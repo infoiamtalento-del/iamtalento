@@ -1,0 +1,2 @@
+ALTER TABLE public.profiles DROP CONSTRAINT profiles_employment_type_check;
+ALTER TABLE public.profiles ADD CONSTRAINT profiles_employment_type_check CHECK (employment_type = ANY (ARRAY['full-time','part-time','contract','freelance','internship']));
