@@ -2,7 +2,6 @@ import { Helmet } from "react-helmet-async";
 import Layout from "@/components/layout/Layout";
 import HeroSection from "@/components/landing/HeroSection";
 import SocialProofBar from "@/components/landing/SocialProofBar";
-import GapSection from "@/components/landing/GapSection";
 import IndustryReadinessSection from "@/components/landing/IndustryReadinessSection";
 import TrustAuthoritySection from "@/components/landing/TrustAuthoritySection";
 import AssessmentIntegritySection from "@/components/landing/AssessmentIntegritySection";
@@ -16,6 +15,7 @@ import CTASection from "@/components/landing/CTASection";
 import CandidateJourneySection from "@/components/landing/CandidateJourneySection";
 import ReviewsMarquee from "@/components/landing/ReviewsMarquee";
 import WebinarScheduleSection from "@/components/webinars/WebinarScheduleSection";
+import WebinarHowItWorksSection from "@/components/webinars/WebinarHowItWorksSection";
 
 const Index = () => (
   <>
@@ -32,7 +32,6 @@ const Index = () => (
     <Layout>
       <HeroSection />
       <SocialProofBar />
-      <GapSection />
       <CandidateJourneySection />
       <IndustryReadinessSection />
       <TrustAuthoritySection />
@@ -45,6 +44,7 @@ const Index = () => (
       <ReviewsMarquee />
       <ComplianceSection />
       <WebinarScheduleSection />
+      <WebinarHowItWorksSection />
       <CTASection />
     </Layout>
   </>
