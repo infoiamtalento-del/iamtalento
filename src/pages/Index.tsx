@@ -32,6 +32,8 @@ const Index = () => (
     <Layout>
       <HeroSection />
       <SocialProofBar />
+      <WebinarScheduleSection />
+      <WebinarHowItWorksSection />
       <CandidateJourneySection />
       <IndustryReadinessSection />
       <TrustAuthoritySection />
@@ -43,8 +45,6 @@ const Index = () => (
       <SkillCategoriesSection />
       <ReviewsMarquee />
       <ComplianceSection />
-      <WebinarScheduleSection />
-      <WebinarHowItWorksSection />
       <CTASection />
     </Layout>
   </>
