@@ -4,7 +4,6 @@ import HeroSection from "@/components/landing/HeroSection";
 import SocialProofBar from "@/components/landing/SocialProofBar";
 import IndustryReadinessSection from "@/components/landing/IndustryReadinessSection";
 import TrustAuthoritySection from "@/components/landing/TrustAuthoritySection";
-import AssessmentIntegritySection from "@/components/landing/AssessmentIntegritySection";
 import VideoSection from "@/components/landing/VideoSection";
 
 import SkillCategoriesSection from "@/components/landing/SkillCategoriesSection";
@@ -37,7 +36,6 @@ const Index = () => (
       <CandidateJourneySection />
       <IndustryReadinessSection />
       <TrustAuthoritySection />
-      <AssessmentIntegritySection />
       
       <VideoSection />
       <PlatformFeaturesSection />
