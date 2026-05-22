@@ -12,10 +12,10 @@ import SkillCategoriesSection from "@/components/landing/SkillCategoriesSection"
 import PlatformFeaturesSection from "@/components/landing/PlatformFeaturesSection";
 import WhoIsItForSection from "@/components/landing/WhoIsItForSection";
 import ComplianceSection from "@/components/landing/ComplianceSection";
-import FAQSection from "@/components/landing/FAQSection";
 import CTASection from "@/components/landing/CTASection";
 import CandidateJourneySection from "@/components/landing/CandidateJourneySection";
 import ReviewsMarquee from "@/components/landing/ReviewsMarquee";
+import WebinarScheduleSection from "@/components/webinars/WebinarScheduleSection";
 
 const Index = () => (
   <>
@@ -44,7 +44,7 @@ const Index = () => (
       <SkillCategoriesSection />
       <ReviewsMarquee />
       <ComplianceSection />
-      <FAQSection />
+      <WebinarScheduleSection />
       <CTASection />
     </Layout>
   </>
