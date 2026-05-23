@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, ArrowRight, Trophy, Zap, Users, Laptop, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -81,6 +82,7 @@ const SpotlightCarousel = () => {
 };
 
 const HackathonSpotlightSection = () => {
+  const navigate = useNavigate();
   const deadlineDate = new Date("2025-08-15T00:00:00");
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
 
@@ -105,6 +107,12 @@ const HackathonSpotlightSection = () => {
       <div className="container px-4 md:px-6">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-10 text-center flex flex-col items-center">
           <SectionBadge label="Season 4 — Now Open" icon={Trophy} />
+          <h2 className="mt-4 text-3xl md:text-4xl font-bold font-display text-foreground leading-tight">
+            Compete. Build. Get Hired.
+          </h2>
+          <p className="mt-2 text-muted-foreground text-sm md:text-base max-w-xl">
+            Join India's biggest coding competition. Win cash prizes, get verified, and unlock direct interviews with top tech companies.
+          </p>
         </motion.div>
 
         <motion.div
@@ -229,6 +237,22 @@ const HackathonSpotlightSection = () => {
             </motion.div>
           ))}
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-10 flex flex-col items-center text-center"
+        >
+          <Button
+            onClick={() => navigate("/hackathons")}
+            size="lg"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2 font-bold h-12 px-8 shadow-xl rounded-xl text-base"
+          >
+            Explore Hackathon <ArrowRight className="h-5 w-5" />
+          </Button>
+          <p className="mt-3 text-muted-foreground text-sm">Free entry · Open to all skill levels · Aug 15–17, 2025</p>
+        </motion.div>
       </div>
     </section>
   );
