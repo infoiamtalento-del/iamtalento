@@ -14,6 +14,7 @@ import CandidateJourneySection from "@/components/landing/CandidateJourneySectio
 import ReviewsMarquee from "@/components/landing/ReviewsMarquee";
 import WebinarHowItWorksSection from "@/components/webinars/WebinarHowItWorksSection";
 import JobProfileAssessmentSection from "@/components/landing/JobProfileAssessmentSection";
+import HackathonSpotlightSection from "@/components/landing/HackathonSpotlightSection";
 
 const Index = () => (
   <>
@@ -32,6 +33,7 @@ const Index = () => (
       <SocialProofBar />
       <WebinarHowItWorksSection />
       <JobProfileAssessmentSection />
+      <HackathonSpotlightSection />
       {/* <CandidateJourneySection /> */}
       <IndustryReadinessSection />
       <TrustAuthoritySection />
