@@ -13,7 +13,6 @@ import ComplianceSection from "@/components/landing/ComplianceSection";
 import CTASection from "@/components/landing/CTASection";
 import CandidateJourneySection from "@/components/landing/CandidateJourneySection";
 import ReviewsMarquee from "@/components/landing/ReviewsMarquee";
-import WebinarScheduleSection from "@/components/webinars/WebinarScheduleSection";
 import WebinarHowItWorksSection from "@/components/webinars/WebinarHowItWorksSection";
 
 const Index = () => (
