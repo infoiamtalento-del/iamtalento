@@ -45,19 +45,20 @@ const StepCard = ({
   const t = themes[data.theme];
 
   const slice = 1 / total;
-  const inStart = Math.max(0, index * slice);
-  const inEarly = Math.min(1, inStart + slice * 0.25);
-  const inMid = Math.min(1, inStart + slice * 0.4);
-  const settle = Math.min(1, inStart + slice * 0.65);
+  // Entrance window: starts when previous card has settled, ends at this card's settle point
+  const prevSettle = Math.max(0, (index - 1) * slice + slice * 0.65);
+  const settle = Math.min(1, index * slice + slice * 0.65);
+  const mid = (prevSettle + settle) / 2;
 
-  const y = useTransform(progress, [inStart, inMid, settle], [-360, -40, 0]);
+  // Card 0 is already settled at scroll=0; others animate in
+  const y = useTransform(progress, [prevSettle, mid, settle], index === 0 ? [0, 0, 0] : [-360, -40, 0]);
   const rotate = useTransform(
     progress,
-    [inStart, inMid, settle],
-    [data.rotate * 2.5, data.rotate * 1.4, data.rotate]
+    [prevSettle, mid, settle],
+    index === 0 ? [data.rotate, data.rotate, data.rotate] : [data.rotate * 2.5, data.rotate * 1.4, data.rotate]
   );
-  const opacity = useTransform(progress, [inStart, inEarly], [index === 0 ? 1 : 0, 1]);
-  const scale = useTransform(progress, [inStart, settle], [0.9, 1]);
+  const opacity = useTransform(progress, [prevSettle, mid], index === 0 ? [1, 1] : [0, 1]);
+  const scale = useTransform(progress, [prevSettle, settle], index === 0 ? [1, 1] : [0.9, 1]);
 
   return (
     <motion.div
