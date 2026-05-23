@@ -45,12 +45,12 @@ const StepCard = ({
   const t = themes[data.theme];
 
   const slice = 1 / total;
-  // Entrance window: starts when previous card has settled, ends at this card's settle point
-  const prevSettle = Math.max(0, (index - 1) * slice + slice * 0.65);
-  const settle = Math.min(1, index * slice + slice * 0.65);
-  const mid = (prevSettle + settle) / 2;
+  // Card N animates from start-of-slice → end-of-slice, settled at (index+1)*slice
+  const prevSettle = Math.max(0, index * slice);
+  const settle = Math.min(1, (index + 1) * slice);
+  const mid = prevSettle + (settle - prevSettle) * 0.6;
 
-  // Card 0 is already settled at scroll=0; others animate in
+  // Card 0 is already settled at scroll=0; others animate in during their slice
   const y = useTransform(progress, [prevSettle, mid, settle], index === 0 ? [0, 0, 0] : [-360, -40, 0]);
   const rotate = useTransform(
     progress,
