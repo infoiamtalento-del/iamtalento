@@ -1,18 +1,28 @@
 import { motion } from "framer-motion";
 import { Star, Building2 } from "lucide-react";
 import SectionBadge from "@/components/ui/section-badge";
+import googleLogo from "@/assets/company-logos/google.svg";
+import microsoftLogo from "@/assets/company-logos/microsoft.svg";
+import amazonLogo from "@/assets/company-logos/amazon.svg";
+import accentureLogo from "@/assets/company-logos/accenture.svg";
+import ibmLogo from "@/assets/company-logos/ibm.svg";
+import oracleLogo from "@/assets/company-logos/oracle.svg";
+import infosysLogo from "@/assets/company-logos/infosys.svg";
+import tcsLogo from "@/assets/company-logos/tcs.svg";
+import capgeminiLogo from "@/assets/company-logos/capgemini.svg";
+import wiproLogo from "@/assets/company-logos/wipro.svg";
 
 const companyLogos = [
-  { name: "Google", logo: "https://cdn.simpleicons.org/google/64748b" },
-  { name: "Microsoft", logo: "https://cdn.simpleicons.org/microsoft/64748b" },
-  { name: "Amazon", logo: "https://cdn.simpleicons.org/amazon/64748b" },
-  { name: "Accenture", logo: "https://cdn.simpleicons.org/accenture/64748b" },
-  { name: "IBM", logo: "https://cdn.simpleicons.org/ibm/64748b" },
-  { name: "Oracle", logo: "https://cdn.simpleicons.org/oracle/64748b" },
-  { name: "Infosys", logo: "https://cdn.simpleicons.org/infosys/64748b" },
-  { name: "TCS", logo: "https://cdn.simpleicons.org/tataconsultancyservices/64748b" },
-  { name: "Capgemini", logo: "https://cdn.simpleicons.org/capgemini/64748b" },
-  { name: "Wipro", logo: "https://cdn.simpleicons.org/wipro/64748b" },
+  { name: "Google", logo: googleLogo },
+  { name: "Microsoft", logo: microsoftLogo },
+  { name: "Amazon", logo: amazonLogo },
+  { name: "Accenture", logo: accentureLogo },
+  { name: "IBM", logo: ibmLogo },
+  { name: "Oracle", logo: oracleLogo },
+  { name: "Infosys", logo: infosysLogo },
+  { name: "TCS", logo: tcsLogo },
+  { name: "Capgemini", logo: capgeminiLogo },
+  { name: "Wipro", logo: wiproLogo },
 ];
 
 const marqueeLogos = [...companyLogos, ...companyLogos];
@@ -101,7 +111,7 @@ const SocialProofBar = () => (
             <img
               src={company.logo}
               alt={company.name}
-              className="max-h-7 md:max-h-10 max-w-full object-contain dark:brightness-0 dark:invert"
+              className="max-h-7 md:max-h-10 max-w-full object-contain"
               loading="lazy"
             />
           </div>
