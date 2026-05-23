@@ -32,6 +32,7 @@ const Index = () => (
       <HeroSection />
       <SocialProofBar />
       <WebinarHowItWorksSection />
+      <JobProfileAssessmentSection />
       <CandidateJourneySection />
       <IndustryReadinessSection />
       <TrustAuthoritySection />
