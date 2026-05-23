@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Briefcase, FileText } from "lucide-react";
+import { ArrowRight, Briefcase, FileText, Sparkles, CheckCircle2, Play } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import SectionBadge from "@/components/ui/section-badge";
@@ -8,17 +8,17 @@ import SectionBadge from "@/components/ui/section-badge";
 const profileSlides = [
   {
     title: "Build Your Professional Identity",
-    description: "Showcase your skills, experience and career aspirations in a profile that recruiters trust.",
+    description: "Showcase your skills, experience and career aspirations in a profile recruiters trust.",
     image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800&q=80",
   },
   {
     title: "Highlight Your Achievements",
-    description: "Add certifications, projects, and verified credentials to stand out from the crowd.",
+    description: "Add certifications, projects, and verified credentials to stand out.",
     image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&q=80",
   },
   {
     title: "Get Discovered by Top Employers",
-    description: "Your profile is matched with companies looking for talent exactly like you.",
+    description: "Your profile is matched with companies looking for talent like you.",
     image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80",
   },
 ];
@@ -26,12 +26,12 @@ const profileSlides = [
 const assessmentSlides = [
   {
     title: "AI-Powered Proctored Tests",
-    description: "Prove your skills with secure, role-specific assessments tailored to your target job.",
+    description: "Prove your skills with secure, role-specific assessments tailored to your goal.",
     image: "https://images.unsplash.com/photo-1531538606174-0f90ff5dce83?w=800&q=80",
   },
   {
     title: "Benchmark Against Professionals",
-    description: "See how you compare with real industry professionals and identify your growth areas.",
+    description: "See how you compare with real industry professionals and identify growth areas.",
     image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80",
   },
   {
@@ -58,147 +58,143 @@ const JobProfileAssessmentSection = () => {
 
   return (
     <section className="py-16 md:py-24">
-      <div className="container">
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <SectionBadge label="Get Started" icon={Briefcase} />
+      <div className="container px-4 md:px-6">
+        <div className="text-center mb-10 md:mb-14">
+          <SectionBadge label="Get Started" icon={Sparkles} />
           <motion.h2
-            className="text-3xl md:text-4xl font-bold font-display mb-4"
-            initial={{ opacity: 0, y: 20 }}
+            className="text-3xl md:text-4xl font-bold font-display mb-3"
+            initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            Your Path to <span className="text-primary">Career Success</span>
+            Your Path to<br />
+            <span className="text-primary">Career Success</span>
           </motion.h2>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-muted-foreground max-w-xl mx-auto">
             Showcase who you are and prove what you can do — all in one place.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto">
-          {/* Job Profile Card - Red */}
+        <div className="grid md:grid-cols-2 gap-4 max-w-5xl mx-auto">
+          {/* Job Profile Card — primary filled */}
           <motion.div
-            initial={{ opacity: 0, x: -20, scale: 0.96 }}
-            whileInView={{ opacity: 1, x: 0, scale: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="bg-red-600 rounded-2xl overflow-hidden hover:shadow-xl transition-shadow duration-300 text-white"
+            transition={{ duration: 0.5 }}
+            className="rounded-2xl bg-primary text-primary-foreground p-6 md:p-8 relative overflow-hidden group"
           >
-            <div className="aspect-[16/10] relative overflow-hidden">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={profileIndex}
-                  initial={{ opacity: 0, scale: 1.05 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.98 }}
-                  transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                  className="absolute inset-0"
-                >
-                  <img
+            <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-white/5 -translate-y-1/3 translate-x-1/4" />
+            <div className="relative z-10 flex flex-col h-full">
+              <div className="inline-flex w-fit items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 text-xs font-semibold text-primary-foreground mb-4">
+                <FileText className="h-3 w-3" /> Profile Builder
+              </div>
+              <h3 className="text-xl md:text-2xl font-bold font-display mb-2 leading-tight text-primary-foreground">
+                Create Your Job Profile
+              </h3>
+              <p className="text-primary-foreground/70 text-sm mb-5 max-w-sm min-h-[3em]">
+                {currentProfile.description}
+              </p>
+
+              <div className="relative rounded-xl overflow-hidden border border-white/10 aspect-[16/10] mb-5">
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={profileIndex}
                     src={currentProfile.image}
                     alt={currentProfile.title}
-                    className="w-full h-full object-cover"
+                    initial={{ opacity: 0, scale: 1.04 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.6 }}
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-red-700 via-red-600/60 to-transparent" />
-                </motion.div>
-              </AnimatePresence>
-
-              <div className="absolute bottom-0 left-0 right-0 p-5">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
-                    <FileText className="h-4 w-4 text-white" />
-                  </div>
-                  <h3 className="text-lg font-bold font-display text-white">Create Your Job Profile</h3>
-                </div>
-                <p className="text-red-100 text-sm">
-                  {currentProfile.description}
-                </p>
+                </AnimatePresence>
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent" />
               </div>
-            </div>
 
-            <div className="p-5 pt-3 flex flex-col gap-4">
-              <div className="flex gap-1.5">
+              <div className="flex gap-1.5 mb-5">
                 {profileSlides.map((_, i) => (
                   <button
                     key={i}
                     onClick={() => setProfileIndex(i)}
-                    aria-label={`Show step ${i + 1}`}
+                    aria-label={`Show slide ${i + 1}`}
                     className={`h-1.5 rounded-full transition-all ${
-                      i === profileIndex ? "flex-1 bg-white" : "w-3 bg-white/30"
+                      i === profileIndex ? "flex-1 bg-primary-foreground" : "w-3 bg-primary-foreground/25"
                     }`}
                   />
                 ))}
               </div>
 
-              <Button asChild size="lg" className="w-full h-11 gap-2 bg-white text-red-600 hover:bg-red-50 border-0">
+              <Button
+                asChild
+                className="mt-auto w-full bg-warning text-warning-foreground hover:bg-warning/90 gap-2 font-semibold rounded-full h-11"
+              >
                 <Link to="/profile">
-                  <FileText className="h-4 w-4" /> Create Your Job Profile
-                  <ArrowRight className="h-4 w-4 ml-auto" />
+                  Create Your Profile <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
             </div>
           </motion.div>
 
-          {/* Skill Assessment Card - Yellow */}
+          {/* Skill Assessment Card — bordered with primary accents */}
           <motion.div
-            initial={{ opacity: 0, x: 20, scale: 0.96 }}
-            whileInView={{ opacity: 1, x: 0, scale: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-            className="bg-amber-400 rounded-2xl overflow-hidden hover:shadow-xl transition-shadow duration-300 text-amber-950"
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="rounded-2xl border bg-card p-6 md:p-8 group hover:border-primary/30 transition-colors flex flex-col"
           >
-            <div className="aspect-[16/10] relative overflow-hidden">
+            <div className="inline-flex w-fit items-center gap-1.5 px-3 py-1 rounded-full bg-accent text-primary text-xs font-semibold mb-4">
+              <Briefcase className="h-3 w-3" /> Skill Assessment
+            </div>
+            <h3 className="text-xl md:text-2xl font-bold font-display mb-2 leading-tight">
+              Get Your Skill Assessment
+            </h3>
+            <p className="text-muted-foreground text-sm mb-5 max-w-sm min-h-[3em]">
+              {currentAssessment.description}
+            </p>
+
+            <div className="relative rounded-xl overflow-hidden border aspect-[16/10] mb-5">
               <AnimatePresence mode="wait">
-                <motion.div
+                <motion.img
                   key={assessmentIndex}
-                  initial={{ opacity: 0, scale: 1.05 }}
+                  src={currentAssessment.image}
+                  alt={currentAssessment.title}
+                  initial={{ opacity: 0, scale: 1.04 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.98 }}
-                  transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                  className="absolute inset-0"
-                >
-                  <img
-                    src={currentAssessment.image}
-                    alt={currentAssessment.title}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-amber-500 via-amber-400/60 to-transparent" />
-                </motion.div>
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.6 }}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
               </AnimatePresence>
-
-              <div className="absolute bottom-0 left-0 right-0 p-5">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-amber-950/20 flex items-center justify-center">
-                    <Briefcase className="h-4 w-4 text-amber-950" />
-                  </div>
-                  <h3 className="text-lg font-bold font-display text-amber-950">Get Your Skill Assessment</h3>
-                </div>
-                <p className="text-amber-900/80 text-sm">
-                  {currentAssessment.description}
-                </p>
+              <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-background/10 to-transparent" />
+              <div className="absolute top-3 left-3 inline-flex items-center gap-1 bg-card/90 backdrop-blur rounded-full px-2.5 py-1 border">
+                <CheckCircle2 className="h-3 w-3 text-primary" />
+                <span className="text-[10px] font-bold">Verified</span>
               </div>
             </div>
 
-            <div className="p-5 pt-3 flex flex-col gap-4">
-              <div className="flex gap-1.5">
-                {assessmentSlides.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setAssessmentIndex(i)}
-                    aria-label={`Show step ${i + 1}`}
-                    className={`h-1.5 rounded-full transition-all ${
-                      i === assessmentIndex ? "flex-1 bg-amber-950" : "w-3 bg-amber-950/30"
-                    }`}
-                  />
-                ))}
-              </div>
-
-              <Button asChild size="lg" className="w-full h-11 gap-2 bg-amber-950 text-amber-50 hover:bg-amber-900 border-0">
-                <Link to="/skill-assessment">
-                  <Briefcase className="h-4 w-4" /> Take Your Skill Assessment
-                  <ArrowRight className="h-4 w-4 ml-auto" />
-                </Link>
-              </Button>
+            <div className="flex gap-1.5 mb-5">
+              {assessmentSlides.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setAssessmentIndex(i)}
+                  aria-label={`Show slide ${i + 1}`}
+                  className={`h-1.5 rounded-full transition-all ${
+                    i === assessmentIndex ? "flex-1 bg-primary" : "w-3 bg-muted"
+                  }`}
+                />
+              ))}
             </div>
+
+            <Button
+              asChild
+              className="mt-auto w-full gap-2 font-semibold rounded-full h-11"
+            >
+              <Link to="/skill-assessment">
+                Take Your Assessment <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
           </motion.div>
         </div>
       </div>
