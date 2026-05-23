@@ -96,7 +96,7 @@ const JobProfileAssessmentSection = () => {
                 {currentProfile.description}
               </p>
 
-              <div className="relative rounded-xl overflow-hidden border border-white/10 aspect-[16/10] mb-5">
+              <div className="relative rounded-xl overflow-hidden border aspect-[16/10] mb-5">
                 <AnimatePresence mode="wait">
                   <motion.img
                     key={profileIndex}
@@ -109,8 +109,26 @@ const JobProfileAssessmentSection = () => {
                     className="absolute inset-0 w-full h-full object-cover"
                   />
                 </AnimatePresence>
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-background/10 to-transparent" />
               </div>
+
+              <div className="flex gap-1.5 mb-5">
+                {profileSlides.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setProfileIndex(i)}
+                    aria-label={`Show slide ${i + 1}`}
+                    className={`h-1.5 rounded-full transition-all ${
+                      i === profileIndex ? "flex-1 bg-primary" : "w-3 bg-muted"
+                    }`}
+                  />
+                ))}
+              </div>
+
+              <Button
+                asChild
+                className="mt-auto w-full bg-warning text-warning-foreground hover:bg-warning/90 gap-2 font-semibold rounded-full h-11"
+              >
 
               <div className="flex gap-1.5 mb-5">
                 {profileSlides.map((_, i) => (
