@@ -1,28 +1,17 @@
 import { motion } from "framer-motion";
 import { Star, Building2 } from "lucide-react";
 import SectionBadge from "@/components/ui/section-badge";
-import googleLogo from "@/assets/company-logos/google.svg";
-import microsoftLogo from "@/assets/company-logos/microsoft.svg";
-import amazonLogo from "@/assets/company-logos/amazon.svg";
-import accentureLogo from "@/assets/company-logos/accenture.svg";
-import ibmLogo from "@/assets/company-logos/ibm.svg";
-import oracleLogo from "@/assets/company-logos/oracle.svg";
-import infosysLogo from "@/assets/company-logos/infosys.svg";
-import tcsLogo from "@/assets/company-logos/tcs.svg";
-import capgeminiLogo from "@/assets/company-logos/capgemini.svg";
-import wiproLogo from "@/assets/company-logos/wipro.svg";
-
 const companyLogos = [
-  { name: "Google", logo: googleLogo },
-  { name: "Microsoft", logo: microsoftLogo },
-  { name: "Amazon", logo: amazonLogo },
-  { name: "Accenture", logo: accentureLogo },
-  { name: "IBM", logo: ibmLogo },
-  { name: "Oracle", logo: oracleLogo },
-  { name: "Infosys", logo: infosysLogo },
-  { name: "TCS", logo: tcsLogo },
-  { name: "Capgemini", logo: capgeminiLogo },
-  { name: "Wipro", logo: wiproLogo },
+  { name: "Google", logo: "https://cdn.simpleicons.org/google" },
+  { name: "Microsoft", logo: "https://cdn.simpleicons.org/microsoft" },
+  { name: "Amazon", logo: "https://cdn.simpleicons.org/amazon" },
+  { name: "Accenture", logo: "https://cdn.simpleicons.org/accenture" },
+  { name: "IBM", logo: "https://cdn.simpleicons.org/ibm" },
+  { name: "Oracle", logo: "https://cdn.simpleicons.org/oracle" },
+  { name: "Infosys", logo: "https://cdn.simpleicons.org/infosys" },
+  { name: "TCS", logo: "https://cdn.simpleicons.org/tatacconsultancyservices" },
+  { name: "Capgemini", logo: "https://cdn.simpleicons.org/capgemini" },
+  { name: "Wipro", logo: "https://cdn.simpleicons.org/wipro" },
 ];
 
 const marqueeLogos = [...companyLogos, ...companyLogos];
