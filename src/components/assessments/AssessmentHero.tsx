@@ -98,13 +98,6 @@ const AssessmentHero = () => {
                 </div>
               </div>
 
-              {/* Play on image */}
-              <motion.div
-                className="absolute top-5 right-5 h-11 w-11 rounded-full bg-primary/80 border border-primary-foreground/20 flex items-center justify-center cursor-pointer z-10"
-                whileHover={{ scale: 1.1 }}
-              >
-                <Play className="h-4 w-4 text-primary-foreground fill-primary-foreground ml-0.5" />
-              </motion.div>
             </div>
           </motion.div>
         </div>
