@@ -82,17 +82,17 @@ const JobProfileAssessmentSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="rounded-2xl bg-primary text-primary-foreground p-6 md:p-8 relative overflow-hidden group"
+            className="rounded-2xl border bg-card text-card-foreground p-6 md:p-8 relative overflow-hidden group flex flex-col"
           >
-            <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-white/5 -translate-y-1/3 translate-x-1/4" />
+            <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-primary/5 -translate-y-1/3 translate-x-1/4" />
             <div className="relative z-10 flex flex-col h-full">
-              <div className="inline-flex w-fit items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 text-xs font-semibold text-primary-foreground mb-4">
+              <div className="inline-flex w-fit items-center gap-1.5 px-3 py-1 rounded-full bg-accent text-primary text-xs font-semibold mb-4">
                 <FileText className="h-3 w-3" /> Profile Builder
               </div>
-              <h3 className="text-xl md:text-2xl font-bold font-display mb-2 leading-tight text-primary-foreground">
+              <h3 className="text-xl md:text-2xl font-bold font-display mb-2 leading-tight">
                 Create Your Job Profile
               </h3>
-              <p className="text-primary-foreground/70 text-sm mb-5 max-w-sm min-h-[3em]">
+              <p className="text-muted-foreground text-sm mb-5 max-w-sm min-h-[3em]">
                 {currentProfile.description}
               </p>
 
