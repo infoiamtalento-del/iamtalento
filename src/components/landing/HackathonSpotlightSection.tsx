@@ -236,6 +236,8 @@ const HackathonSpotlightSection = () => {
               <p className={`text-[11px] mt-1 leading-tight ${i === 0 ? "text-primary-foreground/50" : "text-muted-foreground"}`}>{p.extra}</p>
             </motion.div>
           ))}
+        </div>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
