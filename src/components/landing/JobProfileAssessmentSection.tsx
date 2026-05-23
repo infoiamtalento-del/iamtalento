@@ -125,23 +125,6 @@ const JobProfileAssessmentSection = () => {
                 ))}
               </div>
 
-              <Button
-                asChild
-                className="mt-auto w-full bg-warning text-warning-foreground hover:bg-warning/90 gap-2 font-semibold rounded-full h-11"
-              >
-
-              <div className="flex gap-1.5 mb-5">
-                {profileSlides.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setProfileIndex(i)}
-                    aria-label={`Show slide ${i + 1}`}
-                    className={`h-1.5 rounded-full transition-all ${
-                      i === profileIndex ? "flex-1 bg-primary-foreground" : "w-3 bg-primary-foreground/25"
-                    }`}
-                  />
-                ))}
-              </div>
 
               <Button
                 asChild
