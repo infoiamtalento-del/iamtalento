@@ -122,9 +122,8 @@ const StepCard = ({
         opacity,
         scale,
         zIndex: 10 + index,
-        marginTop: index === 0 ? 0 : -150,
       }}
-      className="relative w-full"
+      className="absolute inset-x-0 mx-auto w-full max-w-md"
     >
       <div className={`${t.bg} ${t.text} ${t.border} border rounded-3xl shadow-2xl px-6 md:px-8 py-6 md:py-7 relative overflow-hidden`}>
         <span
