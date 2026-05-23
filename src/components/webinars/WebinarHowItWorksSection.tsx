@@ -27,7 +27,7 @@ const steps = [
     title: "Calendar Invite",
     desc: "Add the session to your calendar with one click — Google, Outlook, Apple.",
     icon: Calendar,
-    theme: "dark",
+    theme: "yellow",
     rotate: 5,
   },
   {
@@ -35,7 +35,7 @@ const steps = [
     title: "Arrive Prepared",
     desc: "We send context material 24 hours before so you walk in ready.",
     icon: FileText,
-    theme: "white",
+    theme: "red",
     rotate: -4,
   },
   {
@@ -51,7 +51,7 @@ const steps = [
     title: "Q&A With Experts",
     desc: "Get your doubts answered directly by industry leaders during the live AMA.",
     icon: MessageSquare,
-    theme: "dark",
+    theme: "red",
     rotate: -5,
   },
   {
@@ -59,7 +59,7 @@ const steps = [
     title: "Meet Your Peers",
     desc: "Connect with attendees from top companies in the breakout community room.",
     icon: Users,
-    theme: "red",
+    theme: "yellow",
     rotate: 4,
   },
   {
@@ -67,7 +67,7 @@ const steps = [
     title: "Add to Your Profile",
     desc: "Download your certificate and auto-add it to your Talento profile.",
     icon: Award,
-    theme: "yellow",
+    theme: "red",
     rotate: -6,
   },
   {
@@ -75,16 +75,14 @@ const steps = [
     title: "Show Off Your Win",
     desc: "Post your badge to LinkedIn in one tap and let recruiters notice.",
     icon: Share2,
-    theme: "white",
+    theme: "yellow",
     rotate: 7,
   },
 ];
 
 const themes: Record<string, { bg: string; text: string; sub: string; chip: string; border: string }> = {
-  red:    { bg: "bg-[#ef4444]", text: "text-white",      sub: "text-white/70",        chip: "bg-white/15 text-white",       border: "border-black/5" },
-  dark:   { bg: "bg-[#0f0f10]", text: "text-white",      sub: "text-white/60",        chip: "bg-white/10 text-white",       border: "border-white/5" },
-  yellow: { bg: "bg-[#fbbf24]", text: "text-[#1a1500]",  sub: "text-[#3a2f00]/70",    chip: "bg-[#1a1500]/10 text-[#1a1500]", border: "border-black/5" },
-  white:  { bg: "bg-white",     text: "text-[#0f0f10]",  sub: "text-[#0f0f10]/60",    chip: "bg-[#0f0f10]/5 text-[#0f0f10]",  border: "border-black/10" },
+  red:    { bg: "bg-[#ef4444]", text: "text-white",     sub: "text-white/70",     chip: "bg-white/15 text-white",         border: "border-black/5" },
+  yellow: { bg: "bg-[#fbbf24]", text: "text-[#1a1500]", sub: "text-[#3a2f00]/70", chip: "bg-[#1a1500]/10 text-[#1a1500]", border: "border-black/10" },
 };
 
 const StepCard = ({
@@ -124,9 +122,8 @@ const StepCard = ({
         opacity,
         scale,
         zIndex: 10 + index,
-        marginTop: index === 0 ? 0 : -150,
       }}
-      className="relative w-full"
+      className="absolute inset-x-0 mx-auto w-full max-w-md"
     >
       <div className={`${t.bg} ${t.text} ${t.border} border rounded-3xl shadow-2xl px-6 md:px-8 py-6 md:py-7 relative overflow-hidden`}>
         <span
@@ -265,8 +262,8 @@ const WebinarHowItWorksSection = () => {
               </div>
 
               {/* RIGHT — scroll-stacked cards */}
-              <div className="lg:col-span-7 relative h-[80vh] flex items-center justify-center">
-                <div className="w-full max-w-xl mx-auto px-2">
+              <div className="lg:col-span-7 relative h-[70vh] flex items-center justify-center">
+                <div className="relative w-full h-full max-w-xl mx-auto flex items-center justify-center">
                   {steps.map((data, i) => (
                     <StepCard
                       key={data.label}
