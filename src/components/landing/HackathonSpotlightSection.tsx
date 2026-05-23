@@ -236,7 +236,21 @@ const HackathonSpotlightSection = () => {
               <p className={`text-[11px] mt-1 leading-tight ${i === 0 ? "text-primary-foreground/50" : "text-muted-foreground"}`}>{p.extra}</p>
             </motion.div>
           ))}
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-10 flex flex-col items-center text-center"
+        >
+          <Button
+            onClick={() => navigate("/hackathons")}
+            size="lg"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2 font-bold h-12 px-8 shadow-xl rounded-xl text-base"
+          >
+            Explore Hackathon <ArrowRight className="h-5 w-5" />
+          </Button>
+          <p className="mt-3 text-muted-foreground text-sm">Free entry · Open to all skill levels · Aug 15–17, 2025</p>
+        </motion.div>
       </div>
     </section>
   );
