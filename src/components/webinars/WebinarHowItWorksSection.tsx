@@ -262,8 +262,8 @@ const WebinarHowItWorksSection = () => {
               </div>
 
               {/* RIGHT — scroll-stacked cards */}
-              <div className="lg:col-span-7 relative h-[80vh] flex items-center justify-center">
-                <div className="w-full max-w-xl mx-auto px-2">
+              <div className="lg:col-span-7 relative h-[70vh] flex items-center justify-center">
+                <div className="relative w-full h-full max-w-xl mx-auto flex items-center justify-center">
                   {steps.map((data, i) => (
                     <StepCard
                       key={data.label}
