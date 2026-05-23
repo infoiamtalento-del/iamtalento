@@ -31,17 +31,20 @@ const themes: Record<string, { bg: string; text: string; sub: string; chip: stri
   yellow: { bg: "bg-primary-glow", text: "text-foreground", sub: "text-foreground/75", chip: "bg-background/30 text-foreground" },
 };
 
+const VISIBLE = 4;
+
 const WebinarHowItWorksSection = () => {
-  const [[active, dir], setActive] = useState<[number, number]>([0, 0]);
+  const [active, setActive] = useState(0);
 
   const go = (delta: number) => {
-    const next = (active + delta + steps.length) % steps.length;
-    setActive([next, delta]);
+    setActive((p) => (p + delta + steps.length) % steps.length);
   };
 
-  const data = steps[active];
-  const Icon = data.icon;
-  const t = themes[data.theme];
+  // Build visible window of 4 steps starting from `active`
+  const visible = Array.from({ length: VISIBLE }, (_, i) => {
+    const idx = (active + i) % steps.length;
+    return { ...steps[idx], idx };
+  });
 
   return (
     <section className="py-16 md:py-24 bg-background overflow-hidden">
@@ -58,7 +61,7 @@ const WebinarHowItWorksSection = () => {
           </p>
         </div>
 
-        {/* Centered card carousel */}
+        {/* 4-card carousel */}
         <div className="relative flex items-center justify-center gap-4 md:gap-6">
           <button
             onClick={() => go(-1)}
@@ -68,45 +71,52 @@ const WebinarHowItWorksSection = () => {
             <ChevronLeft className="h-5 w-5" />
           </button>
 
-          <div className="relative w-[280px] sm:w-[320px] md:w-[360px] h-[460px] md:h-[520px]">
-            <AnimatePresence mode="wait" custom={dir} initial={false}>
-              <motion.div
-                key={active}
-                custom={dir}
-                initial={{ x: dir > 0 ? 120 : -120, opacity: 0, rotate: dir > 0 ? 8 : -8, scale: 0.9 }}
-                animate={{ x: 0, opacity: 1, rotate: 0, scale: 1 }}
-                exit={{ x: dir > 0 ? -120 : 120, opacity: 0, rotate: dir > 0 ? -8 : 8, scale: 0.9 }}
-                transition={{ type: "spring", stiffness: 260, damping: 28 }}
-                className="absolute inset-0"
-              >
-                <div className={`${t.bg} ${t.text} h-full w-full rounded-[2rem] shadow-2xl px-7 py-8 relative overflow-hidden flex flex-col`}>
-                  <span
-                    aria-hidden
-                    className={`absolute -top-6 right-4 font-display font-black leading-none select-none ${t.text} opacity-10`}
-                    style={{ fontSize: "clamp(140px, 18vw, 220px)" }}
-                  >
-                    {active + 1}
-                  </span>
+          <div className="flex-1 overflow-hidden">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+              <AnimatePresence mode="popLayout" initial={false}>
+                {visible.map((s, i) => {
+                  const Icon = s.icon;
+                  const t = themes[s.theme];
+                  return (
+                    <motion.div
+                      key={s.idx}
+                      layout
+                      initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -30, scale: 0.9 }}
+                      transition={{ type: "spring", stiffness: 260, damping: 28, delay: i * 0.05 }}
+                    >
+                      <div className={`${t.bg} ${t.text} h-[420px] md:h-[460px] w-full rounded-[2rem] shadow-2xl px-6 py-7 relative overflow-hidden flex flex-col`}>
+                        <span
+                          aria-hidden
+                          className={`absolute -top-6 right-3 font-display font-black leading-none select-none ${t.text} opacity-10`}
+                          style={{ fontSize: "clamp(110px, 10vw, 180px)" }}
+                        >
+                          {s.idx + 1}
+                        </span>
 
-                  <div className={`relative inline-flex w-fit items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-[0.18em] ${t.chip}`}>
-                    <Icon className="h-3 w-3" /> {data.label}
-                  </div>
+                        <div className={`relative inline-flex w-fit items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-[0.18em] ${t.chip}`}>
+                          <Icon className="h-3 w-3" /> {s.label}
+                        </div>
 
-                  <div className="relative mt-auto">
-                    <h3 className={`text-3xl md:text-4xl font-bold font-display leading-[1.05] ${t.text}`}>
-                      {data.title}
-                    </h3>
-                    <p className={`mt-3 text-sm md:text-base ${t.sub}`}>{data.desc}</p>
+                        <div className="relative mt-auto">
+                          <h3 className={`text-2xl md:text-3xl font-bold font-display leading-[1.05] ${t.text}`}>
+                            {s.title}
+                          </h3>
+                          <p className={`mt-3 text-xs md:text-sm ${t.sub}`}>{s.desc}</p>
 
-                    <div className={`mt-8 flex items-center gap-3 text-[10px] tracking-[0.2em] font-bold ${t.sub}`}>
-                      <span>0{active + 1}</span>
-                      <span className="h-px flex-1 bg-current opacity-25" />
-                      <span>0{active + 1}/0{steps.length}</span>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
+                          <div className={`mt-6 flex items-center gap-3 text-[10px] tracking-[0.2em] font-bold ${t.sub}`}>
+                            <span>0{s.idx + 1}</span>
+                            <span className="h-px flex-1 bg-current opacity-25" />
+                            <span>0{s.idx + 1}/0{steps.length}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </AnimatePresence>
+            </div>
           </div>
 
           <button
@@ -123,7 +133,7 @@ const WebinarHowItWorksSection = () => {
           {steps.map((_, i) => (
             <button
               key={i}
-              onClick={() => setActive([i, i > active ? 1 : -1])}
+              onClick={() => setActive(i)}
               aria-label={`Go to step ${i + 1}`}
               className={`h-1.5 rounded-full transition-all ${i === active ? "w-6 bg-[#ef4444]" : "w-1.5 bg-[#ef4444]/30"}`}
             />
