@@ -82,6 +82,7 @@ const SpotlightCarousel = () => {
 };
 
 const HackathonSpotlightSection = () => {
+  const navigate = useNavigate();
   const deadlineDate = new Date("2025-08-15T00:00:00");
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
 
