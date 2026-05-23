@@ -7,7 +7,6 @@ import TrustAuthoritySection from "@/components/landing/TrustAuthoritySection";
 import VideoSection from "@/components/landing/VideoSection";
 
 import SkillCategoriesSection from "@/components/landing/SkillCategoriesSection";
-import PlatformFeaturesSection from "@/components/landing/PlatformFeaturesSection";
 import WhoIsItForSection from "@/components/landing/WhoIsItForSection";
 import ComplianceSection from "@/components/landing/ComplianceSection";
 import CTASection from "@/components/landing/CTASection";
@@ -38,7 +37,6 @@ const Index = () => (
       <TrustAuthoritySection />
       
       <VideoSection />
-      <PlatformFeaturesSection />
       <WhoIsItForSection />
       <SkillCategoriesSection />
       <ReviewsMarquee />
