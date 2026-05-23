@@ -5,12 +5,13 @@ import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import SectionBadge from "@/components/ui/section-badge";
-import { motion, useInView, useMotionValue, useTransform, animate, AnimatePresence } from "framer-motion";
+import { motion, useInView, useMotionValue, useTransform, useScroll, animate, AnimatePresence, type MotionValue } from "framer-motion";
 import {
   Calendar, Clock, Users, ArrowRight, Globe, Star, CheckCircle,
   Play, Mic, Monitor, BookOpen, TrendingUp, Sparkles, Target,
   FileText, Award, Zap, Quote, Package, Shield, Eye,
-  Laptop, BarChart3, Palette, Sprout, Code
+  Laptop, BarChart3, Palette, Sprout, Code, User, Layers,
+  ListChecks, MessageSquare, ShieldCheck, Send
 } from "lucide-react";
 
 import webinarHero from "@/assets/webinar-hero.jpg";
@@ -55,11 +56,15 @@ const webinars = [
 ];
 
 const howItWorks = [
-  { step: "01", title: "Register", desc: "Pick your webinar and secure your seat in under 60 seconds.", icon: CheckCircle },
-  { step: "02", title: "Get Pre-Read", desc: "We send you context material 24 hours before so you arrive prepared.", icon: FileText },
-  { step: "03", title: "Attend Live", desc: "Interact, ask questions, participate in polls, and learn in real time.", icon: Play },
-  { step: "04", title: "Get Certified", desc: "Download your certificate and auto-add it to your I Am Talento profile.", icon: Award },
-];
+  { step: "01", label: "STEP 1", title: "Build Your Profile", desc: "Tell us who you are in 2 minutes — role, experience, and goals.", icon: User, theme: "red", rotate: -7 },
+  { step: "02", label: "STEP 2", title: "Pick Your Domain", desc: "Choose your field and experience level for a fully tailored path.", icon: Layers, theme: "yellow", rotate: 5 },
+  { step: "03", label: "STEP 3", title: "Select Your Test", desc: "Role-specific. AI-curated. Precise — built for your exact target job.", icon: ListChecks, theme: "red", rotate: -4 },
+  { step: "04", label: "STEP 4", title: "Practice Like It's Real", desc: "Mock interviews and AI practice tests that mirror real hiring pressure.", icon: MessageSquare, theme: "yellow", rotate: 6 },
+  { step: "05", label: "STEP 5", title: "Craft Your AI Resume", desc: "Premium templates engineered to pass ATS and actually get callbacks.", icon: FileText, theme: "red", rotate: -5 },
+  { step: "06", label: "STEP 6", title: "Take the Proctored Test", desc: "Fair. Secure. Employer-trusted — your real skill, on the record.", icon: ShieldCheck, theme: "yellow", rotate: 4 },
+  { step: "07", label: "STEP 7", title: "Get Your ScoreCard", desc: "One score that speaks louder than your CV — benchmarked against peers.", icon: BarChart3, theme: "red", rotate: -6 },
+  { step: "08", label: "STEP 8", title: "Apply to 100+ Jobs", desc: "Let employers come to you. Verified. Ranked. Ready to hire.", icon: Send, theme: "yellow", rotate: 7 },
+] as const;
 
 const differentiators = [
   { icon: Target, title: "Industry-Benchmarked Content", desc: "Every topic is chosen based on real skill gaps identified across 10,000+ candidates." },
@@ -296,87 +301,127 @@ const UpcomingWebinars = () => {
   );
 };
 
-/* ─── How It Works — Flip Card ─── */
-const WEBINAR_FLIP_INTERVAL = 3000;
+/* ─── How It Works — Scroll Stack ─── */
+const stepCardTheme = {
+  red: "bg-primary text-primary-foreground",
+  yellow: "bg-primary-glow text-foreground",
+} as const;
+
+const ScrollStepCard = ({
+  item,
+  index,
+  progress,
+  total,
+}: {
+  item: (typeof howItWorks)[number];
+  index: number;
+  progress: MotionValue<number>;
+  total: number;
+}) => {
+  const Icon = item.icon;
+  const y = useTransform(progress, (v) => {
+    const delta = index - v * (total - 1);
+    return delta >= 0 ? delta * 36 : 132 + Math.abs(delta) * 18;
+  });
+  const x = useTransform(progress, (v) => {
+    const delta = index - v * (total - 1);
+    return Math.max(-3, Math.min(3, delta)) * 8;
+  });
+  const rotate = useTransform(progress, (v) => {
+    const delta = index - v * (total - 1);
+    return item.rotate + Math.max(-3, Math.min(3, delta)) * 2;
+  });
+  const scale = useTransform(progress, (v) => {
+    const distance = Math.abs(index - v * (total - 1));
+    return Math.max(0.82, 1 - distance * 0.035);
+  });
+  const opacity = useTransform(progress, (v) => {
+    const delta = index - v * (total - 1);
+    return delta < -2.5 ? 0.22 : delta > 6 ? 0.45 : 1;
+  });
+  const zIndex = useTransform(progress, (v) => Math.round(100 - Math.abs(index - v * (total - 1)) * 10));
+
+  return (
+    <motion.article
+      style={{ y, x, rotate, scale, opacity, zIndex }}
+      className="absolute inset-x-0 top-8 mx-auto w-full max-w-md origin-top"
+    >
+      <div className={`${stepCardTheme[item.theme]} relative overflow-hidden rounded-3xl border border-border/20 px-6 py-6 shadow-2xl md:px-8 md:py-7`}>
+        <span className="absolute -right-2 -top-5 select-none font-display text-[7rem] font-black leading-none opacity-15 md:text-[9rem]">
+          {item.step}
+        </span>
+        <div className="relative z-10">
+          <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-background/15 backdrop-blur-sm">
+            <Icon className="h-7 w-7" />
+          </div>
+          <span className="mb-3 inline-flex rounded-full bg-background/15 px-3 py-1 text-[10px] font-bold tracking-[0.2em]">
+            {item.label}
+          </span>
+          <h3 className="mb-3 font-display text-2xl font-bold leading-tight md:text-3xl">{item.title}</h3>
+          <p className="max-w-sm text-sm leading-relaxed opacity-75">{item.desc}</p>
+          <div className="mt-6 flex items-center gap-3 text-[10px] font-bold tracking-[0.2em] opacity-70">
+            <span>{item.step}</span>
+            <span className="h-px flex-1 bg-current opacity-30" />
+            <span>{item.step}/08</span>
+          </div>
+        </div>
+      </div>
+    </motion.article>
+  );
+};
 
 const HowItWorksSection = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] });
   const [activeStep, setActiveStep] = useState(0);
 
   useEffect(() => {
-    const id = setInterval(() => {
-      setActiveStep((prev) => (prev + 1) % howItWorks.length);
-    }, WEBINAR_FLIP_INTERVAL);
-    return () => clearInterval(id);
-  }, []);
-
-  const step = howItWorks[activeStep];
-  const Icon = step.icon;
+    const unsubscribe = scrollYProgress.on("change", (v) => {
+      setActiveStep(Math.min(howItWorks.length - 1, Math.max(0, Math.round(v * (howItWorks.length - 1)))));
+    });
+    return unsubscribe;
+  }, [scrollYProgress]);
 
   return (
-    <section className="py-20 md:py-24">
-      <div className="container px-4 md:px-6">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-14 text-center flex flex-col items-center">
-          <SectionBadge label="How It Works" icon={Zap} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display mt-4 mb-3">
-            From Registration to<br /><span className="text-primary">Real Skill in 4 Steps</span>
-          </h2>
-        </motion.div>
+    <section ref={containerRef} className="relative bg-background" style={{ height: `${howItWorks.length * 82}vh` }}>
+      <div className="sticky top-0 flex h-screen items-center overflow-hidden py-16 md:py-20">
+        <div className="container px-4 md:px-6">
+          <div className="grid items-center gap-10 lg:grid-cols-12">
+            <div className="lg:col-span-6">
+              <SectionBadge label="How It Works" icon={Zap} />
+              <h2 className="mt-4 text-3xl font-bold leading-[1.05] font-display md:text-5xl">
+                From Registration to<br /><span className="text-primary">Real Skill in 8 Steps</span>
+              </h2>
+              <p className="mt-4 max-w-md text-muted-foreground">
+                From zero to offer-ready — a complete system built to prove your value.
+              </p>
 
-        <div className="flex flex-col lg:flex-row gap-10 items-stretch mx-auto max-w-5xl">
-          <div className="w-full lg:w-[360px] shrink-0 flex" style={{ perspective: "1200px" }}>
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeStep}
-                initial={{ rotateY: 90, opacity: 0 }}
-                animate={{ rotateY: 0, opacity: 1 }}
-                exit={{ rotateY: -90, opacity: 0 }}
-                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                className="rounded-3xl p-10 bg-primary shadow-2xl h-full flex flex-col justify-between w-full"
-                style={{ transformStyle: "preserve-3d" }}
-              >
-                <div className="h-14 w-14 rounded-2xl bg-primary-foreground/15 backdrop-blur-sm flex items-center justify-center mb-8">
-                  <Icon className="h-7 w-7 text-primary-foreground" />
-                </div>
-                <motion.span initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                  className="text-6xl font-bold font-display text-primary-foreground/25 block mb-3">{step.step}</motion.span>
-                <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-                  className="text-2xl font-bold font-display text-primary-foreground mb-3">{step.title}</motion.p>
-                <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-                  className="text-primary-foreground/70 text-sm leading-relaxed">{step.desc}</motion.p>
-                <div className="mt-10 h-1 rounded-full bg-primary-foreground/15 overflow-hidden">
-                  <motion.div className="h-full rounded-full bg-primary-foreground/60"
-                    initial={{ width: "0%" }} animate={{ width: "100%" }}
-                    transition={{ duration: WEBINAR_FLIP_INTERVAL / 1000, ease: "linear" }} />
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-          <div className="flex-1 space-y-3">
-            {howItWorks.map(({ step: s, title, desc, icon: StepIcon }, i) => {
-              const isActive = i === activeStep;
-              return (
-                <motion.button key={s} onClick={() => setActiveStep(i)}
-                  initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}
-                  className={`w-full text-left flex items-start gap-4 rounded-2xl p-5 transition-all duration-300 ${isActive ? "bg-accent border-2 border-primary/20 shadow-md" : "border border-border bg-card hover:border-primary/10"}`}>
-                  <div className={`h-12 w-12 rounded-xl flex items-center justify-center shrink-0 transition-colors duration-300 ${isActive ? "bg-primary" : "bg-accent"}`}>
-                    <StepIcon className={`h-5 w-5 transition-colors duration-300 ${isActive ? "text-primary-foreground" : "text-primary"}`} />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className={`text-xs font-bold ${isActive ? "text-primary" : "text-muted-foreground"}`}>{s}</span>
-                      <p className="text-sm font-bold font-display text-foreground">{title}</p>
+              <div className="mt-8 grid max-w-xl grid-cols-2 gap-x-5 gap-y-4">
+                {howItWorks.map(({ step, label, title, icon: StepIcon }, i) => {
+                  const isActive = i === activeStep;
+                  const isPast = i < activeStep;
+                  return (
+                    <div key={step} className={`flex items-start gap-3 transition-all duration-300 ${isActive ? "opacity-100" : isPast ? "opacity-60" : "opacity-35"}`}>
+                      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all duration-300 ${isActive ? "scale-110 bg-primary text-primary-foreground shadow-lg shadow-primary/25" : "bg-accent text-primary"}`}>
+                        {isPast ? <CheckCircle className="h-5 w-5" /> : <StepIcon className="h-5 w-5" />}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-[10px] font-bold tracking-[0.18em] text-primary">{label}</p>
+                        <p className="font-display text-sm font-bold leading-tight text-foreground">{title}</p>
+                      </div>
                     </div>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
-                  </div>
-                  {isActive && (
-                    <motion.div layoutId="webinar-step-indicator"
-                      className="ml-auto h-2.5 w-2.5 rounded-full bg-primary shrink-0 mt-4"
-                      transition={{ type: "spring", stiffness: 300, damping: 30 }} />
-                  )}
-                </motion.button>
-              );
-            })}
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="relative h-[74vh] min-h-[560px] lg:col-span-6">
+              <div className="relative mx-auto h-full w-full max-w-xl">
+                {howItWorks.map((item, i) => (
+                  <ScrollStepCard key={item.step} item={item} index={i} progress={scrollYProgress} total={howItWorks.length} />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

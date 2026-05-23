@@ -26,8 +26,8 @@ const steps = [
 ];
 
 const themes: Record<string, { bg: string; text: string; sub: string; chip: string; border: string }> = {
-  red:    { bg: "bg-[#ef4444]", text: "text-white",     sub: "text-white/70",     chip: "bg-white/15 text-white",         border: "border-black/5" },
-  yellow: { bg: "bg-[#fbbf24]", text: "text-[#1a1500]", sub: "text-[#3a2f00]/70", chip: "bg-[#1a1500]/10 text-[#1a1500]", border: "border-black/10" },
+  red:    { bg: "bg-primary", text: "text-primary-foreground", sub: "text-primary-foreground/75", chip: "bg-primary-foreground/15 text-primary-foreground", border: "border-primary/20" },
+  yellow: { bg: "bg-primary-glow", text: "text-foreground", sub: "text-foreground/70", chip: "bg-background/25 text-foreground", border: "border-primary-glow/20" },
 };
 
 const StepCard = ({
@@ -44,26 +44,29 @@ const StepCard = ({
   const Icon = data.icon;
   const t = themes[data.theme];
 
-  const slice = 1 / total;
-  // Card N animates from start-of-slice → end-of-slice, settled at (index+1)*slice
-  const prevSettle = Math.max(0, index * slice);
-  const settle = Math.min(1, (index + 1) * slice);
-  const mid = prevSettle + (settle - prevSettle) * 0.6;
-
-  // Card 0 is already settled at scroll=0; others animate in during their slice
-  const y = useTransform(progress, [prevSettle, mid, settle], index === 0 ? [0, 0, 0] : [-360, -40, 0]);
-  const rotate = useTransform(
-    progress,
-    [prevSettle, mid, settle],
-    index === 0 ? [data.rotate, data.rotate, data.rotate] : [data.rotate * 2.5, data.rotate * 1.4, data.rotate]
-  );
-  const opacity = useTransform(progress, [prevSettle, mid], index === 0 ? [1, 1] : [0, 1]);
-  const scale = useTransform(progress, [prevSettle, settle], index === 0 ? [1, 1] : [0.9, 1]);
+  const y = useTransform(progress, (v) => {
+    const delta = index - v * (total - 1);
+    return delta >= 0 ? delta * 42 : 128 + Math.abs(delta) * 18;
+  });
+  const x = useTransform(progress, (v) => {
+    const delta = index - v * (total - 1);
+    return Math.max(-3, Math.min(3, delta)) * 8;
+  });
+  const rotate = useTransform(progress, (v) => {
+    const delta = index - v * (total - 1);
+    return data.rotate + Math.max(-3, Math.min(3, delta)) * 2;
+  });
+  const opacity = useTransform(progress, (v) => {
+    const delta = index - v * (total - 1);
+    return delta < -3 ? 0.25 : delta > 6 ? 0.55 : 1;
+  });
+  const scale = useTransform(progress, (v) => Math.max(0.82, 1 - Math.abs(index - v * (total - 1)) * 0.035));
+  const zIndex = useTransform(progress, (v) => Math.round(100 - Math.abs(index - v * (total - 1)) * 10));
 
   return (
     <motion.div
-      style={{ y, rotate, opacity, scale, zIndex: 10 + index }}
-      className="absolute inset-x-0 mx-auto w-full max-w-md"
+      style={{ y, x, rotate, opacity, scale, zIndex }}
+      className="absolute inset-x-0 top-8 mx-auto w-full max-w-md origin-top"
     >
       <div className={`${t.bg} ${t.text} ${t.border} border rounded-3xl shadow-2xl px-6 md:px-8 py-6 md:py-7 relative overflow-hidden`}>
         <span
