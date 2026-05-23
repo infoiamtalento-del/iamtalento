@@ -3,17 +3,16 @@ import { Star, Building2 } from "lucide-react";
 import SectionBadge from "@/components/ui/section-badge";
 
 const companyLogos = [
-  { name: "Google", logo: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" },
-  { name: "Microsoft", logo: "https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31" },
-  { name: "Amazon", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/200px-Amazon_logo.svg.png" },
-  { name: "Accenture", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Accenture.svg/200px-Accenture.svg.png" },
-  { name: "IBM", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/IBM_logo.svg/200px-IBM_logo.svg.png" },
-  { name: "Oracle", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Oracle_logo.svg/200px-Oracle_logo.svg.png" },
-  { name: "Infosys", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Infosys_logo.svg/200px-Infosys_logo.svg.png" },
-  { name: "TCS", logo: "https://companieslogo.com/img/orig/TCS.NS-7401f1bd.png?t=1720244494" },
-  { name: "Capgemini", logo: "https://companieslogo.com/img/orig/CAP.PA-9b4110b0.png?t=1720244491" },
-  
-  { name: "Wipro", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Wipro_Primary_Logo_Color_RGB.svg/200px-Wipro_Primary_Logo_Color_RGB.svg.png" },
+  { name: "Google", logo: "https://cdn.simpleicons.org/google/64748b" },
+  { name: "Microsoft", logo: "https://cdn.simpleicons.org/microsoft/64748b" },
+  { name: "Amazon", logo: "https://cdn.simpleicons.org/amazon/64748b" },
+  { name: "Accenture", logo: "https://cdn.simpleicons.org/accenture/64748b" },
+  { name: "IBM", logo: "https://cdn.simpleicons.org/ibm/64748b" },
+  { name: "Oracle", logo: "https://cdn.simpleicons.org/oracle/64748b" },
+  { name: "Infosys", logo: "https://cdn.simpleicons.org/infosys/64748b" },
+  { name: "TCS", logo: "https://cdn.simpleicons.org/tataconsultancyservices/64748b" },
+  { name: "Capgemini", logo: "https://cdn.simpleicons.org/capgemini/64748b" },
+  { name: "Wipro", logo: "https://cdn.simpleicons.org/wipro/64748b" },
 ];
 
 const marqueeLogos = [...companyLogos, ...companyLogos];
