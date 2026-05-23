@@ -1,145 +1,143 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
-import { CheckCircle, FileText, Play, Award, Zap, ArrowRight } from "lucide-react";
+import { CheckCircle, FileText, Play, Award, Zap } from "lucide-react";
 import SectionBadge from "@/components/ui/section-badge";
 
-const howItWorks = [
+const steps = [
   {
-    step: "01",
-    title: "Register",
-    desc: "Pick your webinar and secure your seat in under 60 seconds.",
+    step: "1",
+    label: "REGISTER",
+    title: "Secure Your Seat",
+    desc: "Pick your webinar and reserve a spot in under 60 seconds.",
     icon: CheckCircle,
-    mock: "register",
+    // tailwind classes for color theme
+    bg: "bg-[#ef4444]",
+    text: "text-white",
+    sub: "text-white/70",
+    chip: "bg-white/15 text-white",
+    rotate: -6,
   },
   {
-    step: "02",
-    title: "Get Pre-Read",
-    desc: "We send context material 24 hours before so you arrive prepared.",
+    step: "2",
+    label: "PRE-READ",
+    title: "Arrive Prepared",
+    desc: "We send context material 24 hours before so you walk in ready.",
     icon: FileText,
-    mock: "preread",
+    bg: "bg-[#0f0f10]",
+    text: "text-white",
+    sub: "text-white/60",
+    chip: "bg-white/10 text-white",
+    rotate: 5,
   },
   {
-    step: "03",
-    title: "Attend Live",
-    desc: "Interact, ask questions, join polls, and learn in real time.",
+    step: "3",
+    label: "ATTEND LIVE",
+    title: "Learn in Real Time",
+    desc: "Interact, ask questions, join polls and absorb live insights.",
     icon: Play,
-    mock: "live",
+    bg: "bg-[#fbbf24]",
+    text: "text-[#1a1500]",
+    sub: "text-[#3a2f00]/70",
+    chip: "bg-[#1a1500]/10 text-[#1a1500]",
+    rotate: -4,
   },
   {
-    step: "04",
-    title: "Get Certified",
-    desc: "Download your certificate and auto-add it to your I Am Talento profile.",
+    step: "4",
+    label: "GET CERTIFIED",
+    title: "Add to Your Profile",
+    desc: "Download your certificate and auto-add it to your Talento profile.",
     icon: Award,
-    mock: "cert",
+    bg: "bg-[#ef4444]",
+    text: "text-white",
+    sub: "text-white/70",
+    chip: "bg-white/15 text-white",
+    rotate: 6,
   },
 ];
-
-const MockScreen = ({ type }: { type: string }) => {
-  if (type === "register") {
-    return (
-      <div className="space-y-3">
-        <div className="h-3 w-2/3 rounded-full bg-foreground/10" />
-        <div className="h-10 rounded-lg border bg-background flex items-center px-3">
-          <div className="h-2 w-24 rounded bg-foreground/20" />
-        </div>
-        <div className="h-10 rounded-lg border bg-background flex items-center px-3">
-          <div className="h-2 w-32 rounded bg-foreground/20" />
-        </div>
-        <div className="h-10 rounded-lg bg-primary flex items-center justify-center">
-          <div className="h-2 w-20 rounded bg-primary-foreground/80" />
-        </div>
-      </div>
-    );
-  }
-  if (type === "preread") {
-    return (
-      <div className="space-y-2">
-        <div className="h-3 w-1/2 rounded-full bg-foreground/15 mb-3" />
-        {[...Array(6)].map((_, i) => (
-          <div key={i} className="h-2 rounded-full bg-foreground/10" style={{ width: `${100 - i * 8}%` }} />
-        ))}
-        <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1">
-          <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-          <div className="h-2 w-16 rounded bg-primary/40" />
-        </div>
-      </div>
-    );
-  }
-  if (type === "live") {
-    return (
-      <div className="space-y-3">
-        <div className="aspect-video rounded-lg bg-gradient-to-br from-primary/30 to-primary/5 relative flex items-center justify-center">
-          <div className="h-10 w-10 rounded-full bg-background/90 flex items-center justify-center">
-            <Play className="h-4 w-4 text-primary fill-primary" />
-          </div>
-          <div className="absolute top-2 left-2 flex items-center gap-1 bg-destructive rounded px-1.5 py-0.5">
-            <div className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-            <span className="text-[8px] text-white font-bold">LIVE</span>
-          </div>
-        </div>
-        <div className="flex gap-2">
-          <div className="h-6 w-6 rounded-full bg-foreground/20" />
-          <div className="flex-1 h-6 rounded-full bg-foreground/10" />
-        </div>
-      </div>
-    );
-  }
-  return (
-    <div className="space-y-3 text-center">
-      <div className="mx-auto h-12 w-12 rounded-full bg-primary/15 flex items-center justify-center">
-        <Award className="h-6 w-6 text-primary" />
-      </div>
-      <div className="h-3 w-3/4 mx-auto rounded-full bg-foreground/15" />
-      <div className="h-2 w-1/2 mx-auto rounded-full bg-foreground/10" />
-      <div className="rounded-lg border-2 border-dashed border-primary/40 p-3 mt-2">
-        <div className="h-2 w-full rounded bg-primary/20" />
-      </div>
-    </div>
-  );
-};
 
 const StepCard = ({
   index,
   data,
   progress,
+  total,
 }: {
   index: number;
-  data: (typeof howItWorks)[0];
+  data: (typeof steps)[0];
   progress: MotionValue<number>;
+  total: number;
 }) => {
   const Icon = data.icon;
-  const isLeft = index % 2 === 0;
 
-  const start = index / howItWorks.length;
-  const end = (index + 0.6) / howItWorks.length;
-  const opacity = useTransform(progress, [start, end], [0.3, 1]);
-  const y = useTransform(progress, [start, end], [40, 0]);
+  // Each card occupies a slice of scroll: [index/total, (index+1)/total]
+  const slice = 1 / total;
+  const inStart = index * slice;
+  const inMid = inStart + slice * 0.35;
+  const settle = inStart + slice * 0.6;
+
+  // Entrance: drop from above with rotation, then settle
+  const y = useTransform(
+    progress,
+    [inStart - 0.05, inMid, settle],
+    [-420, -40, 0]
+  );
+  const rotate = useTransform(
+    progress,
+    [inStart - 0.05, inMid, settle],
+    [data.rotate * 3, data.rotate * 1.4, data.rotate]
+  );
+  const opacity = useTransform(
+    progress,
+    [inStart - 0.05, inStart + slice * 0.2],
+    [0, 1]
+  );
+  const scale = useTransform(
+    progress,
+    [inStart, settle],
+    [0.92, 1]
+  );
 
   return (
     <motion.div
-      style={{ opacity, y }}
-      className={`relative grid md:grid-cols-2 gap-6 md:gap-12 items-center ${isLeft ? "" : "md:[direction:rtl]"}`}
+      style={{
+        y,
+        rotate,
+        opacity,
+        scale,
+        zIndex: 10 + index,
+        marginTop: index === 0 ? 0 : -120,
+      }}
+      className="relative w-full max-w-3xl mx-auto"
     >
-      <div className="md:[direction:ltr] space-y-4">
-        <div className="flex items-center gap-3">
-          <span className="text-5xl md:text-6xl font-bold font-display text-primary/15">{data.step}</span>
-          <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-            <Icon className="h-5 w-5 text-primary" />
-          </div>
-        </div>
-        <h3 className="text-2xl md:text-3xl font-bold font-display">{data.title}</h3>
-        <p className="text-muted-foreground leading-relaxed max-w-md">{data.desc}</p>
-      </div>
+      <div
+        className={`${data.bg} ${data.text} rounded-3xl shadow-2xl border border-black/5 px-6 md:px-10 py-7 md:py-9 relative overflow-hidden`}
+      >
+        {/* giant number watermark */}
+        <span
+          aria-hidden
+          className={`absolute -top-6 right-2 md:right-6 font-display font-black leading-none select-none ${data.text} opacity-15`}
+          style={{ fontSize: "clamp(120px, 18vw, 220px)" }}
+        >
+          {data.step}
+        </span>
 
-      <div className="md:[direction:ltr]">
-        <div className="rounded-2xl border bg-card p-5 hover:border-primary/30 transition-colors">
-          <div className="rounded-xl bg-background border p-5 min-h-[200px]">
-            <div className="flex items-center gap-1.5 mb-4">
-              <div className="h-2 w-2 rounded-full bg-muted-foreground/30" />
-              <div className="h-2 w-2 rounded-full bg-muted-foreground/30" />
-              <div className="h-2 w-2 rounded-full bg-muted-foreground/30" />
+        <div className="relative flex items-start justify-between gap-6">
+          <div className="flex-1 min-w-0">
+            <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-[0.18em] ${data.chip}`}>
+              <Icon className="h-3 w-3" /> {data.label}
             </div>
-            <MockScreen type={data.mock} />
+            <h3 className={`mt-4 text-3xl md:text-5xl font-bold font-display leading-[1.05] ${data.text}`}>
+              {data.title}
+            </h3>
+            <p className={`mt-3 text-sm md:text-base max-w-md ${data.sub}`}>
+              {data.desc}
+            </p>
+
+            {/* metric row */}
+            <div className={`mt-6 flex items-center gap-5 text-[10px] tracking-[0.2em] font-bold ${data.sub}`}>
+              <span>STEP · 0{data.step}</span>
+              <span className="h-px flex-1 bg-current opacity-20" />
+              <span>0{data.step}/0{steps.length}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -147,56 +145,15 @@ const StepCard = ({
   );
 };
 
-const ArrowConnector = ({
-  index,
-  progress,
-}: {
-  index: number;
-  progress: MotionValue<number>;
-}) => {
-  const flip = index % 2 === 0;
-  const segStart = (index + 0.5) / howItWorks.length;
-  const segEnd = (index + 1) / howItWorks.length;
-  const pathLength = useTransform(progress, [segStart, segEnd], [0, 1]);
-  const arrowOpacity = useTransform(progress, [segEnd - 0.02, segEnd], [0, 1]);
-
-  const d = flip
-    ? "M 280 10 C 280 80, 40 80, 40 150"
-    : "M 40 10 C 40 80, 280 80, 280 150";
-  const arrowX = flip ? 40 : 280;
-
-  return (
-    <div className="relative h-32 md:h-40 my-2 hidden md:block" aria-hidden>
-      <svg viewBox="0 0 320 160" className="w-full h-full" preserveAspectRatio="none">
-        <motion.path
-          d={d}
-          fill="none"
-          stroke="hsl(var(--primary))"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeDasharray="6 6"
-          style={{ pathLength }}
-        />
-        <motion.g style={{ opacity: arrowOpacity }}>
-          <polygon
-            points={`${arrowX - 6},145 ${arrowX + 6},145 ${arrowX},156`}
-            fill="hsl(var(--primary))"
-          />
-        </motion.g>
-      </svg>
-    </div>
-  );
-};
-
 const WebinarHowItWorksSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start 80%", "end 60%"],
+    offset: ["start start", "end end"],
   });
 
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-16 md:py-24 bg-background">
       <div className="container px-4 md:px-6">
         <div className="text-center mb-12 md:mb-16">
           <SectionBadge label="How It Works" icon={Zap} />
@@ -204,32 +161,31 @@ const WebinarHowItWorksSection = () => {
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl md:text-4xl font-bold font-display mb-3"
+            className="text-3xl md:text-5xl font-bold font-display mb-3"
           >
             From Registration to<br />
             <span className="text-primary">Real Skill in 4 Steps</span>
           </motion.h2>
           <p className="text-muted-foreground max-w-xl mx-auto">
-            A guided path from signup to certificate — designed so you actually finish.
+            Scroll to stack each step — a guided path from signup to certificate.
           </p>
         </div>
 
-        <div ref={containerRef} className="max-w-5xl mx-auto relative">
-          {howItWorks.map((data, i) => (
-            <div key={data.step}>
-              <StepCard index={i} data={data} progress={scrollYProgress} />
-              {i < howItWorks.length - 1 && (
-                <ArrowConnector index={i} progress={scrollYProgress} />
-              )}
-              {i < howItWorks.length - 1 && (
-                <div className="flex md:hidden justify-center py-6">
-                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <ArrowRight className="h-5 w-5 text-primary rotate-90" />
-                  </div>
-                </div>
-              )}
+        {/* Scroll-driven stack: tall scroll container with sticky stage */}
+        <div ref={containerRef} className="relative" style={{ height: `${steps.length * 90}vh` }}>
+          <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
+            <div className="w-full px-2 md:px-4">
+              {steps.map((data, i) => (
+                <StepCard
+                  key={data.step}
+                  index={i}
+                  data={data}
+                  progress={scrollYProgress}
+                  total={steps.length}
+                />
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </section>
