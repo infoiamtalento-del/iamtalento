@@ -10,7 +10,6 @@ import {
   BarChart3,
   Send,
   Zap,
-  CheckCircle,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -47,126 +46,88 @@ const WebinarHowItWorksSection = () => {
   return (
     <section className="py-16 md:py-24 bg-background overflow-hidden">
       <div className="container px-4 md:px-6">
-        <div className="grid lg:grid-cols-12 gap-10 items-center">
-          {/* LEFT */}
-          <div className="lg:col-span-6">
-            <SectionBadge label="How It Works" icon={Zap} />
-            <h2 className="text-3xl md:text-5xl font-bold font-display mb-3 leading-[1.05]">
-              From Registration to<br />
-              <span className="text-[#ef4444]">Real Skill in 8 Steps</span>
-            </h2>
-            <p className="text-muted-foreground max-w-md mb-8">
-              From zero to offer-ready — a complete system built to prove your value.
-            </p>
+        {/* Centered heading */}
+        <div className="flex flex-col items-center text-center mb-12">
+          <SectionBadge label="How It Works" icon={Zap} />
+          <h2 className="text-3xl md:text-5xl font-bold font-display mb-3 leading-[1.05]">
+            From Registration to<br />
+            <span className="text-[#ef4444]">Real Skill in 8 Steps</span>
+          </h2>
+          <p className="text-muted-foreground max-w-md">
+            From zero to offer-ready — a complete system built to prove your value.
+          </p>
+        </div>
 
-            <div className="grid grid-cols-2 gap-x-5 gap-y-4 max-w-lg">
-              {steps.map((s, i) => {
-                const SIcon = s.icon;
-                const isActive = i === active;
-                const isPast = i < active;
-                return (
-                  <button
-                    key={s.title}
-                    onClick={() => setActive([i, i > active ? 1 : -1])}
-                    className="flex items-start gap-3 text-left transition-opacity"
-                    style={{ opacity: isActive ? 1 : isPast ? 0.6 : 0.4 }}
+        {/* Centered card carousel */}
+        <div className="relative flex items-center justify-center gap-4 md:gap-6">
+          <button
+            onClick={() => go(-1)}
+            aria-label="Previous step"
+            className="h-11 w-11 shrink-0 rounded-full bg-background border border-border shadow-md hover:bg-accent hover:scale-105 active:scale-95 transition flex items-center justify-center z-10"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+
+          <div className="relative w-[280px] sm:w-[320px] md:w-[360px] h-[460px] md:h-[520px]">
+            <AnimatePresence mode="wait" custom={dir} initial={false}>
+              <motion.div
+                key={active}
+                custom={dir}
+                initial={{ x: dir > 0 ? 120 : -120, opacity: 0, rotate: dir > 0 ? 8 : -8, scale: 0.9 }}
+                animate={{ x: 0, opacity: 1, rotate: 0, scale: 1 }}
+                exit={{ x: dir > 0 ? -120 : 120, opacity: 0, rotate: dir > 0 ? -8 : 8, scale: 0.9 }}
+                transition={{ type: "spring", stiffness: 260, damping: 28 }}
+                className="absolute inset-0"
+              >
+                <div className={`${t.bg} ${t.text} h-full w-full rounded-[2rem] shadow-2xl px-7 py-8 relative overflow-hidden flex flex-col`}>
+                  <span
+                    aria-hidden
+                    className={`absolute -top-6 right-4 font-display font-black leading-none select-none ${t.text} opacity-10`}
+                    style={{ fontSize: "clamp(140px, 18vw, 220px)" }}
                   >
-                    <div
-                      className={`h-10 w-10 shrink-0 rounded-xl flex items-center justify-center transition-all ${
-                        isActive
-                          ? "bg-[#ef4444] text-white scale-110 shadow-md shadow-[#ef4444]/30"
-                          : "bg-[#fde9e2] text-[#ef4444]"
-                      }`}
-                    >
-                      {isPast ? <CheckCircle className="h-5 w-5" /> : <SIcon className="h-5 w-5" strokeWidth={2} />}
+                    {active + 1}
+                  </span>
+
+                  <div className={`relative inline-flex w-fit items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-[0.18em] ${t.chip}`}>
+                    <Icon className="h-3 w-3" /> {data.label}
+                  </div>
+
+                  <div className="relative mt-auto">
+                    <h3 className={`text-3xl md:text-4xl font-bold font-display leading-[1.05] ${t.text}`}>
+                      {data.title}
+                    </h3>
+                    <p className={`mt-3 text-sm md:text-base ${t.sub}`}>{data.desc}</p>
+
+                    <div className={`mt-8 flex items-center gap-3 text-[10px] tracking-[0.2em] font-bold ${t.sub}`}>
+                      <span>0{active + 1}</span>
+                      <span className="h-px flex-1 bg-current opacity-25" />
+                      <span>0{active + 1}/0{steps.length}</span>
                     </div>
-                    <div className="min-w-0">
-                      <p className={`text-[10px] font-bold tracking-[0.18em] ${isActive ? "text-[#ef4444]" : "text-[#ef4444]/70"}`}>
-                        {s.label}
-                      </p>
-                      <p className="text-sm font-bold font-display leading-tight text-foreground">
-                        {s.title}
-                      </p>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+                  </div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
-          {/* RIGHT — portrait card carousel */}
-          <div className="lg:col-span-6">
-            <div className="relative flex items-center justify-center gap-4 md:gap-6">
-              <button
-                onClick={() => go(-1)}
-                aria-label="Previous step"
-                className="h-11 w-11 shrink-0 rounded-full bg-background border border-border shadow-md hover:bg-accent hover:scale-105 active:scale-95 transition flex items-center justify-center z-10"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
+          <button
+            onClick={() => go(1)}
+            aria-label="Next step"
+            className="h-11 w-11 shrink-0 rounded-full bg-background border border-border shadow-md hover:bg-accent hover:scale-105 active:scale-95 transition flex items-center justify-center z-10"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+        </div>
 
-              <div className="relative w-[280px] sm:w-[320px] md:w-[360px] h-[460px] md:h-[520px]">
-                <AnimatePresence mode="wait" custom={dir} initial={false}>
-                  <motion.div
-                    key={active}
-                    custom={dir}
-                    initial={{ x: dir > 0 ? 120 : -120, opacity: 0, rotate: dir > 0 ? 8 : -8, scale: 0.9 }}
-                    animate={{ x: 0, opacity: 1, rotate: 0, scale: 1 }}
-                    exit={{ x: dir > 0 ? -120 : 120, opacity: 0, rotate: dir > 0 ? -8 : 8, scale: 0.9 }}
-                    transition={{ type: "spring", stiffness: 260, damping: 28 }}
-                    className="absolute inset-0"
-                  >
-                    <div className={`${t.bg} ${t.text} h-full w-full rounded-[2rem] shadow-2xl px-7 py-8 relative overflow-hidden flex flex-col`}>
-                      <span
-                        aria-hidden
-                        className={`absolute -top-6 right-4 font-display font-black leading-none select-none ${t.text} opacity-10`}
-                        style={{ fontSize: "clamp(140px, 18vw, 220px)" }}
-                      >
-                        {active + 1}
-                      </span>
-
-                      <div className={`relative inline-flex w-fit items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-[0.18em] ${t.chip}`}>
-                        <Icon className="h-3 w-3" /> {data.label}
-                      </div>
-
-                      <div className="relative mt-auto">
-                        <h3 className={`text-3xl md:text-4xl font-bold font-display leading-[1.05] ${t.text}`}>
-                          {data.title}
-                        </h3>
-                        <p className={`mt-3 text-sm md:text-base ${t.sub}`}>{data.desc}</p>
-
-                        <div className={`mt-8 flex items-center gap-3 text-[10px] tracking-[0.2em] font-bold ${t.sub}`}>
-                          <span>0{active + 1}</span>
-                          <span className="h-px flex-1 bg-current opacity-25" />
-                          <span>0{active + 1}/0{steps.length}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-
-              <button
-                onClick={() => go(1)}
-                aria-label="Next step"
-                className="h-11 w-11 shrink-0 rounded-full bg-background border border-border shadow-md hover:bg-accent hover:scale-105 active:scale-95 transition flex items-center justify-center z-10"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </button>
-            </div>
-
-            {/* Dots */}
-            <div className="mt-6 flex items-center justify-center gap-2">
-              {steps.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActive([i, i > active ? 1 : -1])}
-                  aria-label={`Go to step ${i + 1}`}
-                  className={`h-1.5 rounded-full transition-all ${i === active ? "w-6 bg-[#ef4444]" : "w-1.5 bg-[#ef4444]/30"}`}
-                />
-              ))}
-            </div>
-          </div>
+        {/* Dots */}
+        <div className="mt-6 flex items-center justify-center gap-2">
+          {steps.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setActive([i, i > active ? 1 : -1])}
+              aria-label={`Go to step ${i + 1}`}
+              className={`h-1.5 rounded-full transition-all ${i === active ? "w-6 bg-[#ef4444]" : "w-1.5 bg-[#ef4444]/30"}`}
+            />
+          ))}
         </div>
       </div>
     </section>
