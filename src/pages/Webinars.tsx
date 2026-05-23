@@ -5,12 +5,13 @@ import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import SectionBadge from "@/components/ui/section-badge";
-import { motion, useInView, useMotionValue, useTransform, animate, AnimatePresence } from "framer-motion";
+import { motion, useInView, useMotionValue, useTransform, useScroll, animate, AnimatePresence, type MotionValue } from "framer-motion";
 import {
   Calendar, Clock, Users, ArrowRight, Globe, Star, CheckCircle,
   Play, Mic, Monitor, BookOpen, TrendingUp, Sparkles, Target,
   FileText, Award, Zap, Quote, Package, Shield, Eye,
-  Laptop, BarChart3, Palette, Sprout, Code
+  Laptop, BarChart3, Palette, Sprout, Code, User, Layers,
+  ListChecks, MessageSquare, ShieldCheck, Send
 } from "lucide-react";
 
 import webinarHero from "@/assets/webinar-hero.jpg";
@@ -55,11 +56,15 @@ const webinars = [
 ];
 
 const howItWorks = [
-  { step: "01", title: "Register", desc: "Pick your webinar and secure your seat in under 60 seconds.", icon: CheckCircle },
-  { step: "02", title: "Get Pre-Read", desc: "We send you context material 24 hours before so you arrive prepared.", icon: FileText },
-  { step: "03", title: "Attend Live", desc: "Interact, ask questions, participate in polls, and learn in real time.", icon: Play },
-  { step: "04", title: "Get Certified", desc: "Download your certificate and auto-add it to your I Am Talento profile.", icon: Award },
-];
+  { step: "01", label: "STEP 1", title: "Build Your Profile", desc: "Tell us who you are in 2 minutes — role, experience, and goals.", icon: User, theme: "red", rotate: -7 },
+  { step: "02", label: "STEP 2", title: "Pick Your Domain", desc: "Choose your field and experience level for a fully tailored path.", icon: Layers, theme: "yellow", rotate: 5 },
+  { step: "03", label: "STEP 3", title: "Select Your Test", desc: "Role-specific. AI-curated. Precise — built for your exact target job.", icon: ListChecks, theme: "red", rotate: -4 },
+  { step: "04", label: "STEP 4", title: "Practice Like It's Real", desc: "Mock interviews and AI practice tests that mirror real hiring pressure.", icon: MessageSquare, theme: "yellow", rotate: 6 },
+  { step: "05", label: "STEP 5", title: "Craft Your AI Resume", desc: "Premium templates engineered to pass ATS and actually get callbacks.", icon: FileText, theme: "red", rotate: -5 },
+  { step: "06", label: "STEP 6", title: "Take the Proctored Test", desc: "Fair. Secure. Employer-trusted — your real skill, on the record.", icon: ShieldCheck, theme: "yellow", rotate: 4 },
+  { step: "07", label: "STEP 7", title: "Get Your ScoreCard", desc: "One score that speaks louder than your CV — benchmarked against peers.", icon: BarChart3, theme: "red", rotate: -6 },
+  { step: "08", label: "STEP 8", title: "Apply to 100+ Jobs", desc: "Let employers come to you. Verified. Ranked. Ready to hire.", icon: Send, theme: "yellow", rotate: 7 },
+] as const;
 
 const differentiators = [
   { icon: Target, title: "Industry-Benchmarked Content", desc: "Every topic is chosen based on real skill gaps identified across 10,000+ candidates." },
