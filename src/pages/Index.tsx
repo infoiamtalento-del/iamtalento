@@ -31,7 +31,7 @@ const Index = () => (
     <Layout>
       <HeroSection />
       <SocialProofBar />
-      <WebinarHowItWorksSection />
+      {/* <WebinarHowItWorksSection /> */}
       <JobProfileAssessmentSection />
       <CandidateJourneySection />
       <IndustryReadinessSection />
