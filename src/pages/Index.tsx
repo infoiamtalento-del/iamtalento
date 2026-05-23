@@ -14,6 +14,7 @@ import CTASection from "@/components/landing/CTASection";
 import CandidateJourneySection from "@/components/landing/CandidateJourneySection";
 import ReviewsMarquee from "@/components/landing/ReviewsMarquee";
 import WebinarHowItWorksSection from "@/components/webinars/WebinarHowItWorksSection";
+import JobProfileAssessmentSection from "@/components/landing/JobProfileAssessmentSection";
 
 const Index = () => (
   <>
@@ -31,6 +32,7 @@ const Index = () => (
       <HeroSection />
       <SocialProofBar />
       <WebinarHowItWorksSection />
+      <JobProfileAssessmentSection />
       <CandidateJourneySection />
       <IndustryReadinessSection />
       <TrustAuthoritySection />
