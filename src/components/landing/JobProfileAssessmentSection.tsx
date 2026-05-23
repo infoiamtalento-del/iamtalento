@@ -75,13 +75,13 @@ const JobProfileAssessmentSection = () => {
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto">
-          {/* Job Profile Card */}
+          {/* Job Profile Card - Red */}
           <motion.div
             initial={{ opacity: 0, x: -20, scale: 0.96 }}
             whileInView={{ opacity: 1, x: 0, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="bg-card border border-border/50 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow duration-300"
+            className="bg-red-600 rounded-2xl overflow-hidden hover:shadow-xl transition-shadow duration-300 text-white"
           >
             <div className="aspect-[16/10] relative overflow-hidden">
               <AnimatePresence mode="wait">
@@ -98,18 +98,18 @@ const JobProfileAssessmentSection = () => {
                     alt={currentProfile.title}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-red-700 via-red-600/60 to-transparent" />
                 </motion.div>
               </AnimatePresence>
 
               <div className="absolute bottom-0 left-0 right-0 p-5">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <FileText className="h-4 w-4 text-primary" />
+                  <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+                    <FileText className="h-4 w-4 text-white" />
                   </div>
-                  <h3 className="text-lg font-bold font-display">Create Your Job Profile</h3>
+                  <h3 className="text-lg font-bold font-display text-white">Create Your Job Profile</h3>
                 </div>
-                <p className="text-muted-foreground text-sm">
+                <p className="text-red-100 text-sm">
                   {currentProfile.description}
                 </p>
               </div>
@@ -123,13 +123,13 @@ const JobProfileAssessmentSection = () => {
                     onClick={() => setProfileIndex(i)}
                     aria-label={`Show step ${i + 1}`}
                     className={`h-1.5 rounded-full transition-all ${
-                      i === profileIndex ? "flex-1 bg-primary" : "w-3 bg-muted-foreground/20"
+                      i === profileIndex ? "flex-1 bg-white" : "w-3 bg-white/30"
                     }`}
                   />
                 ))}
               </div>
 
-              <Button asChild size="lg" variant="outline" className="w-full h-11 gap-2">
+              <Button asChild size="lg" className="w-full h-11 gap-2 bg-white text-red-600 hover:bg-red-50 border-0">
                 <Link to="/profile">
                   <FileText className="h-4 w-4" /> Create Your Job Profile
                   <ArrowRight className="h-4 w-4 ml-auto" />
@@ -138,13 +138,13 @@ const JobProfileAssessmentSection = () => {
             </div>
           </motion.div>
 
-          {/* Skill Assessment Card */}
+          {/* Skill Assessment Card - Yellow */}
           <motion.div
             initial={{ opacity: 0, x: 20, scale: 0.96 }}
             whileInView={{ opacity: 1, x: 0, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-            className="bg-card border border-border/50 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow duration-300"
+            className="bg-amber-400 rounded-2xl overflow-hidden hover:shadow-xl transition-shadow duration-300 text-amber-950"
           >
             <div className="aspect-[16/10] relative overflow-hidden">
               <AnimatePresence mode="wait">
@@ -161,18 +161,18 @@ const JobProfileAssessmentSection = () => {
                     alt={currentAssessment.title}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-amber-500 via-amber-400/60 to-transparent" />
                 </motion.div>
               </AnimatePresence>
 
               <div className="absolute bottom-0 left-0 right-0 p-5">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Briefcase className="h-4 w-4 text-primary" />
+                  <div className="w-8 h-8 rounded-lg bg-amber-950/20 flex items-center justify-center">
+                    <Briefcase className="h-4 w-4 text-amber-950" />
                   </div>
-                  <h3 className="text-lg font-bold font-display">Get Your Skill Assessment</h3>
+                  <h3 className="text-lg font-bold font-display text-amber-950">Get Your Skill Assessment</h3>
                 </div>
-                <p className="text-muted-foreground text-sm">
+                <p className="text-amber-900/80 text-sm">
                   {currentAssessment.description}
                 </p>
               </div>
@@ -186,13 +186,13 @@ const JobProfileAssessmentSection = () => {
                     onClick={() => setAssessmentIndex(i)}
                     aria-label={`Show step ${i + 1}`}
                     className={`h-1.5 rounded-full transition-all ${
-                      i === assessmentIndex ? "flex-1 bg-primary" : "w-3 bg-muted-foreground/20"
+                      i === assessmentIndex ? "flex-1 bg-amber-950" : "w-3 bg-amber-950/30"
                     }`}
                   />
                 ))}
               </div>
 
-              <Button asChild size="lg" className="w-full h-11 gap-2">
+              <Button asChild size="lg" className="w-full h-11 gap-2 bg-amber-950 text-amber-50 hover:bg-amber-900 border-0">
                 <Link to="/skill-assessment">
                   <Briefcase className="h-4 w-4" /> Take Your Skill Assessment
                   <ArrowRight className="h-4 w-4 ml-auto" />
