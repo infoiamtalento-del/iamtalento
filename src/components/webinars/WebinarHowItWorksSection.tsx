@@ -68,33 +68,22 @@ const StepCard = ({
 }) => {
   const Icon = data.icon;
 
-  // Each card occupies a slice of scroll: [index/total, (index+1)/total]
+  // Each card occupies a slice of scroll, all values clamped to [0,1] and strictly increasing
   const slice = 1 / total;
-  const inStart = index * slice;
-  const inMid = inStart + slice * 0.35;
-  const settle = inStart + slice * 0.6;
+  const inStart = Math.max(0, index * slice);
+  const inEarly = Math.min(1, inStart + slice * 0.2);
+  const inMid = Math.min(1, inStart + slice * 0.35);
+  const settle = Math.min(1, inStart + slice * 0.6);
 
   // Entrance: drop from above with rotation, then settle
-  const y = useTransform(
-    progress,
-    [inStart - 0.05, inMid, settle],
-    [-420, -40, 0]
-  );
+  const y = useTransform(progress, [inStart, inMid, settle], [-420, -40, 0]);
   const rotate = useTransform(
     progress,
-    [inStart - 0.05, inMid, settle],
+    [inStart, inMid, settle],
     [data.rotate * 3, data.rotate * 1.4, data.rotate]
   );
-  const opacity = useTransform(
-    progress,
-    [inStart - 0.05, inStart + slice * 0.2],
-    [0, 1]
-  );
-  const scale = useTransform(
-    progress,
-    [inStart, settle],
-    [0.92, 1]
-  );
+  const opacity = useTransform(progress, [inStart, inEarly], [index === 0 ? 1 : 0, 1]);
+  const scale = useTransform(progress, [inStart, settle], [0.92, 1]);
 
   return (
     <motion.div
