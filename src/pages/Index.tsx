@@ -12,9 +12,9 @@ import ComplianceSection from "@/components/landing/ComplianceSection";
 import CTASection from "@/components/landing/CTASection";
 import CandidateJourneySection from "@/components/landing/CandidateJourneySection";
 import ReviewsMarquee from "@/components/landing/ReviewsMarquee";
-import WebinarHowItWorksSection from "@/components/webinars/WebinarHowItWorksSection";
 import JobProfileAssessmentSection from "@/components/landing/JobProfileAssessmentSection";
 import HackathonSpotlightSection from "@/components/landing/HackathonSpotlightSection";
+import FeaturedCompanies from "@/components/jobs/FeaturedCompanies";
 
 const Index = () => (
   <>
@@ -31,13 +31,11 @@ const Index = () => (
     <Layout>
       <HeroSection />
       <SocialProofBar />
-      <WebinarHowItWorksSection />
+      <FeaturedCompanies />
       <JobProfileAssessmentSection />
-      <HackathonSpotlightSection />
-      {/* <CandidateJourneySection /> */}
       <IndustryReadinessSection />
       <TrustAuthoritySection />
-      
+      <HackathonSpotlightSection />
       <VideoSection />
       <WhoIsItForSection />
       <SkillCategoriesSection />
