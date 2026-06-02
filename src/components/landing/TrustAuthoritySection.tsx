@@ -14,7 +14,7 @@ const qualities = [
   { icon: Briefcase, title: "Real-World Tasks", desc: "Simulated workplace challenges" },
   { icon: FlaskConical, title: "Scientifically Validated", desc: "Psychometric principles" },
   { icon: Users, title: "Bias-Reduced", desc: "Standardized, fair scoring" },
-  { icon: Lock, title: "Integrity-Protected", desc: "30-layer proctoring" },
+  
   { icon: BarChart2, title: "Benchmarked", desc: "Comparative performance data" },
   { icon: GitBranch, title: "Enterprise-Ready", desc: "Scales to any org size" },
   { icon: CheckCircle2, title: "Quality Assured", desc: "Continuously refined" },
