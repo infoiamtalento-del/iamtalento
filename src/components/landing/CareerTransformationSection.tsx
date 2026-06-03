@@ -133,7 +133,7 @@ const ProfileCard = ({ p, i }: { p: Profile; i: number }) => (
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5">
               <p className="text-sm font-semibold text-foreground truncate">{p.toRole}</p>
-              <span className="text-[10px] font-bold text-emerald-600 bg-emerald-500/10 px-1.5 py-0.5 rounded">NEW</span>
+              <span className="text-[10px] font-bold text-red-600 bg-red-500/10 px-1.5 py-0.5 rounded">NEW</span>
             </div>
             <p className="text-xs text-muted-foreground truncate">{p.toCompany} · Full-time</p>
             <p className="text-[11px] text-muted-foreground/80">Present</p>
