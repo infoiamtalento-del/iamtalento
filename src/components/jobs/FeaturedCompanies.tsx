@@ -4,19 +4,27 @@ import SectionBadge from "@/components/ui/section-badge";
 import { Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import googleLogo from "@/assets/company-logos/google.svg";
+import microsoftLogo from "@/assets/company-logos/microsoft.svg";
+import amazonLogo from "@/assets/company-logos/amazon.svg";
+import accentureLogo from "@/assets/company-logos/accenture.svg";
+import ibmLogo from "@/assets/company-logos/ibm.svg";
+import oracleLogo from "@/assets/company-logos/oracle.svg";
+import infosysLogo from "@/assets/company-logos/infosys.svg";
+import tcsLogo from "@/assets/company-logos/tcs.svg";
 
 const companiesRow1 = [
-  { name: "Google", logo: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png", rating: 4.5, reviews: "12.4K+", tagline: "Organize the world's information.", industry: "Software & Tech", openings: 340 },
-  { name: "Microsoft", logo: "https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31", rating: 4.3, reviews: "18.2K+", tagline: "Empowering every person on the planet.", industry: "Software & Tech", openings: 285 },
-  { name: "Amazon", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/200px-Amazon_logo.svg.png", rating: 3.9, reviews: "27.1K+", tagline: "Work hard. Have fun. Make history.", industry: "E-commerce & Retail", openings: 520 },
-  { name: "Accenture", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Accenture.svg/200px-Accenture.svg.png", rating: 4.0, reviews: "41.3K+", tagline: "Global professional services firm.", industry: "Consulting", openings: 410 },
+  { name: "Google", logo: googleLogo, rating: 4.5, reviews: "12.4K+", tagline: "Organize the world's information.", industry: "Software & Tech", openings: 340 },
+  { name: "Microsoft", logo: microsoftLogo, rating: 4.3, reviews: "18.2K+", tagline: "Empowering every person on the planet.", industry: "Software & Tech", openings: 285 },
+  { name: "Amazon", logo: amazonLogo, rating: 3.9, reviews: "27.1K+", tagline: "Work hard. Have fun. Make history.", industry: "E-commerce & Retail", openings: 520 },
+  { name: "Accenture", logo: accentureLogo, rating: 4.0, reviews: "41.3K+", tagline: "Global professional services firm.", industry: "Consulting", openings: 410 },
 ];
 
 const companiesRow2 = [
-  { name: "TCS", logo: "https://companieslogo.com/img/orig/TCS.NS-7401f1bd.png?t=1720244494", rating: 3.8, reviews: "55K+", tagline: "Building on Belief.", industry: "IT Services", openings: 680 },
-  { name: "IBM", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/IBM_logo.svg/200px-IBM_logo.svg.png", rating: 4.0, reviews: "15.6K+", tagline: "Let's create something that changes everything.", industry: "Software & Tech", openings: 275 },
-  { name: "Cognizant", logo: "https://companieslogo.com/img/orig/CTSH-82a8444b.png?t=1720244491", rating: 3.8, reviews: "29K+", tagline: "Intuition engineered.", industry: "IT Services", openings: 445 },
-  { name: "Oracle", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Oracle_logo.svg/200px-Oracle_logo.svg.png", rating: 4.1, reviews: "9.8K+", tagline: "Hardware and software, engineered to work together.", industry: "Software & Tech", openings: 230 },
+  { name: "TCS", logo: tcsLogo, rating: 3.8, reviews: "55K+", tagline: "Building on Belief.", industry: "IT Services", openings: 680 },
+  { name: "IBM", logo: ibmLogo, rating: 4.0, reviews: "15.6K+", tagline: "Let's create something that changes everything.", industry: "Software & Tech", openings: 275 },
+  { name: "Infosys", logo: infosysLogo, rating: 3.9, reviews: "29K+", tagline: "Powered by intellect, driven by values.", industry: "IT Services", openings: 445 },
+  { name: "Oracle", logo: oracleLogo, rating: 4.1, reviews: "9.8K+", tagline: "Hardware and software, engineered to work together.", industry: "Software & Tech", openings: 230 },
 ];
 
 type Company = typeof companiesRow1[number];
