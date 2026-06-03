@@ -1,6 +1,4 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { motion } from "framer-motion";
 import {
   Brain,
   Gauge,
