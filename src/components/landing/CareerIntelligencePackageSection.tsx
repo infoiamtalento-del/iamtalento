@@ -129,18 +129,6 @@ const items: Item[] = [
     value: "Strong USP — shareable with recruiters and employers.",
     image: "https://images.unsplash.com/photo-1606857521015-7f9fcf423740?w=900&q=80",
   },
-  {
-    icon: PhoneCall,
-    title: "30-Minute Career Consultation",
-    description: "A real advisor walks you through your results, opportunities, and roadmap.",
-    bullets: [
-      "Assessment interpretation",
-      "Career opportunities",
-      "Growth roadmap",
-    ],
-    value: "People pay for interpretation, not reports.",
-    image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=900&q=80",
-  },
 ];
 
 const usps = [
