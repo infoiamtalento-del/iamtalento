@@ -185,6 +185,12 @@ const usps = [
 ];
 
 const CareerIntelligencePackageSection = () => {
+  const [active, setActive] = useState(0);
+  const total = items.length;
+  const go = (dir: 1 | -1) => setActive((p) => (p + dir + total) % total);
+  const item = items[active];
+  const Icon = item.icon;
+
   return (
     <section className="py-16 md:py-24 bg-muted/30">
       <div className="container px-4 md:px-6">
