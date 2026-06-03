@@ -166,29 +166,45 @@ const ProfileCard = ({ p, i }: { p: Profile; i: number }) => (
       </div>
     </div>
 
-    {/* Transformation stats */}
-    <div className="px-5 py-4 bg-muted/40">
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Before</p>
-          <p className="text-sm font-bold text-foreground/70 line-through">{p.salaryFrom}</p>
+    {/* Transformation stats — BIG before/after */}
+    <div className="px-5 py-5 bg-gradient-to-br from-red-500/5 via-orange-500/5 to-yellow-400/10 border-t border-border">
+      <div className="flex items-stretch gap-3">
+        {/* BEFORE */}
+        <div className="flex-1 rounded-xl bg-card border border-border p-3 text-center">
+          <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold mb-1">Before</p>
+          <p className="text-2xl font-bold font-display text-foreground/50 line-through leading-none">
+            {p.salaryFrom}
+          </p>
         </div>
-        <ArrowRight className="h-4 w-4 text-primary shrink-0" />
-        <div>
-          <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">After</p>
-          <p className="text-sm font-bold text-foreground">{p.salaryTo}</p>
+
+        {/* Arrow */}
+        <div className="flex flex-col items-center justify-center shrink-0">
+          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-red-600 to-yellow-400 flex items-center justify-center shadow-lg shadow-red-500/30">
+            <ArrowRight className="h-5 w-5 text-white" />
+          </div>
         </div>
-        <div className="ml-auto inline-flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-600 text-xs font-bold">
-          <TrendingUp className="h-3 w-3" />
-          {p.hike}
+
+        {/* AFTER */}
+        <div className="flex-1 rounded-xl bg-gradient-to-br from-red-600 to-yellow-500 p-3 text-center shadow-lg shadow-red-500/20">
+          <p className="text-[10px] uppercase tracking-wider text-white/80 font-bold mb-1">After</p>
+          <p className="text-2xl font-bold font-display text-white leading-none">
+            {p.salaryTo}
+          </p>
         </div>
       </div>
 
-      <div className="mt-3 flex items-center justify-between gap-2">
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-semibold">
+      <div className="mt-3 flex items-center justify-center">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-yellow-400 text-red-900 text-sm font-extrabold shadow-md">
+          <TrendingUp className="h-4 w-4" />
+          {p.hike} Salary Hike
+        </div>
+      </div>
+
+      <div className="mt-4 flex items-center justify-between gap-2">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-500/10 text-red-600 text-[11px] font-semibold">
           <Sparkles className="h-3 w-3" /> {p.pkg}
         </span>
-        <button className="text-[11px] font-semibold text-[#0a66c2] hover:underline">
+        <button className="text-[11px] font-semibold text-red-600 hover:underline">
           View full story
         </button>
       </div>
