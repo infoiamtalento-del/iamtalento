@@ -20,6 +20,7 @@ import HackathonSocialProof from "@/components/hackathons/HackathonSocialProof";
 import CareerIntelligencePackageSection from "@/components/landing/CareerIntelligencePackageSection";
 import CareerTransformationSection from "@/components/landing/CareerTransformationSection";
 import FreeAccessSection from "@/components/landing/FreeAccessSection";
+import DigitalSkillPassportSection from "@/components/landing/DigitalSkillPassportSection";
 
 const Index = () => (
   <>
@@ -42,6 +43,7 @@ const Index = () => (
       <JobProfileAssessmentSection />
       <CareerIntelligencePackageSection />
       <CareerTransformationSection />
+      <DigitalSkillPassportSection />
       <FreeAccessSection />
       {/* <CandidateJourneySection /> */}
       <FeaturedCompanies />
