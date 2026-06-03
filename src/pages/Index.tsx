@@ -15,6 +15,7 @@ import ReviewsMarquee from "@/components/landing/ReviewsMarquee";
 import JobProfileAssessmentSection from "@/components/landing/JobProfileAssessmentSection";
 import HackathonSpotlightSection from "@/components/landing/HackathonSpotlightSection";
 import FeaturedCompanies from "@/components/jobs/FeaturedCompanies";
+import WebinarHowItWorksSection from "@/components/webinars/WebinarHowItWorksSection";
 
 const Index = () => (
   <>
