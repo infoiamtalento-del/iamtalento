@@ -153,7 +153,7 @@ const CareerIntelligencePackageSection = () => {
             <span className="text-red-600">Measure & Master</span> Your Career
           </motion.h2>
           <p className="mt-4 text-muted-foreground text-base md:text-lg">
-            12 powerful insights bundled into one report — for just{" "}
+            9 powerful insights bundled into one report — for just{" "}
             <span className="text-foreground font-bold">₹1,999</span>.
           </p>
 
