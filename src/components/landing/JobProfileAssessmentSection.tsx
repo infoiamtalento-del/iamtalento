@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Briefcase, FileText, Sparkles, CheckCircle2, Play } from "lucide-react";
+import { ArrowRight, Briefcase, FileText, Sparkles, CheckCircle2, Play, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import SectionBadge from "@/components/ui/section-badge";
