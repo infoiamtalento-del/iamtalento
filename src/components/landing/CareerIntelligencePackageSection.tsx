@@ -6,12 +6,9 @@ import {
   Wallet,
   Target,
   Compass,
-  Map,
   FileText,
-  Linkedin,
   Mic,
   BadgeCheck,
-  PhoneCall,
   ArrowRight,
   Sparkles,
 } from "lucide-react";
@@ -105,37 +102,6 @@ const items: Item[] = [
     image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=900&q=80",
   },
   {
-    icon: Map,
-    title: "Personalized Learning Roadmap",
-    description: "Action plans you can actually follow — not vague advice.",
-    bullets: ["30-Day Plan", "90-Day Plan", "6-Month Plan"],
-    value: "People love action plans.",
-    image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=900&q=80",
-  },
-  {
-    icon: FileText,
-    title: "Resume Health Score",
-    description: "See exactly how your resume performs against ATS and recruiters.",
-    bullets: [
-      "ATS compatibility",
-      "Resume effectiveness",
-      "Profile strength",
-      "Resume Score out of 100 + key improvements",
-    ],
-    image: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=900&q=80",
-  },
-  {
-    icon: Linkedin,
-    title: "LinkedIn Profile Audit",
-    description: "Make recruiters stop scrolling and start messaging.",
-    bullets: [
-      "Profile completeness",
-      "Recruiter attractiveness",
-      "Personal branding score",
-    ],
-    image: "https://images.unsplash.com/photo-1611944212129-29977ae1398c?w=900&q=80",
-  },
-  {
     icon: Mic,
     title: "Interview Readiness Score",
     description: "Walk into interviews knowing exactly where you'll shine — and stumble.",
@@ -159,18 +125,6 @@ const items: Item[] = [
     ],
     value: "Strong USP — shareable with recruiters and employers.",
     image: "https://images.unsplash.com/photo-1606857521015-7f9fcf423740?w=900&q=80",
-  },
-  {
-    icon: PhoneCall,
-    title: "30-Minute Career Consultation",
-    description: "A real advisor walks you through your results, opportunities, and roadmap.",
-    bullets: [
-      "Assessment interpretation",
-      "Career opportunities",
-      "Growth roadmap",
-    ],
-    value: "People pay for interpretation, not reports.",
-    image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=900&q=80",
   },
 ];
 
@@ -199,7 +153,7 @@ const CareerIntelligencePackageSection = () => {
             <span className="text-red-600">Measure & Master</span> Your Career
           </motion.h2>
           <p className="mt-4 text-muted-foreground text-base md:text-lg">
-            12 powerful insights bundled into one report — for just{" "}
+            9 powerful insights bundled into one report — for just{" "}
             <span className="text-foreground font-bold">₹1,999</span>.
           </p>
 
