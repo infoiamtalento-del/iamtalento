@@ -214,78 +214,93 @@ const CareerIntelligencePackageSection = () => {
           </div>
         </div>
 
-        {/* Vertical cards grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6">
-          {items.map((item, idx) => {
-            const Icon = item.icon;
-            const isYellow = idx % 2 === 1;
-            const accentBg = isYellow ? "bg-yellow-400" : "bg-red-600";
-            const accentText = isYellow ? "text-red-900" : "text-white";
-            const ringColor = isYellow ? "hover:border-yellow-400" : "hover:border-red-500";
-            const numberBg = isYellow ? "bg-yellow-400 text-red-900" : "bg-red-600 text-white";
+        {/* Zigzag timeline */}
+        <div className="relative max-w-5xl mx-auto">
+          {/* Center vertical line (desktop only) */}
+          <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-red-500/40 via-yellow-400/40 to-red-500/40 -translate-x-1/2" />
 
-            return (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.45, delay: (idx % 4) * 0.05 }}
-                className={`group relative flex flex-col bg-card rounded-3xl border border-border overflow-hidden shadow-[0_8px_24px_rgb(0,0,0,0.04)] hover:shadow-[0_18px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 ${ringColor}`}
-              >
-                {/* Image */}
-                <div className="relative aspect-[5/4] overflow-hidden bg-muted">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    loading="lazy"
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-foreground/10 to-transparent" />
+          <div className="space-y-10 md:space-y-16">
+            {items.map((item, idx) => {
+              const Icon = item.icon;
+              const isYellow = idx % 2 === 1;
+              const isLeft = idx % 2 === 0;
+              const accentBg = isYellow ? "bg-yellow-400" : "bg-red-600";
+              const accentText = isYellow ? "text-red-900" : "text-white";
+              const tintBg = isYellow ? "bg-yellow-400/15" : "bg-red-500/10";
+              const tintText = isYellow ? "text-yellow-800" : "text-red-700";
 
-                  {/* Module number */}
-                  <div className={`absolute top-3 left-3 h-9 w-9 rounded-full ${numberBg} flex items-center justify-center text-sm font-extrabold shadow-lg`}>
-                    {String(idx + 1).padStart(2, "0")}
-                  </div>
-
-                  {/* Icon chip */}
-                  <div className={`absolute bottom-3 left-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full ${accentBg} ${accentText} text-[11px] font-bold uppercase tracking-wider shadow-md`}>
-                    <Icon className="h-3.5 w-3.5" />
-                    Module {idx + 1}
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="flex flex-col flex-grow p-5">
-                  <h3 className="text-lg font-bold font-display text-foreground leading-tight mb-2">
-                    {item.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                    {item.description}
-                  </p>
-
-                  <ul className="space-y-2 mb-4 flex-grow">
-                    {item.bullets.slice(0, 3).map((b) => (
-                      <li key={b} className="flex items-start gap-2 text-[13px] text-foreground/85">
-                        <span className={`mt-1.5 h-1.5 w-1.5 rounded-full shrink-0 ${isYellow ? "bg-yellow-500" : "bg-red-600"}`} />
-                        {b}
-                      </li>
-                    ))}
-                  </ul>
-
-                  {(item.value || item.example) && (
-                    <div className={`mt-auto rounded-xl px-3 py-2.5 text-[11px] font-semibold leading-snug ${isYellow ? "bg-yellow-400/20 text-yellow-800" : "bg-red-500/10 text-red-700"}`}>
-                      <Sparkles className="h-3 w-3 inline mr-1" />
-                      {item.value || item.example}
+              return (
+                <motion.div
+                  key={item.title}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ duration: 0.5 }}
+                  className="relative md:grid md:grid-cols-2 md:gap-12 items-center"
+                >
+                  {/* Center node */}
+                  <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+                    <div className={`h-14 w-14 rounded-full ${accentBg} ${accentText} flex items-center justify-center font-extrabold font-display text-base shadow-xl ring-4 ring-background`}>
+                      {String(idx + 1).padStart(2, "0")}
                     </div>
-                  )}
-                </div>
+                  </div>
 
-                {/* Bottom accent bar */}
-                <div className={`h-1.5 ${accentBg}`} />
-              </motion.div>
-            );
-          })}
+                  {/* Card */}
+                  <div className={`${isLeft ? "md:col-start-1 md:pr-8" : "md:col-start-2 md:pl-8"}`}>
+                    <div className="group bg-card rounded-3xl border border-border overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.05)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] transition-all duration-300">
+                      {/* Image */}
+                      <div className="relative aspect-[16/9] overflow-hidden bg-muted">
+                        <img
+                          src={item.image}
+                          alt={item.title}
+                          loading="lazy"
+                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-foreground/20 to-transparent" />
+                        <div className={`absolute bottom-3 left-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full ${accentBg} ${accentText} text-[11px] font-bold uppercase tracking-wider shadow-md`}>
+                          <Icon className="h-3.5 w-3.5" />
+                          Module {idx + 1}
+                        </div>
+                        {/* Mobile number */}
+                        <div className={`md:hidden absolute top-3 right-3 h-10 w-10 rounded-full ${accentBg} ${accentText} flex items-center justify-center text-sm font-extrabold shadow-lg`}>
+                          {String(idx + 1).padStart(2, "0")}
+                        </div>
+                      </div>
+
+                      {/* Content */}
+                      <div className="p-5 md:p-6">
+                        <h3 className="text-xl md:text-2xl font-bold font-display text-foreground leading-tight mb-2">
+                          {item.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                          {item.description}
+                        </p>
+
+                        <ul className="space-y-2 mb-4">
+                          {item.bullets.slice(0, 3).map((b) => (
+                            <li key={b} className="flex items-start gap-2 text-[13px] text-foreground/85">
+                              <span className={`mt-1.5 h-1.5 w-1.5 rounded-full shrink-0 ${isYellow ? "bg-yellow-500" : "bg-red-600"}`} />
+                              {b}
+                            </li>
+                          ))}
+                        </ul>
+
+                        {(item.value || item.example) && (
+                          <div className={`rounded-xl px-3 py-2.5 text-[11px] font-semibold leading-snug ${tintBg} ${tintText}`}>
+                            <Sparkles className="h-3 w-3 inline mr-1" />
+                            {item.value || item.example}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Bottom accent bar */}
+                      <div className={`h-1 ${accentBg}`} />
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
 
         {/* USPs */}
