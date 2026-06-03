@@ -185,7 +185,7 @@ const ProfileCard = ({ p, i }: { p: Profile; i: number }) => (
         </div>
 
         {/* AFTER */}
-        <div className="flex-1 rounded-xl bg-gradient-to-br from-red-600 to-yellow-500 p-3 text-center shadow-lg shadow-red-500/20">
+        <div className="flex-1 rounded-xl bg-red-600 p-3 text-center shadow-lg shadow-red-500/20">
           <p className="text-[10px] uppercase tracking-wider text-white/80 font-bold mb-1">After</p>
           <p className="text-2xl font-bold font-display text-white leading-none">
             {p.salaryTo}
