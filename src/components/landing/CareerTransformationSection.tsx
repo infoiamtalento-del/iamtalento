@@ -86,7 +86,7 @@ const ProfileCard = ({ p, i }: { p: Profile; i: number }) => (
     className="bg-card rounded-2xl border border-border shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300"
   >
     {/* Cover + avatar */}
-    <div className="relative h-20 bg-gradient-to-r from-[#0a66c2] to-[#378fe9]">
+    <div className="relative h-20 bg-gradient-to-r from-red-600 via-red-500 to-yellow-400">
       <div className="absolute -bottom-10 left-5">
         <div className="relative">
           <img
@@ -95,7 +95,7 @@ const ProfileCard = ({ p, i }: { p: Profile; i: number }) => (
             className="h-20 w-20 rounded-full ring-4 ring-card object-cover bg-muted"
           />
           <div className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-card flex items-center justify-center">
-            <BadgeCheck className="h-5 w-5 text-[#0a66c2] fill-[#0a66c2]/10" />
+            <BadgeCheck className="h-5 w-5 text-red-600 fill-red-500/10" />
           </div>
         </div>
       </div>
@@ -105,7 +105,7 @@ const ProfileCard = ({ p, i }: { p: Profile; i: number }) => (
     <div className="pt-12 px-5 pb-4 border-b border-border">
       <div className="flex items-center gap-1.5">
         <h3 className="text-base font-bold text-foreground">{p.name}</h3>
-        <BadgeCheck className="h-4 w-4 text-[#0a66c2]" />
+        <BadgeCheck className="h-4 w-4 text-red-600" />
       </div>
       <p className="text-sm text-foreground/80 mt-0.5 leading-snug">{p.headline}</p>
       <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
