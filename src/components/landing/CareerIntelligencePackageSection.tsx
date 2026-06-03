@@ -201,33 +201,6 @@ const CareerIntelligencePackageSection = () => {
           })}
         </div>
 
-        {/* USPs */}
-        <div className="mt-20">
-          <div className="text-center mb-8">
-            <h3 className="text-2xl md:text-3xl font-bold font-display">
-              Why People <span className="text-primary">Choose Us</span>
-            </h3>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {usps.map((u, i) => (
-              <motion.div
-                key={u}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
-                className="rounded-2xl p-5 bg-card border border-border hover:border-primary/40 hover:shadow-lg transition-all"
-              >
-                <span className="inline-block text-[10px] font-bold tracking-wider text-primary mb-2">
-                  USP {i + 1}
-                </span>
-                <p className="text-foreground font-semibold leading-snug">
-                  “{u}”
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
 
         {/* CTA */}
         <div className="mt-16 text-center">
