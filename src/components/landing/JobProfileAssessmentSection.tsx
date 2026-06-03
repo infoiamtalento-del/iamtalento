@@ -281,7 +281,7 @@ const JobProfileAssessmentSection = () => {
                     onClick={() => setJobsIndex(i)}
                     aria-label={`Show slide ${i + 1}`}
                     className={`h-1.5 rounded-full transition-all ${
-                      i === jobsIndex ? "w-8 bg-emerald-500" : "w-1.5 bg-muted"
+                      i === jobsIndex ? "w-8 bg-yellow-400" : "w-1.5 bg-muted"
                     }`}
                   />
                 ))}
