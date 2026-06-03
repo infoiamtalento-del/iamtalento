@@ -177,7 +177,7 @@ const CareerIntelligencePackageSection = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ duration: 0.35, delay: (idx % 4) * 0.04 }}
-                className={`group relative bg-card rounded-2xl border border-border ${hoverBorder} p-5 md:p-6 transition-all hover:shadow-lg`}
+                className={`group relative bg-card rounded-2xl border border-border ${hoverBorder} p-5 md:p-6 transition-all hover:shadow-lg cursor-pointer`}
               >
                 <span className="absolute top-3 right-3 text-[10px] font-bold text-muted-foreground/60 font-display">
                   {String(idx + 1).padStart(2, "0")}
@@ -189,6 +189,14 @@ const CareerIntelligencePackageSection = () => {
                   {item.title}
                 </h3>
                 <div className={`mt-3 h-0.5 w-8 ${accentBg} rounded-full`} />
+
+                {/* Hover popup */}
+                <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-full mb-3 w-64 z-20 opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200">
+                  <div className="bg-foreground text-background rounded-xl px-4 py-3 shadow-2xl text-xs leading-relaxed">
+                    {item.description}
+                    <div className="absolute left-1/2 -translate-x-1/2 top-full -mt-1 w-2 h-2 rotate-45 bg-foreground" />
+                  </div>
+                </div>
               </motion.div>
             );
           })}
