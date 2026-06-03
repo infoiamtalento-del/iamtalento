@@ -96,7 +96,7 @@ const FreeAccessSection = () => {
                   ))}
                 </ul>
 
-                <button className="mt-auto inline-flex items-center justify-between w-full px-4 py-3 rounded-xl bg-foreground text-background font-semibold text-sm hover:bg-red-600 transition-colors group/btn">
+                <button className="mt-auto inline-flex items-center justify-between w-full px-4 py-3 rounded-xl bg-red-600 text-white font-semibold text-sm hover:bg-red-700 transition-colors group/btn">
                   {p.cta}
                   <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-0.5" />
                 </button>
