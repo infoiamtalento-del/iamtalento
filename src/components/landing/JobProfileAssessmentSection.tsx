@@ -41,6 +41,24 @@ const assessmentSlides = [
   },
 ];
 
+const jobsSlides = [
+  {
+    title: "Discover Roles That Match You",
+    description: "Browse 100+ open jobs from top employers actively hiring verified talent.",
+    image: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&q=80",
+  },
+  {
+    title: "Apply With Your Verified Profile",
+    description: "Stand out with a credible profile and skill-backed proof employers trust.",
+    image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&q=80",
+  },
+  {
+    title: "Get Hired Faster",
+    description: "Skip the noise — get matched directly with relevant opportunities.",
+    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80",
+  },
+];
+
 const JobProfileAssessmentSection = () => {
   const [profileIndex, setProfileIndex] = useState(0);
   const [assessmentIndex, setAssessmentIndex] = useState(0);
