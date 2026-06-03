@@ -62,17 +62,20 @@ const jobsSlides = [
 const JobProfileAssessmentSection = () => {
   const [profileIndex, setProfileIndex] = useState(0);
   const [assessmentIndex, setAssessmentIndex] = useState(0);
+  const [jobsIndex, setJobsIndex] = useState(0);
 
   useEffect(() => {
     const id = setInterval(() => {
       setProfileIndex((i) => (i + 1) % profileSlides.length);
       setAssessmentIndex((i) => (i + 1) % assessmentSlides.length);
+      setJobsIndex((i) => (i + 1) % jobsSlides.length);
     }, 4500);
     return () => clearInterval(id);
   }, []);
 
   const currentProfile = profileSlides[profileIndex];
   const currentAssessment = assessmentSlides[assessmentIndex];
+  const currentJobs = jobsSlides[jobsIndex];
 
   return (
     <section className="py-16 md:py-24">
