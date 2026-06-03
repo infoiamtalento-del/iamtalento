@@ -6,12 +6,9 @@ import {
   Wallet,
   Target,
   Compass,
-  Map,
   FileText,
-  Linkedin,
   Mic,
   BadgeCheck,
-  PhoneCall,
   ArrowRight,
   Sparkles,
 } from "lucide-react";
