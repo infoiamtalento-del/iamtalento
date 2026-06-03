@@ -18,6 +18,7 @@ import FeaturedCompanies from "@/components/jobs/FeaturedCompanies";
 import WebinarHowItWorksSection from "@/components/webinars/WebinarHowItWorksSection";
 import HackathonSocialProof from "@/components/hackathons/HackathonSocialProof";
 import CareerIntelligencePackageSection from "@/components/landing/CareerIntelligencePackageSection";
+import CareerTransformationSection from "@/components/landing/CareerTransformationSection";
 
 const Index = () => (
   <>
@@ -39,6 +40,7 @@ const Index = () => (
       
       <JobProfileAssessmentSection />
       <CareerIntelligencePackageSection />
+      <CareerTransformationSection />
       {/* <CandidateJourneySection /> */}
       <FeaturedCompanies />
       <IndustryReadinessSection />
