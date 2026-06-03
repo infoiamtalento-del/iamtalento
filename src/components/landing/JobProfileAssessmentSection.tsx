@@ -289,7 +289,7 @@ const JobProfileAssessmentSection = () => {
 
               <Button
                 asChild
-                className="w-full py-4 h-auto px-6 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm tracking-wide transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-[0.98]"
+                className="w-full py-4 h-auto px-6 rounded-xl bg-yellow-400 hover:bg-yellow-500 text-yellow-950 font-bold text-sm tracking-wide transition-all flex items-center justify-center gap-2 shadow-lg shadow-yellow-400/20 active:scale-[0.98]"
               >
                 <Link to="/jobs">
                   Browse Jobs <ArrowRight className="h-4 w-4" />
