@@ -242,7 +242,7 @@ const JobProfileAssessmentSection = () => {
             className="group relative bg-card rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-border transition-all duration-300 hover:shadow-[0_20px_50px_hsl(var(--primary)/0.12)] hover:-translate-y-1 flex flex-col"
           >
             <div className="mb-6 flex items-start justify-between">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 text-xs font-semibold tracking-wide uppercase">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-400/15 text-yellow-600 text-xs font-semibold tracking-wide uppercase">
                 <Search className="h-3.5 w-3.5" />
                 Browse Jobs
               </span>
@@ -281,7 +281,7 @@ const JobProfileAssessmentSection = () => {
                     onClick={() => setJobsIndex(i)}
                     aria-label={`Show slide ${i + 1}`}
                     className={`h-1.5 rounded-full transition-all ${
-                      i === jobsIndex ? "w-8 bg-emerald-500" : "w-1.5 bg-muted"
+                      i === jobsIndex ? "w-8 bg-yellow-400" : "w-1.5 bg-muted"
                     }`}
                   />
                 ))}
@@ -289,7 +289,7 @@ const JobProfileAssessmentSection = () => {
 
               <Button
                 asChild
-                className="w-full py-4 h-auto px-6 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm tracking-wide transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-[0.98]"
+                className="w-full py-4 h-auto px-6 rounded-xl bg-yellow-400 hover:bg-yellow-500 text-yellow-950 font-bold text-sm tracking-wide transition-all flex items-center justify-center gap-2 shadow-lg shadow-yellow-400/20 active:scale-[0.98]"
               >
                 <Link to="/jobs">
                   Browse Jobs <ArrowRight className="h-4 w-4" />
