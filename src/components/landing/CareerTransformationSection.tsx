@@ -86,7 +86,7 @@ const ProfileCard = ({ p, i }: { p: Profile; i: number }) => (
     className="bg-card rounded-2xl border border-border shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300"
   >
     {/* Cover + avatar */}
-    <div className="relative h-20 bg-gradient-to-r from-red-600 via-red-500 to-yellow-400">
+    <div className="relative h-20 bg-red-600">
       <div className="absolute -bottom-10 left-5">
         <div className="relative">
           <img
