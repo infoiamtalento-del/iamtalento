@@ -33,6 +33,8 @@ const Index = () => (
     <Layout>
       <HeroSection />
       <SocialProofBar />
+      <HackathonSocialProof />
+      
       
       <JobProfileAssessmentSection />
       {/* <CandidateJourneySection /> */}
