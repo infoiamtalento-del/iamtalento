@@ -86,7 +86,7 @@ const ProfileCard = ({ p, i }: { p: Profile; i: number }) => (
     className="bg-card rounded-2xl border border-border shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300"
   >
     {/* Cover + avatar */}
-    <div className="relative h-20 bg-gradient-to-r from-[#0a66c2] to-[#378fe9]">
+    <div className="relative h-20 bg-gradient-to-r from-red-600 via-red-500 to-yellow-400">
       <div className="absolute -bottom-10 left-5">
         <div className="relative">
           <img
@@ -95,7 +95,7 @@ const ProfileCard = ({ p, i }: { p: Profile; i: number }) => (
             className="h-20 w-20 rounded-full ring-4 ring-card object-cover bg-muted"
           />
           <div className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-card flex items-center justify-center">
-            <BadgeCheck className="h-5 w-5 text-[#0a66c2] fill-[#0a66c2]/10" />
+            <BadgeCheck className="h-5 w-5 text-red-600 fill-red-500/10" />
           </div>
         </div>
       </div>
@@ -105,7 +105,7 @@ const ProfileCard = ({ p, i }: { p: Profile; i: number }) => (
     <div className="pt-12 px-5 pb-4 border-b border-border">
       <div className="flex items-center gap-1.5">
         <h3 className="text-base font-bold text-foreground">{p.name}</h3>
-        <BadgeCheck className="h-4 w-4 text-[#0a66c2]" />
+        <BadgeCheck className="h-4 w-4 text-red-600" />
       </div>
       <p className="text-sm text-foreground/80 mt-0.5 leading-snug">{p.headline}</p>
       <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
@@ -133,7 +133,7 @@ const ProfileCard = ({ p, i }: { p: Profile; i: number }) => (
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5">
               <p className="text-sm font-semibold text-foreground truncate">{p.toRole}</p>
-              <span className="text-[10px] font-bold text-emerald-600 bg-emerald-500/10 px-1.5 py-0.5 rounded">NEW</span>
+              <span className="text-[10px] font-bold text-red-600 bg-red-500/10 px-1.5 py-0.5 rounded">NEW</span>
             </div>
             <p className="text-xs text-muted-foreground truncate">{p.toCompany} · Full-time</p>
             <p className="text-[11px] text-muted-foreground/80">Present</p>
@@ -166,29 +166,45 @@ const ProfileCard = ({ p, i }: { p: Profile; i: number }) => (
       </div>
     </div>
 
-    {/* Transformation stats */}
-    <div className="px-5 py-4 bg-muted/40">
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Before</p>
-          <p className="text-sm font-bold text-foreground/70 line-through">{p.salaryFrom}</p>
+    {/* Transformation stats — BIG before/after */}
+    <div className="px-5 py-5 bg-gradient-to-br from-red-500/5 via-orange-500/5 to-yellow-400/10 border-t border-border">
+      <div className="flex items-stretch gap-3">
+        {/* BEFORE */}
+        <div className="flex-1 rounded-xl bg-card border border-border p-3 text-center">
+          <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold mb-1">Before</p>
+          <p className="text-2xl font-bold font-display text-foreground/50 line-through leading-none">
+            {p.salaryFrom}
+          </p>
         </div>
-        <ArrowRight className="h-4 w-4 text-primary shrink-0" />
-        <div>
-          <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">After</p>
-          <p className="text-sm font-bold text-foreground">{p.salaryTo}</p>
+
+        {/* Arrow */}
+        <div className="flex flex-col items-center justify-center shrink-0">
+          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-red-600 to-yellow-400 flex items-center justify-center shadow-lg shadow-red-500/30">
+            <ArrowRight className="h-5 w-5 text-white" />
+          </div>
         </div>
-        <div className="ml-auto inline-flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-600 text-xs font-bold">
-          <TrendingUp className="h-3 w-3" />
-          {p.hike}
+
+        {/* AFTER */}
+        <div className="flex-1 rounded-xl bg-gradient-to-br from-red-600 to-yellow-500 p-3 text-center shadow-lg shadow-red-500/20">
+          <p className="text-[10px] uppercase tracking-wider text-white/80 font-bold mb-1">After</p>
+          <p className="text-2xl font-bold font-display text-white leading-none">
+            {p.salaryTo}
+          </p>
         </div>
       </div>
 
-      <div className="mt-3 flex items-center justify-between gap-2">
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-semibold">
+      <div className="mt-3 flex items-center justify-center">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-yellow-400 text-red-900 text-sm font-extrabold shadow-md">
+          <TrendingUp className="h-4 w-4" />
+          {p.hike} Salary Hike
+        </div>
+      </div>
+
+      <div className="mt-4 flex items-center justify-between gap-2">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-500/10 text-red-600 text-[11px] font-semibold">
           <Sparkles className="h-3 w-3" /> {p.pkg}
         </span>
-        <button className="text-[11px] font-semibold text-[#0a66c2] hover:underline">
+        <button className="text-[11px] font-semibold text-red-600 hover:underline">
           View full story
         </button>
       </div>
