@@ -19,6 +19,7 @@ import WebinarHowItWorksSection from "@/components/webinars/WebinarHowItWorksSec
 import HackathonSocialProof from "@/components/hackathons/HackathonSocialProof";
 import CareerIntelligencePackageSection from "@/components/landing/CareerIntelligencePackageSection";
 import CareerTransformationSection from "@/components/landing/CareerTransformationSection";
+import FreeAccessSection from "@/components/landing/FreeAccessSection";
 
 const Index = () => (
   <>
