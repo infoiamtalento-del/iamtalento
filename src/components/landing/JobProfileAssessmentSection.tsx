@@ -242,7 +242,7 @@ const JobProfileAssessmentSection = () => {
             className="group relative bg-card rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-border transition-all duration-300 hover:shadow-[0_20px_50px_hsl(var(--primary)/0.12)] hover:-translate-y-1 flex flex-col"
           >
             <div className="mb-6 flex items-start justify-between">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 text-xs font-semibold tracking-wide uppercase">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-400/15 text-yellow-600 text-xs font-semibold tracking-wide uppercase">
                 <Search className="h-3.5 w-3.5" />
                 Browse Jobs
               </span>
