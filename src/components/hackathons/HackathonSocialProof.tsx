@@ -10,6 +10,7 @@ const hackathons = [
     location: "Global · Online",
     participants: "50,000+",
     date: "Mar 2025",
+    openings: "85",
   },
   {
     company: "Microsoft",
@@ -18,6 +19,7 @@ const hackathons = [
     location: "Seattle, USA",
     participants: "30,000+",
     date: "Apr 2025",
+    openings: "62",
   },
   {
     company: "Amazon",
@@ -26,6 +28,7 @@ const hackathons = [
     location: "Bangalore, India",
     participants: "12,000+",
     date: "May 2025",
+    openings: "120",
   },
   {
     company: "Flipkart",
@@ -34,6 +37,7 @@ const hackathons = [
     location: "Bangalore, India",
     participants: "25,000+",
     date: "Jun 2025",
+    openings: "48",
   },
   {
     company: "Infosys",
@@ -42,6 +46,7 @@ const hackathons = [
     location: "Pan India · Online",
     participants: "200,000+",
     date: "Jul 2025",
+    openings: "210",
   },
   {
     company: "TCS",
@@ -50,6 +55,7 @@ const hackathons = [
     location: "Global · Online",
     participants: "300,000+",
     date: "Aug 2025",
+    openings: "340",
   },
   {
     company: "Walmart",
@@ -58,6 +64,7 @@ const hackathons = [
     location: "Bangalore, India",
     participants: "8,000+",
     date: "Sep 2025",
+    openings: "55",
   },
   {
     company: "Razorpay",
@@ -66,6 +73,7 @@ const hackathons = [
     location: "Bangalore, India",
     participants: "5,000+",
     date: "Oct 2025",
+    openings: "30",
   },
   {
     company: "Swiggy",
@@ -74,6 +82,7 @@ const hackathons = [
     location: "Bangalore, India",
     participants: "4,000+",
     date: "Nov 2025",
+    openings: "22",
   },
   {
     company: "Meta",
@@ -82,6 +91,7 @@ const hackathons = [
     location: "Global · Online",
     participants: "40,000+",
     date: "Sep 2025",
+    openings: "75",
   },
   {
     company: "Atlassian",
@@ -90,6 +100,7 @@ const hackathons = [
     location: "Sydney, Australia",
     participants: "3,000+",
     date: "Dec 2025",
+    openings: "18",
   },
   {
     company: "Paytm",
@@ -98,6 +109,7 @@ const hackathons = [
     location: "Noida, India",
     participants: "10,000+",
     date: "Jan 2026",
+    openings: "40",
   },
 ];
 
