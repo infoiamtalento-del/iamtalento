@@ -128,13 +128,6 @@ const items: Item[] = [
   },
 ];
 
-const usps = [
-  "Don't Guess Your Career. Measure It.",
-  "Know Your Employability Score, Skill Gaps & Salary Potential in One Report.",
-  "A Career Health Checkup for Professionals.",
-  "Find Out Where You Stand Against Industry Standards & Top Performers.",
-  "Get a Personalized Roadmap to Your Next Promotion, Salary Hike, or Career Move.",
-];
 
 const CareerIntelligencePackageSection = () => {
   return (
