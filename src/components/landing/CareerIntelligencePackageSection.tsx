@@ -185,12 +185,6 @@ const usps = [
 ];
 
 const CareerIntelligencePackageSection = () => {
-  const [active, setActive] = useState(0);
-  const total = items.length;
-  const go = (dir: 1 | -1) => setActive((p) => (p + dir + total) % total);
-  const item = items[active];
-  const Icon = item.icon;
-
   return (
     <section className="py-16 md:py-24 bg-muted/30">
       <div className="container px-4 md:px-6">
@@ -204,126 +198,96 @@ const CareerIntelligencePackageSection = () => {
             className="text-3xl md:text-5xl font-bold font-display leading-tight"
           >
             Everything You Need to{" "}
-            <span className="text-primary">Measure & Master</span> Your Career
+            <span className="text-red-600">Measure & Master</span> Your Career
           </motion.h2>
           <p className="mt-4 text-muted-foreground text-base md:text-lg">
             12 powerful insights bundled into one report — for just{" "}
             <span className="text-foreground font-bold">₹1,999</span>.
           </p>
 
-          <div className="mt-6 inline-flex items-baseline gap-3 px-6 py-3 rounded-2xl bg-primary text-primary-foreground shadow-lg">
+          <div className="mt-6 inline-flex items-baseline gap-3 px-6 py-3 rounded-2xl bg-red-600 text-white shadow-lg">
             <span className="text-xs uppercase tracking-wider font-semibold opacity-80">
               All-in Price
             </span>
             <span className="text-2xl md:text-3xl font-bold font-display">
               ₹1,999
             </span>
-            <span className="text-xs line-through opacity-60">₹9,999+</span>
+            <span className="text-xs line-through opacity-70">₹9,999+</span>
           </div>
         </div>
 
-        {/* Carousel */}
-        <div className="relative">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={active}
-              initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -40 }}
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              className="grid md:grid-cols-2 gap-6 md:gap-10 items-center bg-card border border-border rounded-3xl p-5 md:p-8 shadow-[0_10px_40px_rgb(0,0,0,0.05)]"
-            >
-              {/* Image (left) */}
-              <div className="relative group">
-                <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-muted border border-border">
+        {/* Vertical cards grid */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6">
+          {items.map((item, idx) => {
+            const Icon = item.icon;
+            const isYellow = idx % 2 === 1;
+            const accentBg = isYellow ? "bg-yellow-400" : "bg-red-600";
+            const accentText = isYellow ? "text-red-900" : "text-white";
+            const ringColor = isYellow ? "hover:border-yellow-400" : "hover:border-red-500";
+            const numberBg = isYellow ? "bg-yellow-400 text-red-900" : "bg-red-600 text-white";
+
+            return (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.45, delay: (idx % 4) * 0.05 }}
+                className={`group relative flex flex-col bg-card rounded-3xl border border-border overflow-hidden shadow-[0_8px_24px_rgb(0,0,0,0.04)] hover:shadow-[0_18px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 ${ringColor}`}
+              >
+                {/* Image */}
+                <div className="relative aspect-[5/4] overflow-hidden bg-muted">
                   <img
                     src={item.image}
                     alt={item.title}
                     loading="lazy"
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-tr from-foreground/40 via-transparent to-transparent" />
-                  <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-card/95 backdrop-blur border border-border shadow-sm">
-                    <span className="h-6 w-6 rounded-full bg-primary text-primary-foreground text-[11px] font-bold flex items-center justify-center">
-                      {String(active + 1).padStart(2, "0")}
-                    </span>
-                    <span className="text-xs font-semibold text-foreground">
-                      Module {active + 1} of {total}
-                    </span>
+                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-foreground/10 to-transparent" />
+
+                  {/* Module number */}
+                  <div className={`absolute top-3 left-3 h-9 w-9 rounded-full ${numberBg} flex items-center justify-center text-sm font-extrabold shadow-lg`}>
+                    {String(idx + 1).padStart(2, "0")}
+                  </div>
+
+                  {/* Icon chip */}
+                  <div className={`absolute bottom-3 left-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full ${accentBg} ${accentText} text-[11px] font-bold uppercase tracking-wider shadow-md`}>
+                    <Icon className="h-3.5 w-3.5" />
+                    Module {idx + 1}
                   </div>
                 </div>
-              </div>
 
-              {/* Content (right) */}
-              <div>
-                <div className="inline-flex items-center justify-center h-12 w-12 rounded-2xl bg-primary/10 text-primary mb-4">
-                  <Icon className="h-6 w-6" />
-                </div>
-                <h3 className="text-2xl md:text-3xl font-bold font-display text-foreground mb-3 leading-tight">
-                  {item.title}
-                </h3>
-                <p className="text-muted-foreground text-base mb-5">
-                  {item.description}
-                </p>
+                {/* Content */}
+                <div className="flex flex-col flex-grow p-5">
+                  <h3 className="text-lg font-bold font-display text-foreground leading-tight mb-2">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                    {item.description}
+                  </p>
 
-                <ul className="space-y-2.5 mb-5">
-                  {item.bullets.map((b) => (
-                    <li key={b} className="flex items-start gap-3">
-                      <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
-                      <span className="text-foreground/90 text-sm md:text-base">
+                  <ul className="space-y-2 mb-4 flex-grow">
+                    {item.bullets.slice(0, 3).map((b) => (
+                      <li key={b} className="flex items-start gap-2 text-[13px] text-foreground/85">
+                        <span className={`mt-1.5 h-1.5 w-1.5 rounded-full shrink-0 ${isYellow ? "bg-yellow-500" : "bg-red-600"}`} />
                         {b}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
+                      </li>
+                    ))}
+                  </ul>
 
-                {item.example && (
-                  <div className="rounded-xl bg-muted/50 border border-border p-4 mb-4 text-sm text-foreground/80 italic">
-                    “{item.example}”
-                  </div>
-                )}
+                  {(item.value || item.example) && (
+                    <div className={`mt-auto rounded-xl px-3 py-2.5 text-[11px] font-semibold leading-snug ${isYellow ? "bg-yellow-400/20 text-yellow-800" : "bg-red-500/10 text-red-700"}`}>
+                      <Sparkles className="h-3 w-3 inline mr-1" />
+                      {item.value || item.example}
+                    </div>
+                  )}
+                </div>
 
-                {item.value && (
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold">
-                    <Sparkles className="h-3.5 w-3.5" />
-                    {item.value}
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Controls */}
-          <div className="mt-6 flex items-center justify-between gap-4">
-            <button
-              onClick={() => go(-1)}
-              aria-label="Previous module"
-              className="h-12 w-12 rounded-full bg-card border border-border shadow-sm flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all active:scale-95"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-
-            <div className="flex flex-wrap items-center justify-center gap-1.5">
-              {items.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActive(i)}
-                  aria-label={`Go to module ${i + 1}`}
-                  className={`h-2 rounded-full transition-all ${
-                    i === active ? "w-8 bg-primary" : "w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
-                  }`}
-                />
-              ))}
-            </div>
-
-            <button
-              onClick={() => go(1)}
-              aria-label="Next module"
-              className="h-12 w-12 rounded-full bg-card border border-border shadow-sm flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all active:scale-95"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
-          </div>
+                {/* Bottom accent bar */}
+                <div className={`h-1.5 ${accentBg}`} />
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* USPs */}
