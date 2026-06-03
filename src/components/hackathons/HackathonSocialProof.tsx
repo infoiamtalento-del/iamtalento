@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Calendar, MapPin, Users, Building2, Globe } from "lucide-react";
+import { MapPin, Briefcase, Globe } from "lucide-react";
 import SectionBadge from "@/components/ui/section-badge";
 
 const hackathons = [
