@@ -105,37 +105,6 @@ const items: Item[] = [
     image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=900&q=80",
   },
   {
-    icon: Map,
-    title: "Personalized Learning Roadmap",
-    description: "Action plans you can actually follow — not vague advice.",
-    bullets: ["30-Day Plan", "90-Day Plan", "6-Month Plan"],
-    value: "People love action plans.",
-    image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=900&q=80",
-  },
-  {
-    icon: FileText,
-    title: "Resume Health Score",
-    description: "See exactly how your resume performs against ATS and recruiters.",
-    bullets: [
-      "ATS compatibility",
-      "Resume effectiveness",
-      "Profile strength",
-      "Resume Score out of 100 + key improvements",
-    ],
-    image: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=900&q=80",
-  },
-  {
-    icon: Linkedin,
-    title: "LinkedIn Profile Audit",
-    description: "Make recruiters stop scrolling and start messaging.",
-    bullets: [
-      "Profile completeness",
-      "Recruiter attractiveness",
-      "Personal branding score",
-    ],
-    image: "https://images.unsplash.com/photo-1611944212129-29977ae1398c?w=900&q=80",
-  },
-  {
     icon: Mic,
     title: "Interview Readiness Score",
     description: "Walk into interviews knowing exactly where you'll shine — and stumble.",
