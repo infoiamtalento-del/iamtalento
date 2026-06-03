@@ -45,6 +45,7 @@ const Index = () => (
       <SkillCategoriesSection />
       <ReviewsMarquee />
       <ComplianceSection />
+      <WebinarHowItWorksSection />
       <CTASection />
     </Layout>
   </>
