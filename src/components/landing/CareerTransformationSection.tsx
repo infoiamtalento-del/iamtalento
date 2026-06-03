@@ -167,7 +167,7 @@ const ProfileCard = ({ p, i }: { p: Profile; i: number }) => (
     </div>
 
     {/* Transformation stats — BIG before/after */}
-    <div className="px-5 py-5 bg-gradient-to-br from-red-500/5 via-orange-500/5 to-yellow-400/10 border-t border-border">
+    <div className="px-5 py-5 bg-muted/40 border-t border-border">
       <div className="flex items-stretch gap-3">
         {/* BEFORE */}
         <div className="flex-1 rounded-xl bg-card border border-border p-3 text-center">
