@@ -130,13 +130,9 @@ const HackathonCard = ({ d }: { d: HackathonData }) => (
           <MapPin className="h-3 w-3" />
           {d.location}
         </span>
-        <span className="flex items-center gap-1">
-          <Users className="h-3 w-3" />
-          {d.participants}
-        </span>
-        <span className="flex items-center gap-1">
-          <Calendar className="h-3 w-3" />
-          {d.date}
+        <span className="flex items-center gap-1 text-primary font-semibold">
+          <Briefcase className="h-3 w-3" />
+          {d.openings} open jobs
         </span>
       </div>
     </div>
