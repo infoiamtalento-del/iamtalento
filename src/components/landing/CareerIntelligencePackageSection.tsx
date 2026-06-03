@@ -1,4 +1,6 @@
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   Brain,
   Gauge,
@@ -183,6 +185,12 @@ const usps = [
 ];
 
 const CareerIntelligencePackageSection = () => {
+  const [active, setActive] = useState(0);
+  const total = items.length;
+  const go = (dir: 1 | -1) => setActive((p) => (p + dir + total) % total);
+  const item = items[active];
+  const Icon = item.icon;
+
   return (
     <section className="py-16 md:py-24 bg-muted/30">
       <div className="container px-4 md:px-6">
@@ -214,79 +222,108 @@ const CareerIntelligencePackageSection = () => {
           </div>
         </div>
 
-        {/* Items */}
-        <div className="space-y-10 md:space-y-16">
-          {items.map((item, idx) => {
-            const Icon = item.icon;
-            return (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.5 }}
-                className="grid md:grid-cols-2 gap-6 md:gap-10 items-center"
-              >
-                {/* Image (left) */}
-                <div className="relative group">
-                  <div className="relative aspect-[4/3] rounded-3xl overflow-hidden bg-muted border border-border shadow-[0_10px_40px_rgb(0,0,0,0.06)]">
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      loading="lazy"
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-tr from-foreground/40 via-transparent to-transparent" />
-                    <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-card/95 backdrop-blur border border-border shadow-sm">
-                      <span className="h-6 w-6 rounded-full bg-primary text-primary-foreground text-[11px] font-bold flex items-center justify-center">
-                        {String(idx + 1).padStart(2, "0")}
-                      </span>
-                      <span className="text-xs font-semibold text-foreground">
-                        Module {idx + 1}
-                      </span>
-                    </div>
+        {/* Carousel */}
+        <div className="relative">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={active}
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -40 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              className="grid md:grid-cols-2 gap-6 md:gap-10 items-center bg-card border border-border rounded-3xl p-5 md:p-8 shadow-[0_10px_40px_rgb(0,0,0,0.05)]"
+            >
+              {/* Image (left) */}
+              <div className="relative group">
+                <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-muted border border-border">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    loading="lazy"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-foreground/40 via-transparent to-transparent" />
+                  <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-card/95 backdrop-blur border border-border shadow-sm">
+                    <span className="h-6 w-6 rounded-full bg-primary text-primary-foreground text-[11px] font-bold flex items-center justify-center">
+                      {String(active + 1).padStart(2, "0")}
+                    </span>
+                    <span className="text-xs font-semibold text-foreground">
+                      Module {active + 1} of {total}
+                    </span>
                   </div>
                 </div>
+              </div>
 
-                {/* Content (right) */}
-                <div>
-                  <div className="inline-flex items-center justify-center h-12 w-12 rounded-2xl bg-primary/10 text-primary mb-4">
-                    <Icon className="h-6 w-6" />
-                  </div>
-                  <h3 className="text-2xl md:text-3xl font-bold font-display text-foreground mb-3 leading-tight">
-                    {item.title}
-                  </h3>
-                  <p className="text-muted-foreground text-base mb-5">
-                    {item.description}
-                  </p>
-
-                  <ul className="space-y-2.5 mb-5">
-                    {item.bullets.map((b) => (
-                      <li key={b} className="flex items-start gap-3">
-                        <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
-                        <span className="text-foreground/90 text-sm md:text-base">
-                          {b}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  {item.example && (
-                    <div className="rounded-xl bg-card border border-border p-4 mb-4 text-sm text-foreground/80 italic">
-                      “{item.example}”
-                    </div>
-                  )}
-
-                  {item.value && (
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold">
-                      <Sparkles className="h-3.5 w-3.5" />
-                      {item.value}
-                    </div>
-                  )}
+              {/* Content (right) */}
+              <div>
+                <div className="inline-flex items-center justify-center h-12 w-12 rounded-2xl bg-primary/10 text-primary mb-4">
+                  <Icon className="h-6 w-6" />
                 </div>
-              </motion.div>
-            );
-          })}
+                <h3 className="text-2xl md:text-3xl font-bold font-display text-foreground mb-3 leading-tight">
+                  {item.title}
+                </h3>
+                <p className="text-muted-foreground text-base mb-5">
+                  {item.description}
+                </p>
+
+                <ul className="space-y-2.5 mb-5">
+                  {item.bullets.map((b) => (
+                    <li key={b} className="flex items-start gap-3">
+                      <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                      <span className="text-foreground/90 text-sm md:text-base">
+                        {b}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+
+                {item.example && (
+                  <div className="rounded-xl bg-muted/50 border border-border p-4 mb-4 text-sm text-foreground/80 italic">
+                    “{item.example}”
+                  </div>
+                )}
+
+                {item.value && (
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold">
+                    <Sparkles className="h-3.5 w-3.5" />
+                    {item.value}
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Controls */}
+          <div className="mt-6 flex items-center justify-between gap-4">
+            <button
+              onClick={() => go(-1)}
+              aria-label="Previous module"
+              className="h-12 w-12 rounded-full bg-card border border-border shadow-sm flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all active:scale-95"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+
+            <div className="flex flex-wrap items-center justify-center gap-1.5">
+              {items.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActive(i)}
+                  aria-label={`Go to module ${i + 1}`}
+                  className={`h-2 rounded-full transition-all ${
+                    i === active ? "w-8 bg-primary" : "w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
+                  }`}
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={() => go(1)}
+              aria-label="Next module"
+              className="h-12 w-12 rounded-full bg-card border border-border shadow-sm flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all active:scale-95"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </div>
         </div>
 
         {/* USPs */}
