@@ -17,6 +17,7 @@ import HackathonSpotlightSection from "@/components/landing/HackathonSpotlightSe
 import FeaturedCompanies from "@/components/jobs/FeaturedCompanies";
 import WebinarHowItWorksSection from "@/components/webinars/WebinarHowItWorksSection";
 import HackathonSocialProof from "@/components/hackathons/HackathonSocialProof";
+import CareerIntelligencePackageSection from "@/components/landing/CareerIntelligencePackageSection";
 
 const Index = () => (
   <>
@@ -37,6 +38,7 @@ const Index = () => (
       
       
       <JobProfileAssessmentSection />
+      <CareerIntelligencePackageSection />
       {/* <CandidateJourneySection /> */}
       <FeaturedCompanies />
       <IndustryReadinessSection />
