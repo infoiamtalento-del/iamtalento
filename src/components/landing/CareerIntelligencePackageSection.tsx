@@ -221,7 +221,7 @@ const CareerIntelligencePackageSection = () => {
           </div>
 
           {/* Right: expanded content + fixed video */}
-          <div className="grid md:grid-cols-2 gap-6 items-start">
+          <div className="grid md:grid-cols-[1fr_1.15fr] gap-8 items-start">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeIdx}
