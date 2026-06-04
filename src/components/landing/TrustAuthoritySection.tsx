@@ -45,13 +45,30 @@ const TrustAuthoritySection = () => {
         <div className="relative overflow-hidden mb-12 md:mb-16 -mt-4">
           <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-background to-transparent z-10" />
           <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-background to-transparent z-10" />
-          <div className="flex gap-12 animate-[marquee_30s_linear_infinite] whitespace-nowrap">
+          <div className="flex gap-16 animate-[marquee_30s_linear_infinite] whitespace-nowrap items-center">
             {[...Array(2)].map((_, dup) => (
-              <div key={dup} className="flex gap-12 shrink-0">
-                {["Google","Microsoft","Amazon","Meta","Adobe","Infosys","TCS","Wipro","Deloitte","Accenture","IBM","Flipkart"].map((logo) => (
-                  <span key={logo} className="text-xl md:text-2xl font-bold text-muted-foreground/60 hover:text-foreground transition-colors tracking-tight">
-                    {logo}
-                  </span>
+              <div key={dup} className="flex gap-16 shrink-0 items-center">
+                {[
+                  { name: "Google", slug: "google" },
+                  { name: "Microsoft", slug: "microsoftazure" },
+                  { name: "Amazon", slug: "amazon" },
+                  { name: "Meta", slug: "meta" },
+                  { name: "Adobe", slug: "adobe" },
+                  { name: "Infosys", slug: "infosys" },
+                  { name: "IBM", slug: "ibm" },
+                  { name: "Accenture", slug: "accenture" },
+                  { name: "Deloitte", slug: "deloitte" },
+                  { name: "Flipkart", slug: "flipkart" },
+                  { name: "Wipro", slug: "wipro" },
+                  { name: "TCS", slug: "tcs" },
+                ].map((logo) => (
+                  <img
+                    key={logo.name}
+                    src={`https://cdn.simpleicons.org/${logo.slug}`}
+                    alt={logo.name}
+                    className="h-8 md:h-10 w-auto opacity-80 hover:opacity-100 transition-opacity"
+                    loading="lazy"
+                  />
                 ))}
               </div>
             ))}
