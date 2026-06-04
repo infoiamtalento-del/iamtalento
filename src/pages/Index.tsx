@@ -4,7 +4,7 @@ import HeroSection from "@/components/landing/HeroSection";
 
 import IndustryReadinessSection from "@/components/landing/IndustryReadinessSection";
 import TrustAuthoritySection from "@/components/landing/TrustAuthoritySection";
-import VideoSection from "@/components/landing/VideoSection";
+
 
 import SkillCategoriesSection from "@/components/landing/SkillCategoriesSection";
 import WhoIsItForSection from "@/components/landing/WhoIsItForSection";
@@ -52,7 +52,7 @@ const Index = () => (
       <HackathonSpotlightSection />
       
       
-      <VideoSection />
+      
       <WhoIsItForSection />
       <SkillCategoriesSection />
       <ReviewsMarquee />
