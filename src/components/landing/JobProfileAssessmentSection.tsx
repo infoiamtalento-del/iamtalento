@@ -79,7 +79,7 @@ const JobProfileAssessmentSection = () => {
 
   return (
     <section className="py-16 md:py-24">
-      <div className="container px-4 md:px-6">
+      <div className="container px-4 md:px-6 max-w-[1400px]">
         <div className="text-center mb-10 md:mb-14">
           <SectionBadge label="Get Started" icon={Sparkles} />
           <motion.h2
@@ -96,7 +96,7 @@ const JobProfileAssessmentSection = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-[1320px] mx-auto">
           {/* Job Profile Card */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
