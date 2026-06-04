@@ -41,6 +41,23 @@ const TrustAuthoritySection = () => {
           </p>
         </div>
 
+        {/* Logo marquee */}
+        <div className="relative overflow-hidden mb-12 md:mb-16 -mt-4">
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-background to-transparent z-10" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-background to-transparent z-10" />
+          <div className="flex gap-12 animate-[marquee_30s_linear_infinite] whitespace-nowrap">
+            {[...Array(2)].map((_, dup) => (
+              <div key={dup} className="flex gap-12 shrink-0">
+                {["Google","Microsoft","Amazon","Meta","Adobe","Infosys","TCS","Wipro","Deloitte","Accenture","IBM","Flipkart"].map((logo) => (
+                  <span key={logo} className="text-xl md:text-2xl font-bold text-muted-foreground/60 hover:text-foreground transition-colors tracking-tight">
+                    {logo}
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
           {qualities.map((q, i) => {
