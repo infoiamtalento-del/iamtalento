@@ -18,6 +18,7 @@ const qualities = [
   { icon: BarChart2, title: "Benchmarked", desc: "Comparative performance data" },
   { icon: GitBranch, title: "Enterprise-Ready", desc: "Scales to any org size" },
   { icon: CheckCircle2, title: "Quality Assured", desc: "Continuously refined" },
+  { icon: BadgeCheck, title: "Industry-Recognized", desc: "Trusted by hiring partners" },
 ];
 
 const partners = [
