@@ -28,6 +28,7 @@ import LiveLeaderboardSection from "@/components/assessments/LiveLeaderboardSect
 
 // 5. The Reward
 import VerifiedBadgeSection from "@/components/assessments/VerifiedBadgeSection";
+import DigitalSkillPassportSection from "@/components/landing/DigitalSkillPassportSection";
 import VerifiedBadgeBentoSection from "@/components/assessments/VerifiedBadgeBentoSection";
 
 // 6. Social proof → Convert
@@ -49,6 +50,8 @@ const Assessments = () => (
       <AssessmentHero />
       <AssessmentSocialProof />
       <VerifiedBadgeSection />
+      <DigitalSkillPassportSection />
+      
       
       <ProblemSolutionAccordion />
       <AssessmentIntegritySection />
