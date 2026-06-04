@@ -165,7 +165,7 @@ const CareerIntelligencePackageSection = () => {
         </div>
 
         {/* Master-detail landscape layout */}
-        <div className="grid lg:grid-cols-[minmax(0,360px)_1fr] gap-6 max-w-6xl mx-auto items-start bg-card rounded-3xl border border-border p-4 md:p-6 shadow-sm">
+        <div className="grid lg:grid-cols-[minmax(0,320px)_1fr] gap-6 max-w-[1400px] mx-auto items-start bg-card rounded-3xl border border-border p-4 md:p-6 shadow-sm">
           {/* Left: titles list */}
           <div className="lg:border-r lg:border-border lg:pr-4">
             <h3 className="text-lg font-bold font-display text-foreground mb-1 px-2">
