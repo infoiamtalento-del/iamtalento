@@ -45,28 +45,29 @@ const TrustAuthoritySection = () => {
         <div className="relative overflow-hidden mb-12 md:mb-16 -mt-4">
           <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-background to-transparent z-10" />
           <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-background to-transparent z-10" />
-          <div className="flex gap-14 animate-[marquee_30s_linear_infinite] whitespace-nowrap items-center">
+          <div className="flex gap-10 md:gap-14 animate-[marquee_30s_linear_infinite] whitespace-nowrap items-center">
             {[...Array(2)].map((_, dup) => (
-              <div key={dup} className="flex gap-14 shrink-0 items-center">
+              <div key={dup} className="flex gap-10 md:gap-14 shrink-0 items-center">
                 {[
-                  { name: "Amazon", domain: "amazon.com" },
-                  { name: "Razorpay", domain: "razorpay.com" },
-                  { name: "Flipkart", domain: "flipkart.com" },
-                  { name: "Swiggy", domain: "swiggy.com" },
-                  { name: "PhonePe", domain: "phonepe.com" },
-                  { name: "Infosys", domain: "infosys.com" },
-                  { name: "Walmart", domain: "walmart.com" },
-                  { name: "Deloitte", domain: "deloitte.com" },
-                  { name: "Google", domain: "google.com" },
-                  { name: "Microsoft", domain: "microsoft.com" },
+                  { name: "Amazon", color: "#FF9900", font: "font-bold italic" },
+                  { name: "Razorpay", color: "#0C2451", font: "font-bold" },
+                  { name: "Flipkart", color: "#2874F0", font: "font-extrabold italic" },
+                  { name: "Swiggy", color: "#FC8019", font: "font-extrabold" },
+                  { name: "PhonePe", color: "#5F259F", font: "font-bold" },
+                  { name: "Infosys", color: "#007CC3", font: "font-bold" },
+                  { name: "Walmart", color: "#0071CE", font: "font-bold" },
+                  { name: "Deloitte", color: "#000000", font: "font-bold" },
+                  { name: "Google", color: "#4285F4", font: "font-medium" },
+                  { name: "Microsoft", color: "#5E5E5E", font: "font-semibold" },
                 ].map((logo) => (
-                  <img
+                  <span
                     key={logo.name}
-                    src={`https://logo.clearbit.com/${logo.domain}`}
-                    alt={logo.name}
-                    className="h-10 md:h-12 w-auto object-contain shrink-0 grayscale-0 opacity-90 hover:opacity-100 transition-opacity"
-                    loading="lazy"
-                  />
+                    className={`text-xl md:text-2xl tracking-tight shrink-0 ${logo.font}`}
+                    style={{ color: logo.color }}
+                  >
+                    {logo.name}
+                    {logo.name === "Deloitte" && <span style={{ color: "#86BC25" }}>.</span>}
+                  </span>
                 ))}
               </div>
             ))}
