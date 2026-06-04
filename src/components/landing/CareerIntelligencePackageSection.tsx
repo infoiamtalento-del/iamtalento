@@ -271,20 +271,20 @@ const CareerIntelligencePackageSection = () => {
             </AnimatePresence>
 
             {/* Fixed video */}
-            <div className="md:sticky md:top-24">
-              <div className="relative aspect-video rounded-2xl overflow-hidden shadow-xl group">
+            <div className="flex flex-col gap-4">
+              <div className="relative aspect-[4/5] rounded-2xl overflow-hidden shadow-xl group">
                 <img
                   src={fixedVideoImage}
                   alt="Career Intelligence demo"
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
                 <button
                   className="absolute inset-0 flex items-center justify-center"
                   aria-label="Play video"
                 >
-                  <span className="h-14 w-14 md:h-16 md:w-16 rounded-full bg-red-500 text-white flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
-                    <Play className="h-6 w-6 fill-current ml-0.5" />
+                  <span className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-red-500 text-white flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
+                    <Play className="h-7 w-7 fill-current ml-0.5" />
                   </span>
                 </button>
                 <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white text-xs font-medium">
@@ -295,10 +295,15 @@ const CareerIntelligencePackageSection = () => {
                     02:14
                   </span>
                 </div>
+                <div className="absolute top-3 left-3 right-3 text-white">
+                  <p className="text-xs uppercase tracking-wider opacity-80 font-semibold">
+                    Demo Walkthrough
+                  </p>
+                  <p className="text-base md:text-lg font-bold font-display leading-tight mt-0.5">
+                    See your Career Intelligence Report in action
+                  </p>
+                </div>
               </div>
-              <p className="mt-3 text-xs text-muted-foreground text-center">
-                See how your Career Intelligence Report works.
-              </p>
             </div>
           </div>
         </div>
