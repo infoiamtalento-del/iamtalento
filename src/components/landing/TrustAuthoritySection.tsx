@@ -49,25 +49,28 @@ const TrustAuthoritySection = () => {
             {[...Array(2)].map((_, dup) => (
               <div key={dup} className="flex gap-10 md:gap-14 shrink-0 items-center">
                 {[
-                  { name: "Amazon", color: "#FF9900", font: "font-bold italic" },
-                  { name: "Razorpay", color: "#0C2451", font: "font-bold" },
-                  { name: "Flipkart", color: "#2874F0", font: "font-extrabold italic" },
-                  { name: "Swiggy", color: "#FC8019", font: "font-extrabold" },
-                  { name: "PhonePe", color: "#5F259F", font: "font-bold" },
-                  { name: "Infosys", color: "#007CC3", font: "font-bold" },
-                  { name: "Walmart", color: "#0071CE", font: "font-bold" },
-                  { name: "Deloitte", color: "#000000", font: "font-bold" },
-                  { name: "Google", color: "#4285F4", font: "font-medium" },
-                  { name: "Microsoft", color: "#5E5E5E", font: "font-semibold" },
+                  { name: "Microsoft", domain: "microsoft.com" },
+                  { name: "Amazon", domain: "amazon.com" },
+                  { name: "Razorpay", domain: "razorpay.com" },
+                  { name: "Flipkart", domain: "flipkart.com" },
+                  { name: "Swiggy", domain: "swiggy.com" },
+                  { name: "PhonePe", domain: "phonepe.com" },
+                  { name: "Infosys", domain: "infosys.com" },
+                  { name: "Walmart", domain: "walmart.com" },
+                  { name: "Deloitte", domain: "deloitte.com" },
+                  { name: "Google", domain: "google.com" },
                 ].map((logo) => (
-                  <span
-                    key={logo.name}
-                    className={`text-xl md:text-2xl tracking-tight shrink-0 ${logo.font}`}
-                    style={{ color: logo.color }}
-                  >
-                    {logo.name}
-                    {logo.name === "Deloitte" && <span style={{ color: "#86BC25" }}>.</span>}
-                  </span>
+                  <div key={logo.name} className="flex items-center gap-2 shrink-0">
+                    <img
+                      src={`https://www.google.com/s2/favicons?domain=${logo.domain}&sz=64`}
+                      alt={logo.name}
+                      className="h-6 w-6 md:h-7 md:w-7 object-contain"
+                      loading="lazy"
+                    />
+                    <span className="text-base md:text-lg font-semibold text-foreground/80">
+                      {logo.name}
+                    </span>
+                  </div>
                 ))}
               </div>
             ))}
