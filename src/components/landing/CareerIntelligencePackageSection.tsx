@@ -6,7 +6,6 @@ import {
   Wallet,
   Target,
   Compass,
-  FileText,
   Mic,
   BadgeCheck,
   ArrowRight,
@@ -17,12 +16,11 @@ import type { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SectionBadge from "@/components/ui/section-badge";
 import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 type Item = {
   icon: LucideIcon;
@@ -31,7 +29,6 @@ type Item = {
   bullets: string[];
   example?: string;
   value?: string;
-  image: string;
 };
 
 const items: Item[] = [
@@ -46,7 +43,6 @@ const items: Item[] = [
       "Problem-solving evaluation",
     ],
     value: "Value Perceived: ₹999",
-    image: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=900&q=80",
   },
   {
     icon: Gauge,
@@ -58,7 +54,6 @@ const items: Item[] = [
       "Top 10% Benchmark: 89/100",
     ],
     value: "“I know where I stand.”",
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=80",
   },
   {
     icon: BarChart3,
@@ -70,7 +65,6 @@ const items: Item[] = [
       "Leadership Skills: Top 60%",
     ],
     value: "“I know my competition.”",
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=900&q=80",
   },
   {
     icon: Wallet,
@@ -82,7 +76,6 @@ const items: Item[] = [
       "Roles available at current competency",
     ],
     value: "This alone can justify ₹1,999.",
-    image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=900&q=80",
   },
   {
     icon: Target,
@@ -95,7 +88,6 @@ const items: Item[] = [
     ],
     example:
       "You are 70% ready for a Performance Marketing Manager role. Improve GA4, Marketing Automation, and Data Visualization to become 90% job-ready.",
-    image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=900&q=80",
   },
   {
     icon: Compass,
@@ -107,7 +99,6 @@ const items: Item[] = [
       "Digital Marketing Manager",
     ],
     example: "Current Role → SEO Executive · Recommended Growth Path below.",
-    image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=900&q=80",
   },
   {
     icon: Mic,
@@ -119,7 +110,6 @@ const items: Item[] = [
       "Problem-solving",
       "Readiness score + recommendations",
     ],
-    image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=900&q=80",
   },
   {
     icon: BadgeCheck,
@@ -132,10 +122,11 @@ const items: Item[] = [
       "Verification Date",
     ],
     value: "Strong USP — shareable with recruiters and employers.",
-    image: "https://images.unsplash.com/photo-1606857521015-7f9fcf423740?w=900&q=80",
   },
 ];
 
+const fixedVideoImage =
+  "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=1200&q=80";
 
 const CareerIntelligencePackageSection = () => {
   return (
@@ -169,40 +160,62 @@ const CareerIntelligencePackageSection = () => {
           </div>
         </div>
 
-        {/* Carousel: left content, right video */}
-        <Carousel opts={{ loop: true, align: "start" }} className="max-w-6xl mx-auto">
-          <CarouselContent>
-            {items.map((item, idx) => {
-              const Icon = item.icon;
-              const isYellow = idx % 2 === 1;
-              const accentBg = isYellow ? "bg-yellow-400" : "bg-red-500";
-              const accentText = isYellow ? "text-red-900" : "text-white";
-              const accentBar = isYellow ? "bg-yellow-400" : "bg-red-500";
+        {/* Two-column: left accordion card, right fixed video */}
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 max-w-6xl mx-auto items-start">
+          {/* Left: separate card with accordion */}
+          <div className="bg-card rounded-3xl border border-border p-6 md:p-8 shadow-sm">
+            <h3 className="text-xl md:text-2xl font-bold font-display text-foreground mb-1">
+              What's inside
+            </h3>
+            <p className="text-sm text-muted-foreground mb-5">
+              Expand any insight to see what you'll get.
+            </p>
 
-              return (
-                <CarouselItem key={item.title}>
-                  <div className="grid md:grid-cols-2 gap-6 md:gap-10 items-center bg-card rounded-3xl border border-border p-6 md:p-10 shadow-sm">
-                    {/* Left: content */}
-                    <div className="order-2 md:order-1">
-                      <div className="flex items-center gap-3 mb-5">
-                        <div className={`h-12 w-12 rounded-xl ${accentBg} ${accentText} flex items-center justify-center shadow-md`}>
-                          <Icon className="h-6 w-6" />
+            <Accordion type="single" collapsible defaultValue="item-0" className="w-full">
+              {items.map((item, idx) => {
+                const Icon = item.icon;
+                const isYellow = idx % 2 === 1;
+                const accentBg = isYellow ? "bg-yellow-400" : "bg-red-500";
+                const accentText = isYellow ? "text-red-900" : "text-white";
+                const accentBar = isYellow ? "bg-yellow-400" : "bg-red-500";
+
+                return (
+                  <AccordionItem
+                    key={item.title}
+                    value={`item-${idx}`}
+                    className="border-border"
+                  >
+                    <AccordionTrigger className="hover:no-underline py-4 group">
+                      <div className="flex items-center gap-3 text-left">
+                        <div
+                          className={`h-9 w-9 rounded-lg ${accentBg} ${accentText} flex items-center justify-center shadow-sm shrink-0`}
+                        >
+                          <Icon className="h-4.5 w-4.5" />
                         </div>
-                        <span className="text-xs font-bold text-muted-foreground/70 font-display">
-                          {String(idx + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
-                        </span>
+                        <div>
+                          <div className="text-xs font-bold text-muted-foreground/70 font-display">
+                            {String(idx + 1).padStart(2, "0")} /{" "}
+                            {String(items.length).padStart(2, "0")}
+                          </div>
+                          <div className="text-base md:text-lg font-bold font-display text-foreground leading-tight">
+                            {item.title}
+                          </div>
+                        </div>
                       </div>
-                      <h3 className="text-2xl md:text-3xl font-bold font-display text-foreground leading-tight mb-3">
-                        {item.title}
-                      </h3>
-                      <div className={`h-1 w-12 ${accentBar} rounded-full mb-4`} />
-                      <p className="text-muted-foreground text-base md:text-lg leading-relaxed mb-5">
+                    </AccordionTrigger>
+                    <AccordionContent className="pl-12">
+                      <p className="text-muted-foreground text-sm md:text-base leading-relaxed mb-4">
                         {item.description}
                       </p>
-                      <ul className="space-y-2 mb-5">
+                      <ul className="space-y-2 mb-4">
                         {item.bullets.map((b) => (
-                          <li key={b} className="flex items-start gap-2 text-sm md:text-base text-foreground/90">
-                            <span className={`mt-2 h-1.5 w-1.5 rounded-full shrink-0 ${accentBar}`} />
+                          <li
+                            key={b}
+                            className="flex items-start gap-2 text-sm text-foreground/90"
+                          >
+                            <span
+                              className={`mt-1.5 h-1.5 w-1.5 rounded-full shrink-0 ${accentBar}`}
+                            />
                             {b}
                           </li>
                         ))}
@@ -212,42 +225,46 @@ const CareerIntelligencePackageSection = () => {
                           {item.example || item.value}
                         </p>
                       )}
-                    </div>
-
-                    {/* Right: video card */}
-                    <div className="order-1 md:order-2">
-                      <div className="relative aspect-video rounded-2xl overflow-hidden shadow-xl group">
-                        <img
-                          src={item.image}
-                          alt={item.title}
-                          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-                        <button className="absolute inset-0 flex items-center justify-center" aria-label="Play video">
-                          <span className={`h-16 w-16 md:h-20 md:w-20 rounded-full ${accentBg} ${accentText} flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform`}>
-                            <Play className="h-7 w-7 md:h-8 md:w-8 fill-current ml-1" />
-                          </span>
-                        </button>
-                        <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white text-xs font-medium">
-                          <span className="px-2 py-1 rounded-md bg-black/40 backdrop-blur">Watch demo</span>
-                          <span className="px-2 py-1 rounded-md bg-black/40 backdrop-blur">02:14</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CarouselItem>
-              );
-            })}
-          </CarouselContent>
-          <div className="flex items-center justify-center gap-4 mt-8">
-            <CarouselPrevious className="static translate-y-0 h-12 w-12 bg-red-500 hover:bg-red-600 text-white border-0 shadow-lg shadow-red-500/30 hover:scale-110 transition-all [&_svg]:h-5 [&_svg]:w-5" />
-            <span className="text-sm font-semibold text-muted-foreground px-2">
-              Swipe through all 8 insights
-            </span>
-            <CarouselNext className="static translate-y-0 h-12 w-12 bg-red-500 hover:bg-red-600 text-white border-0 shadow-lg shadow-red-500/30 hover:scale-110 transition-all [&_svg]:h-5 [&_svg]:w-5" />
+                    </AccordionContent>
+                  </AccordionItem>
+                );
+              })}
+            </Accordion>
           </div>
-        </Carousel>
 
+          {/* Right: fixed video card */}
+          <div className="lg:sticky lg:top-24">
+            <div className="bg-card rounded-3xl border border-border p-4 md:p-5 shadow-sm">
+              <div className="relative aspect-video rounded-2xl overflow-hidden shadow-xl group">
+                <img
+                  src={fixedVideoImage}
+                  alt="Career Intelligence demo video"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                <button
+                  className="absolute inset-0 flex items-center justify-center"
+                  aria-label="Play video"
+                >
+                  <span className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-red-500 text-white flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
+                    <Play className="h-7 w-7 md:h-8 md:w-8 fill-current ml-1" />
+                  </span>
+                </button>
+                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white text-xs font-medium">
+                  <span className="px-2 py-1 rounded-md bg-black/40 backdrop-blur">
+                    Watch demo
+                  </span>
+                  <span className="px-2 py-1 rounded-md bg-black/40 backdrop-blur">
+                    02:14
+                  </span>
+                </div>
+              </div>
+              <p className="mt-4 text-sm text-muted-foreground text-center">
+                See how your Career Intelligence Report works — end to end.
+              </p>
+            </div>
+          </div>
+        </div>
 
         {/* CTA */}
         <div className="mt-16 text-center">
