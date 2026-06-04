@@ -45,30 +45,32 @@ const TrustAuthoritySection = () => {
         <div className="relative overflow-hidden mb-12 md:mb-16 -mt-4">
           <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-background to-transparent z-10" />
           <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-background to-transparent z-10" />
-          <div className="flex gap-16 animate-[marquee_30s_linear_infinite] whitespace-nowrap items-center">
+          <div className="flex gap-12 animate-[marquee_30s_linear_infinite] whitespace-nowrap items-center">
             {[...Array(2)].map((_, dup) => (
-              <div key={dup} className="flex gap-16 shrink-0 items-center">
+              <div key={dup} className="flex gap-12 shrink-0 items-center">
                 {[
+                  { name: "Amazon", slug: "amazon" },
+                  { name: "Razorpay", slug: "razorpay" },
+                  { name: "Flipkart", slug: "flipkart" },
+                  { name: "Swiggy", slug: "swiggy" },
+                  { name: "PhonePe", slug: "phonepe" },
+                  { name: "Infosys", slug: "infosys" },
+                  { name: "Walmart", slug: "walmart" },
+                  { name: "Deloitte", slug: "deloitte" },
                   { name: "Google", slug: "google" },
                   { name: "Microsoft", slug: "microsoftazure" },
-                  { name: "Amazon", slug: "amazon" },
-                  { name: "Meta", slug: "meta" },
-                  { name: "Adobe", slug: "adobe" },
-                  { name: "Infosys", slug: "infosys" },
-                  { name: "IBM", slug: "ibm" },
-                  { name: "Accenture", slug: "accenture" },
-                  { name: "Deloitte", slug: "deloitte" },
-                  { name: "Flipkart", slug: "flipkart" },
-                  { name: "Wipro", slug: "wipro" },
-                  { name: "TCS", slug: "tcs" },
                 ].map((logo) => (
-                  <img
-                    key={logo.name}
-                    src={`https://cdn.simpleicons.org/${logo.slug}`}
-                    alt={logo.name}
-                    className="h-8 md:h-10 w-auto opacity-80 hover:opacity-100 transition-opacity"
-                    loading="lazy"
-                  />
+                  <div key={logo.name} className="flex items-center gap-2 shrink-0">
+                    <img
+                      src={`https://cdn.simpleicons.org/${logo.slug}`}
+                      alt={logo.name}
+                      className="h-7 md:h-8 w-auto"
+                      loading="lazy"
+                    />
+                    <span className="text-base md:text-lg font-semibold text-foreground/80">
+                      {logo.name}
+                    </span>
+                  </div>
                 ))}
               </div>
             ))}
