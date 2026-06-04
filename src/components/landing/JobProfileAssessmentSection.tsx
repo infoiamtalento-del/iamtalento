@@ -79,7 +79,7 @@ const JobProfileAssessmentSection = () => {
 
   return (
     <section className="py-16 md:py-24">
-      <div className="container px-4 md:px-6">
+      <div className="container px-4 md:px-6 max-w-[1400px]">
         <div className="text-center mb-10 md:mb-14">
           <SectionBadge label="Get Started" icon={Sparkles} />
           <motion.h2
