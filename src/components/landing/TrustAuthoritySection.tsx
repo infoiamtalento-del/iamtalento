@@ -45,28 +45,37 @@ const TrustAuthoritySection = () => {
         <div className="relative overflow-hidden mb-12 md:mb-16 -mt-4">
           <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-background to-transparent z-10" />
           <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-background to-transparent z-10" />
-          <div className="flex gap-14 animate-[marquee_30s_linear_infinite] whitespace-nowrap items-center">
+          <div className="flex gap-12 animate-[marquee_30s_linear_infinite] whitespace-nowrap items-center">
             {[...Array(2)].map((_, dup) => (
-              <div key={dup} className="flex gap-14 shrink-0 items-center">
+              <div key={dup} className="flex gap-12 shrink-0 items-center">
                 {[
-                  { name: "Amazon", domain: "amazon.com" },
-                  { name: "Razorpay", domain: "razorpay.com" },
-                  { name: "Flipkart", domain: "flipkart.com" },
-                  { name: "Swiggy", domain: "swiggy.com" },
-                  { name: "PhonePe", domain: "phonepe.com" },
-                  { name: "Infosys", domain: "infosys.com" },
-                  { name: "Walmart", domain: "walmart.com" },
-                  { name: "Deloitte", domain: "deloitte.com" },
-                  { name: "Google", domain: "google.com" },
-                  { name: "Microsoft", domain: "microsoft.com" },
+                  { name: "Amazon", slug: "amazon", color: "FF9900" },
+                  { name: "Razorpay", slug: "razorpay", color: "0C2451" },
+                  { name: "Flipkart", slug: "flipkart", color: "2874F0" },
+                  { name: "Swiggy", slug: "swiggy", color: "FC8019" },
+                  { name: "PhonePe", slug: "phonepe", color: "5F259F" },
+                  { name: "Infosys", slug: "infosys", color: "007CC3" },
+                  { name: "Walmart", slug: "walmart", color: "0071CE" },
+                  { name: "Deloitte", slug: "deloitte", color: "86BC25" },
+                  { name: "Google", slug: "google", color: "4285F4" },
+                  { name: "Microsoft", slug: "microsoft", color: "5E5E5E" },
                 ].map((logo) => (
-                  <img
-                    key={logo.name}
-                    src={`https://logo.clearbit.com/${logo.domain}`}
-                    alt={logo.name}
-                    className="h-10 md:h-12 w-auto object-contain shrink-0 grayscale-0 opacity-90 hover:opacity-100 transition-opacity"
-                    loading="lazy"
-                  />
+                  <div key={logo.name} className="flex items-center gap-2.5 shrink-0">
+                    <img
+                      src={`https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/${logo.slug}.svg`}
+                      alt={logo.name}
+                      className="h-7 md:h-8 w-auto"
+                      style={{ filter: `brightness(0) saturate(100%) invert(1) sepia(1) saturate(10000%) hue-rotate(0deg)` }}
+                      loading="lazy"
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                    />
+                    <span
+                      className="text-base md:text-lg font-bold tracking-tight"
+                      style={{ color: `#${logo.color}` }}
+                    >
+                      {logo.name}
+                    </span>
+                  </div>
                 ))}
               </div>
             ))}
