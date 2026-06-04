@@ -79,7 +79,7 @@ const JobProfileAssessmentSection = () => {
 
   return (
     <section className="py-16 md:py-24">
-      <div className="container px-4 md:px-6 max-w-[1400px]">
+      <div className="container px-4 md:px-6 max-w-[1600px]">
         <div className="text-center mb-10 md:mb-14">
           <SectionBadge label="Get Started" icon={Sparkles} />
           <motion.h2
@@ -96,7 +96,7 @@ const JobProfileAssessmentSection = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-[1320px] mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-[1560px] mx-auto">
           {/* Job Profile Card */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -120,7 +120,7 @@ const JobProfileAssessmentSection = () => {
                 {currentProfile.description}
               </p>
 
-              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-6 bg-muted transition-transform duration-500 group-hover:scale-[1.02]">
+              <div className="relative aspect-[5/4] rounded-2xl overflow-hidden mb-6 bg-muted transition-transform duration-500 group-hover:scale-[1.02]">
                 <AnimatePresence mode="wait">
                   <motion.img
                     key={profileIndex}
@@ -185,7 +185,7 @@ const JobProfileAssessmentSection = () => {
                 {currentAssessment.description}
               </p>
 
-              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-6 bg-muted transition-transform duration-500 group-hover:scale-[1.02]">
+              <div className="relative aspect-[5/4] rounded-2xl overflow-hidden mb-6 bg-muted transition-transform duration-500 group-hover:scale-[1.02]">
                 <AnimatePresence mode="wait">
                   <motion.img
                     key={assessmentIndex}
@@ -256,7 +256,7 @@ const JobProfileAssessmentSection = () => {
                 {currentJobs.description}
               </p>
 
-              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-6 bg-muted transition-transform duration-500 group-hover:scale-[1.02]">
+              <div className="relative aspect-[5/4] rounded-2xl overflow-hidden mb-6 bg-muted transition-transform duration-500 group-hover:scale-[1.02]">
                 <AnimatePresence mode="wait">
                   <motion.img
                     key={jobsIndex}
