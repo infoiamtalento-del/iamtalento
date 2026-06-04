@@ -161,46 +161,79 @@ const CareerIntelligencePackageSection = () => {
           </div>
         </div>
 
-        {/* Minimal icon grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 max-w-6xl mx-auto">
-          {items.map((item, idx) => {
-            const Icon = item.icon;
-            const isYellow = idx % 2 === 1;
-            const accentBg = isYellow ? "bg-yellow-400" : "bg-red-600";
-            const accentText = isYellow ? "text-red-900" : "text-white";
-            const hoverBorder = isYellow ? "hover:border-yellow-400" : "hover:border-red-500";
+        {/* Carousel: left content, right video */}
+        <Carousel opts={{ loop: true, align: "start" }} className="max-w-6xl mx-auto">
+          <CarouselContent>
+            {items.map((item, idx) => {
+              const Icon = item.icon;
+              const isYellow = idx % 2 === 1;
+              const accentBg = isYellow ? "bg-yellow-400" : "bg-red-600";
+              const accentText = isYellow ? "text-red-900" : "text-white";
+              const accentBar = isYellow ? "bg-yellow-400" : "bg-red-600";
 
-            return (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.35, delay: (idx % 4) * 0.04 }}
-                className={`group relative bg-card rounded-2xl border border-border ${hoverBorder} p-5 md:p-6 transition-all hover:shadow-lg cursor-pointer`}
-              >
-                <span className="absolute top-3 right-3 text-[10px] font-bold text-muted-foreground/60 font-display">
-                  {String(idx + 1).padStart(2, "0")}
-                </span>
-                <div className={`h-12 w-12 rounded-xl ${accentBg} ${accentText} flex items-center justify-center mb-4 shadow-md group-hover:scale-110 transition-transform`}>
-                  <Icon className="h-6 w-6" />
-                </div>
-                <h3 className="text-sm md:text-base font-bold font-display text-foreground leading-snug">
-                  {item.title}
-                </h3>
-                <div className={`mt-3 h-0.5 w-8 ${accentBg} rounded-full`} />
+              return (
+                <CarouselItem key={item.title}>
+                  <div className="grid md:grid-cols-2 gap-6 md:gap-10 items-center bg-card rounded-3xl border border-border p-6 md:p-10 shadow-sm">
+                    {/* Left: content */}
+                    <div className="order-2 md:order-1">
+                      <div className="flex items-center gap-3 mb-5">
+                        <div className={`h-12 w-12 rounded-xl ${accentBg} ${accentText} flex items-center justify-center shadow-md`}>
+                          <Icon className="h-6 w-6" />
+                        </div>
+                        <span className="text-xs font-bold text-muted-foreground/70 font-display">
+                          {String(idx + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
+                        </span>
+                      </div>
+                      <h3 className="text-2xl md:text-3xl font-bold font-display text-foreground leading-tight mb-3">
+                        {item.title}
+                      </h3>
+                      <div className={`h-1 w-12 ${accentBar} rounded-full mb-4`} />
+                      <p className="text-muted-foreground text-base md:text-lg leading-relaxed mb-5">
+                        {item.description}
+                      </p>
+                      <ul className="space-y-2 mb-5">
+                        {item.bullets.map((b) => (
+                          <li key={b} className="flex items-start gap-2 text-sm md:text-base text-foreground/90">
+                            <span className={`mt-2 h-1.5 w-1.5 rounded-full shrink-0 ${accentBar}`} />
+                            {b}
+                          </li>
+                        ))}
+                      </ul>
+                      {(item.example || item.value) && (
+                        <p className="text-sm italic text-muted-foreground border-l-2 border-border pl-3">
+                          {item.example || item.value}
+                        </p>
+                      )}
+                    </div>
 
-                {/* Hover popup */}
-                <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-full mb-3 w-64 z-20 opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200">
-                  <div className="bg-foreground text-background rounded-xl px-4 py-3 shadow-2xl text-xs leading-relaxed">
-                    {item.description}
-                    <div className="absolute left-1/2 -translate-x-1/2 top-full -mt-1 w-2 h-2 rotate-45 bg-foreground" />
+                    {/* Right: video card */}
+                    <div className="order-1 md:order-2">
+                      <div className="relative aspect-video rounded-2xl overflow-hidden shadow-xl group">
+                        <img
+                          src={item.image}
+                          alt={item.title}
+                          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                        <button className="absolute inset-0 flex items-center justify-center" aria-label="Play video">
+                          <span className={`h-16 w-16 md:h-20 md:w-20 rounded-full ${accentBg} ${accentText} flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform`}>
+                            <Play className="h-7 w-7 md:h-8 md:w-8 fill-current ml-1" />
+                          </span>
+                        </button>
+                        <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white text-xs font-medium">
+                          <span className="px-2 py-1 rounded-md bg-black/40 backdrop-blur">Watch demo</span>
+                          <span className="px-2 py-1 rounded-md bg-black/40 backdrop-blur">02:14</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
+                </CarouselItem>
+              );
+            })}
+          </CarouselContent>
+          <CarouselPrevious className="hidden md:flex -left-4" />
+          <CarouselNext className="hidden md:flex -right-4" />
+        </Carousel>
 
 
         {/* CTA */}
