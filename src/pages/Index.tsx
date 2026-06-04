@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import Layout from "@/components/layout/Layout";
 import HeroSection from "@/components/landing/HeroSection";
-import SocialProofBar from "@/components/landing/SocialProofBar";
+
 import IndustryReadinessSection from "@/components/landing/IndustryReadinessSection";
 import TrustAuthoritySection from "@/components/landing/TrustAuthoritySection";
 import VideoSection from "@/components/landing/VideoSection";
@@ -36,7 +36,7 @@ const Index = () => (
     </Helmet>
     <Layout>
       <HeroSection />
-      <SocialProofBar />
+      
       <HackathonSocialProof />
       
       
