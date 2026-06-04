@@ -239,8 +239,8 @@ const CareerIntelligencePackageSection = () => {
               );
             })}
           </CarouselContent>
-          <CarouselPrevious className="hidden md:flex -left-4" />
-          <CarouselNext className="hidden md:flex -right-4" />
+          <CarouselPrevious className="hidden md:flex -left-6 h-14 w-14 bg-red-600 hover:bg-red-700 text-white border-2 border-white shadow-2xl shadow-red-600/40 hover:scale-110 transition-all [&_svg]:h-6 [&_svg]:w-6" />
+          <CarouselNext className="hidden md:flex -right-6 h-14 w-14 bg-red-600 hover:bg-red-700 text-white border-2 border-white shadow-2xl shadow-red-600/40 hover:scale-110 transition-all [&_svg]:h-6 [&_svg]:w-6" />
         </Carousel>
 
 
