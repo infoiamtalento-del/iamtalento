@@ -151,14 +151,14 @@ const CareerIntelligencePackageSection = () => {
             className="text-3xl md:text-5xl font-bold font-display leading-tight"
           >
             Everything You Need to{" "}
-            <span className="text-red-600">Measure & Master</span> Your Career
+            <span className="text-red-500">Measure & Master</span> Your Career
           </motion.h2>
           <p className="mt-4 text-muted-foreground text-base md:text-lg">
             9 powerful insights bundled into one report — for just{" "}
             <span className="text-foreground font-bold">₹1,999</span>.
           </p>
 
-          <div className="mt-6 inline-flex items-baseline gap-3 px-6 py-3 rounded-2xl bg-red-600 text-white shadow-lg">
+          <div className="mt-6 inline-flex items-baseline gap-3 px-6 py-3 rounded-2xl bg-red-500 text-white shadow-lg">
             <span className="text-xs uppercase tracking-wider font-semibold opacity-80">
               All-in Price
             </span>
@@ -175,9 +175,9 @@ const CareerIntelligencePackageSection = () => {
             {items.map((item, idx) => {
               const Icon = item.icon;
               const isYellow = idx % 2 === 1;
-              const accentBg = isYellow ? "bg-yellow-400" : "bg-red-600";
+              const accentBg = isYellow ? "bg-yellow-400" : "bg-red-500";
               const accentText = isYellow ? "text-red-900" : "text-white";
-              const accentBar = isYellow ? "bg-yellow-400" : "bg-red-600";
+              const accentBar = isYellow ? "bg-yellow-400" : "bg-red-500";
 
               return (
                 <CarouselItem key={item.title}>
@@ -240,11 +240,11 @@ const CareerIntelligencePackageSection = () => {
             })}
           </CarouselContent>
           <div className="flex items-center justify-center gap-4 mt-8">
-            <CarouselPrevious className="static translate-y-0 h-12 w-12 bg-red-600 hover:bg-red-700 text-white border-0 shadow-lg shadow-red-600/30 hover:scale-110 transition-all [&_svg]:h-5 [&_svg]:w-5" />
+            <CarouselPrevious className="static translate-y-0 h-12 w-12 bg-red-500 hover:bg-red-600 text-white border-0 shadow-lg shadow-red-500/30 hover:scale-110 transition-all [&_svg]:h-5 [&_svg]:w-5" />
             <span className="text-sm font-semibold text-muted-foreground px-2">
               Swipe through all 8 insights
             </span>
-            <CarouselNext className="static translate-y-0 h-12 w-12 bg-red-600 hover:bg-red-700 text-white border-0 shadow-lg shadow-red-600/30 hover:scale-110 transition-all [&_svg]:h-5 [&_svg]:w-5" />
+            <CarouselNext className="static translate-y-0 h-12 w-12 bg-red-500 hover:bg-red-600 text-white border-0 shadow-lg shadow-red-500/30 hover:scale-110 transition-all [&_svg]:h-5 [&_svg]:w-5" />
           </div>
         </Carousel>
 
