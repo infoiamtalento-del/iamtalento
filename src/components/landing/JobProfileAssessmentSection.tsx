@@ -250,7 +250,7 @@ const JobProfileAssessmentSection = () => {
 
             <div className="flex-grow">
               <h3 className="text-2xl font-bold font-display text-foreground mb-3 leading-tight">
-                Browse 100+ Jobs
+                Apply 100+ Jobs<br />In One Click
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed mb-8 min-h-[3em]">
                 {currentJobs.description}
