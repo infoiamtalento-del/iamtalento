@@ -120,7 +120,7 @@ const JobProfileAssessmentSection = () => {
                 {currentProfile.description}
               </p>
 
-              <div className="relative aspect-[5/4] rounded-2xl overflow-hidden mb-6 bg-muted transition-transform duration-500 group-hover:scale-[1.02]">
+              <div className="relative aspect-[16/10] rounded-2xl overflow-hidden mb-6 bg-muted transition-transform duration-500 group-hover:scale-[1.02]">
                 <AnimatePresence mode="wait">
                   <motion.img
                     key={profileIndex}
@@ -185,7 +185,7 @@ const JobProfileAssessmentSection = () => {
                 {currentAssessment.description}
               </p>
 
-              <div className="relative aspect-[5/4] rounded-2xl overflow-hidden mb-6 bg-muted transition-transform duration-500 group-hover:scale-[1.02]">
+              <div className="relative aspect-[16/10] rounded-2xl overflow-hidden mb-6 bg-muted transition-transform duration-500 group-hover:scale-[1.02]">
                 <AnimatePresence mode="wait">
                   <motion.img
                     key={assessmentIndex}
@@ -256,7 +256,7 @@ const JobProfileAssessmentSection = () => {
                 {currentJobs.description}
               </p>
 
-              <div className="relative aspect-[5/4] rounded-2xl overflow-hidden mb-6 bg-muted transition-transform duration-500 group-hover:scale-[1.02]">
+              <div className="relative aspect-[16/10] rounded-2xl overflow-hidden mb-6 bg-muted transition-transform duration-500 group-hover:scale-[1.02]">
                 <AnimatePresence mode="wait">
                   <motion.img
                     key={jobsIndex}
