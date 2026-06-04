@@ -11,10 +11,18 @@ import {
   BadgeCheck,
   ArrowRight,
   Sparkles,
+  Play,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SectionBadge from "@/components/ui/section-badge";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 type Item = {
   icon: LucideIcon;
