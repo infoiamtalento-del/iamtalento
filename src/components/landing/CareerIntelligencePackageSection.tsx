@@ -239,8 +239,13 @@ const CareerIntelligencePackageSection = () => {
               );
             })}
           </CarouselContent>
-          <CarouselPrevious className="hidden md:flex -left-6 h-14 w-14 bg-red-600 hover:bg-red-700 text-white border-2 border-white shadow-2xl shadow-red-600/40 hover:scale-110 transition-all [&_svg]:h-6 [&_svg]:w-6" />
-          <CarouselNext className="hidden md:flex -right-6 h-14 w-14 bg-red-600 hover:bg-red-700 text-white border-2 border-white shadow-2xl shadow-red-600/40 hover:scale-110 transition-all [&_svg]:h-6 [&_svg]:w-6" />
+          <div className="flex items-center justify-center gap-4 mt-8">
+            <CarouselPrevious className="static translate-y-0 h-12 w-12 bg-red-600 hover:bg-red-700 text-white border-0 shadow-lg shadow-red-600/30 hover:scale-110 transition-all [&_svg]:h-5 [&_svg]:w-5" />
+            <span className="text-sm font-semibold text-muted-foreground px-2">
+              Swipe through all 8 insights
+            </span>
+            <CarouselNext className="static translate-y-0 h-12 w-12 bg-red-600 hover:bg-red-700 text-white border-0 shadow-lg shadow-red-600/30 hover:scale-110 transition-all [&_svg]:h-5 [&_svg]:w-5" />
+          </div>
         </Carousel>
 
 
