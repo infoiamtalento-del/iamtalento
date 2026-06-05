@@ -128,9 +128,12 @@ const JobProfileAssessmentSection = () => {
               <div className="absolute inset-0 ring-1 ring-inset ring-black/5 rounded-xl pointer-events-none" />
             </div>
 
-            <h3 className="text-base font-bold font-display text-foreground mb-2 leading-tight">
+            <h3 className="text-base font-bold font-display text-foreground mb-1.5 leading-tight">
               Create Your Job Profile
             </h3>
+            <p className="text-xs text-muted-foreground leading-relaxed mb-3">
+              Build a recruiter-ready profile in minutes — showcase skills, projects, and verified credentials.
+            </p>
 
             <div className="mt-auto">
               <div className="flex gap-1 mb-3">
@@ -194,9 +197,12 @@ const JobProfileAssessmentSection = () => {
               <div className="absolute inset-0 ring-1 ring-inset ring-black/5 rounded-xl pointer-events-none" />
             </div>
 
-            <h3 className="text-base font-bold font-display text-foreground mb-2 leading-tight">
+            <h3 className="text-base font-bold font-display text-foreground mb-1.5 leading-tight">
               Get Your Skill Assessment
             </h3>
+            <p className="text-xs text-muted-foreground leading-relaxed mb-3">
+              Take AI-proctored tests, benchmark against pros, and earn verified, employer-trusted certifications.
+            </p>
 
             <div className="mt-auto">
               <div className="flex gap-1 mb-3">
@@ -254,9 +260,12 @@ const JobProfileAssessmentSection = () => {
               <div className="absolute inset-0 ring-1 ring-inset ring-black/5 rounded-xl pointer-events-none" />
             </div>
 
-            <h3 className="text-base font-bold font-display text-foreground mb-2 leading-tight">
+            <h3 className="text-base font-bold font-display text-foreground mb-1.5 leading-tight">
               Apply 100+ Jobs In One Click
             </h3>
+            <p className="text-xs text-muted-foreground leading-relaxed mb-3">
+              Get matched with top employers actively hiring verified talent — apply faster, get hired sooner.
+            </p>
 
             <div className="mt-auto">
               <div className="flex gap-1 mb-3">
