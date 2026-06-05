@@ -51,7 +51,7 @@ const TrustAuthoritySection = () => {
             Trusted by Employers.<br /><span className="text-primary">Powered by Data.</span>
           </h2>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-            Companies are increasingly using Career Intelligence Reports to identify job-ready talent, benchmark candidates, and hire with confidence — built on the insights of recruiters, industry professionals, and business leaders who know what success looks like in today's workforce.
+            Career Intelligence Reports help companies identify, benchmark, and hire job-ready talent with confidence.
           </p>
         </div>
 
