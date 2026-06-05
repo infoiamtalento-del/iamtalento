@@ -174,7 +174,7 @@ const TrustAuthoritySection = () => {
         {/* Closing */}
         <div className="text-center mt-14">
           <p className="text-base md:text-lg font-semibold text-foreground">
-            Built to replace guesswork with <span className="text-primary">measurable proof.</span>
+            Beyond Resumes. Beyond Assumptions. <span className="text-primary">Real Skills. Real Scores. Real Opportunities.</span>
           </p>
           <p className="text-sm text-muted-foreground mt-1">Trusted by professionals. Recognized by employers.</p>
         </div>
