@@ -21,6 +21,7 @@ import CareerIntelligencePackageSection from "@/components/landing/CareerIntelli
 import CareerTransformationSection from "@/components/landing/CareerTransformationSection";
 import FreeAccessSection from "@/components/landing/FreeAccessSection";
 import DigitalSkillPassportSection from "@/components/landing/DigitalSkillPassportSection";
+import GetHiredBanner from "@/components/landing/GetHiredBanner";
 
 const Index = () => (
   <>
