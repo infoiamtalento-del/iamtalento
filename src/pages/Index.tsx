@@ -48,6 +48,7 @@ const Index = () => (
       {/* <FreeAccessSection /> */}
       {/* <CandidateJourneySection /> */}
       <FeaturedCompanies />
+      <GetHiredBanner />
       <IndustryReadinessSection />
       <TrustAuthoritySection />
       <HackathonSpotlightSection />
