@@ -489,7 +489,7 @@ const IndustryReadinessSection = () => {
             style={{ background: "hsl(33,100%,50%)" }}
           />
           <p className="text-base md:text-[17px]" style={{ color: "#6b7280" }}>
-            Career Intelligence Report — benchmark your skills against 50,000+ professionals and see where you stand in today's competitive job market.
+            Benchmark against 50,000+ professionals. Trusted by top employers.
           </p>
         </motion.div>
 
