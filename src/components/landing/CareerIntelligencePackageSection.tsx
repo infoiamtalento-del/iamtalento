@@ -149,10 +149,10 @@ const CareerIntelligencePackageSection = () => {
             <span className="text-red-500">Report Today</span>
           </motion.h2>
           <p className="mt-4 text-foreground text-lg md:text-xl font-semibold">
-            Unlock 9 Career-Changing Insights for Only <span className="text-red-500">₹1,999</span>.
+            9 career-changing insights for just <span className="text-red-500">₹1,999</span>.
           </p>
-          <p className="mt-3 text-muted-foreground text-base md:text-lg">
-            9 Powerful Insights. One Career-Defining Report. Discover your strengths, identify skill gaps, benchmark against industry standards, and unlock opportunities with confidence.
+          <p className="mt-2 text-muted-foreground text-sm md:text-base">
+            Strengths, skill gaps, benchmarks — all in one report.
           </p>
 
           <div className="mt-6 inline-flex items-baseline gap-3 px-6 py-3 rounded-2xl bg-red-500 text-white shadow-lg">
