@@ -92,7 +92,7 @@ const FeaturedCompanies = () => {
             transition={{ delay: 0.1 }}
             className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto"
           >
-            <span className="font-semibold text-foreground">Where Talent Meets Opportunity.</span> From leading global enterprises to high-growth startups, employers trust I Am Talento to identify, assess, and hire skilled professionals with confidence.
+            <span className="font-semibold text-foreground">Where talent meets opportunity.</span> Global enterprises and high-growth startups trust I Am Talento to hire skilled, verified professionals.
           </motion.p>
 
           {/* Stats strip */}
