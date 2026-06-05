@@ -221,7 +221,7 @@ const CareerIntelligencePackageSection = () => {
           </div>
 
           {/* Right: expanded content + fixed video */}
-          <div className="grid md:grid-cols-[1fr_1.15fr] gap-8 items-start">
+          <div className="grid md:grid-cols-[1fr_1.1fr] gap-6 items-stretch">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeIdx}
@@ -229,80 +229,84 @@ const CareerIntelligencePackageSection = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -16 }}
                 transition={{ duration: 0.25 }}
-                className="p-2"
+                className="relative p-6 rounded-2xl bg-gradient-to-br from-muted/40 via-background to-muted/20 border border-border/60 flex flex-col h-full overflow-hidden min-h-[480px]"
               >
-                <div className="flex items-center gap-3 mb-4">
-                  <div
-                    className={`h-11 w-11 rounded-xl ${accentBg} ${accentText} flex items-center justify-center shadow-md`}
-                  >
-                    <ActiveIcon className="h-5 w-5" />
+                <div className={`absolute -top-16 -right-16 h-48 w-48 rounded-full ${accentBg} opacity-10 blur-3xl pointer-events-none`} />
+
+                <div className="flex items-center justify-between mb-4 relative">
+                  <div className="flex items-center gap-3">
+                    <div className={`h-11 w-11 rounded-xl ${accentBg} ${accentText} flex items-center justify-center shadow-md`}>
+                      <ActiveIcon className="h-5 w-5" />
+                    </div>
+                    <span className="text-xs font-bold text-muted-foreground/70 font-display">
+                      {String(activeIdx + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
+                    </span>
                   </div>
-                  <span className="text-xs font-bold text-muted-foreground/70 font-display">
-                    {String(activeIdx + 1).padStart(2, "0")} /{" "}
-                    {String(items.length).padStart(2, "0")}
+                  <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground bg-muted/70 px-2.5 py-1 rounded-full">
+                    Included
                   </span>
                 </div>
+
                 <h3 className="text-xl md:text-2xl font-bold font-display text-foreground leading-tight mb-2">
                   {active.title}
                 </h3>
                 <div className={`h-1 w-10 ${accentBar} rounded-full mb-3`} />
-                <p className="text-muted-foreground text-sm md:text-base leading-relaxed mb-4">
+                <p className="text-muted-foreground text-sm md:text-base leading-relaxed mb-5">
                   {active.description}
                 </p>
-                <ul className="space-y-2 mb-4">
+
+                <div className="grid grid-cols-1 gap-2 mb-5">
                   {active.bullets.map((b) => (
-                    <li
+                    <div
                       key={b}
-                      className="flex items-start gap-2 text-sm text-foreground/90"
+                      className="flex items-start gap-2.5 text-sm text-foreground/90 bg-background/70 border border-border/50 rounded-lg px-3 py-2"
                     >
-                      <span
-                        className={`mt-1.5 h-1.5 w-1.5 rounded-full shrink-0 ${accentBar}`}
-                      />
-                      {b}
-                    </li>
+                      <span className={`mt-1.5 h-1.5 w-1.5 rounded-full shrink-0 ${accentBar}`} />
+                      <span className="leading-snug">{b}</span>
+                    </div>
                   ))}
-                </ul>
+                </div>
+
                 {(active.example || active.value) && (
-                  <p className="text-sm italic text-muted-foreground border-l-2 border-border pl-3">
-                    {active.example || active.value}
-                  </p>
+                  <div className={`mt-auto rounded-xl p-4 border ${isYellow ? "bg-yellow-400/10 border-yellow-400/40" : "bg-red-500/10 border-red-500/30"}`}>
+                    <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">
+                      {active.value ? "Why it matters" : "Example"}
+                    </p>
+                    <p className="text-sm text-foreground/90 leading-relaxed">
+                      {active.example || active.value}
+                    </p>
+                  </div>
                 )}
               </motion.div>
             </AnimatePresence>
 
             {/* Fixed video */}
-            <div className="flex flex-col gap-4">
-              <div className="relative aspect-[4/5] rounded-2xl overflow-hidden shadow-xl group">
-                <img
-                  src={fixedVideoImage}
-                  alt="Career Intelligence demo"
-                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-                <button
-                  className="absolute inset-0 flex items-center justify-center"
-                  aria-label="Play video"
-                >
-                  <span className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-red-500 text-white flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
-                    <Play className="h-7 w-7 fill-current ml-0.5" />
-                  </span>
-                </button>
-                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white text-xs font-medium">
-                  <span className="px-2 py-1 rounded-md bg-black/40 backdrop-blur">
-                    Watch demo
-                  </span>
-                  <span className="px-2 py-1 rounded-md bg-black/40 backdrop-blur">
-                    02:14
-                  </span>
-                </div>
-                <div className="absolute top-3 left-3 right-3 text-white">
-                  <p className="text-xs uppercase tracking-wider opacity-80 font-semibold">
-                    Demo Walkthrough
-                  </p>
-                  <p className="text-base md:text-lg font-bold font-display leading-tight mt-0.5">
-                    See your Career Intelligence Report in action
-                  </p>
-                </div>
+            <div className="relative rounded-2xl overflow-hidden shadow-xl group h-full min-h-[480px]">
+              <img
+                src={fixedVideoImage}
+                alt="Career Intelligence demo"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+              <button
+                className="absolute inset-0 flex items-center justify-center"
+                aria-label="Play video"
+              >
+                <span className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-red-500 text-white flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
+                  <Play className="h-7 w-7 fill-current ml-0.5" />
+                </span>
+              </button>
+              <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white text-xs font-medium">
+                <span className="px-2 py-1 rounded-md bg-black/40 backdrop-blur">Watch demo</span>
+                <span className="px-2 py-1 rounded-md bg-black/40 backdrop-blur">02:14</span>
+              </div>
+              <div className="absolute top-3 left-3 right-3 text-white">
+                <p className="text-xs uppercase tracking-wider opacity-80 font-semibold">
+                  Demo Walkthrough
+                </p>
+                <p className="text-base md:text-lg font-bold font-display leading-tight mt-0.5">
+                  See your Career Intelligence Report in action
+                </p>
               </div>
             </div>
           </div>
