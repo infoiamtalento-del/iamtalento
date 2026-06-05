@@ -64,30 +64,53 @@ const CompanyCard = ({ company, delay }: { company: Company; delay: number }) =>
   </motion.div>
 );
 
+const stats = [
+  { value: "1,200+", label: "Hiring Partners" },
+  { value: "500K+", label: "Professionals Assessed" },
+  { value: "33+", label: "Countries Represented" },
+];
+
 const FeaturedCompanies = () => {
   return (
     <section className="py-16 md:py-20">
       <div className="container px-4 md:px-6">
         <div className="text-center mb-10">
-          <SectionBadge label="Featured Employers" icon={Building2} />
+          <SectionBadge label="1,500,000+ Job Vacancies Listed" icon={Building2} />
           <motion.h2
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="text-3xl md:text-4xl font-bold font-display mb-3"
           >
-            Featured Companies<br />
-            <span className="text-primary">Actively Hiring</span>
+            Top Employers Prefer<br />
+            <span className="text-primary">Verified Talent</span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-muted-foreground text-base md:text-lg max-w-xl mx-auto"
+            className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto"
           >
-            Top-rated employers with verified openings — find your next opportunity.
+            <span className="font-semibold text-foreground">Where Talent Meets Opportunity.</span> From leading global enterprises to high-growth startups, employers trust I Am Talento to identify, assess, and hire skilled professionals with confidence.
           </motion.p>
+
+          {/* Stats strip */}
+          <div className="mt-8 grid grid-cols-3 gap-3 md:gap-6 max-w-3xl mx-auto">
+            {stats.map((s, i) => (
+              <motion.div
+                key={s.label}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.15 + i * 0.08 }}
+                className="rounded-2xl border border-border bg-card/60 px-4 py-4 md:py-5"
+              >
+                <p className="text-2xl md:text-3xl font-bold font-display text-primary">{s.value}</p>
+                <p className="text-[11px] md:text-xs text-muted-foreground uppercase tracking-wide mt-1">{s.label}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
         {/* Row 1 */}
