@@ -29,7 +29,7 @@ const GetHiredBanner = () => (
           </motion.h2>
 
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-            Showcase your skills, validate your expertise, and connect with employers who hire based on proven capabilities — not just resumes.
+            Showcase proven skills. Get hired by employers who value capability over resumes.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3 md:gap-4">
