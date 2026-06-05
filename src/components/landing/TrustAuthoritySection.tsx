@@ -46,12 +46,12 @@ const TrustAuthoritySection = () => {
           "text-center max-w-3xl mx-auto mb-10 md:mb-12 transition-all duration-700",
           isVisible ? "opacity-100" : "opacity-0 translate-y-8"
         )}>
-          <SectionBadge label="Our Assessments" icon={ShieldCheck} />
+          <SectionBadge label="Where Verified Talent Gets Hired" icon={ShieldCheck} />
           <h2 className="text-3xl md:text-4xl font-bold font-display mb-4">
-            Credibility &<br /><span className="text-primary">Trust</span>
+            Trusted by Employers.<br /><span className="text-primary">Powered by Data.</span>
           </h2>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-            Built by the people who hire, lead, and build — so every score carries real weight.
+            Companies are increasingly using Career Intelligence Reports to identify job-ready talent, benchmark candidates, and hire with confidence — built on the insights of recruiters, industry professionals, and business leaders who know what success looks like in today's workforce.
           </p>
         </div>
 
@@ -174,7 +174,7 @@ const TrustAuthoritySection = () => {
         {/* Closing */}
         <div className="text-center mt-14">
           <p className="text-base md:text-lg font-semibold text-foreground">
-            Built to replace guesswork with <span className="text-primary">measurable proof.</span>
+            Beyond Resumes. Beyond Assumptions. <span className="text-primary">Real Skills. Real Scores. Real Opportunities.</span>
           </p>
           <p className="text-sm text-muted-foreground mt-1">Trusted by professionals. Recognized by employers.</p>
         </div>

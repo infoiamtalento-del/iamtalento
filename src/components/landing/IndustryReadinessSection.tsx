@@ -474,7 +474,7 @@ const IndustryReadinessSection = () => {
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
           >
-            <SectionBadge label="AI-Powered Assessment" icon={Sparkles} className="mb-6" />
+            <SectionBadge label="AI-Powered Skill Assessment" icon={Sparkles} className="mb-6" />
           </motion.div>
 
           <h2 className="text-3xl md:text-4xl font-bold font-display mb-4">
@@ -489,7 +489,7 @@ const IndustryReadinessSection = () => {
             style={{ background: "hsl(33,100%,50%)" }}
           />
           <p className="text-base md:text-[17px]" style={{ color: "#6b7280" }}>
-            Benchmarked against 50,000+ professionals. Trusted by top employers.
+            Career Intelligence Report — benchmark your skills against 50,000+ professionals and see where you stand in today's competitive job market.
           </p>
         </motion.div>
 

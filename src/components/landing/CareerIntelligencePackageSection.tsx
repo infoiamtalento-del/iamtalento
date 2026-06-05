@@ -138,19 +138,21 @@ const CareerIntelligencePackageSection = () => {
       <div className="container px-4 md:px-6">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16">
-          <SectionBadge label="Career Intelligence Package" icon={Sparkles} />
+          <SectionBadge label="Skill Assessment Report" icon={Sparkles} />
           <motion.h2
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="text-3xl md:text-5xl font-bold font-display leading-tight"
           >
-            Everything You Need to{" "}
-            <span className="text-red-500">Measure & Master</span> Your Career
+            Get Your Career Intelligence{" "}
+            <span className="text-red-500">Report Today</span>
           </motion.h2>
-          <p className="mt-4 text-muted-foreground text-base md:text-lg">
-            9 powerful insights bundled into one report — for just{" "}
-            <span className="text-foreground font-bold">₹1,999</span>.
+          <p className="mt-4 text-foreground text-lg md:text-xl font-semibold">
+            Unlock 9 Career-Changing Insights for Only <span className="text-red-500">₹1,999</span>.
+          </p>
+          <p className="mt-3 text-muted-foreground text-base md:text-lg">
+            9 Powerful Insights. One Career-Defining Report. Discover your strengths, identify skill gaps, benchmark against industry standards, and unlock opportunities with confidence.
           </p>
 
           <div className="mt-6 inline-flex items-baseline gap-3 px-6 py-3 rounded-2xl bg-red-500 text-white shadow-lg">
