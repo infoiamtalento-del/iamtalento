@@ -3,21 +3,21 @@ import { Building2, Users, ShieldCheck, Target } from "lucide-react";
 import SectionBadge from "@/components/ui/section-badge";
 
 const companyLogos = [
-  { name: "Google", logo: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" },
-  { name: "Microsoft", logo: "https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31" },
-  { name: "Amazon", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/200px-Amazon_logo.svg.png" },
-  { name: "Accenture", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Accenture.svg/200px-Accenture.svg.png" },
-  { name: "IBM", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/IBM_logo.svg/200px-IBM_logo.svg.png" },
-  { name: "Oracle", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Oracle_logo.svg/200px-Oracle_logo.svg.png" },
-  { name: "Infosys", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Infosys_logo.svg/200px-Infosys_logo.svg.png" },
-  { name: "TCS", logo: "https://companieslogo.com/img/orig/TCS.NS-7401f1bd.png?t=1720244494" },
-  { name: "Capgemini", logo: "https://companieslogo.com/img/orig/CAP.PA-9b4110b0.png?t=1720244491" },
-  { name: "Wipro", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Wipro_Primary_Logo_Color_RGB.svg/200px-Wipro_Primary_Logo_Color_RGB.svg.png" },
-  { name: "Deloitte", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Deloitte.svg/200px-Deloitte.svg.png" },
-  { name: "Cognizant", logo: "https://companieslogo.com/img/orig/CTSH-82a8444b.png?t=1720244491" },
-  { name: "SAP", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/SAP_2011_logo.svg/200px-SAP_2011_logo.svg.png" },
-  { name: "Adobe", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Adobe_Corporate_Logo.png/200px-Adobe_Corporate_Logo.png" },
-  { name: "Salesforce", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Salesforce.com_logo.svg/200px-Salesforce.com_logo.svg.png" },
+  { name: "Google", logo: "https://logo.clearbit.com/google.com" },
+  { name: "Microsoft", logo: "https://logo.clearbit.com/microsoft.com" },
+  { name: "Amazon", logo: "https://logo.clearbit.com/amazon.com" },
+  { name: "Accenture", logo: "https://logo.clearbit.com/accenture.com" },
+  { name: "IBM", logo: "https://logo.clearbit.com/ibm.com" },
+  { name: "Oracle", logo: "https://logo.clearbit.com/oracle.com" },
+  { name: "Infosys", logo: "https://logo.clearbit.com/infosys.com" },
+  { name: "TCS", logo: "https://logo.clearbit.com/tcs.com" },
+  { name: "Capgemini", logo: "https://logo.clearbit.com/capgemini.com" },
+  { name: "Wipro", logo: "https://logo.clearbit.com/wipro.com" },
+  { name: "Deloitte", logo: "https://logo.clearbit.com/deloitte.com" },
+  { name: "Cognizant", logo: "https://logo.clearbit.com/cognizant.com" },
+  { name: "SAP", logo: "https://logo.clearbit.com/sap.com" },
+  { name: "Adobe", logo: "https://logo.clearbit.com/adobe.com" },
+  { name: "Salesforce", logo: "https://logo.clearbit.com/salesforce.com" },
 ];
 
 const marqueeLogos = [...companyLogos, ...companyLogos];
