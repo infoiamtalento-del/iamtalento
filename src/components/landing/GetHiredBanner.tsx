@@ -10,7 +10,7 @@ const pillars = [
 
 const GetHiredBanner = () => (
   <section className="py-14 md:py-20">
-    <div className="container px-4 md:px-6">
+    <div className="container">
       <div className="relative overflow-hidden rounded-3xl border border-border bg-card p-8 md:p-14 text-center">
 
 
