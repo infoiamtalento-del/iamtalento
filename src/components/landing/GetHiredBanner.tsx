@@ -11,9 +11,8 @@ const pillars = [
 const GetHiredBanner = () => (
   <section className="py-14 md:py-20">
     <div className="container px-4 md:px-6">
-      <div className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary/5 via-card to-muted/30 p-8 md:p-14 text-center">
-        <div className="pointer-events-none absolute -top-20 -left-20 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-24 -right-16 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
+      <div className="relative overflow-hidden rounded-3xl border border-border bg-card p-8 md:p-14 text-center">
+
 
         <div className="relative">
           <SectionBadge label="The Future of Hiring is Here" icon={Sparkles} />
