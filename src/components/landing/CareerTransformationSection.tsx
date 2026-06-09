@@ -239,58 +239,8 @@ const CareerTransformationSection = () => {
           ))}
         </div>
 
-        {/* Packages */}
-        <div className="mt-14 max-w-5xl mx-auto">
-          <div className="text-center mb-6">
-            <h3 className="text-xl md:text-2xl font-bold font-display">
-              Transition <span className="text-primary">Packages</span>
-            </h3>
-            <p className="text-sm text-muted-foreground mt-1">
-              Pick a track. Switch companies in 12–20 weeks.
-            </p>
-          </div>
 
-          <div className="grid sm:grid-cols-3 gap-4">
-            {packages.map((pk, i) => (
-              <motion.div
-                key={pk.name}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.06 }}
-                className="rounded-2xl bg-card border border-border p-5 hover:border-primary/40 hover:shadow-lg transition-all flex flex-col"
-              >
-                <p className="text-xs font-bold uppercase tracking-wider text-primary">
-                  Package {i + 1}
-                </p>
-                <h4 className="mt-2 text-lg font-bold font-display text-foreground">
-                  {pk.name}
-                </h4>
-                <p className="text-xs text-muted-foreground mt-1">{pk.duration}</p>
-                <div className="mt-4 flex items-baseline gap-2">
-                  <span className="text-2xl font-bold font-display text-foreground">{pk.price}</span>
-                  <span className="text-xs text-muted-foreground">one-time</span>
-                </div>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="mt-4 gap-1.5 self-start rounded-lg border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground"
-                >
-                  Explore <ArrowRight className="h-3.5 w-3.5" />
-                </Button>
-              </motion.div>
-            ))}
-          </div>
 
-          <div className="mt-8 text-center">
-            <Button
-              size="lg"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2 font-bold h-12 px-8 shadow-xl rounded-xl text-base"
-            >
-              Start Your Transition <ArrowRight className="h-5 w-5" />
-            </Button>
-          </div>
-        </div>
       </div>
     </section>
   );
