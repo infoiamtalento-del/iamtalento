@@ -70,7 +70,7 @@ const ResumeToolkitSection = () => {
                 className="group relative rounded-2xl border border-border bg-card overflow-hidden hover:border-primary/30 hover:shadow-[0_20px_50px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300"
               >
                 {/* Visual top area */}
-                <div className={`relative h-40 bg-gradient-to-br ${f.accent} flex items-center justify-center overflow-hidden`}>
+                <div className={`relative h-40 ${f.bg} flex items-center justify-center overflow-hidden`}>
                   <div className="absolute inset-0 opacity-[0.04]" style={{
                     backgroundImage: "radial-gradient(circle, currentColor 1px, transparent 1px)",
                     backgroundSize: "16px 16px",
