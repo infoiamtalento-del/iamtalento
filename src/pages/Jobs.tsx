@@ -255,6 +255,9 @@ const Jobs = () => {
         {/* Featured Companies */}
         <FeaturedCompanies />
 
+        {/* Resume Toolkit */}
+        <ResumeToolkitSection />
+
         {/* Industries Section */}
         <section ref={indRef} className="py-16 md:py-20 bg-accent/20">
           <div className="container px-4 md:px-6">
