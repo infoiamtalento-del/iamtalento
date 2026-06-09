@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight, BadgeCheck, Briefcase, MapPin, TrendingUp, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ArrowRight, BadgeCheck, MapPin, TrendingUp } from "lucide-react";
 import SectionBadge from "@/components/ui/section-badge";
 
 type Profile = {
@@ -8,73 +7,55 @@ type Profile = {
   headline: string;
   location: string;
   avatar: string;
-  fromRole: string;
-  fromCompany: string;
-  fromLogo: string;
-  toRole: string;
   toCompany: string;
   toLogo: string;
+  fromCompany: string;
+  fromLogo: string;
   salaryFrom: string;
   salaryTo: string;
   hike: string;
-  pkg: string;
 };
 
 const profiles: Profile[] = [
   {
     name: "Ananya Iyer",
-    headline: "Performance Marketing Manager · ex-Wipro",
+    headline: "Performance Marketing Manager",
     location: "Bengaluru, India",
-    avatar: "https://i.pravatar.cc/160?img=47",
-    fromRole: "SEO Executive",
-    fromCompany: "Wipro",
-    fromLogo: "https://logo.clearbit.com/wipro.com",
-    toRole: "Performance Marketing Manager",
+    avatar: "https://i.pravatar.cc/400?img=47",
     toCompany: "Razorpay",
     toLogo: "https://logo.clearbit.com/razorpay.com",
+    fromCompany: "Wipro",
+    fromLogo: "https://logo.clearbit.com/wipro.com",
     salaryFrom: "₹6 LPA",
     salaryTo: "₹18 LPA",
     hike: "+200%",
-    pkg: "Growth Marketer Track",
   },
   {
     name: "Rohan Verma",
-    headline: "Senior Data Analyst · ex-Infosys",
+    headline: "Senior Data Analyst",
     location: "Hyderabad, India",
-    avatar: "https://i.pravatar.cc/160?img=12",
-    fromRole: "Business Analyst",
-    fromCompany: "Infosys",
-    fromLogo: "https://logo.clearbit.com/infosys.com",
-    toRole: "Senior Data Analyst",
+    avatar: "https://i.pravatar.cc/400?img=12",
     toCompany: "Flipkart",
     toLogo: "https://logo.clearbit.com/flipkart.com",
+    fromCompany: "Infosys",
+    fromLogo: "https://logo.clearbit.com/infosys.com",
     salaryFrom: "₹8 LPA",
     salaryTo: "₹22 LPA",
     hike: "+175%",
-    pkg: "Data Pro Bootcamp",
   },
   {
     name: "Priya Nair",
-    headline: "Product Manager · ex-TCS",
+    headline: "Product Manager",
     location: "Mumbai, India",
-    avatar: "https://i.pravatar.cc/160?img=32",
-    fromRole: "Associate PM",
-    fromCompany: "TCS",
-    fromLogo: "https://logo.clearbit.com/tcs.com",
-    toRole: "Product Manager",
+    avatar: "https://i.pravatar.cc/400?img=32",
     toCompany: "Swiggy",
     toLogo: "https://logo.clearbit.com/swiggy.com",
+    fromCompany: "TCS",
+    fromLogo: "https://logo.clearbit.com/tcs.com",
     salaryFrom: "₹10 LPA",
     salaryTo: "₹28 LPA",
     hike: "+180%",
-    pkg: "PM Leadership Track",
   },
-];
-
-const packages = [
-  { name: "Growth Marketer Track", price: "₹14,999", duration: "12 weeks" },
-  { name: "Data Pro Bootcamp", price: "₹19,999", duration: "16 weeks" },
-  { name: "PM Leadership Track", price: "₹24,999", duration: "20 weeks" },
 ];
 
 const ProfileCard = ({ p, i }: { p: Profile; i: number }) => (
@@ -83,130 +64,54 @@ const ProfileCard = ({ p, i }: { p: Profile; i: number }) => (
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
     transition={{ duration: 0.5, delay: i * 0.08 }}
-    className="bg-card rounded-2xl border border-border shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300"
+    className="bg-card rounded-2xl border border-border overflow-hidden hover:shadow-[0_20px_50px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300"
   >
-    {/* Cover + avatar */}
-    <div className="relative h-20 bg-red-500">
-      <div className="absolute -bottom-10 left-5">
-        <div className="relative">
-          <img
-            src={p.avatar}
-            alt={p.name}
-            className="h-20 w-20 rounded-full ring-4 ring-card object-cover bg-muted"
-          />
-          <div className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-card flex items-center justify-center">
-            <BadgeCheck className="h-5 w-5 text-red-500 fill-red-500/10" />
-          </div>
-        </div>
+    {/* Big photo */}
+    <div className="relative aspect-[4/5] bg-muted overflow-hidden">
+      <img src={p.avatar} alt={p.name} className="w-full h-full object-cover" />
+      <div className="absolute top-3 right-3 h-7 w-7 rounded-full bg-card/95 backdrop-blur flex items-center justify-center shadow-sm">
+        <BadgeCheck className="h-4 w-4 text-primary" />
       </div>
     </div>
 
     {/* Identity */}
-    <div className="pt-12 px-5 pb-4 border-b border-border">
-      <div className="flex items-center gap-1.5">
-        <h3 className="text-base font-bold text-foreground">{p.name}</h3>
-        <BadgeCheck className="h-4 w-4 text-red-500" />
-      </div>
-      <p className="text-sm text-foreground/80 mt-0.5 leading-snug">{p.headline}</p>
-      <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+    <div className="px-5 pt-5 pb-4">
+      <h3 className="text-lg font-bold text-foreground">{p.name}</h3>
+      <p className="text-sm text-muted-foreground mt-0.5">{p.headline}</p>
+      <p className="text-xs text-muted-foreground/80 mt-1.5 flex items-center gap-1">
         <MapPin className="h-3 w-3" /> {p.location}
       </p>
     </div>
 
-    {/* Experience – LinkedIn style */}
-    <div className="px-5 py-4 border-b border-border">
-      <p className="text-xs font-bold text-foreground/70 mb-3 uppercase tracking-wider flex items-center gap-1.5">
-        <Briefcase className="h-3.5 w-3.5" /> Experience
-      </p>
-
-      <div className="space-y-3">
-        {/* To (current) */}
-        <div className="flex gap-3">
-          <div className="h-10 w-10 rounded-md bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0">
-            <img
-              src={p.toLogo}
-              alt={p.toCompany}
-              className="h-7 w-7 object-contain"
-              onError={(e) => ((e.currentTarget.style.display = "none"))}
-            />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-1.5">
-              <p className="text-sm font-semibold text-foreground truncate">{p.toRole}</p>
-              <span className="text-[10px] font-bold text-red-500 bg-red-500/10 px-1.5 py-0.5 rounded">NEW</span>
-            </div>
-            <p className="text-xs text-muted-foreground truncate">{p.toCompany} · Full-time</p>
-            <p className="text-[11px] text-muted-foreground/80">Present</p>
-          </div>
+    {/* Transition: companies */}
+    <div className="px-5 pb-4 flex items-center gap-3">
+      <div className="flex-1 flex items-center gap-2 min-w-0">
+        <div className="h-8 w-8 rounded-md bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0">
+          <img src={p.fromLogo} alt={p.fromCompany} className="h-5 w-5 object-contain" onError={(e) => (e.currentTarget.style.display = "none")} />
         </div>
-
-        {/* Connector */}
-        <div className="flex">
-          <div className="w-10 flex justify-center">
-            <div className="h-4 w-px bg-border" />
-          </div>
-        </div>
-
-        {/* From */}
-        <div className="flex gap-3 opacity-80">
-          <div className="h-10 w-10 rounded-md bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0">
-            <img
-              src={p.fromLogo}
-              alt={p.fromCompany}
-              className="h-7 w-7 object-contain"
-              onError={(e) => ((e.currentTarget.style.display = "none"))}
-            />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-foreground truncate">{p.fromRole}</p>
-            <p className="text-xs text-muted-foreground truncate">{p.fromCompany} · Full-time</p>
-            <p className="text-[11px] text-muted-foreground/80">Past role</p>
-          </div>
+        <span className="text-xs text-muted-foreground truncate">{p.fromCompany}</span>
+      </div>
+      <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0" />
+      <div className="flex-1 flex items-center gap-2 min-w-0 justify-end">
+        <span className="text-xs font-semibold text-foreground truncate">{p.toCompany}</span>
+        <div className="h-8 w-8 rounded-md bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0">
+          <img src={p.toLogo} alt={p.toCompany} className="h-5 w-5 object-contain" onError={(e) => (e.currentTarget.style.display = "none")} />
         </div>
       </div>
     </div>
 
-    {/* Transformation stats — BIG before/after */}
-    <div className="px-5 py-5 bg-muted/40 border-t border-border">
-      <div className="flex items-stretch gap-3">
-        {/* BEFORE */}
-        <div className="flex-1 rounded-xl bg-card border border-border p-3 text-center">
-          <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold mb-1">Before</p>
-          <p className="text-2xl font-bold font-display text-foreground/50 line-through leading-none">
-            {p.salaryFrom}
-          </p>
-        </div>
-
-        {/* Arrow */}
-        <div className="flex flex-col items-center justify-center shrink-0">
-          <div className="h-10 w-10 rounded-full bg-red-500 flex items-center justify-center shadow-lg shadow-red-500/30">
-            <ArrowRight className="h-5 w-5 text-white" />
-          </div>
-        </div>
-
-        {/* AFTER */}
-        <div className="flex-1 rounded-xl bg-red-500 p-3 text-center shadow-lg shadow-red-500/20">
-          <p className="text-[10px] uppercase tracking-wider text-white/80 font-bold mb-1">After</p>
-          <p className="text-2xl font-bold font-display text-white leading-none">
-            {p.salaryTo}
-          </p>
+    {/* Salary */}
+    <div className="px-5 py-4 border-t border-border flex items-center justify-between">
+      <div>
+        <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Package</p>
+        <div className="flex items-baseline gap-2 mt-0.5">
+          <span className="text-sm text-muted-foreground line-through">{p.salaryFrom}</span>
+          <span className="text-xl font-bold font-display text-foreground">{p.salaryTo}</span>
         </div>
       </div>
-
-      <div className="mt-3 flex items-center justify-center">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-yellow-400 text-red-900 text-sm font-extrabold shadow-md">
-          <TrendingUp className="h-4 w-4" />
-          {p.hike} Salary Hike
-        </div>
-      </div>
-
-      <div className="mt-4 flex items-center justify-between gap-2">
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-500/10 text-red-500 text-[11px] font-semibold">
-          <Sparkles className="h-3 w-3" /> {p.pkg}
-        </span>
-        <button className="text-[11px] font-semibold text-red-500 hover:underline">
-          View full story
-        </button>
+      <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold">
+        <TrendingUp className="h-3 w-3" />
+        {p.hike}
       </div>
     </div>
   </motion.div>
@@ -215,7 +120,7 @@ const ProfileCard = ({ p, i }: { p: Profile; i: number }) => (
 const CareerTransformationSection = () => {
   return (
     <section className="py-16 md:py-24">
-      <div className="container px-4 md:px-6">
+      <div className="container">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <SectionBadge label="Career Transformation" icon={TrendingUp} />
           <motion.h2
@@ -232,15 +137,11 @@ const CareerTransformationSection = () => {
           </p>
         </div>
 
-        {/* Profiles */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {profiles.map((p, i) => (
             <ProfileCard key={p.name} p={p} i={i} />
           ))}
         </div>
-
-
-
       </div>
     </section>
   );
