@@ -87,14 +87,15 @@ const JobsSocialProof = () => (
         {marqueeLogos.map((company, i) => (
           <div
             key={i}
-            className="flex items-center justify-center h-10 md:h-14 w-28 md:w-40 shrink-0 hover:opacity-60 transition-all duration-500"
+            className="flex items-center gap-2 shrink-0 px-4 py-2 rounded-full border border-border bg-card hover:border-primary/30 transition-colors"
           >
             <img
               src={company.logo}
               alt={company.name}
-              className="max-h-7 md:max-h-10 max-w-full object-contain dark:brightness-0 dark:invert"
+              className="h-5 w-5 object-contain"
               loading="lazy"
             />
+            <span className="text-sm font-semibold text-foreground whitespace-nowrap">{company.name}</span>
           </div>
         ))}
       </motion.div>
