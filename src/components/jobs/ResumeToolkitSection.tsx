@@ -9,21 +9,21 @@ const features = [
     eyebrow: "AI Powered",
     title: "AI Resume Builders",
     tag: "Built in minutes",
-    bg: "bg-primary/10",
+    bg: "bg-primary/25",
   },
   {
     icon: Video,
     eyebrow: "Stand Out",
     title: "Video Resume Templates",
     tag: "60-sec pitch",
-    bg: "bg-[hsl(45,100%,60%)]/20",
+    bg: "bg-[hsl(33,100%,50%)]/25",
   },
   {
     icon: FileCheck2,
     eyebrow: "Get Shortlisted",
     title: "ATS Friendly Templates",
     tag: "Beat the bots",
-    bg: "bg-primary/10",
+    bg: "bg-primary/25",
   },
 ];
 
