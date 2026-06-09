@@ -3,21 +3,21 @@ import { Building2, Users, ShieldCheck, Target } from "lucide-react";
 import SectionBadge from "@/components/ui/section-badge";
 
 const companyLogos = [
-  { name: "Google", logo: "https://logo.clearbit.com/google.com" },
-  { name: "Microsoft", logo: "https://logo.clearbit.com/microsoft.com" },
-  { name: "Amazon", logo: "https://logo.clearbit.com/amazon.com" },
-  { name: "Accenture", logo: "https://logo.clearbit.com/accenture.com" },
-  { name: "IBM", logo: "https://logo.clearbit.com/ibm.com" },
-  { name: "Oracle", logo: "https://logo.clearbit.com/oracle.com" },
-  { name: "Infosys", logo: "https://logo.clearbit.com/infosys.com" },
-  { name: "TCS", logo: "https://logo.clearbit.com/tcs.com" },
-  { name: "Capgemini", logo: "https://logo.clearbit.com/capgemini.com" },
-  { name: "Wipro", logo: "https://logo.clearbit.com/wipro.com" },
-  { name: "Deloitte", logo: "https://logo.clearbit.com/deloitte.com" },
-  { name: "Cognizant", logo: "https://logo.clearbit.com/cognizant.com" },
-  { name: "SAP", logo: "https://logo.clearbit.com/sap.com" },
-  { name: "Adobe", logo: "https://logo.clearbit.com/adobe.com" },
-  { name: "Salesforce", logo: "https://logo.clearbit.com/salesforce.com" },
+  { name: "Google", logo: "https://www.google.com/s2/favicons?domain=google.com&sz=64" },
+  { name: "Microsoft", logo: "https://www.google.com/s2/favicons?domain=microsoft.com&sz=64" },
+  { name: "Amazon", logo: "https://www.google.com/s2/favicons?domain=amazon.com&sz=64" },
+  { name: "Razorpay", logo: "https://www.google.com/s2/favicons?domain=razorpay.com&sz=64" },
+  { name: "Flipkart", logo: "https://www.google.com/s2/favicons?domain=flipkart.com&sz=64" },
+  { name: "Swiggy", logo: "https://www.google.com/s2/favicons?domain=swiggy.com&sz=64" },
+  { name: "PhonePe", logo: "https://www.google.com/s2/favicons?domain=phonepe.com&sz=64" },
+  { name: "Infosys", logo: "https://www.google.com/s2/favicons?domain=infosys.com&sz=64" },
+  { name: "Walmart", logo: "https://www.google.com/s2/favicons?domain=walmart.com&sz=64" },
+  { name: "Deloitte", logo: "https://www.google.com/s2/favicons?domain=deloitte.com&sz=64" },
+  { name: "Accenture", logo: "https://www.google.com/s2/favicons?domain=accenture.com&sz=64" },
+  { name: "TCS", logo: "https://www.google.com/s2/favicons?domain=tcs.com&sz=64" },
+  { name: "SAP", logo: "https://www.google.com/s2/favicons?domain=sap.com&sz=64" },
+  { name: "Adobe", logo: "https://www.google.com/s2/favicons?domain=adobe.com&sz=64" },
+  { name: "Salesforce", logo: "https://www.google.com/s2/favicons?domain=salesforce.com&sz=64" },
 ];
 
 const marqueeLogos = [...companyLogos, ...companyLogos];
@@ -87,14 +87,15 @@ const JobsSocialProof = () => (
         {marqueeLogos.map((company, i) => (
           <div
             key={i}
-            className="flex items-center justify-center h-10 md:h-14 w-28 md:w-40 shrink-0 hover:opacity-60 transition-all duration-500"
+            className="flex items-center gap-2 shrink-0 px-4 py-2 rounded-full border border-border bg-card hover:border-primary/30 transition-colors"
           >
             <img
               src={company.logo}
               alt={company.name}
-              className="max-h-7 md:max-h-10 max-w-full object-contain dark:brightness-0 dark:invert"
+              className="h-5 w-5 object-contain"
               loading="lazy"
             />
+            <span className="text-sm font-semibold text-foreground whitespace-nowrap">{company.name}</span>
           </div>
         ))}
       </motion.div>
