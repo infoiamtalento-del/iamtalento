@@ -247,8 +247,6 @@ const Jobs = () => {
         {/* Banner 1 – Take a Test */}
         <JobsBannerTest />
 
-        {/* Top Companies Hiring */}
-        <TopCompaniesHiring />
 
         {/* Popular Roles */}
         <PopularRolesSection />
