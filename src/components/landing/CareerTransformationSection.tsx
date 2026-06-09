@@ -105,46 +105,6 @@ const ProfileCard = ({ p, i }: { p: Profile; i: number }) => (
       </p>
     </div>
 
-    {/* Experience */}
-    <div className="px-5 py-4 border-b border-border">
-      <p className="text-xs font-bold text-foreground/70 mb-3 uppercase tracking-wider flex items-center gap-1.5">
-        <Briefcase className="h-3.5 w-3.5" /> Experience
-      </p>
-
-      <div className="space-y-3">
-        <div className="flex gap-3">
-          <div className="h-10 w-10 rounded-md bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0">
-            <img src={p.toLogo} alt={p.toCompany} className="h-7 w-7 object-contain" onError={(e) => (e.currentTarget.style.display = "none")} />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-1.5">
-              <p className="text-sm font-semibold text-foreground truncate">{p.toRole}</p>
-              <span className="text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded">NEW</span>
-            </div>
-            <p className="text-xs text-muted-foreground truncate">{p.toCompany} · Full-time</p>
-            <p className="text-[11px] text-muted-foreground/80">Present</p>
-          </div>
-        </div>
-
-        <div className="flex">
-          <div className="w-10 flex justify-center">
-            <div className="h-4 w-px bg-border" />
-          </div>
-        </div>
-
-        <div className="flex gap-3 opacity-80">
-          <div className="h-10 w-10 rounded-md bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0">
-            <img src={p.fromLogo} alt={p.fromCompany} className="h-7 w-7 object-contain" onError={(e) => (e.currentTarget.style.display = "none")} />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-foreground truncate">{p.fromRole}</p>
-            <p className="text-xs text-muted-foreground truncate">{p.fromCompany} · Full-time</p>
-            <p className="text-[11px] text-muted-foreground/80">Past role</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
     {/* Salary transformation */}
     <div className="px-5 py-4 flex items-center justify-between">
       <div>
