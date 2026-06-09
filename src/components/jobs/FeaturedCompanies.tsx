@@ -95,22 +95,6 @@ const FeaturedCompanies = () => {
             <span className="font-semibold text-foreground">Where talent meets opportunity.</span> Global enterprises and high-growth startups trust I Am Talento to hire skilled, verified professionals.
           </motion.p>
 
-          {/* Stats strip */}
-          <div className="mt-8 grid grid-cols-3 gap-3 md:gap-6 max-w-3xl mx-auto">
-            {stats.map((s, i) => (
-              <motion.div
-                key={s.label}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.15 + i * 0.08 }}
-                className="rounded-2xl border border-border bg-card/60 px-4 py-4 md:py-5"
-              >
-                <p className="text-2xl md:text-3xl font-bold font-display text-primary">{s.value}</p>
-                <p className="text-[11px] md:text-xs text-muted-foreground uppercase tracking-wide mt-1">{s.label}</p>
-              </motion.div>
-            ))}
-          </div>
         </div>
 
         {/* Row 1 */}
