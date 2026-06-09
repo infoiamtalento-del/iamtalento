@@ -19,7 +19,7 @@ const events = [
 
 const JobsEventsSection = () => (
   <section className="py-16 md:py-20 bg-accent/20">
-    <div className="container px-4 md:px-6 max-w-5xl mx-auto">
+    <div className="container px-4 md:px-6 max-w-7xl mx-auto">
       <div className="text-center mb-10">
         <SectionBadge label="Events & Meetups" icon={Calendar} />
         <h2 className="text-3xl md:text-4xl font-bold font-display mb-3">
