@@ -1,20 +1,21 @@
-import { Calendar, Mic, Radio, Users, ArrowRight } from "lucide-react";
+import { Calendar, Mic, Radio, Code2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import SectionBadge from "@/components/ui/section-badge";
 
-import eventIndustry from "@/assets/event-industry.jpg";
-import eventMeetup from "@/assets/event-meetup.jpg";
-import eventOnline from "@/assets/event-online.jpg";
-import eventPodcast from "@/assets/event-podcast.jpg";
+import eventNetworking from "@/assets/event-networking.jpg";
+import eventHackathon from "@/assets/event-hackathon.jpg";
+import eventWebinar from "@/assets/event-webinar.jpg";
+import eventPodcasts from "@/assets/event-podcasts.jpg";
 
 const events = [
-  { icon: Calendar, title: "Industry Events", desc: "Network with hiring managers and peers at curated career events.", color: "bg-primary/10 text-primary", image: eventIndustry },
-  { icon: Users, title: "Offline Meetups", desc: "In-person sessions in your city to practice, learn, and connect.", color: "bg-[hsl(33,100%,50%)]/10 text-[hsl(33,100%,50%)]", image: eventMeetup },
-  { icon: Radio, title: "Online Events", desc: "Live webinars and workshops you can join from anywhere.", color: "bg-primary/10 text-primary", image: eventOnline },
-  { icon: Mic, title: "Live Podcasts", desc: "Hear from industry leaders sharing career insights and tips.", color: "bg-[hsl(33,100%,50%)]/10 text-[hsl(33,100%,50%)]", image: eventPodcast },
+  { icon: Calendar, title: "Networking Events", desc: "Connect with hiring managers and peers at curated career meetups.", color: "bg-primary/10 text-primary", image: eventNetworking, link: "/meetups" },
+  { icon: Code2, title: "Hackathons", desc: "Build, compete and showcase your skills at top hackathons.", color: "bg-[hsl(33,100%,50%)]/10 text-[hsl(33,100%,50%)]", image: eventHackathon, link: "/hackathons" },
+  { icon: Radio, title: "Online Webinars", desc: "Live webinars and workshops you can join from anywhere.", color: "bg-primary/10 text-primary", image: eventWebinar, link: "/webinars" },
+  { icon: Mic, title: "Podcasts", desc: "Hear industry leaders share career insights and stories.", color: "bg-[hsl(33,100%,50%)]/10 text-[hsl(33,100%,50%)]", image: eventPodcasts, link: "/podcast" },
 ];
+
 
 const JobsEventsSection = () => (
   <section className="py-16 md:py-20 bg-accent/20">
@@ -31,7 +32,7 @@ const JobsEventsSection = () => (
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 mb-10">
-        {events.map(({ icon: Icon, title, desc, color, image }, i) => (
+        {events.map(({ icon: Icon, title, desc, color, image, link }, i) => (
           <motion.div
             key={title}
             initial={{ opacity: 0, y: 20 }}
@@ -39,9 +40,9 @@ const JobsEventsSection = () => (
             viewport={{ once: true }}
             transition={{ delay: i * 0.08 }}
           >
-            <Link to="/meetups" className="block rounded-xl bg-card border border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 h-full group overflow-hidden">
+            <Link to={link} className="block rounded-xl bg-card border border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 h-full group overflow-hidden">
               <div className="relative h-36 overflow-hidden">
-                <img src={image} alt={title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <img src={image} alt={title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" width={800} height={600} />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <div className="p-5">
