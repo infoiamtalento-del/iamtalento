@@ -249,11 +249,11 @@ const Jobs = () => {
         <JobsBannerTest />
 
 
-        {/* Popular Roles */}
-        <PopularRolesSection />
-
         {/* Featured Companies */}
         <FeaturedCompanies />
+
+        {/* Popular Roles */}
+        <PopularRolesSection />
 
         {/* Resume Toolkit */}
         <ResumeToolkitSection />
