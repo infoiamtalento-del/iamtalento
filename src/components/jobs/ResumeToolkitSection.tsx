@@ -112,9 +112,8 @@ const ResumeToolkitSection = () => {
                   </p>
 
                   <Button
-                    variant="outline"
                     size="sm"
-                    className="w-full border-border hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors group/btn"
+                    className="w-full bg-[#EE2737] text-white border border-[#EE2737] hover:bg-white hover:text-[#EE2737] transition-colors group/btn"
                   >
                     Try it now
                     <ArrowRight className="h-4 w-4 ml-1 group-hover/btn:translate-x-1 transition-transform" />
