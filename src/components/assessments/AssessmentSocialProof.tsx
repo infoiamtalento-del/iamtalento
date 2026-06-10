@@ -165,7 +165,7 @@ const AssessmentSocialProof = () => {
             <p className="text-[24px] font-medium tracking-[-0.5px]" style={{ color: textColor }}>
               <AnimatedStat value={s.value} symbol={s.symbol} />
             </p>
-            <p className="text-[11px] mt-[3px]" style={{ color: subColor }}>{s.label}</p>
+            <p className="text-[11px] font-semibold mt-[3px] text-white">{s.label}</p>
             <div className="h-[2px] rounded-[1px] mt-[10px]" style={{ background: barTrack }}>
               <motion.div
                 className="h-full rounded-[1px]"
