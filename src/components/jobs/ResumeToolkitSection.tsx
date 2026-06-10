@@ -2,28 +2,37 @@ import { motion } from "framer-motion";
 import { Sparkles, Video, FileCheck2, ArrowRight, FileText, Check } from "lucide-react";
 import SectionBadge from "@/components/ui/section-badge";
 import { Button } from "@/components/ui/button";
+import resumeAiImg from "@/assets/resume-ai-builder.jpg";
+import resumeVideoImg from "@/assets/resume-video.jpg";
+import resumeAtsImg from "@/assets/resume-ats.jpg";
 
 const features = [
   {
     icon: Sparkles,
     eyebrow: "AI Powered",
     title: "AI Resume Builders",
+    description: "Build a professional resume in minutes. Powered by smart AI suggestions.",
     tag: "Built in minutes",
     bg: "bg-[#EE2737]",
+    image: resumeAiImg,
   },
   {
     icon: Video,
     eyebrow: "Stand Out",
     title: "Video Resume Templates",
+    description: "Create video resumes that stand out. Make a memorable first impression.",
     tag: "60-sec pitch",
     bg: "bg-[#FF8A00]",
+    image: resumeVideoImg,
   },
   {
     icon: FileCheck2,
     eyebrow: "Get Shortlisted",
     title: "ATS Friendly Templates",
+    description: "Optimized for ATS screening systems. Get shortlisted with confidence.",
     tag: "Beat the bots",
     bg: "bg-[#EE2737]",
+    image: resumeAtsImg,
   },
 ];
 
@@ -70,43 +79,37 @@ const ResumeToolkitSection = () => {
                 className="group relative rounded-2xl border border-border bg-card overflow-hidden hover:border-primary/30 hover:shadow-[0_20px_50px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300"
               >
                 {/* Visual top area */}
-                <div className={`relative h-40 ${f.bg} flex items-center justify-center overflow-hidden`}>
-                  <div className="absolute inset-0 opacity-[0.04]" style={{
-                    backgroundImage: "radial-gradient(circle, currentColor 1px, transparent 1px)",
-                    backgroundSize: "16px 16px",
-                  }} />
-
-                  {/* Mock resume card */}
-                  <div className="relative w-32 h-40 -mb-10 bg-card rounded-lg shadow-xl border border-border/50 p-2.5 rotate-[-4deg] group-hover:rotate-0 transition-transform duration-500">
-                    <div className="h-2 w-10 rounded-full bg-primary mb-2" />
-                    <div className="h-1.5 w-full rounded-full bg-muted mb-1" />
-                    <div className="h-1.5 w-4/5 rounded-full bg-muted mb-3" />
-                    <div className="h-1.5 w-1/3 rounded-full bg-foreground/30 mb-1.5" />
-                    <div className="h-1 w-full rounded-full bg-muted mb-1" />
-                    <div className="h-1 w-5/6 rounded-full bg-muted mb-2.5" />
-                    <div className="h-1.5 w-1/3 rounded-full bg-foreground/30 mb-1.5" />
-                    <div className="h-1 w-full rounded-full bg-muted mb-1" />
-                    <div className="h-1 w-3/4 rounded-full bg-muted" />
-                  </div>
+                <div className={`relative h-44 ${f.bg} overflow-hidden`}>
+                  <img
+                    src={f.image}
+                    alt={f.title}
+                    width={768}
+                    height={512}
+                    loading="lazy"
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
 
                   {/* Floating icon badge */}
-                  <div className="absolute top-4 right-4 h-11 w-11 rounded-xl bg-card shadow-lg border border-border flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <div className="absolute top-4 right-4 h-11 w-11 rounded-xl bg-card shadow-lg border border-border flex items-center justify-center group-hover:scale-110 transition-transform z-10">
                     <Icon className="h-5 w-5 text-primary" />
                   </div>
 
                   {/* Tag pill */}
-                  <div className="absolute top-4 left-4 inline-flex items-center gap-1 bg-card/90 backdrop-blur border border-border/60 rounded-full px-2.5 py-1">
+                  <div className="absolute top-4 left-4 inline-flex items-center gap-1 bg-card/90 backdrop-blur border border-border/60 rounded-full px-2.5 py-1 z-10">
                     <Check className="h-3 w-3 text-primary" />
                     <span className="text-[10px] font-semibold text-foreground">{f.tag}</span>
                   </div>
                 </div>
 
                 {/* Content */}
-                <div className="p-5 pt-7">
+                <div className="p-5">
                   <span className="text-[10px] font-semibold uppercase tracking-wider text-primary">
                     {f.eyebrow}
                   </span>
-                  <h3 className="text-lg font-bold font-display mt-1 mb-4">{f.title}</h3>
+                  <h3 className="text-lg font-bold font-display mt-1 mb-2">{f.title}</h3>
+                  <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                    {f.description}
+                  </p>
 
                   <Button
                     variant="outline"
