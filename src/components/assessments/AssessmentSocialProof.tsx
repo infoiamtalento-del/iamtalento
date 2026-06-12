@@ -125,7 +125,7 @@ const AssessmentSocialProof = () => {
           <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest px-3 py-1 mb-4 rounded-full" style={{ color: "#E22C2C", background: "hsl(355 84% 54% / 0.08)" }}>
             <span className="w-1.5 h-1.5 rounded-full bg-[#E22C2C]" /> Live Results
           </span>
-          <h2 className="text-3xl md:text-5xl font-bold font-display mb-3 text-slate-900">
+          <h2 className="text-2xl md:text-4xl font-bold font-display mb-3 text-slate-900">
             Verified People. Real Skills.{" "}
             <span className="text-primary relative inline-block">
               Life-Changing Outcomes.
