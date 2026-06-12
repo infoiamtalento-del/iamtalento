@@ -1,8 +1,12 @@
-import { motion, useInView, useMotionValue, useTransform, animate } from "framer-motion";
+import { motion, useInView, useMotionValue, animate } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { BadgeCheck } from "lucide-react";
+import {
+  ShieldCheck, Timer, Building2, PhoneCall,
+  Target, Award, TrendingUp, Rocket, Lock,
+  CheckCircle2, Clock, FileText, Crosshair, ArrowRight, ChevronLeft, ChevronRight,
+} from "lucide-react";
 
-// Animated counter component
+// Animated counter
 const AnimatedStat = ({ value, symbol }: { value: string; symbol: string }) => {
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true });
@@ -16,228 +20,269 @@ const AnimatedStat = ({ value, symbol }: { value: string; symbol: string }) => {
       duration: 2,
       ease: "easeOut",
       onUpdate: (v) => {
-        if (numericValue >= 1000) {
-          setDisplay(Math.floor(v).toLocaleString("en-IN"));
-        } else if (Number.isInteger(numericValue)) {
-          setDisplay(Math.floor(v).toString());
-        } else {
-          setDisplay(v.toFixed(0));
-        }
+        if (numericValue >= 1000) setDisplay(Math.floor(v).toLocaleString("en-IN"));
+        else setDisplay(Math.floor(v).toString());
       },
     });
     return controls.stop;
   }, [isInView, numericValue, motionVal]);
 
-  return (
-    <span ref={ref}>
-      {display}<span style={{ color: "inherit" }}>{symbol}</span>
-    </span>
-  );
+  return <span ref={ref}>{display}{symbol}</span>;
 };
 
 const stats = [
-  { value: "18,731", symbol: "+", label: "professionals verified", bar: 93 },
-  { value: "92", symbol: "%", label: "hired within 60 days of verifying", bar: 92 },
-  { value: "200", symbol: "+", label: "companies actively hiring on Talento", bar: 70 },
-  { value: "3", symbol: "x", label: "more callbacks vs unverified profiles", bar: 100 },
+  { icon: ShieldCheck, value: "18,731", symbol: "+", label: "Professionals Verified", sub: "Trusted by leading companies", bg: "#ED2938" },
+  { icon: Timer, value: "92", symbol: "%", label: "Hired within 60 Days", sub: "Faster outcomes. Real impact.", bg: "#FF8C01" },
+  { icon: Building2, value: "200", symbol: "+", label: "Companies Hiring", sub: "Active hiring partners on Talento", bg: "#ED2938" },
+  { icon: PhoneCall, value: "3", symbol: "x", label: "More Callbacks", sub: "Compared to unverified profiles", bg: "#FF8C01" },
 ];
 
-const row1 = [
-  { initials: "RK", photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&h=80&fit=crop&crop=face", name: "Rohan K.", city: "Bangalore", skill: "React.js", skillIcon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg", score: 92, company: "Zepto", logo: "https://www.google.com/s2/favicons?sz=64&domain=zepto.co" },
-  { initials: "AS", photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face", name: "Ananya S.", city: "Pune", skill: "Node.js", skillIcon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg", score: 88, company: "Razorpay", logo: "https://www.google.com/s2/favicons?sz=64&domain=razorpay.com" },
-  { initials: "VM", photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face", name: "Vikram M.", city: "Delhi", skill: "System Design", skillIcon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/archlinux/archlinux-original.svg", score: 85, company: "Atlassian", logo: "https://www.google.com/s2/favicons?sz=64&domain=atlassian.com" },
-  { initials: "PR", photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face", name: "Priya R.", city: "Mumbai", skill: "Product Mgmt", skillIcon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jira/jira-original.svg", score: 91, company: "Swiggy", logo: "https://www.google.com/s2/favicons?sz=64&domain=swiggy.com" },
-  { initials: "NK", photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&h=80&fit=crop&crop=face", name: "Nikhil K.", city: "Chennai", skill: "Python / ML", skillIcon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg", score: 94, company: "Flipkart", logo: "https://www.google.com/s2/favicons?sz=64&domain=flipkart.com" },
-  { initials: "SA", photo: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&h=80&fit=crop&crop=face", name: "Sneha A.", city: "Hyderabad", skill: "UI / UX", skillIcon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg", score: 87, company: "CRED", logo: "https://www.google.com/s2/favicons?sz=64&domain=cred.club" },
+const benefits = [
+  { icon: Target, title: "Skills That Employers Trust", desc: "Scientific assessment backed by industry experts" },
+  { icon: Award, title: "Stand Out in Every Application", desc: "Verified badge boosts your shortlisting chances" },
+  { icon: TrendingUp, title: "Faster Hiring. Better Offers.", desc: "Get noticed by top companies and recruiters" },
+  { icon: Rocket, title: "Real Opportunities, Real Growth", desc: "Access exclusive jobs, internships and career resources" },
+  { icon: Lock, title: "Secure. Private. Trusted.", desc: "Your data is protected and never misused" },
 ];
 
-const row2 = [
-  { initials: "AM", photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face", name: "Arjun M.", city: "Bangalore", skill: "AWS + K8s", skillIcon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg", score: 89, company: "PhonePe", logo: "https://www.google.com/s2/favicons?sz=64&domain=phonepe.com" },
-  { initials: "KS", photo: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&h=80&fit=crop&crop=face", name: "Kavya S.", city: "Pune", skill: "SQL + Python", skillIcon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg", score: 93, company: "Meesho", logo: "https://www.google.com/s2/favicons?sz=64&domain=meesho.com" },
-  { initials: "DT", photo: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=80&h=80&fit=crop&crop=face", name: "Dev T.", city: "Mumbai", skill: "Go + APIs", skillIcon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg", score: 86, company: "Zepto", logo: "https://www.google.com/s2/favicons?sz=64&domain=zepto.co" },
-  { initials: "RS", photo: "https://images.unsplash.com/photo-1463453091185-61582044d556?w=80&h=80&fit=crop&crop=face", name: "Rahul S.", city: "Delhi", skill: "Vue.js", skillIcon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg", score: 90, company: "MakeMyTrip", logo: "https://www.google.com/s2/favicons?sz=64&domain=makemytrip.com" },
-  { initials: "PK", photo: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=80&h=80&fit=crop&crop=face", name: "Pooja K.", city: "Noida", skill: "React Native", skillIcon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg", score: 88, company: "Paytm", logo: "https://www.google.com/s2/favicons?sz=64&domain=paytm.com" },
-  { initials: "MT", photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80&h=80&fit=crop&crop=face", name: "Mihir T.", city: "Surat", skill: "Java + Spring", skillIcon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg", score: 91, company: "Juspay", logo: "https://www.google.com/s2/favicons?sz=64&domain=juspay.in" },
+const stories = [
+  {
+    name: "Priya R.", city: "Mumbai",
+    photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=160&h=160&fit=crop&crop=face",
+    skill: "Product Mgmt", skillIcon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jira/jira-original.svg",
+    company: "Swiggy", logo: "https://www.google.com/s2/favicons?sz=64&domain=swiggy.com",
+    score: 91, quote: "The assessment helped me discover my strengths and land my dream role.",
+  },
+  {
+    name: "Nikhil K.", city: "Chennai",
+    photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=160&h=160&fit=crop&crop=face",
+    skill: "Python / ML", skillIcon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
+    company: "Flipkart", logo: "https://www.google.com/s2/favicons?sz=64&domain=flipkart.com",
+    score: 94, quote: "Verified profile got me shortlisted faster and the process was smooth.",
+  },
+  {
+    name: "Sneha A.", city: "Hyderabad",
+    photo: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&h=160&fit=crop&crop=face",
+    skill: "UI / UX", skillIcon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg",
+    company: "Google", logo: "https://www.google.com/s2/favicons?sz=64&domain=google.com",
+    score: 87, quote: "The insights were spot on. It changed my career direction.",
+  },
+  {
+    name: "Rahul S.", city: "Delhi",
+    photo: "https://images.unsplash.com/photo-1463453091185-61582044d556?w=160&h=160&fit=crop&crop=face",
+    skill: "Vue.js", skillIcon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg",
+    company: "Microsoft", logo: "https://www.google.com/s2/favicons?sz=64&domain=microsoft.com",
+    score: 90, quote: "From confused to confident — Talento made it possible!",
+  },
 ];
 
-const bottomCompanies = [
-  { name: "Zepto", logo: "https://www.google.com/s2/favicons?sz=64&domain=zepto.co" },
-  { name: "Razorpay", logo: "https://www.google.com/s2/favicons?sz=64&domain=razorpay.com" },
-  { name: "Atlassian", logo: "https://www.google.com/s2/favicons?sz=64&domain=atlassian.com" },
-  { name: "Swiggy", logo: "https://www.google.com/s2/favicons?sz=64&domain=swiggy.com" },
-  { name: "Flipkart", logo: "https://www.google.com/s2/favicons?sz=64&domain=flipkart.com" },
-  { name: "PhonePe", logo: "https://www.google.com/s2/favicons?sz=64&domain=phonepe.com" },
-  { name: "CRED", logo: "https://www.google.com/s2/favicons?sz=64&domain=cred.club" },
-];
-
-type CardData = typeof row1[0];
-
-const MarqueeCard = ({ d }: { d: CardData }) => (
-  <div
-    className="flex items-center whitespace-nowrap overflow-hidden rounded-2xl hover:-translate-y-1 transition-all duration-200 shadow-[0_2px_8px_rgba(0,0,0,0.06)] bg-white"
-    style={{ border: "1px solid #e5e7eb" }}
-  >
-    {/* Avatar + Name */}
-    <div className="flex items-center gap-4 pl-5 pr-6 py-6">
-      <img
-        src={d.photo}
-        alt={d.name}
-        className="w-14 h-14 rounded-full object-cover shrink-0 ring-2 ring-white shadow-sm"
-        loading="lazy"
-      />
-      <div className="flex flex-col">
-        <span className="text-[15px] font-semibold" style={{ color: "#0f172a" }}>{d.name}</span>
-        <span className="text-[12px]" style={{ color: "#94a3b8" }}>{d.city}</span>
+const StoryCard = ({ s }: { s: typeof stories[0] }) => (
+  <div className="bg-white rounded-2xl p-5 shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 min-w-[260px] flex-1">
+    <div className="flex items-start justify-between mb-3">
+      <div className="flex items-center gap-3">
+        <img src={s.photo} alt={s.name} className="w-11 h-11 rounded-full object-cover" loading="lazy" />
+        <div>
+          <p className="text-[14px] font-semibold text-slate-900">{s.name}</p>
+          <p className="text-[12px] text-slate-500">{s.city}</p>
+        </div>
       </div>
+      <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+        <CheckCircle2 className="h-3 w-3" /> Hired
+      </span>
     </div>
-
-    {/* Skill + Score — grouped together */}
-    <div className="flex items-center gap-4 px-5 py-6" style={{ borderLeft: "1px solid #f1f5f9" }}>
-      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg" style={{ background: "#f8fafc" }}>
-        <img src={d.skillIcon} alt={d.skill} className="object-contain shrink-0" style={{ width: 18, height: 18 }} loading="lazy" />
-        <span className="text-[13px] font-medium" style={{ color: "#475569" }}>{d.skill}</span>
+    <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-slate-50 mb-3">
+      <img src={s.skillIcon} alt={s.skill} className="w-4 h-4 object-contain" loading="lazy" />
+      <span className="text-[12px] font-medium text-slate-700">{s.skill}</span>
+    </div>
+    <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center gap-2">
+        <img src={s.logo} alt={s.company} className="w-5 h-5 object-contain rounded-sm" loading="lazy" />
+        <span className="text-[12px] font-bold uppercase tracking-wide text-slate-700">{s.company}</span>
       </div>
       <div className="flex items-baseline">
-        <span className="text-[20px] font-bold tabular-nums" style={{ color: "#0f172a" }}>{d.score}</span>
-        <span className="text-[11px] ml-px" style={{ color: "#cbd5e1" }}>/100</span>
+        <span className="text-[18px] font-bold text-slate-900 tabular-nums">{s.score}</span>
+        <span className="text-[10px] text-slate-400">/100</span>
       </div>
     </div>
-
-    {/* Hired badge */}
-    <div className="flex items-center gap-2.5 px-5 py-6 rounded-r-2xl bg-white" style={{ borderLeft: "1px solid #f1f5f9" }}>
-      <span className="w-2 h-2 rounded-full shrink-0" style={{ background: "#ED2938" }} />
-      <span className="text-[13px] font-semibold" style={{ color: "#ED2938" }}>Hired</span>
-      <img src={d.logo} alt={d.company} className="h-5 w-5 rounded-sm object-contain shrink-0" loading="lazy" />
-      <span className="text-[13px] font-semibold" style={{ color: "#0f172a" }}>{d.company}</span>
+    <div className="bg-rose-50/60 rounded-lg p-3 text-[12px] text-slate-600 italic leading-snug">
+      <span className="text-rose-400 text-lg leading-none mr-1">“</span>{s.quote}
     </div>
   </div>
 );
 
 const AssessmentSocialProof = () => {
-  const doubled1 = [...row1, ...row1, ...row1, ...row1];
-  const doubled2 = [...row2, ...row2, ...row2, ...row2];
+  const [storyIdx, setStoryIdx] = useState(0);
+  const visibleCount = 3;
+  const maxIdx = Math.max(0, stories.length - visibleCount);
+  const prev = () => setStoryIdx((i) => Math.max(0, i - 1));
+  const next = () => setStoryIdx((i) => Math.min(maxIdx, i + 1));
 
   return (
-    <section className="w-full bg-white overflow-hidden">
+    <section className="w-full bg-white">
       {/* Header */}
       <div className="container px-4 md:px-6 pt-14 pb-8 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <span
-            className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest px-3 py-1 mb-4 rounded-full"
-            style={{ color: "#E22C2C", background: "hsl(355 84% 54% / 0.08)" }}
-          >
-            <BadgeCheck className="h-3.5 w-3.5" /> Live Results
+        <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest px-3 py-1 mb-4 rounded-full" style={{ color: "#E22C2C", background: "hsl(355 84% 54% / 0.08)" }}>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E22C2C]" /> Live Results
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold font-display mb-2">
-            Verified Professionals,{" "}
-            <span className="text-primary">Real Outcomes</span>
+          <h2 className="text-3xl md:text-5xl font-bold font-display mb-3 text-slate-900">
+            Verified People. Real Skills.{" "}
+            <span className="text-primary relative inline-block">
+              Life-Changing Outcomes.
+              <span className="absolute left-0 right-0 -bottom-1 h-[3px] bg-primary/70 rounded-full" />
+            </span>
           </h2>
-          <p className="text-muted-foreground text-base md:text-lg max-w-xl mx-auto">
-            See how verified candidates are getting hired faster at top companies across India.
+          <p className="text-slate-500 text-base md:text-lg max-w-2xl mx-auto">
+            See how Talento verified professionals are getting hired faster and building better careers.
           </p>
         </motion.div>
       </div>
 
-      {/* Stats grid */}
+      {/* Stats with icons */}
       <div className="container px-4 md:px-6">
-      <div className="grid grid-cols-2 md:grid-cols-4 rounded-xl overflow-hidden">
-        {stats.map((s, i) => {
-          const isRed = i % 2 === 0;
-          const bg = isRed ? "#ED2938" : "#FF8C01";
-          const textColor = "#ffffff";
-          const subColor = "rgba(255,255,255,0.75)";
-          const barTrack = "rgba(255,255,255,0.25)";
-          const barFill = "#ffffff";
-          return (
-          <motion.div
-            key={s.label}
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.08 }}
-            className="flex flex-col gap-0.5 px-5 md:px-7 py-[18px]"
-            style={{ background: bg, borderRight: i < stats.length - 1 ? "1px solid rgba(255,255,255,0.15)" : "none" }}
-          >
-            <p className="text-[24px] font-medium tracking-[-0.5px]" style={{ color: textColor }}>
-              <AnimatedStat value={s.value} symbol={s.symbol} />
-            </p>
-            <p className="text-[11px] font-semibold mt-[3px] text-white">{s.label}</p>
-            <div className="h-[2px] rounded-[1px] mt-[10px]" style={{ background: barTrack }}>
+        <div className="grid grid-cols-2 md:grid-cols-4 rounded-2xl overflow-hidden">
+          {stats.map((s, i) => {
+            const Icon = s.icon;
+            return (
               <motion.div
-                className="h-full rounded-[1px]"
-                style={{ background: barFill }}
-                initial={{ width: 0 }}
-                whileInView={{ width: `${s.bar}%` }}
+                key={s.label}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 1, delay: 0.3 + i * 0.1, ease: "easeOut" }}
-              />
+                transition={{ delay: i * 0.08 }}
+                className="flex items-center gap-4 px-5 md:px-6 py-6"
+                style={{ background: s.bg, borderRight: i < stats.length - 1 ? "1px solid rgba(255,255,255,0.18)" : "none" }}
+              >
+                <div className="shrink-0 w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-sm">
+                  <Icon className="h-7 w-7" style={{ color: s.bg }} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[26px] md:text-[28px] font-bold text-white leading-none">
+                    <AnimatedStat value={s.value} symbol={s.symbol} />
+                  </p>
+                  <p className="text-[13px] font-bold text-white mt-1">{s.label}</p>
+                  <p className="text-[11px] text-white/80 mt-0.5 leading-tight">{s.sub}</p>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Benefits row */}
+      <div className="container px-4 md:px-6 mt-6">
+        <div className="bg-slate-50/70 border border-slate-100 rounded-2xl px-5 md:px-7 py-6">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-5">
+            {benefits.map((b, i) => {
+              const Icon = b.icon;
+              return (
+                <motion.div
+                  key={b.title}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.06 }}
+                  className="flex items-start gap-3"
+                >
+                  <div className="shrink-0 w-9 h-9 rounded-full bg-rose-50 flex items-center justify-center">
+                    <Icon className="h-4 w-4 text-[#ED2938]" />
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-bold text-slate-900 leading-tight">{b.title}</p>
+                    <p className="text-[12px] text-slate-500 mt-1 leading-snug">{b.desc}</p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Success Stories */}
+      <div className="container px-4 md:px-6 mt-6">
+        <div className="bg-rose-50/40 border border-rose-100/60 rounded-2xl px-5 md:px-7 py-6">
+          <div className="flex items-center gap-5">
+            {/* Left intro + nav */}
+            <div className="hidden md:flex flex-col w-[200px] shrink-0">
+              <h3 className="text-xl font-bold text-slate-900">Success Stories</h3>
+              <span className="w-10 h-[2px] bg-[#ED2938] mt-1 mb-3" />
+              <p className="text-[13px] text-slate-600 leading-snug">
+                Real people. Real results.<br />
+                <span className="font-semibold text-slate-900">Real careers accelerated.</span>
+              </p>
+              <button className="mt-4 inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#ED2938] border border-[#ED2938] rounded-full px-3 py-1.5 w-fit hover:bg-[#ED2938] hover:text-white transition-colors">
+                View More Stories <ArrowRight className="h-3.5 w-3.5" />
+              </button>
             </div>
-          </motion.div>
-          );
-        })}
-      </div>
-      </div>
 
-      {/* Marquee */}
-      <div className="relative py-5" style={{ borderBottom: "1px solid #e2e8f0" }}>
-        {/* Fade edges */}
-        <div className="absolute left-0 top-0 w-[100px] h-full z-[3] pointer-events-none" style={{ background: "linear-gradient(90deg, #fff 0%, transparent 100%)" }} />
-        <div className="absolute right-0 top-0 w-[100px] h-full z-[3] pointer-events-none" style={{ background: "linear-gradient(-90deg, #fff 0%, transparent 100%)" }} />
-
-        <div className="flex flex-col gap-3">
-          {/* Row 1 — left */}
-          <div className="overflow-hidden">
-            <motion.div
-              className="flex gap-4 w-max"
-              animate={{ x: ["0%", "-50%"] }}
-              transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
-            >
-              {doubled1.map((d, i) => <MarqueeCard key={`r1-${i}`} d={d} />)}
-            </motion.div>
-          </div>
-          {/* Row 2 — right */}
-          <div className="overflow-hidden">
-            <motion.div
-              className="flex gap-4 w-max"
-              animate={{ x: ["-50%", "0%"] }}
-              transition={{ duration: 110, repeat: Infinity, ease: "linear" }}
-            >
-              {doubled2.map((d, i) => <MarqueeCard key={`r2-${i}`} d={d} />)}
-            </motion.div>
+            {/* Carousel */}
+            <button onClick={prev} disabled={storyIdx === 0} className="hidden md:flex w-9 h-9 rounded-full bg-white border border-slate-200 items-center justify-center text-slate-500 hover:text-slate-900 disabled:opacity-40 shrink-0">
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <div className="flex-1 overflow-hidden">
+              <motion.div
+                className="flex gap-4"
+                animate={{ x: `calc(-${storyIdx} * (100% / ${visibleCount} + 16px / ${visibleCount}))` }}
+                transition={{ type: "spring", stiffness: 200, damping: 30 }}
+                style={{ width: `calc((100% / ${visibleCount}) * ${stories.length} + ${(stories.length - visibleCount) * 16}px)` }}
+              >
+                {stories.map((s) => (
+                  <div key={s.name} style={{ flex: `0 0 calc(100% / ${stories.length})` }}>
+                    <StoryCard s={s} />
+                  </div>
+                ))}
+              </motion.div>
+            </div>
+            <button onClick={next} disabled={storyIdx >= maxIdx} className="hidden md:flex w-9 h-9 rounded-full bg-white border border-slate-200 items-center justify-center text-slate-500 hover:text-slate-900 disabled:opacity-40 shrink-0">
+              <ChevronRight className="h-4 w-4" />
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Bottom bar */}
-      <div className="flex flex-col items-center justify-center px-5 md:px-7 py-4 gap-3">
-        <div className="flex items-center gap-2">
-          <span className="relative flex h-[6px] w-[6px]">
-            <span className="absolute inset-0 rounded-full bg-[#22c55e] animate-[pulse-dot_1.4s_ease-in-out_infinite]" />
-            <span className="relative rounded-full h-[6px] w-[6px] bg-[#22c55e]" />
-          </span>
-          <span className="text-[11px]" style={{ color: "#94a3b8" }}>Verified in real-time · Updated every hour</span>
-        </div>
-        <div className="flex items-center gap-4 flex-wrap justify-center">
-          {bottomCompanies.map((c, i) => (
-            <span key={c.name} className="flex items-center gap-2">
-              {i > 0 && <span className="w-1 h-1 rounded-full" style={{ background: "#e2e8f0" }} />}
-              <img src={c.logo} alt={c.name} className="h-5 w-5 object-contain" loading="lazy" />
-              <span className="text-[11px] font-medium" style={{ color: "#64748b" }}>{c.name}</span>
-            </span>
-          ))}
+      {/* CTA banner */}
+      <div className="container px-4 md:px-6 mt-6 mb-14">
+        <div className="rounded-2xl bg-[#ED2938] text-white px-5 md:px-8 py-5 flex flex-col md:flex-row items-center gap-5">
+          <div className="flex items-center gap-4 flex-1 min-w-0">
+            <div className="flex -space-x-3 shrink-0">
+              <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&h=80&fit=crop&crop=face" alt="" className="w-10 h-10 rounded-full ring-2 ring-[#ED2938] object-cover" />
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt="" className="w-10 h-10 rounded-full ring-2 ring-[#ED2938] object-cover" />
+              <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face" alt="" className="w-10 h-10 rounded-full ring-2 ring-[#ED2938] object-cover" />
+            </div>
+            <div>
+              <p className="text-[15px] md:text-[17px] font-bold leading-tight">Your Dream Career Is Closer Than You Think!</p>
+              <p className="text-[12px] md:text-[13px] text-white/85 mt-0.5">Take the assessment. Get verified. Get hired faster.</p>
+            </div>
+          </div>
+
+          <div className="hidden lg:flex items-center gap-5">
+            {[
+              { icon: Clock, title: "10–15 Mins", sub: "Assessment" },
+              { icon: FileText, title: "Detailed", sub: "Personal Report" },
+              { icon: Crosshair, title: "Personalized", sub: "Career Roadmap" },
+            ].map(({ icon: I, title, sub }) => (
+              <div key={title} className="flex items-center gap-2">
+                <div className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center">
+                  <I className="h-4 w-4 text-white" />
+                </div>
+                <div className="leading-tight">
+                  <p className="text-[12px] font-bold">{title}</p>
+                  <p className="text-[11px] text-white/80">{sub}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-col items-center md:items-end gap-1.5 shrink-0">
+            <button className="inline-flex items-center gap-2 bg-white text-[#ED2938] font-bold text-[14px] px-5 py-2.5 rounded-full hover:bg-slate-100 transition-colors">
+              Take Assessment Now <ArrowRight className="h-4 w-4" />
+            </button>
+            <p className="text-[11px] text-white/80 inline-flex items-center gap-1">
+              <ShieldCheck className="h-3 w-3" /> Trusted by 18,731+ professionals
+            </p>
+          </div>
         </div>
       </div>
-
-      <style>{`
-        @keyframes pulse-dot {
-          0%, 100% { transform: scale(1); opacity: 1; }
-          50% { transform: scale(0.85); opacity: 0.4; }
-        }
-      `}</style>
     </section>
   );
 };
