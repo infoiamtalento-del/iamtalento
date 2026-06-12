@@ -1,279 +1,274 @@
-import { useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
-  UserPlus, Search, CreditCard, ShieldCheck, FileBarChart, Rocket,
-  CheckCircle2, ArrowRight, Flame,
+  UserPlus, FileText, CreditCard, ShieldCheck, FileBarChart, Rocket,
+  Star, ChevronRight, PlayCircle, CheckCircle2, Clock,
+  ShieldCheck as ShieldIcon, Zap, BarChart3, Award, TrendingUp,
+  ArrowRight, Sparkles, Users, Headphones, Building2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import SectionBadge from "@/components/ui/section-badge";
 
-const steps = [
+type Step = {
+  num: number;
+  title: string;
+  desc: string;
+  why: string;
+  icon: typeof UserPlus;
+  color: string; // tailwind bg
+  ring: string; // tailwind ring/bg for why panel
+  text: string; // text color for why heading
+};
+
+const steps: Step[] = [
   {
-    step: 1,
-    label: "Build Your Profile",
-    subtitle: "Sign up & set your goals",
-    bg: "bg-primary",
+    num: 1,
+    title: "Build Your Profile",
+    desc: "Create your profile and tell us about your skills, goals, and experience.",
+    why: "A strong profile helps us personalize your assessment experience.",
     icon: UserPlus,
-    desc: "Sign up and complete your professional profile — add skills, experience, and career goals so we can match you with the right assessment.",
-    bullets: ["Skills & experience", "Career goals", "Role preferences", "Portfolio links"],
+    color: "bg-rose-500",
+    ring: "bg-rose-50",
+    text: "text-rose-600",
   },
   {
-    step: 2,
-    label: "Choose Assessment",
-    subtitle: "50+ role-specific tests",
-    bg: "bg-[hsl(33,100%,50%)]",
-    icon: Search,
-    desc: "Pick from 50+ role-specific, industry-aligned assessments — from Data Science to Digital Marketing. Each one mirrors real job tasks.",
-    bullets: ["50+ assessments", "Role-specific", "Industry-aligned", "Real-world tasks"],
+    num: 2,
+    title: "Choose Your Assessment",
+    desc: "Pick the assessment that matches your role and career aspirations.",
+    why: "The right test shows the right skills to the right opportunities.",
+    icon: FileText,
+    color: "bg-orange-500",
+    ring: "bg-orange-50",
+    text: "text-orange-600",
   },
   {
-    step: 3,
-    label: "Pay & Schedule",
-    subtitle: "Flexible plans & slots",
-    bg: "bg-primary",
+    num: 3,
+    title: "Pay & Schedule",
+    desc: "Make a secure payment and choose a date & time that works for you.",
+    why: "Flexible scheduling. Hassle-free experience. Your time, your pace.",
     icon: CreditCard,
-    desc: "Select a plan, pay securely, and book a slot that works for you. Flexible scheduling with instant confirmation.",
-    bullets: ["Secure payment", "Flexible slots", "Instant confirmation", "Multiple plans"],
+    color: "bg-violet-500",
+    ring: "bg-violet-50",
+    text: "text-violet-600",
   },
   {
-    step: 4,
-    label: "Take the Test",
-    subtitle: "AI-proctored assessment",
-    bg: "bg-[hsl(33,100%,50%)]",
+    num: 4,
+    title: "Take the Test",
+    desc: "Complete the assessment in a proctored environment with confidence.",
+    why: "Our assessments are fair, secure, and designed to reflect real skills.",
     icon: ShieldCheck,
-    desc: "Complete the assessment under AI-powered proctoring — screen monitoring, identity verification, and anti-cheat safeguards ensure credibility.",
-    bullets: ["Screen monitoring", "Identity check", "Anti-cheat AI", "Fair evaluation"],
+    color: "bg-blue-500",
+    ring: "bg-blue-50",
+    text: "text-blue-600",
   },
   {
-    step: 5,
-    label: "Get Your Report",
-    subtitle: "Results in 24 hours",
-    bg: "bg-primary",
+    num: 5,
+    title: "Get Your Report",
+    desc: "Receive your detailed score report and skill breakdown within 24 hours.",
+    why: "Know exactly where you stand and how you can improve.",
     icon: FileBarChart,
-    desc: "Get your full Industry Readiness Report within 24 hours. If you meet the benchmark, your Verified Badge activates immediately.",
-    bullets: ["Readiness report", "Verified badge", "Skill breakdown", "Career roadmap"],
+    color: "bg-emerald-500",
+    ring: "bg-emerald-50",
+    text: "text-emerald-600",
   },
   {
-    step: 6,
-    label: "Unlock Opportunities",
-    subtitle: "Priority hiring access",
-    bg: "bg-[hsl(33,100%,50%)]",
+    num: 6,
+    title: "Unlock Opportunities",
+    desc: "Get discovered by top employers and land opportunities that fit you.",
+    why: "Verified skills. More visibility. Better matches. Faster growth.",
     icon: Rocket,
-    desc: "Earn priority visibility with hiring partners and access exclusive job openings matched to your proven skills.",
-    bullets: ["Priority listing", "Hiring partners", "Exclusive jobs", "Skill matching"],
+    color: "bg-rose-500",
+    ring: "bg-rose-50",
+    text: "text-rose-600",
   },
 ];
 
-const CardVisual = ({ card, isCenter }: { card: typeof steps[0]; isCenter: boolean }) => {
-  const Icon = card.icon;
+const trustItems = [
+  { icon: ShieldIcon, label: "Secure & Proctored", desc: "Fair. Transparent. Trusted by 500+ companies.", color: "text-violet-500", bg: "bg-violet-50" },
+  { icon: Clock, label: "Quick & Easy", desc: "Complete in less than 60 minutes.", color: "text-orange-500", bg: "bg-orange-50" },
+  { icon: BarChart3, label: "Skill-Focused", desc: "Real skills. Real score. Real opportunities.", color: "text-rose-500", bg: "bg-rose-50" },
+  { icon: Award, label: "Verified & Valued", desc: "Stand out with a score employers trust.", color: "text-amber-500", bg: "bg-amber-50" },
+  { icon: TrendingUp, label: "Career Growth", desc: "Better matches. Better roles. Better future.", color: "text-emerald-500", bg: "bg-emerald-50" },
+];
+
+const StepCard = ({ step, align }: { step: Step; align: "left" | "right" }) => {
+  const Icon = step.icon;
   return (
-    <div className={`w-full h-full ${card.bg} rounded-3xl flex flex-col items-center justify-center relative overflow-hidden`}>
-      {/* Concentric rings */}
-      {[1, 2, 3, 4, 5].map((r) => (
-        <div
-          key={r}
-          className="absolute rounded-full border border-white/[0.08]"
-          style={{
-            width: `${r * 100}px`,
-            height: `${r * 100}px`,
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
-        />
-      ))}
-
-      {/* Floating dots — center card only */}
-      {isCenter && (
-        <>
-          <motion.div className="absolute w-2 h-2 rounded-full bg-white/20" style={{ top: "22%", left: "28%" }} animate={{ y: [-8, 8, -8] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
-          <motion.div className="absolute w-1.5 h-1.5 rounded-full bg-white/15" style={{ top: "35%", right: "22%" }} animate={{ y: [6, -6, 6] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} />
-        </>
-      )}
-
-      {/* Step number badge */}
-      {isCenter && (
-        <motion.div
-          className="absolute top-5 right-5"
-          animate={{ scale: [1, 1.1, 1] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          <div className="flex items-center gap-1 bg-white/20 rounded-full px-2.5 py-1">
-            <Flame className="w-3 h-3 text-white" />
-            <span className="text-[10px] font-bold text-white">Step {card.step}</span>
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.5 }}
+      className={`flex items-stretch gap-3 md:gap-4 ${align === "right" ? "md:ml-auto" : ""}`}
+      style={{ maxWidth: 520 }}
+    >
+      {/* Main card */}
+      <div className="flex-1 bg-white border border-border rounded-2xl p-4 md:p-5 shadow-sm flex gap-4 items-start">
+        <div className="relative shrink-0">
+          <div className={`w-14 h-14 rounded-full ${step.color} flex items-center justify-center shadow-md`}>
+            <Icon className="w-6 h-6 text-white" strokeWidth={2} />
           </div>
-        </motion.div>
-      )}
-
-      {/* Icon */}
-      <motion.div
-        animate={isCenter ? { scale: [1, 1.06, 1] } : {}}
-        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-        className="mb-5"
-      >
-        <div className="w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-white/20 flex items-center justify-center">
-          <Icon className="w-10 h-10 md:w-12 md:h-12 text-white" strokeWidth={1.5} />
+          <div className={`absolute -top-1 -right-1 w-6 h-6 rounded-md ${step.color} text-white text-xs font-bold flex items-center justify-center shadow`}>
+            {step.num}
+          </div>
         </div>
-      </motion.div>
+        <div className="min-w-0">
+          <h3 className="font-bold font-display text-base md:text-lg text-foreground mb-1">{step.title}</h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
+        </div>
+      </div>
 
-      {/* Text at bottom */}
-      <h3 className="text-base md:text-lg font-bold font-display text-white text-center">{card.label}</h3>
-      <p className="text-[11px] text-white/60 font-medium mt-0.5">{card.subtitle}</p>
-    </div>
+      {/* Why it matters */}
+      <div className={`${step.ring} rounded-2xl p-3 md:p-4 w-[180px] md:w-[210px] shrink-0 flex flex-col justify-center relative`}>
+        <div className={`flex items-center gap-1.5 ${step.text} text-xs font-semibold mb-1.5`}>
+          <Star className="w-3.5 h-3.5 fill-current" />
+          Why it matters?
+        </div>
+        <p className="text-xs text-foreground/70 leading-relaxed pr-4">{step.why}</p>
+        <ChevronRight className={`w-4 h-4 ${step.text} absolute right-2 top-1/2 -translate-y-1/2`} />
+      </div>
+    </motion.div>
   );
 };
 
 const HowItWorksSection = () => {
-  const [activeIdx, setActiveIdx] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const activeStep = steps[activeIdx];
-
-  useEffect(() => {
-    if (paused) return;
-    const interval = setInterval(() => {
-      setActiveIdx((p) => (p + 1) % steps.length);
-    }, 3500);
-    return () => clearInterval(interval);
-  }, [paused]);
-
-  const handleClick = useCallback((i: number) => {
-    setActiveIdx(i);
-    setPaused(true);
-    setTimeout(() => setPaused(false), 6000);
-  }, []);
-
-  const getCardStyle = (i: number) => {
-    const offset = i - activeIdx;
-    const absOffset = Math.abs(offset);
-    const isCenter = offset === 0;
-
-    return {
-      x: offset * 180,
-      rotateY: offset * -8,
-      scale: isCenter ? 1 : 0.92 - absOffset * 0.02,
-      opacity: isCenter ? 1 : Math.max(0.3, 0.85 - absOffset * 0.2),
-      zIndex: 10 - absOffset,
-    };
-  };
-
   return (
-    <section className="bg-background py-16 md:py-24 overflow-hidden">
+    <section className="bg-gradient-to-b from-rose-50/30 to-background py-16 md:py-24 overflow-hidden">
       <div className="container px-4 md:px-6">
         {/* Header */}
-        <div className="text-center mb-12 md:mb-16">
+        <div className="text-center mb-10">
           <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <SectionBadge label="How It Works" icon={ShieldCheck} />
+            <SectionBadge label="HOW IT WORKS" icon={PlayCircle} />
           </motion.div>
           <motion.h2
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-3xl md:text-5xl font-bold font-display mt-4 mb-4"
+            className="text-3xl md:text-5xl font-bold font-display mt-3 mb-3"
           >
-            From Sign-Up to<br />
-            <span className="text-primary">Getting Hired.</span>
+            Your Journey to the Right Opportunity<br />
+            <span className="text-primary">Starts Here.</span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.15 }}
-            className="text-muted-foreground max-w-xl mx-auto mb-8"
+            className="text-muted-foreground max-w-xl mx-auto mb-6"
           >
             Six simple steps to prove your skills, earn trust, and land your dream role.
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
             <Link to="/skill-assessment">
-              <Button className="rounded-full px-8 gap-2 h-11 text-sm font-semibold bg-[hsl(33,100%,50%)] hover:bg-[hsl(33,100%,45%)] text-white border-0">
+              <Button className="rounded-xl px-8 gap-2 h-12 text-sm font-semibold bg-gradient-to-r from-rose-500 to-primary hover:opacity-95 text-white border-0 shadow-lg shadow-rose-500/20">
                 Start Your Assessment <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
+            <p className="mt-3 text-xs text-muted-foreground inline-flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+              Takes less than 60 minutes
+            </p>
           </motion.div>
         </div>
 
-        {/* Card Fan */}
+        {/* Zigzag journey */}
+        <div className="relative max-w-5xl mx-auto">
+          {/* Dotted path - decorative, hidden on small screens */}
+          <svg className="hidden md:block absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none">
+            <defs>
+              <pattern id="dots" patternUnits="userSpaceOnUse" width="6" height="6">
+                <circle cx="2" cy="2" r="1.2" fill="hsl(var(--primary) / 0.35)" />
+              </pattern>
+            </defs>
+          </svg>
+
+          <div className="flex flex-col gap-6 md:gap-8 relative">
+            {steps.map((s, i) => (
+              <StepCard key={s.num} step={s} align={i % 2 === 0 ? "left" : "right"} />
+            ))}
+          </div>
+        </div>
+
+        {/* Trust bar */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.25 }}
-          className="relative flex items-center justify-center mb-10"
-          style={{ height: "clamp(380px, 50vw, 520px)", perspective: "1600px" }}
+          className="mt-16 bg-white border border-border rounded-2xl p-6 md:p-8 max-w-5xl mx-auto shadow-sm"
         >
-          {steps.map((card, i) => {
-            const offset = i - activeIdx;
-            const isCenter = offset === 0;
-            const style = getCardStyle(i);
-
-            return (
-              <motion.div
-                key={i}
-                onClick={() => handleClick(i)}
-                className="absolute cursor-pointer select-none"
-                animate={{
-                  x: style.x,
-                  rotateY: style.rotateY,
-                  scale: style.scale,
-                  opacity: style.opacity,
-                }}
-                transition={{ type: "spring", stiffness: 220, damping: 26 }}
-                style={{
-                  zIndex: style.zIndex,
-                  transformStyle: "preserve-3d",
-                  width: "clamp(260px, 30vw, 380px)",
-                  height: "clamp(340px, 42vw, 480px)",
-                }}
-              >
-                <CardVisual card={card} isCenter={isCenter} />
-              </motion.div>
-            );
-          })}
+          <div className="flex items-center justify-center gap-2 mb-6">
+            <Sparkles className="w-4 h-4 text-primary" />
+            <h3 className="text-base md:text-lg font-bold font-display text-center">Why Thousands Trust Our Process</h3>
+            <Sparkles className="w-4 h-4 text-primary" />
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
+            {trustItems.map(({ icon: Icon, label, desc, color, bg }) => (
+              <div key={label} className="flex flex-col items-center text-center">
+                <div className={`w-12 h-12 rounded-full ${bg} flex items-center justify-center mb-2`}>
+                  <Icon className={`w-5 h-5 ${color}`} />
+                </div>
+                <p className="text-sm font-bold font-display text-foreground mb-1">{label}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
         </motion.div>
 
-        {/* Dot indicators */}
-        <div className="flex items-center justify-center gap-2 mb-12">
-          {steps.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => handleClick(i)}
-              className={`rounded-full transition-all duration-300 ${
-                i === activeIdx
-                  ? "w-8 h-2 bg-primary"
-                  : "w-2 h-2 bg-muted-foreground/25 hover:bg-muted-foreground/40"
-              }`}
-            />
-          ))}
-        </div>
-
-        {/* Active step detail */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeIdx}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.3 }}
-            className="max-w-2xl mx-auto text-center"
-          >
-            <p className="text-xs font-bold uppercase tracking-widest text-primary mb-2">
-              Step {activeStep.step} of 6
-            </p>
-            <h3 className="text-xl md:text-2xl font-bold font-display mb-3">{activeStep.label}</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed mb-5 max-w-lg mx-auto">
-              {activeStep.desc}
-            </p>
-            <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
-              {activeStep.bullets.map((bullet) => (
-                <div key={bullet} className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
-                  <span className="text-sm font-medium">{bullet}</span>
-                </div>
-              ))}
+        {/* Bottom CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-8 bg-gradient-to-r from-rose-50 via-rose-50/70 to-pink-50 border border-rose-100 rounded-2xl p-6 md:p-8 max-w-5xl mx-auto"
+        >
+          <div className="flex flex-col md:flex-row items-center gap-6">
+            <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-gradient-to-br from-rose-100 to-rose-200/60 flex items-center justify-center shrink-0 relative">
+              <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-rose-500 to-primary flex items-center justify-center shadow-lg">
+                <ShieldCheck className="w-8 h-8 md:w-10 md:h-10 text-white" />
+              </div>
+              <Sparkles className="absolute top-1 right-2 w-3 h-3 text-rose-400" />
+              <Sparkles className="absolute bottom-2 left-1 w-3 h-3 text-rose-400" />
             </div>
-          </motion.div>
-        </AnimatePresence>
+            <div className="flex-1 text-center md:text-left">
+              <h3 className="text-xl md:text-2xl font-bold font-display">
+                One Step Today.<br />
+                <span className="text-primary">A Better Tomorrow.</span>
+              </h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Your dream role is closer than you think. Take the first step now!
+              </p>
+            </div>
+            <div className="flex flex-col items-center md:items-end gap-2 shrink-0">
+              <Link to="/skill-assessment">
+                <Button className="rounded-xl px-6 gap-2 h-11 text-sm font-semibold bg-gradient-to-r from-rose-500 to-primary hover:opacity-95 text-white border-0 shadow-lg shadow-rose-500/20">
+                  Start Your Assessment <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+              <div className="flex items-center gap-2">
+                <div className="flex -space-x-2">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className={`w-7 h-7 rounded-full border-2 border-white bg-gradient-to-br ${
+                      i === 1 ? "from-rose-300 to-rose-400" : i === 2 ? "from-orange-300 to-orange-400" : "from-violet-300 to-violet-400"
+                    }`} />
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  <span className="font-semibold text-foreground">18,731+ professionals</span> already took<br />
+                  their first step. Will you be next?
+                </p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Footer strip */}
+        <div className="mt-6 max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3 text-xs text-muted-foreground border-t border-border pt-5">
+          <div className="flex items-center justify-center gap-2"><Building2 className="w-4 h-4 text-primary" /> Trusted by 500+ Companies</div>
+          <div className="flex items-center justify-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> 18,731+ Assessments Completed</div>
+          <div className="flex items-center justify-center gap-2"><TrendingUp className="w-4 h-4 text-primary" /> High Success Rate</div>
+          <div className="flex items-center justify-center gap-2"><Headphones className="w-4 h-4 text-primary" /> 24/7 Support</div>
+        </div>
       </div>
     </section>
   );
