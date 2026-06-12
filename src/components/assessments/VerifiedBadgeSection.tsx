@@ -53,21 +53,21 @@ const VerifiedBadgeSection = () => (
       {/* Hero banner: badge + stats */}
       <motion.div
         initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-        className="rounded-2xl border border-rose-100 bg-rose-50/40 p-5 md:p-6 mb-10"
+        className="rounded-2xl border border-rose-100 bg-rose-50/40 p-6 md:p-8 mb-14"
       >
-        <div className="grid grid-cols-1 md:grid-cols-[1.1fr_2fr] gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-[1.1fr_2fr] gap-6">
           {/* Left red panel */}
-          <div className="relative overflow-hidden rounded-xl px-7 py-8 text-white"
+          <div className="relative overflow-hidden rounded-xl px-8 py-10 text-white"
             style={{ background: "linear-gradient(135deg, #ED2938 0%, #FF5A3C 100%)" }}>
             <div className="absolute -left-4 -top-4 w-32 h-32 rounded-full bg-white/10 blur-2xl" />
-            <div className="flex items-center gap-4 relative">
+            <div className="flex items-center gap-5 relative">
               <div className="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur flex items-center justify-center shrink-0 ring-2 ring-white/20">
                 <BadgeCheck className="h-9 w-9 text-white" />
               </div>
               <div>
                 <p className="text-[20px] md:text-[22px] font-bold leading-tight">Pass the Benchmark.</p>
                 <p className="text-[20px] md:text-[22px] font-bold leading-tight">Wear the Badge.</p>
-                <p className="text-[13px] text-white/90 mt-3 leading-snug">
+                <p className="text-[13px] text-white/90 mt-4 leading-relaxed">
                   Employers prioritize verified talent.<br />Your badge makes sure you're seen first.
                 </p>
               </div>
@@ -75,18 +75,18 @@ const VerifiedBadgeSection = () => (
           </div>
 
           {/* Right stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-stretch">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-stretch">
             {stats.map((s) => {
               const Icon = s.icon;
               return (
-                <div key={s.label} className="flex items-center gap-3 px-5 py-5 rounded-xl bg-white">
+                <div key={s.label} className="flex items-center gap-4 px-6 py-7 rounded-xl bg-white">
                   <div className="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center shrink-0">
                     <Icon className="h-5 w-5 text-primary" />
                   </div>
                   <div>
                     <p className="text-3xl font-extrabold text-primary leading-none">{s.value}</p>
-                    <p className="text-[13px] font-bold text-slate-900 mt-1">{s.label}</p>
-                    <p className="text-[11px] text-slate-500 leading-tight">{s.sub}</p>
+                    <p className="text-[13px] font-bold text-slate-900 mt-2">{s.label}</p>
+                    <p className="text-[11px] text-slate-500 leading-tight mt-1">{s.sub}</p>
                   </div>
                 </div>
               );
@@ -96,7 +96,7 @@ const VerifiedBadgeSection = () => (
       </motion.div>
 
       {/* Benefit grid 4x2 */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-14">
         {benefits.map((b, i) => {
           const Icon = b.icon;
           const num = String(i + 1).padStart(2, "0");
@@ -105,16 +105,16 @@ const VerifiedBadgeSection = () => (
               key={b.title}
               initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
               transition={{ delay: i * 0.05 }}
-              className="relative rounded-xl border border-slate-200 bg-white p-6 hover:border-rose-200 hover:shadow-[0_8px_20px_rgba(237,41,56,0.08)] transition-all"
+              className="relative rounded-xl border border-slate-200 bg-white p-7 hover:border-rose-200 hover:shadow-[0_8px_20px_rgba(237,41,56,0.08)] transition-all"
             >
-              <span className="absolute top-3 right-3 text-[11px] font-bold text-primary">{num}</span>
-              <div className="flex items-start gap-3">
+              <span className="absolute top-4 right-4 text-[11px] font-bold text-primary">{num}</span>
+              <div className="flex items-start gap-4">
                 <div className="w-11 h-11 rounded-full bg-rose-50 flex items-center justify-center shrink-0">
                   <Icon className="h-5 w-5 text-primary" />
                 </div>
                 <div>
                   <p className="text-[14px] font-bold text-slate-900 leading-tight">{b.title}</p>
-                  <p className="text-[12px] text-slate-500 mt-2 leading-snug">{b.desc}</p>
+                  <p className="text-[12px] text-slate-500 mt-3 leading-relaxed">{b.desc}</p>
                 </div>
               </div>
             </motion.div>
@@ -123,43 +123,44 @@ const VerifiedBadgeSection = () => (
       </div>
 
       {/* Footer banner */}
-      <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-5">
-        <div className="rounded-2xl bg-amber-50/60 border border-amber-100 p-7 flex flex-col md:flex-row items-start md:items-center gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6">
+        <div className="rounded-2xl bg-amber-50/60 border border-amber-100 p-8 flex flex-col md:flex-row items-start md:items-center gap-8">
           <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center shrink-0 ring-1 ring-rose-100">
             <ShieldCheck className="h-7 w-7 text-primary" />
           </div>
-          <div className="md:w-[280px]">
+          <div className="md:w-[260px] shrink-0">
             <p className="text-[16px] font-bold text-slate-900 leading-tight">Private. Fair. Focused on You.</p>
-            <p className="text-[16px] font-bold text-primary leading-tight">No Last CTC Asked.</p>
-            <p className="text-[12px] text-slate-500 mt-2 leading-snug">
+            <p className="text-[16px] font-bold text-primary leading-tight mt-1">No Last CTC Asked.</p>
+            <p className="text-[12px] text-slate-500 mt-3 leading-relaxed">
               Your future matters more than your past.
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 flex-1">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 flex-1">
             {privacy.map((p) => {
               const Icon = p.icon;
               return (
-                <div key={p.title} className="flex items-start gap-2">
+                <div key={p.title} className="flex items-start gap-3">
                   <div className="w-8 h-8 rounded-md bg-white flex items-center justify-center shrink-0 ring-1 ring-rose-100">
                     <Icon className="h-4 w-4 text-primary" />
                   </div>
-                  <p className="text-[12px] font-bold text-slate-900 leading-tight">{p.title}</p>
+                  <p className="text-[12px] font-bold text-slate-900 leading-snug">{p.title}</p>
                 </div>
               );
             })}
           </div>
         </div>
 
-        <div className="rounded-2xl p-7 text-white relative overflow-hidden"
+        <div className="rounded-2xl p-8 text-white relative overflow-hidden"
           style={{ background: "linear-gradient(135deg, #ED2938 0%, #FF5A3C 100%)" }}>
           <div className="flex items-start justify-between">
             <p className="text-[16px] font-bold leading-tight">Get Your Verified Badge</p>
             <ArrowRight className="h-5 w-5" />
           </div>
-          <p className="text-[12px] text-white/90 mt-2 leading-snug">
+          <p className="text-[12px] text-white/90 mt-3 leading-relaxed">
             Take the assessment and unlock endless opportunities.
           </p>
-          <div className="flex items-center justify-between mt-5">
+          <div className="flex items-center justify-between mt-6">
+
             <div className="flex -space-x-2">
               <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face" className="w-9 h-9 rounded-full ring-2 ring-white object-cover" alt="" />
               <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&h=80&fit=crop&crop=face" className="w-9 h-9 rounded-full ring-2 ring-white object-cover" alt="" />
