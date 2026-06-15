@@ -30,7 +30,7 @@ const JobsEventsSection = () => (
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-10">
         {events.map(({ icon: Icon, title, desc, color, image, link }, i) => (
           <motion.div
             key={title}
@@ -40,11 +40,11 @@ const JobsEventsSection = () => (
             transition={{ delay: i * 0.08 }}
           >
             <Link to={link} className="block rounded-xl bg-card border border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 h-full group overflow-hidden">
-              <div className="relative h-36 overflow-hidden">
+              <div className="relative h-52 overflow-hidden">
                 <img src={image} alt={title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" width={800} height={600} />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
-              <div className="p-5">
+              <div className="p-6">
                 <div className={`h-10 w-10 rounded-lg ${color} flex items-center justify-center mb-3`}>
                   <Icon className="h-5 w-5" />
                 </div>
