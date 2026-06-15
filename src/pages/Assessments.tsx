@@ -52,6 +52,7 @@ const Assessments = () => (
       <AssessmentHero />
       <AssessmentSocialProof />
       <VerifiedBadgeSection />
+      <HowItWorksSection />
       <DigitalSkillPassportSection />
       <DreamCareerCTABanner />
 
@@ -65,7 +66,7 @@ const Assessments = () => (
       <WhoIsItForSection />
 
       {/* ── 3. HOW IT WORKS → EXPLORE ── */}
-      <HowItWorksSection />
+      
       
       <SelectAssessmentSection />
       <PlatformFeaturesSection />
