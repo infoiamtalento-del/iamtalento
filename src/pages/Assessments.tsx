@@ -50,6 +50,7 @@ const Assessments = () => (
     <Layout>
       {/* ── 1. HOOK ── */}
       <AssessmentHero />
+      <SocialProofStats />
       <AssessmentSocialProof />
       <VerifiedBadgeSection />
       <HowItWorksSection />
