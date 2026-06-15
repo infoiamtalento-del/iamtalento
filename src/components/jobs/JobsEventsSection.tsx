@@ -13,7 +13,6 @@ const events = [
   { icon: Calendar, title: "Networking Events", desc: "Connect with hiring managers and peers at curated career meetups.", color: "bg-primary/10 text-primary", image: eventNetworking, link: "/meetups" },
   { icon: Code2, title: "Hackathons", desc: "Build, compete and showcase your skills at top hackathons.", color: "bg-[hsl(33,100%,50%)]/10 text-[hsl(33,100%,50%)]", image: eventHackathon, link: "/hackathons" },
   { icon: Radio, title: "Online Webinars", desc: "Live webinars and workshops you can join from anywhere.", color: "bg-primary/10 text-primary", image: eventWebinar, link: "/webinars" },
-  { icon: Mic, title: "Podcasts", desc: "Hear industry leaders share career insights and stories.", color: "bg-[hsl(33,100%,50%)]/10 text-[hsl(33,100%,50%)]", image: eventPodcasts, link: "/podcast" },
 ];
 
 
