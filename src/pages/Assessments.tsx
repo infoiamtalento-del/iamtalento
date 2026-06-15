@@ -58,7 +58,7 @@ const Assessments = () => (
       <CareerIntelligencePackageSection />
       <CredibilityTrustSection />
       <HowItWorksSection />
-      <DigitalSkillPassportSection />
+      
       
 
       
