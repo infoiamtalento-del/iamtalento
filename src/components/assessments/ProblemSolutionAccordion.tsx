@@ -146,88 +146,78 @@ const ProblemSolutionAccordion = () => {
         </motion.div>
 
 
-        {/* Outcome bar */}
+        {/* Outcome — minimal stat row */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-10 rounded-2xl bg-rose-50/60 border border-rose-100 p-10 md:p-12"
+          className="mt-20"
         >
-          <div className="flex items-center justify-center gap-2 mb-10">
-            <h3 className="text-lg md:text-xl font-bold font-display text-slate-900">The Outcome You Deserve</h3>
+          <div className="flex items-center justify-center gap-3 mb-10">
+            <span className="h-px w-8 bg-slate-200" />
+            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">
+              The Outcome You Deserve
+            </p>
+            <span className="h-px w-8 bg-slate-200" />
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-6">
-            {outcomes.map((o, i) => {
-              const Icon = o.icon;
-              return (
-                <div key={i} className="flex items-center gap-3 justify-center md:justify-start">
-                  <div className={`h-12 w-12 rounded-full ${o.bg} flex items-center justify-center shrink-0`}>
-                    <Icon className={`h-6 w-6 ${o.color}`} />
-                  </div>
-                  <div>
-                    <p className={`text-lg font-bold ${o.color} font-display leading-tight`}>{o.stat}</p>
-                    <p className="text-xs text-slate-600 leading-tight">{o.label}</p>
-                  </div>
-                </div>
-              );
-            })}
+
+          <div className="grid grid-cols-2 md:grid-cols-5">
+            {outcomes.map((o, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.06 }}
+                className={`text-center px-4 py-6 ${i < outcomes.length - 1 ? "md:border-r border-slate-100" : ""}`}
+              >
+                <p className={`text-3xl md:text-4xl font-bold font-display ${o.color} leading-none`}>
+                  {o.stat}
+                </p>
+                <p className="text-[11px] uppercase tracking-wider text-slate-500 mt-3">
+                  {o.label}
+                </p>
+              </motion.div>
+            ))}
           </div>
         </motion.div>
 
-        {/* CTA banner */}
+        {/* CTA — light, minimal */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-10 rounded-2xl overflow-hidden relative"
-          style={{ background: "linear-gradient(135deg, hsl(355 84% 54%) 0%, hsl(355 84% 48%) 100%)" }}
+          className="mt-16 rounded-3xl bg-rose-50/40 border border-rose-100/80 px-8 md:px-14 py-10 md:py-12"
         >
-          <div className="px-6 md:px-10 py-7 md:py-8 flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
-            {/* Badge icon + heading */}
-            <div className="flex items-center gap-4 lg:flex-1">
-              <div className="h-16 w-16 md:h-20 md:w-20 rounded-2xl bg-white/15 backdrop-blur flex items-center justify-center shrink-0 border border-white/20">
-                <BadgeCheck className="h-9 w-9 md:h-11 md:w-11 text-white" />
+          <div className="flex flex-col md:flex-row items-center md:items-center gap-8 md:gap-10">
+            <div className="flex items-center gap-5 flex-1 text-center md:text-left">
+              <div className="hidden md:flex h-14 w-14 rounded-full bg-white ring-1 ring-rose-100 items-center justify-center shrink-0">
+                <BadgeCheck className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h3 className="text-xl md:text-2xl font-bold font-display text-white leading-tight">
-                  Get Your Verified Badge.
-                </h3>
-                <p className="text-base md:text-lg font-bold font-display text-white/95 leading-tight">
-                  Open Doors That Skills Deserve.
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary mb-2">
+                  Verified Badge
                 </p>
+                <h3 className="text-2xl md:text-[28px] font-bold font-display text-slate-900 leading-tight">
+                  Open doors your <span className="text-primary">skills deserve.</span>
+                </h3>
               </div>
             </div>
 
-            {/* Features */}
-            <div className="flex items-center gap-5 md:gap-6">
-              {ctaFeatures.map((f, i) => {
-                const Icon = f.icon;
-                return (
-                  <div key={i} className="flex flex-col items-center text-center">
-                    <div className="h-10 w-10 rounded-full bg-white/15 flex items-center justify-center mb-1.5">
-                      <Icon className="h-5 w-5 text-white" />
-                    </div>
-                    <p className="text-[11px] text-white font-medium leading-tight">{f.label}</p>
-                    <p className="text-[11px] text-white/85 leading-tight">{f.sub}</p>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* CTA */}
-            <div className="flex flex-col items-center lg:items-end gap-2">
+            <div className="flex flex-col items-center md:items-end gap-2 shrink-0">
               <Link to="/assessments">
-                <Button className="bg-white text-primary hover:bg-white/90 font-semibold h-11 px-6 gap-2 shadow-md">
+                <Button className="bg-primary text-white hover:bg-primary/90 font-semibold h-12 px-7 gap-2 rounded-full">
                   Get My Verified Badge <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
-              <div className="flex items-center gap-1.5 text-[11px] text-white/90">
-                <ShieldCheck className="h-3.5 w-3.5" />
+              <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
+                <ShieldCheck className="h-3.5 w-3.5 text-primary/70" />
                 Trusted by 18,731+ professionals
               </div>
             </div>
           </div>
         </motion.div>
+
       </div>
     </section>
   );
