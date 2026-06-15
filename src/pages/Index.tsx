@@ -60,7 +60,7 @@ const Index = () => (
       
       {/* <SkillCategoriesSection /> */}
       <ReviewsMarquee />
-      <ComplianceSection />
+      
       <CTASection />
     </Layout>
   </>

@@ -38,6 +38,7 @@ import PhoneMockupSection from "@/components/assessments/PhoneMockupSection";
 import PricingBundles from "@/components/assessments/PricingBundles";
 import AssessmentFAQ from "@/components/assessments/AssessmentFAQ";
 import AssessmentFinalCTA from "@/components/assessments/AssessmentFinalCTA";
+import ComplianceSection from "@/components/landing/ComplianceSection";
 
 const Assessments = () => (
   <>
@@ -79,6 +80,7 @@ const Assessments = () => (
       <PricingBundles />
       <AssessmentFAQ />
       <AssessmentFinalCTA />
+      <ComplianceSection />
     </Layout>
   </>
 );
