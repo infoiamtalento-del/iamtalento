@@ -28,6 +28,7 @@ import LiveLeaderboardSection from "@/components/assessments/LiveLeaderboardSect
 
 // 5. The Reward
 import VerifiedBadgeSection from "@/components/assessments/VerifiedBadgeSection";
+import CareerIntelligencePackageSection from "@/components/landing/CareerIntelligencePackageSection";
 import DigitalSkillPassportSection from "@/components/landing/DigitalSkillPassportSection";
 import VerifiedBadgeBentoSection from "@/components/assessments/VerifiedBadgeBentoSection";
 import DreamCareerCTABanner from "@/components/assessments/DreamCareerCTABanner";
