@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, SlidersHorizontal, X, MapPin, Briefcase, ChevronDown, Code2, Building2, FileBarChart } from "lucide-react";
+import { Search, SlidersHorizontal, X, MapPin, Briefcase, ChevronDown, Code2, Building2, FileBarChart, ShieldCheck, Target, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
