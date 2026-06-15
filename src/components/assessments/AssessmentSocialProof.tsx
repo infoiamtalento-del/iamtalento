@@ -31,10 +31,10 @@ const AnimatedStat = ({ value, symbol }: { value: string; symbol: string }) => {
 };
 
 const stats = [
-  { icon: ShieldCheck, value: "18,731", symbol: "+", label: "Professionals Verified", sub: "Trusted by leading companies" },
-  { icon: Timer, value: "92", symbol: "%", label: "Hired within 60 Days", sub: "Faster outcomes. Real impact." },
-  { icon: Building2, value: "200", symbol: "+", label: "Companies Hiring", sub: "Active hiring partners on Talento" },
-  { icon: PhoneCall, value: "3", symbol: "x", label: "More Callbacks", sub: "Compared to unverified profiles" },
+  { icon: ShieldCheck, value: "18,731", symbol: "+", label: "Professionals Verified", sub: "Trusted by leading companies", bg: "#ED2938" },
+  { icon: Timer, value: "92", symbol: "%", label: "Hired within 60 Days", sub: "Faster outcomes. Real impact.", bg: "#FF8C01" },
+  { icon: Building2, value: "200", symbol: "+", label: "Companies Hiring", sub: "Active hiring partners on Talento", bg: "#ED2938" },
+  { icon: PhoneCall, value: "3", symbol: "x", label: "More Callbacks", sub: "Compared to unverified profiles", bg: "#FF8C01" },
 ];
 
 const benefits = [
