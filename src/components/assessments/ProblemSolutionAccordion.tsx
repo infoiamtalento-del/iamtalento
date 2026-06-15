@@ -22,53 +22,36 @@ import { Link } from "react-router-dom";
 const audiences = [
   {
     icon: UserX,
-    iconBg: "bg-rose-50",
-    iconColor: "text-primary",
-    tag: "For Job Seekers",
-    tagColor: "text-primary",
-    title: "It's a Struggle to Get Noticed for the Right Reasons",
-    points: [
-      "Every job application feels like a gamble.",
-      "Last CTC is asked every time — and it limits your worth.",
-      "Your real skills get buried under irrelevant filters.",
-      "Hard to stand out in a sea of unverified profiles.",
-      "Rejections with no feedback. No clarity to improve.",
-      "Stuck in the same role. No growth. No direction.",
-    ],
+    accent: "text-primary",
+    accentBg: "bg-rose-50",
+    accentRing: "ring-rose-100",
+    accentLine: "bg-primary",
+    tag: "Job Seekers",
+    title: "Unseen by the system.",
+    line: "Real skills buried under filters. Rejections without feedback. Last CTC defining your worth.",
   },
   {
     icon: GraduationCap,
-    iconBg: "bg-orange-50",
-    iconColor: "text-orange-500",
-    tag: "For Students / Freshers",
-    tagColor: "text-orange-500",
-    title: "No Platform. No Proof. No Opportunity.",
-    points: [
-      "No proven way to showcase what you truly know.",
-      "Grades don't reflect real-world potential.",
-      "Lack of industry recognition or validation.",
-      'Miss out on opportunities because you\'re "not experienced".',
-      "Low confidence. Don't know where you stand.",
-      "Unclear path from learning to earning.",
-    ],
+    accent: "text-orange-500",
+    accentBg: "bg-orange-50",
+    accentRing: "ring-orange-100",
+    accentLine: "bg-orange-500",
+    tag: "Students & Freshers",
+    title: "No proof. No platform.",
+    line: "Grades don't show potential. No way to validate what you know — or where to start.",
   },
   {
     icon: Building2,
-    iconBg: "bg-violet-50",
-    iconColor: "text-violet-500",
-    tag: "For Employers / Recruiters",
-    tagColor: "text-violet-500",
-    title: "Hard to Find. Hard to Trust. Hard to Hire.",
-    points: [
-      "Tons of resumes. Very few relevant candidates.",
-      "Unverified skills lead to bad hires.",
-      "Manual screening wastes time and resources.",
-      "High cost of mis-hire and team inefficiency.",
-      "No standard way to objectively compare talent.",
-      "Bias, inconsistency and guesswork in hiring.",
-    ],
+    accent: "text-violet-500",
+    accentBg: "bg-violet-50",
+    accentRing: "ring-violet-100",
+    accentLine: "bg-violet-500",
+    tag: "Employers",
+    title: "Hard to find. Hard to trust.",
+    line: "Endless resumes, unverified skills, costly mis-hires. No objective way to compare talent.",
   },
 ];
+
 
 const outcomes = [
   { icon: Target, color: "text-primary", bg: "bg-rose-50", stat: "3X", label: "Better Matches" },
@@ -111,42 +94,57 @@ const ProblemSolutionAccordion = () => {
           </p>
         </motion.div>
 
-        {/* Three audience columns card */}
+        {/* Three audience columns — minimal */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="rounded-2xl border border-slate-200 bg-white shadow-sm p-8 md:p-14"
+          className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-200/80 border-y border-slate-200/80"
         >
-          <div className="grid md:grid-cols-3 gap-12 md:gap-14">
-            {audiences.map((a, i) => {
-              const Icon = a.icon;
-              return (
-                <div key={i}>
-                  <div className="flex items-start gap-4 mb-5">
-                    <div className={`h-14 w-14 rounded-full ${a.iconBg} flex items-center justify-center shrink-0`}>
-                      <Icon className={`h-7 w-7 ${a.iconColor}`} />
-                    </div>
-                    <div>
-                      <p className={`text-xs font-bold ${a.tagColor} mb-1`}>{a.tag}</p>
-                      <h3 className="text-base md:text-lg font-bold font-display text-slate-900 leading-snug">
-                        {a.title}
-                      </h3>
-                    </div>
-                  </div>
-                  <ul className="space-y-4">
-                    {a.points.map((p, j) => (
-                      <li key={j} className="flex items-start gap-3 text-[13px] text-slate-600 leading-relaxed">
-                        <XCircle className="h-4 w-4 text-rose-400 shrink-0 mt-0.5" />
-                        <span>{p}</span>
-                      </li>
-                    ))}
-                  </ul>
+          {audiences.map((a, i) => {
+            const Icon = a.icon;
+            const num = String(i + 1).padStart(2, "0");
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08 }}
+                className="group relative px-6 md:px-10 py-12 md:py-14"
+              >
+                {/* number watermark */}
+                <span className="absolute top-6 right-6 md:top-8 md:right-8 text-[11px] font-mono tracking-widest text-slate-300">
+                  {num} / 03
+                </span>
+
+                {/* icon */}
+                <div className={`h-12 w-12 rounded-full ${a.accentBg} ring-1 ${a.accentRing} flex items-center justify-center mb-8`}>
+                  <Icon className={`h-5 w-5 ${a.accent}`} />
                 </div>
-              );
-            })}
-          </div>
+
+                {/* tag */}
+                <p className={`text-[10px] font-bold uppercase tracking-[0.18em] ${a.accent} mb-3`}>
+                  {a.tag}
+                </p>
+
+                {/* headline */}
+                <h3 className="text-[22px] md:text-[26px] font-bold font-display text-slate-900 leading-[1.15] mb-5 max-w-[280px]">
+                  {a.title}
+                </h3>
+
+                {/* accent line */}
+                <span className={`block h-px w-10 ${a.accentLine} mb-5 transition-all duration-500 group-hover:w-20`} />
+
+                {/* single condensed line */}
+                <p className="text-[14px] text-slate-500 leading-relaxed max-w-[300px]">
+                  {a.line}
+                </p>
+              </motion.div>
+            );
+          })}
         </motion.div>
+
 
         {/* Outcome bar */}
         <motion.div
