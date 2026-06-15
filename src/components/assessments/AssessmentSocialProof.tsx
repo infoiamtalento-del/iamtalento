@@ -140,7 +140,7 @@ const AssessmentSocialProof = () => {
 
       {/* Stats with icons */}
       <div className="container px-4 md:px-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 rounded-2xl overflow-hidden border border-slate-200/80 bg-white">
+        <div className="grid grid-cols-2 md:grid-cols-4 rounded-2xl overflow-hidden">
           {stats.map((s, i) => {
             const Icon = s.icon;
             return (
@@ -150,17 +150,18 @@ const AssessmentSocialProof = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08 }}
-                className="flex items-center gap-4 px-6 md:px-8 py-8 md:py-10 border-slate-200/80 [&:not(:last-child)]:md:border-r [&:nth-child(odd)]:border-r md:[&:nth-child(odd)]:border-r [&:nth-child(-n+2)]:border-b md:[&:nth-child(-n+2)]:border-b-0"
+                className="flex items-center gap-4 px-5 md:px-6 py-6"
+                style={{ background: s.bg, borderRight: i < stats.length - 1 ? "1px solid rgba(255,255,255,0.18)" : "none" }}
               >
-                <div className="shrink-0 w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center">
-                  <Icon className="h-5 w-5 text-slate-700" strokeWidth={1.75} />
+                <div className="shrink-0 w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-sm">
+                  <Icon className="h-7 w-7" style={{ color: s.bg }} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-[26px] md:text-[28px] font-semibold text-slate-900 leading-none tracking-tight">
+                  <p className="text-[26px] md:text-[28px] font-bold text-white leading-none">
                     <AnimatedStat value={s.value} symbol={s.symbol} />
                   </p>
-                  <p className="text-[13px] font-medium text-slate-700 mt-1.5">{s.label}</p>
-                  <p className="text-[11px] text-slate-400 mt-0.5 leading-tight">{s.sub}</p>
+                  <p className="text-[13px] font-bold text-white mt-1">{s.label}</p>
+                  <p className="text-[11px] text-white/80 mt-0.5 leading-tight">{s.sub}</p>
                 </div>
               </motion.div>
             );
@@ -168,34 +169,6 @@ const AssessmentSocialProof = () => {
         </div>
       </div>
 
-      {/* Benefits row */}
-      <div className="container px-4 md:px-6 mt-10 md:mt-12">
-        <div className="bg-slate-50/70 border border-slate-100 rounded-2xl px-6 md:px-10 py-8 md:py-10">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8">
-            {benefits.map((b, i) => {
-              const Icon = b.icon;
-              return (
-                <motion.div
-                  key={b.title}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.06 }}
-                  className="flex items-start gap-3"
-                >
-                  <div className="shrink-0 w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center">
-                    <Icon className="h-4 w-4 text-slate-600" strokeWidth={1.75} />
-                  </div>
-                  <div>
-                    <p className="text-[13px] font-bold text-slate-900 leading-tight">{b.title}</p>
-                    <p className="text-[12px] text-slate-500 mt-1 leading-snug">{b.desc}</p>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
 
 
 
