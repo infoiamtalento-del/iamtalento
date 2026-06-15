@@ -153,14 +153,12 @@ const ProblemSolutionAccordion = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-6 rounded-2xl bg-rose-50/60 border border-rose-100 p-6 md:p-8"
+          className="mt-10 rounded-2xl bg-rose-50/60 border border-rose-100 p-10 md:p-12"
         >
-          <div className="flex items-center justify-center gap-2 mb-6">
-            <Sparkles className="h-4 w-4 text-amber-400" />
+          <div className="flex items-center justify-center gap-2 mb-10">
             <h3 className="text-lg md:text-xl font-bold font-display text-slate-900">The Outcome You Deserve</h3>
-            <Sparkles className="h-4 w-4 text-amber-400" />
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-5 md:gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-6">
             {outcomes.map((o, i) => {
               const Icon = o.icon;
               return (
