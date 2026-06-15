@@ -181,7 +181,7 @@ const ProblemSolutionAccordion = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-6 rounded-2xl overflow-hidden relative"
+          className="mt-10 rounded-2xl overflow-hidden relative"
           style={{ background: "linear-gradient(135deg, hsl(355 84% 54%) 0%, hsl(355 84% 48%) 100%)" }}
         >
           <div className="px-6 md:px-10 py-7 md:py-8 flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
