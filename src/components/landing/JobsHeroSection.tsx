@@ -30,7 +30,7 @@ const JobsHeroSection = () => {
   };
 
   return (
-    <section className="pt-32 pb-16 md:pt-44 md:pb-24 bg-accent/30 relative overflow-hidden">
+    <section className="pt-48 pb-16 md:pt-64 md:pb-24 bg-accent/30 relative overflow-hidden">
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-20 left-1/4 w-[400px] h-[400px] rounded-full bg-primary/5 blur-[100px]" />
         <div className="absolute bottom-10 right-1/4 w-80 h-80 rounded-full bg-warning/5 blur-[80px]" />
