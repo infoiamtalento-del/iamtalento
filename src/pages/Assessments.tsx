@@ -78,7 +78,6 @@ const Assessments = () => (
       <LiveLeaderboardSection />
 
       {/* ── 6. SOCIAL PROOF → CONVERT ── */}
-      <SocialProofStats />
       <CandidateStories />
       <PhoneMockupSection />
       <PricingBundles />
