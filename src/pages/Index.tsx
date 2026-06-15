@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import Layout from "@/components/layout/Layout";
-import HeroSection from "@/components/landing/HeroSection";
+import JobsHeroSection from "@/components/landing/JobsHeroSection";
 
 import IndustryReadinessSection from "@/components/landing/IndustryReadinessSection";
 import TrustAuthoritySection from "@/components/landing/TrustAuthoritySection";
@@ -36,7 +36,7 @@ const Index = () => (
       <meta name="twitter:description" content="Measure your Industry Readiness. Benchmark against real professionals. Improve with precision." />
     </Helmet>
     <Layout>
-      <HeroSection />
+      <JobsHeroSection />
       
       <JobsSocialProof />
       
