@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, SlidersHorizontal, X, MapPin, Briefcase, ChevronDown, Code2, Building2, FileBarChart } from "lucide-react";
+import { Search, SlidersHorizontal, X, MapPin, Briefcase, ChevronDown, Code2, Building2, FileBarChart, ShieldCheck, Target, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,10 +48,33 @@ const JobsHeroSection = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.15 }}
-          className="text-muted-foreground text-lg mb-10"
+          className="text-muted-foreground text-lg mb-8 max-w-xl mx-auto"
         >
-          5 lakh+ jobs for you to explore
+          Explore 5 lakh+ jobs from top companies and take the next step in your career.
         </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="flex flex-wrap items-center justify-center gap-6 md:gap-10 mb-10"
+        >
+          {[
+            { icon: ShieldCheck, title: "Verified Jobs", sub: "100% genuine opportunities" },
+            { icon: Target, title: "Personalized Matches", sub: "Jobs that match your skills" },
+            { icon: TrendingUp, title: "Your Career Edge", sub: "Insights to grow faster" },
+          ].map(({ icon: Icon, title, sub }) => (
+            <div key={title} className="flex items-center gap-3 text-left">
+              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <Icon className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <div className="text-sm font-semibold">{title}</div>
+                <div className="text-xs text-muted-foreground">{sub}</div>
+              </div>
+            </div>
+          ))}
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -59,37 +82,53 @@ const JobsHeroSection = () => {
           transition={{ delay: 0.25 }}
           className="bg-card rounded-2xl shadow-lg border border-border/50 p-3 md:p-4 flex flex-col md:flex-row items-stretch gap-2 md:gap-0"
         >
-          <div className="flex items-center gap-2 flex-1 px-3">
-            <Search className="h-5 w-5 text-muted-foreground shrink-0" />
-            <Input
-              placeholder="Enter skills / designations / companies"
-              className="border-0 shadow-none focus-visible:ring-0 bg-transparent h-12 text-base"
-            />
+          <div className="flex items-center gap-3 flex-1 px-3 text-left">
+            <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+              <Search className="h-5 w-5 text-primary" />
+            </div>
+            <div className="flex-1">
+              <div className="text-xs font-semibold">What</div>
+              <Input
+                placeholder="Skills, roles, designations or company"
+                className="border-0 shadow-none focus-visible:ring-0 bg-transparent h-7 px-0 text-sm text-muted-foreground"
+              />
+            </div>
           </div>
           <div className="hidden md:block w-px bg-border self-stretch my-2" />
-          <div className="flex items-center gap-2 flex-1 px-3">
-            <Briefcase className="h-4 w-4 text-muted-foreground shrink-0" />
-            <Select>
-              <SelectTrigger className="border-0 shadow-none focus:ring-0 bg-transparent h-12 text-base">
-                <SelectValue placeholder="Select experience" />
-              </SelectTrigger>
-              <SelectContent>
-                {experienceOptions.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
-              </SelectContent>
-            </Select>
+          <div className="flex items-center gap-3 flex-1 px-3 text-left">
+            <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+              <Briefcase className="h-5 w-5 text-primary" />
+            </div>
+            <div className="flex-1">
+              <div className="text-xs font-semibold">Experience</div>
+              <Select>
+                <SelectTrigger className="border-0 shadow-none focus:ring-0 bg-transparent h-7 px-0 text-sm text-muted-foreground">
+                  <SelectValue placeholder="Select experience" />
+                </SelectTrigger>
+                <SelectContent>
+                  {experienceOptions.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <div className="hidden md:block w-px bg-border self-stretch my-2" />
-          <div className="flex items-center gap-2 flex-1 px-3">
-            <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
-            <Input
-              placeholder="Enter location"
-              className="border-0 shadow-none focus-visible:ring-0 bg-transparent h-12 text-base"
-            />
+          <div className="flex items-center gap-3 flex-1 px-3 text-left">
+            <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+              <MapPin className="h-5 w-5 text-primary" />
+            </div>
+            <div className="flex-1">
+              <div className="text-xs font-semibold">Location</div>
+              <Input
+                placeholder="Enter location"
+                className="border-0 shadow-none focus-visible:ring-0 bg-transparent h-7 px-0 text-sm text-muted-foreground"
+              />
+            </div>
           </div>
-          <Button className="bg-primary text-primary-foreground hover:bg-primary/90 h-12 px-8 rounded-xl gap-2 shrink-0 text-base">
-            <Search className="h-4 w-4" /> Search
+          <Button className="bg-primary text-primary-foreground hover:bg-primary/90 h-14 px-8 rounded-xl gap-2 shrink-0 text-base">
+            <Search className="h-4 w-4" /> Search Jobs
           </Button>
         </motion.div>
+
 
         <motion.div
           initial={{ opacity: 0 }}
