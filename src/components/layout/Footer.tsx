@@ -36,10 +36,7 @@ const Footer = () => (
       <div className="grid grid-cols-2 md:grid-cols-6 gap-8">
         <div className="col-span-2">
           <Link to="/" className="flex items-center gap-2 mb-4">
-            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-              <Zap className="h-4 w-4 text-primary-foreground" />
-            </div>
-            <span className="text-lg font-bold font-display">IAmTalento</span>
+            <img src="/logo.png" alt="IAmTalento" className="h-8 w-auto" />
           </Link>
           <p className="text-muted-foreground text-sm max-w-xs mb-6 leading-relaxed">
             AI-powered Industry Readiness platform that connects verified talent with employers — through secure assessments, domain-expert questions, and trusted scores.
