@@ -3,7 +3,7 @@ import Layout from "@/components/layout/Layout";
 import AssessmentIntegritySection from "@/components/landing/AssessmentIntegritySection";
 import TrustAuthoritySection from "@/components/landing/TrustAuthoritySection";
 import WhoIsItForSection from "@/components/landing/WhoIsItForSection";
-import PlatformFeaturesSection from "@/components/landing/PlatformFeaturesSection";
+import JobsEventsSection from "@/components/jobs/JobsEventsSection";
 
 // 1. Hook
 import AssessmentHero from "@/components/assessments/AssessmentHero";
