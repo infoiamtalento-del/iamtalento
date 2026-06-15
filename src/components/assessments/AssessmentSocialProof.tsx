@@ -118,9 +118,9 @@ const AssessmentSocialProof = () => {
   const next = () => setStoryIdx((i) => Math.min(maxIdx, i + 1));
 
   return (
-    <section className="w-full bg-white">
+    <section className="w-full bg-white py-20 md:py-28">
       {/* Header */}
-      <div className="container px-4 md:px-6 pt-14 pb-8 text-center">
+      <div className="container px-4 md:px-6 pb-12 md:pb-16 text-center">
         <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
           <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest px-3 py-1 mb-4 rounded-full" style={{ color: "#E22C2C", background: "hsl(355 84% 54% / 0.08)" }}>
             <span className="w-1.5 h-1.5 rounded-full bg-[#E22C2C]" /> Live Results
@@ -150,7 +150,7 @@ const AssessmentSocialProof = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08 }}
-                className="flex items-center gap-4 px-5 md:px-6 py-6 border-slate-200/80 [&:not(:last-child)]:md:border-r [&:nth-child(odd)]:border-r md:[&:nth-child(odd)]:border-r [&:nth-child(-n+2)]:border-b md:[&:nth-child(-n+2)]:border-b-0"
+                className="flex items-center gap-4 px-6 md:px-8 py-8 md:py-10 border-slate-200/80 [&:not(:last-child)]:md:border-r [&:nth-child(odd)]:border-r md:[&:nth-child(odd)]:border-r [&:nth-child(-n+2)]:border-b md:[&:nth-child(-n+2)]:border-b-0"
               >
                 <div className="shrink-0 w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center">
                   <Icon className="h-5 w-5 text-slate-700" strokeWidth={1.75} />
@@ -169,9 +169,9 @@ const AssessmentSocialProof = () => {
       </div>
 
       {/* Benefits row */}
-      <div className="container px-4 md:px-6 mt-6">
-        <div className="bg-slate-50/70 border border-slate-100 rounded-2xl px-5 md:px-7 py-6">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-5">
+      <div className="container px-4 md:px-6 mt-10 md:mt-12">
+        <div className="bg-slate-50/70 border border-slate-100 rounded-2xl px-6 md:px-10 py-8 md:py-10">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8">
             {benefits.map((b, i) => {
               const Icon = b.icon;
               return (
