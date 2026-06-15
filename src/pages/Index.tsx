@@ -57,7 +57,7 @@ const Index = () => (
       
       
       
-      <WhoIsItForSection />
+      
       {/* <SkillCategoriesSection /> */}
       <ReviewsMarquee />
       <ComplianceSection />
