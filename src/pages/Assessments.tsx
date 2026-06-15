@@ -56,6 +56,7 @@ const Assessments = () => (
       <AssessmentSocialProof />
       <VerifiedBadgeSection />
       <CareerIntelligencePackageSection />
+      <CredibilityTrustSection />
       <HowItWorksSection />
       <DigitalSkillPassportSection />
       
