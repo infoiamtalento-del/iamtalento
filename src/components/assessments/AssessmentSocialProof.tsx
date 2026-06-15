@@ -198,47 +198,8 @@ const AssessmentSocialProof = () => {
         </div>
       </div>
 
-      {/* Success Stories */}
-      <div className="container px-4 md:px-6 mt-6">
-        <div className="bg-rose-50/40 border border-rose-100/60 rounded-2xl px-5 md:px-7 py-6">
-          <div className="flex items-center gap-5">
-            {/* Left intro + nav */}
-            <div className="hidden md:flex flex-col w-[200px] shrink-0">
-              <h3 className="text-xl font-bold text-slate-900">Success Stories</h3>
-              <span className="w-10 h-[2px] bg-[#ED2938] mt-1 mb-3" />
-              <p className="text-[13px] text-slate-600 leading-snug">
-                Real people. Real results.<br />
-                <span className="font-semibold text-slate-900">Real careers accelerated.</span>
-              </p>
-              <button className="mt-4 inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#ED2938] border border-[#ED2938] rounded-full px-3 py-1.5 w-fit hover:bg-[#ED2938] hover:text-white transition-colors">
-                View More Stories <ArrowRight className="h-3.5 w-3.5" />
-              </button>
-            </div>
 
-            {/* Carousel */}
-            <button onClick={prev} disabled={storyIdx === 0} className="hidden md:flex w-9 h-9 rounded-full bg-white border border-slate-200 items-center justify-center text-slate-500 hover:text-slate-900 disabled:opacity-40 shrink-0">
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            <div className="flex-1 overflow-hidden">
-              <motion.div
-                className="flex gap-4"
-                animate={{ x: `calc(-${storyIdx} * (100% / ${visibleCount} + 16px / ${visibleCount}))` }}
-                transition={{ type: "spring", stiffness: 200, damping: 30 }}
-                style={{ width: `calc((100% / ${visibleCount}) * ${stories.length} + ${(stories.length - visibleCount) * 16}px)` }}
-              >
-                {stories.map((s) => (
-                  <div key={s.name} style={{ flex: `0 0 calc(100% / ${stories.length})` }}>
-                    <StoryCard s={s} />
-                  </div>
-                ))}
-              </motion.div>
-            </div>
-            <button onClick={next} disabled={storyIdx >= maxIdx} className="hidden md:flex w-9 h-9 rounded-full bg-white border border-slate-200 items-center justify-center text-slate-500 hover:text-slate-900 disabled:opacity-40 shrink-0">
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-      </div>
+
 
 
 
