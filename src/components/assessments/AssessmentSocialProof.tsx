@@ -183,8 +183,8 @@ const AssessmentSocialProof = () => {
                   transition={{ delay: i * 0.06 }}
                   className="flex items-start gap-3"
                 >
-                  <div className="shrink-0 w-9 h-9 rounded-full bg-rose-50 flex items-center justify-center">
-                    <Icon className="h-4 w-4 text-[#ED2938]" />
+                  <div className="shrink-0 w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center">
+                    <Icon className="h-4 w-4 text-slate-600" strokeWidth={1.75} />
                   </div>
                   <div>
                     <p className="text-[13px] font-bold text-slate-900 leading-tight">{b.title}</p>
