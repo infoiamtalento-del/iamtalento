@@ -86,14 +86,14 @@ const ctaFeatures = [
 
 const ProblemSolutionAccordion = () => {
   return (
-    <section className="bg-white py-16 md:py-20">
+    <section className="bg-white py-24 md:py-32">
       <div className="max-w-[1200px] mx-auto px-4 md:px-6">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-10 md:mb-12"
+          className="text-center mb-16 md:mb-20"
         >
           <span
             className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest px-3 py-1 mb-4 rounded-full"
