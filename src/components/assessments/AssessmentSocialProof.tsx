@@ -118,9 +118,9 @@ const AssessmentSocialProof = () => {
   const next = () => setStoryIdx((i) => Math.min(maxIdx, i + 1));
 
   return (
-    <section className="w-full bg-white">
+    <section className="w-full bg-white py-20 md:py-28">
       {/* Header */}
-      <div className="container px-4 md:px-6 pt-14 pb-8 text-center">
+      <div className="container px-4 md:px-6 pb-12 md:pb-16 text-center">
         <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
           <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest px-3 py-1 mb-4 rounded-full" style={{ color: "#E22C2C", background: "hsl(355 84% 54% / 0.08)" }}>
             <span className="w-1.5 h-1.5 rounded-full bg-[#E22C2C]" /> Live Results
