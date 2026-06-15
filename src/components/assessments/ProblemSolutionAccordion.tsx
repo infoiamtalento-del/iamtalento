@@ -116,9 +116,9 @@ const ProblemSolutionAccordion = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="rounded-2xl border border-slate-200 bg-white shadow-sm p-6 md:p-10"
+          className="rounded-2xl border border-slate-200 bg-white shadow-sm p-8 md:p-14"
         >
-          <div className="grid md:grid-cols-3 gap-8 md:gap-10">
+          <div className="grid md:grid-cols-3 gap-12 md:gap-14">
             {audiences.map((a, i) => {
               const Icon = a.icon;
               return (
