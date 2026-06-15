@@ -51,7 +51,7 @@ const Index = () => (
       {/* <CandidateJourneySection /> */}
       <GetHiredBanner />
       <IndustryReadinessSection />
-      <TrustAuthoritySection />
+      
       <JobsEventsSection />
       <HackathonSpotlightSection />
       
