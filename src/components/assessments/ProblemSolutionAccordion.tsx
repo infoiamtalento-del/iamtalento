@@ -94,42 +94,57 @@ const ProblemSolutionAccordion = () => {
           </p>
         </motion.div>
 
-        {/* Three audience columns card */}
+        {/* Three audience columns — minimal */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="rounded-2xl border border-slate-200 bg-white shadow-sm p-8 md:p-14"
+          className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-200/80 border-y border-slate-200/80"
         >
-          <div className="grid md:grid-cols-3 gap-12 md:gap-14">
-            {audiences.map((a, i) => {
-              const Icon = a.icon;
-              return (
-                <div key={i}>
-                  <div className="flex items-start gap-4 mb-5">
-                    <div className={`h-14 w-14 rounded-full ${a.iconBg} flex items-center justify-center shrink-0`}>
-                      <Icon className={`h-7 w-7 ${a.iconColor}`} />
-                    </div>
-                    <div>
-                      <p className={`text-xs font-bold ${a.tagColor} mb-1`}>{a.tag}</p>
-                      <h3 className="text-base md:text-lg font-bold font-display text-slate-900 leading-snug">
-                        {a.title}
-                      </h3>
-                    </div>
-                  </div>
-                  <ul className="space-y-4">
-                    {a.points.map((p, j) => (
-                      <li key={j} className="flex items-start gap-3 text-[13px] text-slate-600 leading-relaxed">
-                        <XCircle className="h-4 w-4 text-rose-400 shrink-0 mt-0.5" />
-                        <span>{p}</span>
-                      </li>
-                    ))}
-                  </ul>
+          {audiences.map((a, i) => {
+            const Icon = a.icon;
+            const num = String(i + 1).padStart(2, "0");
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08 }}
+                className="group relative px-6 md:px-10 py-12 md:py-14"
+              >
+                {/* number watermark */}
+                <span className="absolute top-6 right-6 md:top-8 md:right-8 text-[11px] font-mono tracking-widest text-slate-300">
+                  {num} / 03
+                </span>
+
+                {/* icon */}
+                <div className={`h-12 w-12 rounded-full ${a.accentBg} ring-1 ${a.accentRing} flex items-center justify-center mb-8`}>
+                  <Icon className={`h-5 w-5 ${a.accent}`} />
                 </div>
-              );
-            })}
-          </div>
+
+                {/* tag */}
+                <p className={`text-[10px] font-bold uppercase tracking-[0.18em] ${a.accent} mb-3`}>
+                  {a.tag}
+                </p>
+
+                {/* headline */}
+                <h3 className="text-[22px] md:text-[26px] font-bold font-display text-slate-900 leading-[1.15] mb-5 max-w-[280px]">
+                  {a.title}
+                </h3>
+
+                {/* accent line */}
+                <span className={`block h-px w-10 ${a.accentLine} mb-5 transition-all duration-500 group-hover:w-20`} />
+
+                {/* single condensed line */}
+                <p className="text-[14px] text-slate-500 leading-relaxed max-w-[300px]">
+                  {a.line}
+                </p>
+              </motion.div>
+            );
+          })}
         </motion.div>
+
 
         {/* Outcome bar */}
         <motion.div
