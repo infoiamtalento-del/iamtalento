@@ -50,6 +50,7 @@ const Assessments = () => (
     <Layout>
       {/* ── 1. HOOK ── */}
       <AssessmentHero />
+      <SocialProofStats />
       <AssessmentSocialProof />
       <VerifiedBadgeSection />
       <HowItWorksSection />
@@ -77,7 +78,6 @@ const Assessments = () => (
       <LiveLeaderboardSection />
 
       {/* ── 6. SOCIAL PROOF → CONVERT ── */}
-      <SocialProofStats />
       <CandidateStories />
       <PhoneMockupSection />
       <PricingBundles />
