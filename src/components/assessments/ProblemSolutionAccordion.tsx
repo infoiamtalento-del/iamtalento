@@ -86,14 +86,14 @@ const ctaFeatures = [
 
 const ProblemSolutionAccordion = () => {
   return (
-    <section className="bg-white py-16 md:py-20">
+    <section className="bg-white py-24 md:py-32">
       <div className="max-w-[1200px] mx-auto px-4 md:px-6">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-10 md:mb-12"
+          className="text-center mb-16 md:mb-20"
         >
           <span
             className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest px-3 py-1 mb-4 rounded-full"
@@ -116,9 +116,9 @@ const ProblemSolutionAccordion = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="rounded-2xl border border-slate-200 bg-white shadow-sm p-6 md:p-10"
+          className="rounded-2xl border border-slate-200 bg-white shadow-sm p-8 md:p-14"
         >
-          <div className="grid md:grid-cols-3 gap-8 md:gap-10">
+          <div className="grid md:grid-cols-3 gap-12 md:gap-14">
             {audiences.map((a, i) => {
               const Icon = a.icon;
               return (
@@ -134,9 +134,9 @@ const ProblemSolutionAccordion = () => {
                       </h3>
                     </div>
                   </div>
-                  <ul className="space-y-2.5">
+                  <ul className="space-y-4">
                     {a.points.map((p, j) => (
-                      <li key={j} className="flex items-start gap-2.5 text-[13px] text-slate-600 leading-relaxed">
+                      <li key={j} className="flex items-start gap-3 text-[13px] text-slate-600 leading-relaxed">
                         <XCircle className="h-4 w-4 text-rose-400 shrink-0 mt-0.5" />
                         <span>{p}</span>
                       </li>
@@ -153,14 +153,12 @@ const ProblemSolutionAccordion = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-6 rounded-2xl bg-rose-50/60 border border-rose-100 p-6 md:p-8"
+          className="mt-10 rounded-2xl bg-rose-50/60 border border-rose-100 p-10 md:p-12"
         >
-          <div className="flex items-center justify-center gap-2 mb-6">
-            <Sparkles className="h-4 w-4 text-amber-400" />
+          <div className="flex items-center justify-center gap-2 mb-10">
             <h3 className="text-lg md:text-xl font-bold font-display text-slate-900">The Outcome You Deserve</h3>
-            <Sparkles className="h-4 w-4 text-amber-400" />
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-5 md:gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-6">
             {outcomes.map((o, i) => {
               const Icon = o.icon;
               return (
@@ -183,7 +181,7 @@ const ProblemSolutionAccordion = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-6 rounded-2xl overflow-hidden relative"
+          className="mt-10 rounded-2xl overflow-hidden relative"
           style={{ background: "linear-gradient(135deg, hsl(355 84% 54%) 0%, hsl(355 84% 48%) 100%)" }}
         >
           <div className="px-6 md:px-10 py-7 md:py-8 flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
