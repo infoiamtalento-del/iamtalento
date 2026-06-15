@@ -22,7 +22,7 @@ import CareerTransformationSection from "@/components/landing/CareerTransformati
 import FreeAccessSection from "@/components/landing/FreeAccessSection";
 import DigitalSkillPassportSection from "@/components/landing/DigitalSkillPassportSection";
 import GetHiredBanner from "@/components/landing/GetHiredBanner";
-import JobsEventsSection from "@/components/jobs/JobsEventsSection";
+import PlatformFeaturesSection from "@/components/landing/PlatformFeaturesSection";
 
 const Index = () => (
   <>
