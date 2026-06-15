@@ -1,10 +1,40 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Eye, CheckCircle2, Shield, Users, Play, Sparkles } from "lucide-react";
+import { ArrowRight, Play, Sparkles, TrendingUp, ShieldCheck, Award, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import SectionBadge from "@/components/ui/section-badge";
 import assessmentHeroPerson from "@/assets/assessment-hero-person.jpg";
 
+const usps = [
+  { icon: Target, text: "Role-Specific Assessments" },
+  { icon: TrendingUp, text: "Industry Readiness Score" },
+  { icon: Sparkles, text: "AI Skill Gap Analysis" },
+  { icon: Award, text: "Verified Skill Badge" },
+];
+
+const typewriterText = "You Don't Lack Talent. You Lack Proof.";
+
 const AssessmentHero = () => {
+  const [displayedChars, setDisplayedChars] = useState(0);
+
+  useEffect(() => {
+    if (displayedChars < typewriterText.length) {
+      const timeout = setTimeout(() => setDisplayedChars((prev) => prev + 1), 50);
+      return () => clearTimeout(timeout);
+    }
+  }, [displayedChars]);
+
+  const displayed = typewriterText.slice(0, displayedChars);
+  const isTyping = displayedChars < typewriterText.length;
+  const splitIdx = typewriterText.indexOf("Talent.") + 7;
+  const line1 = displayed.slice(0, Math.min(displayedChars, splitIdx));
+  const line2 = displayedChars > splitIdx ? displayed.slice(splitIdx) : "";
+  const proofStart = typewriterText.indexOf("Proof.");
+  const hasProof = displayedChars >= proofStart + 6;
+  const line2BeforeProof = hasProof ? line2.slice(0, line2.indexOf("Proof.")) : line2;
+  const proofText = hasProof ? "Proof." : "";
+
   return (
     <section className="relative pt-32 pb-20 md:pt-44 md:pb-32 overflow-hidden bg-accent/30">
       <div className="absolute inset-0 -z-10">
@@ -13,56 +43,71 @@ const AssessmentHero = () => {
       </div>
 
       <div className="container px-4 md:px-6">
-        {/* Top row: text left, card right */}
         <div className="grid lg:grid-cols-[1fr_1.15fr] gap-10 lg:gap-14 items-center">
-          {/* Left — Copy */}
+          {/* Left — Copy (from home hero) */}
           <div>
             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }}>
-              <SectionBadge label="AI-Powered Skill Assessments" icon={Sparkles} className="mb-6" />
+              <SectionBadge label="AI-Powered Industry Readiness Platform" icon={Sparkles} className="mb-6" />
             </motion.div>
 
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold font-display leading-[1.08] mb-6 tracking-tight"
-            >
-              Your Skills Are
-              <br />
-              Only Worth What
-              <br />
-              <span className="gradient-text">You Can Prove.</span>
-            </motion.h1>
+            <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold font-display leading-[1.08] mb-6 tracking-tight min-h-[7rem]">
+              <span>{line1}</span>
+              {line1.length >= splitIdx && <br />}
+              <span>{line2BeforeProof}</span>
+              {proofText && <span className="gradient-text">{proofText}</span>}
+              {isTyping && (
+                <motion.span
+                  className="inline-block w-[3px] h-[1em] bg-primary ml-1 align-middle"
+                  animate={{ opacity: [1, 0] }}
+                  transition={{ duration: 0.6, repeat: Infinity }}
+                />
+              )}
+            </h1>
 
             <motion.p
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15 }}
+              transition={{ delay: 2.2 }}
               className="text-lg text-muted-foreground max-w-lg mb-8 leading-relaxed"
             >
-              AI-powered, proctored skill assessments that benchmark you against real industry standards — and prove it to employers.
+              Get your AI-powered Industry Readiness Score and know exactly where you stand in today's competitive job market. Verified by domain experts. Trusted by employers.
             </motion.p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.25 }}
-              className="flex flex-wrap gap-3 mb-8"
-            >
-              <Button size="lg" className="bg-[hsl(33,100%,50%)] text-white hover:bg-[hsl(33,100%,45%)] border-0 gap-2 h-12 px-6 font-bold">
-                Start Your Assessment <ArrowRight className="h-4 w-4" />
-              </Button>
-              <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 border-0 gap-2 h-12 px-6 font-bold">
-                <Eye className="h-4 w-4" /> View Sample Report
-              </Button>
+            <div className="grid grid-cols-2 gap-3 mb-8 max-w-md">
+              {usps.map(({ icon: Icon, text }, i) => (
+                <motion.div
+                  key={text}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 2.4 + i * 0.08 }}
+                  className="flex items-center gap-2.5 text-sm"
+                >
+                  <Icon className="h-4 w-4 text-primary shrink-0" />
+                  <span className="text-muted-foreground">{text}</span>
+                </motion.div>
+              ))}
+            </div>
+
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.8 }} className="flex flex-wrap gap-4 mb-8">
+              <Link to="/assessments">
+                <Button size="lg" className="bg-[hsl(33,100%,50%)] text-white hover:bg-[hsl(33,100%,45%)] border-0 gap-2 h-12 px-6">
+                  Take Your Assessment <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+              <Link to="/for-employers">
+                <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 border-0 gap-2 h-12 px-6">
+                  I'm an Employer
+                </Button>
+              </Link>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }} className="flex flex-wrap items-center gap-6 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1.5"><Users className="h-3.5 w-3.5 text-primary" /> 18,731+ verified</span>
-              <span className="flex items-center gap-1.5"><Shield className="h-3.5 w-3.5 text-primary" /> AI Proctored</span>
-              <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-primary" /> Results in 24h</span>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 3 }} className="flex flex-wrap items-center gap-6 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5 text-primary" /> SOC 2 Compliant</span>
+              <span className="flex items-center gap-1.5"><Award className="h-3.5 w-3.5 text-primary" /> AI-Verified Certification</span>
+              <span className="flex items-center gap-1.5"><TrendingUp className="h-3.5 w-3.5 text-primary" /> 12,000+ Professionals</span>
             </motion.div>
           </div>
+
 
           {/* Right — Wide red card */}
           <motion.div

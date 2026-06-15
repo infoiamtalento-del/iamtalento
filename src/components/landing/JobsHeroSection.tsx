@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Search, SlidersHorizontal, X, MapPin, Briefcase, ChevronDown, Code2, Building2 } from "lucide-react";
+import { Search, SlidersHorizontal, X, MapPin, Briefcase, ChevronDown, Code2, Building2, FileBarChart } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -90,17 +91,29 @@ const JobsHeroSection = () => {
           </Button>
         </motion.div>
 
-        <motion.button
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          onClick={() => setShowAdvanced(!showAdvanced)}
-          className="mt-4 inline-flex items-center gap-2 text-sm text-primary font-medium hover:underline"
+          className="mt-4 flex flex-wrap items-center justify-center gap-3"
         >
-          <SlidersHorizontal className="h-4 w-4" />
-          {showAdvanced ? "Hide Advanced Search" : "Advanced Search"}
-          <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", showAdvanced && "rotate-180")} />
-        </motion.button>
+          <button
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            className="inline-flex items-center gap-2 text-sm text-primary font-medium hover:underline"
+          >
+            <SlidersHorizontal className="h-4 w-4" />
+            {showAdvanced ? "Hide Advanced Search" : "Advanced Search"}
+            <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", showAdvanced && "rotate-180")} />
+          </button>
+          <span className="hidden sm:inline text-muted-foreground/40">|</span>
+          <Link
+            to="/assessments"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-[hsl(33,100%,50%)] hover:text-[hsl(33,100%,45%)] hover:underline"
+          >
+            <FileBarChart className="h-4 w-4" />
+            Get Your Career Intelligence Report
+          </Link>
+        </motion.div>
 
         {showAdvanced && (
           <motion.div
