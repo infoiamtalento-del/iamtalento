@@ -16,7 +16,7 @@ import JobProfileAssessmentSection from "@/components/landing/JobProfileAssessme
 import HackathonSpotlightSection from "@/components/landing/HackathonSpotlightSection";
 import FeaturedCompanies from "@/components/jobs/FeaturedCompanies";
 import WebinarHowItWorksSection from "@/components/webinars/WebinarHowItWorksSection";
-import HackathonSocialProof from "@/components/hackathons/HackathonSocialProof";
+import JobsSocialProof from "@/components/jobs/JobsSocialProof";
 import CareerIntelligencePackageSection from "@/components/landing/CareerIntelligencePackageSection";
 import CareerTransformationSection from "@/components/landing/CareerTransformationSection";
 import FreeAccessSection from "@/components/landing/FreeAccessSection";
@@ -38,7 +38,7 @@ const Index = () => (
     <Layout>
       <HeroSection />
       
-      <HackathonSocialProof />
+      <JobsSocialProof />
       
       
       <JobProfileAssessmentSection />
