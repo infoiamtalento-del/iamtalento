@@ -69,7 +69,7 @@ const Assessments = () => (
       {/* ── 3. HOW IT WORKS → EXPLORE ── */}
       
       
-      <PlatformFeaturesSection />
+      <JobsEventsSection />
 
       {/* ── 4. TRUST & INTEGRITY ── */}
       <ProctoringSection />
