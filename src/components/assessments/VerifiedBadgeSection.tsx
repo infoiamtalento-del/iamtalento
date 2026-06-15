@@ -124,7 +124,6 @@ const VerifiedBadgeSection = () => (
 
     </div>
 
-    </div>
   </section>
 );
 
