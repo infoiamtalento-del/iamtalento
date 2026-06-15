@@ -122,57 +122,8 @@ const VerifiedBadgeSection = () => (
         })}
       </div>
 
-      {/* Footer banner */}
-      <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6">
-        <div className="rounded-2xl bg-amber-50/60 border border-amber-100 p-8 flex flex-col md:flex-row items-start md:items-center gap-8">
-          <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center shrink-0 ring-1 ring-rose-100">
-            <ShieldCheck className="h-7 w-7 text-primary" />
-          </div>
-          <div className="md:w-[260px] shrink-0">
-            <p className="text-[16px] font-bold text-slate-900 leading-tight">Private. Fair. Focused on You.</p>
-            <p className="text-[16px] font-bold text-primary leading-tight mt-1">No Last CTC Asked.</p>
-            <p className="text-[12px] text-slate-500 mt-3 leading-relaxed">
-              Your future matters more than your past.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 flex-1">
-            {privacy.map((p) => {
-              const Icon = p.icon;
-              return (
-                <div key={p.title} className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-md bg-white flex items-center justify-center shrink-0 ring-1 ring-rose-100">
-                    <Icon className="h-4 w-4 text-primary" />
-                  </div>
-                  <p className="text-[12px] font-bold text-slate-900 leading-snug">{p.title}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+    </div>
 
-        <div className="rounded-2xl p-8 text-white relative overflow-hidden"
-          style={{ background: "linear-gradient(135deg, #ED2938 0%, #FF5A3C 100%)" }}>
-          <div className="flex items-start justify-between">
-            <p className="text-[16px] font-bold leading-tight">Get Your Verified Badge</p>
-            <ArrowRight className="h-5 w-5" />
-          </div>
-          <p className="text-[12px] text-white/90 mt-3 leading-relaxed">
-            Take the assessment and unlock endless opportunities.
-          </p>
-          <div className="flex items-center justify-between mt-6">
-
-            <div className="flex -space-x-2">
-              <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face" className="w-9 h-9 rounded-full ring-2 ring-white object-cover" alt="" />
-              <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&h=80&fit=crop&crop=face" className="w-9 h-9 rounded-full ring-2 ring-white object-cover" alt="" />
-              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&h=80&fit=crop&crop=face" className="w-9 h-9 rounded-full ring-2 ring-white object-cover" alt="" />
-            </div>
-            <div className="text-right">
-              <p className="text-[20px] font-extrabold leading-none">18,731+</p>
-              <p className="text-[11px] text-white/85">professionals already verified</p>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </section>
 );
