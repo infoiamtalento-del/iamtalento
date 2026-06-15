@@ -134,9 +134,9 @@ const ProblemSolutionAccordion = () => {
                       </h3>
                     </div>
                   </div>
-                  <ul className="space-y-2.5">
+                  <ul className="space-y-4">
                     {a.points.map((p, j) => (
-                      <li key={j} className="flex items-start gap-2.5 text-[13px] text-slate-600 leading-relaxed">
+                      <li key={j} className="flex items-start gap-3 text-[13px] text-slate-600 leading-relaxed">
                         <XCircle className="h-4 w-4 text-rose-400 shrink-0 mt-0.5" />
                         <span>{p}</span>
                       </li>
