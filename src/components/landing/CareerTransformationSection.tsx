@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, MapPin, Play, Quote, TrendingUp } from "lucide-react";
+import { ArrowRight, BadgeCheck, MapPin, Play, TrendingUp } from "lucide-react";
 import SectionBadge from "@/components/ui/section-badge";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 type Profile = {
   name: string;
-  role: string;
-  company: string;
+  headline: string;
   location: string;
   avatar: string;
   salaryFrom: string;
@@ -19,8 +18,7 @@ type Profile = {
 const profiles: Profile[] = [
   {
     name: "Ananya Iyer",
-    role: "Performance Marketing Manager",
-    company: "ex-Wipro",
+    headline: "Performance Marketing Manager · ex-Wipro",
     location: "Bengaluru, India",
     avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80",
     salaryFrom: "₹6 LPA",
@@ -30,8 +28,7 @@ const profiles: Profile[] = [
   },
   {
     name: "Rohan Verma",
-    role: "Senior Data Analyst",
-    company: "ex-Infosys",
+    headline: "Senior Data Analyst · ex-Infosys",
     location: "Hyderabad, India",
     avatar: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=800&q=80",
     salaryFrom: "₹8 LPA",
@@ -41,8 +38,7 @@ const profiles: Profile[] = [
   },
   {
     name: "Priya Nair",
-    role: "Product Manager",
-    company: "ex-TCS",
+    headline: "Product Manager · ex-TCS",
     location: "Mumbai, India",
     avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=800&q=80",
     salaryFrom: "₹10 LPA",
@@ -58,60 +54,63 @@ const ProfileCard = ({ p, i, onPlay }: { p: Profile; i: number; onPlay: () => vo
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
     transition={{ duration: 0.5, delay: i * 0.08 }}
-    className="group relative rounded-3xl overflow-hidden bg-card shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer flex flex-col"
+    className="group relative h-[560px] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer"
     onClick={onPlay}
   >
-    {/* Portrait */}
-    <div className="relative aspect-[4/5] overflow-hidden">
-      <img
-        src={p.avatar}
-        alt={p.name}
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-      />
+    {/* Full-height portrait */}
+    <img
+      src={p.avatar}
+      alt={p.name}
+      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+    />
 
-      {/* Location pill top-left */}
-      <div className="absolute top-4 left-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-background/85 backdrop-blur-md shadow-sm">
-        <MapPin className="h-3.5 w-3.5 text-foreground" />
-        <span className="text-xs font-medium text-foreground">{p.location}</span>
-      </div>
+    {/* Gradient overlay */}
+    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-black/10" />
 
-      {/* Subtle play button center */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <button
-          type="button"
-          aria-label={`Play ${p.name}'s testimonial`}
-          className="w-14 h-14 rounded-full bg-black/35 backdrop-blur-sm text-white flex items-center justify-center ring-1 ring-white/40 transition-all duration-300 group-hover:scale-110 group-hover:bg-black/50"
-        >
-          <Play className="h-5 w-5 ml-0.5 fill-current" />
-        </button>
-      </div>
+    {/* Verified badge */}
+    <div className="absolute top-4 right-4 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-md shadow-md">
+      <BadgeCheck className="h-3.5 w-3.5 text-primary" />
+      <span className="text-[10px] font-bold uppercase tracking-wider text-foreground">Verified</span>
     </div>
 
-    {/* Dark info panel */}
-    <div className="relative bg-zinc-950 text-white p-6 pt-5 -mt-12 rounded-t-2xl">
-      <Quote className="h-5 w-5 text-primary fill-primary mb-2" />
-      <h3 className="text-xl font-bold font-display">{p.name}</h3>
-      <p className="text-sm text-white/85 mt-1 leading-snug">{p.role}</p>
-      <p className="text-sm text-white/65 leading-snug">{p.company}</p>
+    {/* Play button */}
+    <div className="absolute inset-0 flex items-center justify-center">
+      <button
+        type="button"
+        aria-label={`Play ${p.name}'s testimonial`}
+        className="w-20 h-20 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-2xl ring-8 ring-white/10 transition-all duration-300 group-hover:scale-110 group-hover:ring-white/20"
+      >
+        <Play className="h-7 w-7 ml-1 fill-current" />
+      </button>
+    </div>
 
-      <div className="mt-5 pt-4 border-t border-white/10 flex items-end justify-between gap-3">
-        <div>
-          <p className="text-[10px] uppercase tracking-wider text-white/60 font-bold mb-1.5">Package</p>
-          <div className="flex items-baseline gap-2">
-            <span className="text-sm text-white/50 line-through">{p.salaryFrom}</span>
-            <ArrowRight className="h-3.5 w-3.5 text-white/50" />
-            <span className="text-xl font-bold font-display text-white">{p.salaryTo}</span>
+    {/* Bottom info */}
+    <div className="absolute bottom-0 left-0 right-0 p-6 space-y-4">
+      <div className="space-y-1">
+        <h3 className="text-2xl font-bold font-display text-white">{p.name}</h3>
+        <p className="text-sm text-white/80">{p.headline}</p>
+        <p className="text-xs text-white/60 flex items-center gap-1 pt-0.5">
+          <MapPin className="h-3 w-3" /> {p.location}
+        </p>
+      </div>
+
+      <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-4 border border-white/15">
+        <div className="flex items-end justify-between gap-3">
+          <div>
+            <p className="text-[10px] uppercase tracking-wider text-white/70 font-bold mb-1">Package</p>
+            <div className="flex items-baseline gap-2">
+              <span className="text-xs text-white/60 line-through">{p.salaryFrom}</span>
+              <ArrowRight className="h-3 w-3 text-white/60" />
+              <span className="text-xl font-bold font-display text-white">{p.salaryTo}</span>
+            </div>
+          </div>
+          <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary text-primary-foreground text-xs font-bold shadow-md">
+            <TrendingUp className="h-3 w-3" />
+            {p.hike}
           </div>
         </div>
-        <div className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary/20 text-primary text-xs font-bold">
-          <TrendingUp className="h-3 w-3" />
-          {p.hike}
-        </div>
       </div>
     </div>
-
-    {/* Red accent bar */}
-    <div className="h-1 bg-primary" />
   </motion.div>
 );
 
@@ -121,24 +120,23 @@ const CareerTransformationSection = () => {
   return (
     <section className="py-16 md:py-24">
       <div className="container">
-        <div className="text-center max-w-3xl mx-auto mb-14">
+        <div className="text-center max-w-2xl mx-auto mb-12">
           <SectionBadge label="Career Transformation" icon={TrendingUp} />
           <motion.h2
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-4xl md:text-5xl font-bold font-display leading-tight"
+            className="text-3xl md:text-4xl font-bold font-display leading-tight"
           >
-            Real Profiles.
-            <br />
-            Real <span className="text-primary">Company Transitions.</span>
+            Real Profiles. Real{" "}
+            <span className="text-primary">Company Transitions</span>.
           </motion.h2>
-          <p className="mt-4 text-muted-foreground text-lg">
+          <p className="mt-3 text-muted-foreground">
             Professionals who used I Am Talento to switch companies, level up roles, and grow their package.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {profiles.map((p, i) => (
             <ProfileCard key={p.name} p={p} i={i} onPlay={() => setActive(p)} />
           ))}
