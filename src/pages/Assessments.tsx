@@ -30,6 +30,7 @@ import LiveLeaderboardSection from "@/components/assessments/LiveLeaderboardSect
 import VerifiedBadgeSection from "@/components/assessments/VerifiedBadgeSection";
 import DigitalSkillPassportSection from "@/components/landing/DigitalSkillPassportSection";
 import VerifiedBadgeBentoSection from "@/components/assessments/VerifiedBadgeBentoSection";
+import DreamCareerCTABanner from "@/components/assessments/DreamCareerCTABanner";
 
 // 6. Social proof → Convert
 import SocialProofStats from "@/components/assessments/SocialProofStats";
@@ -52,7 +53,8 @@ const Assessments = () => (
       <AssessmentSocialProof />
       <VerifiedBadgeSection />
       <DigitalSkillPassportSection />
-      
+      <DreamCareerCTABanner />
+
       
       <ProblemSolutionAccordion />
       <AssessmentIntegritySection />
