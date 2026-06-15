@@ -9,7 +9,7 @@ import JobsEventsSection from "@/components/jobs/JobsEventsSection";
 import AssessmentHero from "@/components/assessments/AssessmentHero";
 import AssessmentSocialProof from "@/components/assessments/AssessmentSocialProof";
 import AssessmentMarqueeSection from "@/components/assessments/AssessmentMarqueeSection";
-import ProblemSolutionAccordion from "@/components/assessments/ProblemSolutionAccordion";
+import SuccessStoriesCarousel from "@/components/assessments/SuccessStoriesCarousel";
 
 // 2. Problem → Solution
 import WhyItMattersTimeline from "@/components/assessments/WhyItMattersTimeline";
