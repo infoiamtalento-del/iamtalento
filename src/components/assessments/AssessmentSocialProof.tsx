@@ -169,9 +169,9 @@ const AssessmentSocialProof = () => {
       </div>
 
       {/* Benefits row */}
-      <div className="container px-4 md:px-6 mt-6">
-        <div className="bg-slate-50/70 border border-slate-100 rounded-2xl px-5 md:px-7 py-6">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-5">
+      <div className="container px-4 md:px-6 mt-10 md:mt-12">
+        <div className="bg-slate-50/70 border border-slate-100 rounded-2xl px-6 md:px-10 py-8 md:py-10">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8">
             {benefits.map((b, i) => {
               const Icon = b.icon;
               return (
