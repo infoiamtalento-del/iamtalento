@@ -150,7 +150,7 @@ const AssessmentSocialProof = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08 }}
-                className="flex items-center gap-4 px-5 md:px-6 py-6 border-slate-200/80 [&:not(:last-child)]:md:border-r [&:nth-child(odd)]:border-r md:[&:nth-child(odd)]:border-r [&:nth-child(-n+2)]:border-b md:[&:nth-child(-n+2)]:border-b-0"
+                className="flex items-center gap-4 px-6 md:px-8 py-8 md:py-10 border-slate-200/80 [&:not(:last-child)]:md:border-r [&:nth-child(odd)]:border-r md:[&:nth-child(odd)]:border-r [&:nth-child(-n+2)]:border-b md:[&:nth-child(-n+2)]:border-b-0"
               >
                 <div className="shrink-0 w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center">
                   <Icon className="h-5 w-5 text-slate-700" strokeWidth={1.75} />
