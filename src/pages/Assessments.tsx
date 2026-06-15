@@ -62,7 +62,7 @@ const Assessments = () => (
       
 
       
-      <ProblemSolutionAccordion />
+      <SuccessStoriesCarousel />
       <AssessmentIntegritySection />
       <SelectAssessmentSection />
 
