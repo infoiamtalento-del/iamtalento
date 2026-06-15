@@ -52,7 +52,7 @@ const Index = () => (
       <GetHiredBanner />
       <IndustryReadinessSection />
       
-      <JobsEventsSection />
+      <PlatformFeaturesSection />
       <HackathonSpotlightSection />
       
       
