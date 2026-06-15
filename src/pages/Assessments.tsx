@@ -73,8 +73,6 @@ const Assessments = () => (
 
       {/* ── 4. TRUST & INTEGRITY ── */}
       <ProctoringSection />
-      <ResultsReportSection />
-      <LiveLeaderboardSection />
 
       {/* ── 6. SOCIAL PROOF → CONVERT ── */}
       <CandidateStories />
