@@ -190,30 +190,8 @@ const HowItWorksSection = () => {
           </div>
         </div>
 
-        {/* Trust bar */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-16 bg-white border border-border rounded-2xl p-6 md:p-8 max-w-5xl mx-auto shadow-sm"
-        >
-          <div className="flex items-center justify-center gap-2 mb-6">
-            <Sparkles className="w-4 h-4 text-primary" />
-            <h3 className="text-base md:text-lg font-bold font-display text-center">Why Thousands Trust Our Process</h3>
-            <Sparkles className="w-4 h-4 text-primary" />
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
-            {trustItems.map(({ icon: Icon, label, desc, color, bg }) => (
-              <div key={label} className="flex flex-col items-center text-center">
-                <div className={`w-12 h-12 rounded-full ${bg} flex items-center justify-center mb-2`}>
-                  <Icon className={`w-5 h-5 ${color}`} />
-                </div>
-                <p className="text-sm font-bold font-display text-foreground mb-1">{label}</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
-              </div>
-            ))}
-          </div>
-        </motion.div>
+
+
 
         {/* Bottom CTA */}
         <motion.div
