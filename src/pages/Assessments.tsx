@@ -60,7 +60,7 @@ const Assessments = () => (
       
       <ProblemSolutionAccordion />
       <AssessmentIntegritySection />
-      <AssessmentMarqueeSection />
+      <SelectAssessmentSection />
 
       {/* ── 2. CREDIBILITY & TRUST ── */}
       <TrustAuthoritySection />
@@ -69,7 +69,6 @@ const Assessments = () => (
       {/* ── 3. HOW IT WORKS → EXPLORE ── */}
       
       
-      <SelectAssessmentSection />
       <PlatformFeaturesSection />
 
       {/* ── 4. TRUST & INTEGRITY ── */}
