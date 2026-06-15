@@ -249,12 +249,7 @@ const DemoProfile = () => {
         >
           <nav className="container flex items-center" aria-label="Main navigation">
             <Link to="/" className="flex items-center gap-2 group mr-auto" aria-label="IAmTalento Home">
-              <div className="h-9 w-9 rounded-lg bg-primary flex items-center justify-center transition-shadow">
-                <Zap className="h-5 w-5 text-primary-foreground" />
-              </div>
-              <span className="text-xl font-bold font-display tracking-tight">
-                IAm<span className="text-primary">Talento</span>
-              </span>
+              <img src="/logo.png" alt="IAmTalento" className="h-9 w-auto" />
             </Link>
 
             {/* Desktop */}
