@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Brain,
@@ -124,7 +124,7 @@ const items: Item[] = [
 const fixedVideoImage =
   "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=1200&q=80";
 
-const CareerIntelligencePackageSection = () => {
+const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode } = {}) => {
   const [activeIdx, setActiveIdx] = useState(0);
   const active = items[activeIdx];
   const ActiveIcon = active.icon;
@@ -313,6 +313,8 @@ const CareerIntelligencePackageSection = () => {
             </div>
           </div>
         </div>
+
+        {beforeCta}
 
         {/* CTA */}
         <div className="mt-16 text-center">
