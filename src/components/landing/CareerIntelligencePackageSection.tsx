@@ -314,6 +314,8 @@ const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode
           </div>
         </div>
 
+        {beforeCta}
+
         {/* CTA */}
         <div className="mt-16 text-center">
           <Button
