@@ -155,7 +155,19 @@ const PricingBundles = () => (
             <div className="flex items-center gap-1 text-xs font-bold text-primary mb-3">
               <Sparkles className="h-3 w-3" /> Save ₹{b.savings.toLocaleString()}
             </div>
-            <p className="text-xs mb-5" style={{ color: "#94A3B8" }}>Best for {b.best}</p>
+            <p className="text-xs mb-4" style={{ color: "#94A3B8" }}>Best for {b.best}</p>
+
+            <div className="h-px w-full bg-slate-100 mb-4" />
+
+            <ul className="space-y-2.5 mb-6">
+              {b.features.map((f) => (
+                <li key={f} className="flex items-start gap-2 text-[12.5px] leading-snug" style={{ color: "#334155" }}>
+                  <CheckCircle2 className={`h-4 w-4 shrink-0 mt-0.5 ${b.popular ? "text-primary" : "text-primary/80"}`} />
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+
             <Button
               className={`mt-auto gap-2 text-sm font-bold h-10 ${b.popular ? "bg-primary hover:bg-primary/90 text-white" : "bg-white text-primary border-primary hover:bg-primary hover:text-white"}`}
               variant={b.popular ? "default" : "outline"}
