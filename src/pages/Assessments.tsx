@@ -57,7 +57,7 @@ const Assessments = () => (
       
       <AssessmentSocialProof />
       <VerifiedBadgeSection />
-      <CareerIntelligencePackageSection beforeCta={<CareerBonusSection />} />
+      <CareerIntelligencePackageSection />
       <CredibilityTrustSection />
       <AssessmentExpertsSection />
       <HowItWorksSection />
