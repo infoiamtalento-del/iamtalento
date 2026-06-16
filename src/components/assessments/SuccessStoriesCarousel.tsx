@@ -34,6 +34,36 @@ const stories: Story[] = [
   { name: "Sahil F.", city: "Bhopal", role: "iOS Dev", company: "Swiggy", score: 93, quote: "Landed my first remote role thanks to the verified badge.", initials: "SF" },
   { name: "Neha L.", city: "Coimbatore", role: "Product Design", company: "Razorpay", score: 91, quote: "The assessment is the most honest mirror of your skills.", initials: "NL" },
   { name: "Devansh C.", city: "Nagpur", role: "Full Stack", company: "Zoho", score: 94, quote: "Loved how the report mapped directly to actual job roles.", initials: "DC" },
+  // Page 3
+  { name: "Sanya R.", city: "Mumbai", role: "Growth Marketing", company: "CRED", score: 92, quote: "My verified score opened doors I didn't even know existed.", initials: "SR" },
+  { name: "Harsh V.", city: "Bengaluru", role: "ML Engineer", company: "Meta", score: 96, quote: "The depth of the assessment pushed me to actually level up.", initials: "HV" },
+  { name: "Divya S.", city: "Chennai", role: "Data Analyst", company: "PhonePe", score: 89, quote: "Clear, fair, and actionable — exactly what I needed.", initials: "DS" },
+  { name: "Manish T.", city: "Hyderabad", role: "Backend / Go", company: "Uber", score: 91, quote: "Recruiters stopped asking for proof — the badge spoke for itself.", initials: "MT" },
+  { name: "Kavya I.", city: "Pune", role: "UX Research", company: "Atlassian", score: 90, quote: "Felt seen for my real skills, not just my resume.", initials: "KI" },
+  { name: "Yash O.", city: "Delhi", role: "Cybersecurity", company: "PwC", score: 93, quote: "Made the switch into security thanks to the role mapping.", initials: "YO" },
+  { name: "Tara N.", city: "Kochi", role: "Mobile Dev", company: "Razorpay", score: 88, quote: "Quick, rigorous, and genuinely helpful for my growth.", initials: "TN" },
+  { name: "Aman B.", city: "Patna", role: "SDET", company: "Microsoft", score: 92, quote: "The benchmark report gave me real confidence in interviews.", initials: "AB" },
+  { name: "Lavanya P.", city: "Mysore", role: "Product Ops", company: "Freshworks", score: 89, quote: "The career roadmap was the best part — totally personal.", initials: "LP" },
+  // Page 4
+  { name: "Rajat H.", city: "Bhubaneswar", role: "Data Engineer", company: "Walmart", score: 94, quote: "Verified skills got me past resume screens almost instantly.", initials: "RH" },
+  { name: "Simran K.", city: "Amritsar", role: "Brand Design", company: "Nykaa", score: 87, quote: "It's the only score I've shared that recruiters trusted on sight.", initials: "SK" },
+  { name: "Varun E.", city: "Goa", role: "AI Research", company: "OpenAI", score: 97, quote: "The rigor matched the bar of top global teams. Loved it.", initials: "VE" },
+  { name: "Niharika S.", city: "Vizag", role: "Sales Ops", company: "Salesforce", score: 88, quote: "Switched domains confidently with the readiness report.", initials: "NS" },
+  { name: "Omkar W.", city: "Nashik", role: "Java / Spring", company: "TCS", score: 90, quote: "Was a non-CS grad — this proved my skills better than any degree.", initials: "OW" },
+  { name: "Aisha Z.", city: "Hyderabad", role: "Content Design", company: "Notion", score: 91, quote: "The assessment respected my time and gave real signals.", initials: "AZ" },
+  { name: "Pranav Q.", city: "Pune", role: "SRE", company: "Atlassian", score: 93, quote: "Cracked SRE interviews with the scenario practice it suggested.", initials: "PQ" },
+  { name: "Bhumi X.", city: "Ranchi", role: "Finance Analyst", company: "Goldman Sachs", score: 89, quote: "Standardized score made cross-city hiring actually fair for me.", initials: "BX" },
+  { name: "Naveen U.", city: "Trichy", role: "Embedded Systems", company: "Qualcomm", score: 92, quote: "Niche skills finally got the spotlight they deserved.", initials: "NU" },
+  // Page 5
+  { name: "Ritika Y.", city: "Dehradun", role: "Frontend / Next.js", company: "Vercel", score: 95, quote: "Got referred internally after recruiters saw the verified score.", initials: "RY" },
+  { name: "Siddharth A.", city: "Vadodara", role: "Solutions Architect", company: "AWS", score: 94, quote: "The role-fit map nailed exactly where I should apply.", initials: "SA" },
+  { name: "Mehak J.", city: "Shimla", role: "Customer Success", company: "Zendesk", score: 88, quote: "Career switch from support to CS — made simple and credible.", initials: "MJ" },
+  { name: "Tushar G.", city: "Raipur", role: "Blockchain Dev", company: "Polygon", score: 91, quote: "Niche assessments here are seriously the best I've taken.", initials: "TG" },
+  { name: "Ira D.", city: "Madurai", role: "Product Manager", company: "Stripe", score: 96, quote: "From IC to PM — the gap analysis made the leap real.", initials: "ID" },
+  { name: "Aryan B.", city: "Jodhpur", role: "Game Dev", company: "Ubisoft", score: 90, quote: "Verified portfolio + score = my fastest interview cycle ever.", initials: "AB" },
+  { name: "Sneh F.", city: "Faridabad", role: "Marketing Ops", company: "HubSpot", score: 87, quote: "Honest, structured, and finally a credential that travels.", initials: "SF" },
+  { name: "Ojas R.", city: "Guwahati", role: "Platform Engineer", company: "Cloudflare", score: 93, quote: "Got real interview leads within days — not weeks.", initials: "OR" },
+  { name: "Pari M.", city: "Varanasi", role: "Data Science", company: "Spotify", score: 92, quote: "The proctoring made me trust my own score for the first time.", initials: "PM" },
 ];
 
 const PAGE_SIZE = 9;
