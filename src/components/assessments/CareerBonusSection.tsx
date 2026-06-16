@@ -35,7 +35,7 @@ const bonuses = [
 
 const CareerBonusSection = () => (
   <section className="py-14 bg-background">
-    <div className="container px-4 max-w-5xl mx-auto">
+    <div className="container px-4 max-w-7xl mx-auto">
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-3">
           <Gift className="w-3.5 h-3.5" />
