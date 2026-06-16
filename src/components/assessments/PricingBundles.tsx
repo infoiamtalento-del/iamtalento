@@ -3,11 +3,77 @@ import { CheckCircle2, ArrowRight, Star, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const bundles = [
-  { name: "Starter Bundle", tests: "Technical + Behavioral", price: 2999, original: 3998, best: "freshers & junior professionals", popular: false, savings: 999 },
-  { name: "Professional Bundle", tests: "Technical + Behavioral + Communication", price: 3999, original: 5997, best: "mid-level professionals", popular: false, savings: 1998 },
-  { name: "Domain Expert", tests: "Technical + Behavioral + 1 Domain Test", price: 3999, original: 5997, best: "specialists proving deep expertise", popular: false, savings: 1998 },
-  { name: "Full Verification", tests: "All 4 Core Tests", price: 4999, original: 7996, best: "maximum employer visibility", popular: true, savings: 2997 },
+  {
+    name: "Starter Bundle",
+    tests: "Technical + Behavioral",
+    price: 2999,
+    original: 3998,
+    best: "freshers & junior professionals",
+    popular: false,
+    savings: 999,
+    features: [
+      "2 Core Assessments",
+      "Industry Readiness Report",
+      "Verified Skill Badge",
+      "Employer-visible profile",
+      "Basic benchmark insights",
+      "Score valid for 12 months",
+    ],
+  },
+  {
+    name: "Professional Bundle",
+    tests: "Technical + Behavioral + Communication",
+    price: 3999,
+    original: 5997,
+    best: "mid-level professionals",
+    popular: false,
+    savings: 1998,
+    features: [
+      "3 Core Assessments",
+      "Industry Readiness Report",
+      "Verified Skill Badge",
+      "Communication proficiency score",
+      "Peer benchmark comparison",
+      "Priority profile visibility",
+    ],
+  },
+  {
+    name: "Domain Expert",
+    tests: "Technical + Behavioral + 1 Domain Test",
+    price: 3999,
+    original: 5997,
+    best: "specialists proving deep expertise",
+    popular: false,
+    savings: 1998,
+    features: [
+      "3 Assessments incl. Domain Test",
+      "In-depth Domain Expertise Report",
+      "Verified Domain Specialist Badge",
+      "Role-specific benchmarking",
+      "Recruiter shortlist boost",
+      "Featured in domain talent pool",
+    ],
+  },
+  {
+    name: "Full Verification",
+    tests: "All 4 Core Tests",
+    price: 4999,
+    original: 7996,
+    best: "maximum employer visibility",
+    popular: true,
+    savings: 2997,
+    features: [
+      "All 4 Core Assessments",
+      "Complete Career Intelligence Report",
+      "Top-tier Verified Talent Badge",
+      "Full benchmark across all skills",
+      "Top placement in employer search",
+      "Priority recruiter outreach",
+      "1:1 result walkthrough call",
+    ],
+  },
 ];
+
 
 const included = [
   "Full Industry Readiness Report",
