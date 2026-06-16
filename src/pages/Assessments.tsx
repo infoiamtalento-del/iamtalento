@@ -31,6 +31,7 @@ import VerifiedBadgeSection from "@/components/assessments/VerifiedBadgeSection"
 import CareerIntelligencePackageSection from "@/components/landing/CareerIntelligencePackageSection";
 import CredibilityTrustSection from "@/components/assessments/CredibilityTrustSection";
 import AssessmentExpertsSection from "@/components/assessments/AssessmentExpertsSection";
+import CareerBonusSection from "@/components/assessments/CareerBonusSection";
 import DigitalSkillPassportSection from "@/components/landing/DigitalSkillPassportSection";
 import VerifiedBadgeBentoSection from "@/components/assessments/VerifiedBadgeBentoSection";
 import DreamCareerCTABanner from "@/components/assessments/DreamCareerCTABanner";
