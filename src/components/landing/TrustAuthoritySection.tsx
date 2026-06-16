@@ -7,12 +7,28 @@ import {
 } from "lucide-react";
 import SectionBadge from "@/components/ui/section-badge";
 
+import microsoftLogo from "@/assets/company-logos/microsoft.svg";
+import amazonLogo from "@/assets/company-logos/amazon.svg";
+import googleLogo from "@/assets/company-logos/google.svg";
+import ibmLogo from "@/assets/company-logos/ibm.svg";
+import oracleLogo from "@/assets/company-logos/oracle.svg";
+import infosysLogo from "@/assets/company-logos/infosys.svg";
+import tcsLogo from "@/assets/company-logos/tcs.svg";
+import wiproLogo from "@/assets/company-logos/wipro.svg";
+import accentureLogo from "@/assets/company-logos/accenture.svg";
+import capgeminiLogo from "@/assets/company-logos/capgemini.svg";
+
 const partners = [
-  { name: "Microsoft", domain: "microsoft.com" },
-  { name: "Amazon", domain: "amazon.com" },
-  { name: "Deloitte", domain: "deloitte.com" },
-  { name: "Infosys", domain: "infosys.com" },
-  { name: "Swiggy", domain: "swiggy.com" },
+  { name: "Microsoft", logo: microsoftLogo },
+  { name: "Amazon", logo: amazonLogo },
+  { name: "Google", logo: googleLogo },
+  { name: "IBM", logo: ibmLogo },
+  { name: "Oracle", logo: oracleLogo },
+  { name: "Infosys", logo: infosysLogo },
+  { name: "TCS", logo: tcsLogo },
+  { name: "Wipro", logo: wiproLogo },
+  { name: "Accenture", logo: accentureLogo },
+  { name: "Capgemini", logo: capgeminiLogo },
 ];
 
 const problems = [
