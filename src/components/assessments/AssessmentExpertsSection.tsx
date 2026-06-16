@@ -1,6 +1,60 @@
 import { useState } from "react";
 import { Sparkles, Linkedin, Briefcase, Building2 } from "lucide-react";
 
+const COMPANY_DOMAINS: Record<string, string> = {
+  Swiggy: "swiggy.com", Uber: "uber.com", Ola: "olacabs.com", Nykaa: "nykaa.com",
+  Myntra: "myntra.com", "Tata CLiQ": "tatacliq.com", HubSpot: "hubspot.com",
+  Zomato: "zomato.com", MakeMyTrip: "makemytrip.com", Cred: "cred.club",
+  Paytm: "paytm.com", Razorpay: "razorpay.com", Meta: "meta.com", Google: "google.com",
+  Dentsu: "dentsu.com", Dunzo: "dunzo.com", "Tata 1mg": "1mg.com",
+  Pharmeasy: "pharmeasy.in", Netmeds: "netmeds.com", Zerodha: "zerodha.com",
+  Flipkart: "flipkart.com", Amazon: "amazon.com", Walmart: "walmart.com",
+  Sugar: "sugarcosmetics.com", Mamaearth: "mamaearth.in", Plum: "plumgoodness.com",
+  Groww: "groww.in", Upstox: "upstox.com", "The Moms Co.": "themomsco.com",
+  Inc42: "inc42.com", YourStory: "yourstory.com", "ET Prime": "economictimes.indiatimes.com",
+  "The Ken": "the-ken.com", Mint: "livemint.com", Quartz: "qz.com",
+  Notion: "notion.so", Asana: "asana.com", Figma: "figma.com", Stripe: "stripe.com",
+  Ogilvy: "ogilvy.com", DDB: "ddb.com", "Leo Burnett": "leoburnett.com",
+  Atlassian: "atlassian.com", GitLab: "gitlab.com", GitHub: "github.com",
+  TechCrunch: "techcrunch.com", Forbes: "forbes.com", "Forbes India": "forbesindia.com",
+  Freshworks: "freshworks.com", Zoho: "zoho.com", Salesforce: "salesforce.com",
+  BS: "business-standard.com", Substack: "substack.com", Medium: "medium.com",
+  Ghost: "ghost.org", "Wieden+Kennedy": "wk.com", BBDO: "bbdo.com",
+  "IBM Research": "ibm.com", Yahoo: "yahoo.com", "Walmart Labs": "walmart.com",
+  DeepMind: "deepmind.com", Microsoft: "microsoft.com", Lyft: "lyft.com",
+  Airbnb: "airbnb.com", LinkedIn: "linkedin.com", Adobe: "adobe.com",
+  Target: "target.com", eBay: "ebay.com", PhonePe: "phonepe.com",
+  Twitter: "twitter.com", Snap: "snap.com", "Goldman Sachs": "goldmansachs.com",
+  "Morgan Stanley": "morganstanley.com", JPM: "jpmorgan.com", TCS: "tcs.com",
+  Infosys: "infosys.com", Wipro: "wipro.com", JPMorgan: "jpmorgan.com",
+  Citi: "citi.com", BofA: "bankofamerica.com", "HDFC Bank": "hdfcbank.com",
+  ICICI: "icicibank.com", Axis: "axisbank.com", "Axis Bank": "axisbank.com",
+  Lendingkart: "lendingkart.com", "Capital Float": "capitalfloat.com", PwC: "pwc.com",
+  "Credit Suisse": "credit-suisse.com", UBS: "ubs.com", SBI: "sbi.co.in",
+  HDFC: "hdfcbank.com", Kotak: "kotak.com", "Yes Bank": "yesbank.in",
+  "Bajaj Finserv": "bajajfinserv.in", "Tata Capital": "tatacapital.com",
+  Sequoia: "sequoiacap.com", Accel: "accel.com", Lightspeed: "lsvp.com",
+  Deloitte: "deloitte.com", EY: "ey.com", KPMG: "kpmg.com",
+  IIFL: "iifl.com", Edelweiss: "edelweissfin.com", PayPal: "paypal.com",
+  Square: "squareup.com", Oracle: "oracle.com", Plaid: "plaid.com",
+  Vercel: "vercel.com", Netlify: "netlify.com", Cloudflare: "cloudflare.com",
+  AWS: "aws.amazon.com", Fastly: "fastly.com", DoorDash: "doordash.com",
+  Netflix: "netflix.com", Spotify: "spotify.com", Hulu: "hulu.com",
+  Shopify: "shopify.com", Autodesk: "autodesk.com", OpenAI: "openai.com",
+  Anthropic: "anthropic.com", "Google Brain": "google.com",
+  "Google DeepMind": "deepmind.com", "Meta AI": "ai.meta.com", MSR: "microsoft.com",
+  FAIR: "ai.meta.com", Apple: "apple.com", IBM: "ibm.com",
+  "Microsoft Research": "microsoft.com", Tesla: "tesla.com", Waymo: "waymo.com",
+  Cruise: "getcruise.com", "Hugging Face": "huggingface.co", Cohere: "cohere.com",
+  Mistral: "mistral.ai", Runway: "runwayml.com", Midjourney: "midjourney.com",
+  Nvidia: "nvidia.com", "Scale AI": "scale.com", "Stability AI": "stability.ai",
+};
+
+const logoUrl = (name: string) => {
+  const d = COMPANY_DOMAINS[name];
+  return d ? `https://logo.clearbit.com/${d}` : null;
+};
+
 type Expert = {
   name: string;
   title: string;
