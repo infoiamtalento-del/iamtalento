@@ -81,15 +81,19 @@ const TrustAuthoritySection = () => {
                   "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
               }}
             >
-              <div className="flex items-center gap-12 w-max animate-[marquee_30s_linear_infinite]">
-                {[...partners, ...partners].map((p, i) => (
-                  <img
-                    key={`${p.name}-${i}`}
-                    src={p.logo}
-                    alt={p.name}
-                    className="h-7 md:h-8 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity shrink-0"
-                    loading="lazy"
-                  />
+              <div className="flex w-max animate-[marquee_30s_linear_infinite]">
+                {[0, 1].map((g) => (
+                  <div key={g} className="flex items-center gap-12 pr-12 shrink-0" aria-hidden={g === 1}>
+                    {partners.map((p, i) => (
+                      <img
+                        key={`${p.name}-${g}-${i}`}
+                        src={p.logo}
+                        alt={p.name}
+                        className="h-7 md:h-8 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity shrink-0"
+                        loading="lazy"
+                      />
+                    ))}
+                  </div>
                 ))}
               </div>
               <style>{`
