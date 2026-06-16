@@ -255,10 +255,10 @@ const AssessmentExpertsSection = () => {
           {experts.map((e) => (
             <div
               key={e.name}
-              className="group relative rounded-2xl border border-border bg-card overflow-hidden hover:border-primary/40 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+              className="group relative rounded-2xl border border-border bg-card overflow-hidden hover:border-primary/40 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
             >
               {/* Square image */}
-              <div className="relative aspect-square overflow-hidden bg-muted">
+              <div className="relative aspect-square overflow-hidden bg-muted shrink-0">
                 <img
                   src={e.photo}
                   alt={e.name}
@@ -268,21 +268,21 @@ const AssessmentExpertsSection = () => {
                     (ev.currentTarget as HTMLImageElement).style.display = "none";
                   }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-transparent" />
-                {/* Name + role overlaid */}
-                <div className="absolute inset-x-0 bottom-0 p-4 text-white">
-                  <p className="font-semibold text-base leading-tight drop-shadow">{e.name}</p>
-                  <p className="text-xs text-white/85 mt-0.5 line-clamp-1">{e.title}</p>
-                </div>
               </div>
 
-              {/* Body */}
-              <div className="p-4 space-y-3">
+              {/* Body — matches image height */}
+              <div className="aspect-square p-4 flex flex-col">
+                {/* Name + title on white */}
+                <div className="mb-3">
+                  <p className="font-semibold text-base leading-tight text-foreground">{e.name}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{e.title}</p>
+                </div>
+
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Currently</span>
                   <Linkedin className="w-3.5 h-3.5 text-muted-foreground/60 group-hover:text-primary transition" />
                 </div>
-                <div className="flex items-center gap-2 -mt-1">
+                <div className="flex items-center gap-2 mt-1.5">
                   {logoUrl(e.company) && (
                     <img
                       src={logoUrl(e.company)!}
@@ -295,7 +295,7 @@ const AssessmentExpertsSection = () => {
                   <p className="text-sm font-semibold text-primary truncate">{e.company}</p>
                 </div>
 
-                <div className="pt-3 border-t border-border">
+                <div className="pt-3 mt-3 border-t border-border">
                   <div className="flex items-center gap-1.5 mb-1.5">
                     <Building2 className="w-3 h-3 text-muted-foreground" />
                     <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
@@ -323,15 +323,19 @@ const AssessmentExpertsSection = () => {
                   </div>
                 </div>
 
-                {/* Experience footer */}
-                <div className="pt-3 border-t border-border flex items-center justify-between">
-                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
-                    Experience
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-semibold">
-                    <Briefcase className="w-3 h-3" />
-                    {e.years}+ years
-                  </span>
+                {/* Experience footer — pinned to bottom */}
+                <div className="mt-auto pt-3">
+                  <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary/15 text-primary shrink-0">
+                      <Briefcase className="w-4 h-4" />
+                    </div>
+                    <div className="leading-tight">
+                      <p className="text-[9px] uppercase tracking-wider text-muted-foreground font-medium">Experience</p>
+                      <p className="text-sm font-bold text-foreground">
+                        {e.years}+ <span className="text-xs font-medium text-muted-foreground">years</span>
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
