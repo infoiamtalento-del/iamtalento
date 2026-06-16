@@ -52,7 +52,7 @@ const COMPANY_DOMAINS: Record<string, string> = {
 
 const logoUrl = (name: string) => {
   const d = COMPANY_DOMAINS[name];
-  return d ? `https://logo.clearbit.com/${d}` : null;
+  return d ? `https://www.google.com/s2/favicons?domain=${d}&sz=64` : null;
 };
 
 type Expert = {
