@@ -200,6 +200,7 @@ const AssessmentExpertsSection = () => {
             >
               <div className="flex flex-col items-center text-center">
                 <Avatar className="h-20 w-20 mb-4 ring-2 ring-primary/10 group-hover:ring-primary/30 transition">
+                  <AvatarImage src={e.photo} alt={e.name} loading="lazy" />
                   <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/5 text-primary font-semibold text-lg">
                     {e.initials}
                   </AvatarFallback>
