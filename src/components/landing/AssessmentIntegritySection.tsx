@@ -60,7 +60,7 @@ const proctorPhases = [
 
 const AssessmentIntegritySection = () => {
   const { ref, isVisible } = useScrollAnimation();
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(1);
 
   return (
     <section ref={ref} className="py-16 md:py-20 relative overflow-hidden bg-white">
