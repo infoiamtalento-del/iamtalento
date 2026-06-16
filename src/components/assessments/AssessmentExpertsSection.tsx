@@ -269,11 +269,6 @@ const AssessmentExpertsSection = () => {
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-transparent" />
-                {/* Years badge */}
-                <div className="absolute top-3 right-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-background/95 backdrop-blur text-[11px] font-semibold text-primary shadow-sm">
-                  <Briefcase className="w-3 h-3" />
-                  {e.years}+ yrs
-                </div>
                 {/* Name + role overlaid */}
                 <div className="absolute inset-x-0 bottom-0 p-4 text-white">
                   <p className="font-semibold text-base leading-tight drop-shadow">{e.name}</p>
@@ -287,7 +282,18 @@ const AssessmentExpertsSection = () => {
                   <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Currently</span>
                   <Linkedin className="w-3.5 h-3.5 text-muted-foreground/60 group-hover:text-primary transition" />
                 </div>
-                <p className="text-sm font-semibold text-primary -mt-2">{e.company}</p>
+                <div className="flex items-center gap-2 -mt-1">
+                  {logoUrl(e.company) && (
+                    <img
+                      src={logoUrl(e.company)!}
+                      alt={e.company}
+                      loading="lazy"
+                      className="w-5 h-5 rounded object-contain bg-white ring-1 ring-border"
+                      onError={(ev) => ((ev.currentTarget as HTMLImageElement).style.display = "none")}
+                    />
+                  )}
+                  <p className="text-sm font-semibold text-primary truncate">{e.company}</p>
+                </div>
 
                 <div className="pt-3 border-t border-border">
                   <div className="flex items-center gap-1.5 mb-1.5">
@@ -296,16 +302,36 @@ const AssessmentExpertsSection = () => {
                       Previously
                     </span>
                   </div>
-                  <div className="flex flex-wrap gap-1">
+                  <div className="flex flex-wrap gap-1.5">
                     {e.prevCompanies.map((c) => (
                       <span
                         key={c}
-                        className="text-[11px] px-2 py-0.5 rounded-md bg-muted text-foreground/80 font-medium"
+                        className="inline-flex items-center gap-1 text-[11px] pl-1 pr-2 py-0.5 rounded-md bg-muted text-foreground/80 font-medium"
                       >
+                        {logoUrl(c) && (
+                          <img
+                            src={logoUrl(c)!}
+                            alt={c}
+                            loading="lazy"
+                            className="w-3.5 h-3.5 rounded-sm object-contain bg-white"
+                            onError={(ev) => ((ev.currentTarget as HTMLImageElement).style.display = "none")}
+                          />
+                        )}
                         {c}
                       </span>
                     ))}
                   </div>
+                </div>
+
+                {/* Experience footer */}
+                <div className="pt-3 border-t border-border flex items-center justify-between">
+                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
+                    Experience
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-semibold">
+                    <Briefcase className="w-3 h-3" />
+                    {e.years}+ years
+                  </span>
                 </div>
               </div>
             </div>
