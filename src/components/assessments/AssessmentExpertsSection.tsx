@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sparkles, Linkedin } from "lucide-react";
 
 type Expert = {
@@ -7,12 +7,20 @@ type Expert = {
   title: string;
   company: string;
   initials: string;
+  photo: string;
 };
 
 type Track = {
   id: string;
   label: string;
   experts: Expert[];
+};
+
+// Stable hash → pravatar id (1..70 are valid portraits)
+const hashToId = (s: string) => {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  return (h % 70) + 1;
 };
 
 const make = (rows: [string, string, string][]): Expert[] =>
@@ -25,7 +33,9 @@ const make = (rows: [string, string, string][]): Expert[] =>
       .map((n) => n[0])
       .slice(0, 2)
       .join(""),
+    photo: `https://i.pravatar.cc/240?img=${hashToId(name + company)}`,
   }));
+
 
 const tracks: Track[] = [
   {
