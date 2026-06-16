@@ -64,26 +64,48 @@ const TrustAuthoritySection = () => {
           </p>
         </div>
 
-        {/* Trust strip with logos */}
-        <div className="rounded-2xl border border-border bg-card px-6 md:px-10 py-6 mb-10 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="text-center md:text-left shrink-0">
-            <div className="text-primary font-bold text-sm">TRUSTED BY 200+</div>
-            <div className="text-xs text-muted-foreground tracking-wide">LEADING COMPANIES</div>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 flex-1 md:justify-center">
-            {partners.map((p) => (
-              <img
-                key={p.name}
-                src={`https://www.google.com/s2/favicons?domain=${p.domain}&sz=128`}
-                alt={p.name}
-                className="h-7 object-contain opacity-80 hover:opacity-100 transition-opacity"
-                loading="lazy"
-              />
-            ))}
-          </div>
-          <div className="text-center md:text-right shrink-0">
-            <div className="text-xs text-muted-foreground tracking-wide">and <span className="text-primary font-bold text-sm">12K+</span></div>
-            <div className="text-xs text-muted-foreground tracking-wide">VERIFIED HIRES</div>
+        {/* Trust strip with infinite-scrolling logos */}
+        <div className="rounded-2xl border border-border bg-card mb-10 overflow-hidden">
+          <div className="flex flex-col md:flex-row items-stretch">
+            <div className="text-center md:text-left shrink-0 px-6 md:px-8 py-5 md:border-r border-border flex flex-col justify-center bg-muted/30">
+              <div className="text-primary font-bold text-sm">TRUSTED BY 200+</div>
+              <div className="text-xs text-muted-foreground tracking-wide">LEADING COMPANIES</div>
+            </div>
+
+            <div
+              className="flex-1 relative overflow-hidden py-5"
+              style={{
+                maskImage:
+                  "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+                WebkitMaskImage:
+                  "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+              }}
+            >
+              <div className="flex items-center gap-12 w-max animate-[marquee_30s_linear_infinite]">
+                {[...partners, ...partners].map((p, i) => (
+                  <img
+                    key={`${p.name}-${i}`}
+                    src={p.logo}
+                    alt={p.name}
+                    className="h-7 md:h-8 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity shrink-0"
+                    loading="lazy"
+                  />
+                ))}
+              </div>
+              <style>{`
+                @keyframes marquee {
+                  from { transform: translateX(0); }
+                  to { transform: translateX(-50%); }
+                }
+              `}</style>
+            </div>
+
+            <div className="text-center md:text-right shrink-0 px-6 md:px-8 py-5 md:border-l border-border flex flex-col justify-center bg-muted/30">
+              <div className="text-xs text-muted-foreground tracking-wide">
+                and <span className="text-primary font-bold text-sm">12K+</span>
+              </div>
+              <div className="text-xs text-muted-foreground tracking-wide">VERIFIED HIRES</div>
+            </div>
           </div>
         </div>
 
