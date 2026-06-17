@@ -268,6 +268,18 @@ const AssessmentExpertsSection = () => {
                     (ev.currentTarget as HTMLImageElement).style.display = "none";
                   }}
                 />
+                {/* Experience badge — half width, on image bottom */}
+                <div className="absolute bottom-3 left-3 w-1/2 flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-background/90 backdrop-blur-md border border-primary/30 shadow-lg">
+                  <div className="flex items-center justify-center w-7 h-7 rounded-md bg-primary/15 text-primary shrink-0">
+                    <Briefcase className="w-3.5 h-3.5" />
+                  </div>
+                  <div className="leading-tight min-w-0">
+                    <p className="text-[8px] uppercase tracking-wider text-muted-foreground font-semibold">Experience</p>
+                    <p className="text-sm font-bold text-foreground truncate">
+                      {e.years}+ <span className="text-[10px] font-medium text-muted-foreground">yrs</span>
+                    </p>
+                  </div>
+                </div>
               </div>
 
               {/* Body — matches image height */}
