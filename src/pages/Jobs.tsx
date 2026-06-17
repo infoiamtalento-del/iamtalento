@@ -267,6 +267,9 @@ const Jobs = () => {
         {/* Featured Companies */}
         <FeaturedCompanies />
 
+        {/* Salary Insights */}
+        <SalaryInsightsSection />
+
         {/* Career Resources */}
         <CareerResourcesSection />
 
