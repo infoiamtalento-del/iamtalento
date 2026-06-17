@@ -1,9 +1,10 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowRight, Sparkles, TrendingUp, Trophy, Zap } from "lucide-react";
+import { ArrowRight, Sparkles, TrendingUp, Trophy, Zap, LineChart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import SectionBadge from "@/components/ui/section-badge";
 import { cn } from "@/lib/utils";
 
 // Base CTC (in INR LPA) for 0 years experience per role — market standard baselines
@@ -61,8 +62,25 @@ const SalaryInsightsSection = () => {
     <section className="py-16 md:py-20">
       <div className="container px-4 md:px-6">
         <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold font-display mb-2">Salary Insights</h2>
-          <p className="text-muted-foreground">Compare salaries, explore growth trends, and negotiate with confidence</p>
+          <SectionBadge label="Live Salary Intelligence" icon={LineChart} />
+          <motion.h2
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-3xl md:text-4xl font-bold font-display mb-3"
+          >
+            Know Your Worth.<br />
+            <span className="text-primary">Earn What You Deserve.</span>
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto"
+          >
+            <span className="font-semibold text-foreground">Compare salaries, explore growth trends, and negotiate with confidence</span> — powered by data from 50,000+ verified Talento offers.
+          </motion.p>
         </div>
         <motion.div
           initial={{ opacity: 0, y: 24 }}
