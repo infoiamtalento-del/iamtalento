@@ -270,8 +270,8 @@ const Jobs = () => {
         {/* Salary Insights */}
         <SalaryInsightsSection />
 
-        {/* Career Resources */}
-        <CareerResourcesSection />
+        {/* Events & Meetups */}
+        <JobsEventsSection />
 
         {/* Get Job Alerts email banner */}
         <JobAlertsBanner />
