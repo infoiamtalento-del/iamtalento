@@ -1,12 +1,12 @@
 import { motion } from "framer-motion";
 
 const locations = [
-  { city: "San Francisco, CA", jobs: "12,560 jobs", img: "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=600&q=80" },
-  { city: "New York, NY", jobs: "9,230 jobs", img: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=600&q=80" },
-  { city: "London, UK", jobs: "7,450 jobs", img: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=600&q=80" },
-  { city: "Bangalore, IN", jobs: "6,780 jobs", img: "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=600&q=80" },
-  { city: "Berlin, DE", jobs: "4,320 jobs", img: "https://images.unsplash.com/photo-1587330979470-3016b6702d89?w=600&q=80" },
-  { city: "Tokyo, JP", jobs: "3,890 jobs", img: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&q=80" },
+  { city: "Bangalore, KA", jobs: "12,560 jobs", img: "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=600&q=80" },
+  { city: "Mumbai, MH", jobs: "10,420 jobs", img: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=600&q=80" },
+  { city: "Delhi, DL", jobs: "9,180 jobs", img: "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=600&q=80" },
+  { city: "Hyderabad, TS", jobs: "7,650 jobs", img: "https://images.unsplash.com/photo-1572445271230-a78b5944a659?w=600&q=80" },
+  { city: "Pune, MH", jobs: "5,930 jobs", img: "https://images.unsplash.com/photo-1599661046289-e31897846e41?w=600&q=80" },
+  { city: "Chennai, TN", jobs: "4,720 jobs", img: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&q=80" },
 ];
 
 const PopularLocationsSection = () => {
