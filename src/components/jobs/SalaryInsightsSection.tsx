@@ -59,7 +59,11 @@ const SalaryInsightsSection = () => {
 
   return (
     <section className="py-16 md:py-20">
-      <div className="container mx-auto">
+      <div className="container px-4 md:px-6">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl md:text-4xl font-bold font-display mb-2">Salary Insights</h2>
+          <p className="text-muted-foreground">Compare salaries, explore growth trends, and negotiate with confidence</p>
+        </div>
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -83,19 +87,11 @@ const SalaryInsightsSection = () => {
           </div>
 
           <div className="relative z-10 p-6 md:p-10">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
-              <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-warning/10 text-warning border border-warning/20 text-xs font-medium mb-3">
-                  <Sparkles className="h-3.5 w-3.5" />
-                  Live Salary Intelligence
-                </div>
-                <h2 className="font-display text-3xl md:text-4xl font-bold mb-2 text-foreground">
-                  Salary Insights
-                </h2>
-                <p className="text-muted-foreground max-w-xl">
-                  Compare salaries, explore growth trends, and negotiate with confidence — powered by data from 50,000+ verified Talento offers.
-                </p>
+            {/* Inline badge row */}
+            <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-warning/10 text-warning border border-warning/20 text-xs font-medium">
+                <Sparkles className="h-3.5 w-3.5" />
+                Live Salary Intelligence — 50,000+ verified Talento offers
               </div>
               <Link
                 to="/assessments"
@@ -105,6 +101,7 @@ const SalaryInsightsSection = () => {
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
+
 
             <div className="grid lg:grid-cols-[1fr_1.4fr] gap-8">
               {/* Left: Controls + stats */}
