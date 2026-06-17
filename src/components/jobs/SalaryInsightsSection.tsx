@@ -262,16 +262,16 @@ const SalaryInsightsSection = () => {
 
 
             {/* CTA */}
-            <div className="mt-8 rounded-2xl border border-warning/30 bg-gradient-to-r from-warning/15 via-warning/5 to-transparent p-5 md:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="mt-8 rounded-2xl border border-warning/40 bg-gradient-to-r from-warning/15 via-warning/5 to-transparent p-5 md:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div className="flex items-start gap-4">
                 <div className="h-12 w-12 rounded-xl bg-warning/20 text-warning flex items-center justify-center shrink-0">
                   <Zap className="h-6 w-6" />
                 </div>
                 <div>
-                  <h3 className="font-display text-lg md:text-xl font-bold mb-0.5">
+                  <h3 className="font-display text-lg md:text-xl font-bold mb-0.5 text-foreground">
                     Want to earn <span className="text-warning">2× more</span> than this?
                   </h3>
-                  <p className="text-sm text-white/70">
+                  <p className="text-sm text-muted-foreground">
                     Take the Talento Verified Assessment and unlock offers up to{" "}
                     <span className="text-warning font-semibold">{formatINR(talento * 2)}</span> from top employers.
                   </p>
@@ -290,12 +290,13 @@ const SalaryInsightsSection = () => {
   );
 };
 
-const Stat = ({ label, value, tone }: { label: string; value: string; tone?: "muted" }) => (
-  <div className={cn("rounded-xl border border-white/10 bg-white/[0.04] p-3")}>
-    <div className="text-base md:text-lg font-bold font-display">{value}</div>
-    <div className="text-[10px] uppercase tracking-wider text-white/50 mt-0.5">{label}</div>
+const Stat = ({ label, value }: { label: string; value: string }) => (
+  <div className={cn("rounded-xl border border-border bg-card p-3 shadow-sm")}>
+    <div className="text-base md:text-lg font-bold font-display text-foreground">{value}</div>
+    <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-0.5">{label}</div>
   </div>
 );
+
 
 const LegendDot = ({ color, label }: { color: string; label: string }) => (
   <span className="inline-flex items-center gap-1.5 text-white/70">
