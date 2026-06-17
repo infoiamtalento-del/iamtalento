@@ -17,11 +17,11 @@ const FeaturedJobsBanner = () => {
   return (
     <section className="py-10">
       <div className="container px-4 md:px-6">
-        <div className="bg-primary text-primary-foreground rounded-2xl p-6 md:p-8 shadow-lg">
+        <div className="bg-primary text-white rounded-2xl p-6 md:p-8 shadow-lg">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-3">
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold font-display">Featured Jobs</h2>
-              <p className="text-primary-foreground/80 text-sm mt-1">Handpicked opportunities from top companies</p>
+              <h2 className="text-2xl md:text-3xl font-bold font-display text-white">Featured Jobs</h2>
+              <p className="text-white/80 text-sm mt-1">Handpicked opportunities from top companies</p>
             </div>
             <Button variant="secondary" className="bg-card text-primary hover:bg-card/90 gap-2 self-start md:self-auto">
               View all jobs <ArrowRight className="h-4 w-4" />
@@ -35,15 +35,15 @@ const FeaturedJobsBanner = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
-                className="bg-primary-foreground/10 hover:bg-primary-foreground/15 backdrop-blur-sm border border-primary-foreground/20 rounded-xl p-4 cursor-pointer transition-all"
+                className="bg-white/10 hover:bg-white/15 backdrop-blur-sm border border-white/20 rounded-xl p-4 cursor-pointer transition-all"
               >
                 <div className="flex items-start gap-3">
                   <div className="h-9 w-9 rounded-lg bg-card flex items-center justify-center shrink-0 p-1.5">
                     <img src={job.logo} alt={job.company} className="max-h-full max-w-full object-contain" />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="font-semibold text-sm font-display truncate">{job.title}</h3>
-                    <p className="text-xs text-primary-foreground/80 truncate">{job.company} · {job.location}</p>
+                    <h3 className="font-semibold text-sm font-display truncate text-white">{job.title}</h3>
+                    <p className="text-xs text-white/80 truncate">{job.company} · {job.location}</p>
                   </div>
                 </div>
               </motion.div>
