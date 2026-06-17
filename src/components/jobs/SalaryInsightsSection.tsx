@@ -1,9 +1,10 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowRight, Sparkles, TrendingUp, Trophy, Zap } from "lucide-react";
+import { ArrowRight, Sparkles, TrendingUp, Trophy, Zap, LineChart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SectionBadge } from "@/components/ui/section-badge";
 import { cn } from "@/lib/utils";
 
 // Base CTC (in INR LPA) for 0 years experience per role — market standard baselines
