@@ -19,7 +19,7 @@ import FeaturedJobsBanner from "@/components/jobs/FeaturedJobsBanner";
 import ExperienceLevelsSection from "@/components/jobs/ExperienceLevelsSection";
 import PopularLocationsSection from "@/components/jobs/PopularLocationsSection";
 import RemoteJobsSection from "@/components/jobs/RemoteJobsSection";
-import CareerResourcesSection from "@/components/jobs/CareerResourcesSection";
+import JobsEventsSection from "@/components/jobs/JobsEventsSection";
 import JobAlertsBanner from "@/components/jobs/JobAlertsBanner";
 import JobsSuccessStoriesSection from "@/components/jobs/JobsSuccessStoriesSection";
 import JobsFinalCTA from "@/components/jobs/JobsFinalCTA";
