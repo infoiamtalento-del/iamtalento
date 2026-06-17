@@ -70,7 +70,7 @@ const Assessments = () => (
       <SelectAssessmentSection />
 
       {/* ── 2. CREDIBILITY & TRUST ── */}
-      <TrustAuthoritySection />
+      {/* <TrustAuthoritySection /> */}
       <WhoIsItForSection />
 
       {/* ── 3. HOW IT WORKS → EXPLORE ── */}
