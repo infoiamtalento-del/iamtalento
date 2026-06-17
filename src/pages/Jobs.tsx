@@ -23,6 +23,7 @@ import CareerResourcesSection from "@/components/jobs/CareerResourcesSection";
 import JobAlertsBanner from "@/components/jobs/JobAlertsBanner";
 import JobsSuccessStoriesSection from "@/components/jobs/JobsSuccessStoriesSection";
 import JobsFinalCTA from "@/components/jobs/JobsFinalCTA";
+import SalaryInsightsSection from "@/components/jobs/SalaryInsightsSection";
 
 const experienceOptions = ["Fresher", "1-3 years", "3-5 years", "5-10 years", "10+ years"];
 
