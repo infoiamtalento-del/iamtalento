@@ -34,10 +34,10 @@ const SalaryInsightsSection = () => {
     const cfg = roleBaselines[role];
     const points = experienceYears.map(y => {
       const m = cfg.base * Math.pow(1 + cfg.growth, y);
-      return { year: y, market: m, talento: m * 4 };
+      return { year: y, market: m, talento: m * 1.5 };
     });
     const market = cfg.base * Math.pow(1 + cfg.growth, exp);
-    const talento = market * 4;
+    const talento = market * 1.5;
     return {
       points,
       market,
@@ -188,7 +188,7 @@ const SalaryInsightsSection = () => {
                         {formatINR(talento)}
                       </div>
                       <div className="text-sm text-muted-foreground mt-1">
-                        That's <span className="text-warning font-semibold">4× the market standard</span> for
+                        That's <span className="text-warning font-semibold">1.5× the market standard</span> for
                         a {roleBaselines[role].label.toLowerCase()} with {exp} {exp === 1 ? "year" : "years"} of experience.
                       </div>
                     </div>
@@ -284,11 +284,10 @@ const SalaryInsightsSection = () => {
                 </div>
                 <div>
                   <h3 className="font-display text-lg md:text-xl font-bold mb-0.5 text-foreground">
-                    Want to earn <span className="text-warning">2× more</span> than this?
+                    Want to earn <span className="text-warning">even more</span>?
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    Take the Talento Verified Assessment and unlock offers up to{" "}
-                    <span className="text-warning font-semibold">{formatINR(talento * 2)}</span> from top employers.
+                    Take the Talento Verified Assessment and unlock premium offers from top employers actively hiring verified talent.
                   </p>
                 </div>
               </div>
