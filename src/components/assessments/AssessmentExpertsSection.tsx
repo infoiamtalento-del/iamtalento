@@ -268,6 +268,18 @@ const AssessmentExpertsSection = () => {
                     (ev.currentTarget as HTMLImageElement).style.display = "none";
                   }}
                 />
+                {/* Experience badge — half width, on image bottom */}
+                <div className="absolute bottom-3 left-3 w-1/2 flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-background/90 backdrop-blur-md border border-primary/30 shadow-lg">
+                  <div className="flex items-center justify-center w-7 h-7 rounded-md bg-primary/15 text-primary shrink-0">
+                    <Briefcase className="w-3.5 h-3.5" />
+                  </div>
+                  <div className="leading-tight min-w-0">
+                    <p className="text-[8px] uppercase tracking-wider text-muted-foreground font-semibold">Experience</p>
+                    <p className="text-sm font-bold text-foreground truncate">
+                      {e.years}+ <span className="text-[10px] font-medium text-muted-foreground">yrs</span>
+                    </p>
+                  </div>
+                </div>
               </div>
 
               {/* Body — matches image height */}
@@ -327,20 +339,6 @@ const AssessmentExpertsSection = () => {
                   </div>
                 </div>
 
-                {/* Experience footer — pinned to bottom */}
-                <div className="mt-auto pt-3">
-                  <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary/15 text-primary shrink-0">
-                      <Briefcase className="w-4 h-4" />
-                    </div>
-                    <div className="leading-tight">
-                      <p className="text-[9px] uppercase tracking-wider text-muted-foreground font-medium">Experience</p>
-                      <p className="text-sm font-bold text-foreground">
-                        {e.years}+ <span className="text-xs font-medium text-muted-foreground">years</span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           ))}
