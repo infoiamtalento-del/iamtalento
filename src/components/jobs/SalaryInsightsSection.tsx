@@ -188,7 +188,7 @@ const SalaryInsightsSection = () => {
                         {formatINR(talento)}
                       </div>
                       <div className="text-sm text-muted-foreground mt-1">
-                        That's <span className="text-warning font-semibold">4× the market standard</span> for
+                        That's <span className="text-warning font-semibold">1.5× the market standard</span> for
                         a {roleBaselines[role].label.toLowerCase()} with {exp} {exp === 1 ? "year" : "years"} of experience.
                       </div>
                     </div>
