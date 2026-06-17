@@ -34,10 +34,10 @@ const SalaryInsightsSection = () => {
     const cfg = roleBaselines[role];
     const points = experienceYears.map(y => {
       const m = cfg.base * Math.pow(1 + cfg.growth, y);
-      return { year: y, market: m, talento: m * 4 };
+      return { year: y, market: m, talento: m * 1.5 };
     });
     const market = cfg.base * Math.pow(1 + cfg.growth, exp);
-    const talento = market * 4;
+    const talento = market * 1.5;
     return {
       points,
       market,
