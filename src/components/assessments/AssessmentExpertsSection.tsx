@@ -272,10 +272,14 @@ const AssessmentExpertsSection = () => {
 
               {/* Body — matches image height */}
               <div className="aspect-square p-4 flex flex-col">
-                {/* Name + title on white */}
-                <div className="mb-3">
-                  <p className="font-semibold text-base leading-tight text-foreground">{e.name}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{e.title}</p>
+                {/* Name + title — highlighted block */}
+                <div className="relative mb-3 rounded-xl border border-primary/20 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent px-3 py-2.5 overflow-hidden">
+                  <span className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-primary/40" />
+                  <p className="font-bold text-base leading-tight text-foreground pl-1.5">{e.name}</p>
+                  <div className="flex items-center gap-1.5 mt-1 pl-1.5">
+                    <span className="inline-block w-1 h-1 rounded-full bg-primary" />
+                    <p className="text-[11px] uppercase tracking-wider font-semibold text-primary line-clamp-1">{e.title}</p>
+                  </div>
                 </div>
 
                 <div className="flex items-center justify-between">
