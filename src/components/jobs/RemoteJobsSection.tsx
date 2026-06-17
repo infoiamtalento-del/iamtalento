@@ -1,13 +1,13 @@
 import { motion } from "framer-motion";
-import { Globe } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
 const remoteCompanies = [
-  { name: "GitLab", positions: "45 open positions", color: "bg-orange-500/10 text-orange-500" },
-  { name: "Zapier", positions: "32 open positions", color: "bg-amber-500/10 text-amber-600" },
-  { name: "InVision", positions: "28 open positions", color: "bg-pink-500/10 text-pink-500" },
-  { name: "Automattic", positions: "24 open positions", color: "bg-blue-500/10 text-blue-500" },
-  { name: "Canva", positions: "18 open positions", color: "bg-cyan-500/10 text-cyan-500" },
-  { name: "Doist", positions: "15 open positions", color: "bg-red-500/10 text-red-500" },
+  { name: "GitLab", positions: "45 open positions", logo: "https://cdn.simpleicons.org/gitlab", tint: "from-orange-500/15 to-orange-500/5" },
+  { name: "Zapier", positions: "32 open positions", logo: "https://cdn.simpleicons.org/zapier/FF4A00", tint: "from-amber-500/15 to-amber-500/5" },
+  { name: "InVision", positions: "28 open positions", logo: "https://cdn.simpleicons.org/invision/FF3366", tint: "from-pink-500/15 to-pink-500/5" },
+  { name: "Automattic", positions: "24 open positions", logo: "https://cdn.simpleicons.org/automattic/3499CD", tint: "from-blue-500/15 to-blue-500/5" },
+  { name: "Canva", positions: "18 open positions", logo: "https://cdn.simpleicons.org/canva/00C4CC", tint: "from-cyan-500/15 to-cyan-500/5" },
+  { name: "Doist", positions: "15 open positions", logo: "https://cdn.simpleicons.org/todoist/E44332", tint: "from-red-500/15 to-red-500/5" },
 ];
 
 const RemoteJobsSection = () => {
@@ -26,14 +26,18 @@ const RemoteJobsSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.05 }}
-              className="p-4 rounded-xl bg-card border border-border/50 hover:border-primary/30 hover:shadow-md transition-all cursor-pointer flex items-center gap-3"
+              className="group relative p-5 rounded-2xl bg-card border border-border/60 hover:border-primary/40 hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer overflow-hidden"
             >
-              <div className={`h-10 w-10 rounded-lg ${c.color} flex items-center justify-center shrink-0`}>
-                <Globe className="h-5 w-5" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-sm font-semibold font-display truncate">{c.name}</p>
-                <p className="text-[11px] text-muted-foreground truncate">{c.positions}</p>
+              <div className={`absolute inset-0 bg-gradient-to-br ${c.tint} opacity-0 group-hover:opacity-100 transition-opacity`} />
+              <ArrowUpRight className="absolute top-3 right-3 h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:text-primary transition-all" />
+              <div className="relative flex flex-col items-start gap-3">
+                <div className="h-12 w-12 rounded-xl bg-background border border-border/60 flex items-center justify-center shrink-0 shadow-sm">
+                  <img src={c.logo} alt={`${c.name} logo`} loading="lazy" className="h-7 w-7 object-contain" />
+                </div>
+                <div className="min-w-0 w-full">
+                  <p className="text-sm font-semibold font-display truncate">{c.name}</p>
+                  <p className="text-xs text-muted-foreground truncate mt-0.5">{c.positions}</p>
+                </div>
               </div>
             </motion.div>
           ))}
