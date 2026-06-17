@@ -188,8 +188,7 @@ const SalaryInsightsSection = () => {
                         {formatINR(talento)}
                       </div>
                       <div className="text-sm text-muted-foreground mt-1">
-                        That's <span className="text-primary font-semibold">1.5× the market standard</span> for
-                        a {roleBaselines[role].label.toLowerCase()} with {exp} {exp === 1 ? "year" : "years"} of experience.
+                        What a <span className="text-foreground font-semibold">{roleBaselines[role].label}</span> with {exp} {exp === 1 ? "year" : "years"} of experience can command — <span className="text-primary font-semibold">far above the market average</span>.
                       </div>
                     </div>
                     <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 text-sm font-semibold bg-emerald-500/10 px-2.5 py-1 rounded-full">
