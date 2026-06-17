@@ -284,11 +284,10 @@ const SalaryInsightsSection = () => {
                 </div>
                 <div>
                   <h3 className="font-display text-lg md:text-xl font-bold mb-0.5 text-foreground">
-                    Want to earn <span className="text-warning">2× more</span> than this?
+                    Want to earn <span className="text-warning">even more</span>?
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    Take the Talento Verified Assessment and unlock offers up to{" "}
-                    <span className="text-warning font-semibold">{formatINR(talento * 2)}</span> from top employers.
+                    Take the Talento Verified Assessment and unlock premium offers from top employers actively hiring verified talent.
                   </p>
                 </div>
               </div>
