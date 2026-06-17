@@ -269,34 +269,34 @@ const AssessmentExpertsSection = () => {
                   }}
                 />
                 {/* Experience badge — half width, on image bottom */}
-                <div className="absolute bottom-3 left-3 w-1/2 flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-background/90 backdrop-blur-md border border-primary/30 shadow-lg">
-                  <div className="flex items-center justify-center w-7 h-7 rounded-md bg-primary/15 text-primary shrink-0">
-                    <Briefcase className="w-3.5 h-3.5" />
+                <div className="absolute bottom-3 left-3 w-1/2 flex items-center gap-2 px-3 py-2 rounded-lg bg-background/90 backdrop-blur-md border border-primary/30 shadow-lg">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary/15 text-primary shrink-0">
+                    <Briefcase className="w-4 h-4" />
                   </div>
                   <div className="leading-tight min-w-0">
-                    <p className="text-[8px] uppercase tracking-wider text-muted-foreground font-semibold">Experience</p>
-                    <p className="text-sm font-bold text-foreground truncate">
-                      {e.years}+ <span className="text-[10px] font-medium text-muted-foreground">yrs</span>
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Experience</p>
+                    <p className="text-base font-bold text-foreground truncate">
+                      {e.years}+ <span className="text-xs font-medium text-muted-foreground">yrs</span>
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Body — matches image height */}
-              <div className="aspect-square p-4 flex flex-col">
+              {/* Body */}
+              <div className="p-4 flex flex-col">
                 {/* Name + title — highlighted block */}
                 <div className="relative mb-3 rounded-xl border border-primary/20 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent px-3 py-2.5 overflow-hidden">
                   <span className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-primary/40" />
-                  <p className="font-bold text-base leading-tight text-foreground pl-1.5">{e.name}</p>
+                  <p className="font-bold text-lg leading-tight text-foreground pl-1.5">{e.name}</p>
                   <div className="flex items-center gap-1.5 mt-1 pl-1.5">
                     <span className="inline-block w-1 h-1 rounded-full bg-primary" />
-                    <p className="text-[11px] uppercase tracking-wider font-semibold text-primary line-clamp-1">{e.title}</p>
+                    <p className="text-[13px] uppercase tracking-wider font-semibold text-primary line-clamp-1">{e.title}</p>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Currently</span>
-                  <Linkedin className="w-3.5 h-3.5 text-muted-foreground/60 group-hover:text-primary transition" />
+                  <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">Currently</span>
+                  <Linkedin className="w-4 h-4 text-muted-foreground/60 group-hover:text-primary transition" />
                 </div>
                 <div className="flex items-center gap-2 mt-1.5">
                   {logoUrl(e.company) && (
@@ -304,17 +304,17 @@ const AssessmentExpertsSection = () => {
                       src={logoUrl(e.company)!}
                       alt={e.company}
                       loading="lazy"
-                      className="w-5 h-5 rounded object-contain bg-white ring-1 ring-border"
+                      className="w-6 h-6 rounded object-contain bg-white ring-1 ring-border"
                       onError={(ev) => ((ev.currentTarget as HTMLImageElement).style.display = "none")}
                     />
                   )}
-                  <p className="text-sm font-semibold text-primary truncate">{e.company}</p>
+                  <p className="text-base font-semibold text-primary truncate">{e.company}</p>
                 </div>
 
                 <div className="pt-3 mt-3 border-t border-border">
                   <div className="flex items-center gap-1.5 mb-1.5">
-                    <Building2 className="w-3 h-3 text-muted-foreground" />
-                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
+                    <Building2 className="w-3.5 h-3.5 text-muted-foreground" />
+                    <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
                       Previously
                     </span>
                   </div>
@@ -322,14 +322,14 @@ const AssessmentExpertsSection = () => {
                     {e.prevCompanies.map((c) => (
                       <span
                         key={c}
-                        className="inline-flex items-center gap-1 text-[11px] pl-1 pr-2 py-0.5 rounded-md bg-muted text-foreground/80 font-medium"
+                        className="inline-flex items-center gap-1.5 text-[13px] pl-1 pr-2 py-1 rounded-md bg-muted text-foreground/80 font-medium"
                       >
                         {logoUrl(c) && (
                           <img
                             src={logoUrl(c)!}
                             alt={c}
                             loading="lazy"
-                            className="w-3.5 h-3.5 rounded-sm object-contain bg-white"
+                            className="w-4 h-4 rounded-sm object-contain bg-white"
                             onError={(ev) => ((ev.currentTarget as HTMLImageElement).style.display = "none")}
                           />
                         )}
