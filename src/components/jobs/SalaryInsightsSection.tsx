@@ -299,7 +299,7 @@ const Stat = ({ label, value }: { label: string; value: string }) => (
 
 
 const LegendDot = ({ color, label }: { color: string; label: string }) => (
-  <span className="inline-flex items-center gap-1.5 text-white/70">
+  <span className="inline-flex items-center gap-1.5 text-muted-foreground">
     <span className="h-2 w-2 rounded-full" style={{ background: color }} />
     {label}
   </span>
