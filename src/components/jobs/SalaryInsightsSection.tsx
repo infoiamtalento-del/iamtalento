@@ -87,12 +87,12 @@ const SalaryInsightsSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-accent/40 via-background to-warning/5 border border-border/60 shadow-xl"
+          className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-accent/40 via-background to-primary/5 border border-border/60 shadow-xl"
         >
           {/* Decorative glows */}
           <div className="pointer-events-none absolute inset-0 -z-0">
             <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-primary/10 blur-[120px]" />
-            <div className="absolute -bottom-24 -right-10 w-96 h-96 rounded-full bg-warning/15 blur-[120px]" />
+            <div className="absolute -bottom-24 -right-10 w-96 h-96 rounded-full bg-primary/15 blur-[120px]" />
             <div
               className="absolute inset-0 opacity-[0.5]"
               style={{
@@ -107,7 +107,7 @@ const SalaryInsightsSection = () => {
           <div className="relative z-10 p-6 md:p-10">
             {/* Inline badge row */}
             <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-warning/10 text-warning border border-warning/20 text-xs font-medium">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-medium">
                 <Sparkles className="h-3.5 w-3.5" />
                 Live Salary Intelligence — 50,000+ verified Talento offers
               </div>
@@ -147,7 +147,7 @@ const SalaryInsightsSection = () => {
                     <label className="text-xs uppercase tracking-wider text-muted-foreground">
                       Years of Experience
                     </label>
-                    <span className="text-sm font-semibold text-warning">{exp} {exp === 1 ? "yr" : "yrs"}</span>
+                    <span className="text-sm font-semibold text-primary">{exp} {exp === 1 ? "yr" : "yrs"}</span>
                   </div>
                   <input
                     type="range"
@@ -156,10 +156,10 @@ const SalaryInsightsSection = () => {
                     step={1}
                     value={exp}
                     onChange={(e) => setExp(Number(e.target.value))}
-                    className="w-full h-2 rounded-full appearance-none bg-border accent-warning cursor-pointer
+                    className="w-full h-2 rounded-full appearance-none bg-border accent-primary cursor-pointer
                       [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5
-                      [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-warning
-                      [&::-webkit-slider-thumb]:shadow-[0_0_0_4px_hsl(var(--warning)/0.2)]"
+                      [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary
+                      [&::-webkit-slider-thumb]:shadow-[0_0_0_4px_hsl(var(--primary)/0.2)]"
                   />
                   <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
                     <span>0</span><span>3</span><span>6</span><span>9</span><span>12+</span>
@@ -177,18 +177,18 @@ const SalaryInsightsSection = () => {
               {/* Right: Chart + headline */}
               <div className="space-y-5">
                 {/* Headline */}
-                <div className="rounded-2xl bg-card border border-warning/30 p-5 shadow-sm relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-warning/10 via-transparent to-primary/5 pointer-events-none" />
+                <div className="rounded-2xl bg-card border border-primary/30 p-5 shadow-sm relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5 pointer-events-none" />
                   <div className="relative flex items-start justify-between gap-4 flex-wrap">
                     <div>
-                      <div className="flex items-center gap-2 text-xs text-warning font-semibold uppercase tracking-wider mb-1">
+                      <div className="flex items-center gap-2 text-xs text-primary font-semibold uppercase tracking-wider mb-1">
                         <Trophy className="h-3.5 w-3.5" /> Talento Verified Earning Potential
                       </div>
                       <div className="font-display text-4xl md:text-5xl font-bold leading-tight text-foreground">
                         {formatINR(talento)}
                       </div>
                       <div className="text-sm text-muted-foreground mt-1">
-                        That's <span className="text-warning font-semibold">1.5× the market standard</span> for
+                        That's <span className="text-primary font-semibold">1.5× the market standard</span> for
                         a {roleBaselines[role].label.toLowerCase()} with {exp} {exp === 1 ? "year" : "years"} of experience.
                       </div>
                     </div>
@@ -202,7 +202,7 @@ const SalaryInsightsSection = () => {
                 <div className="rounded-2xl bg-card border border-border p-4 shadow-sm">
                   <div className="flex items-center justify-between mb-3 text-xs">
                     <div className="flex items-center gap-4">
-                      <LegendDot color="hsl(var(--warning))" label="Talento" />
+                      <LegendDot color="hsl(var(--primary))" label="Talento" />
                       <LegendDot color="hsl(var(--muted-foreground))" label="Market" />
                     </div>
                     <span className="text-muted-foreground">CTC vs Experience</span>
@@ -210,8 +210,8 @@ const SalaryInsightsSection = () => {
                   <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto">
                     <defs>
                       <linearGradient id="talentoFill" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="hsl(var(--warning))" stopOpacity="0.35" />
-                        <stop offset="100%" stopColor="hsl(var(--warning))" stopOpacity="0" />
+                        <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.35" />
+                        <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
                       </linearGradient>
                       <linearGradient id="marketFill" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="hsl(var(--muted-foreground))" stopOpacity="0.15" />
@@ -234,7 +234,7 @@ const SalaryInsightsSection = () => {
                     <motion.path
                       d={buildPath("talento")}
                       fill="none"
-                      stroke="hsl(var(--warning))"
+                      stroke="hsl(var(--primary))"
                       strokeWidth="2.5"
                       initial={{ pathLength: 0 }}
                       whileInView={{ pathLength: 1 }}
@@ -248,13 +248,13 @@ const SalaryInsightsSection = () => {
                       return (
                         <g key={p.year}>
                           <circle cx={xScale(p.year)} cy={yScale(p.talento)} r={active ? 6 : 3.5}
-                            fill="hsl(var(--warning))" stroke="hsl(var(--card))" strokeWidth={active ? 2 : 0} />
+                            fill="hsl(var(--primary))" stroke="hsl(var(--card))" strokeWidth={active ? 2 : 0} />
                           {active && (
                             <g>
                               <line x1={xScale(p.year)} x2={xScale(p.year)} y1={PAD} y2={H - PAD}
-                                stroke="hsl(var(--warning))" strokeOpacity="0.4" strokeDasharray="2 3" />
+                                stroke="hsl(var(--primary))" strokeOpacity="0.4" strokeDasharray="2 3" />
                               <rect x={xScale(p.year) - 42} y={yScale(p.talento) - 32} width="84" height="22"
-                                rx="6" fill="hsl(var(--warning))" />
+                                rx="6" fill="hsl(var(--primary))" />
                               <text x={xScale(p.year)} y={yScale(p.talento) - 17} textAnchor="middle"
                                 fill="white" fontSize="11" fontWeight="700">
                                 {formatINR(p.talento)}
@@ -277,21 +277,21 @@ const SalaryInsightsSection = () => {
 
 
             {/* CTA */}
-            <div className="mt-8 rounded-2xl border border-warning/40 bg-gradient-to-r from-warning/15 via-warning/5 to-transparent p-5 md:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="mt-8 rounded-2xl border border-primary/40 bg-gradient-to-r from-primary/15 via-primary/5 to-transparent p-5 md:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div className="flex items-start gap-4">
-                <div className="h-12 w-12 rounded-xl bg-warning/20 text-warning flex items-center justify-center shrink-0">
+                <div className="h-12 w-12 rounded-xl bg-primary/20 text-primary flex items-center justify-center shrink-0">
                   <Zap className="h-6 w-6" />
                 </div>
                 <div>
                   <h3 className="font-display text-lg md:text-xl font-bold mb-0.5 text-foreground">
-                    Want to earn <span className="text-warning">even more</span>?
+                    Want to earn <span className="text-primary">even more</span>?
                   </h3>
                   <p className="text-sm text-muted-foreground">
                     Take the Talento Verified Assessment and unlock premium offers from top employers actively hiring verified talent.
                   </p>
                 </div>
               </div>
-              <Button asChild size="lg" className="bg-warning text-warning-foreground hover:bg-warning/90 rounded-xl gap-2 shrink-0">
+              <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl gap-2 shrink-0">
                 <Link to="/assessments">
                   Take the Assessment <ArrowRight className="h-4 w-4" />
                 </Link>
