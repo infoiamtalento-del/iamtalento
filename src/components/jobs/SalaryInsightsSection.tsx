@@ -65,18 +65,19 @@ const SalaryInsightsSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="relative overflow-hidden rounded-3xl bg-[hsl(222,47%,15%)] text-white shadow-2xl"
+          className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-accent/40 via-background to-warning/5 border border-border/60 shadow-xl"
         >
           {/* Decorative glows */}
           <div className="pointer-events-none absolute inset-0 -z-0">
-            <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-primary/20 blur-[120px]" />
-            <div className="absolute -bottom-24 -right-10 w-96 h-96 rounded-full bg-warning/20 blur-[120px]" />
+            <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-primary/10 blur-[120px]" />
+            <div className="absolute -bottom-24 -right-10 w-96 h-96 rounded-full bg-warning/15 blur-[120px]" />
             <div
-              className="absolute inset-0 opacity-[0.06]"
+              className="absolute inset-0 opacity-[0.5]"
               style={{
                 backgroundImage:
-                  "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
+                  "linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px)",
                 backgroundSize: "44px 44px",
+                maskImage: "radial-gradient(ellipse at center, black 30%, transparent 75%)",
               }}
             />
           </div>
@@ -85,20 +86,20 @@ const SalaryInsightsSection = () => {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
               <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur text-xs font-medium mb-3">
-                  <Sparkles className="h-3.5 w-3.5 text-warning" />
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-warning/10 text-warning border border-warning/20 text-xs font-medium mb-3">
+                  <Sparkles className="h-3.5 w-3.5" />
                   Live Salary Intelligence
                 </div>
-                <h2 className="font-display text-3xl md:text-4xl font-bold mb-2">
+                <h2 className="font-display text-3xl md:text-4xl font-bold mb-2 text-foreground">
                   Salary Insights
                 </h2>
-                <p className="text-white/70 max-w-xl">
+                <p className="text-muted-foreground max-w-xl">
                   Compare salaries, explore growth trends, and negotiate with confidence — powered by data from 50,000+ verified Talento offers.
                 </p>
               </div>
               <Link
                 to="/assessments"
-                className="inline-flex items-center gap-2 text-sm font-medium text-white/90 hover:text-white group"
+                className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 group"
               >
                 Explore salary data
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -110,11 +111,11 @@ const SalaryInsightsSection = () => {
               <div className="space-y-5">
                 {/* Role selector */}
                 <div>
-                  <label className="text-xs uppercase tracking-wider text-white/60 mb-2 block">
+                  <label className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block">
                     Job Role
                   </label>
                   <Select value={role} onValueChange={setRole}>
-                    <SelectTrigger className="bg-white text-foreground border-0 h-12 rounded-xl">
+                    <SelectTrigger className="bg-card text-foreground border border-border h-12 rounded-xl shadow-sm">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -128,7 +129,7 @@ const SalaryInsightsSection = () => {
                 {/* Experience slider */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-xs uppercase tracking-wider text-white/60">
+                    <label className="text-xs uppercase tracking-wider text-muted-foreground">
                       Years of Experience
                     </label>
                     <span className="text-sm font-semibold text-warning">{exp} {exp === 1 ? "yr" : "yrs"}</span>
@@ -140,77 +141,78 @@ const SalaryInsightsSection = () => {
                     step={1}
                     value={exp}
                     onChange={(e) => setExp(Number(e.target.value))}
-                    className="w-full h-2 rounded-full appearance-none bg-white/15 accent-warning cursor-pointer
+                    className="w-full h-2 rounded-full appearance-none bg-border accent-warning cursor-pointer
                       [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5
                       [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-warning
-                      [&::-webkit-slider-thumb]:shadow-[0_0_0_4px_hsl(var(--warning)/0.25)]"
+                      [&::-webkit-slider-thumb]:shadow-[0_0_0_4px_hsl(var(--warning)/0.2)]"
                   />
-                  <div className="flex justify-between text-[10px] text-white/40 mt-1">
+                  <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
                     <span>0</span><span>3</span><span>6</span><span>9</span><span>12+</span>
                   </div>
                 </div>
 
                 {/* Stat row */}
                 <div className="grid grid-cols-3 gap-2 pt-2">
-                  <Stat label="Avg Market" value={formatINR(market)} tone="muted" />
-                  <Stat label="Lowest" value={formatINR(lowest)} tone="muted" />
-                  <Stat label="Highest" value={formatINR(highest)} tone="muted" />
+                  <Stat label="Avg Market" value={formatINR(market)} />
+                  <Stat label="Lowest" value={formatINR(lowest)} />
+                  <Stat label="Highest" value={formatINR(highest)} />
                 </div>
               </div>
 
               {/* Right: Chart + headline */}
               <div className="space-y-5">
                 {/* Headline */}
-                <div className="rounded-2xl bg-gradient-to-br from-warning/20 via-primary/10 to-transparent border border-white/10 p-5">
-                  <div className="flex items-start justify-between gap-4 flex-wrap">
+                <div className="rounded-2xl bg-card border border-warning/30 p-5 shadow-sm relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-warning/10 via-transparent to-primary/5 pointer-events-none" />
+                  <div className="relative flex items-start justify-between gap-4 flex-wrap">
                     <div>
                       <div className="flex items-center gap-2 text-xs text-warning font-semibold uppercase tracking-wider mb-1">
                         <Trophy className="h-3.5 w-3.5" /> Talento Verified Earning Potential
                       </div>
-                      <div className="font-display text-4xl md:text-5xl font-bold leading-tight">
+                      <div className="font-display text-4xl md:text-5xl font-bold leading-tight text-foreground">
                         {formatINR(talento)}
                       </div>
-                      <div className="text-sm text-white/70 mt-1">
+                      <div className="text-sm text-muted-foreground mt-1">
                         That's <span className="text-warning font-semibold">4× the market standard</span> for
                         a {roleBaselines[role].label.toLowerCase()} with {exp} {exp === 1 ? "year" : "years"} of experience.
                       </div>
                     </div>
-                    <div className="flex items-center gap-1.5 text-emerald-400 text-sm font-semibold bg-emerald-500/10 px-2.5 py-1 rounded-full">
+                    <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 text-sm font-semibold bg-emerald-500/10 px-2.5 py-1 rounded-full">
                       <TrendingUp className="h-3.5 w-3.5" /> +{Math.round(((talento - market) / market) * 100)}%
                     </div>
                   </div>
                 </div>
 
                 {/* Chart */}
-                <div className="rounded-2xl bg-white/[0.04] border border-white/10 p-4">
+                <div className="rounded-2xl bg-card border border-border p-4 shadow-sm">
                   <div className="flex items-center justify-between mb-3 text-xs">
                     <div className="flex items-center gap-4">
                       <LegendDot color="hsl(var(--warning))" label="Talento" />
-                      <LegendDot color="rgba(255,255,255,0.5)" label="Market" />
+                      <LegendDot color="hsl(var(--muted-foreground))" label="Market" />
                     </div>
-                    <span className="text-white/50">CTC vs Experience</span>
+                    <span className="text-muted-foreground">CTC vs Experience</span>
                   </div>
                   <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto">
                     <defs>
                       <linearGradient id="talentoFill" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="hsl(var(--warning))" stopOpacity="0.45" />
+                        <stop offset="0%" stopColor="hsl(var(--warning))" stopOpacity="0.35" />
                         <stop offset="100%" stopColor="hsl(var(--warning))" stopOpacity="0" />
                       </linearGradient>
                       <linearGradient id="marketFill" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="white" stopOpacity="0.18" />
-                        <stop offset="100%" stopColor="white" stopOpacity="0" />
+                        <stop offset="0%" stopColor="hsl(var(--muted-foreground))" stopOpacity="0.15" />
+                        <stop offset="100%" stopColor="hsl(var(--muted-foreground))" stopOpacity="0" />
                       </linearGradient>
                     </defs>
 
                     {/* Grid */}
                     {[0.25, 0.5, 0.75].map((t) => (
                       <line key={t} x1={PAD} x2={W - PAD} y1={PAD + t * (H - PAD * 2)} y2={PAD + t * (H - PAD * 2)}
-                        stroke="white" strokeOpacity="0.06" strokeDasharray="3 4" />
+                        stroke="hsl(var(--border))" strokeDasharray="3 4" />
                     ))}
 
                     {/* Market area + line */}
                     <path d={buildArea("market")} fill="url(#marketFill)" />
-                    <path d={buildPath("market")} fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="2" strokeDasharray="4 4" />
+                    <path d={buildPath("market")} fill="none" stroke="hsl(var(--muted-foreground))" strokeOpacity="0.6" strokeWidth="2" strokeDasharray="4 4" />
 
                     {/* Talento area + line */}
                     <path d={buildArea("talento")} fill="url(#talentoFill)" />
@@ -231,7 +233,7 @@ const SalaryInsightsSection = () => {
                       return (
                         <g key={p.year}>
                           <circle cx={xScale(p.year)} cy={yScale(p.talento)} r={active ? 6 : 3.5}
-                            fill="hsl(var(--warning))" stroke="white" strokeWidth={active ? 2 : 0} />
+                            fill="hsl(var(--warning))" stroke="hsl(var(--card))" strokeWidth={active ? 2 : 0} />
                           {active && (
                             <g>
                               <line x1={xScale(p.year)} x2={xScale(p.year)} y1={PAD} y2={H - PAD}
@@ -239,7 +241,7 @@ const SalaryInsightsSection = () => {
                               <rect x={xScale(p.year) - 42} y={yScale(p.talento) - 32} width="84" height="22"
                                 rx="6" fill="hsl(var(--warning))" />
                               <text x={xScale(p.year)} y={yScale(p.talento) - 17} textAnchor="middle"
-                                fill="hsl(222,47%,15%)" fontSize="11" fontWeight="700">
+                                fill="white" fontSize="11" fontWeight="700">
                                 {formatINR(p.talento)}
                               </text>
                             </g>
@@ -251,24 +253,25 @@ const SalaryInsightsSection = () => {
                     {/* X labels */}
                     {points.map(p => (
                       <text key={`x-${p.year}`} x={xScale(p.year)} y={H - 4} textAnchor="middle"
-                        fill="rgba(255,255,255,0.45)" fontSize="10">{p.year}y</text>
+                        fill="hsl(var(--muted-foreground))" fontSize="10">{p.year}y</text>
                     ))}
                   </svg>
                 </div>
               </div>
             </div>
 
+
             {/* CTA */}
-            <div className="mt-8 rounded-2xl border border-warning/30 bg-gradient-to-r from-warning/15 via-warning/5 to-transparent p-5 md:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="mt-8 rounded-2xl border border-warning/40 bg-gradient-to-r from-warning/15 via-warning/5 to-transparent p-5 md:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div className="flex items-start gap-4">
                 <div className="h-12 w-12 rounded-xl bg-warning/20 text-warning flex items-center justify-center shrink-0">
                   <Zap className="h-6 w-6" />
                 </div>
                 <div>
-                  <h3 className="font-display text-lg md:text-xl font-bold mb-0.5">
+                  <h3 className="font-display text-lg md:text-xl font-bold mb-0.5 text-foreground">
                     Want to earn <span className="text-warning">2× more</span> than this?
                   </h3>
-                  <p className="text-sm text-white/70">
+                  <p className="text-sm text-muted-foreground">
                     Take the Talento Verified Assessment and unlock offers up to{" "}
                     <span className="text-warning font-semibold">{formatINR(talento * 2)}</span> from top employers.
                   </p>
@@ -287,15 +290,16 @@ const SalaryInsightsSection = () => {
   );
 };
 
-const Stat = ({ label, value, tone }: { label: string; value: string; tone?: "muted" }) => (
-  <div className={cn("rounded-xl border border-white/10 bg-white/[0.04] p-3")}>
-    <div className="text-base md:text-lg font-bold font-display">{value}</div>
-    <div className="text-[10px] uppercase tracking-wider text-white/50 mt-0.5">{label}</div>
+const Stat = ({ label, value }: { label: string; value: string }) => (
+  <div className={cn("rounded-xl border border-border bg-card p-3 shadow-sm")}>
+    <div className="text-base md:text-lg font-bold font-display text-foreground">{value}</div>
+    <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-0.5">{label}</div>
   </div>
 );
 
+
 const LegendDot = ({ color, label }: { color: string; label: string }) => (
-  <span className="inline-flex items-center gap-1.5 text-white/70">
+  <span className="inline-flex items-center gap-1.5 text-muted-foreground">
     <span className="h-2 w-2 rounded-full" style={{ background: color }} />
     {label}
   </span>
