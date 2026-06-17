@@ -275,8 +275,6 @@ const Jobs = () => {
         {/* Success Stories */}
         <JobsSuccessStoriesSection />
 
-        {/* Final CTA */}
-        <JobsFinalCTA />
       </Layout>
     </>
   );
