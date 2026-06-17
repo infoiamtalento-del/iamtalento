@@ -245,7 +245,44 @@ const Jobs = () => {
           </div>
         </section>
 
-        {/* Social Proof + Logo Marquee */}
+        {/* Trusted by companies marquee */}
+        <JobsSocialProof />
+
+        {/* Top Categories */}
+        <TopCategoriesSection />
+
+        {/* Featured Jobs red banner */}
+        <FeaturedJobsBanner />
+
+        {/* Jobs by Experience Level */}
+        <ExperienceLevelsSection />
+
+        {/* Popular Job Locations */}
+        <PopularLocationsSection />
+
+        {/* Remote Jobs */}
+        <RemoteJobsSection />
+
+        {/* Featured Companies */}
+        <FeaturedCompanies />
+
+        {/* Career Resources */}
+        <CareerResourcesSection />
+
+        {/* Get Job Alerts email banner */}
+        <JobAlertsBanner />
+
+        {/* Success Stories */}
+        <JobsSuccessStoriesSection />
+
+        {/* Final CTA */}
+        <JobsFinalCTA />
+      </Layout>
+    </>
+  );
+};
+
+export default Jobs;
         <JobsSocialProof />
 
         {/* Banner 1 – Take a Test */}
