@@ -13,13 +13,16 @@ import { cn } from "@/lib/utils";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { Link } from "react-router-dom";
 import JobsSocialProof from "@/components/jobs/JobsSocialProof";
-import PopularRolesSection from "@/components/jobs/PopularRolesSection";
-import JobsBannerTest from "@/components/jobs/JobsBannerTest";
-import JobsBannerReadiness from "@/components/jobs/JobsBannerReadiness";
-import JobsEventsSection from "@/components/jobs/JobsEventsSection";
-import TopCompaniesHiring from "@/components/jobs/TopCompaniesHiring";
 import FeaturedCompanies from "@/components/jobs/FeaturedCompanies";
-import ResumeToolkitSection from "@/components/jobs/ResumeToolkitSection";
+import TopCategoriesSection from "@/components/jobs/TopCategoriesSection";
+import FeaturedJobsBanner from "@/components/jobs/FeaturedJobsBanner";
+import ExperienceLevelsSection from "@/components/jobs/ExperienceLevelsSection";
+import PopularLocationsSection from "@/components/jobs/PopularLocationsSection";
+import RemoteJobsSection from "@/components/jobs/RemoteJobsSection";
+import CareerResourcesSection from "@/components/jobs/CareerResourcesSection";
+import JobAlertsBanner from "@/components/jobs/JobAlertsBanner";
+import JobsSuccessStoriesSection from "@/components/jobs/JobsSuccessStoriesSection";
+import JobsFinalCTA from "@/components/jobs/JobsFinalCTA";
 
 const experienceOptions = ["Fresher", "1-3 years", "3-5 years", "5-10 years", "10+ years"];
 
@@ -242,72 +245,38 @@ const Jobs = () => {
           </div>
         </section>
 
-        {/* Social Proof + Logo Marquee */}
+        {/* Trusted by companies marquee */}
         <JobsSocialProof />
 
-        {/* Banner 1 – Take a Test */}
-        <JobsBannerTest />
+        {/* Top Categories */}
+        <TopCategoriesSection />
 
+        {/* Featured Jobs red banner */}
+        <FeaturedJobsBanner />
+
+        {/* Jobs by Experience Level */}
+        <ExperienceLevelsSection />
+
+        {/* Popular Job Locations */}
+        <PopularLocationsSection />
+
+        {/* Remote Jobs */}
+        <RemoteJobsSection />
 
         {/* Featured Companies */}
         <FeaturedCompanies />
 
-        {/* Popular Roles */}
-        <PopularRolesSection />
+        {/* Career Resources */}
+        <CareerResourcesSection />
 
-        {/* Resume Toolkit */}
-        <ResumeToolkitSection />
+        {/* Get Job Alerts email banner */}
+        <JobAlertsBanner />
 
-        {/* Industries Section */}
-        <section ref={indRef} className="py-16 md:py-20 bg-accent/20">
-          <div className="container px-4 md:px-6">
-            <div className={cn("text-center max-w-2xl mx-auto mb-10 transition-all duration-700", indVisible ? "opacity-100" : "opacity-0 translate-y-8")}>
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent text-accent-foreground text-xs font-medium mb-4 border border-primary/10">
-                <span className="h-2 w-2 rounded-full bg-primary" /> Browse by Industry
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold font-display mb-3">
-                We Speak Your<br />
-                <span className="text-primary">Industry's Language</span>
-              </h2>
-              <p className="text-muted-foreground text-base md:text-lg">
-                Discover roles tailored to your domain expertise.
-              </p>
-            </div>
+        {/* Success Stories */}
+        <JobsSuccessStoriesSection />
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
-              {industries.map(({ icon: Icon, title, roles }, i) => (
-                <motion.div
-                  key={title}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.05 }}
-                  className="p-5 rounded-xl bg-card border border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 group cursor-pointer"
-                >
-                  <div className="h-10 w-10 rounded-lg bg-accent flex items-center justify-center mb-3 group-hover:gradient-primary transition-all duration-300">
-                    <Icon className="h-5 w-5 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
-                  </div>
-                  <p className="text-sm font-semibold font-display mb-0.5">{title}</p>
-                  <p className="text-xs text-primary font-medium">{roles}</p>
-                </motion.div>
-              ))}
-            </div>
-
-            <div className="text-center mt-10">
-              <Link to="/assessments">
-                <Button variant="outline" className="border-border gap-2">
-                  Browse all 48+ industries <ArrowRight className="h-4 w-4" />
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* Banner 2 – Get Industry Ready */}
-        <JobsBannerReadiness />
-
-        {/* Events Section */}
-        <JobsEventsSection />
+        {/* Final CTA */}
+        <JobsFinalCTA />
       </Layout>
     </>
   );
