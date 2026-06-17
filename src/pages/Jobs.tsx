@@ -13,13 +13,16 @@ import { cn } from "@/lib/utils";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { Link } from "react-router-dom";
 import JobsSocialProof from "@/components/jobs/JobsSocialProof";
-import PopularRolesSection from "@/components/jobs/PopularRolesSection";
-import JobsBannerTest from "@/components/jobs/JobsBannerTest";
-import JobsBannerReadiness from "@/components/jobs/JobsBannerReadiness";
-import JobsEventsSection from "@/components/jobs/JobsEventsSection";
-import TopCompaniesHiring from "@/components/jobs/TopCompaniesHiring";
 import FeaturedCompanies from "@/components/jobs/FeaturedCompanies";
-import ResumeToolkitSection from "@/components/jobs/ResumeToolkitSection";
+import TopCategoriesSection from "@/components/jobs/TopCategoriesSection";
+import FeaturedJobsBanner from "@/components/jobs/FeaturedJobsBanner";
+import ExperienceLevelsSection from "@/components/jobs/ExperienceLevelsSection";
+import PopularLocationsSection from "@/components/jobs/PopularLocationsSection";
+import RemoteJobsSection from "@/components/jobs/RemoteJobsSection";
+import CareerResourcesSection from "@/components/jobs/CareerResourcesSection";
+import JobAlertsBanner from "@/components/jobs/JobAlertsBanner";
+import JobsSuccessStoriesSection from "@/components/jobs/JobsSuccessStoriesSection";
+import JobsFinalCTA from "@/components/jobs/JobsFinalCTA";
 
 const experienceOptions = ["Fresher", "1-3 years", "3-5 years", "5-10 years", "10+ years"];
 
