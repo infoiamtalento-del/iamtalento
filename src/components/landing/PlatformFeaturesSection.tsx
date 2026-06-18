@@ -201,6 +201,8 @@ const mockupMap: Record<string, React.ReactNode> = {
   assessment: <AssessmentMockup />,
   jobs: <JobsMockup />,
   learning: <LearningMockup />,
+  hackathons: <HackathonsMockup />,
+  podcasts: <PodcastsMockup />,
 };
 
 const PlatformFeaturesSection = () => {
