@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Target, Briefcase, GraduationCap, ArrowRight,
   BarChart3, Users, TrendingUp, BookOpen, Award, Zap,
+  Code2, Mic, Trophy, Calendar, Headphones, Play, Radio, Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
