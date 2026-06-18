@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Target, Briefcase, GraduationCap, ArrowRight,
   BarChart3, Users, TrendingUp, BookOpen, Award, Zap,
+  Code2, Mic, Trophy, Calendar, Headphones, Play, Radio, Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -69,6 +70,47 @@ const features = [
     href: "/jobs",
     mockup: "jobs",
     gradient: "from-violet-500/10 via-violet-500/5 to-transparent",
+  },
+  {
+    id: "hackathons",
+    icon: Code2,
+    tag: "🏆 AI-Powered Hackathons",
+    headline: "Compete, Build, and Get Noticed by Top Recruiters",
+    description: "Real-world hackathons designed to showcase your skills and connect you with hiring teams.",
+    details: [
+      { icon: Trophy, text: "Compete in Industry-Backed Hackathons" },
+      { icon: Code2, text: "Solve Real-World Company Challenges" },
+      { icon: Users, text: "Team Up with Top Builders Worldwide" },
+      { icon: Calendar, text: "Weekly & Monthly Themed Events" },
+      { icon: Award, text: "Win Cash Prizes & Verified Badges" },
+      { icon: Briefcase, text: "Get Direct Recruiter Visibility" },
+      { icon: TrendingUp, text: "Boost Your Profile with Live Projects" },
+      { icon: Star, text: "Earn Featured Spots on the Leaderboard" },
+    ],
+    cta: "Join a Hackathon",
+    href: "/hackathons",
+    mockup: "hackathons",
+    gradient: "from-amber-500/10 via-amber-500/5 to-transparent",
+  },
+  {
+    id: "podcasts",
+    icon: Mic,
+    tag: "🎙️ Career Podcasts",
+    headline: "Learn from the Voices Shaping Your Industry",
+    description: "Insider conversations with hiring leaders, founders, and top performers — straight to your ears.",
+    details: [
+      { icon: Mic, text: "Weekly Episodes with Industry Leaders" },
+      { icon: Headphones, text: "Listen Anywhere, On Any Device" },
+      { icon: BookOpen, text: "Career Playbooks from Top Performers" },
+      { icon: Users, text: "Recruiter & Hiring Manager Interviews" },
+      { icon: Play, text: "On-Demand Library of 200+ Episodes" },
+      { icon: Radio, text: "Live Q&A Sessions with Experts" },
+      { icon: TrendingUp, text: "Stay Ahead of Industry Trends" },
+    ],
+    cta: "Listen to Podcasts",
+    href: "/podcast",
+    mockup: "podcasts",
+    gradient: "from-blue-500/10 via-blue-500/5 to-transparent",
   },
 ];
 
@@ -155,10 +197,63 @@ const LearningMockup = () => (
   </div>
 );
 
+const HackathonsMockup = () => (
+  <div className="space-y-3">
+    {[
+      { name: "AI Agents Build-Off", prize: "$10K", participants: "2.4K", live: true },
+      { name: "FinTech Innovate '26", prize: "$7.5K", participants: "1.8K", live: false },
+      { name: "ClimateTech Sprint", prize: "$5K", participants: "1.2K", live: false },
+    ].map((h, i) => (
+      <div key={h.name} className="p-4 rounded-xl border border-border/50">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Trophy className="h-3.5 w-3.5 text-primary" />
+            </div>
+            <p className="text-sm font-semibold">{h.name}</p>
+          </div>
+          {h.live && (
+            <span className="text-[9px] font-bold text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded-full flex items-center gap-1">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" /> LIVE
+            </span>
+          )}
+        </div>
+        <div className="flex justify-between text-[10px] text-muted-foreground">
+          <span>Prize: <span className="font-bold text-foreground">{h.prize}</span></span>
+          <span>{h.participants} builders</span>
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
+const PodcastsMockup = () => (
+  <div className="space-y-3">
+    {[
+      { title: "Breaking into FAANG in 2026", host: "Sarah Chen · Ex-Google", duration: "42 min" },
+      { title: "What Recruiters Actually Want", host: "Marcus Lee · Stripe", duration: "36 min" },
+      { title: "From Bootcamp to Staff Engineer", host: "Priya Patel · Notion", duration: "51 min" },
+    ].map((p) => (
+      <div key={p.title} className="p-4 rounded-xl border border-border/50 flex items-center gap-3">
+        <div className="h-10 w-10 rounded-lg gradient-primary flex items-center justify-center shrink-0">
+          <Play className="h-4 w-4 text-white fill-white" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold truncate">{p.title}</p>
+          <p className="text-[10px] text-muted-foreground truncate">{p.host}</p>
+        </div>
+        <span className="text-[10px] text-muted-foreground shrink-0">{p.duration}</span>
+      </div>
+    ))}
+  </div>
+);
+
 const mockupMap: Record<string, React.ReactNode> = {
   assessment: <AssessmentMockup />,
   jobs: <JobsMockup />,
   learning: <LearningMockup />,
+  hackathons: <HackathonsMockup />,
+  podcasts: <PodcastsMockup />,
 };
 
 const PlatformFeaturesSection = () => {
