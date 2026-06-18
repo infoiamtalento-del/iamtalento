@@ -280,6 +280,11 @@ const Jobs = () => {
         {/* Success Stories */}
         <JobsSuccessStoriesSection />
 
+        {/* AI Tools to Get You Hired */}
+        <ResumeToolkitSection />
+
+
+
       </Layout>
     </>
   );
