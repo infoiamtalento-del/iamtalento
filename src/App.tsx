@@ -34,6 +34,7 @@ const SkillAssessment = lazy(() => import("./pages/SkillAssessment"));
 const Podcast = lazy(() => import("./pages/Podcast"));
 const Hackathons = lazy(() => import("./pages/Hackathons"));
 const Webinars = lazy(() => import("./pages/Webinars"));
+const Networking = lazy(() => import("./pages/Networking"));
 
 const queryClient = new QueryClient();
 
@@ -68,6 +69,7 @@ const AnimatedRoutes = () => {
           <Route path="/demo-profile" element={<PageTransition><DemoProfile /></PageTransition>} />
           <Route path="/skill-assessment" element={<PageTransition><SkillAssessment /></PageTransition>} />
           <Route path="/podcast" element={<PageTransition><Podcast /></PageTransition>} />
+          <Route path="/networking" element={<PageTransition><Networking /></PageTransition>} />
           <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
         </Routes>
       </Suspense>
