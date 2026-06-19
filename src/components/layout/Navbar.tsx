@@ -9,6 +9,7 @@ const eventsDropdownItems = [
   { label: "Hackathons", href: "/hackathons" },
   { label: "Webinars", href: "/webinars" },
   { label: "Live Podcasts", href: "/podcast" },
+  { label: "Networking", href: "/networking" },
 ];
 
 const pricingDropdownItems = [
