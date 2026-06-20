@@ -31,9 +31,8 @@ const EmployerProfileBuilder = lazy(() => import("./pages/EmployerProfileBuilder
 const MyProfile = lazy(() => import("./pages/MyProfile"));
 const DemoProfile = lazy(() => import("./pages/DemoProfile"));
 const SkillAssessment = lazy(() => import("./pages/SkillAssessment"));
-const Podcast = lazy(() => import("./pages/Podcast"));
+const Podcasts = lazy(() => import("./pages/Podcasts"));
 const Hackathons = lazy(() => import("./pages/Hackathons"));
-const Webinars = lazy(() => import("./pages/Webinars"));
 const Networking = lazy(() => import("./pages/Networking"));
 
 const queryClient = new QueryClient();
