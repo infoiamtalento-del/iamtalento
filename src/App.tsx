@@ -31,9 +31,8 @@ const EmployerProfileBuilder = lazy(() => import("./pages/EmployerProfileBuilder
 const MyProfile = lazy(() => import("./pages/MyProfile"));
 const DemoProfile = lazy(() => import("./pages/DemoProfile"));
 const SkillAssessment = lazy(() => import("./pages/SkillAssessment"));
-const Podcast = lazy(() => import("./pages/Podcast"));
+const Podcasts = lazy(() => import("./pages/Podcasts"));
 const Hackathons = lazy(() => import("./pages/Hackathons"));
-const Webinars = lazy(() => import("./pages/Webinars"));
 const Networking = lazy(() => import("./pages/Networking"));
 
 const queryClient = new QueryClient();
@@ -57,7 +56,9 @@ const AnimatedRoutes = () => {
           <Route path="/learning" element={<PageTransition><Learning /></PageTransition>} />
           <Route path="/meetups" element={<PageTransition><Hackathons /></PageTransition>} />
           <Route path="/hackathons" element={<PageTransition><Hackathons /></PageTransition>} />
-          <Route path="/webinars" element={<PageTransition><Webinars /></PageTransition>} />
+          <Route path="/podcasts" element={<PageTransition><Podcasts /></PageTransition>} />
+          <Route path="/webinars" element={<PageTransition><Podcasts /></PageTransition>} />
+          <Route path="/podcast" element={<PageTransition><Podcasts /></PageTransition>} />
           <Route path="/resources" element={<PageTransition><Resources /></PageTransition>} />
           <Route path="/pricing" element={<PageTransition><Pricing /></PageTransition>} />
           <Route path="/for-employers" element={<PageTransition><ForEmployers /></PageTransition>} />
@@ -68,7 +69,6 @@ const AnimatedRoutes = () => {
           <Route path="/employer-profile" element={<PageTransition><EmployerProfileBuilder /></PageTransition>} />
           <Route path="/demo-profile" element={<PageTransition><DemoProfile /></PageTransition>} />
           <Route path="/skill-assessment" element={<PageTransition><SkillAssessment /></PageTransition>} />
-          <Route path="/podcast" element={<PageTransition><Podcast /></PageTransition>} />
           <Route path="/networking" element={<PageTransition><Networking /></PageTransition>} />
           <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
         </Routes>

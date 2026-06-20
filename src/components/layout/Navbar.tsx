@@ -7,8 +7,7 @@ import ThemeToggle from "./ThemeToggle";
 
 const eventsDropdownItems = [
   { label: "Hackathons", href: "/hackathons" },
-  { label: "Webinars", href: "/webinars" },
-  { label: "Live Podcasts", href: "/podcast" },
+  { label: "Podcasts", href: "/podcasts" },
   { label: "Networking", href: "/networking" },
 ];
 
