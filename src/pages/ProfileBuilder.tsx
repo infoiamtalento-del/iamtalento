@@ -217,7 +217,7 @@ const ProfileBuilder = () => {
           <div className="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
             <div className="flex items-center gap-3">
               <Link to="/" className="flex items-center gap-2">
-                <img src="/logo.png" alt="IAmTalento" className="h-12 w-auto" />
+                <img src="/logo.png" alt="IAmTalento" className="h-16 w-auto" />
               </Link>
               <div className="h-5 w-px bg-border" />
               <span className="text-sm font-medium text-muted-foreground">Profile Builder</span>
