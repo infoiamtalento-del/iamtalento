@@ -249,7 +249,7 @@ const DemoProfile = () => {
         >
           <nav className="container flex items-center" aria-label="Main navigation">
             <Link to="/" className="flex items-center gap-2 group mr-auto" aria-label="IAmTalento Home">
-              <img src="/logo.png" alt="IAmTalento" className="h-9 w-auto" />
+              <img src="/logo.png" alt="IAmTalento" className="h-12 w-auto" />
             </Link>
 
             {/* Desktop */}
