@@ -267,7 +267,7 @@ const DemoProfile = () => {
         </header>
 
         <main className="pt-28 pb-16">
-          <div className="max-w-6xl mx-auto px-4 md:px-6 space-y-5">
+          <div className="container space-y-5">
 
             {/* ===== HEADER CARD ===== */}
             <motion.div
