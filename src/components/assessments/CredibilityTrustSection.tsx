@@ -47,7 +47,7 @@ const CredibilityTrustSection = () => (
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.04, duration: 0.4 }}
-            className="p-5 rounded-2xl bg-accent border border-primary/10 hover:border-primary/25 hover:shadow-md transition-all duration-300 text-center group"
+            className="p-5 rounded-2xl bg-cream border border-primary/10 hover:border-primary/25 hover:shadow-md transition-all duration-300 text-center group"
           >
             <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
               <Icon className="h-5 w-5 text-primary" />
