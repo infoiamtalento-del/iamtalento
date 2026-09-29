@@ -30,10 +30,10 @@ const FreeFeaturesSection = () => {
     <section className="py-20 md:py-24 bg-gradient-to-b from-background via-accent/30 to-background">
       <div className="container">
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <SectionBadge label="Free With IAT" icon={Gift} />
+          <SectionBadge label="Unlock 8 FREE Career Benefits" icon={Gift} />
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold font-display tracking-tight">
-            8 Free Features.{" "}
-            <span className="text-primary">One Career Platform.</span>
+            Your Job Hunt Gets Smarter{" "}
+            <span className="text-primary">With I Am Talento</span>
           </h2>
         </div>
 
@@ -49,9 +49,9 @@ const FreeFeaturesSection = () => {
             {/* Left: heading + feature grid */}
             <div className="flex-1 p-8 md:p-12 lg:p-16">
               <h3 className="text-3xl md:text-4xl font-bold font-display leading-[1.1] tracking-tight text-foreground">
-                Everything you need.
+                Upload Your Resume Today.
                 <br />
-                <span className="text-primary">Nothing to pay.</span>
+                <span className="text-primary">Get Discovered Tomorrow.</span>
               </h3>
 
               <motion.div
