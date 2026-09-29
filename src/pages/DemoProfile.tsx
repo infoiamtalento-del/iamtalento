@@ -21,6 +21,7 @@ import demoAvatar from "@/assets/demo-avatar.jpg";
 import logoAws from "@/assets/logo-aws.svg";
 import logoGoogle from "@/assets/logo-google.svg";
 import logoMeta from "@/assets/logo-meta.svg";
+import brandLogo from "@/assets/I-am-Talento.png.asset.json";
 import { cn } from "@/lib/utils";
 
 // ===== DUMMY DATA =====
@@ -166,7 +167,7 @@ const DemoProfile = () => {
         >
           <nav className="container flex items-center" aria-label="Main navigation">
             <Link to="/" className="flex items-center gap-2 group mr-auto" aria-label="IAmTalento Home">
-              <img src="/logo.png" alt="IAmTalento" className="h-16 w-auto" />
+              <img src={brandLogo.url} alt="I Am Talento" className="h-16 w-auto object-contain" />
             </Link>
 
             <div className="hidden lg:flex items-center gap-1">
