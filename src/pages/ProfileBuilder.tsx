@@ -26,6 +26,7 @@ import ProjectsSection from "@/components/profile/sections/ProjectsSection";
 import CoursesSection from "@/components/profile/sections/CoursesSection";
 import AchievementsSection from "@/components/profile/sections/AchievementsSection";
 import VolunteerSection from "@/components/profile/sections/VolunteerSection";
+import brandLogo from "@/assets/I-am-Talento.png.asset.json";
 
 const ProfileBuilder = () => {
   const navigate = useNavigate();
@@ -217,7 +218,7 @@ const ProfileBuilder = () => {
           <div className="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
             <div className="flex items-center gap-3">
               <Link to="/" className="flex items-center gap-2">
-                <img src="/logo.png" alt="IAmTalento" className="h-16 w-auto" />
+                <img src={brandLogo.url} alt="I Am Talento" className="h-16 w-auto object-contain" />
               </Link>
               <div className="h-5 w-px bg-border" />
               <span className="text-sm font-medium text-muted-foreground">Profile Builder</span>
