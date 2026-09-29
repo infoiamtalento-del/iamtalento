@@ -134,7 +134,7 @@ const FreeFeaturesSection = () => {
 
           <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="text-center md:text-left">
-              <h3 className="text-2xl md:text-3xl font-bold font-display tracking-tight">
+              <h3 className="text-2xl md:text-3xl font-bold font-display tracking-tight text-white">
                 All of this. Zero cost.
               </h3>
               <p className="mt-2 text-sm md:text-base text-primary-foreground/80">
