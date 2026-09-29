@@ -105,7 +105,7 @@ const VerifiedBadgeSection = () => (
               key={b.title}
               initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
               transition={{ delay: i * 0.05 }}
-              className="relative rounded-xl border border-slate-200 bg-white p-7 hover:border-rose-200 hover:shadow-[0_8px_20px_rgba(237,41,56,0.08)] transition-all"
+              className="relative rounded-xl border border-primary/10 bg-accent p-7 hover:border-primary/25 hover:shadow-md transition-all"
             >
               <span className="absolute top-4 right-4 text-[11px] font-bold text-primary">{num}</span>
               <div className="flex items-start gap-4">
