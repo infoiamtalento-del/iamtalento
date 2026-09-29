@@ -75,7 +75,7 @@ const Navbar = () => {
     >
       <nav className="container flex items-center" aria-label="Main navigation">
         <Link to="/" className="flex items-center gap-2 group mr-auto" aria-label="IAmTalento Home">
-          <img src={brandLogo.url} alt="I Am Talento" className="h-20 w-auto object-contain" />
+          <img src={brandLogo.url} alt="I Am Talento" className="h-14 w-auto object-contain" />
         </Link>
 
         {/* Desktop */}
