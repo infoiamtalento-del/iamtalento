@@ -42,7 +42,7 @@ const Index = () => (
       <JobsSocialProof />
       
       
-      <JobProfileAssessmentSection />
+      {/* <JobProfileAssessmentSection /> */}
       <FeaturedCompanies />
       <CareerIntelligencePackageSection />
       <CareerTransformationSection />
