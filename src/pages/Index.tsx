@@ -49,7 +49,7 @@ const Index = () => (
       {/* <DigitalSkillPassportSection /> */}
       {/* <FreeAccessSection /> */}
       {/* <CandidateJourneySection /> */}
-      <GetHiredBanner />
+      {/* <GetHiredBanner /> */}
       <IndustryReadinessSection />
       
       <PlatformFeaturesSection />
