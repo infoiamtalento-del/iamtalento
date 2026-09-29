@@ -31,8 +31,9 @@ const FreeFeaturesSection = () => {
       <div className="container">
         <div className="text-center max-w-3xl mx-auto mb-12">
           <SectionBadge label="Unlock 8 FREE Career Benefits" icon={Gift} />
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold font-display tracking-tight">
-            Your Job Hunt Gets Smarter{" "}
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold font-display tracking-tight leading-[1.15]">
+            Your Job Hunt Gets Smarter
+            <br />
             <span className="text-primary">With I Am Talento</span>
           </h2>
         </div>
