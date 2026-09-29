@@ -142,7 +142,7 @@ const FreeFeaturesSection = () => {
               </p>
             </div>
             <Link
-              to="/register"
+              to="/auth"
               className="inline-flex shrink-0 items-center gap-2 rounded-full bg-background text-primary px-7 py-3.5 text-base font-bold shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all duration-300"
             >
               Create your job profile now
