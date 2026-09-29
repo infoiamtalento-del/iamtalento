@@ -41,8 +41,9 @@ const Index = () => (
       <JobsHeroSection />
       
       <JobsSocialProof />
-      
-      
+
+      <FreeFeaturesSection />
+
       {/* <JobProfileAssessmentSection /> */}
       <FeaturedCompanies />
       <CareerIntelligencePackageSection />
@@ -50,7 +51,6 @@ const Index = () => (
       {/* <DigitalSkillPassportSection /> */}
       {/* <FreeAccessSection /> */}
       {/* <CandidateJourneySection /> */}
-      <FreeFeaturesSection />
       <IndustryReadinessSection />
       
       <PlatformFeaturesSection />
