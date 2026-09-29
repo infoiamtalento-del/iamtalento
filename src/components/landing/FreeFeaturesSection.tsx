@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import SectionBadge from "@/components/ui/section-badge";
+import freeFeaturesVisual from "@/assets/free-features-visual.jpg";
 
 const features = [
   { icon: Database, title: "Industry Experts Resume Database" },
@@ -87,62 +88,30 @@ const FreeFeaturesSection = () => {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="lg:col-span-7"
           >
-            <div className="group relative rounded-3xl border bg-muted/50 p-6 md:p-8 shadow-elegant overflow-hidden">
-              {/* Soft glow behind the mockup */}
-              <div className="absolute -top-16 -right-16 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
+            <div className="group relative">
+              {/* Soft glow behind the photo */}
+              <div className="absolute -top-16 -right-16 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
 
-              {/* Mockup platform UI */}
-              <div className="relative rounded-2xl bg-card border shadow-xl overflow-hidden transition-transform duration-500 group-hover:-translate-y-2">
-                {/* Window chrome */}
-                <div className="flex items-center justify-between border-b px-5 py-3">
-                  <div className="flex gap-2">
-                    <span className="h-3 w-3 rounded-full bg-primary/70" />
-                    <span className="h-3 w-3 rounded-full bg-primary-glow/70" />
-                    <span className="h-3 w-3 rounded-full bg-success/70" />
-                  </div>
-                  <div className="h-4 w-36 rounded bg-muted" />
-                </div>
-
-                <div className="flex gap-6 p-6">
-                  {/* Sidebar */}
-                  <div className="hidden sm:flex w-1/3 flex-col gap-3">
-                    <div className="flex items-center gap-3 rounded-xl bg-accent px-3 py-3">
-                      <div className="h-9 w-9 rounded-full bg-primary/20" />
-                      <div className="space-y-1.5">
-                        <div className="h-2.5 w-16 rounded bg-primary/40" />
-                        <div className="h-2 w-10 rounded bg-primary/20" />
-                      </div>
-                    </div>
-                    <div className="h-3.5 w-full rounded bg-muted" />
-                    <div className="h-3.5 w-2/3 rounded bg-muted" />
-                    <div className="h-3.5 w-3/4 rounded bg-muted" />
-                    <div className="h-3.5 w-1/2 rounded bg-muted" />
-                  </div>
-
-                  {/* Main panel */}
-                  <div className="flex-1 space-y-4">
-                    <div className="h-9 w-1/2 rounded-lg bg-accent" />
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="h-20 rounded-xl bg-muted/70 border" />
-                      <div className="h-20 rounded-xl bg-primary/10 border border-primary/20" />
-                      <div className="h-20 rounded-xl bg-muted/70 border" />
-                      <div className="h-20 rounded-xl bg-muted/70 border" />
-                    </div>
-                    <div className="space-y-2 pt-1">
-                      <div className="h-2.5 w-full rounded bg-muted" />
-                      <div className="h-2.5 w-5/6 rounded bg-muted" />
-                      <div className="h-2.5 w-2/3 rounded bg-muted" />
-                    </div>
-                  </div>
-                </div>
+              {/* Realistic photo card */}
+              <div className="relative rounded-3xl overflow-hidden border shadow-elegant transition-transform duration-500 group-hover:-translate-y-2">
+                <img
+                  src={freeFeaturesVisual}
+                  alt="Professional celebrating a job offer on the IAmTalento platform"
+                  width={1200}
+                  height={1200}
+                  loading="lazy"
+                  className="w-full h-auto object-cover aspect-[4/3.4] transition-transform duration-700 group-hover:scale-[1.03]"
+                />
+                {/* Soft bottom fade so the badge sits cleanly */}
+                <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/25 to-transparent pointer-events-none" />
               </div>
 
               {/* Floating badges */}
-              <div className="absolute top-10 right-8 md:right-12 rotate-6 rounded-2xl bg-primary px-5 py-3.5 text-primary-foreground shadow-lg shadow-primary/30 transition-transform duration-500 group-hover:rotate-3 group-hover:scale-105">
+              <div className="absolute top-8 -right-3 md:-right-5 rotate-6 rounded-2xl bg-primary px-5 py-3.5 text-primary-foreground shadow-lg shadow-primary/30 transition-transform duration-500 group-hover:rotate-3 group-hover:scale-105">
                 <p className="text-xs font-bold uppercase tracking-wide">98% Match</p>
                 <p className="text-[10px] opacity-80">Product Designer · Bangalore</p>
               </div>
-              <div className="absolute -bottom-3 left-6 md:left-10 flex items-center gap-3 rounded-2xl bg-card border px-4 py-3 shadow-lg">
+              <div className="absolute -bottom-4 left-6 md:left-10 flex items-center gap-3 rounded-2xl bg-card border px-4 py-3 shadow-lg">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-success/15">
                   <Check className="h-4 w-4 text-success" />
                 </div>
