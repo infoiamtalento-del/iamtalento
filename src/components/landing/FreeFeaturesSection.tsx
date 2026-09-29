@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import SectionBadge from "@/components/ui/section-badge";
+import freeFeaturesVisual from "@/assets/free-features-visual.jpg";
 
 const features = [
   { icon: Database, title: "Industry Experts Resume Database" },
