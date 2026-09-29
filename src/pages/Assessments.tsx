@@ -33,7 +33,7 @@ import CredibilityTrustSection from "@/components/assessments/CredibilityTrustSe
 import AssessmentExpertsSection from "@/components/assessments/AssessmentExpertsSection";
 
 import DigitalSkillPassportSection from "@/components/landing/DigitalSkillPassportSection";
-import VerifiedBadgeBentoSection from "@/components/assessments/VerifiedBadgeBentoSection";
+import PlatformFeaturesSection from "@/components/landing/PlatformFeaturesSection";
 import DreamCareerCTABanner from "@/components/assessments/DreamCareerCTABanner";
 
 // 6. Social proof → Convert
@@ -62,9 +62,7 @@ const Assessments = () => (
       <AssessmentExpertsSection />
       <HowItWorksSection />
       
-      
-
-      
+      <PlatformFeaturesSection />
       <SuccessStoriesCarousel />
       <AssessmentIntegritySection />
       <SelectAssessmentSection />
