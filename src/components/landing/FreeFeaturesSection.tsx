@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import {
   ArrowRight,
-  Award,
   BellRing,
   Briefcase,
   Database,
