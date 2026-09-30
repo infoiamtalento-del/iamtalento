@@ -89,10 +89,10 @@ const benefits: Benefit[] = [
 
 const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode } = {}) => {
   return (
-    <section className="py-16 md:py-24 bg-muted/30">
+    <section className="py-12 md:py-16 bg-muted/30">
       <div className="container px-4 md:px-6">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-10 md:mb-12">
           <SectionBadge label="Skill Assessment Report" icon={Sparkles} />
           <motion.h2
             initial={{ opacity: 0, y: 16 }}
@@ -113,7 +113,7 @@ const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode
         </div>
 
         {/* List + benefits grid layout */}
-        <div className="grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.35fr)] gap-6 lg:gap-8 items-stretch bg-card rounded-3xl border border-border p-5 md:p-8 shadow-sm">
+        <div className="grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.35fr)] gap-6 lg:gap-8 items-stretch bg-card rounded-3xl border border-border p-4 md:p-6 shadow-sm">
           {/* Left: static insight list */}
           <div className="lg:border-r lg:border-border lg:pr-6 flex flex-col max-w-md w-full">
             <h3 className="text-lg font-bold font-display text-foreground mb-1 px-2">
@@ -122,7 +122,7 @@ const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode
             <p className="text-xs text-muted-foreground mb-4 px-2">
               Everything included in your report.
             </p>
-            <ul className="flex-1 flex flex-col justify-between gap-2">
+            <ul className="flex-1 flex flex-col justify-between gap-1.5">
               {items.map((item, idx) => {
                 const Icon = item.icon;
                 const itemYellow = idx % 2 === 1;
@@ -132,12 +132,12 @@ const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode
                 return (
                   <li
                     key={item.title}
-                    className="flex items-center gap-3 text-left p-2.5 rounded-xl"
+                    className="flex items-center gap-3 text-left p-2 rounded-xl"
                   >
                     <div
-                      className={`h-9 w-9 rounded-lg ${itemAccentBg} ${itemAccentText} flex items-center justify-center shadow-sm shrink-0`}
+                      className={`h-8 w-8 rounded-lg ${itemAccentBg} ${itemAccentText} flex items-center justify-center shadow-sm shrink-0`}
                     >
-                      <Icon className="h-4.5 w-4.5" />
+                      <Icon className="h-4 w-4" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="text-[10px] font-bold text-muted-foreground/70 font-display tracking-wide">
@@ -176,14 +176,14 @@ const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode
                     to={link}
                     className="flex flex-col rounded-xl bg-background border border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 h-full group overflow-hidden"
                   >
-                    <div className="relative flex-1 min-h-[10rem] overflow-hidden">
+                    <div className="relative flex-1 min-h-[7rem] overflow-hidden">
                       <img
                         src={image}
                         alt={title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         loading="lazy"
                         width={800}
-                        height={600}
+                        height={450}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
@@ -207,7 +207,7 @@ const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode
         {beforeCta}
 
         {/* CTA */}
-        <div className="mt-16 text-center">
+        <div className="mt-10 text-center">
           <Button
             size="lg"
             className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2 font-bold h-12 px-8 shadow-xl rounded-xl text-base"
