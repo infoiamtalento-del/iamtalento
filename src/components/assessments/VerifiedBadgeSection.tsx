@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import {
-  Award, Globe, TrendingUp, Link2, Lock, Star, Headphones,
-  Shield, Eye, UserPlus, Rocket, ShieldCheck, Target, ArrowRight, BadgeCheck,
+  Award, Globe, TrendingUp, Link2,
+  Shield, Eye, UserPlus, Rocket, ShieldCheck, Target, BadgeCheck,
 } from "lucide-react";
 import SectionBadge from "@/components/ui/section-badge";
 
@@ -10,9 +10,6 @@ const benefits = [
   { icon: Globe, title: "Profile Activation", desc: "Visible to all 500+ hiring partners." },
   { icon: TrendingUp, title: "3x Employer Visibility", desc: "Appear on top in recruiter searches." },
   { icon: Link2, title: "Verification Link", desc: "Share anywhere—resumes, emails, LinkedIn." },
-  { icon: Lock, title: "Full Session Access", desc: "Employers view your full assessment with permission." },
-  { icon: Star, title: "Preferred by Top Employers", desc: "500+ companies prefer verified candidates." },
-  { icon: Headphones, title: "Priority Consideration", desc: "Priority during shortlisting and interviews." },
 ];
 
 const stats = [
