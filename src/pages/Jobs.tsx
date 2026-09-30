@@ -107,8 +107,8 @@ const Jobs = () => {
               animate={{ opacity: 1, y: 0 }}
               className="text-4xl md:text-5xl font-bold font-display mb-3"
             >
-              Find Your<br />
-              <span className="text-primary">Dream Job Now</span>
+              Find Your Dream<br />
+              <span className="text-primary">Job Now</span>
             </motion.h1>
             <motion.p
               initial={{ opacity: 0 }}
