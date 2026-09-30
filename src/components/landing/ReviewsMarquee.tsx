@@ -81,11 +81,11 @@ const ReviewsMarquee = () => (
     <div className="container mb-12">
       <div className="text-center max-w-2xl mx-auto">
         <SectionBadge label="What People Say" icon={MessageSquare} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display mb-4">
+        <h2 className="text-3xl md:text-4xl font-bold font-display mb-4 leading-[1.15]">
           Trusted by Employers<br /><span className="text-primary">& Candidates</span>
         </h2>
-        <p className="text-muted-foreground">
-          Real stories from professionals who proved their worth and employers who found verified talent.
+        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+          Real stories from professionals who proved their worth with verified skills — and employers who finally found talent they can trust.
         </p>
       </div>
     </div>

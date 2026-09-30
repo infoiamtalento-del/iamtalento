@@ -488,8 +488,8 @@ const IndustryReadinessSection = () => {
             className="h-0.5 w-40 mx-auto mb-5 origin-left"
             style={{ background: "hsl(33,100%,50%)" }}
           />
-          <p className="text-base md:text-[17px]" style={{ color: "#6b7280" }}>
-            Benchmark against 50,000+ professionals. Trusted by top employers.
+          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+            Benchmark yourself against 50,000+ verified professionals and see exactly where you stand. Trusted by top employers across every industry.
           </p>
         </motion.div>
 

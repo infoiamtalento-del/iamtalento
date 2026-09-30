@@ -126,13 +126,14 @@ const CareerTransformationSection = () => {
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl md:text-4xl font-bold font-display leading-tight"
+            className="text-3xl md:text-4xl font-bold font-display leading-[1.15]"
           >
-            Real Profiles. Real{" "}
-            <span className="text-primary">Company Transitions</span>.
+            Real Profiles.
+            <br />
+            <span className="text-primary">Real Company Transitions.</span>
           </motion.h2>
-          <p className="mt-3 text-muted-foreground">
-            Professionals who used I Am Talento to switch companies, level up roles, and grow their package.
+          <p className="mt-4 text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+            Real professionals who used I Am Talento to switch companies, level up into bigger roles, and grow their packages.
           </p>
         </div>
 

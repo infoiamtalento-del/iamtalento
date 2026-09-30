@@ -31,11 +31,14 @@ const FreeFeaturesSection = () => {
       <div className="container">
         <div className="text-center max-w-3xl mx-auto mb-12">
           <SectionBadge label="Unlock 8 FREE Career Benefits" icon={Gift} />
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold font-display tracking-tight leading-[1.15]">
+          <h2 className="text-3xl md:text-4xl font-bold font-display tracking-tight leading-[1.15]">
             Your Job Hunt Gets Smarter
             <br />
             <span className="text-primary">With I Am Talento</span>
           </h2>
+          <p className="mt-4 text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+            Everything you need to find, apply, and get hired — AI resume tools, verified assessments, and smart job matching. All in one platform, at zero cost.
+          </p>
         </div>
 
         {/* Unified boxed card */}

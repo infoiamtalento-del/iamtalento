@@ -73,13 +73,13 @@ const JobsSocialProof = () => (
         <span className="text-primary">Leaders Worldwide</span>
       </motion.h2>
       <motion.p
-        className="text-center text-sm md:text-base text-muted-foreground mb-10"
+        className="text-center text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mb-10"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ delay: 0.1 }}
       >
-        Leading employers rely on IAmTalento for skills-first, proctored hiring at scale.
+        Leading employers rely on IAmTalento for skills-first, proctored hiring at scale — so every shortlist they receive arrives verified, benchmarked, and ready to interview.
       </motion.p>
 
       {/* Stats row */}
