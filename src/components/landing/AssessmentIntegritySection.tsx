@@ -68,7 +68,7 @@ const AssessmentIntegritySection = () => {
         <div className={cn("text-center max-w-2xl mx-auto mb-14 transition-all duration-700", isVisible ? "opacity-100" : "opacity-0 translate-y-8")}>
           <SectionBadge label="30-Layer Proctoring" icon={Shield} />
           <motion.h2
-            className="text-3xl md:text-4xl font-bold font-display mb-3 text-foreground"
+            className="text-3xl md:text-4xl font-bold font-display mb-3 text-foreground leading-[1.15]"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -76,8 +76,10 @@ const AssessmentIntegritySection = () => {
             30 Layers of Integrity.<br />
             <span className="text-primary">Zero Tolerance.</span>
           </motion.h2>
-          <p className="text-lg text-muted-foreground">
-            Every assessment is protected before, during, and after — so every score is actually earned.
+          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+            Every assessment is protected before, during, and after —
+            <br className="hidden md:block" />
+            so every score is actually earned.
           </p>
         </div>
 

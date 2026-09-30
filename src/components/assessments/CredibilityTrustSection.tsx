@@ -30,12 +30,14 @@ const CredibilityTrustSection = () => (
         <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 mb-4 rounded-full bg-primary/10 text-primary">
           <ShieldCheck className="h-3.5 w-3.5" /> Our Assessments
         </span>
-        <h2 className="text-3xl md:text-4xl font-bold font-display mb-4 leading-tight">
+        <h2 className="text-3xl md:text-4xl font-bold font-display mb-4 leading-[1.15]">
           Credibility &amp;<br />
           <span className="text-primary">Trust</span>
         </h2>
-        <p className="text-muted-foreground leading-relaxed">
-          Built by the people who hire, lead, and build — so every score carries real weight.
+        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+          Built by the people who hire, lead, and build —
+          <br className="hidden md:block" />
+          so every score carries real weight.
         </p>
       </motion.div>
 

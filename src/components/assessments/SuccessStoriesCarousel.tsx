@@ -83,11 +83,14 @@ const SuccessStoriesCarousel = () => {
             <BadgeCheck className="w-4 h-4" />
             Success Stories
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
-            1000+ Success Stories <span className="text-primary">and counting</span>
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
+            1000+ Success Stories<br />
+            <span className="text-primary">and counting</span>
           </h2>
-          <p className="text-muted-foreground text-lg">
-            Real people, real assessments, real offers — careers accelerated through verified skills and data-driven guidance.
+          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+            Real people, real assessments, real offers —
+            <br className="hidden md:block" />
+            careers accelerated through verified skills and data-driven guidance.
           </p>
         </div>
 
