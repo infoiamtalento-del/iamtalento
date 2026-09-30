@@ -113,20 +113,20 @@ const FreeFeaturesSection = () => {
           </div>
 
           {/* Bottom CTA banner */}
-          <div className="relative overflow-hidden bg-primary px-8 py-10 md:px-14 lg:px-16">
+          <div className="relative overflow-hidden bg-primary px-8 py-6 md:px-14 lg:px-16">
             <div className="pointer-events-none absolute right-0 top-0 h-full w-64 translate-x-1/2 rounded-full bg-primary-glow/25 blur-3xl" />
-            <div className="relative flex flex-col items-center justify-between gap-6 md:flex-row">
+            <div className="relative flex flex-col items-center justify-between gap-4 md:flex-row">
               <div className="text-center md:text-left">
-                <h4 className="font-display text-2xl font-bold tracking-tight text-white md:text-3xl">
+                <h4 className="font-display text-xl font-bold tracking-tight text-white md:text-2xl">
                   All of this. Zero cost.
                 </h4>
-                <p className="mt-1.5 text-sm text-primary-foreground/85 md:text-base">
+                <p className="mt-0.5 text-sm text-primary-foreground/85">
                   No hidden fees, no subscriptions. Ever.
                 </p>
               </div>
               <Link
                 to="/auth"
-                className="group inline-flex shrink-0 items-center gap-2 rounded-full bg-background px-8 py-4 text-base font-bold text-primary shadow-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl"
+                className="group inline-flex shrink-0 items-center gap-2 rounded-full bg-background px-7 py-3 text-base font-bold text-primary shadow-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl"
               >
                 Create your job profile now
                 <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
