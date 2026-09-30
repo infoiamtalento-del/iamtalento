@@ -17,7 +17,7 @@ import HackathonSpotlightSection from "@/components/landing/HackathonSpotlightSe
 import FeaturedCompanies from "@/components/jobs/FeaturedCompanies";
 import WebinarHowItWorksSection from "@/components/webinars/WebinarHowItWorksSection";
 import JobsSocialProof from "@/components/jobs/JobsSocialProof";
-import CareerIntelligencePackageSection from "@/components/landing/CareerIntelligencePackageSection";
+import CareerIntelligencePackageHome from "@/components/landing/CareerIntelligencePackageHome";
 import CareerTransformationSection from "@/components/landing/CareerTransformationSection";
 import FreeAccessSection from "@/components/landing/FreeAccessSection";
 import DigitalSkillPassportSection from "@/components/landing/DigitalSkillPassportSection";
@@ -46,7 +46,7 @@ const Index = () => (
 
       {/* <JobProfileAssessmentSection /> */}
       <FeaturedCompanies />
-      <CareerIntelligencePackageSection />
+      <CareerIntelligencePackageHome />
       <IndustryReadinessSection />
       <CareerTransformationSection />
       {/* <DigitalSkillPassportSection /> */}
