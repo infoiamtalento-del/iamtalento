@@ -12,8 +12,15 @@ const JobAlertsBanner = () => {
               <Mail className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h3 className="text-xl md:text-2xl font-bold font-display text-white">Get Job Alerts in Your Inbox</h3>
-              <p className="text-white/85 text-sm">Subscribe to get notified about new job opportunities</p>
+              <h3 className="text-xl md:text-2xl font-bold font-display leading-[1.15] text-white">
+                Get Job Alerts in<br />
+                Your Inbox
+              </h3>
+              <p className="text-white/85 text-sm md:text-base mt-2">
+                Subscribe to get notified about new jobs
+                <br className="hidden md:block" />
+                matched to your skills and profile.
+              </p>
             </div>
           </div>
           <form className="flex items-stretch gap-2 w-full md:w-auto">

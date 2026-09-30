@@ -116,7 +116,9 @@ const Jobs = () => {
               transition={{ delay: 0.15 }}
               className="text-muted-foreground text-lg mb-10"
             >
-              5 lakh+ jobs for you to explore
+              5 lakh+ live jobs from top employers across India —
+              <br className="hidden md:block" />
+              matched to your verified skills and experience.
             </motion.p>
 
             {/* Search Bar */}

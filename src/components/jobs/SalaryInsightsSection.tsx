@@ -67,10 +67,10 @@ const SalaryInsightsSection = () => {
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl md:text-4xl font-bold font-display mb-3"
+            className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3"
           >
-            Know Your Worth.<br />
-            <span className="text-primary">Earn What You Deserve.</span>
+            Know Your Worth. Earn<br />
+            <span className="text-primary">What You Deserve.</span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0 }}
@@ -79,7 +79,9 @@ const SalaryInsightsSection = () => {
             transition={{ delay: 0.1 }}
             className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto"
           >
-            <span className="font-semibold text-foreground">Compare salaries, explore growth trends, and negotiate with confidence</span> — powered by data from 50,000+ verified Talento offers.
+            Compare salaries, explore growth trends, and negotiate with confidence —
+            <br className="hidden md:block" />
+            powered by data from 50,000+ verified Talento offers.
           </motion.p>
         </div>
         <motion.div
