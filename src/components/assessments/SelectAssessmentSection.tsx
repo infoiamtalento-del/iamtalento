@@ -39,7 +39,7 @@ const SelectAssessmentSection = () => {
           </h2>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mt-4">
             Explore proctored assessments across every domain and skill level.<br className="hidden md:block" />
-            Pick one, prove your expertise, and stand out to top employers.
+            Pick one, prove your expertise, and stand out.
           </p>
         </motion.div>
 
