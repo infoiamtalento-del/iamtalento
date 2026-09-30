@@ -226,7 +226,7 @@ const AssessmentExpertsSection = () => {
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
             Co-authored with industry leaders and senior practitioners —
             <br className="hidden md:block" />
-            so every question maps to what really matters on the job.
+            every question maps to what matters on the job.
           </p>
         </div>
 
