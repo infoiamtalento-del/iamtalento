@@ -105,9 +105,9 @@ const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode
             <span className="text-primary">Report Today</span>
           </motion.h2>
           <p className="mt-4 text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-            Discover your strengths, identify skill gaps, benchmark against industry standards,
+            Discover your strengths, identify skill gaps, and benchmark yourself against
             <br className="hidden md:block" />
-            and unlock opportunities with confidence.
+            industry standards with confidence.
           </p>
 
           <div className="mt-6 inline-flex items-baseline gap-3 px-6 py-3 rounded-2xl bg-red-500 text-white shadow-lg">
@@ -122,7 +122,7 @@ const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode
         </div>
 
         {/* List + benefits grid layout */}
-        <div className="grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto items-stretch bg-card rounded-3xl border border-border p-5 md:p-8 shadow-sm">
+        <div className="grid lg:grid-cols-2 gap-8 items-stretch bg-card rounded-3xl border border-border p-5 md:p-8 shadow-sm">
           {/* Left: static insight list */}
           <div className="lg:border-r lg:border-border lg:pr-8 flex flex-col">
             <h3 className="text-lg font-bold font-display text-foreground mb-1 px-2">
