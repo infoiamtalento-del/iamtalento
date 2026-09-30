@@ -122,7 +122,7 @@ const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode
         </div>
 
         {/* List + benefits grid layout */}
-        <div className="grid lg:grid-cols-[minmax(0,320px)_1fr] gap-6 max-w-[1400px] mx-auto items-start bg-card rounded-3xl border border-border p-4 md:p-6 shadow-sm">
+        <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] gap-8 max-w-6xl mx-auto items-stretch bg-card rounded-3xl border border-border p-4 md:p-6 shadow-sm">
           {/* Left: static insight list */}
           <div className="lg:border-r lg:border-border lg:pr-4">
             <h3 className="text-lg font-bold font-display text-foreground mb-1 px-2">
@@ -171,7 +171,7 @@ const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode
             <p className="text-xs text-muted-foreground mb-4 px-1">
               Your Career Intelligence Report also unlocks these career platforms.
             </p>
-            <div className="grid sm:grid-cols-2 gap-5">
+            <div className="grid sm:grid-cols-2 gap-4 h-full">
               {benefits.map(({ icon: Icon, title, description, image, link, color }, i) => (
                 <motion.div
                   key={title}
@@ -179,12 +179,13 @@ const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.08 }}
+                  className="h-full"
                 >
                   <Link
                     to={link}
-                    className="block rounded-xl bg-background border border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 h-full group overflow-hidden"
+                    className="flex flex-col rounded-xl bg-background border border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 h-full group overflow-hidden"
                   >
-                    <div className="relative h-40 overflow-hidden">
+                    <div className="relative h-28 overflow-hidden shrink-0">
                       <img
                         src={image}
                         alt={title}
@@ -195,13 +196,13 @@ const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
-                    <div className="p-5">
-                      <div className={`h-10 w-10 rounded-lg ${color} flex items-center justify-center mb-3`}>
-                        <Icon className="h-5 w-5" />
+                    <div className="p-4 flex flex-col flex-1">
+                      <div className={`h-9 w-9 rounded-lg ${color} flex items-center justify-center mb-2.5`}>
+                        <Icon className="h-4.5 w-4.5" />
                       </div>
                       <p className="text-sm font-semibold font-display mb-1">{title}</p>
-                      <p className="text-xs text-muted-foreground mb-3">{description}</p>
-                      <span className="text-xs font-medium text-primary inline-flex items-center gap-1 group-hover:gap-2 transition-all">
+                      <p className="text-xs text-muted-foreground mb-2.5">{description}</p>
+                      <span className="text-xs font-medium text-primary inline-flex items-center gap-1 group-hover:gap-2 transition-all mt-auto">
                         Explore <ArrowRight className="h-3 w-3" />
                       </span>
                     </div>
