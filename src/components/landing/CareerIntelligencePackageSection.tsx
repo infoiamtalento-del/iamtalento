@@ -105,9 +105,9 @@ const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode
             <span className="text-primary">Report Today</span>
           </motion.h2>
           <p className="mt-4 text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-            Discover your strengths, identify skill gaps, benchmark against industry standards,
+            Discover your strengths, identify skill gaps, and benchmark yourself against
             <br className="hidden md:block" />
-            and unlock opportunities with confidence.
+            industry standards with confidence.
           </p>
 
           <div className="mt-6 inline-flex items-baseline gap-3 px-6 py-3 rounded-2xl bg-red-500 text-white shadow-lg">
