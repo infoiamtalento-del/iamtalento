@@ -477,21 +477,13 @@ const IndustryReadinessSection = () => {
             <SectionBadge label="AI-Powered Skill Assessment" icon={Sparkles} className="mb-6" />
           </motion.div>
 
-          <h2 className="text-3xl md:text-4xl font-bold font-display mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-5">
             Measure Your Industry<br /><span className="text-primary">Readiness Score</span>
           </h2>
-          <motion.div
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="h-0.5 w-40 mx-auto mb-5 origin-left"
-            style={{ background: "hsl(33,100%,50%)" }}
-          />
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-            Benchmark yourself against 50,000+ verified professionals and see exactly where you stand.
+            Benchmark yourself against 50,000+ verified professionals —
             <br className="hidden md:block" />
-            Trusted by top employers across every industry.
+            trusted by top employers across every industry.
           </p>
         </motion.div>
 
