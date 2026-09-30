@@ -268,15 +268,18 @@ const PlatformFeaturesSection = () => {
         <div className="text-center max-w-2xl mx-auto mb-10">
           <SectionBadge label="Platform" icon={Zap} />
           <motion.h2
-            className="text-3xl md:text-4xl font-bold font-display mb-4"
+            className="text-3xl md:text-4xl font-bold font-display mb-4 leading-[1.15]"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            Three Engines. One Career Leap.
+            Three Powerful Engines.<br />
+            <span className="text-primary">One Career Leap.</span>
           </motion.h2>
-          <p className="text-muted-foreground text-lg">
-            Measure, match, and grow — all in one platform built for results.
+          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+            Measure, match, and grow — all in one platform
+            <br className="hidden md:block" />
+            built for results.
           </p>
         </div>
 
