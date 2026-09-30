@@ -122,7 +122,7 @@ const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode
         </div>
 
         {/* List + benefits grid layout */}
-        <div className="grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto items-stretch bg-card rounded-3xl border border-border p-5 md:p-8 shadow-sm">
+        <div className="grid lg:grid-cols-2 gap-8 items-stretch bg-card rounded-3xl border border-border p-5 md:p-8 shadow-sm">
           {/* Left: static insight list */}
           <div className="lg:border-r lg:border-border lg:pr-8 flex flex-col">
             <h3 className="text-lg font-bold font-display text-foreground mb-1 px-2">
