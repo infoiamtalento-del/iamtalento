@@ -1,16 +1,15 @@
 import { motion } from "framer-motion";
 import {
-  Award, Globe, TrendingUp, Link2, QrCode, Lock, Star, Headphones,
+  Award, Globe, TrendingUp, Link2, Lock, Star, Headphones,
   Shield, Eye, UserPlus, Rocket, ShieldCheck, Target, ArrowRight, BadgeCheck,
 } from "lucide-react";
 import SectionBadge from "@/components/ui/section-badge";
 
 const benefits = [
   { icon: Award, title: "Verified Talent Badge", desc: "A mark of credibility that proves your skills." },
-  { icon: Globe, title: "100% Profile Activation", desc: "Visible to all 500+ hiring partners." },
+  { icon: Globe, title: "Profile Activation", desc: "Visible to all 500+ hiring partners." },
   { icon: TrendingUp, title: "3x Employer Visibility", desc: "Appear on top in recruiter searches." },
-  { icon: Link2, title: "Shareable Verification Link", desc: "Share anywhere—resumes, emails, LinkedIn." },
-  { icon: QrCode, title: "Instant QR Verification", desc: "Scan to instantly verify your score." },
+  { icon: Link2, title: "Verification Link", desc: "Share anywhere—resumes, emails, LinkedIn." },
   { icon: Lock, title: "Full Session Access", desc: "Employers view your full assessment with permission." },
   { icon: Star, title: "Preferred by Top Employers", desc: "500+ companies prefer verified candidates." },
   { icon: Headphones, title: "Priority Consideration", desc: "Priority during shortlisting and interviews." },
