@@ -143,12 +143,13 @@ const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl md:text-5xl font-bold font-display leading-tight"
+            className="text-3xl md:text-4xl font-bold font-display leading-[1.15]"
           >
-            Get Your Career Intelligence{" "}
-            <span className="text-red-500">Report Today</span>
+            Get Your Career Intelligence
+            <br />
+            <span className="text-primary">Report Today</span>
           </motion.h2>
-          <p className="mt-2 text-muted-foreground text-sm md:text-base">
+          <p className="mt-4 text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
             Discover your strengths, identify skill gaps, benchmark against industry standards, and unlock opportunities with confidence.
           </p>
 

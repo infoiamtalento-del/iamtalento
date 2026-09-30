@@ -48,9 +48,9 @@ const JobsHeroSection = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.15 }}
-          className="text-muted-foreground text-lg mb-8 max-w-xl mx-auto"
+          className="text-muted-foreground text-base md:text-lg mb-8 max-w-2xl mx-auto"
         >
-          Explore 5 lakh+ jobs from top companies and take the next step in your career.
+          Explore 5 lakh+ verified jobs from India's top companies — matched to your skills, benchmarked for fit, and ready for you to take the next step in your career.
         </motion.p>
 
         <motion.div
