@@ -31,14 +31,14 @@ const ProctoringSection = () => (
               <Shield className="h-5 w-5 text-primary" />
               <span className="text-xs font-bold uppercase tracking-widest text-primary">30-LAYER PROCTORING</span>
             </div>
-            <h2
-              className="text-[28px] md:text-[32px] font-bold text-white mb-4 leading-tight"
-              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-            >
-              Why Start Today?
+            <h2 className="text-3xl md:text-4xl font-bold font-display text-white mb-4 leading-[1.15]">
+              Why Start Today?<br />
+              <span className="text-primary-glow">Here's Why.</span>
             </h2>
-            <p className="text-sm text-white/70 mb-6 max-w-md leading-relaxed">
-              Every assessment is protected with 30 layers of integrity — before, during, and after. AI proctoring, identity verification, and session replay ensure every score is earned.
+            <p className="text-base md:text-lg text-white/70 mb-6 max-w-md leading-relaxed">
+              Every assessment is protected with 30 layers of integrity —
+              <br className="hidden md:block" />
+              before, during, and after — so every score is earned.
             </p>
             <div className="space-y-2.5 mb-8">
               {[

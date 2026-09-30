@@ -25,8 +25,10 @@ const JobsEventsSection = () => (
           Grow Your Network,<br />
           <span className="text-primary">Grow Your Career</span>
         </h2>
-        <p className="text-muted-foreground text-base md:text-lg max-w-xl mx-auto">
-          Join curated events designed to connect you with opportunities and industry leaders.
+        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+          Join curated events designed to connect you
+          <br className="hidden md:block" />
+          with opportunities and industry leaders.
         </p>
       </div>
 
