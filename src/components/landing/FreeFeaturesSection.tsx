@@ -6,12 +6,12 @@ import freeFeaturesVisual from "@/assets/free-features-visual.jpg";
 
 const features = [
   "Industry Experts Resume Database",
-  "AI-Powered Resume Builder",
+  "AI-Powered Resume Builder and Grader",
   "Real-Time Job Market Insight Alerts",
   "Skill-Based Automated Job Matching",
   "Application Tracking & Follow-Up",
   "Digital Portfolio with Custom URL",
-  "Free AI Learning Courses",
+  "Free Access to AI Learning Courses",
   "Freelancing & Gig Opportunities",
 ];
 
