@@ -122,16 +122,16 @@ const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode
         </div>
 
         {/* List + benefits grid layout */}
-        <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] gap-8 max-w-6xl mx-auto items-stretch bg-card rounded-3xl border border-border p-4 md:p-6 shadow-sm">
+        <div className="grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto items-stretch bg-card rounded-3xl border border-border p-5 md:p-8 shadow-sm">
           {/* Left: static insight list */}
-          <div className="lg:border-r lg:border-border lg:pr-4">
+          <div className="lg:border-r lg:border-border lg:pr-8 flex flex-col">
             <h3 className="text-lg font-bold font-display text-foreground mb-1 px-2">
               What's inside
             </h3>
-            <p className="text-xs text-muted-foreground mb-3 px-2">
+            <p className="text-xs text-muted-foreground mb-4 px-2">
               Everything included in your report.
             </p>
-            <ul className="space-y-1">
+            <ul className="flex-1 flex flex-col justify-between gap-2">
               {items.map((item, idx) => {
                 const Icon = item.icon;
                 const itemYellow = idx % 2 === 1;
@@ -164,14 +164,14 @@ const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode
           </div>
 
           {/* Right: 4-box grid of extra benefits */}
-          <div>
+          <div className="flex flex-col">
             <h3 className="text-lg font-bold font-display text-foreground mb-1 px-1">
               Plus, more benefits of your report
             </h3>
             <p className="text-xs text-muted-foreground mb-4 px-1">
               Your Career Intelligence Report also unlocks these career platforms.
             </p>
-            <div className="grid sm:grid-cols-2 gap-4 h-full">
+            <div className="grid sm:grid-cols-2 gap-4 flex-1">
               {benefits.map(({ icon: Icon, title, description, image, link, color }, i) => (
                 <motion.div
                   key={title}
@@ -185,7 +185,7 @@ const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode
                     to={link}
                     className="flex flex-col rounded-xl bg-background border border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 h-full group overflow-hidden"
                   >
-                    <div className="relative h-28 overflow-hidden shrink-0">
+                    <div className="relative h-24 overflow-hidden shrink-0">
                       <img
                         src={image}
                         alt={title}
