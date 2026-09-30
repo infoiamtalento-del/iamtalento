@@ -162,7 +162,7 @@ const CareerIntelligencePackageHome = ({ beforeCta }: { beforeCta?: ReactNode } 
           {/* Left: clickable titles list */}
           <div className="lg:border-r lg:border-border lg:pr-4">
             <h3 className="text-lg font-bold font-display text-foreground mb-1 px-2">
-              What's inside
+              What's Inside your CIR Report
             </h3>
             <p className="text-xs text-muted-foreground mb-3 px-2">
               Click any insight to expand it on the right.

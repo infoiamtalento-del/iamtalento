@@ -117,7 +117,7 @@ const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode
           {/* Left: static insight list */}
           <div className="lg:border-r lg:border-border lg:pr-6 flex flex-col max-w-md w-full">
             <h3 className="text-lg font-bold font-display text-foreground mb-1 px-2">
-              What's inside
+              What's Inside your CIR Report
             </h3>
             <p className="text-xs text-muted-foreground mb-4 px-2">
               Everything included in your report.
