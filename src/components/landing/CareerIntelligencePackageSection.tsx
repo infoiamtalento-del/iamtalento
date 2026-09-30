@@ -176,7 +176,7 @@ const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode
                     to={link}
                     className="flex flex-col rounded-xl bg-background border border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 h-full group overflow-hidden"
                   >
-                    <div className="relative h-24 overflow-hidden shrink-0">
+                    <div className="relative flex-1 min-h-[10rem] overflow-hidden">
                       <img
                         src={image}
                         alt={title}
@@ -187,9 +187,9 @@ const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
-                    <div className="p-4 flex flex-col flex-1">
-                      <div className={`h-9 w-9 rounded-lg ${color} flex items-center justify-center mb-2.5`}>
-                        <Icon className="h-4.5 w-4.5" />
+                    <div className="p-3.5 flex flex-col shrink-0">
+                      <div className={`h-7 w-7 rounded-lg ${color} flex items-center justify-center mb-2`}>
+                        <Icon className="h-3.5 w-3.5" />
                       </div>
                       <p className="text-sm font-semibold font-display mb-1">{title}</p>
                       <p className="text-xs text-muted-foreground mb-2.5">{description}</p>
