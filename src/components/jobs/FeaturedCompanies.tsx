@@ -92,7 +92,9 @@ const FeaturedCompanies = () => {
             transition={{ delay: 0.1 }}
             className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto"
           >
-            Where talent meets opportunity. Global enterprises and high-growth startups trust I Am Talento to hire skilled, verified professionals.
+            Where talent meets opportunity. Global enterprises and high-growth startups
+            <br className="hidden md:block" />
+            trust I Am Talento to hire skilled, verified professionals.
           </motion.p>
 
         </div>

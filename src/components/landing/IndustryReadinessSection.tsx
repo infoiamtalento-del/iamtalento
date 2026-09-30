@@ -478,7 +478,7 @@ const IndustryReadinessSection = () => {
           </motion.div>
 
           <h2 className="text-3xl md:text-4xl font-bold font-display mb-4">
-            Your Industry<br /><span className="text-primary">Readiness Score</span>
+            Measure Your Industry<br /><span className="text-primary">Readiness Score</span>
           </h2>
           <motion.div
             initial={{ scaleX: 0 }}
@@ -489,7 +489,9 @@ const IndustryReadinessSection = () => {
             style={{ background: "hsl(33,100%,50%)" }}
           />
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-            Benchmark yourself against 50,000+ verified professionals and see exactly where you stand. Trusted by top employers across every industry.
+            Benchmark yourself against 50,000+ verified professionals and see exactly where you stand.
+            <br className="hidden md:block" />
+            Trusted by top employers across every industry.
           </p>
         </motion.div>
 
