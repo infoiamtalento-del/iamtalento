@@ -1,5 +1,29 @@
 import { useState } from "react";
 import { Sparkles, Linkedin, Briefcase, Building2 } from "lucide-react";
+import male1 from "@/assets/experts/male-1.jpg";
+import male2 from "@/assets/experts/male-2.jpg";
+import male3 from "@/assets/experts/male-3.jpg";
+import male4 from "@/assets/experts/male-4.jpg";
+import male5 from "@/assets/experts/male-5.jpg";
+import male6 from "@/assets/experts/male-6.jpg";
+import female1 from "@/assets/experts/female-1.jpg";
+import female2 from "@/assets/experts/female-2.jpg";
+import female3 from "@/assets/experts/female-3.jpg";
+import female4 from "@/assets/experts/female-4.jpg";
+import female5 from "@/assets/experts/female-5.jpg";
+import female6 from "@/assets/experts/female-6.jpg";
+
+const MALE_PHOTOS = [male1, male2, male3, male4, male5, male6];
+const FEMALE_PHOTOS = [female1, female2, female3, female4, female5, female6];
+
+const FEMALE_NAMES = new Set([
+  "Neha", "Priya", "Tanya", "Sneha", "Meera", "Riya",
+  "Ananya", "Shreya", "Pooja", "Divya", "Kavya", "Tara",
+  "Anjali", "Ritu", "Pallavi", "Ira", "Smita", "Ritika",
+  "Naina", "Mohini", "Sunita", "Tanvi", "Rachna", "Megha",
+  "Aisha", "Niharika", "Lakshmi", "Ishita", "Shruti", "Maya",
+  "Anika", "Sara",
+]);
 
 const COMPANY_DOMAINS: Record<string, string> = {
   Swiggy: "swiggy.com", Uber: "uber.com", Ola: "olacabs.com", Nykaa: "nykaa.com",
@@ -69,12 +93,6 @@ type Track = {
   id: string;
   label: string;
   experts: Omit<Expert, "initials" | "photo">[];
-};
-
-const hashToId = (s: string) => {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
-  return (h % 70) + 1;
 };
 
 const E = (
@@ -196,16 +214,24 @@ const tracks: Track[] = [
   },
 ];
 
-const enrich = (e: Omit<Expert, "initials" | "photo">): Expert => ({
+const enrich = (e: Omit<Expert, "initials" | "photo">, photo: string): Expert => ({
   ...e,
   initials: e.name.split(" ").map((n) => n[0]).slice(0, 2).join(""),
-  photo: `https://i.pravatar.cc/360?img=${hashToId(e.name + e.company)}`,
+  photo,
 });
 
 const AssessmentExpertsSection = () => {
   const [active, setActive] = useState(tracks[0].id);
   const current = tracks.find((t) => t.id === active)!;
-  const experts = current.experts.map(enrich);
+  let mi = 0;
+  let fi = 0;
+  const experts = current.experts.map((e) => {
+    const first = e.name.replace(/^Dr\.\s*/, "").split(" ")[0];
+    const isFemale = FEMALE_NAMES.has(first);
+    const idx = isFemale ? fi++ : mi++;
+    const pool = isFemale ? FEMALE_PHOTOS : MALE_PHOTOS;
+    return enrich(e, pool[idx % pool.length]);
+  });
 
   return (
     <section className="py-24 bg-gradient-to-b from-background via-primary/[0.02] to-background relative overflow-hidden">
