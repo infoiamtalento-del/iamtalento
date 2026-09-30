@@ -113,7 +113,9 @@ const HackathonSpotlightSection = () => {
             <span className="text-primary">Get Hired.</span>
           </h2>
           <p className="mt-4 text-muted-foreground text-base md:text-lg max-w-2xl">
-            Join India's biggest coding competition. Win cash prizes, earn your verified badge, and unlock direct interviews with top tech companies.
+            Join India's biggest coding competition. Win cash prizes, earn your verified badge,
+            <br className="hidden md:block" />
+            and unlock direct interviews with top tech companies.
           </p>
         </motion.div>
 

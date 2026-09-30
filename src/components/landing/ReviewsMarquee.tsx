@@ -85,7 +85,9 @@ const ReviewsMarquee = () => (
           Trusted by Employers<br /><span className="text-primary">& Candidates</span>
         </h2>
         <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-          Real stories from professionals who proved their worth with verified skills — and employers who finally found talent they can trust.
+          Real stories from professionals who proved their worth with verified skills —
+          <br className="hidden md:block" />
+          and employers who finally found talent they can trust.
         </p>
       </div>
     </div>

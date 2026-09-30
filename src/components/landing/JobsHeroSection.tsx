@@ -41,8 +41,8 @@ const JobsHeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-4xl md:text-5xl font-bold font-display mb-3"
         >
-          Find Your<br />
-          <span className="text-primary">Dream Job Now</span>
+          Find Your Dream<br />
+          <span className="text-primary">Job Now</span>
         </motion.h1>
         <motion.p
           initial={{ opacity: 0 }}
@@ -50,7 +50,9 @@ const JobsHeroSection = () => {
           transition={{ delay: 0.15 }}
           className="text-muted-foreground text-base md:text-lg mb-8 max-w-2xl mx-auto"
         >
-          Explore 5 lakh+ verified jobs from India's top companies — matched to your skills, benchmarked for fit, and ready for you to take the next step in your career.
+          Explore 5 lakh+ verified jobs from India's top companies — matched to your skills,
+          <br className="hidden md:block" />
+          benchmarked for fit, and ready for you to take the next step in your career.
         </motion.p>
 
         <motion.div
