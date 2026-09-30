@@ -107,8 +107,8 @@ const Jobs = () => {
               animate={{ opacity: 1, y: 0 }}
               className="text-4xl md:text-5xl font-bold font-display mb-3"
             >
-              Find Your<br />
-              <span className="text-primary">Dream Job Now</span>
+              Find Your Dream<br />
+              <span className="text-primary">Job Now</span>
             </motion.h1>
             <motion.p
               initial={{ opacity: 0 }}
@@ -116,7 +116,9 @@ const Jobs = () => {
               transition={{ delay: 0.15 }}
               className="text-muted-foreground text-lg mb-10"
             >
-              5 lakh+ jobs for you to explore
+              5 lakh+ live jobs from top employers across India —
+              <br className="hidden md:block" />
+              matched to your verified skills and experience.
             </motion.p>
 
             {/* Search Bar */}

@@ -20,8 +20,15 @@ const FeaturedJobsBanner = () => {
         <div className="bg-primary text-white rounded-2xl p-6 md:p-8 shadow-lg">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-3">
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold font-display text-white">Featured Jobs</h2>
-              <p className="text-white/80 text-sm mt-1">Handpicked opportunities from top companies</p>
+              <h2 className="text-2xl md:text-3xl font-bold font-display leading-[1.15] text-white">
+                Handpicked Openings from<br />
+                Top Companies
+              </h2>
+              <p className="text-white/85 text-sm md:text-base mt-2">
+                Featured roles from leading employers —
+                <br className="hidden md:block" />
+                refreshed daily for verified talent.
+              </p>
             </div>
             <Button variant="secondary" className="bg-card text-primary hover:bg-card/90 gap-2 self-start md:self-auto">
               View all jobs <ArrowRight className="h-4 w-4" />

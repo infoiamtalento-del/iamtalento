@@ -50,19 +50,21 @@ const ResumeToolkitSection = () => {
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl md:text-4xl font-bold font-display mb-3"
+            className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3"
           >
             Build a Resume That<br />
-            <span className="text-primary">Actually Gets You Hired</span>
+            <span className="text-primary">Gets You Hired</span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-muted-foreground text-base"
+            className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto"
           >
-            Three smart tools. One job-ready you.
+            AI-powered builder, grader, and expert templates —
+            <br className="hidden md:block" />
+            everything you need to land more interviews.
           </motion.p>
         </div>
 
