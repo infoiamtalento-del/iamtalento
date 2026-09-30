@@ -214,16 +214,24 @@ const tracks: Track[] = [
   },
 ];
 
-const enrich = (e: Omit<Expert, "initials" | "photo">): Expert => ({
+const enrich = (e: Omit<Expert, "initials" | "photo">, photo: string): Expert => ({
   ...e,
   initials: e.name.split(" ").map((n) => n[0]).slice(0, 2).join(""),
-  photo: `https://i.pravatar.cc/360?img=${hashToId(e.name + e.company)}`,
+  photo,
 });
 
 const AssessmentExpertsSection = () => {
   const [active, setActive] = useState(tracks[0].id);
   const current = tracks.find((t) => t.id === active)!;
-  const experts = current.experts.map(enrich);
+  let mi = 0;
+  let fi = 0;
+  const experts = current.experts.map((e) => {
+    const first = e.name.replace(/^Dr\.\s*/, "").split(" ")[0];
+    const isFemale = FEMALE_NAMES.has(first);
+    const idx = isFemale ? fi++ : mi++;
+    const pool = isFemale ? FEMALE_PHOTOS : MALE_PHOTOS;
+    return enrich(e, pool[idx % pool.length]);
+  });
 
   return (
     <section className="py-24 bg-gradient-to-b from-background via-primary/[0.02] to-background relative overflow-hidden">
