@@ -53,11 +53,8 @@ const CandidateStories = () => (
         >
           SUCCESS STORIES
         </span>
-        <h2
-          className="text-[26px] md:text-[30px] font-bold"
-          style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: "#0F172A" }}
-        >
-          What Happened After{" "}
+        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground">
+          What Happened After<br />
           <span className="text-primary">They Got Verified</span>
         </h2>
       </motion.div>

@@ -29,15 +29,14 @@ const AssessmentFAQ = () => (
           >
             <HelpCircle className="h-3 w-3" /> FAQ
           </span>
-          <h2
-            className="text-[26px] md:text-[30px] font-bold mb-3"
-            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: "#0F172A" }}
-          >
-            Questions Candidates Ask{" "}
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3 text-foreground">
+            Questions Candidates Ask<br />
             <span className="text-primary">Before They Start</span>
           </h2>
-          <p className="text-sm mb-5" style={{ color: "#475569" }}>
-            Can't find what you're looking for? Reach out to our support team.
+          <p className="text-muted-foreground text-base md:text-lg mb-5 max-w-2xl">
+            Can't find what you're looking for?
+            <br className="hidden md:block" />
+            Reach out to our support team.
           </p>
           <button
             className="inline-flex items-center gap-2 bg-primary text-white px-4 py-2.5 text-sm font-bold hover:bg-primary/90 transition-colors"

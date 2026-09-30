@@ -99,11 +99,8 @@ const PricingBundles = () => (
         >
           PRICING
         </span>
-        <h2
-          className="text-[26px] md:text-[30px] font-bold mb-2"
-          style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: "#0F172A" }}
-        >
-          Invest Once. Benefit for{" "}
+        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3 text-foreground">
+          Invest Once. Benefit for<br />
           <span className="text-primary">12 Months.</span>
         </h2>
         <p className="text-sm" style={{ color: "#475569" }}>

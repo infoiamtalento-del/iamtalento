@@ -23,7 +23,7 @@ const WhoIsItForSection = () => {
         <div className={cn("text-center max-w-2xl mx-auto mb-16 transition-all duration-700", isVisible ? "opacity-100" : "opacity-0 translate-y-8")}>
           <SectionBadge label="Who Is It For" icon={Users} />
           <motion.h2
-            className="text-3xl md:text-4xl font-bold font-display mb-4"
+            className="text-3xl md:text-4xl font-bold font-display mb-4 leading-[1.15]"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -31,13 +31,15 @@ const WhoIsItForSection = () => {
             Built for Every Stage<br />of <span className="text-primary">Your Career</span>
           </motion.h2>
           <motion.p
-            className="text-muted-foreground text-lg"
+            className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.15 }}
           >
-            Whether you're writing your first line of code or leading a 200-person team — there's an assessment for you.
+            Whether you're writing your first line of code or leading a 200-person team —
+            <br className="hidden md:block" />
+            there's an assessment for you.
           </motion.p>
         </div>
 

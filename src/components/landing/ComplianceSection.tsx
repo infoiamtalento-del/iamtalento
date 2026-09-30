@@ -20,14 +20,18 @@ const ComplianceSection = () => {
         <div className={cn("text-center max-w-2xl mx-auto mb-12 transition-all duration-700", isVisible ? "opacity-100" : "opacity-0 translate-y-8")}>
           <SectionBadge label="Enterprise Compliance" icon={Shield} />
           <motion.h2
-            className="text-3xl md:text-4xl font-bold font-display mb-4"
+            className="text-3xl md:text-4xl font-bold font-display mb-4 leading-[1.15]"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
             Your Data.<br /><span className="text-primary">Our Responsibility.</span>
           </motion.h2>
-          <p className="text-muted-foreground text-lg">Enterprise-grade protection, ethical AI, and full regulatory compliance — because trust isn't optional.</p>
+          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+            Enterprise-grade protection, ethical AI, and full regulatory compliance —
+            <br className="hidden md:block" />
+            because trust isn't optional.
+          </p>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 max-w-5xl mx-auto">

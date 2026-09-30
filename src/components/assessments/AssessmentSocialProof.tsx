@@ -125,15 +125,14 @@ const AssessmentSocialProof = () => {
           <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest px-3 py-1 mb-4 rounded-full" style={{ color: "#E22C2C", background: "hsl(355 84% 54% / 0.08)" }}>
             <span className="w-1.5 h-1.5 rounded-full bg-[#E22C2C]" /> Live Results
           </span>
-          <h2 className="text-2xl md:text-4xl font-bold font-display mb-3 text-slate-900">
-            Verified People. Real Skills.{" "}
-            <span className="text-primary relative inline-block">
-              Life-Changing Outcomes.
-              <span className="absolute left-0 right-0 -bottom-1 h-[3px] bg-primary/70 rounded-full" />
-            </span>
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4 text-slate-900">
+            Verified People. Real Skills.<br />
+            <span className="text-primary">Life-Changing Outcomes.</span>
           </h2>
-          <p className="text-slate-500 text-base md:text-lg max-w-2xl mx-auto">
-            See how Talento verified professionals are getting hired faster and building better careers.
+          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+            See how Talento verified professionals are getting hired faster
+            <br className="hidden md:block" />
+            and building better careers.
           </p>
         </motion.div>
       </div>

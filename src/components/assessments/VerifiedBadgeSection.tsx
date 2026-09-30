@@ -31,18 +31,17 @@ const VerifiedBadgeSection = () => (
       <div className="text-center mb-12">
         <SectionBadge label="Verified Badge" icon={Shield} />
         <motion.h2
-          className="text-3xl md:text-5xl font-bold font-display mb-4 text-slate-900"
+          className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4 text-slate-900"
           initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
         >
-          Your Skills Are Real. Prove It.{" "}
-          <span className="text-primary relative inline-block">
-            Get Ahead.
-            <span className="absolute left-0 right-0 -bottom-1 h-[3px] bg-primary/80 rounded-full" />
-          </span>
+          Your Skills Are Real. Prove It.<br />
+          <span className="text-primary">Get Ahead.</span>
         </motion.h2>
-        <p className="text-slate-500 text-base md:text-lg max-w-2xl mx-auto">
-          The Verified Badge is your proof of skills and potential—trusted by{" "}
-          <span className="font-bold text-primary">500+ top companies</span> to identify, shortlist, and hire the right talent faster.
+        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+          The Verified Badge is your proof of skills and potential — trusted by{" "}
+          <span className="font-bold text-primary">500+ top companies</span>
+          <br className="hidden md:block" />
+          to identify, shortlist, and hire the right talent faster.
         </p>
       </div>
 

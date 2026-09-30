@@ -219,11 +219,14 @@ const AssessmentExpertsSection = () => {
             <Sparkles className="w-4 h-4" />
             AI Assessments
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
-            AI Assessments <span className="text-primary">Prepared By</span>
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
+            AI Assessments Prepared By<br />
+            <span className="text-primary">Industry Experts.</span>
           </h2>
-          <p className="text-muted-foreground text-lg">
-            Co-authored with industry leaders and senior practitioners — so every question maps to what really matters on the job.
+          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+            Co-authored with industry leaders and senior practitioners —
+            <br className="hidden md:block" />
+            so every question maps to what really matters on the job.
           </p>
         </div>
 

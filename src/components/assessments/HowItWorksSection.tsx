@@ -145,7 +145,7 @@ const HowItWorksSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-3xl md:text-5xl font-bold font-display mt-3 mb-3"
+            className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-3 mb-3"
           >
             Your Journey to the Right Opportunity<br />
             <span className="text-primary">Starts Here.</span>
@@ -155,9 +155,11 @@ const HowItWorksSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.15 }}
-            className="text-muted-foreground max-w-xl mx-auto mb-6"
+            className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mb-6"
           >
-            Six simple steps to prove your skills, earn trust, and land your dream role.
+            Six simple steps to prove your skills, earn trust,
+            <br className="hidden md:block" />
+            and land your dream role.
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
             <Link to="/skill-assessment">

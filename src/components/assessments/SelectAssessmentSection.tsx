@@ -33,11 +33,8 @@ const SelectAssessmentSection = () => {
           >
             FIND YOUR ASSESSMENT
           </span>
-          <h2
-            className="text-[26px] md:text-[30px] font-bold"
-            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: "#0F172A" }}
-          >
-            Find the Right Assessment{" "}
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground">
+            Find the Right Assessment<br />
             <span className="text-primary">for Your Career</span>
           </h2>
         </motion.div>
