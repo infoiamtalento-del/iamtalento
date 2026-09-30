@@ -90,7 +90,7 @@ const SuccessStoriesCarousel = () => {
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
             Real people, real assessments, real offers —
             <br className="hidden md:block" />
-            careers accelerated through verified skills and data-driven guidance.
+            careers accelerated by verified skills.
           </p>
         </div>
 
