@@ -37,9 +37,9 @@ const FreeFeaturesSection = () => {
             <span className="text-primary">With I Am Talento</span>
           </h2>
           <p className="mt-4 text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-            Everything you need to find, apply, and get hired — AI resume tools, verified assessments, and smart job matching.
+            AI resume tools, verified assessments, and smart job matching —
             <br className="hidden md:block" />
-            All in one platform, at zero cost.
+            everything you need to get hired, at zero cost.
           </p>
         </div>
 
