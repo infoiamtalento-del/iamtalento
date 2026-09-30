@@ -103,8 +103,10 @@ const PricingBundles = () => (
           Invest Once. Benefit for<br />
           <span className="text-primary">12 Months.</span>
         </h2>
-        <p className="text-sm" style={{ color: "#475569" }}>
-          Single Test: <span className="font-bold" style={{ color: "#0F172A" }}>₹1,999</span> per assessment
+        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+          Start with a single test at <span className="font-bold text-foreground">₹1,999</span> or bundle up and save more —
+          <br className="hidden md:block" />
+          every result stays valid for a full 12 months.
         </p>
       </motion.div>
 
