@@ -155,15 +155,6 @@ const CareerIntelligencePackageHome = ({ beforeCta }: { beforeCta?: ReactNode } 
             industry standards with confidence.
           </p>
 
-          <div className="mt-6 inline-flex items-baseline gap-3 px-6 py-3 rounded-2xl bg-red-500 text-white shadow-lg">
-            <span className="text-xs uppercase tracking-wider font-semibold opacity-80">
-              All-in Price
-            </span>
-            <span className="text-2xl md:text-3xl font-bold font-display">
-              ₹1,999
-            </span>
-            <span className="text-xs line-through opacity-70">₹9,999+</span>
-          </div>
         </div>
 
         {/* Master-detail landscape layout */}
