@@ -1,4 +1,6 @@
 import { motion } from "framer-motion";
+import SectionBadge from "@/components/ui/section-badge";
+import { MapPin } from "lucide-react";
 
 const locations = [
   { city: "Bangalore, KA", jobs: "12,560 jobs", img: "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=600&q=80" },
@@ -14,8 +16,16 @@ const PopularLocationsSection = () => {
     <section className="py-16 md:py-20">
       <div className="container px-4 md:px-6">
         <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold font-display mb-2">Popular Job Locations</h2>
-          <p className="text-muted-foreground">Find jobs in top cities around the world</p>
+          <SectionBadge label="Job Locations" icon={MapPin} />
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
+            Explore Jobs in India's<br />
+            <span className="text-primary">Hottest Job Markets</span>
+          </h2>
+          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+            From Bangalore and Mumbai to Delhi and Hyderabad —
+            <br className="hidden md:block" />
+            discover openings in the city you want to grow in.
+          </p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {locations.map((loc, i) => (

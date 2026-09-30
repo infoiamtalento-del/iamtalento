@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { Code2, Palette, Megaphone, Users, Headphones, BarChart3, Package, UserCog } from "lucide-react";
+import { Code2, Palette, Megaphone, Users, Headphones, BarChart3, Package, UserCog, LayoutGrid } from "lucide-react";
+import SectionBadge from "@/components/ui/section-badge";
 
 const categories = [
   { icon: Code2, title: "Development", jobs: "12,560 jobs" },
@@ -17,8 +18,16 @@ const TopCategoriesSection = () => {
     <section className="py-16 md:py-20">
       <div className="container px-4 md:px-6">
         <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold font-display mb-2">Top Categories</h2>
-          <p className="text-muted-foreground">Explore jobs by your interest</p>
+          <SectionBadge label="Explore by Category" icon={LayoutGrid} />
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
+            Explore Top Job<br />
+            <span className="text-primary">Categories</span>
+          </h2>
+          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+            From tech and finance to design and operations —
+            <br className="hidden md:block" />
+            find roles that match your interests and skills.
+          </p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
           {categories.map(({ icon: Icon, title, jobs }, i) => (

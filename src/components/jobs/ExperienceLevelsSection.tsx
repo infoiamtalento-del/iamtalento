@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Sprout, TrendingUp, Award, Crown, ArrowRight } from "lucide-react";
+import SectionBadge from "@/components/ui/section-badge";
+import { Sprout, TrendingUp, Award, Crown, ArrowRight, Layers } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const levels = [
@@ -15,8 +16,16 @@ const ExperienceLevelsSection = () => {
     <section className="py-16 md:py-20 bg-accent/20">
       <div className="container px-4 md:px-6">
         <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold font-display mb-2">Jobs by Experience Level</h2>
-          <p className="text-muted-foreground">Find jobs that match your experience</p>
+          <SectionBadge label="Experience Levels" icon={Layers} />
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
+            Find Jobs for Every<br />
+            <span className="text-primary">Experience Level</span>
+          </h2>
+          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+            From freshers to senior executives — thousands of roles
+            <br className="hidden md:block" />
+            matched to exactly where you are in your career.
+          </p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
           {levels.map(({ icon: Icon, title, years, jobs }, i) => (

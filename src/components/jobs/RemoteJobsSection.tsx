@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import SectionBadge from "@/components/ui/section-badge";
+import { ArrowUpRight, Globe } from "lucide-react";
 
 const remoteCompanies = [
   { name: "GitLab", positions: "45 open positions", logo: "https://cdn.simpleicons.org/gitlab", tint: "from-orange-500/15 to-orange-500/5" },
@@ -15,8 +16,16 @@ const RemoteJobsSection = () => {
     <section className="py-16 md:py-20 bg-accent/20">
       <div className="container px-4 md:px-6">
         <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold font-display mb-2">Remote Jobs</h2>
-          <p className="text-muted-foreground">Work from anywhere in the world</p>
+          <SectionBadge label="Work From Anywhere" icon={Globe} />
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
+            Remote Roles from Leading<br />
+            <span className="text-primary">Global Companies</span>
+          </h2>
+          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+            Flexible, work-from-anywhere roles at trusted employers —
+            <br className="hidden md:block" />
+            all verified and open to talent across India.
+          </p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {remoteCompanies.map((c, i) => (
