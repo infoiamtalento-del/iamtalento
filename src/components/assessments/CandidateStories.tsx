@@ -57,6 +57,10 @@ const CandidateStories = () => (
           What Happened After<br />
           <span className="text-primary">They Got Verified</span>
         </h2>
+        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mt-4">
+          Real candidates, real scores, real offers — see how a verified assessment<br className="hidden md:block" />
+          turned effort into interview calls and salary jumps.
+        </p>
       </motion.div>
 
       <div className="grid md:grid-cols-3 gap-5">
