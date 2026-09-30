@@ -185,7 +185,7 @@ const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode
                     to={link}
                     className="flex flex-col rounded-xl bg-background border border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 h-full group overflow-hidden"
                   >
-                    <div className="relative h-28 overflow-hidden shrink-0">
+                    <div className="relative h-24 overflow-hidden shrink-0">
                       <img
                         src={image}
                         alt={title}
