@@ -28,7 +28,7 @@ const WhoIsItForSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            Built for Every Stage<br />of <span className="text-primary">Your Career</span>
+            Built for Every Stage<br /><span className="text-primary">of Your Career</span>
           </motion.h2>
           <motion.p
             className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto"
