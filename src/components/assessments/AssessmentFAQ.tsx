@@ -30,8 +30,8 @@ const AssessmentFAQ = () => (
             <HelpCircle className="h-3 w-3" /> FAQ
           </span>
           <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3 text-foreground">
-            Questions Candidates Ask<br />
-            <span className="text-primary">Before They Start</span>
+            Questions Candidates<br />
+            <span className="text-primary">Ask Before Starting</span>
           </h2>
           <p className="text-muted-foreground text-base md:text-lg mb-5 max-w-2xl">
             Can't find what you're looking for?
