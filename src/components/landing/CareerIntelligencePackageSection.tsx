@@ -148,9 +148,6 @@ const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode
             Get Your Career Intelligence{" "}
             <span className="text-red-500">Report Today</span>
           </motion.h2>
-          <p className="mt-4 text-foreground text-lg md:text-xl font-semibold">
-            9 career-changing insights for just <span className="text-red-500">₹1,999</span>.
-          </p>
           <p className="mt-2 text-muted-foreground text-sm md:text-base">
             Discover your strengths, identify skill gaps, benchmark against industry standards, and unlock opportunities with confidence.
           </p>
