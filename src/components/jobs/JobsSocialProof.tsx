@@ -81,7 +81,7 @@ const JobsSocialProof = () => (
       >
         Leading employers rely on IAmTalento for skills-first, proctored hiring at scale —
         <br className="hidden md:block" />
-        so every shortlist arrives verified, benchmarked, and ready to interview.
+        so every shortlist arrives verified and interview-ready.
       </motion.p>
 
       {/* Stats row */}
