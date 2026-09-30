@@ -38,8 +38,7 @@ const VerifiedBadgeSection = () => (
           <span className="text-primary">Get Ahead.</span>
         </motion.h2>
         <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-          The Verified Badge is your proof of skills and potential — trusted by{" "}
-          <span className="font-bold text-primary">500+ top companies</span>
+          The Verified Badge is your proof of skills and potential — trusted by top employers
           <br className="hidden md:block" />
           to identify, shortlist, and hire the right talent faster.
         </p>
