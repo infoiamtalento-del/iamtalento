@@ -287,8 +287,7 @@ const AssessmentExpertsSection = () => {
                 {/* Name + title */}
                 <div className="mb-3 pl-0.5">
                   <p className="font-bold text-lg leading-tight text-foreground">{e.name}</p>
-                  <div className="flex items-center gap-1.5 mt-1">
-                    <span className="inline-block w-1 h-1 rounded-full bg-primary" />
+                  <div className="mt-1">
                     <p className="text-[13px] uppercase tracking-wider font-semibold text-primary line-clamp-1">{e.title}</p>
                   </div>
                 </div>
