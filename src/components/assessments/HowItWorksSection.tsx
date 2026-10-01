@@ -162,7 +162,7 @@ const HowItWorksSection = () => {
             and land your dream role.
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
-            <Link to="/skill-assessment">
+            <Link to="/assessments/explore">
               <Button className="rounded-xl px-8 gap-2 h-12 text-sm font-semibold bg-gradient-to-r from-rose-500 to-primary hover:opacity-95 text-white border-0 shadow-lg shadow-rose-500/20">
                 Start Your Assessment <ArrowRight className="h-4 w-4" />
               </Button>
@@ -220,7 +220,7 @@ const HowItWorksSection = () => {
               </p>
             </div>
             <div className="flex flex-col items-center md:items-end gap-2 shrink-0">
-              <Link to="/skill-assessment">
+              <Link to="/assessments/explore">
                 <Button className="rounded-xl px-6 gap-2 h-11 text-sm font-semibold bg-gradient-to-r from-rose-500 to-primary hover:opacity-95 text-white border-0 shadow-lg shadow-rose-500/20">
                   Start Your Assessment <ArrowRight className="h-4 w-4" />
                 </Button>

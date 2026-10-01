@@ -26,7 +26,7 @@ const JobsBannerReadiness = () => (
               Know your Industry Readiness Score and bridge skill gaps with personalised learning paths.
             </p>
           </div>
-          <Link to="/skill-assessment" className="shrink-0">
+          <Link to="/assessments/explore" className="shrink-0">
             <Button className="bg-white text-[hsl(33,100%,50%)] hover:bg-white/90 gap-2 font-semibold">
               Check My Readiness <ArrowRight className="h-4 w-4" />
             </Button>

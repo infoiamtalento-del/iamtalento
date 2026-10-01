@@ -247,7 +247,7 @@ const VerifiedBadgeBentoSection = () => (
         transition={{ delay: 0.5 }}
       >
         <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-12 px-8 gap-2 rounded-xl">
-          <Link to="/skill-assessment">
+          <Link to="/assessments/explore">
             Get Your Verified Badge <ArrowRight className="h-4 w-4" />
           </Link>
         </Button>

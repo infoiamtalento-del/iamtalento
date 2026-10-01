@@ -177,7 +177,7 @@ const GrowthTrackerSection = () => {
             Every lesson, quiz, and project moves your career readiness needle.
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
-            <Link to="/skill-assessment">
+            <Link to="/assessments/explore">
               <Button className="rounded-full px-8 gap-2 h-11 text-sm font-semibold bg-[hsl(33,100%,50%)] hover:bg-[hsl(33,100%,45%)] text-white border-0">
                 Start Tracking <ArrowRight className="h-4 w-4" />
               </Button>

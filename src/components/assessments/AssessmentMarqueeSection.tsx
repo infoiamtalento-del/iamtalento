@@ -174,7 +174,7 @@ const AssessmentMarqueeSection = () => {
         </AnimatePresence>
 
         <div className="text-center mt-10">
-          <Link to="/skill-assessment">
+          <Link to="/assessments/explore">
             <Button variant="outline" className="gap-2">
               Browse All Assessments <ArrowRight className="h-4 w-4" />
             </Button>

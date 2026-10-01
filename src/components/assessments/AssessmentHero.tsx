@@ -89,7 +89,7 @@ const AssessmentHero = () => {
             </div>
 
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.8 }} className="flex flex-wrap gap-4 mb-8">
-              <Link to="/assessments">
+              <Link to="/assessments/explore">
                 <Button size="lg" className="bg-[hsl(33,100%,50%)] text-white hover:bg-[hsl(33,100%,45%)] border-0 gap-2 h-12 px-6">
                   Take Your Assessment <ArrowRight className="h-4 w-4" />
                 </Button>
