@@ -20,8 +20,8 @@ const Resources = () => (
             Practical Resources<br /><span className="text-primary">For Your Career</span>
           </h1>
           <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto mb-8">
-            Explore practical guides, whitepapers, and industry insights created for ambitious professionals —<br className="hidden md:block" />
-            more useful resources are coming soon.
+            Explore practical guides and industry insights.<br className="hidden md:block" /><br className="hidden md:block" />
+            More useful resources are coming.
           </p>
           <Link to="/"><Button size="lg" className="bg-[hsl(33,100%,50%)] text-white hover:bg-[hsl(33,100%,45%)] border-0 gap-2">Back to Home <ArrowRight className="h-4 w-4" /></Button></Link>
         </div>

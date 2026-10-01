@@ -47,7 +47,7 @@ const Pricing = () => {
               </h1>
               <p className="text-base md:text-lg text-primary-foreground/70 max-w-2xl mx-auto mb-8">
                 {tab === "candidates"
-                  ? <>Build your profile, improve your resume, and apply for your first role completely free —<br className="hidden md:block" />pay only when you are ready to get verified.</>
+                  ? <>Build your profile and apply for roles free.<br className="hidden md:block" /><br className="hidden md:block" />Upgrade when you need verification.</>
                   : <>Post jobs and browse talent free, then upgrade for verified profiles and custom assessments —<br className="hidden md:block" />pay only when your hiring needs grow.</>
                 }
               </p>

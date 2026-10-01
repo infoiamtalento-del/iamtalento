@@ -247,7 +247,7 @@ const HackathonHero = () => (
           <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
             className="text-lg text-muted-foreground max-w-lg mb-8 leading-relaxed"
           >
-            The fastest way to prove your skills, get noticed by top employers, and land real opportunities — no resume needed.
+            Prove your skills through real challenges.<br className="hidden md:block" /> Get noticed without a résumé.
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="flex flex-wrap gap-3 mb-8">
             <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 h-12 px-6">

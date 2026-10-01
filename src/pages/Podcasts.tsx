@@ -156,7 +156,7 @@ const Hero = () => (
             Real Conversations<br /><span className="text-primary">Build Career Skills</span>
           </h1>
           <p className="text-sm md:text-lg text-muted-foreground max-w-lg mb-8 leading-relaxed">
-            One home for practical podcasts and webinars led by people who know what hiring teams value —<br className="hidden md:block" />listen, watch, learn, and apply it today.
+            Practical podcasts and webinars led by experts.<br className="hidden md:block" /><br className="hidden md:block" />Listen, learn, and apply it today.
           </p>
           <div className="flex flex-wrap gap-3 mb-8">
             <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2 h-12 px-6 rounded-xl">
@@ -536,7 +536,7 @@ const Hosts = () => (
       <div className="text-center mb-10">
         <SectionBadge label="The Voices" icon={Mic} />
         <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Meet the Experts<br /><span className="text-primary">Behind Each Episode</span></h2>
-          <p className="text-muted-foreground text-sm md:text-lg mt-3 max-w-2xl mx-auto">Hear directly from practitioners, coaches, and leaders who bring useful experience to every topic —<br className="hidden md:block" />meet the voices you can trust.</p>
+          <p className="text-muted-foreground text-sm md:text-lg mt-3 max-w-2xl mx-auto">Hear from trusted practitioners and leaders.<br className="hidden md:block" /><br className="hidden md:block" />Meet voices with experience.</p>
         <p className="text-muted-foreground text-sm md:text-lg mt-3 max-w-2xl mx-auto">Learn from practitioners who have hired, led teams, built products, and navigated career changes —<br className="hidden md:block" />experience speaks in every session.</p>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -565,7 +565,7 @@ const Categories = () => (
       <div className="text-center mb-10">
         <SectionBadge label="Explore" icon={Lightbulb} />
         <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Choose a Topic<br /><span className="text-primary">Move Your Career</span></h2>
-          <p className="text-muted-foreground text-sm md:text-lg mt-3 max-w-2xl mx-auto">Browse focused conversations across technology, leadership, careers, skills, and startup growth —<br className="hidden md:block" />start with what matters most to you.</p>
+          <p className="text-muted-foreground text-sm md:text-lg mt-3 max-w-2xl mx-auto">Browse focused conversations across career topics.<br className="hidden md:block" /><br className="hidden md:block" />Start with what matters most.</p>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {categories.map((c, i) => (
@@ -616,7 +616,7 @@ const Perks = () => (
       <div className="text-center mb-12">
         <SectionBadge label="Why You'll Love It" icon={Star} />
         <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Built for Outcomes<br /><span className="text-primary">Not Passive Views</span></h2>
-          <p className="text-muted-foreground text-sm md:text-lg mt-3 max-w-2xl mx-auto">Every session is designed to deliver practical insight, useful connections, and a clear next step —<br className="hidden md:block" />learning should lead somewhere.</p>
+          <p className="text-muted-foreground text-sm md:text-lg mt-3 max-w-2xl mx-auto">Gain practical insight and useful connections.<br className="hidden md:block" /><br className="hidden md:block" />Leave with a clear next step.</p>
       </div>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
         {perks.map((p, i) => (
@@ -668,7 +668,7 @@ const Stories = () => (
       <div className="text-center mb-12">
         <SectionBadge label="Listener Wins" icon={Quote} />
         <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Listeners Turn Ideas<br /><span className="text-primary">Into Career Outcomes</span></h2>
-          <p className="text-muted-foreground text-sm md:text-lg mt-3 max-w-2xl mx-auto">Discover how listeners used practical advice from our sessions to improve resumes and negotiate offers —<br className="hidden md:block" />small insights created real progress.</p>
+          <p className="text-muted-foreground text-sm md:text-lg mt-3 max-w-2xl mx-auto">See how listeners turned advice into progress.<br className="hidden md:block" /><br className="hidden md:block" />Small insights created results.</p>
       </div>
       <div className="grid md:grid-cols-3 gap-6">
         {stories.map((s, i) => (
@@ -697,7 +697,7 @@ const Bundles = () => (
       <div className="text-center mb-12">
         <SectionBadge label="Series & Bundles" icon={Award} />
         <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Go Deeper With<br /><span className="text-primary">Expert Learning Series</span></h2>
-          <p className="text-muted-foreground text-sm md:text-lg mt-3 max-w-2xl mx-auto">Unlock focused collections built around one goal, from job search confidence to leadership growth —<br className="hidden md:block" />follow a complete learning path.</p>
+          <p className="text-muted-foreground text-sm md:text-lg mt-3 max-w-2xl mx-auto">Explore collections built around one goal.<br className="hidden md:block" /><br className="hidden md:block" />Follow a complete learning path.</p>
       </div>
       <div className="grid md:grid-cols-3 gap-5">
         {bundles.map((b, i) => (
@@ -764,7 +764,7 @@ const CTA = () => (
         <div className="relative grid md:grid-cols-2 gap-8 items-center">
           <div>
             <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15]">Never Miss a<br /><span className="text-primary-foreground/75">Live Session</span></h2>
-            <p className="mt-3 text-primary-foreground/80 max-w-md">Get weekly episode releases, exclusive guest notes, and early access to upcoming live sessions —<br className="hidden md:block" />delivered directly to your inbox.</p>
+            <p className="mt-3 text-primary-foreground/80 max-w-md">Get new episodes and guest notes each week.<br className="hidden md:block" /><br className="hidden md:block" />Receive them in your inbox.</p>
           </div>
           <form onSubmit={(e) => e.preventDefault()} className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1 flex items-center gap-2 bg-background text-foreground rounded-full px-4 py-3">
