@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { Zap, Github, Twitter, Linkedin, Mail } from "lucide-react";
-import brandLogo from "@/assets/I-am-Talento.png.asset.json";
 
 const footerLinks = {
   "For Employers": [
@@ -37,7 +36,7 @@ const Footer = () => (
       <div className="grid grid-cols-2 md:grid-cols-6 gap-8">
         <div className="col-span-2">
           <Link to="/" className="flex items-center gap-2 mb-4">
-            <img src={brandLogo.url} alt="I Am Talento" className="h-12 w-auto object-contain" />
+            <img src="/logo.png" alt="I Am Talento" className="h-12 w-auto object-contain" />
           </Link>
           <p className="text-muted-foreground text-sm max-w-xs mb-6 leading-relaxed">
             AI-powered Industry Readiness platform that connects verified talent with employers — through secure assessments, domain-expert questions, and trusted scores.
