@@ -17,7 +17,7 @@ const Resources = () => (
             <BookOpen className="h-8 w-8 text-primary-foreground" />
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-4">
-            Practical Resources for Your<br /><span className="text-primary">Next Career Move</span>
+            Practical Resources<br /><span className="text-primary">For Your Career</span>
           </h1>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mb-8">
             Explore practical guides, whitepapers, and industry insights created for ambitious professionals —<br className="hidden md:block" />

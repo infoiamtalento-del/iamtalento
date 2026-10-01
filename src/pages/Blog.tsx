@@ -37,11 +37,11 @@ const Blog = () => {
             <div className="text-center mb-12">
               <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">Blog</p>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-4">
-                Talent Intelligence Insights for<br /><span className="text-primary">Modern Hiring</span>
+                Talent Insights for<br /><span className="text-primary">Modern Hiring</span>
               </h1>
               <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-                Explore practical research, proven strategies, and fresh thinking for stronger hiring teams —<br className="hidden md:block" />
-                built for decisions that matter.
+                <span className="block">Explore practical research and fresh strategies.</span>
+                <span className="block">Make stronger hiring decisions.</span>
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
