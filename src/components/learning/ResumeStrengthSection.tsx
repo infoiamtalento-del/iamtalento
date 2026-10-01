@@ -10,10 +10,13 @@ const ResumeStrengthSection = () => (
       <div className="text-center mb-10">
         <SectionBadge label="Resume Intelligence" icon={FileText} />
         <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
-          Your Learning Reflects on<br />
-          <span className="text-primary">Your Resume — Instantly</span>
+          Turn Every New Skill<br />
+          <span className="text-primary">Into Resume Strength</span>
         </h2>
-        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">As you complete courses, your AI Resume Strength Score updates automatically.</p>
+        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+          <span className="block">Complete courses and watch your AI Resume Strength Score update.</span>
+          <span className="block">Make every new skill visible.</span>
+        </p>
       </div>
       <div className="grid sm:grid-cols-2 gap-8 max-w-2xl mx-auto">
         {/* Before */}

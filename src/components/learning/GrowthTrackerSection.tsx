@@ -162,7 +162,7 @@ const GrowthTrackerSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-3xl md:text-5xl font-bold font-display mt-4 mb-4"
+            className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4 mb-3"
           >
             Watch Yourself<br />
             <span className="text-primary">Level Up</span>
@@ -172,9 +172,10 @@ const GrowthTrackerSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.15 }}
-            className="text-muted-foreground max-w-xl mx-auto mb-8"
+            className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mb-8"
           >
-            Every lesson, quiz, and project moves your career readiness needle.
+            <span className="block">Track how every lesson, quiz, and project strengthens your readiness.</span>
+            <span className="block">See your career progress clearly.</span>
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
             <Link to="/assessments/explore">

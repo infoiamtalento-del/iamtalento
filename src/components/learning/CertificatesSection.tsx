@@ -15,10 +15,13 @@ const CertificatesSection = () => (
         <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
           <SectionBadge label="Verified Certificates" icon={Award} />
           <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
-            Earn Verified Certificates<br />
-            <span className="text-primary">Recruiters Actually Trust</span>
+            Earn Certificates Recruiters<br />
+            <span className="text-primary">Know They Can Trust</span>
           </h2>
-          <p className="text-muted-foreground mb-8">Earn credentials that give recruiters clear, verifiable evidence of the skills you have developed —<br className="hidden md:block" />more useful than a static PDF.</p>
+          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mb-8">
+            <span className="block">Give recruiters clear, verifiable evidence of the skills you developed.</span>
+            <span className="block">Offer more proof than a static PDF.</span>
+          </p>
           <div className="space-y-4">
             {diffs.map((d, i) => (
               <motion.div key={d.title} initial={{ opacity: 0, x: -12 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="flex gap-3">

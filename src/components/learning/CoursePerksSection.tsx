@@ -565,7 +565,7 @@ const CoursePerksSection = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-3xl md:text-4xl font-bold font-display mt-4 mb-4"
+            className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4 mb-3"
           >
             What You Get With<br />
             <span className="text-primary">Every Course</span>
@@ -574,9 +574,10 @@ const CoursePerksSection = () => {
             initial={{ opacity: 0, y: 16 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-muted-foreground max-w-2xl mx-auto"
+            className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto"
           >
-            Every course comes packed with resources that go way beyond video lessons.
+            <span className="block">Every course includes practical resources designed for real progress.</span>
+            <span className="block">Go far beyond video lessons.</span>
           </motion.p>
         </div>
 

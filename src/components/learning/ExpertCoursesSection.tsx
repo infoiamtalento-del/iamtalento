@@ -64,11 +64,12 @@ const ExpertCoursesSection = () => {
       <div className="text-center mb-10">
         <SectionBadge label="Expert-Led" icon={Award} />
         <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
-          Learn From Experts Who Know<br />
-          <span className="text-primary">What Industry Expects</span>
+          Learn From Industry Experts<br />
+          <span className="text-primary">Who Know the Work</span>
         </h2>
         <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-          Learn practical skills from experienced professionals who understand today’s roles and hiring standards —<br className="hidden md:block" />gain insight grounded in real work.
+          <span className="block">Learn practical skills from professionals who understand today’s roles.</span>
+          <span className="block">Gain insight grounded in real work.</span>
         </p>
       </div>
 

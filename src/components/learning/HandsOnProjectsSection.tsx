@@ -12,7 +12,10 @@ const HandsOnProjectsSection = () => (
           Learn by Doing —<br />
           <span className="text-primary">Not Just Watching</span>
         </h2>
-        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">Apply every lesson through realistic projects that demonstrate how you think, build, and solve —<br className="hidden md:block" />then add the work to your portfolio.</p>
+        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+          <span className="block">Apply every lesson through realistic projects that show how you solve.</span>
+          <span className="block">Add your strongest work to your portfolio.</span>
+        </p>
       </div>
 
       {/* Bento Grid */}

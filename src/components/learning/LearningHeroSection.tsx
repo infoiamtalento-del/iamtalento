@@ -25,8 +25,9 @@ const LearningHeroSection = () => (
           Learn Skills That<br />
           <span className="text-primary">Get You Hired</span>
         </h1>
-        <p className="text-base md:text-lg text-muted-foreground mb-6 max-w-lg">
-          Build practical, job-ready capabilities through AI-powered courses made for real working environments —<br className="hidden md:block" />go beyond certificates and learn by doing.
+        <p className="text-base md:text-lg text-muted-foreground mb-6 max-w-2xl">
+          <span className="block">Build practical, job-ready skills through courses shaped for real work.</span>
+          <span className="block">Learn by doing, not just watching.</span>
         </p>
 
         <div className="relative mb-6 w-full max-w-xl md:max-w-2xl lg:max-w-3xl">

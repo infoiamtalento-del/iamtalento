@@ -31,7 +31,8 @@ const GetCertifiedSection = () => (
               Earn Trusted Certifications<br /><span className="text-white/75">Build Career Momentum</span>
             </h2>
             <p className="text-white/70 text-base md:text-lg max-w-2xl mb-6">
-              Build your profile with industry-aligned credentials that make completed learning visible to recruiters —<br className="hidden md:block" />turn new skills into trusted proof.
+              <span className="block">Build your profile with credentials that make completed learning visible.</span>
+              <span className="block">Turn new skills into trusted proof.</span>
             </p>
             <Link to="/learning#courses">
               <Button className="bg-warning text-warning-foreground hover:bg-warning/90 gap-2 font-semibold">
