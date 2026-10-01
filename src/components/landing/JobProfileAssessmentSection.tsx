@@ -222,7 +222,7 @@ const JobProfileAssessmentSection = () => {
                 asChild
                 className="w-full py-2.5 h-auto px-4 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs tracking-wide transition-all flex items-center justify-center gap-2 shadow-md shadow-primary/20 active:scale-[0.98]"
               >
-                <Link to="/skill-assessment">
+                <Link to="/assessments/explore">
                   Take Your Assessment <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
               </Button>
