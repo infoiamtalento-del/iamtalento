@@ -140,7 +140,7 @@ const Networking = () => (
           <div>
             <SectionBadge label="Networking Events" icon={Network} />
             <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-4">
-              Meet People Who Move<br /><span className="text-primary">Your Career Forward</span>
+              Meet People<br /><span className="text-primary">Who Move Careers</span>
             </h1>
             <p className="text-muted-foreground max-w-xl text-base md:text-lg mb-8">
               <span className="block">Meet founders, operators, and hiring teams.</span><span className="block">Build connections that move careers.</span>

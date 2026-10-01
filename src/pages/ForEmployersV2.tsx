@@ -359,7 +359,7 @@ const WhoItsForSection = () => {
             Ideal Customer Profiles
           </p>
           <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
-            Built for Leaders Who Cannot Afford<br />
+            Built for Hiring Leaders<br />
               <span className="text-primary">Another Bad Hire</span>
           </h2>
           <p className="text-muted-foreground leading-relaxed">
@@ -511,8 +511,8 @@ const ProblemVsSolutionSection = () => {
                 The Problem
               </p>
               <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15]">
-                Hiring Today Feels Slow and Costly<br />
-                  <span className="text-primary">With Too Much Uncertainty</span>
+                Hiring Feels Slow<br />
+                  <span className="text-primary">And Uncertain</span>
               </h2>
             </div>
             {employerProblems.map(({ icon: Icon, title, bullets }, i) => {
@@ -573,7 +573,7 @@ const ProblemVsSolutionSection = () => {
                 The Solution
               </p>
               <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15]">
-                Build a Structured Hiring Process<br />
+                Build Structured Hiring<br />
                   <span className="text-primary">Based on Performance</span>
               </h2>
             </div>
@@ -689,7 +689,7 @@ const HowItWorksSection = () => {
             How It Works
           </p>
           <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
-            Move From Job Description to Offer<br />
+            Move From Role to Offer<br />
               <span className="text-primary">In Four Clear Steps</span>
           </h2>
           <p className="text-muted-foreground leading-relaxed">
@@ -1404,7 +1404,7 @@ const PlatformCapabilitiesSection = () => {
             Platform Capabilities
           </p>
           <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
-            Everything You Need for Skills-First<br />
+            Everything for Skills-First<br />
               <span className="text-primary">Hiring in One Place</span>
           </h2>
           <p className="text-muted-foreground leading-relaxed mb-2">
@@ -1535,7 +1535,7 @@ const AssessmentCoverageSection = () => {
             Assessment Coverage
           </p>
           <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
-            Test the Capabilities That Matter<br />
+            Test Skills That Matter<br />
               <span className="text-primary">Most for the Job</span>
           </h2>
           <p className="text-muted-foreground leading-relaxed">
@@ -1593,8 +1593,8 @@ const EmployerDashboardSection = () => {
               Employer Dashboard
             </p>
             <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-6">
-              Manage Every Hiring Signal From<br />
-                <span className="text-primary">One Clear Dashboard</span>
+              Manage Hiring Signals<br />
+                <span className="text-primary">In One Dashboard</span>
             </h2>
             <div className="space-y-4 mb-8">
               {dashboardBullets.map(({ icon: Icon, text }) => (
