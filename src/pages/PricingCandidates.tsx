@@ -170,6 +170,7 @@ const ComparisonTable = () => (
         <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
           Compare Every Plan Clearly<br /><span className="text-primary">At a Glance</span>
         </h2>
+        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">See every feature, benefit, and access level side by side before choosing your plan —<br className="hidden md:block" />compare with confidence.</p>
       </motion.div>
       <div className="overflow-x-auto rounded-2xl border border-border bg-card shadow-sm">
         <table className="w-full text-sm">
@@ -215,6 +216,7 @@ const HowItWorks = () => (
         <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
           From Payment to a Verified Badge<br /><span className="text-primary">In Under 60 Minutes</span>
         </h2>
+        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">Choose your skill, complete a secure assessment, and receive a verified result employers trust —<br className="hidden md:block" />all in one focused journey.</p>
       </motion.div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {howSteps.map((s, i) => {
@@ -251,6 +253,7 @@ const Testimonials = () => (
         <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
           Thousands of Professionals Verified<br /><span className="text-primary">Here Is What Happened Next</span>
         </h2>
+        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">Hear how verified professionals turned stronger proof into more recruiter conversations —<br className="hidden md:block" />and better career outcomes.</p>
       </motion.div>
       <div className="grid md:grid-cols-3 gap-5">
         {testimonials.map((t, i) => (
@@ -289,6 +292,7 @@ const FAQSection = () => (
         <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
           Everything Candidates Want to Know<br /><span className="text-primary">Before Buying</span>
         </h2>
+        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">Find clear answers about assessments, badges, validity, retakes, and plan access —<br className="hidden md:block" />before you make a choice.</p>
       </motion.div>
       <Accordion type="single" collapsible className="space-y-3">
         {faqs.map((f, i) => (
