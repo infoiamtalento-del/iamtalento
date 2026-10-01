@@ -49,7 +49,7 @@ const PlansSection = () => (
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
         <SectionBadge label="Choose Your Plan" icon={Sparkles} />
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
-          One Test. One Badge. One Clear<br /><span className="text-primary">Career Advantage</span>
+          One Test. One Badge.<br /><span className="text-primary">Career Advantage</span>
         </h2>
         <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">Start free with essential career tools.<br className="hidden md:block" /><br className="hidden md:block" />Upgrade when you are ready.</p>
       </motion.div>
@@ -214,7 +214,7 @@ const HowItWorks = () => (
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
         <SectionBadge label="How it works" icon={Clock} />
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
-          From Payment to a Verified Badge<br /><span className="text-primary">In Under 60 Minutes</span>
+          From Payment to Proof<br /><span className="text-primary">In Under 60 Minutes</span>
         </h2>
         <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">Complete one secure assessment journey.<br className="hidden md:block" /><br className="hidden md:block" />Receive a result employers trust.</p>
       </motion.div>
@@ -251,7 +251,7 @@ const Testimonials = () => (
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
         <SectionBadge label="What they're saying" icon={MessageSquare} />
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
-          Thousands of Professionals Verified<br /><span className="text-primary">Here Is What Happened Next</span>
+          Thousands Got Verified<br /><span className="text-primary">Here Is What Happened Next</span>
         </h2>
         <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">See how proof created recruiter conversations.<br className="hidden md:block" /><br className="hidden md:block" />Hear real career outcomes.</p>
       </motion.div>
@@ -290,7 +290,7 @@ const FAQSection = () => (
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
         <SectionBadge label="Common questions" icon={HelpCircle} />
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
-          Everything Candidates Want to Know<br /><span className="text-primary">Before Buying</span>
+          What Candidates Ask<br /><span className="text-primary">Before Buying</span>
         </h2>
         <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">Find answers about tests, badges, and access.<br className="hidden md:block" /><br className="hidden md:block" />Choose with confidence.</p>
       </motion.div>
@@ -316,7 +316,7 @@ const BottomCTA = () => (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-primary-foreground/[0.03]" />
         <div className="relative z-10 text-center max-w-2xl mx-auto">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-primary-foreground mb-3">
-            Your Skills Deserve More Than<br /><span className="text-primary-foreground/80">A Line on Your Resume</span>
+            Your Skills Deserve<br /><span className="text-primary-foreground/80">A Line on Your Resume</span>
           </h2>
           <p className="text-sm md:text-base text-primary-foreground/70 mb-8">
             Get verified in one focused session and give employers a clearer reason to notice you —<br className="hidden md:block" />your next opportunity can start here.
