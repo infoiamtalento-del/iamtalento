@@ -224,12 +224,12 @@ const PopularSkillsSection = () => {
       <div className="container px-4 md:px-6">
         <div className="text-center mb-10">
           <SectionBadge label="Popular Skills" icon={Brain} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display mb-3">
-            Skills to Transform<br />
-            <span className="text-primary">Your Career and Life</span>
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
+            Build Skills That Can Transform<br />
+            <span className="text-primary">Your Career</span>
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto text-sm">
-            Start with critical skills for today's professional development.
+          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+            Train in the practical skills employers value across fast-growing roles and modern workplaces —<br className="hidden md:block" />start with what matters most.
           </p>
         </div>
 

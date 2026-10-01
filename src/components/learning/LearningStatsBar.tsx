@@ -24,7 +24,7 @@ const LearningStatsBar = () => (
             <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-3 group-hover:bg-primary/15 transition-colors duration-300">
               <s.icon className="h-5 w-5 text-primary" />
             </div>
-            <p className="text-2xl md:text-3xl font-bold font-display text-foreground mb-0.5">
+            <p className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mb-0.5">
               {s.value}
             </p>
             <p className="text-xs md:text-sm text-muted-foreground font-medium">

@@ -62,12 +62,12 @@ const LearnInLanguageSection = () => {
             </AnimatePresence>
           </div>
 
-          <h2 className="text-2xl md:text-3xl font-bold font-display mb-3">
-            Learn Comfortably in{" "}
-            <span className="text-primary">Your Language</span>
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
+            Learn New Skills Comfortably<br />
+            <span className="text-primary">In Your Language</span>
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto text-sm">
-            Our courses are available in 5+ languages so nothing gets lost in translation.
+          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+            Learn through clear explanations in five or more languages designed for stronger understanding —<br className="hidden md:block" />nothing gets lost in translation.
           </p>
         </div>
 

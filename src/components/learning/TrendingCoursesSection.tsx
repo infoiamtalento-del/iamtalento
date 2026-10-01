@@ -30,10 +30,11 @@ const TrendingCoursesSection = () => {
       <div className="container px-4 md:px-6">
         <div className="text-center mb-8">
           <SectionBadge label="Trending Now" icon={TrendingUp} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display mb-3">
-            Trending <span className="text-primary">Right Now</span>
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
+            Explore the Courses Learners Choose<br />
+            <span className="text-primary">Right Now</span>
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">Courses learners are rushing to complete this week.</p>
+          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">Discover the practical courses learners are choosing to build relevant skills this week —<br className="hidden md:block" />start with what is trending now.</p>
         </div>
 
         {/* Category tabs like Udemy */}
