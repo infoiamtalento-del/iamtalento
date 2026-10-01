@@ -1431,8 +1431,8 @@ const PlatformCapabilitiesSection = () => {
         <div className={cn("text-center max-w-3xl mx-auto mb-12 transition-all duration-700", isVisible ? "opacity-100" : "opacity-0 translate-y-8")}>
           <SectionBadge label="Platform Capabilities" icon={Zap} />
           <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
-            Everything You Need for<br />
-            Skills-First Hiring <span className="text-primary">in One Place.</span>
+            Everything You Need for Skills-First<br />
+              <span className="text-primary">Hiring in One Place</span>
           </h2>
           <p className="text-muted-foreground leading-relaxed mb-2">
             Replace 3 tools — resume screening, skill tests, and interviews — with one integrated Industry Readiness platform.
