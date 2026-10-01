@@ -36,7 +36,7 @@ const Blog = () => {
           <div className="container max-w-4xl">
             <div className="text-center mb-12">
               <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">Blog</p>
-              <h1 className="text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-4">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-4">
                 Talent Intelligence Insights for<br /><span className="text-primary">Modern Hiring</span>
               </h1>
               <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">

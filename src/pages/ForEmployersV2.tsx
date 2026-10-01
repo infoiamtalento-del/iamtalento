@@ -358,7 +358,7 @@ const WhoItsForSection = () => {
           <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
             Ideal Customer Profiles
           </p>
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
             Built for Leaders Who Cannot Afford<br />
               <span className="text-primary">Another Bad Hire</span>
           </h2>
@@ -510,7 +510,7 @@ const ProblemVsSolutionSection = () => {
               <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-destructive bg-destructive/10 px-3 py-1.5 rounded-full border border-destructive/20 mb-4">
                 The Problem
               </p>
-              <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15]">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15]">
                 Hiring Today Feels Slow and Costly<br />
                   <span className="text-primary">With Too Much Uncertainty</span>
               </h2>
@@ -572,7 +572,7 @@ const ProblemVsSolutionSection = () => {
               <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20 mb-4">
                 The Solution
               </p>
-              <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15]">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15]">
                 Build a Structured Hiring Process<br />
                   <span className="text-primary">Based on Performance</span>
               </h2>
@@ -688,7 +688,7 @@ const HowItWorksSection = () => {
           <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
             How It Works
           </p>
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
             Move From Job Description to Offer<br />
               <span className="text-primary">In Four Clear Steps</span>
           </h2>
@@ -812,7 +812,7 @@ const EmployerIntegritySection = () => {
             <Shield className="h-3.5 w-3.5" /> 30-Layer Hiring Integrity Stack
           </div>
           <motion.h2
-            className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3"
+            className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -915,7 +915,7 @@ const EmployerComplianceSection = () => {
             <Shield className="h-3.5 w-3.5" /> Employer Data Protection
           </div>
           <motion.h2
-            className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4"
+            className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -982,7 +982,7 @@ const ScoreTrustSection = () => {
             <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
               Talent Intelligence
             </p>
-            <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-6">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-6">
               Use Industry Readiness Scores<br />
                 <span className="text-primary">To Predict Performance</span>
             </h2>
@@ -1404,7 +1404,7 @@ const PlatformCapabilitiesSection = () => {
           <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
             Platform Capabilities
           </p>
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
             Everything You Need for Skills-First<br />
               <span className="text-primary">Hiring in One Place</span>
           </h2>
@@ -1534,7 +1534,7 @@ const AssessmentCoverageSection = () => {
           <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
             Assessment Coverage
           </p>
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
             Test the Capabilities That Matter<br />
               <span className="text-primary">Most for the Job</span>
           </h2>
@@ -1591,7 +1591,7 @@ const EmployerDashboardSection = () => {
             <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
               Employer Dashboard
             </p>
-            <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-6">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-6">
               Manage Every Hiring Signal From<br />
                 <span className="text-primary">One Clear Dashboard</span>
             </h2>
@@ -1746,7 +1746,7 @@ const PricingSection = () => {
           <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
             Pricing
           </p>
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
             Choose Plans That Scale With<br />
               <span className="text-primary">Your Hiring Ambitions</span>
           </h2>
@@ -1856,7 +1856,7 @@ const SocialProofSection = () => {
           <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
             Success Stories
           </p>
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
             Move Beyond Hope-Based Hiring<br />
               <span className="text-primary">Build Skills-First Teams</span>
           </h2>
@@ -1944,7 +1944,7 @@ const FAQSection = () => {
           <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
             FAQ
           </p>
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
             Questions Hiring Leaders Ask<br />
               <span className="text-primary">Before They Switch</span>
           </h2>

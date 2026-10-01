@@ -40,7 +40,7 @@ const Changelog = () => (
         <div className="container max-w-3xl">
           <div className="text-center mb-16">
             <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">Changelog</p>
-            <h1 className="text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-4">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-4">
               See What Is New Across<br /><span className="text-primary">I Am Talento</span>
             </h1>
             <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">

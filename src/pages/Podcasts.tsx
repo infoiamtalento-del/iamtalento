@@ -152,7 +152,7 @@ const Hero = () => (
       <div className="grid lg:grid-cols-2 gap-10 items-center">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <SectionBadge label="Podcasts & Webinars" icon={Mic} className="mb-6" />
-          <h1 className="text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-5">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-5">
             Real Conversations That Build<br /><span className="text-primary">Real Career Skills</span>
           </h1>
           <p className="text-base md:text-lg text-muted-foreground max-w-lg mb-8 leading-relaxed">
@@ -338,7 +338,7 @@ const Player = () => {
       <div className="container px-4 md:px-6">
         <div className="text-center mb-10">
           <SectionBadge label="Listen Now" icon={Headphones} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Press Play and Keep Learning<br /><span className="text-primary">Wherever You Go</span></h2>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Press Play and Keep Learning<br /><span className="text-primary">Wherever You Go</span></h2>
           <p className="text-background/60 mt-3 text-base md:text-lg max-w-2xl mx-auto">Stream practical conversations and expert advice directly from the page whenever you need it —<br className="hidden md:block" />no extra app required.</p>
         </div>
 
@@ -426,7 +426,7 @@ const Upcoming = () => {
       <div className="container px-4 md:px-6">
         <div className="text-center mb-10">
           <SectionBadge label="Upcoming Live" icon={Calendar} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Join the Next Live Conversation<br /><span className="text-primary">Coming Up Soon</span></h2>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Join the Next Live Conversation<br /><span className="text-primary">Coming Up Soon</span></h2>
           <p className="text-muted-foreground text-base md:text-lg mt-3 max-w-2xl mx-auto">Join live podcasts and webinars with honest Q&A, useful polls, and focused breakout rooms —<br className="hidden md:block" />participate instead of only watching.</p>
         </div>
         <div className="flex flex-wrap justify-center gap-2 mb-10">
@@ -481,7 +481,7 @@ const Library = () => {
         <div className="flex flex-wrap items-end justify-between gap-4 mb-10">
           <div>
             <SectionBadge label="On-Demand Library" icon={Sparkles} />
-            <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Watch and Listen Whenever<br /><span className="text-primary">It Works for You</span></h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Watch and Listen Whenever<br /><span className="text-primary">It Works for You</span></h2>
           <p className="text-muted-foreground text-base md:text-lg mt-3 max-w-2xl mx-auto">Explore podcasts and webinars across career growth, technology, leadership, and practical skills —<br className="hidden md:block" />learn at your own pace.</p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -526,7 +526,7 @@ const Hosts = () => (
     <div className="container px-4 md:px-6">
       <div className="text-center mb-10">
         <SectionBadge label="The Voices" icon={Mic} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Meet the Experts Behind Every<br /><span className="text-primary">Conversation</span></h2>
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Meet the Experts Behind Every<br /><span className="text-primary">Conversation</span></h2>
           <p className="text-muted-foreground text-base md:text-lg mt-3 max-w-2xl mx-auto">Hear directly from practitioners, coaches, and leaders who bring useful experience to every topic —<br className="hidden md:block" />meet the voices you can trust.</p>
         <p className="text-muted-foreground text-base md:text-lg mt-3 max-w-2xl mx-auto">Learn from practitioners who have hired, led teams, built products, and navigated career changes —<br className="hidden md:block" />experience speaks in every session.</p>
       </div>
@@ -555,7 +555,7 @@ const Categories = () => (
     <div className="container px-4 md:px-6">
       <div className="text-center mb-10">
         <SectionBadge label="Explore" icon={Lightbulb} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Choose a Topic That Can Move<br /><span className="text-primary">Your Career Forward</span></h2>
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Choose a Topic That Can Move<br /><span className="text-primary">Your Career Forward</span></h2>
           <p className="text-muted-foreground text-base md:text-lg mt-3 max-w-2xl mx-auto">Browse focused conversations across technology, leadership, careers, skills, and startup growth —<br className="hidden md:block" />start with what matters most to you.</p>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -580,7 +580,7 @@ const How = () => (
     <div className="container px-4 md:px-6">
       <div className="text-center mb-12">
         <SectionBadge label="How It Works" icon={Zap} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">From One RSVP to Practical<br /><span className="text-primary">Career Action</span></h2>
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">From One RSVP to Practical<br /><span className="text-primary">Career Action</span></h2>
           <p className="text-muted-foreground text-base md:text-lg mt-3 max-w-2xl mx-auto">Register, join live, ask your questions, and leave with ideas you can put to work immediately —<br className="hidden md:block" />five simple steps make it happen.</p>
       </div>
       <div className="grid md:grid-cols-5 gap-4 relative">
@@ -603,7 +603,7 @@ const Perks = () => (
     <div className="container px-4 md:px-6">
       <div className="text-center mb-12">
         <SectionBadge label="Why You'll Love It" icon={Star} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Built for Meaningful Outcomes<br /><span className="text-primary">Not Passive Views</span></h2>
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Built for Meaningful Outcomes<br /><span className="text-primary">Not Passive Views</span></h2>
           <p className="text-muted-foreground text-base md:text-lg mt-3 max-w-2xl mx-auto">Every session is designed to deliver practical insight, useful connections, and a clear next step —<br className="hidden md:block" />learning should lead somewhere.</p>
       </div>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -629,7 +629,7 @@ const Gallery = () => (
       <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
         <div>
           <SectionBadge label="Behind The Scenes" icon={Camera} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Step Behind the Scenes of<br /><span className="text-primary">Every Great Conversation</span></h2>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Step Behind the Scenes of<br /><span className="text-primary">Every Great Conversation</span></h2>
           <p className="text-muted-foreground text-base md:text-lg mt-3 max-w-2xl mx-auto">See the people, preparation, and energy that bring our live podcasts and webinars to life —<br className="hidden md:block" />these moments happen beyond the microphone.</p>
         </div>
         <Button variant="outline" className="rounded-full">Follow on Instagram <ArrowRight className="h-4 w-4 ml-2" /></Button>
@@ -652,7 +652,7 @@ const Stories = () => (
     <div className="container px-4 md:px-6">
       <div className="text-center mb-12">
         <SectionBadge label="Listener Wins" icon={Quote} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Real Listeners Turning Ideas Into<br /><span className="text-primary">Career Outcomes</span></h2>
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Real Listeners Turning Ideas Into<br /><span className="text-primary">Career Outcomes</span></h2>
           <p className="text-muted-foreground text-base md:text-lg mt-3 max-w-2xl mx-auto">Discover how listeners used practical advice from our sessions to improve resumes and negotiate offers —<br className="hidden md:block" />small insights created real progress.</p>
       </div>
       <div className="grid md:grid-cols-3 gap-6">
@@ -681,7 +681,7 @@ const Bundles = () => (
     <div className="container px-4 md:px-6">
       <div className="text-center mb-12">
         <SectionBadge label="Series & Bundles" icon={Award} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Go Deeper With Expert-Curated<br /><span className="text-primary">Learning Series</span></h2>
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Go Deeper With Expert-Curated<br /><span className="text-primary">Learning Series</span></h2>
           <p className="text-muted-foreground text-base md:text-lg mt-3 max-w-2xl mx-auto">Unlock focused collections built around one goal, from job search confidence to leadership growth —<br className="hidden md:block" />follow a complete learning path.</p>
       </div>
       <div className="grid md:grid-cols-3 gap-5">
@@ -710,7 +710,7 @@ const FAQ = () => {
       <div className="container px-4 md:px-6 max-w-3xl">
         <div className="text-center mb-10">
           <SectionBadge label="FAQ" icon={CheckCircle} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Everything You Need to Know<br /><span className="text-primary">Before You Listen</span></h2>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4">Everything You Need to Know<br /><span className="text-primary">Before You Listen</span></h2>
           <p className="text-muted-foreground text-base md:text-lg mt-3 max-w-2xl mx-auto">Find clear answers about free sessions, recordings, certificates, and listening on the go —<br className="hidden md:block" />start without any uncertainty.</p>
         </div>
         <div className="space-y-3">
@@ -745,7 +745,7 @@ const CTA = () => (
         </div>
         <div className="relative grid md:grid-cols-2 gap-8 items-center">
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15]">Never Miss Another Useful<br /><span className="text-primary-foreground/75">Live Session</span></h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15]">Never Miss Another Useful<br /><span className="text-primary-foreground/75">Live Session</span></h2>
             <p className="mt-3 text-primary-foreground/80 max-w-md">Get weekly episode releases, exclusive guest notes, and early access to upcoming live sessions —<br className="hidden md:block" />delivered directly to your inbox.</p>
           </div>
           <form onSubmit={(e) => e.preventDefault()} className="flex flex-col sm:flex-row gap-3">

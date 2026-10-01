@@ -365,7 +365,7 @@ const EmployerGapSection = () => {
         <div className="text-center max-w-3xl mx-auto mb-14">
           <SectionBadge label="Problem vs Solution" icon={Target} />
           <motion.h2
-            className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4"
+            className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -776,7 +776,7 @@ const StepsSection = () => {
         <div className="text-center max-w-2xl mx-auto mb-10">
           <SectionBadge label="Platform" icon={Zap} />
           <motion.h2
-            className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4"
+            className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -1073,7 +1073,7 @@ const FeaturesGrid = () => {
       <div className="container">
         <div className="text-center max-w-2xl mx-auto mb-14">
           <SectionBadge label="Platform Features" icon={Zap} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
             Hire Smarter.<br />
             <span className="text-primary">Not Harder.</span>
           </h2>
@@ -1430,7 +1430,7 @@ const PlatformCapabilitiesSection = () => {
       <div className="container">
         <div className={cn("text-center max-w-3xl mx-auto mb-12 transition-all duration-700", isVisible ? "opacity-100" : "opacity-0 translate-y-8")}>
           <SectionBadge label="Platform Capabilities" icon={Zap} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
             Everything You Need for Skills-First<br />
               <span className="text-primary">Hiring in One Place</span>
           </h2>
@@ -1540,7 +1540,7 @@ const EmployerComplianceSection = () => {
         <div className={cn("text-center max-w-2xl mx-auto mb-12 transition-all duration-700", isVisible ? "opacity-100" : "opacity-0 translate-y-8")}>
           <SectionBadge label="Employer Data Protection" icon={Shield} />
           <motion.h2
-            className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4"
+            className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -1645,7 +1645,7 @@ const AntiFraudSection = () => {
           )}
         >
           <SectionBadge label="30-Layer Proctoring" icon={ShieldCheck} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
             30 Layers of Integrity.<br />
             <span className="text-primary">Zero Tolerance.</span>
           </h2>
@@ -1723,7 +1723,7 @@ const CredibilityTrustSection = () => {
           )}
         >
           <SectionBadge label="Credibility & Trust" icon={Award} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
             Why Employers Trust<br />
             <span className="text-primary">Our Assessments</span>
           </h2>
@@ -1770,7 +1770,7 @@ const DashboardSection = () => {
           )}
         >
           <SectionBadge label="Employer Dashboard" icon={BarChart3} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
             One Dashboard.<br />
             <span className="text-primary">Everything That Matters.</span>
           </h2>
@@ -1956,7 +1956,7 @@ const PricingSection = () => {
           )}
         >
           <SectionBadge label="Pricing" icon={Landmark} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
             Pick a Plan.<br />
             <span className="text-primary">Start Hiring Today.</span>
           </h2>
@@ -2086,7 +2086,7 @@ const FAQSection = () => {
           )}
         >
           <SectionBadge label="FAQ" icon={MessagesSquare} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
             You Asked.<br />
             <span className="text-primary">We Answered.</span>
           </h2>
@@ -2146,7 +2146,7 @@ const FinalCTA = () => {
           )}
         >
           <SectionBadge label="Start Now" icon={Sparkles} className="bg-white/10 text-white/90 border-white/20" />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4 text-white">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4 text-white">
             Your Next Great Hire<br /><span className="text-white/75">Is Already Here</span>
           </h2>
           <p className="text-white/80 leading-relaxed mb-8 max-w-xl mx-auto">
@@ -2210,7 +2210,7 @@ const IndustriesSection = () => {
           <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20 mb-4">
             <span className="h-2 w-2 rounded-full bg-primary" /> Industry Coverage
           </p>
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
             We Speak Your<br /><span className="text-primary">Industry's Language</span>
           </h2>
           <p className="text-muted-foreground leading-relaxed">

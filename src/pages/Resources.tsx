@@ -16,7 +16,7 @@ const Resources = () => (
           <div className="h-16 w-16 rounded-2xl gradient-primary flex items-center justify-center mx-auto mb-6">
             <BookOpen className="h-8 w-8 text-primary-foreground" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-4">
             Practical Resources for Your<br /><span className="text-primary">Next Career Move</span>
           </h1>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mb-8">

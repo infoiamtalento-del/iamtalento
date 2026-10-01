@@ -39,7 +39,7 @@ const About = () => {
         <section className="pt-32 pb-16">
           <div className="container text-center max-w-3xl">
             <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">About us</p>
-            <h1 className="text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-5">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-5">
               Making Hiring Fair, Fast<br />
               <span className="text-primary">& Intelligent</span>
             </h1>
@@ -76,7 +76,7 @@ const About = () => {
         <section className="py-24 bg-card/50">
           <div className="container">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
                 Meet the Leaders Building<br /><span className="text-primary">Fairer Hiring</span>
               </h2>
               <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
@@ -109,7 +109,7 @@ const About = () => {
         <section ref={ref} className="py-24">
           <div className="container max-w-2xl">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
                 From One Bold Idea to<br /><span className="text-primary">A Growing Movement</span>
               </h2>
               <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">

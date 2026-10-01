@@ -93,7 +93,7 @@ const Features = () => {
         <section className="pt-32 pb-16">
           <div className="container text-center max-w-3xl">
             <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">Features</p>
-            <h1 className="text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-5">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-5">
               The Complete Talent Intelligence<br /><span className="text-primary">Platform</span>
             </h1>
             <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto leading-relaxed">

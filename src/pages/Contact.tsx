@@ -25,7 +25,7 @@ const Contact = () => {
           <div className="container max-w-5xl">
             <div className="text-center mb-16">
               <p className="text-xs uppercase tracking-widest text-primary font-semibold mb-3">Contact</p>
-              <h1 className="text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-4">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-4">
                 Start a Conversation With<br /><span className="text-primary">Our Team</span>
               </h1>
               <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">

@@ -546,7 +546,7 @@ const WhyDifferent = () => (
         className="text-center flex flex-col items-center mb-14"
       >
         <SectionBadge label="Why This Hackathon" icon={Sparkles} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
           Not Just a Competition.<br />
           <span className="text-primary">A Career Launchpad.</span>
         </h2>
@@ -599,7 +599,7 @@ const TracksSection = () => {
     <section className="py-16 md:py-20">
       <div className="container px-4 md:px-6 text-center flex flex-col items-center">
         <SectionBadge label="Tracks & Industries" icon={Code} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
           Pick Your Track.<br /><span className="text-primary">Show Your Best.</span>
         </h2>
         <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mb-8">
@@ -685,7 +685,7 @@ const HowItWorks = () => {
       <div className="container px-4 md:px-6">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-12 text-center flex flex-col items-center">
           <SectionBadge label="How It Works" icon={Zap} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
             From Zero to<br /><span className="text-primary">Finalist in 5 Steps</span>
           </h2>
         <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mb-8">Register, choose a track, build your solution, submit the work, and present to expert judges —<br className="hidden md:block" />five focused steps take you to the final.</p>
@@ -826,7 +826,7 @@ const JudgingSection = () => (
     <div className="container px-4 md:px-6">
       <div className="text-center mb-12">
         <SectionBadge label="Judging Criteria" icon={Shield} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">What the Judges<br /><span className="text-primary">Are Looking For</span></h2>
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">What the Judges<br /><span className="text-primary">Are Looking For</span></h2>
         <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">Every submission is reviewed blindly across five clear dimensions, without college names or follower counts —<br className="hidden md:block" />your work leads the evaluation.</p>
       </div>
 
@@ -927,7 +927,7 @@ const PastWinners = () => {
       <div className="container px-4 md:px-6">
         <div className="text-center mb-12">
           <SectionBadge label="Success Stories" icon={Quote} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Where Are<br /><span className="text-primary">They Now?</span></h2>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Where Are<br /><span className="text-primary">They Now?</span></h2>
         <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mb-8">Meet former participants who turned strong submissions into visibility, mentorship, and career opportunities —<br className="hidden md:block" />their progress continued after the final.</p>
         </div>
 
@@ -1096,7 +1096,7 @@ const CommunitySection = () => (
   <section className="py-16 md:py-20 bg-accent/30">
     <div className="container px-4 md:px-6 text-center flex flex-col items-center">
       <SectionBadge label="Community" icon={MessageCircle} />
-      <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">You're Not<br /><span className="text-primary">Competing Alone</span></h2>
+      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">You're Not<br /><span className="text-primary">Competing Alone</span></h2>
         <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mb-8">Join a supportive builder community where mentors, peers, and experts help you keep moving —<br className="hidden md:block" />collaboration makes the challenge stronger.</p>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {communityPerks.map(({ icon: Icon, text }, i) => (
@@ -1147,7 +1147,7 @@ const PastHackathons = () => (
     <div className="container px-4 md:px-6 relative z-10">
       <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-14 text-center flex flex-col items-center">
         <SectionBadge label="Past Seasons" icon={Trophy} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
           Three Seasons. Thousands of<br />
           <span className="text-primary">Careers Accelerated.</span>
         </h2>
@@ -1307,7 +1307,7 @@ const HackathonFAQ = () => {
       <div className="container px-4 md:px-6 max-w-3xl">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10">
           <SectionBadge label="FAQ" icon={MessageCircle} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4 mb-3">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4 mb-3">
             Questions Builders Ask<br /><span className="text-primary">Before They Register</span>
           </h2>
           <p className="text-muted-foreground text-sm">Get clear answers about eligibility, teams, judging, deadlines, and what happens after submission —<br className="hidden md:block" />register with confidence.</p>
@@ -1368,7 +1368,7 @@ const FinalCTA = () => (
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
         className="rounded-xl bg-accent p-8 md:p-12 text-center">
         <Trophy className="h-10 w-10 text-primary mx-auto mb-4" />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Ready to Build Something<br /><span className="text-primary">Worth Noticing?</span></h2>
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Ready to Build Something<br /><span className="text-primary">Worth Noticing?</span></h2>
         <p className="text-muted-foreground text-base md:text-lg mb-6 max-w-2xl mx-auto">
           Join ambitious developers building real projects, learning from experts, and earning meaningful visibility —<br className="hidden md:block" />registration is free for every skill level.
         </p>

@@ -48,7 +48,7 @@ const PlansSection = () => (
     <div className="container px-4 max-w-6xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
         <SectionBadge label="Choose Your Plan" icon={Sparkles} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
           One Test. One Badge. One Clear<br /><span className="text-primary">Career Advantage</span>
         </h2>
         <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">Start free with essential career tools, then choose the plan that matches your goals —<br className="hidden md:block" />upgrade only when you are ready.</p>
@@ -110,7 +110,7 @@ const VerifiedGetsYou = () => (
     <div className="container px-4 max-w-4xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
         <SectionBadge label="The Difference" icon={TrendingUp} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
           See What Changes After You<br /><span className="text-primary">Get Verified</span>
         </h2>
         <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">See how verification changes profile visibility, recruiter interest, and interview momentum —<br className="hidden md:block" />based on real candidate outcomes.</p>
@@ -167,7 +167,7 @@ const ComparisonTable = () => (
     <div className="container px-4 max-w-5xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
         <SectionBadge label="Compare Plans" icon={Eye} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
           Compare Every Plan Clearly<br /><span className="text-primary">At a Glance</span>
         </h2>
         <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">See every feature, benefit, and access level side by side before choosing your plan —<br className="hidden md:block" />compare with confidence.</p>
@@ -213,7 +213,7 @@ const HowItWorks = () => (
     <div className="container px-4 max-w-5xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
         <SectionBadge label="How it works" icon={Clock} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
           From Payment to a Verified Badge<br /><span className="text-primary">In Under 60 Minutes</span>
         </h2>
         <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">Choose your skill, complete a secure assessment, and receive a verified result employers trust —<br className="hidden md:block" />all in one focused journey.</p>
@@ -250,7 +250,7 @@ const Testimonials = () => (
     <div className="container px-4 max-w-5xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
         <SectionBadge label="What they're saying" icon={MessageSquare} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
           Thousands of Professionals Verified<br /><span className="text-primary">Here Is What Happened Next</span>
         </h2>
         <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">Hear how verified professionals turned stronger proof into more recruiter conversations —<br className="hidden md:block" />and better career outcomes.</p>
@@ -289,7 +289,7 @@ const FAQSection = () => (
     <div className="container px-4 max-w-3xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
         <SectionBadge label="Common questions" icon={HelpCircle} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
           Everything Candidates Want to Know<br /><span className="text-primary">Before Buying</span>
         </h2>
         <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">Find clear answers about assessments, badges, validity, retakes, and plan access —<br className="hidden md:block" />before you make a choice.</p>
@@ -315,7 +315,7 @@ const BottomCTA = () => (
         <div className="absolute bottom-0 left-0 w-52 h-52 rounded-full bg-primary-foreground/5 translate-y-1/3 -translate-x-1/4" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-primary-foreground/[0.03]" />
         <div className="relative z-10 text-center max-w-2xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-primary-foreground mb-3">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-primary-foreground mb-3">
             Your Skills Deserve More Than<br /><span className="text-primary-foreground/80">A Line on Your Resume</span>
           </h2>
           <p className="text-sm md:text-base text-primary-foreground/70 mb-8">
