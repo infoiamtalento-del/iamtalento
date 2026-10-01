@@ -20,11 +20,11 @@ const LearningCTASection = () => (
           </div>
           <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-white mb-3">
             Ready to Learn and Grow?<br />
-            <span className="text-white/75">Start Your Journey</span>
+            <span className="text-white/75">Start Today</span>
           </h2>
           <p className="text-base md:text-lg text-white/80 mb-8">
-            <span className="block">Build a personalized learning path around your career goals.</span>
-            <span className="block">Start as soon as your profile is ready.</span>
+            <span className="block">Build a learning path around your career goals.</span>
+            <span className="block">Start when your profile is ready.</span>
           </p>
           <div className="flex flex-wrap justify-center gap-3 mb-6">
             <Link to="/learning#courses">

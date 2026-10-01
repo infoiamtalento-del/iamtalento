@@ -576,8 +576,8 @@ const CoursePerksSection = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto"
           >
-            <span className="block">Every course includes practical resources designed for real progress.</span>
-            <span className="block">Go far beyond video lessons.</span>
+            <span className="block">Get practical resources with every course.</span>
+            <span className="block">Go beyond video lessons.</span>
           </motion.p>
         </div>
 

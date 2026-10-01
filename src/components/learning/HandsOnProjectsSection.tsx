@@ -13,8 +13,8 @@ const HandsOnProjectsSection = () => (
           <span className="text-primary">Not Just Watching</span>
         </h2>
         <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-          <span className="block">Apply every lesson through realistic projects that show how you solve.</span>
-          <span className="block">Add your strongest work to your portfolio.</span>
+          <span className="block">Apply every lesson through real projects.</span>
+          <span className="block">Build a stronger portfolio.</span>
         </p>
       </div>
 

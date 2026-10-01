@@ -55,12 +55,12 @@ const MasterclassesSection = () => {
         <div className="text-center mb-10">
           <SectionBadge label="Masterclasses" icon={Monitor} />
           <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
-            Prepare for Interviews<br />
+            Prepare for Real Interviews<br />
             <span className="text-primary">With Masterclasses</span>
           </h2>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-            <span className="block">Prepare with role-specific lessons shaped around real hiring decisions.</span>
-            <span className="block">Practice what interviews actually demand.</span>
+            <span className="block">Prepare with lessons shaped by real hiring.</span>
+            <span className="block">Practice what interviews demand.</span>
           </p>
         </div>
         <div className="flex flex-wrap justify-center gap-2 mb-8">

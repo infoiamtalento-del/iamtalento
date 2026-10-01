@@ -174,8 +174,8 @@ const GrowthTrackerSection = () => {
             transition={{ delay: 0.15 }}
             className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mb-8"
           >
-            <span className="block">Track how every lesson, quiz, and project strengthens your readiness.</span>
-            <span className="block">See your career progress clearly.</span>
+            <span className="block">Track every step toward career readiness.</span>
+            <span className="block">See your progress clearly.</span>
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
             <Link to="/assessments/explore">

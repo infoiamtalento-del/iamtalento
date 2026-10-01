@@ -55,7 +55,7 @@ const WhyChooseLearningSection = () => {
             transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3"
           >
-            Choose Learning Built<br />
+            Choose Better Learning<br />
             <span className="text-primary">For Your Career</span>
           </motion.h2>
           <motion.p
@@ -64,8 +64,8 @@ const WhyChooseLearningSection = () => {
             transition={{ delay: 0.1, duration: 0.5 }}
             className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto"
           >
-            <span className="block">Learn with expert guidance, current content, and lifelong access.</span>
-            <span className="block">Build skills trusted by employers.</span>
+            <span className="block">Learn with experts and up-to-date content.</span>
+            <span className="block">Build skills employers trust.</span>
           </motion.p>
         </div>
 

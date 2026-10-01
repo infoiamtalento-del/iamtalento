@@ -16,11 +16,11 @@ const CertificatesSection = () => (
           <SectionBadge label="Verified Certificates" icon={Award} />
           <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
             Earn Certificates Recruiters<br />
-            <span className="text-primary">Know They Can Trust</span>
+            <span className="text-primary">Can Trust</span>
           </h2>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mb-8">
-            <span className="block">Give recruiters clear, verifiable evidence of the skills you developed.</span>
-            <span className="block">Offer more proof than a static PDF.</span>
+            <span className="block">Give recruiters clear proof of your skills.</span>
+            <span className="block">Go beyond a static PDF.</span>
           </p>
           <div className="space-y-4">
             {diffs.map((d, i) => (
