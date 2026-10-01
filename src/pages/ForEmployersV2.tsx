@@ -982,7 +982,7 @@ const ScoreTrustSection = () => {
             <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
               Talent Intelligence
             </p>
-            <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-6 leading-tight">
+            <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-6">
               Use Industry Readiness Scores<br />
                 <span className="text-primary">To Predict Performance</span>
             </h2>
@@ -1591,7 +1591,7 @@ const EmployerDashboardSection = () => {
             <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
               Employer Dashboard
             </p>
-            <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-6 leading-tight">
+            <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-6">
               Manage Every Hiring Signal From<br />
                 <span className="text-primary">One Clear Dashboard</span>
             </h2>

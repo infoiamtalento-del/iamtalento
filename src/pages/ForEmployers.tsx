@@ -1645,7 +1645,7 @@ const AntiFraudSection = () => {
           )}
         >
           <SectionBadge label="30-Layer Proctoring" icon={ShieldCheck} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4 leading-tight">
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
             30 Layers of Integrity.<br />
             <span className="text-primary">Zero Tolerance.</span>
           </h2>
@@ -1723,7 +1723,7 @@ const CredibilityTrustSection = () => {
           )}
         >
           <SectionBadge label="Credibility & Trust" icon={Award} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4 leading-tight">
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
             Why Employers Trust<br />
             <span className="text-primary">Our Assessments</span>
           </h2>

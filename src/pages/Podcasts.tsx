@@ -745,8 +745,8 @@ const CTA = () => (
         </div>
         <div className="relative grid md:grid-cols-2 gap-8 items-center">
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold font-display leading-tight">Never Miss Another Useful<br /><span className="text-primary">Live Session</span></h2>
-            <p className="mt-3 text-primary-foreground/80 max-w-md">Get the weekly episode drop, exclusive guest notes, and early-bird RSVP — straight to your inbox.</p>
+            <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15]">Never Miss Another Useful<br /><span className="text-primary-foreground/75">Live Session</span></h2>
+            <p className="mt-3 text-primary-foreground/80 max-w-md">Get weekly episode releases, exclusive guest notes, and early access to upcoming live sessions —<br className="hidden md:block" />delivered directly to your inbox.</p>
           </div>
           <form onSubmit={(e) => e.preventDefault()} className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1 flex items-center gap-2 bg-background text-foreground rounded-full px-4 py-3">
