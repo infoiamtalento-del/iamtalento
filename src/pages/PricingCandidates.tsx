@@ -319,7 +319,7 @@ const BottomCTA = () => (
           </p>
           <div className="flex flex-wrap justify-center gap-3 mb-8">
             <Link to="/auth"><Button size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 gap-2 font-bold rounded-full h-12 px-8 shadow-lg">Start with the free plan <ArrowRight className="h-4 w-4" /></Button></Link>
-            <Link to="/skill-assessment"><Button size="lg" variant="outline" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 font-bold rounded-full h-12 px-8">Take your first test — ₹1,999</Button></Link>
+            <Link to="/assessments/explore"><Button size="lg" variant="outline" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 font-bold rounded-full h-12 px-8">Take your first test — ₹1,999</Button></Link>
           </div>
           <div className="flex flex-wrap justify-center gap-4">
             {["18,731+ verified", "AI-proctored", "200+ companies hiring", "1 year valid"].map(s => (
