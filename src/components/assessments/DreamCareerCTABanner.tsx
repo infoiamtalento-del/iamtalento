@@ -1,4 +1,5 @@
 import { ArrowRight, Clock, FileText, Crosshair, ShieldCheck } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const DreamCareerCTABanner = () => (
   <div className="container px-4 md:px-6 mt-6 mb-14">

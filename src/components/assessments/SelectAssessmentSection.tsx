@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { Search, Clock, Users, Star, Code2, BarChart3, Palette, Megaphone, Database, Brain, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link, useNavigate } from "react-router-dom";
 
 const domains = ["All", "Programming", "Data Science", "Design", "Marketing", "Finance", "HR"];
 
@@ -163,14 +164,15 @@ const SelectAssessmentSection = () => {
                 >
                   {a.difficulty}
                 </span>
-                <button
+                <Link
+                  to="/assessments/explore"
                   className="text-[13px] font-bold text-primary px-4 py-2 flex items-center gap-1.5 transition-all duration-120 hover:bg-primary hover:text-white"
                   style={{ borderRadius: 6, border: "1px solid hsl(355 84% 54%)" }}
                   onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.02)"; }}
                   onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
                 >
                   Take Test <ArrowRight className="h-3.5 w-3.5" />
-                </button>
+                </Link>
               </div>
             </motion.div>
           ))}
