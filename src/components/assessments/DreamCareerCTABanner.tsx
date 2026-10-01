@@ -35,9 +35,9 @@ const DreamCareerCTABanner = () => (
       </div>
 
       <div className="flex flex-col items-center md:items-end gap-1.5 shrink-0">
-        <button className="inline-flex items-center gap-2 bg-white text-[#ED2938] font-bold text-[14px] px-5 py-2.5 rounded-full hover:bg-slate-100 transition-colors">
+        <Link to="/assessments/explore" className="inline-flex items-center gap-2 bg-white text-[#ED2938] font-bold text-[14px] px-5 py-2.5 rounded-full hover:bg-slate-100 transition-colors">
           Take Assessment Now <ArrowRight className="h-4 w-4" />
-        </button>
+        </Link>
         <p className="text-[11px] text-white/80 inline-flex items-center gap-1">
           <ShieldCheck className="h-3 w-3" /> Trusted by 18,731+ professionals
         </p>

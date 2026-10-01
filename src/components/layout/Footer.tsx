@@ -10,7 +10,7 @@ const footerLinks = {
     { label: "Enterprise", href: "/contact" },
   ],
   "For Candidates": [
-    { label: "Take Assessment", href: "/dashboard" },
+    { label: "Take Assessment", href: "/assessments/explore" },
     { label: "Industry Readiness Score", href: "/features" },
     { label: "Verified Skill Badge", href: "/features" },
     { label: "Find Jobs", href: "/dashboard" },
