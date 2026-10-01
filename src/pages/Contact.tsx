@@ -25,12 +25,12 @@ const Contact = () => {
           <div className="container max-w-5xl">
             <div className="text-center mb-16">
               <p className="text-xs uppercase tracking-widest text-primary font-semibold mb-3">Contact</p>
-              <h1 className="text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-4">
-                Start a Conversation With<br /><span className="text-primary">Our Team</span>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-4">
+                Start a Conversation<br /><span className="text-primary">With Our Team</span>
               </h1>
-              <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-                Have a question, need support, or want to learn how I Am Talento can help you —<br className="hidden md:block" />
-                we would love to hear from you.
+              <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">
+                <span className="block">Have a question or need support?</span>
+                <span className="block">We would love to hear from you.</span>
               </p>
             </div>
             <div className="grid md:grid-cols-5 gap-12">

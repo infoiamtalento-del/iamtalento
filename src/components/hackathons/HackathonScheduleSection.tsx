@@ -24,7 +24,7 @@ const HackathonScheduleSection = () => {
       <div className="container px-4 md:px-6">
         <div className="flex flex-col md:flex-row md:items-end gap-4 mb-2">
           <h2 className="text-3xl md:text-4xl font-bold font-display">
-            Live & <span className="text-primary">Upcoming</span>
+            Live &<br /><span className="text-primary">Upcoming</span>
           </h2>
           <div className="flex gap-2">
             <button onClick={() => setTab("live")} className={`px-4 py-2 rounded-full text-xs font-semibold transition-colors ${tab === "live" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-accent"}`}>

@@ -162,7 +162,7 @@ const HackathonSocialProof = () => (
       >
         <SectionBadge label="Who's Running Hackathons" icon={Globe} />
         <h2 className="text-3xl md:text-4xl font-bold font-display mb-3">
-          Top Companies. <span className="text-primary">Real Challenges.</span>
+          Top Companies.<br /><span className="text-primary">Real Challenges.</span>
         </h2>
         <p className="text-muted-foreground max-w-lg text-sm md:text-base">
           From global MNCs to India's fastest-growing startups — the biggest names run their hackathons here.

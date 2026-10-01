@@ -40,12 +40,12 @@ const Changelog = () => (
         <div className="container max-w-3xl">
           <div className="text-center mb-16">
             <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">Changelog</p>
-            <h1 className="text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-4">
-              See What Is New Across<br /><span className="text-primary">I Am Talento</span>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-4">
+              See What Is New<br /><span className="text-primary">I Am Talento</span>
             </h1>
-            <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-              Follow the latest AI screening features, assessment updates, and platform improvements —<br className="hidden md:block" />
-              all collected in one place.
+            <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">
+              <span className="block">Follow our latest features and improvements.</span>
+              <span className="block">Find every update in one place.</span>
             </p>
           </div>
           <div className="space-y-12">

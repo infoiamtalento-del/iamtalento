@@ -247,7 +247,7 @@ const HackathonHero = () => (
           <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
             className="text-lg text-muted-foreground max-w-lg mb-8 leading-relaxed"
           >
-            The fastest way to prove your skills, get noticed by top employers, and land real opportunities — no resume needed.
+            Prove your skills through real challenges.<br className="hidden md:block" /> Get noticed without a résumé.
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="flex flex-wrap gap-3 mb-8">
             <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 h-12 px-6">
@@ -422,11 +422,12 @@ const CurrentSpotlight = () => {
               </div>
 
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-display text-primary-foreground leading-tight">
-                Code Arena · Season 4
+                Code Arena ·<br /><span className="text-primary-foreground/75">Season 4</span>
               </h2>
               <p className="text-primary-foreground/70 text-sm md:text-base max-w-lg leading-relaxed">
-                Build AI-powered tools that solve real hiring, skilling, and workforce challenges. Ship something that matters.
-              </p>
+            <span className="block">Build AI tools for real hiring challenges.</span>
+            <span className="block">Create something that matters.</span>
+          </p>
 
               {/* Info pills — white bg */}
               <div className="flex flex-wrap gap-2">
@@ -546,13 +547,14 @@ const WhyDifferent = () => (
         className="text-center flex flex-col items-center mb-14"
       >
         <SectionBadge label="Why This Hackathon" icon={Sparkles} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
+        <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
           Not Just a Competition.<br />
           <span className="text-primary">A Career Launchpad.</span>
         </h2>
-        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-          Compete in an experience built around stronger work, fair judging, expert feedback, and real visibility —<br className="hidden md:block" />six benefits make it different.
-        </p>
+        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">
+            <span className="block">Build stronger work and gain real visibility.</span>
+            <span className="block">Discover six distinct benefits.</span>
+          </p>
       </motion.div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto">
@@ -599,12 +601,13 @@ const TracksSection = () => {
     <section className="py-16 md:py-20">
       <div className="container px-4 md:px-6 text-center flex flex-col items-center">
         <SectionBadge label="Tracks & Industries" icon={Code} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
+        <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
           Pick Your Track.<br /><span className="text-primary">Show Your Best.</span>
         </h2>
-        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mb-8">
-          Choose from five industry tracks and more than thirty focused categories built around real-world problems —<br className="hidden md:block" />find the challenge that fits you.
-        </p>
+        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto mb-8">
+            <span className="block">Choose from five tracks and thirty categories.</span>
+            <span className="block">Find the challenge that fits.</span>
+          </p>
 
         {/* Tab row */}
         <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
@@ -685,10 +688,13 @@ const HowItWorks = () => {
       <div className="container px-4 md:px-6">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-12 text-center flex flex-col items-center">
           <SectionBadge label="How It Works" icon={Zap} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
+          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
             From Zero to<br /><span className="text-primary">Finalist in 5 Steps</span>
           </h2>
-        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mb-8">Register, choose a track, build your solution, submit the work, and present to expert judges —<br className="hidden md:block" />five focused steps take you to the final.</p>
+        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto mb-8">
+            <span className="block">Register, build, submit, and present your work.</span>
+            <span className="block">Reach the final in five steps.</span>
+          </p>
         </motion.div>
 
         <div className="flex flex-col lg:flex-row gap-10 items-stretch mx-auto max-w-5xl">
@@ -826,8 +832,11 @@ const JudgingSection = () => (
     <div className="container px-4 md:px-6">
       <div className="text-center mb-12">
         <SectionBadge label="Judging Criteria" icon={Shield} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">What the Judges<br /><span className="text-primary">Are Looking For</span></h2>
-        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">Every submission is reviewed blindly across five clear dimensions, without college names or follower counts —<br className="hidden md:block" />your work leads the evaluation.</p>
+        <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">What the Judges<br /><span className="text-primary">Are Looking For</span></h2>
+        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">
+            <span className="block">See the five dimensions behind every score.</span>
+            <span className="block">Your work leads the evaluation.</span>
+          </p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-5">
@@ -927,8 +936,11 @@ const PastWinners = () => {
       <div className="container px-4 md:px-6">
         <div className="text-center mb-12">
           <SectionBadge label="Success Stories" icon={Quote} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Where Are<br /><span className="text-primary">They Now?</span></h2>
-        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mb-8">Meet former participants who turned strong submissions into visibility, mentorship, and career opportunities —<br className="hidden md:block" />their progress continued after the final.</p>
+          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Where Are<br /><span className="text-primary">They Now?</span></h2>
+        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto mb-8">
+            <span className="block">Meet participants who turned work into opportunity.</span>
+            <span className="block">Their progress continued after.</span>
+          </p>
         </div>
 
         <div className="relative max-w-4xl mx-auto">
@@ -1096,8 +1108,11 @@ const CommunitySection = () => (
   <section className="py-16 md:py-20 bg-accent/30">
     <div className="container px-4 md:px-6 text-center flex flex-col items-center">
       <SectionBadge label="Community" icon={MessageCircle} />
-      <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">You're Not<br /><span className="text-primary">Competing Alone</span></h2>
-        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mb-8">Join a supportive builder community where mentors, peers, and experts help you keep moving —<br className="hidden md:block" />collaboration makes the challenge stronger.</p>
+      <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">You're Not<br /><span className="text-primary">Competing Alone</span></h2>
+        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto mb-8">
+            <span className="block">Build alongside mentors, peers, and experts.</span>
+            <span className="block">Collaboration keeps you moving.</span>
+          </p>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {communityPerks.map(({ icon: Icon, text }, i) => (
           <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}
@@ -1147,11 +1162,14 @@ const PastHackathons = () => (
     <div className="container px-4 md:px-6 relative z-10">
       <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-14 text-center flex flex-col items-center">
         <SectionBadge label="Past Seasons" icon={Trophy} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
+        <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
           Three Seasons. Thousands of<br />
           <span className="text-primary">Careers Accelerated.</span>
         </h2>
-        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mb-8">Explore the projects, winners, and outcomes from three seasons of ambitious building and collaboration —<br className="hidden md:block" />the impact extends beyond prizes.</p>
+        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto mb-8">
+            <span className="block">Explore past projects, winners, and outcomes.</span>
+            <span className="block">See the impact beyond prizes.</span>
+          </p>
       </motion.div>
 
       <div className="space-y-8">
@@ -1307,7 +1325,7 @@ const HackathonFAQ = () => {
       <div className="container px-4 md:px-6 max-w-3xl">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10">
           <SectionBadge label="FAQ" icon={MessageCircle} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4 mb-3">
+          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4 mb-3">
             Questions Builders Ask<br /><span className="text-primary">Before They Register</span>
           </h2>
           <p className="text-muted-foreground text-sm">Get clear answers about eligibility, teams, judging, deadlines, and what happens after submission —<br className="hidden md:block" />register with confidence.</p>
@@ -1368,10 +1386,11 @@ const FinalCTA = () => (
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
         className="rounded-xl bg-accent p-8 md:p-12 text-center">
         <Trophy className="h-10 w-10 text-primary mx-auto mb-4" />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Ready to Build Something<br /><span className="text-primary">Worth Noticing?</span></h2>
-        <p className="text-muted-foreground text-base md:text-lg mb-6 max-w-2xl mx-auto">
-          Join ambitious developers building real projects, learning from experts, and earning meaningful visibility —<br className="hidden md:block" />registration is free for every skill level.
-        </p>
+        <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Ready to Build?<br /><span className="text-primary">Get Noticed</span></h2>
+        <p className="text-muted-foreground text-sm md:text-lg mb-6 max-w-2xl mx-auto">
+            <span className="block">Create real projects and learn from experts.</span>
+            <span className="block">Registration is free for everyone.</span>
+          </p>
         <div className="flex flex-wrap justify-center gap-3">
           <Button className="bg-[hsl(33,100%,50%)] text-primary-foreground hover:bg-[hsl(33,100%,45%)] border-0 gap-2">Register Now — It's Free <ArrowRight className="h-4 w-4" /></Button>
           <Link to="/contact">

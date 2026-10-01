@@ -139,11 +139,11 @@ const Networking = () => (
         <section className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center mb-24">
           <div>
             <SectionBadge label="Networking Events" icon={Network} />
-            <h1 className="text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-4">
-              Meet People Who Can Move<br /><span className="text-primary">Your Career Forward</span>
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-4">
+              Meet People<br /><span className="text-primary">Who Move Careers</span>
             </h1>
             <p className="text-muted-foreground max-w-xl text-base md:text-lg mb-8">
-              Curated mixers, roundtables, and meetups put you alongside operators, founders, and hiring teams —<br className="hidden md:block" />meet the people who can move your career forward.
+              <span className="block">Meet founders, operators, and hiring teams.</span><span className="block">Build connections that move careers.</span>
             </p>
             <div className="flex flex-wrap gap-3">
               <Button size="lg" className="bg-[hsl(33,100%,50%)] text-white hover:bg-[hsl(33,100%,45%)] border-0 gap-2">
@@ -183,8 +183,8 @@ const Networking = () => (
         {/* 3. Event Formats */}
         <section className="mb-24">
           <SectionBadge label="Event Formats" icon={Sparkles} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Six Meaningful Ways to Build<br /><span className="text-primary">Real Connections</span></h2>
-          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mb-8">From intimate coffee chats to focused roundtables and full-day industry summits —<br className="hidden md:block" />choose the format that fits you best.</p>
+          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Six Ways to Build<br /><span className="text-primary">Real Connections</span></h2>
+          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mb-8"><span className="block">Choose from coffee chats to industry summits.</span><span className="block">Find the format that fits you.</span></p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {formats.map(({ icon: Icon, title, desc }, i) => (
               <motion.div key={title} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}
@@ -202,8 +202,8 @@ const Networking = () => (
         {/* 4. Upcoming Events — now with images */}
         <section className="mb-24">
           <SectionBadge label="Upcoming Events" icon={Calendar} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Find the Next Room Worth<br /><span className="text-primary">Showing Up For</span></h2>
-          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mb-8">Browse upcoming gatherings shaped around shared interests, real conversations, and useful introductions —<br className="hidden md:block" />reserve your place before seats fill.</p>
+          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Find the Next Room Worth<br /><span className="text-primary">Showing Up For</span></h2>
+          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mb-8"><span className="block">Browse gatherings built around shared interests.</span><span className="block">Reserve your place before seats fill.</span></p>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {upcoming.map((e, i) => (
               <motion.div key={e.title} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}
@@ -231,8 +231,8 @@ const Networking = () => (
         {/* 5. NEW — Featured Hosts & Speakers */}
         <section className="mb-24">
           <SectionBadge label="Featured Hosts" icon={Mic} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Learn Directly From the People<br /><span className="text-primary">Building What Is Next</span></h2>
-          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mb-8">Meet operators, founders, and creators with practical lessons from building inside leading teams —<br className="hidden md:block" />hear what experience has taught them.</p>
+          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Learn From People<br /><span className="text-primary">Building What Is Next</span></h2>
+          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mb-8"><span className="block">Meet founders and creators with useful lessons.</span><span className="block">Learn directly from experience.</span></p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {hosts.map((h, i) => (
               <motion.div key={h.name} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}
@@ -257,8 +257,8 @@ const Networking = () => (
         {/* 6. NEW — Why You'll Love It (Perks) */}
         <section className="mb-24">
           <SectionBadge label="Why You'll Love It" icon={Heart} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Designed for Conversations That Build<br /><span className="text-primary">Real Connections</span></h2>
-          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mb-8">Every gathering is curated to make meeting the right people feel natural, focused, and worthwhile —<br className="hidden md:block" />without forced networking or crowded rooms.</p>
+          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Conversations Designed<br /><span className="text-primary">For Real Connections</span></h2>
+          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mb-8"><span className="block">Meet the right people in focused gatherings.</span><span className="block">No forced networking or crowds.</span></p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {perks.map(({ icon: Icon, title, desc }, i) => (
               <motion.div key={title} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}
@@ -276,8 +276,8 @@ const Networking = () => (
         {/* 7. Cities */}
         <section className="mb-24">
           <SectionBadge label="Where We Meet" icon={Globe} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Explore Cities With a Growing<br /><span className="text-primary">Professional Community</span></h2>
-          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mb-8">Find active professional communities across India and beyond, with new gatherings added regularly —<br className="hidden md:block" />connect wherever your career takes you.</p>
+          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Explore Cities With<br /><span className="text-primary">Growing Communities</span></h2>
+          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mb-8"><span className="block">Find active professional communities nearby.</span><span className="block">Connect wherever your career takes you.</span></p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {cities.map((c) => (
               <div key={c.name} className="rounded-xl border border-border bg-card p-5 hover:border-primary/30 transition-colors">
@@ -293,8 +293,8 @@ const Networking = () => (
         <section className="mb-24">
           <SectionBadge label="Moments" icon={Camera} />
           <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15]">Step Inside Our Most Recent<br /><span className="text-primary">Community Events</span></h2>
-          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mb-8">See the conversations, introductions, and shared moments that make every gathering memorable —<br className="hidden md:block" />a look at the community in action.</p>
+            <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15]">Step Inside Recent<br /><span className="text-primary">Community Events</span></h2>
+          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mb-8"><span className="block">See conversations and memorable moments.</span><span className="block">Meet our community in action.</span></p>
             <Button variant="outline" size="sm" className="gap-2"><Instagram className="h-4 w-4" /> See on Instagram</Button>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -311,8 +311,8 @@ const Networking = () => (
         {/* 9. How It Works */}
         <section className="mb-24">
           <SectionBadge label="How It Works" icon={Target} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">From Your First RSVP to a<br /><span className="text-primary">Career-Changing Connection</span></h2>
-          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mb-8">Tell us what matters, discover the right room, and continue the conversation after the event —<br className="hidden md:block" />we make every step feel simple.</p>
+          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">From Your First RSVP<br /><span className="text-primary">To a Real Connection</span></h2>
+          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mb-8"><span className="block">Discover the right room and keep talking.</span><span className="block">Every step stays simple.</span></p>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {howItWorks.map((s, i) => (
               <motion.div key={s.step} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}
@@ -328,8 +328,8 @@ const Networking = () => (
         {/* 10. NEW — Community Spotlight */}
         <section className="mb-24">
           <SectionBadge label="Community Spotlight" icon={Star} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Meet the People Making This Month's<br /><span className="text-primary">Biggest Impact</span></h2>
-          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mb-8">Celebrate members who welcome newcomers, share useful knowledge, and strengthen the community —<br className="hidden md:block" />these are this month's stand-outs.</p>
+          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Meet This Month's<br /><span className="text-primary">Community Standouts</span></h2>
+          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mb-8"><span className="block">Celebrate members who strengthen our community.</span><span className="block">Meet this month's standouts.</span></p>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {spotlight.map((p, i) => (
               <motion.div key={p.name} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}
@@ -351,8 +351,8 @@ const Networking = () => (
         {/* 11. Success Stories */}
         <section className="mb-24">
           <SectionBadge label="Success Stories" icon={Award} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Real Conversations That Created<br /><span className="text-primary">Meaningful Outcomes</span></h2>
-          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mb-8">See how one introduction, one honest conversation, or one shared room opened new possibilities —<br className="hidden md:block" />these stories started in person.</p>
+          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Real Conversations<br /><span className="text-primary">Meaningful Outcomes</span></h2>
+          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mb-8"><span className="block">See how one conversation opened new doors.</span><span className="block">These stories started in person.</span></p>
           <div className="grid md:grid-cols-3 gap-5">
             {stories.map((s, i) => (
               <motion.div key={s.name} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}
@@ -388,8 +388,8 @@ const Networking = () => (
             <div className="relative grid md:grid-cols-2 gap-8 p-10 md:p-14 items-center">
               <div>
                 <SectionBadge label="For Hosts" icon={Mic} />
-                <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Bring Your Community Together<br /><span className="text-primary">Host With Us</span></h2>
-                <p className="text-muted-foreground text-base md:text-lg max-w-2xl mb-6">We help shape the format, curate the guest list, secure the venue, and run the room —<br className="hidden md:block" />you bring the topic and community.</p>
+                <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Bring People Together<br /><span className="text-primary">Host With Us</span></h2>
+                <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mb-6"><span className="block">We shape the format and run the room.</span><span className="block">You bring the topic and community.</span></p>
                 <div className="flex flex-wrap gap-3">
                   <Button size="lg" className="bg-[hsl(33,100%,50%)] text-white hover:bg-[hsl(33,100%,45%)] border-0 gap-2">Apply to Host <ArrowRight className="h-4 w-4" /></Button>
                   <Button size="lg" variant="outline">See Host Perks</Button>
@@ -402,8 +402,8 @@ const Networking = () => (
         {/* 13. FAQ + CTA */}
         <section>
           <SectionBadge label="FAQ" icon={HelpCircle} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Everything You Need to Know<br /><span className="text-primary">Before You Join</span></h2>
-          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mb-8">Find quick answers about tickets, matching, virtual access, and hosting your own gathering —<br className="hidden md:block" />so you can join with confidence.</p>
+          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">What You Need to Know<br /><span className="text-primary">Before You Join</span></h2>
+          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mb-8"><span className="block">Find answers about tickets and event access.</span><span className="block">Join with complete confidence.</span></p>
           <div className="grid md:grid-cols-2 gap-5 mb-12">
             {faqs.map((f) => (
               <div key={f.q} className="rounded-xl border border-border bg-card p-6">
@@ -419,8 +419,8 @@ const Networking = () => (
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             className="rounded-2xl bg-accent p-10 md:p-14 text-center">
             <TrendingUp className="h-8 w-8 text-primary mx-auto mb-4" />
-            <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Your Next Opportunity Could Be<br /><span className="text-primary">One Room Away</span></h2>
-            <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mb-6">Join thousands of ambitious professionals turning thoughtful conversations into career momentum —<br className="hidden md:block" />your next connection starts here.</p>
+            <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Your Next Opportunity<br /><span className="text-primary">Is One Room Away</span></h2>
+            <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto mb-6"><span className="block">Turn thoughtful conversations into momentum.</span><span className="block">Your next connection starts here.</span></p>
             <div className="flex flex-wrap justify-center gap-3">
               <Button size="lg" className="bg-[hsl(33,100%,50%)] text-white hover:bg-[hsl(33,100%,45%)] border-0 gap-2">
                 Browse All Events <ArrowRight className="h-4 w-4" />

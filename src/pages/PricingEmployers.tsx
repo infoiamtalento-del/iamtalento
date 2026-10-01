@@ -56,10 +56,10 @@ const PlansSection = () => (
     <div className="container px-4 max-w-7xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
         <SectionBadge label="Choose Your Plan" icon={Sparkles} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
           Start Hiring Free. Upgrade Only<br /><span className="text-primary">When You Need More</span>
         </h2>
-        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">From free job posts to verified profiles and premium reach, choose what fits your team —<br className="hidden md:block" />scale only when hiring demands it.</p>
+        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">From free job posts to verified profiles and premium reach, choose what fits your team —<br className="hidden md:block" />scale only when hiring demands it.</p>
       </motion.div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {plans.map((p, i) => {
@@ -110,10 +110,10 @@ const WhyTalento = () => (
     <div className="container px-4 max-w-4xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
         <SectionBadge label="The Difference" icon={TrendingUp} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
           The Difference Between Posting Jobs<br /><span className="text-primary">And Finding the Right Person</span>
         </h2>
-        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">Move beyond crowded job boards and compare a verified, skills-first hiring experience —<br className="hidden md:block" />see the difference before you choose.</p>
+        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">Move beyond crowded job boards and compare a verified, skills-first hiring experience —<br className="hidden md:block" />see the difference before you choose.</p>
       </motion.div>
       <div className="grid md:grid-cols-2 gap-6">
         <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="rounded-2xl border border-border bg-card p-7">
@@ -156,10 +156,10 @@ const HowHiringWorks = () => (
     <div className="container px-4 max-w-5xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
         <SectionBadge label="How it works" icon={Clock} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
           From Posting Your Role to a Shortlist<br /><span className="text-primary">In Just 48 Hours</span>
         </h2>
-        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">Post your role, meet matched candidates, review verified evidence, and move confidently —<br className="hidden md:block" />from opening to shortlist.</p>
+        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">Post your role, meet matched candidates, review verified evidence, and move confidently —<br className="hidden md:block" />from opening to shortlist.</p>
       </motion.div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {howSteps.map((s, i) => {
@@ -203,10 +203,10 @@ const EmployerComparisonTable = () => (
     <div className="container px-4 max-w-6xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
         <SectionBadge label="Compare Plans" icon={Eye} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
           Compare Every Hiring Plan Clearly<br /><span className="text-primary">At a Glance</span>
         </h2>
-        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">Review posting limits, verified profile access, assessments, and support in one clear view —<br className="hidden md:block" />choose the right fit for your team.</p>
+        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">Review posting limits, verified profile access, assessments, and support in one clear view —<br className="hidden md:block" />choose the right fit for your team.</p>
       </motion.div>
       <div className="overflow-x-auto rounded-2xl border border-border bg-card shadow-sm">
         <table className="w-full text-sm">
@@ -246,10 +246,10 @@ const ROICalculator = () => {
       <div className="container px-4 max-w-4xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
           <SectionBadge label="Calculate your ROI" icon={BarChart3} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
             See What a Bad Hire Can Really<br /><span className="text-primary">Cost Your Team</span>
           </h2>
-          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">
             The average cost-per-hire in India is ₹85,000, while one bad hire can drain months of productivity —<br className="hidden md:block" />calculate what stronger screening could save.
           </p>
         </motion.div>
@@ -294,10 +294,10 @@ const CaseStudies = () => (
     <div className="container px-4 max-w-5xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
         <SectionBadge label="Results from real companies" icon={MessageSquare} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
           See Why Leading Companies Choose<br /><span className="text-primary">Skills-First Hiring</span>
         </h2>
-        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">See how skills-first teams shortened screening and made stronger hiring decisions —<br className="hidden md:block" />with verified evidence at every step.</p>
+        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">See how skills-first teams shortened screening and made stronger hiring decisions —<br className="hidden md:block" />with verified evidence at every step.</p>
       </motion.div>
       <div className="grid md:grid-cols-3 gap-5">
         {caseStudies.map((c, i) => (
@@ -336,10 +336,10 @@ const FAQSection = () => (
     <div className="container px-4 max-w-3xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
         <SectionBadge label="Common questions" icon={HelpCircle} />
-        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
           What Hiring Teams Want to Know<br /><span className="text-primary">Before Getting Started</span>
         </h2>
-        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">Get clear answers about job posts, verified profiles, custom tests, and subscriptions —<br className="hidden md:block" />before your team gets started.</p>
+        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">Get clear answers about job posts, verified profiles, custom tests, and subscriptions —<br className="hidden md:block" />before your team gets started.</p>
       </motion.div>
       <Accordion type="single" collapsible className="space-y-3">
         {faqs.map((f, i) => (
@@ -362,7 +362,7 @@ const BottomCTA = () => (
         <div className="absolute bottom-0 left-0 w-52 h-52 rounded-full bg-primary-foreground/5 translate-y-1/3 -translate-x-1/4" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-primary-foreground/[0.03]" />
         <div className="relative z-10 text-center max-w-2xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-primary-foreground mb-3">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-primary-foreground mb-3">
             Your Next Great Hire Is Already<br /><span className="text-primary-foreground/80">Verified on Talento</span>
           </h2>
           <p className="text-sm md:text-base text-primary-foreground/70 mb-8">

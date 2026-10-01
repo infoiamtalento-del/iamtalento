@@ -47,7 +47,7 @@ const SkillCategoriesSection = () => {
             viewport={{ once: true }}
             transition={{ delay: 0.15 }}
           >
-            Assessments tailored to the realities of each industry, not generic tests.
+            Use assessments tailored to your industry.<br className="hidden md:block" /> Avoid generic skill tests.
           </motion.p>
         </div>
 
