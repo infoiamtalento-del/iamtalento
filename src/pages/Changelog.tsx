@@ -43,7 +43,7 @@ const Changelog = () => (
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-4">
               See What Is New<br /><span className="text-primary">I Am Talento</span>
             </h1>
-            <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+            <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">
               <span className="block">Follow our latest features and improvements.</span>
               <span className="block">Find every update in one place.</span>
             </p>

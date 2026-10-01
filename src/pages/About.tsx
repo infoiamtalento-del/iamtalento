@@ -43,7 +43,7 @@ const About = () => {
               Making Hiring Fair<br />
               <span className="text-primary">& Intelligent</span>
             </h1>
-            <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+            <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto leading-relaxed">
               <span className="block">See every candidate for their true potential.</span>
               <span className="block">Hire without bias or guesswork.</span>
             </p>
@@ -79,7 +79,7 @@ const About = () => {
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
                 Meet the Leaders<br /><span className="text-primary">Building Fairer Hiring</span>
               </h2>
-              <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+              <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">
                 <span className="block">Meet the team building smarter hiring.</span>
                 <span className="block">United by one clear mission.</span>
               </p>
@@ -112,7 +112,7 @@ const About = () => {
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
                 From One Bold Idea to<br /><span className="text-primary">A Growing Movement</span>
               </h2>
-              <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+              <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">
                 <span className="block">Follow the milestones behind our mission.</span>
                 <span className="block">See how the movement grew.</span>
               </p>

@@ -28,7 +28,7 @@ const Contact = () => {
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-4">
                 Start a Conversation<br /><span className="text-primary">With Our Team</span>
               </h1>
-              <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+              <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">
                 <span className="block">Have a question or need support?</span>
                 <span className="block">We would love to hear from you.</span>
               </p>

@@ -96,7 +96,7 @@ const Features = () => {
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-5">
               Talent Intelligence<br /><span className="text-primary">For Modern Teams</span>
             </h1>
-            <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+            <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto leading-relaxed">
               <span className="block">Screen, assess, and match talent intelligently.</span>
               <span className="block">Manage it all in one place.</span>
             </p>

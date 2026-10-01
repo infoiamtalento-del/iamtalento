@@ -39,7 +39,7 @@ const Blog = () => {
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-4">
                 Talent Insights for<br /><span className="text-primary">Modern Hiring</span>
               </h1>
-              <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+              <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">
                 <span className="block">Explore practical research and fresh strategies.</span>
                 <span className="block">Make stronger hiring decisions.</span>
               </p>

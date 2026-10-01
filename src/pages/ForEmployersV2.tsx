@@ -115,7 +115,7 @@ const EmployerHero = () => (
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-base md:text-lg text-muted-foreground max-w-lg mb-8 leading-relaxed"
+            className="text-sm md:text-lg text-muted-foreground max-w-lg mb-8 leading-relaxed"
           >
             AI-powered Industry Readiness and skills-validation platform with pre-verified candidates,
             30-layer proctored assessments, and objective AI reports — so you

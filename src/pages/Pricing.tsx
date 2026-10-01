@@ -41,7 +41,7 @@ const Pricing = () => {
               </div>
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold font-display text-primary-foreground mb-4 leading-tight">
                 {tab === "candidates"
-                  ? <>Start Free. Upgrade When Ready<br /><span className="text-primary-foreground/80">To Stand Out</span></>
+                  ? <>Start Free. Upgrade<br /><span className="text-primary-foreground/80">To Stand Out</span></>
                   : <>Hire With Evidence That Matters<br /><span className="text-primary-foreground/80">Not Promises</span></>
                 }
               </h1>
