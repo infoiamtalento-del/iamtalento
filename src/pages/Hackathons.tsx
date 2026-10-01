@@ -538,6 +538,30 @@ const CurrentSpotlight = () => {
             </motion.div>
           ))}
         </div>
+
+        {/* Bottom CTAs */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3"
+        >
+          <Button
+            size="lg"
+            onClick={() => document.getElementById("hackathon-schedule")?.scrollIntoView({ behavior: "smooth" })}
+            className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2 font-bold h-12 px-8 shadow-xl rounded-xl text-base w-full sm:w-auto"
+          >
+            Explore Hackathons <ArrowRight className="h-5 w-5" />
+          </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            onClick={() => document.getElementById("why-hackathon")?.scrollIntoView({ behavior: "smooth" })}
+            className="border-primary text-primary hover:bg-primary hover:text-primary-foreground gap-2 font-bold h-12 px-8 rounded-xl text-base w-full sm:w-auto"
+          >
+            View More
+          </Button>
+        </motion.div>
       </div>
     </section>
   );
@@ -545,7 +569,7 @@ const CurrentSpotlight = () => {
 
 /* ─── Why Different — Staggered Scroll Reveal ─── */
 const WhyDifferent = () => (
-  <section className="py-20 md:py-28 relative overflow-hidden">
+  <section id="why-hackathon" className="py-20 md:py-28 relative overflow-hidden">
     <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,hsl(var(--primary)/0.05),transparent_60%)]" />
 
     <div className="container px-4 md:px-6 relative z-10">

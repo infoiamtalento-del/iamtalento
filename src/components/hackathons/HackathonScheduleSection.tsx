@@ -20,7 +20,7 @@ const HackathonScheduleSection = () => {
   const filtered = scheduleData.filter(s => s.status === tab);
 
   return (
-    <section className="pt-4 pb-16 md:pt-6 md:pb-20">
+    <section id="hackathon-schedule" className="pt-4 pb-16 md:pt-6 md:pb-20">
       <div className="container px-4 md:px-6">
         <div className="flex flex-col md:flex-row md:items-end gap-4 mb-2">
           <h2 className="text-3xl md:text-4xl font-bold font-display">
