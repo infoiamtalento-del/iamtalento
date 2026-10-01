@@ -13,7 +13,6 @@ import {
   SlidersHorizontal,
   Sparkles,
   FileQuestion,
-  Building2,
 } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -73,8 +72,8 @@ const AssessmentCard = ({ a, index }: { a: Assessment; index: number }) => (
           <p className="text-[11px] text-muted-foreground">Created by</p>
           <p className="truncate text-sm font-semibold">{a.creator.name}</p>
           <div className="mt-0.5 flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground">
-            <span className="flex h-4 w-4 items-center justify-center rounded bg-primary/10 text-primary" aria-hidden="true">
-              <Building2 className="h-2.5 w-2.5" />
+            <span className="flex h-4 w-4 items-center justify-center rounded bg-primary text-[9px] font-bold text-primary-foreground" aria-hidden="true">
+              {a.creator.company.charAt(0)}
             </span>
             <span className="truncate">{a.creator.company}</span>
           </div>

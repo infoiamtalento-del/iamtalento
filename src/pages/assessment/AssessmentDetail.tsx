@@ -16,7 +16,6 @@ import {
   Fingerprint,
   Play,
   Check,
-  Building2,
 } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -158,7 +157,7 @@ const AssessmentDetail = () => {
                   className="absolute bottom-0 right-0 flex h-9 w-9 items-center justify-center rounded-lg border-2 border-background bg-primary text-primary-foreground shadow-sm"
                   title={a.creator.company}
                 >
-                  <Building2 className="h-4 w-4" />
+                  <span className="font-display text-sm font-bold">{a.creator.company.charAt(0)}</span>
                 </div>
               </div>
               <div className="flex-1">
