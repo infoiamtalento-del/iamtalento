@@ -100,13 +100,11 @@ const EmployerHero = () => (
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
-            className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold font-display leading-[1.08] mb-6 tracking-tight"
+            className="text-2xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-bold font-display leading-[1.08] mb-6 tracking-tight"
           >
-            Stop Hiring on{" "}
-            <span className="text-primary">Hope.</span>
+            Stop Guessing.
             <br />
-            Start Hiring on{" "}
-            <span className="text-primary">Proof.</span>
+            <span className="text-primary">Start Hiring on Proof.</span>
           </motion.h1>
 
           <motion.p

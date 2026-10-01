@@ -87,11 +87,11 @@ const TicketCarousel = () => {
           className="mb-12 text-center flex flex-col items-center"
         >
           <SectionBadge label="Upcoming Events" icon={Calendar} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display mb-3">
-            Grab Your <span className="text-primary">Spot</span>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
+            Grab Your Spot<br /><span className="text-primary">Before It Closes</span>
           </h2>
-          <p className="text-muted-foreground max-w-md">
-            Limited spots. Real competitions. Don't miss out.
+          <p className="text-muted-foreground text-sm md:text-lg max-w-md">
+            Secure your place in a live competition.<br className="hidden md:block" /> Limited spots are available.
           </p>
         </motion.div>
 
