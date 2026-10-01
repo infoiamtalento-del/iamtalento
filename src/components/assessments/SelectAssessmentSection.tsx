@@ -51,36 +51,31 @@ const SelectAssessmentSection = () => {
           viewport={{ once: true }}
           className="mb-6"
         >
-          <div
-            className="flex items-center bg-white overflow-hidden transition-shadow focus-within:shadow-[0_0_0_3px_hsl(355_84%_54%/0.15)]"
-            style={{ border: "1.5px solid #E2E8F0", borderRadius: 10, height: 52 }}
-          >
-            <div className="flex items-center gap-2 px-4 flex-1">
-              <Search className="h-4 w-4" style={{ color: "#94A3B8" }} />
-              <input
-                type="text"
-                placeholder="Search skills, roles, or assessments..."
-                className="w-full bg-transparent text-sm outline-none placeholder:text-[#94A3B8]"
-                style={{ color: "#0F172A" }}
-              />
-            </div>
-            <div className="h-8 w-px" style={{ background: "#E2E8F0" }} />
-            <select className="bg-transparent text-sm px-4 py-2 outline-none appearance-none cursor-pointer" style={{ color: "#475569" }}>
-              <option>All Domains</option>
-              {domains.filter((d) => d !== "All").map((d) => <option key={d}>{d}</option>)}
-            </select>
-            <div className="h-8 w-px" style={{ background: "#E2E8F0" }} />
-            <select className="bg-transparent text-sm px-4 py-2 outline-none appearance-none cursor-pointer" style={{ color: "#475569" }}>
-              <option>All Levels</option>
-              <option>Beginner</option>
-              <option>Intermediate</option>
-              <option>Advanced</option>
-            </select>
-            <Button
-              className="h-full bg-primary hover:bg-primary/90 text-white text-sm font-bold px-6 rounded-none"
-              style={{ borderRadius: "0 8px 8px 0" }}
-            >
-              Search
+          <div className="bg-card rounded-2xl shadow-[0_8px_30px_-12px_hsl(var(--foreground)/0.15)] border border-border/60 p-3 flex flex-col md:flex-row md:items-center gap-2">
+            {[
+              { icon: Search, label: "What", type: "input", placeholder: "Skills, roles, or assessments" },
+              { icon: Code2, label: "Domain", type: "select", placeholder: "Select domain", options: domains.filter((d) => d !== "All") },
+              { icon: BarChart3, label: "Level", type: "select", placeholder: "Select level", options: ["Beginner", "Intermediate", "Advanced"] },
+            ].map((f, idx) => (
+              <div key={f.label} className={`flex items-center gap-3 flex-1 px-3 py-2 ${idx > 0 ? "md:border-l border-border" : ""}`}>
+                <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                  <f.icon className="h-5 w-5 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs font-semibold text-foreground">{f.label}</div>
+                  {f.type === "input" ? (
+                    <input type="text" placeholder={f.placeholder} className="w-full bg-transparent text-sm outline-none text-foreground placeholder:text-muted-foreground" />
+                  ) : (
+                    <select defaultValue="" className="w-full bg-transparent text-sm outline-none cursor-pointer text-muted-foreground">
+                      <option value="" disabled>{f.placeholder}</option>
+                      {f.options!.map((o) => <option key={o}>{o}</option>)}
+                    </select>
+                  )}
+                </div>
+              </div>
+            ))}
+            <Button className="h-12 px-8 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold gap-2">
+              <Search className="h-4 w-4" /> Search Assessments
             </Button>
           </div>
         </motion.div>
