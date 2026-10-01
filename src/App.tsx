@@ -34,6 +34,11 @@ const SkillAssessment = lazy(() => import("./pages/SkillAssessment"));
 const Podcasts = lazy(() => import("./pages/Podcasts"));
 const Hackathons = lazy(() => import("./pages/Hackathons"));
 const Networking = lazy(() => import("./pages/Networking"));
+const AssessmentDiscovery = lazy(() => import("./pages/assessment/AssessmentDiscovery"));
+const AssessmentDetail = lazy(() => import("./pages/assessment/AssessmentDetail"));
+const AssessmentPreCheck = lazy(() => import("./pages/assessment/AssessmentPreCheck"));
+const AssessmentTest = lazy(() => import("./pages/assessment/AssessmentTest"));
+const AssessmentResult = lazy(() => import("./pages/assessment/AssessmentResult"));
 
 const queryClient = new QueryClient();
 
@@ -52,6 +57,11 @@ const AnimatedRoutes = () => {
           <Route path="/changelog" element={<PageTransition><Changelog /></PageTransition>} />
           <Route path="/dashboard" element={<PageTransition><Dashboard /></PageTransition>} />
           <Route path="/assessments" element={<PageTransition><Assessments /></PageTransition>} />
+          <Route path="/assessments/explore" element={<PageTransition><AssessmentDiscovery /></PageTransition>} />
+          <Route path="/assessments/:assessmentId" element={<PageTransition><AssessmentDetail /></PageTransition>} />
+          <Route path="/assessments/:assessmentId/pre-check" element={<AssessmentPreCheck />} />
+          <Route path="/assessments/:assessmentId/test" element={<AssessmentTest />} />
+          <Route path="/assessments/:assessmentId/result" element={<PageTransition><AssessmentResult /></PageTransition>} />
           <Route path="/jobs" element={<PageTransition><Jobs /></PageTransition>} />
           <Route path="/learning" element={<PageTransition><Learning /></PageTransition>} />
           <Route path="/meetups" element={<PageTransition><Hackathons /></PageTransition>} />
