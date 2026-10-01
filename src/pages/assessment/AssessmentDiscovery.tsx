@@ -158,7 +158,7 @@ const AssessmentDiscovery = () => {
               <span className="text-primary">Show What You Can Do.</span>
             </h1>
             <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-              Find proctored assessments matched to your industry, domain and experience —<br className="hidden md:block" />
+              Find proctored assessments matched to your industry, domain and experience,<br className="hidden md:block" />
               then turn your score into a verified CIR report.
             </p>
           </div>
