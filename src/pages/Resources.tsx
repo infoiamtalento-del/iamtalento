@@ -16,8 +16,13 @@ const Resources = () => (
           <div className="h-16 w-16 rounded-2xl gradient-primary flex items-center justify-center mx-auto mb-6">
             <BookOpen className="h-8 w-8 text-primary-foreground" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold font-display mb-4">Resources</h1>
-          <p className="text-lg text-muted-foreground mb-8">Guides, whitepapers, and industry insights. Coming soon.</p>
+          <h1 className="text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-4">
+            Practical Resources for Your<br /><span className="text-primary">Next Career Move</span>
+          </h1>
+          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mb-8">
+            Explore practical guides, whitepapers, and industry insights created for ambitious professionals —<br className="hidden md:block" />
+            more useful resources are coming soon.
+          </p>
           <Link to="/"><Button size="lg" className="bg-[hsl(33,100%,50%)] text-white hover:bg-[hsl(33,100%,45%)] border-0 gap-2">Back to Home <ArrowRight className="h-4 w-4" /></Button></Link>
         </div>
       </section>

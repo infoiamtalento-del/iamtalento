@@ -358,9 +358,9 @@ const WhoItsForSection = () => {
           <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
             Ideal Customer Profiles
           </p>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display mb-4">
-            Built for Leaders Who Can't Afford{" "}
-            <span className="text-primary">Bad Hires.</span>
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
+            Built for Leaders Who Cannot Afford<br />
+              <span className="text-primary">Another Bad Hire</span>
           </h2>
           <p className="text-muted-foreground leading-relaxed">
             Designed for high-volume, skill-critical hiring teams that need
@@ -510,9 +510,9 @@ const ProblemVsSolutionSection = () => {
               <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-destructive bg-destructive/10 px-3 py-1.5 rounded-full border border-destructive/20 mb-4">
                 The Problem
               </p>
-              <h2 className="text-2xl sm:text-3xl md:text-3xl font-bold font-display leading-tight">
-                Hiring Today Is Slow, Costly, and{" "}
-                <span className="text-destructive">Uncertain.</span>
+              <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15]">
+                Hiring Today Feels Slow and Costly<br />
+                  <span className="text-primary">With Too Much Uncertainty</span>
               </h2>
             </div>
             {employerProblems.map(({ icon: Icon, title, bullets }, i) => {
@@ -572,9 +572,9 @@ const ProblemVsSolutionSection = () => {
               <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20 mb-4">
                 The Solution
               </p>
-              <h2 className="text-2xl sm:text-3xl md:text-3xl font-bold font-display leading-tight">
-                Structured, Performance-Based{" "}
-                <span className="text-primary">Hiring System.</span>
+              <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15]">
+                Build a Structured Hiring Process<br />
+                  <span className="text-primary">Based on Performance</span>
               </h2>
             </div>
             {employerSolutions.map(({ icon: Icon, title, bullets }, i) => {
@@ -688,9 +688,9 @@ const HowItWorksSection = () => {
           <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
             How It Works
           </p>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display mb-4">
-            From Job Description to{" "}
-            <span className="text-primary">Offer Letter</span> in 4 Steps
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
+            Move From Job Description to Offer<br />
+              <span className="text-primary">In Four Clear Steps</span>
           </h2>
           <p className="text-muted-foreground leading-relaxed">
             A streamlined pipeline that takes you from role definition to
@@ -812,7 +812,7 @@ const EmployerIntegritySection = () => {
             <Shield className="h-3.5 w-3.5" /> 30-Layer Hiring Integrity Stack
           </div>
           <motion.h2
-            className="text-2xl sm:text-3xl md:text-4xl font-bold font-display mb-3"
+            className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -915,7 +915,7 @@ const EmployerComplianceSection = () => {
             <Shield className="h-3.5 w-3.5" /> Employer Data Protection
           </div>
           <motion.h2
-            className="text-2xl sm:text-3xl md:text-4xl font-bold font-display mb-4"
+            className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -982,9 +982,9 @@ const ScoreTrustSection = () => {
             <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
               Talent Intelligence
             </p>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display mb-6 leading-tight">
-              Industry Readiness Scores That{" "}
-              <span className="text-primary">Predict Performance.</span>
+            <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-6">
+              Use Industry Readiness Scores<br />
+                <span className="text-primary">To Predict Performance</span>
             </h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
               From raw test results to clear, actionable hiring decisions.
@@ -1404,9 +1404,9 @@ const PlatformCapabilitiesSection = () => {
           <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
             Platform Capabilities
           </p>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display mb-4">
-            Everything You Need for Skills-First Hiring{" "}
-            <span className="text-primary">in One Place.</span>
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
+            Everything You Need for Skills-First<br />
+              <span className="text-primary">Hiring in One Place</span>
           </h2>
           <p className="text-muted-foreground leading-relaxed mb-2">
             Replace 3 tools — resume screening, skill tests, and interviews — with one integrated Industry Readiness platform.
@@ -1534,9 +1534,9 @@ const AssessmentCoverageSection = () => {
           <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
             Assessment Coverage
           </p>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display mb-4">
-            Test What Actually Matters{" "}
-            <span className="text-primary">for the Job.</span>
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
+            Test the Capabilities That Matter<br />
+              <span className="text-primary">Most for the Job</span>
           </h2>
           <p className="text-muted-foreground leading-relaxed">
             Go beyond buzzwords and résumés. Evaluate real technical, cognitive, and behavioral skills.
@@ -1591,9 +1591,9 @@ const EmployerDashboardSection = () => {
             <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
               Employer Dashboard
             </p>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display mb-6 leading-tight">
-              One Dashboard.{" "}
-              <span className="text-primary">Everything That Matters.</span>
+            <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-6">
+              Manage Every Hiring Signal From<br />
+                <span className="text-primary">One Clear Dashboard</span>
             </h2>
             <div className="space-y-4 mb-8">
               {dashboardBullets.map(({ icon: Icon, text }) => (
@@ -1746,9 +1746,9 @@ const PricingSection = () => {
           <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
             Pricing
           </p>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display mb-4">
-            Plans That Scale With Your{" "}
-            <span className="text-primary">Hiring Ambitions.</span>
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
+            Choose Plans That Scale With<br />
+              <span className="text-primary">Your Hiring Ambitions</span>
           </h2>
           <p className="text-muted-foreground leading-relaxed mb-2">
             Compare plans by outcome: access profiles, run AI assessments, or build fully custom simulations.
@@ -1856,9 +1856,9 @@ const SocialProofSection = () => {
           <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
             Success Stories
           </p>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display mb-4">
-            From Hope-Based Hiring to{" "}
-            <span className="text-primary">Skills-First Teams.</span>
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
+            Move Beyond Hope-Based Hiring<br />
+              <span className="text-primary">Build Skills-First Teams</span>
           </h2>
           <p className="text-muted-foreground">
             Real stories from professionals who proved their worth and employers
@@ -1944,9 +1944,9 @@ const FAQSection = () => {
           <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
             FAQ
           </p>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display mb-4">
-            Questions Leaders Ask{" "}
-            <span className="text-primary">Before They Switch.</span>
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
+            Questions Hiring Leaders Ask<br />
+              <span className="text-primary">Before They Switch</span>
           </h2>
         </div>
         <div className="max-w-3xl mx-auto space-y-3">
@@ -2012,9 +2012,9 @@ const FinalCTA = () => {
         )}>
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="relative z-10">
             <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-5xl font-bold font-display text-primary-foreground mb-3 leading-tight">
-              Turn Every Hire Into a Data-Backed Decision.
+              Turn Every Hire Into a<br /><span className="text-primary-foreground/75">Data-Backed Decision</span>
             </h2>
-            <p className="text-primary-foreground/70 text-sm sm:text-base md:text-lg mb-2">Measure. Screen. Hire.</p>
+            <p className="text-primary-foreground/75 text-base md:text-lg max-w-2xl mx-auto mb-2">Measure capability, screen with evidence, and make every hiring decision with greater confidence —<br className="hidden md:block" />move from instinct to insight.</p>
             <p className="text-primary-foreground/60 max-w-xl mx-auto mb-8 text-xs sm:text-sm md:text-base leading-relaxed">
               Join 500+ companies using IAmTalento to turn every hire into a data-backed decision, not a guess.
             </p>

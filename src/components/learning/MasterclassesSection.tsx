@@ -54,11 +54,11 @@ const MasterclassesSection = () => {
       <div className="container px-4 md:px-6">
         <div className="text-center mb-10">
           <SectionBadge label="Masterclasses" icon={Monitor} />
-          <h2 className="text-3xl md:text-4xl font-bold font-display mb-3">
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
             Industry-Specific Interview<br />
             <span className="text-primary">Masterclasses</span>
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">Go beyond textbooks. Learn exactly what top companies are testing.</p>
+          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">Prepare with role-specific interview lessons shaped around the skills and decisions leading companies test —<br className="hidden md:block" />practice what interviews actually demand.</p>
         </div>
         <div className="flex flex-wrap justify-center gap-2 mb-8">
           {categories.map((c) => (

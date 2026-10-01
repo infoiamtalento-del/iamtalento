@@ -39,12 +39,12 @@ const PersonalizedPathSection = () => (
             </div>
 
             <h2 className="text-3xl md:text-4xl font-bold font-display mb-4 text-foreground leading-tight">
-              Your AI-Curated Learning<br />
-              Path is <span className="text-primary">Ready</span>
+              Your AI-Curated Learning Path<br />
+              <span className="text-primary">Is Ready</span>
             </h2>
 
             <p className="text-foreground/70 max-w-lg mb-10 leading-relaxed">
-              Based on your profile and readiness score, we've mapped the fastest route to your dream role — no guesswork, just results.
+              Based on your profile and readiness score, we map the most relevant route toward your target role —<br className="hidden md:block" />learn with direction, not guesswork.
             </p>
 
             {/* Step row with connectors */}

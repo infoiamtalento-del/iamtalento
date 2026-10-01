@@ -26,7 +26,7 @@ const LearningHeroSection = () => (
           <span className="text-primary">Get You Hired</span>
         </h1>
         <p className="text-base md:text-lg text-muted-foreground mb-6 max-w-lg">
-          AI-powered courses built for the real world — not just certificates, but capabilities.
+          Build practical, job-ready capabilities through AI-powered courses made for real working environments —<br className="hidden md:block" />go beyond certificates and learn by doing.
         </p>
 
         <div className="relative mb-6 w-full max-w-xl md:max-w-2xl lg:max-w-3xl">

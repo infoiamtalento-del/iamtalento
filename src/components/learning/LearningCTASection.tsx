@@ -18,7 +18,7 @@ const LearningCTASection = () => (
           <div className="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center mx-auto mb-5">
             <Rocket className="h-6 w-6 text-white" />
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold font-display text-white mb-3">
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-white mb-3">
             Ready to Learn, Grow & Get Hired?
           </h2>
           <p className="text-sm md:text-base text-white/80 mb-8">

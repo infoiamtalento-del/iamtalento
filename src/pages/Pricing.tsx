@@ -41,14 +41,14 @@ const Pricing = () => {
               </div>
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold font-display text-primary-foreground mb-4 leading-tight">
                 {tab === "candidates"
-                  ? <>Start free. Upgrade when you're ready to <span className="underline decoration-primary-foreground/30 underline-offset-4">stand out.</span></>
-                  : <>Hire on proof. <span className="underline decoration-primary-foreground/30 underline-offset-4">Not promises.</span></>
+                  ? <>Start Free. Upgrade When Ready<br /><span className="text-primary-foreground/80">To Stand Out</span></>
+                  : <>Hire With Evidence That Matters<br /><span className="text-primary-foreground/80">Not Promises</span></>
                 }
               </h1>
               <p className="text-base md:text-lg text-primary-foreground/70 max-w-2xl mx-auto mb-8">
                 {tab === "candidates"
-                  ? "Your profile, AI resume, and first job application are always free. Pay only when you want to get verified and discovered by top employers."
-                  : "Post jobs and browse profiles free. Pay only when you need verified talent, custom assessments, or premium reach."
+                  ? <>Build your profile, improve your resume, and apply for your first role completely free —<br className="hidden md:block" />pay only when you are ready to get verified.</>
+                  : <>Post jobs and browse talent free, then upgrade for verified profiles and custom assessments —<br className="hidden md:block" />pay only when your hiring needs grow.</>
                 }
               </p>
 

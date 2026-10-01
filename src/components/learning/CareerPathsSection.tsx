@@ -75,7 +75,7 @@ const CareerPathsSection = () => {
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10">
           <div>
             <SectionBadge label="Career Blueprints" icon={Sparkles} />
-            <h2 className="text-3xl md:text-4xl font-bold font-display mb-2">
+            <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
               Ready to Reimagine<br />
               <span className="text-primary">Your Career?</span>
             </h2>

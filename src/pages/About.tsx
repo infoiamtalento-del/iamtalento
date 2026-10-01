@@ -39,8 +39,14 @@ const About = () => {
         <section className="pt-32 pb-16">
           <div className="container text-center max-w-3xl">
             <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">About us</p>
-            <h1 className="text-4xl md:text-5xl font-bold font-display mb-5">Making Hiring Fair, Fast & Intelligent</h1>
-            <p className="text-muted-foreground text-lg leading-relaxed">We believe every person deserves to be evaluated on their true potential, and every employer deserves to find the right talent — without bias, without delays, without guesswork.</p>
+            <h1 className="text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-5">
+              Making Hiring Fair, Fast<br />
+              <span className="text-primary">& Intelligent</span>
+            </h1>
+            <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+              Every person deserves to be evaluated on true potential, and every employer deserves the right talent —<br className="hidden md:block" />
+              without bias, delays, or guesswork.
+            </p>
           </div>
         </section>
 
@@ -69,7 +75,15 @@ const About = () => {
 
         <section className="py-24 bg-card/50">
           <div className="container">
-            <h2 className="text-3xl font-bold font-display text-center mb-12">Leadership Team</h2>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
+                Meet the Leaders Building<br /><span className="text-primary">Fairer Hiring</span>
+              </h2>
+              <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+                Experienced builders, researchers, and operators shaping a more intelligent talent platform —<br className="hidden md:block" />
+                united by one clear mission.
+              </p>
+            </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {team.map(({ name, role, bio }, i) => (
                 <motion.div
@@ -94,7 +108,15 @@ const About = () => {
 
         <section ref={ref} className="py-24">
           <div className="container max-w-2xl">
-            <h2 className="text-3xl font-bold font-display text-center mb-12">Our Journey</h2>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
+                From One Bold Idea to<br /><span className="text-primary">A Growing Movement</span>
+              </h2>
+              <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+                Follow the milestones that turned our mission into a platform trusted by growing teams —<br className="hidden md:block" />
+                and ambitious professionals.
+              </p>
+            </div>
             <div className={cn("space-y-8 transition-all duration-700", isVisible ? "opacity-100" : "opacity-0 translate-y-8")}>
               {milestones.map(({ year, event }, i) => (
                 <motion.div
