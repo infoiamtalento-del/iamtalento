@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { Search, Clock, Users, Star, Code2, BarChart3, Palette, Megaphone, Database, Brain, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const domains = ["All", "Programming", "Data Science", "Design", "Marketing", "Finance", "HR"];
 
