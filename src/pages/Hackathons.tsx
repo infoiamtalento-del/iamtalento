@@ -396,6 +396,15 @@ const CurrentSpotlight = () => {
       <div className="container px-4 md:px-6">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-10 text-center flex flex-col items-center">
           <SectionBadge label="Season 4 — Now Open" icon={Trophy} />
+          <h2 className="mt-4 text-2xl sm:text-3xl md:text-4xl font-bold font-display text-foreground leading-[1.15]">
+            The Next Hackathon
+            <br />
+            <span className="text-primary">Starts Soon.</span>
+          </h2>
+          <p className="mt-4 text-muted-foreground text-sm md:text-lg max-w-2xl">
+            <span className="block">Registration is open for our flagship 48-hour build.</span>
+            <span className="block">Compete, get mentored, and get hired.</span>
+          </p>
         </motion.div>
 
         <motion.div
