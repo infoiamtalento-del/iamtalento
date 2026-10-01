@@ -63,11 +63,12 @@ const LearnInLanguageSection = () => {
           </div>
 
           <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
-            Learn New Skills Comfortably<br />
+            Learn Skills Easily<br />
             <span className="text-primary">In Your Language</span>
           </h2>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-            Learn through clear explanations in five or more languages designed for stronger understanding —<br className="hidden md:block" />nothing gets lost in translation.
+            <span className="block">Learn clearly in the language you prefer.</span>
+            <span className="block">Nothing gets lost in translation.</span>
           </p>
         </div>
 

@@ -52,10 +52,13 @@ const LearnerStoriesSection = () => (
       <div className="text-center mb-8">
         <SectionBadge label="Success Stories" icon={Quote} />
         <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
-          See What Others Are Achieving<br />
+          See Learner Success<br />
           <span className="text-primary">Through Learning</span>
         </h2>
-        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">Real stories from real learners who transformed their careers.</p>
+        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+          <span className="block">Meet learners who changed their careers.</span>
+          <span className="block">Their progress started here.</span>
+        </p>
       </div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {stories.map((s, i) => (

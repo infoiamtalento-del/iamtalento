@@ -28,10 +28,11 @@ const GetCertifiedSection = () => (
           <div>
             <SectionBadge label="Certifications" icon={Award} className="bg-white/10 text-white border-white/20" />
             <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3 text-white">
-              Earn Trusted Certifications<br /><span className="text-white/75">Build Career Momentum</span>
+              Build Career Credentials<br /><span className="text-white/75">Recruiters Trust</span>
             </h2>
             <p className="text-white/70 text-base md:text-lg max-w-2xl mb-6">
-              Build your profile with industry-aligned credentials that make completed learning visible to recruiters —<br className="hidden md:block" />turn new skills into trusted proof.
+              <span className="block">Show employers credentials they can verify.</span>
+              <span className="block">Turn skills into trusted proof.</span>
             </p>
             <Link to="/learning#courses">
               <Button className="bg-warning text-warning-foreground hover:bg-warning/90 gap-2 font-semibold">

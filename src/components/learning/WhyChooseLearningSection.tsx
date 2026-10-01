@@ -49,23 +49,24 @@ const WhyChooseLearningSection = () => {
         {/* Header */}
         <div className="text-center mb-10 md:mb-14">
           <SectionBadge label="Why Us" icon={Award} />
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.1, duration: 0.5 }}
-            className="text-muted-foreground text-sm md:text-base mb-2"
-          >
-            Learn from the best in the industry
-          </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 24 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="text-3xl md:text-4xl font-bold font-display"
+            className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3"
           >
-            Why Choose{" "}
-            <span className="text-primary">Learning With Us</span>
+            Choose Better Learning<br />
+            <span className="text-primary">For Your Career</span>
           </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.1, duration: 0.5 }}
+            className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto"
+          >
+            <span className="block">Learn with experts and up-to-date content.</span>
+            <span className="block">Build skills employers trust.</span>
+          </motion.p>
         </div>
 
         {/* Bento Grid */}
