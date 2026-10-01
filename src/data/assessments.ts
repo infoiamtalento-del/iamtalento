@@ -1,3 +1,14 @@
+import expertMale1 from "@/assets/experts/male-1.jpg";
+import expertMale2 from "@/assets/experts/male-2.jpg";
+import expertMale3 from "@/assets/experts/male-3.jpg";
+import expertMale4 from "@/assets/experts/male-4.jpg";
+import expertFemale1 from "@/assets/experts/female-1.jpg";
+import expertFemale2 from "@/assets/experts/female-2.jpg";
+import expertFemale3 from "@/assets/experts/female-3.jpg";
+import expertFemale4 from "@/assets/experts/female-4.jpg";
+import expertFemale5 from "@/assets/experts/female-5.jpg";
+import expertFemale6 from "@/assets/experts/female-6.jpg";
+
 export type AssessmentType = "Knowledge" | "Practical" | "Functional";
 
 export interface Question {
@@ -30,6 +41,7 @@ export interface Assessment {
     experience: string;
     expertise: string[];
     company: string;
+    photo: string;
   };
   questions: Question[];
 }
@@ -111,6 +123,7 @@ export const ASSESSMENTS: Assessment[] = [
       experience: "9+ Years Experience",
       expertise: ["Performance Marketing", "Analytics", "Lifecycle"],
       company: "Swiggy",
+      photo: expertMale1,
     },
     questions: genericQuestions(["Campaign Planning", "Analytics", "Paid Media", "Content Strategy"], "Digital Marketing"),
   },
@@ -137,6 +150,7 @@ export const ASSESSMENTS: Assessment[] = [
       experience: "11+ Years Experience",
       expertise: ["Technical SEO", "Content Ops", "Analytics"],
       company: "HubSpot",
+      photo: expertMale2,
     },
     questions: genericQuestions(["Technical SEO", "Keyword Research", "On-page SEO", "Search Console"], "SEO"),
   },
@@ -163,6 +177,7 @@ export const ASSESSMENTS: Assessment[] = [
       experience: "Assessment authored by practising media buyers",
       expertise: ["Paid Social", "Paid Search", "Attribution"],
       company: "Nykaa",
+      photo: expertFemale1,
     },
     questions: genericQuestions(["Bidding Strategy", "Attribution", "Creative Testing", "Budget Planning"], "Performance Marketing"),
   },
@@ -188,6 +203,7 @@ export const ASSESSMENTS: Assessment[] = [
       experience: "7+ Years Experience",
       expertise: ["Community", "Creator Marketing"],
       company: "Cred",
+      photo: expertFemale2,
     },
     questions: genericQuestions(["Content Calendar", "Community", "Reporting", "Creative Briefing"], "Social Media"),
   },
@@ -214,6 +230,7 @@ export const ASSESSMENTS: Assessment[] = [
       experience: "Built by the team that runs seller onboarding at scale",
       expertise: ["Catalog QA", "Order Flow", "Returns"],
       company: "Meesho",
+      photo: expertFemale3,
     },
     questions: genericQuestions(["Cart Operations", "Coupons", "Variants", "Catalog QA"], "E-commerce Operations"),
   },
@@ -239,6 +256,7 @@ export const ASSESSMENTS: Assessment[] = [
       experience: "12+ Years Experience",
       expertise: ["Backend", "Distributed Systems"],
       company: "Razorpay",
+      photo: expertMale3,
     },
     questions: genericQuestions(["Core Python", "Data Structures", "Debugging", "APIs"], "Python"),
   },
@@ -264,6 +282,7 @@ export const ASSESSMENTS: Assessment[] = [
       experience: "Authored by senior analytics leads",
       expertise: ["SQL", "Experimentation", "BI"],
       company: "Flipkart",
+      photo: expertMale4,
     },
     questions: genericQuestions(["SQL", "Statistics", "Visualisation", "Business Insight"], "Data Analytics"),
   },
@@ -289,6 +308,7 @@ export const ASSESSMENTS: Assessment[] = [
       experience: "8+ Years Experience",
       expertise: ["Product Design", "Design Systems"],
       company: "Zomato",
+      photo: expertFemale4,
     },
     questions: genericQuestions(["Usability", "Design Systems", "Interaction Design", "Research"], "UI/UX"),
   },
@@ -314,6 +334,7 @@ export const ASSESSMENTS: Assessment[] = [
       experience: "10+ Years Experience",
       expertise: ["Marketplace", "Growth", "Monetisation"],
       company: "PhonePe",
+      photo: expertFemale5,
     },
     questions: genericQuestions(["Discovery", "Prioritisation", "Metrics", "GTM"], "Product Management"),
   },
@@ -339,6 +360,7 @@ export const ASSESSMENTS: Assessment[] = [
       experience: "13+ Years Experience",
       expertise: ["Enterprise Sales", "Sales Enablement"],
       company: "Freshworks",
+      photo: expertMale1,
     },
     questions: genericQuestions(["Prospecting", "Discovery", "Objection Handling", "Pipeline"], "Sales"),
   },
@@ -364,6 +386,7 @@ export const ASSESSMENTS: Assessment[] = [
       experience: "Authored by practising finance controllers",
       expertise: ["FP&A", "Controls"],
       company: "HDFC",
+      photo: expertFemale6,
     },
     questions: genericQuestions(["Statement Analysis", "Valuation", "Forecasting", "Reporting"], "Finance"),
   },
@@ -389,6 +412,7 @@ export const ASSESSMENTS: Assessment[] = [
       experience: "9+ Years Experience",
       expertise: ["Tech Hiring", "Employer Brand"],
       company: "Zerodha",
+      photo: expertFemale1,
     },
     questions: genericQuestions(["Sourcing", "Structured Interviews", "Candidate Experience", "Hiring Metrics"], "Talent Acquisition"),
   },

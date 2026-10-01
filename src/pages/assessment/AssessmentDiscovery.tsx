@@ -12,6 +12,7 @@ import {
   ArrowRight,
   SlidersHorizontal,
   Sparkles,
+  FileQuestion,
 } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -53,19 +54,30 @@ const AssessmentCard = ({ a, index }: { a: Assessment; index: number }) => (
       ))}
     </div>
 
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground mb-4">
-      <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {a.duration}</span>
-      <span className="flex items-center gap-1"><Users className="h-3.5 w-3.5" /> {a.attempts}</span>
-      <span className="flex items-center gap-1"><Star className="h-3.5 w-3.5" /> {a.rating}</span>
-      <span>{a.questionCount} questions</span>
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground mb-4">
+      <span className="flex items-center gap-1.5"><Clock className="h-4 w-4 text-primary" /> {a.duration}</span>
+      <span className="flex items-center gap-1.5"><Users className="h-4 w-4 text-success" /> {a.attempts}</span>
+      <span className="flex items-center gap-1.5"><Star className="h-4 w-4 fill-warning text-warning" /> {a.rating}</span>
+      <span className="flex items-center gap-1.5"><FileQuestion className="h-4 w-4 text-accent-foreground" /> {a.questionCount} questions</span>
     </div>
 
     <div className="mt-auto flex items-center justify-between gap-3 pt-4 border-t border-border">
-      <div className="min-w-0">
-        <p className="text-xs text-muted-foreground">Created by</p>
-        <p className="text-sm font-semibold truncate">
-          {a.creator.name} <span className="text-muted-foreground font-normal">· {a.creator.company}</span>
-        </p>
+      <div className="flex min-w-0 items-center gap-2.5">
+        <img
+          src={a.creator.photo}
+          alt={a.creator.name}
+          className="h-10 w-10 shrink-0 rounded-full border-2 border-background object-cover shadow-sm ring-1 ring-border"
+        />
+        <div className="min-w-0">
+          <p className="text-[11px] text-muted-foreground">Created by</p>
+          <p className="truncate text-sm font-semibold">{a.creator.name}</p>
+          <div className="mt-0.5 flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground">
+            <span className="flex h-4 w-4 items-center justify-center rounded bg-primary text-[9px] font-bold text-primary-foreground" aria-hidden="true">
+              {a.creator.company.charAt(0)}
+            </span>
+            <span className="truncate">{a.creator.company}</span>
+          </div>
+        </div>
       </div>
       <Button asChild size="sm" className="shrink-0 gap-1.5">
         <Link to={`/assessments/${a.id}`}>

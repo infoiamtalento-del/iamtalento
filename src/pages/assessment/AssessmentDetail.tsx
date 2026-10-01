@@ -147,8 +147,18 @@ const AssessmentDetail = () => {
               {a.creator.kind === "company" ? "This assessment was created by a company practice team." : "This assessment was created by a practising expert."}
             </p>
             <div className="rounded-xl border border-border bg-background p-6 flex flex-col sm:flex-row sm:items-center gap-5">
-              <div className="h-14 w-14 rounded-xl bg-primary/10 text-primary font-display font-bold text-xl flex items-center justify-center shrink-0">
-                {a.creator.name.charAt(0)}
+              <div className="relative shrink-0 pr-3 pb-3">
+                <img
+                  src={a.creator.photo}
+                  alt={a.creator.name}
+                  className="h-20 w-20 rounded-xl border border-border object-cover shadow-sm"
+                />
+                <div
+                  className="absolute bottom-0 right-0 flex h-9 w-9 items-center justify-center rounded-lg border-2 border-background bg-primary text-primary-foreground shadow-sm"
+                  title={a.creator.company}
+                >
+                  <span className="font-display text-sm font-bold">{a.creator.company.charAt(0)}</span>
+                </div>
               </div>
               <div className="flex-1">
                 <p className="font-display text-lg font-bold">{a.creator.name}</p>
