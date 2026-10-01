@@ -24,6 +24,12 @@ import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { ASSESSMENTS, DOMAINS, EXPERIENCE_LEVELS, INDUSTRIES, Assessment } from "@/data/assessments";
 
+export const MANDATORY_TESTS = [
+  { name: "Communication Skills", text: "Written and verbal clarity, workplace tone." },
+  { name: "Psychometrics", text: "Personality, aptitude and work-style profile." },
+  { name: "Vocational", text: "Career interests and role-fit indicators." },
+];
+
 const typeStyles: Record<string, string> = {
   Knowledge: "bg-secondary text-foreground",
   Practical: "bg-primary/10 text-primary",
@@ -124,6 +130,7 @@ const AssessmentDiscovery = () => {
   const [proctoredOnly, setProctoredOnly] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [query, setQuery] = useState("");
+  const [searched, setSearched] = useState(false);
 
   const domains = industry ? DOMAINS[industry] ?? [] : [];
   const availableDomains = industry ? domains : Array.from(new Set(Object.values(DOMAINS).flat()));
@@ -170,6 +177,7 @@ const AssessmentDiscovery = () => {
   };
 
   const runSearch = () => {
+    setSearched(true);
     document.getElementById("assessment-results")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
@@ -341,6 +349,28 @@ const AssessmentDiscovery = () => {
         {/* Results */}
         <section id="assessment-results" className="scroll-mt-24 pb-20">
           <div className="container">
+            {searched && (
+              <div className="mb-10 rounded-2xl border border-primary/20 bg-accent/40 p-5 md:p-6">
+                <div className="flex flex-wrap items-end justify-between gap-2 mb-4">
+                  <div>
+                    <p className="text-[11px] font-bold uppercase tracking-widest text-primary mb-1">Included in every assessment</p>
+                    <h2 className="font-display text-xl md:text-2xl font-bold">Mandatory Core Tests</h2>
+                  </div>
+                  <p className="text-sm text-muted-foreground">Pick your domain test below and click View.</p>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  {MANDATORY_TESTS.map((t) => (
+                    <label key={t.name} className="flex items-start gap-3 rounded-xl border border-border bg-background p-4 cursor-not-allowed">
+                      <input type="checkbox" checked disabled readOnly className="mt-1 h-4 w-4 accent-[hsl(var(--primary))]" />
+                      <span>
+                        <span className="block font-semibold text-sm">{t.name}</span>
+                        <span className="block text-xs text-muted-foreground">{t.text}</span>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
             {filtered.length === 0 ? (
               <div className="text-center py-16 rounded-xl border border-dashed border-border">
                 <h3 className="font-display text-xl font-bold mb-2">No assessments found</h3>
