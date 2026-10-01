@@ -19,12 +19,12 @@ const LearningCTASection = () => (
             <Rocket className="h-6 w-6 text-white" />
           </div>
           <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-white mb-3">
-            Ready to Learn and Grow?<br />
+            Ready to Learn?<br />
             <span className="text-white/75">Start Today</span>
           </h2>
           <p className="text-base md:text-lg text-white/80 mb-8">
-            <span className="block">Build a learning path around your career goals.</span>
-            <span className="block">Start when your profile is ready.</span>
+            <span className="block">Build a learning path for your career.</span>
+            <span className="block">Start when you are ready.</span>
           </p>
           <div className="flex flex-wrap justify-center gap-3 mb-6">
             <Link to="/learning#courses">

@@ -31,7 +31,7 @@ const TrendingCoursesSection = () => {
         <div className="text-center mb-8">
           <SectionBadge label="Trending Now" icon={TrendingUp} />
           <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
-            Explore Popular Courses<br />
+            Explore Top Courses<br />
             <span className="text-primary">Trending Now</span>
           </h2>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
