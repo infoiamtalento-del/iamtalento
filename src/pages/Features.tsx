@@ -93,8 +93,13 @@ const Features = () => {
         <section className="pt-32 pb-16">
           <div className="container text-center max-w-3xl">
             <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">Features</p>
-            <h1 className="text-4xl md:text-5xl font-bold font-display mb-5">The Complete Talent Intelligence Platform</h1>
-            <p className="text-muted-foreground text-lg leading-relaxed">AI screening, custom assessments, intelligent matching, and hiring analytics — everything modern HR teams need.</p>
+            <h1 className="text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-5">
+              The Complete Talent Intelligence<br /><span className="text-primary">Platform</span>
+            </h1>
+            <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+              AI screening, custom assessments, intelligent matching, and hiring analytics for modern teams —<br className="hidden md:block" />
+              everything you need in one place.
+            </p>
           </div>
         </section>
 

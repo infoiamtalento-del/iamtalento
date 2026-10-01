@@ -40,8 +40,13 @@ const Changelog = () => (
         <div className="container max-w-3xl">
           <div className="text-center mb-16">
             <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">Changelog</p>
-            <h1 className="text-4xl md:text-5xl font-bold font-display mb-4">What's New</h1>
-            <p className="text-muted-foreground">All the latest AI screening features, assessment updates, and platform improvements.</p>
+            <h1 className="text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-4">
+              See What Is New Across<br /><span className="text-primary">I Am Talento</span>
+            </h1>
+            <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+              Follow the latest AI screening features, assessment updates, and platform improvements —<br className="hidden md:block" />
+              all collected in one place.
+            </p>
           </div>
           <div className="space-y-12">
             {entries.map(({ version, date, changes }) => (

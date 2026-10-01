@@ -25,8 +25,13 @@ const Contact = () => {
           <div className="container max-w-5xl">
             <div className="text-center mb-16">
               <p className="text-xs uppercase tracking-widest text-primary font-semibold mb-3">Contact</p>
-              <h1 className="text-4xl md:text-5xl font-bold font-display mb-4">Get in Touch</h1>
-              <p className="text-muted-foreground text-lg">Have a question or want to learn more? We'd love to hear from you.</p>
+              <h1 className="text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-4">
+                Start a Conversation With<br /><span className="text-primary">Our Team</span>
+              </h1>
+              <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+                Have a question, need support, or want to learn how I Am Talento can help you —<br className="hidden md:block" />
+                we would love to hear from you.
+              </p>
             </div>
             <div className="grid md:grid-cols-5 gap-12">
               <form onSubmit={handleSubmit} className="md:col-span-3 space-y-5 p-8 rounded-2xl bg-card border border-border/50">

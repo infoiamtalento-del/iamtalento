@@ -48,10 +48,10 @@ const PlansSection = () => (
     <div className="container px-4 max-w-6xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
         <SectionBadge label="Choose Your Plan" icon={Sparkles} />
-        <h2 className="text-2xl md:text-4xl font-bold font-display text-foreground mt-4 mb-3">
-          One test. One badge. Employers take you <span className="text-primary">seriously.</span>
+        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
+          One Test. One Badge. One Clear<br /><span className="text-primary">Career Advantage</span>
         </h2>
-        <p className="text-muted-foreground text-base max-w-xl mx-auto">Start free, then pick the plan that matches your ambition.</p>
+        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">Start free with essential career tools, then choose the plan that matches your goals —<br className="hidden md:block" />upgrade only when you are ready.</p>
       </motion.div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
         {plans.map((p, i) => {
@@ -110,10 +110,10 @@ const VerifiedGetsYou = () => (
     <div className="container px-4 max-w-4xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
         <SectionBadge label="The Difference" icon={TrendingUp} />
-        <h2 className="text-2xl md:text-4xl font-bold font-display text-foreground mt-4 mb-3">
-          What happens after you get <span className="text-primary">verified</span>
+        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
+          See What Changes After You<br /><span className="text-primary">Get Verified</span>
         </h2>
-        <p className="text-muted-foreground text-base max-w-lg mx-auto">Real data from 500 verified candidates, March 2026.</p>
+        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">See how verification changes profile visibility, recruiter interest, and interview momentum —<br className="hidden md:block" />based on real candidate outcomes.</p>
       </motion.div>
       <div className="grid md:grid-cols-2 gap-6">
         <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="rounded-2xl border border-border bg-card p-7">
@@ -167,8 +167,8 @@ const ComparisonTable = () => (
     <div className="container px-4 max-w-5xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
         <SectionBadge label="Compare Plans" icon={Eye} />
-        <h2 className="text-2xl md:text-4xl font-bold font-display text-foreground mt-4 mb-3">
-          Everything included — at a <span className="text-primary">glance</span>
+        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
+          Compare Every Plan Clearly<br /><span className="text-primary">At a Glance</span>
         </h2>
       </motion.div>
       <div className="overflow-x-auto rounded-2xl border border-border bg-card shadow-sm">
@@ -212,8 +212,8 @@ const HowItWorks = () => (
     <div className="container px-4 max-w-5xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
         <SectionBadge label="How it works" icon={Clock} />
-        <h2 className="text-2xl md:text-4xl font-bold font-display text-foreground mt-4 mb-3">
-          From payment to verified badge —<br />in under <span className="text-primary">60 minutes</span>
+        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
+          From Payment to a Verified Badge<br /><span className="text-primary">In Under 60 Minutes</span>
         </h2>
       </motion.div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -248,8 +248,8 @@ const Testimonials = () => (
     <div className="container px-4 max-w-5xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
         <SectionBadge label="What they're saying" icon={MessageSquare} />
-        <h2 className="text-2xl md:text-4xl font-bold font-display text-foreground mt-4 mb-3">
-          18,731 professionals verified.<br />Here's what happened <span className="text-primary">next.</span>
+        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
+          Thousands of Professionals Verified<br /><span className="text-primary">Here Is What Happened Next</span>
         </h2>
       </motion.div>
       <div className="grid md:grid-cols-3 gap-5">
@@ -286,8 +286,8 @@ const FAQSection = () => (
     <div className="container px-4 max-w-3xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
         <SectionBadge label="Common questions" icon={HelpCircle} />
-        <h2 className="text-2xl md:text-4xl font-bold font-display text-foreground mt-4 mb-3">
-          Everything candidates ask<br /><span className="text-primary">before buying</span>
+        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
+          Everything Candidates Want to Know<br /><span className="text-primary">Before Buying</span>
         </h2>
       </motion.div>
       <Accordion type="single" collapsible className="space-y-3">
@@ -311,11 +311,11 @@ const BottomCTA = () => (
         <div className="absolute bottom-0 left-0 w-52 h-52 rounded-full bg-primary-foreground/5 translate-y-1/3 -translate-x-1/4" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-primary-foreground/[0.03]" />
         <div className="relative z-10 text-center max-w-2xl mx-auto">
-          <h2 className="text-2xl md:text-4xl font-bold font-display text-primary-foreground mb-3">
-            Your skills are worth more than your resume says.
+          <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] text-primary-foreground mb-3">
+            Your Skills Deserve More Than<br /><span className="text-primary-foreground/80">A Line on Your Resume</span>
           </h2>
           <p className="text-sm md:text-base text-primary-foreground/70 mb-8">
-            It takes 60 minutes to get verified. It takes employers 30 seconds to find you after.
+            Get verified in one focused session and give employers a clearer reason to notice you —<br className="hidden md:block" />your next opportunity can start here.
           </p>
           <div className="flex flex-wrap justify-center gap-3 mb-8">
             <Link to="/auth"><Button size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 gap-2 font-bold rounded-full h-12 px-8 shadow-lg">Start with the free plan <ArrowRight className="h-4 w-4" /></Button></Link>
