@@ -535,11 +535,11 @@ const AssessmentDetail = () => {
                 </span>
                 <h2 className="font-display text-xl md:text-3xl font-bold leading-[1.15] mb-4 text-background">
                   Four Tests, One Result
-                  <br className="hidden md:block" /> <span className="text-primary">In About An Hour.</span>
+                  <br className="hidden md:block" /> <span className="text-background/75">In About An Hour.</span>
                 </h2>
                 <p className="text-sm md:text-base leading-relaxed text-background/80 mb-7">
-                  Pay once, complete every test in a single proctored session,
-                  <br className="hidden md:block" /> and walk away with a report employers can verify.
+                  Pay once, complete every test in one proctored session,
+                  <br className="hidden md:block" /> and get a report employers can verify.
                 </p>
                 <Button size="lg" className="gap-2" onClick={goToPayment}>
                   Start Now <ArrowRight className="h-4 w-4" />
