@@ -150,7 +150,7 @@ const AssessmentDetail = () => {
                 What's In Your<br /><span className="text-primary">Complete Assessment.</span>
               </h2>
               <p className="text-muted-foreground max-w-2xl leading-relaxed">
-                Begin with three essential career checks, then prove your expertise<br className="hidden md:block" />
+                Begin with three essential career checks, then prove your expertise{" "}<br className="hidden md:block" />
                 through one focused {a.domain} assessment.
               </p>
             </div>

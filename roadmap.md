@@ -5,4 +5,4 @@
 - [x] Verify the redesigned employer page at desktop and mobile sizes
 - [x] Resolve any preview errors introduced by the redesign
 - [x] Restructure assessment details with mandatory tests before the domain-specific test
-- [ ] Verify the updated assessment details page on desktop and mobile
+- [x] Verify the updated assessment details page on desktop and mobile
