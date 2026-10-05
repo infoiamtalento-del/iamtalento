@@ -373,8 +373,8 @@ const AssessmentDetail = () => {
             <div className="overflow-hidden rounded-2xl bg-primary text-primary-foreground shadow-[0_30px_70px_-45px_hsl(var(--primary))]">
               <div className="grid md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] items-stretch">
                 <div className="p-8 md:p-12">
-                  <span className="inline-flex items-center gap-2 rounded-full bg-primary-foreground/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider mb-5">
-                    <FileBarChart2 className="h-3.5 w-3.5" /> Included with every assessment
+                  <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary-foreground mb-5">
+                    <FileBarChart2 className="h-4 w-4" /> Included with every assessment
                   </span>
                   <h2 className="font-display text-2xl md:text-3xl font-bold leading-[1.15] mb-4">
                     Your Score, Strengths and Gaps
@@ -530,8 +530,8 @@ const AssessmentDetail = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-r from-foreground/92 via-foreground/75 to-foreground/25" />
               <div className="relative p-8 md:p-12 max-w-xl">
-                <span className="inline-flex items-center gap-2 rounded-full bg-primary px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-primary-foreground mb-5">
-                  <Sparkles className="h-3.5 w-3.5" /> One session
+                <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-background mb-5">
+                  <Sparkles className="h-4 w-4" /> One session
                 </span>
                 <h2 className="font-display text-2xl md:text-3xl font-bold leading-[1.15] mb-4 text-background">
                   Four Tests, One Result

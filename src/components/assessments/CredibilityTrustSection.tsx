@@ -31,8 +31,8 @@ const CredibilityTrustSection = ({ align = "center" }: { align?: Align }) => {
           transition={{ duration: 0.5 }}
           className={centered ? "text-center max-w-2xl mx-auto mb-12" : "max-w-3xl mb-10"}
         >
-          <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 mb-4 rounded-full bg-primary/10 text-primary">
-            <ShieldCheck className="h-3.5 w-3.5" /> Our Assessments
+          <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary mb-4">
+            <ShieldCheck className="h-4 w-4" /> Our Assessments
           </span>
           <h2 className="text-3xl md:text-4xl font-bold font-display mb-4 leading-[1.15]">
             Credibility &amp; Trust
