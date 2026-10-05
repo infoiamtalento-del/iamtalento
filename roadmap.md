@@ -9,6 +9,9 @@
 
 ## Assessment detail page polish
 - [x] Header image banner (verified desktop/mobile)
-- [ ] Make entire page more visually appealing
-- [ ] Add more images where they help
-- [ ] Add CTA banners between sections
+- [x] Make entire page more visually appealing
+- [x] Add more images where they help
+- [x] Add CTA banners between sections
+- [x] Uniform spacing and heading rhythm across every section (one shared heading block, equal section padding)
+- [ ] Fix sentences that run words together when the desktop line break is hidden (site-wide scan)
+- [ ] Confirm the real assessment price with the user (₹1,999 + GST is a placeholder)
