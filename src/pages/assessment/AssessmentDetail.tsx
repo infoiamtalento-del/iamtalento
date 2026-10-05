@@ -528,7 +528,7 @@ const AssessmentDetail = () => {
                 loading="lazy"
                 className="absolute inset-0 h-full w-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-foreground/92 via-foreground/75 to-foreground/25" />
+              <div className="absolute inset-0 bg-gradient-to-b from-foreground/90 via-foreground/84 to-foreground/78 md:bg-gradient-to-r md:from-foreground/92 md:via-foreground/75 md:to-foreground/25" />
               <div className="relative p-8 md:p-12 max-w-xl">
                 <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-background mb-5">
                   <Sparkles className="h-4 w-4" /> One session
