@@ -377,7 +377,7 @@ const AssessmentDetail = () => {
                     <FileBarChart2 className="h-4 w-4" /> Included with every assessment
                   </span>
                   <h2 className="font-display text-xl md:text-3xl font-bold leading-[1.15] mb-4">
-                    Your Score, Strengths and Gaps
+                    Your Score and Next Steps
                     <br className="hidden md:block" /> <span className="text-primary-foreground/75">In One Verified Report.</span>
                   </h2>
                   <p className="text-sm md:text-base leading-relaxed text-primary-foreground/85 max-w-md mb-7">
