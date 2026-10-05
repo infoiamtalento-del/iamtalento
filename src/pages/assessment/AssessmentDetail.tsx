@@ -23,12 +23,22 @@ import {
   BrainCircuit,
   Compass,
   CircleCheckBig,
+  Smartphone,
+  CreditCard,
+  Landmark,
+  FileBarChart2,
+  Sparkles,
 } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { ASSESSMENTS, getAssessment } from "@/data/assessments";
 import { MANDATORY_TESTS } from "@/pages/assessment/AssessmentDiscovery";
 import CredibilityTrustSection from "@/components/assessments/CredibilityTrustSection";
+import bannerImg from "@/assets/assessment-banner.jpg";
+import ctaBandImg from "@/assets/assessment-cta-band.jpg";
+import reportImg from "@/assets/step-report.jpg";
+import proctorImg from "@/assets/step-proctoring.jpg";
+import dashboardImg from "@/assets/carousel-dashboard.jpg";
 import { useState } from "react";
 
 const proctoringLayers = [
@@ -53,6 +63,11 @@ const testParts = [
 
 const mandatoryIcons = [MessageSquareText, BrainCircuit, Compass];
 
+const paymentMethods = [
+  { name: "UPI", icon: Smartphone, note: "GPay, PhonePe, Paytm" },
+  { name: "Credit / Debit Card", icon: CreditCard, note: "Visa, Mastercard, RuPay" },
+  { name: "Net Banking", icon: Landmark, note: "All major Indian banks" },
+];
 
 const AssessmentDetail = () => {
   const { assessmentId } = useParams();
@@ -79,6 +94,7 @@ const AssessmentDetail = () => {
     ).values()
   ).slice(0, 6);
   const start = () => navigate(`/assessments/${a.id}/pre-check`);
+  const goToPayment = () => document.getElementById("payment")?.scrollIntoView({ behavior: "smooth" });
 
   return (
     <>
@@ -88,13 +104,14 @@ const AssessmentDetail = () => {
       </Helmet>
       <Layout>
         {/* Header */}
-        <section className="pt-10 pb-10 md:pt-14 bg-gradient-to-b from-accent/40 to-background">
-          <div className="container">
+        <section className="relative overflow-hidden bg-gradient-to-b from-accent/60 via-accent/25 to-background pt-28 pb-12 md:pt-36 md:pb-14">
+          <div className="pointer-events-none absolute -top-28 right-[-8%] h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
+          <div className="container relative">
             <Link to="/assessments/explore" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary mb-6">
               <ArrowLeft className="h-4 w-4" /> All assessments
             </Link>
 
-            <div className="grid lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-8 items-start">
+            <div className="grid lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-8 lg:gap-10 items-start">
               <div>
                 <div className="flex flex-wrap items-center gap-2 mb-4">
                   <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10 text-primary">
@@ -128,12 +145,32 @@ const AssessmentDetail = () => {
                     </li>
                   ))}
                 </ul>
-                <Button className="w-full gap-2" onClick={() => document.getElementById("payment")?.scrollIntoView({ behavior: "smooth" })}>
+                <Button className="w-full gap-2" onClick={goToPayment}>
                   Start Assessment <ArrowRight className="h-4 w-4" />
                 </Button>
                 <p className="text-xs text-muted-foreground text-center mt-3">
                   You'll run a quick device check first.
                 </p>
+              </div>
+            </div>
+
+            {/* Image banner */}
+            <div className="relative mt-10 overflow-hidden rounded-2xl border border-border shadow-[0_28px_60px_-40px_hsl(var(--foreground)/0.45)]">
+              <img
+                src={bannerImg}
+                alt="Professionals preparing for a proctored assessment"
+                width={1920}
+                height={800}
+                className="h-52 w-full object-cover md:h-72"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-foreground/75 via-foreground/35 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 flex flex-wrap items-center gap-3 p-5 md:p-7">
+                <span className="rounded-full bg-primary px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-primary-foreground">
+                  Proctored session
+                </span>
+                <span className="text-xs font-semibold text-background md:text-sm">
+                  Identity check · Camera, mic and screen monitoring · Verified CIR report
+                </span>
               </div>
             </div>
           </div>
@@ -243,6 +280,14 @@ const AssessmentDetail = () => {
               </div>
 
               <aside className="rounded-lg bg-foreground p-5 text-background lg:sticky lg:top-24">
+                <img
+                  src={dashboardImg}
+                  alt="Candidate viewing an assessment dashboard"
+                  width={800}
+                  height={1024}
+                  loading="lazy"
+                  className="mb-5 h-28 w-full rounded-lg object-cover"
+                />
                 <p className="text-xs font-bold uppercase tracking-wider text-primary mb-5">Assessment plan</p>
                 <div className="space-y-5">
                   <div>
@@ -259,14 +304,58 @@ const AssessmentDetail = () => {
                     <ShieldCheck className="h-4 w-4 shrink-0 text-primary" />
                     One secure, proctored session with a verified result.
                   </div>
+                  <Button className="w-full gap-2" onClick={goToPayment}>
+                    Start Assessment <ArrowRight className="h-4 w-4" />
+                  </Button>
                 </div>
               </aside>
             </div>
           </div>
         </section>
 
+        {/* CTA banner — CIR report */}
+        <section className="py-12 md:py-16">
+          <div className="container">
+            <div className="relative overflow-hidden rounded-2xl bg-primary text-primary-foreground shadow-[0_30px_70px_-45px_hsl(var(--primary))]">
+              <div className="grid md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] items-stretch">
+                <div className="relative z-10 p-7 md:p-10">
+                  <span className="inline-flex items-center gap-2 rounded-full bg-primary-foreground/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider mb-5">
+                    <FileBarChart2 className="h-3.5 w-3.5" /> Included with every assessment
+                  </span>
+                  <h2 className="font-display text-2xl md:text-3xl font-bold leading-tight mb-3">
+                    Your Score, Strengths and Next Steps<br className="hidden md:block" />
+                    <span className="text-primary-foreground/80">In One Verified Report.</span>
+                  </h2>
+                  <p className="text-sm md:text-base text-primary-foreground/85 max-w-lg leading-relaxed mb-6">
+                    Finish the session and your Career Intelligence Report is generated the same day.<br className="hidden md:block" />
+                    Share it with employers or keep it for your own roadmap.
+                  </p>
+                  <Button
+                    variant="secondary"
+                    className="gap-2 bg-background text-primary hover:bg-background/90"
+                    onClick={goToPayment}
+                  >
+                    Get Your Report <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="relative min-h-[190px] md:min-h-[280px]">
+                  <img
+                    src={reportImg}
+                    alt="Career Intelligence Report shown on a laptop and printed page"
+                    width={800}
+                    height={600}
+                    loading="lazy"
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/55 to-primary/10" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Creators */}
-        <section className="py-12 bg-secondary/40">
+        <section className="py-12 md:py-16 bg-secondary/40">
           <div className="container">
             <h2 className="font-display text-2xl md:text-3xl font-bold mb-2">
               The Experts Who<br /><span className="text-primary">Created This Test.</span>
@@ -277,8 +366,17 @@ const AssessmentDetail = () => {
             </p>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {creators.map((c) => (
-                <div key={c.name} className="rounded-xl border border-border bg-background p-5 flex gap-4">
-                  <img src={c.photo} alt={c.name} className="h-16 w-16 rounded-xl object-cover border border-border shrink-0" />
+                <div
+                  key={c.name}
+                  className="group relative overflow-hidden rounded-xl border border-border bg-background p-5 flex gap-4 transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_22px_45px_-30px_hsl(var(--foreground)/0.45)]"
+                >
+                  <span className="absolute inset-x-0 top-0 h-1 bg-primary/0 transition-colors group-hover:bg-primary/70" />
+                  <div className="relative shrink-0">
+                    <img src={c.photo} alt={c.name} width={64} height={64} loading="lazy" className="h-16 w-16 rounded-xl object-cover border border-border" />
+                    <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                      <BadgeCheck className="h-3 w-3" />
+                    </span>
+                  </div>
                   <div className="min-w-0">
                     <p className="font-display font-bold">{c.name}</p>
                     <p className="text-sm text-muted-foreground">{c.title} · {c.company}</p>
@@ -298,38 +396,96 @@ const AssessmentDetail = () => {
         <CredibilityTrustSection />
 
         {/* Proctoring */}
-        <section className="py-14">
+        <section className="py-14 md:py-20">
           <div className="container">
-            <h2 className="font-display text-2xl md:text-3xl font-bold mb-2">
-              Your Assessment.<br /><span className="text-primary">Secure and Fair.</span>
-            </h2>
-            <p className="text-muted-foreground mb-8 max-w-2xl">
-              Every session runs through layered integrity checks —<br className="hidden md:block" />
-              so your score means exactly what it says.
-            </p>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {proctoringLayers.map((l, i) => (
-                <motion.div
-                  key={l.name}
-                  initial={{ opacity: 0, y: 14 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.04 }}
-                  className="rounded-xl border border-border bg-background p-5"
-                >
-                  <div className="h-9 w-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-3">
-                    <l.icon className="h-4.5 w-4.5" />
+            <div className="grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-8 lg:gap-12 items-start">
+              <div className="lg:sticky lg:top-24">
+                <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary mb-4">
+                  <ShieldCheck className="h-4 w-4" /> Proctoring
+                </span>
+                <h2 className="font-display text-2xl md:text-3xl font-bold mb-3">
+                  Your Assessment.<br /><span className="text-primary">Secure and Fair.</span>
+                </h2>
+                <p className="text-muted-foreground mb-6 leading-relaxed">
+                  Every session runs through layered integrity checks —<br className="hidden md:block" />
+                  so your score means exactly what it says.
+                </p>
+                <div className="relative overflow-hidden rounded-2xl border border-border shadow-[0_28px_60px_-45px_hsl(var(--foreground)/0.5)]">
+                  <img
+                    src={proctorImg}
+                    alt="Candidate taking a proctored online assessment"
+                    width={800}
+                    height={600}
+                    loading="lazy"
+                    className="h-56 w-full object-cover md:h-72"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-foreground/10 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 flex flex-wrap items-center gap-2 p-4">
+                    <span className="rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary-foreground">
+                      Live monitoring
+                    </span>
+                    <span className="text-xs font-bold text-background">8 integrity layers · full audit trail</span>
                   </div>
-                  <p className="font-semibold text-sm mb-1">{l.name}</p>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{l.text}</p>
-                </motion.div>
-              ))}
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                {proctoringLayers.map((l, i) => (
+                  <motion.div
+                    key={l.name}
+                    initial={{ opacity: 0, y: 14 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.04 }}
+                    className="rounded-xl border border-border bg-background p-5 transition-colors hover:border-primary/35 hover:bg-accent/25"
+                  >
+                    <div className="h-9 w-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-3">
+                      <l.icon className="h-4.5 w-4.5" />
+                    </div>
+                    <p className="font-semibold text-sm mb-1">{l.name}</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed">{l.text}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA banner — start now */}
+        <section className="py-12 md:py-16 bg-secondary/40">
+          <div className="container">
+            <div className="relative overflow-hidden rounded-2xl border border-border">
+              <img
+                src={ctaBandImg}
+                alt="Professional ready to start her assessment"
+                width={1600}
+                height={608}
+                loading="lazy"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-foreground/92 via-foreground/75 to-foreground/25" />
+              <div className="relative p-7 md:p-12 max-w-xl">
+                <span className="inline-flex items-center gap-2 rounded-full bg-primary px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-primary-foreground mb-4">
+                  <Sparkles className="h-3.5 w-3.5" /> One session
+                </span>
+                <h2 className="font-display text-2xl md:text-3xl font-bold leading-tight mb-3 text-background">
+                  Four Tests. One Verified Result.<br className="hidden md:block" />
+                  <span className="text-primary">Ready In About An Hour.</span>
+                </h2>
+                <p className="text-sm md:text-base text-background/80 leading-relaxed mb-6">
+                  Pay once, complete every test in a single proctored session,<br className="hidden md:block" />
+                  and walk away with a report employers can verify.
+                </p>
+                <Button size="lg" className="gap-2" onClick={goToPayment}>
+                  Start Now <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </div>
         </section>
 
         {/* Payment */}
-        <section id="payment" className="py-14 pb-20 bg-secondary/40 scroll-mt-24">
+        <section id="payment" className="py-14 pb-20 scroll-mt-24">
           <div className="container">
             <h2 className="font-display text-2xl md:text-3xl font-bold mb-2">
               Complete Payment and<br /><span className="text-primary">Start Your Assessment.</span>
@@ -340,7 +496,10 @@ const AssessmentDetail = () => {
             </p>
             <div className="grid lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] gap-6 items-start">
               <div className="rounded-xl border border-border bg-background p-6">
-                <p className="font-display font-bold mb-4">Order summary</p>
+                <div className="flex items-center justify-between mb-4">
+                  <p className="font-display font-bold">Order summary</p>
+                  <span className="rounded-full bg-primary/10 px-3 py-1 text-[11px] font-bold text-primary">4 tests included</span>
+                </div>
                 <ul className="divide-y divide-border text-sm">
                   <li className="flex justify-between py-2.5"><span>{a.title} (MCQ · Technical · Experience)</span><span className="font-semibold">₹{DOMAIN_PRICE}</span></li>
                   {MANDATORY_TESTS.map((m) => (
@@ -356,21 +515,32 @@ const AssessmentDetail = () => {
               <div className="rounded-xl border border-border bg-background p-6">
                 <p className="font-display font-bold mb-4">Pay with</p>
                 <div className="grid gap-2 mb-5">
-                  {["UPI", "Credit / Debit Card", "Net Banking"].map((m) => (
+                  {paymentMethods.map((m) => (
                     <button
-                      key={m}
-                      onClick={() => setMethod(m)}
-                      className={`flex items-center justify-between rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${method === m ? "border-primary bg-primary/5 text-primary" : "border-border hover:border-primary/40"}`}
+                      key={m.name}
+                      onClick={() => setMethod(m.name)}
+                      className={`flex items-center gap-3 rounded-lg border px-4 py-3 text-left text-sm font-medium transition-colors ${method === m.name ? "border-primary bg-primary/5 text-primary" : "border-border hover:border-primary/40"}`}
                     >
-                      {m}
-                      {method === m && <Check className="h-4 w-4" />}
+                      <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-md ${method === m.name ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}>
+                        <m.icon className="h-4 w-4" />
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block">{m.name}</span>
+                        <span className="block text-[11px] font-normal text-muted-foreground">{m.note}</span>
+                      </span>
+                      {method === m.name && <Check className="h-4 w-4 shrink-0" />}
                     </button>
                   ))}
                 </div>
                 <Button className="w-full gap-2" size="lg" onClick={start}>
                   <Lock className="h-4 w-4" /> Pay ₹{DOMAIN_PRICE + GST} & Start <ArrowRight className="h-4 w-4" />
                 </Button>
-                <p className="text-xs text-muted-foreground text-center mt-3">Secure checkout. You'll run a quick device check next.</p>
+                <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-[11px] text-muted-foreground">
+                  <span className="flex items-center gap-1"><Lock className="h-3 w-3 text-primary" /> Secure checkout</span>
+                  <span className="flex items-center gap-1"><ShieldCheck className="h-3 w-3 text-primary" /> Proctored integrity</span>
+                  <span className="flex items-center gap-1"><BadgeCheck className="h-3 w-3 text-primary" /> Verified result</span>
+                </div>
+                <p className="text-xs text-muted-foreground text-center mt-3">You'll run a quick device check next.</p>
               </div>
             </div>
           </div>
