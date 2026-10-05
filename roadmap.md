@@ -6,7 +6,7 @@
 - Preserve I Am Talento branding and existing hackathon content — done
 - Add featured event, upcoming challenges, partner trust, journey, seasons, community,
   metrics, judging, participant stories, FAQ, and closing CTAs — done
-- Verify desktop and mobile layout, interactions, overflow, and current build — in progress
+- Verify desktop and mobile layout, interactions, overflow, and current build — done
 
 ## Assessment detail page — make it visually appealing, uniform spacing
 

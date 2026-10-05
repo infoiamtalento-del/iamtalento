@@ -34,6 +34,7 @@ import {
 import hackathonHero from "@/assets/hackathon-hero.jpg";
 import hackathonEvent1 from "@/assets/hackathon-event-1.jpg";
 import hackathonEvent2 from "@/assets/hackathon-event-2.jpg";
+import hackathonArenaHero from "@/assets/hackathon-arena-hero.jpg";
 import learnerAnanya from "@/assets/learner-ananya.jpg";
 import learnerRahul from "@/assets/learner-rahul.jpg";
 import learnerPriya from "@/assets/learner-priya.jpg";
@@ -82,7 +83,7 @@ const SectionHeading = ({
     <p className={`mt-5 text-base leading-relaxed md:text-lg ${inverse ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
       {descriptionFirst}
       <br className="hidden md:block" />
-      {descriptionSecond}
+      {" "}{descriptionSecond}
     </p>
   </div>
 );
@@ -215,12 +216,12 @@ const Hackathons = () => {
             <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-xl">
               Solve real industry challenges and put your skills in front of employers.
               <br className="hidden md:block" />
-              Your next opportunity can begin with what you build.
+              {" "}Your next opportunity can begin with what you build.
             </p>
           </motion.div>
 
           <motion.div {...reveal} transition={{ duration: 0.65, delay: 0.1 }} className="relative mx-auto mt-12 min-h-[500px] max-w-6xl overflow-hidden rounded-lg bg-foreground shadow-2xl md:min-h-[620px]">
-            <img src={hackathonHero} alt="Participants collaborating at an I Am Talento hackathon" className="absolute inset-0 h-full w-full object-cover opacity-70" />
+            <img src={hackathonArenaHero} width={1920} height={1080} alt="Indian participants collaborating at an I Am Talento hackathon" className="absolute inset-0 h-full w-full object-cover opacity-70" />
             <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/45 to-transparent" />
             <div className="relative z-10 flex min-h-[500px] flex-col justify-end p-6 md:min-h-[620px] md:p-14 lg:p-16">
               <div className="mb-5 flex flex-wrap items-center gap-3 text-sm text-primary-foreground/80">
@@ -232,7 +233,7 @@ const Hackathons = () => {
               <p className="mt-4 max-w-2xl text-base leading-relaxed text-primary-foreground/75 md:text-xl">
                 Build AI-powered tools for real hiring and workforce challenges.
                 <br className="hidden md:block" />
-                Ship something useful, verified, and ready to be seen.
+                {" "}Ship something useful, verified, and ready to be seen.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Button size="lg" onClick={() => scrollTo("upcoming-hackathons")} className="h-12 rounded-md px-7 font-bold">
@@ -356,7 +357,7 @@ const Hackathons = () => {
           <motion.div {...reveal} className="relative overflow-hidden rounded-lg bg-primary px-6 py-12 text-center md:px-12 md:py-16">
             <MessageCircle className="mx-auto h-9 w-9 text-primary-foreground/70" />
             <h2 className="mt-5 font-display text-3xl font-bold leading-tight text-primary-foreground md:text-5xl">More Than a Competition.<br /><span className="text-primary-foreground/70">A Community That Builds.</span></h2>
-            <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-primary-foreground/75 md:text-lg">Meet collaborators, mentors, and peers who keep sharing long after the final pitch.<br className="hidden md:block" /> Learn together, find your team, and keep creating.</p>
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-primary-foreground/75 md:text-lg">Meet collaborators, mentors, and peers who keep sharing long after the final pitch.<br className="hidden md:block" />{" "}Learn together, find your team, and keep creating.</p>
             <Button asChild size="lg" className="mt-8 h-12 rounded-md bg-background px-7 font-bold text-primary hover:bg-background/90"><Link to="/meetups">Join the Community <ArrowRight /></Link></Button>
           </motion.div>
         </div>
@@ -421,7 +422,7 @@ const Hackathons = () => {
         <div className="container overflow-hidden rounded-lg bg-foreground px-6 py-14 text-center md:px-12 md:py-20">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-md bg-primary text-primary-foreground"><Trophy className="h-6 w-6" /></div>
           <h2 className="mt-6 font-display text-3xl font-bold leading-tight text-primary-foreground md:text-5xl">Ready to Build Something<br /><span className="text-primary">Employers Remember?</span></h2>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-primary-foreground/65 md:text-lg">Join a live challenge, prove your skills, and make your work visible.<br className="hidden md:block" /> Your next career conversation can start here.</p>
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-primary-foreground/65 md:text-lg">Join a live challenge, prove your skills, and make your work visible.<br className="hidden md:block" />{" "}Your next career conversation can start here.</p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <Button size="lg" onClick={() => scrollTo("upcoming-hackathons")} className="h-12 rounded-md px-8 font-bold">Explore Hackathons <ArrowRight /></Button>
             <Button asChild size="lg" variant="outline" className="h-12 rounded-md border-primary-foreground/25 bg-transparent px-8 font-bold text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"><Link to="/for-employers">Partner With Us</Link></Button>
