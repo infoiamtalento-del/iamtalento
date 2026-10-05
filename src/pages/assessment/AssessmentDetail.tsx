@@ -376,9 +376,9 @@ const AssessmentDetail = () => {
                   <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary-foreground mb-5">
                     <FileBarChart2 className="h-4 w-4" /> Included with every assessment
                   </span>
-                  <h2 className="font-display text-2xl md:text-3xl font-bold leading-[1.15] mb-4">
+                  <h2 className="font-display text-xl md:text-3xl font-bold leading-[1.15] mb-4">
                     Your Score, Strengths and Gaps
-                    <br /> <span className="text-primary-foreground/75">In One Verified Report.</span>
+                    <br className="hidden md:block" /> <span className="text-primary-foreground/75">In One Verified Report.</span>
                   </h2>
                   <p className="text-sm md:text-base leading-relaxed text-primary-foreground/85 max-w-md mb-7">
                     Finish the session and your report is ready the same day.
@@ -533,9 +533,9 @@ const AssessmentDetail = () => {
                 <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-background mb-5">
                   <Sparkles className="h-4 w-4" /> One session
                 </span>
-                <h2 className="font-display text-2xl md:text-3xl font-bold leading-[1.15] mb-4 text-background">
+                <h2 className="font-display text-xl md:text-3xl font-bold leading-[1.15] mb-4 text-background">
                   Four Tests, One Result
-                  <br /> <span className="text-primary">In About An Hour.</span>
+                  <br className="hidden md:block" /> <span className="text-primary">In About An Hour.</span>
                 </h2>
                 <p className="text-sm md:text-base leading-relaxed text-background/80 mb-7">
                   Pay once, complete every test in a single proctored session,
