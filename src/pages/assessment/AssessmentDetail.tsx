@@ -460,7 +460,7 @@ const AssessmentDetail = () => {
           </div>
         </section>
 
-        <CredibilityTrustSection />
+        <CredibilityTrustSection align="start" />
 
         {/* ============ PROCTORING ============ */}
         <section className="py-16 md:py-20">
