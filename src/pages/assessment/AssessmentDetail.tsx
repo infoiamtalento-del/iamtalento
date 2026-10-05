@@ -19,6 +19,10 @@ import {
   Briefcase,
   Lock,
   Check,
+  MessageSquareText,
+  BrainCircuit,
+  Compass,
+  CircleCheckBig,
 } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -46,6 +50,8 @@ const testParts = [
   { icon: Code2, name: "Technical", text: "Hands-on tasks and case problems that test applied skill." },
   { icon: Briefcase, name: "Experience-Based", text: "Real workplace scenarios matched to your experience level." },
 ];
+
+const mandatoryIcons = [MessageSquareText, BrainCircuit, Compass];
 
 
 const AssessmentDetail = () => {
@@ -134,40 +140,127 @@ const AssessmentDetail = () => {
         </section>
 
         {/* Test structure */}
-        <section className="py-12">
+        <section className="py-14 md:py-20 bg-secondary/30">
           <div className="container">
-            <h2 className="font-display text-2xl md:text-3xl font-bold mb-2">
-              What's In Your<br /><span className="text-primary">{a.domain} Assessment.</span>
-            </h2>
-            <p className="text-muted-foreground mb-8 max-w-2xl">
-              A domain-specific test in three parts, plus mandatory core tests —<br className="hidden md:block" />
-              all in one proctored session.
-            </p>
-            <div className="grid gap-4 md:grid-cols-3 mb-6">
-              {testParts.map((t) => (
-                <div key={t.name} className="rounded-xl border border-border bg-background p-5">
-                  <div className="h-10 w-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-3">
-                    <t.icon className="h-5 w-5" />
+            <div className="max-w-3xl mb-10">
+              <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary mb-4">
+                <ListChecks className="h-4 w-4" /> Your complete test journey
+              </span>
+              <h2 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-3">
+                What's In Your<br /><span className="text-primary">Complete Assessment.</span>
+              </h2>
+              <p className="text-muted-foreground max-w-2xl leading-relaxed">
+                Begin with three essential career checks, then prove your expertise<br className="hidden md:block" />
+                through one focused {a.domain} assessment.
+              </p>
+            </div>
+
+            <div className="grid lg:grid-cols-[minmax(0,1fr)_260px] gap-6 items-start">
+              <div className="space-y-6">
+                <div className="rounded-lg border border-border bg-background overflow-hidden">
+                  <div className="flex flex-col gap-2 border-b border-border bg-accent/45 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p className="font-display text-lg font-bold">Mandatory Core Tests</p>
+                      <p className="text-sm text-muted-foreground">Included by default for every candidate</p>
+                    </div>
+                    <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
+                      <CircleCheckBig className="h-3.5 w-3.5" /> 3 selected
+                    </span>
                   </div>
-                  <p className="font-display font-bold mb-1">{t.name}</p>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{t.text}</p>
+                  <div className="grid md:grid-cols-3">
+                    {MANDATORY_TESTS.map((m, index) => {
+                      const MandatoryIcon = mandatoryIcons[index] ?? ListChecks;
+                      return (
+                        <label key={m.name} className="flex cursor-default gap-3 border-b border-border p-5 last:border-b-0 md:border-b-0 md:border-r md:last:border-r-0">
+                          <input type="checkbox" checked readOnly aria-label={`${m.name}, mandatory and selected`} className="mt-1 h-4 w-4 shrink-0 accent-primary" />
+                          <span>
+                            <span className="mb-3 flex h-9 w-9 items-center justify-center rounded-md bg-primary/10 text-primary">
+                              <MandatoryIcon className="h-4.5 w-4.5" />
+                            </span>
+                            <span className="block font-display text-sm font-bold mb-1">{m.name}</span>
+                            <span className="block text-xs leading-relaxed text-muted-foreground">{m.text}</span>
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
                 </div>
-              ))}
-            </div>
-            <div className="rounded-xl border border-primary/20 bg-accent/40 p-5">
-              <p className="text-sm font-semibold mb-3">Mandatory core tests (included)</p>
-              <div className="flex flex-wrap gap-2.5">
-                {MANDATORY_TESTS.map((m) => (
-                  <span key={m.name} className="inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-lg bg-background border border-border">
-                    <Check className="h-4 w-4 text-primary" /> {m.name}
-                  </span>
-                ))}
+
+                <div className="relative flex items-center gap-3 px-2" aria-hidden="true">
+                  <div className="h-px flex-1 bg-border" />
+                  <span className="rounded-full border border-primary/20 bg-background px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-primary">Then continue to</span>
+                  <div className="h-px flex-1 bg-border" />
+                </div>
+
+                <div className="rounded-lg border-2 border-primary/25 bg-background overflow-hidden shadow-[0_16px_40px_-28px_hsl(var(--foreground)/0.3)]">
+                  <div className="grid md:grid-cols-[minmax(0,1fr)_210px]">
+                    <div className="p-6 md:p-7">
+                      <div className="flex flex-wrap items-center gap-2 mb-4">
+                        <span className="rounded-full bg-primary px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-primary-foreground">Domain-specific test</span>
+                        <span className="rounded-full bg-secondary px-3 py-1 text-[11px] font-semibold text-muted-foreground">{a.difficulty}</span>
+                      </div>
+                      <h3 className="font-display text-2xl font-bold mb-2">{a.title}</h3>
+                      <p className="text-sm leading-relaxed text-muted-foreground mb-6">{a.description}</p>
+                      <div className="grid gap-3 sm:grid-cols-3">
+                        {testParts.map((t, index) => (
+                          <div key={t.name} className="border-t-2 border-primary/25 pt-3">
+                            <div className="flex items-center gap-2 mb-1.5">
+                              <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10 text-primary">
+                                <t.icon className="h-3.5 w-3.5" />
+                              </span>
+                              <span className="text-xs font-bold">0{index + 1} · {t.name}</span>
+                            </div>
+                            <p className="text-[11px] leading-relaxed text-muted-foreground">{t.text}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex flex-col justify-between border-t border-border bg-accent/40 p-6 md:border-l md:border-t-0">
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-wider text-primary mb-4">Test snapshot</p>
+                        <dl className="space-y-4">
+                          {[
+                            ["Duration", a.duration],
+                            ["Questions", String(a.questionCount)],
+                            ["Format", a.type],
+                            ["Monitoring", "Proctored"],
+                          ].map(([label, value]) => (
+                            <div key={label} className="flex items-end justify-between gap-3 border-b border-border pb-2">
+                              <dt className="text-xs text-muted-foreground">{label}</dt>
+                              <dd className="text-sm font-bold text-right">{value}</dd>
+                            </div>
+                          ))}
+                        </dl>
+                      </div>
+                      <div className="mt-6 flex flex-wrap gap-1.5">
+                        {a.skills.slice(0, 4).map((skill) => (
+                          <span key={skill} className="rounded-full bg-background px-2.5 py-1 text-[10px] font-semibold text-muted-foreground border border-border">{skill}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="flex flex-wrap gap-2 mt-6">
-              {a.skills.map((sk) => (
-                <span key={sk} className="text-xs font-medium px-3 py-1.5 rounded-full bg-secondary text-muted-foreground">{sk}</span>
-              ))}
+
+              <aside className="rounded-lg bg-foreground p-5 text-background lg:sticky lg:top-24">
+                <p className="text-xs font-bold uppercase tracking-wider text-primary mb-5">Assessment plan</p>
+                <div className="space-y-5">
+                  <div>
+                    <p className="font-display text-3xl font-bold text-background">4</p>
+                    <p className="text-xs text-background/65">tests in one journey</p>
+                  </div>
+                  <div className="h-px bg-background/15" />
+                  <div>
+                    <p className="font-display text-3xl font-bold text-background">3 + 1</p>
+                    <p className="text-xs text-background/65">core plus domain-specific</p>
+                  </div>
+                  <div className="h-px bg-background/15" />
+                  <div className="flex items-start gap-2 text-xs leading-relaxed text-background/75">
+                    <ShieldCheck className="h-4 w-4 shrink-0 text-primary" />
+                    One secure, proctored session with a verified result.
+                  </div>
+                </div>
+              </aside>
             </div>
           </div>
         </section>
