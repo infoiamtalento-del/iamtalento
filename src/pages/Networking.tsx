@@ -166,7 +166,7 @@ const localCities = cities.slice(0, 6).map((city, i) => ({ ...city, img: cityPho
 const eventPhotos = [communityPhoto, panelPhoto, meetupPhoto, industryPhoto, communityPhoto, panelPhoto];
 const hostPhotos = [rohanPhoto, meeraPhoto, arjunPhoto, kavyaPhoto];
 const memberPhotos = [priyaPhoto, rahulPhoto, ananyaPhoto, vikramPhoto, kavyaPhoto, arjunPhoto];
-const galleryPhotos = [communityPhoto, panelPhoto, meetupPhoto, industryPhoto, eventPhoto, communityPhoto, panelPhoto, meetupPhoto];
+const galleryPhotos = [communityPhoto, panelPhoto, meetupPhoto, industryPhoto, eventPhoto, communityPhoto, panelPhoto, meetupPhoto, PHOTO.gallery7, PHOTO.gallery8];
 const scrollToEvents = () => document.getElementById('networking-events')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
 
 const Networking = () => {
