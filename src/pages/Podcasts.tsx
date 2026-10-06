@@ -174,7 +174,7 @@ export default function Podcasts() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {episodes.map(t => <article key={t.id} className="border border-border rounded-lg overflow-hidden bg-card">
               <div className="relative aspect-video"><img src={t.cover} alt={t.title} loading="lazy" className="w-full h-full object-cover" /><Button size="icon" aria-label={`Play ${t.title}`} className="absolute bottom-3 left-3 rounded-full" onClick={() => selectTrack(audioTracks.indexOf(t))}><Play className="fill-current" /></Button><span className="absolute bottom-4 right-3 text-podcast-paper bg-podcast-ink/80 rounded-full px-3 py-1 text-xs">{t.duration}</span></div>
-              <div className="p-5"><h3 className="text-base font-bold min-h-12 text-foreground">{t.title}</h3><p className="text-sm text-muted-foreground mt-2">{t.host}</p><Button variant="link" className="px-0 mt-3" onClick={() => selectTrack(audioTracks.indexOf(t)))}>Listen to Episode <ArrowRight /></Button></div>
+              <div className="p-5"><h3 className="text-base font-bold min-h-12 text-foreground">{t.title}</h3><p className="text-sm text-muted-foreground mt-2">{t.host}</p><Button variant="link" className="px-0 mt-3" onClick={() => selectTrack(audioTracks.indexOf(t))}>Listen to Episode <ArrowRight /></Button></div>
             </article>)}
           </div>
         </div>
