@@ -52,6 +52,11 @@
     --success-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
+
+    --podcast-ink: 0 0% 13.3%;
+    --podcast-paper: 0 0% 100%;
+    --podcast-brand: 351 77% 50%;
+    --podcast-gray: 0 0% 93.3%;
   }
 
   .dark {
@@ -153,4 +158,10 @@
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+.podcast-page {
+  --primary: var(--podcast-brand);
+  --secondary: var(--podcast-gray);
+  letter-spacing: 0;
 }

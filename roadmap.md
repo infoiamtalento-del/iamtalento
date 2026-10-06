@@ -1,5 +1,10 @@
 # Roadmap
 
+## Podcasts page — Studio contrast redesign
+- Rebuild the selected photo-led studio layout with consistent headings and spacing — done
+- Preserve episode playback and filters, and retain live webinar content — done
+- Verify images, desktop/mobile layout and interactions — done; photos loaded, audio played/paused, filters and carousels passed, no overflow or page errors
+
 ## Hackathons page — Elite Hackathon Hub redesign
 
 - Rebuild the page as a premium editorial journey — done
