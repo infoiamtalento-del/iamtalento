@@ -268,7 +268,7 @@ const Networking = () => {
           <div className="container max-w-6xl">
             <Heading label="Community in action" first="Step Inside Our" second="Community Events" description="Shared ideas, new introductions and moments that matter." tail="A glimpse into the room." />
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 auto-rows-[140px] md:auto-rows-[180px]">
-              {galleryPhotos.slice(0, showMoments ? 8 : 7).map((photo, i) => <div key={i} className={`overflow-hidden rounded-lg ${i === 0 ? 'col-span-2 row-span-2' : ''}`}><img src={photo} alt={`Networking community moment ${i + 1}`} loading="lazy" width={800} height={600} className="w-full h-full object-cover" /></div>)}
+              {galleryPhotos.slice(0, showMoments ? 9 : 7).map((photo, i) => <div key={i} className={`overflow-hidden rounded-lg ${i === 0 ? 'col-span-2 row-span-2' : ''}`}><img src={photo} alt={`Networking community moment ${i + 1}`} loading="lazy" width={800} height={600} className="w-full h-full object-cover" /></div>)}
             </div>
             <div className="text-center mt-7"><Button variant="outline" className="gap-2" onClick={() => setShowMoments(!showMoments)}>{showMoments ? 'Show Fewer Moments' : 'View More Moments'}<ArrowRight className="h-4 w-4" /></Button></div>
           </div>
