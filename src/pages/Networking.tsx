@@ -5,6 +5,8 @@ import panelPhoto from "@/assets/networking-panel.jpg";
 import meetupPhoto from "@/assets/event-meetup.jpg";
 import industryPhoto from "@/assets/event-industry.jpg";
 import eventPhoto from "@/assets/event-networking.jpg";
+import webinarPhoto from "@/assets/event-webinar.jpg";
+import podcastPhoto from "@/assets/event-podcast.jpg";
 import rohanPhoto from "@/assets/speaker-rohan.jpg";
 import meeraPhoto from "@/assets/speaker-meera.jpg";
 import arjunPhoto from "@/assets/speaker-arjun.jpg";
@@ -166,7 +168,7 @@ const localCities = cities.slice(0, 6).map((city, i) => ({ ...city, img: cityPho
 const eventPhotos = [communityPhoto, panelPhoto, meetupPhoto, industryPhoto, communityPhoto, panelPhoto];
 const hostPhotos = [rohanPhoto, meeraPhoto, arjunPhoto, kavyaPhoto];
 const memberPhotos = [priyaPhoto, rahulPhoto, ananyaPhoto, vikramPhoto, kavyaPhoto, arjunPhoto];
-const galleryPhotos = [communityPhoto, panelPhoto, meetupPhoto, industryPhoto, eventPhoto, communityPhoto, panelPhoto, meetupPhoto, PHOTO.gallery7, PHOTO.gallery8];
+const galleryPhotos = [communityPhoto, panelPhoto, meetupPhoto, industryPhoto, eventPhoto, communityPhoto, panelPhoto, meetupPhoto, webinarPhoto, podcastPhoto].slice(0, 9);
 const scrollToEvents = () => document.getElementById('networking-events')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
 
 const Networking = () => {
