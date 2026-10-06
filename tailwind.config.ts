@@ -53,6 +53,8 @@ export default {
           foreground: "hsl(var(--card-foreground))",
         },
         cream: "hsl(var(--cream))",
+        "podcast-ink": "hsl(var(--podcast-ink))",
+        "podcast-paper": "hsl(var(--podcast-paper))",
         success: {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",
