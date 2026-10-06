@@ -148,7 +148,7 @@ const spotlight = [
 const Heading = ({ label, first, second, description, tail, inverse = false }: { label: string; first: string; second: string; description: string; tail: string; inverse?: boolean }) => (
   <div className="text-center mb-10 md:mb-12">
     <p className={`text-xs uppercase font-semibold mb-3 ${inverse ? 'text-primary-foreground/80' : 'text-primary'}`}>{label}</p>
-    <h2 className="font-display font-bold text-2xl sm:text-3xl md:text-4xl leading-[1.15] mb-4">{first}<br /><span className={inverse ? 'text-primary-foreground' : 'text-primary'}>{second}</span></h2>
+    <h2 className="font-display font-bold text-2xl sm:text-3xl md:text-4xl leading-[1.15] mb-4"><span className={inverse ? 'text-primary-foreground' : ''}>{first}</span><br /><span className={inverse ? 'text-primary-foreground' : 'text-primary'}>{second}</span></h2>
     <p className={`text-base md:text-lg leading-relaxed ${inverse ? 'text-primary-foreground/85' : 'text-muted-foreground'}`}>{description}{' '}<br className="hidden md:block" />{tail}</p>
   </div>
 );
@@ -211,9 +211,9 @@ const Networking = () => {
           </div>
 
           <div className="grid grid-cols-2 gap-3 h-[460px]">
-            <motion.img initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} src={PHOTO.hero1} alt="Networking event" className="row-span-2 h-full w-full object-cover rounded-2xl shadow-lg" />
-            <motion.img initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} src={PHOTO.hero2} alt="Meetup" className="h-full w-full object-cover rounded-2xl shadow-lg" />
-            <motion.img initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} src={PHOTO.hero3} alt="Fireside chat" className="h-full w-full object-cover rounded-2xl shadow-lg" />
+            <motion.img initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} src={PHOTO.hero1} alt="Networking event" className="row-span-2 h-full w-full object-cover rounded-2xl shadow-xl shadow-foreground/25" />
+            <motion.img initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} src={PHOTO.hero2} alt="Meetup" className="h-full w-full object-cover rounded-2xl shadow-xl shadow-foreground/25" />
+            <motion.img initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} src={PHOTO.hero3} alt="Fireside chat" className="h-full w-full object-cover rounded-2xl shadow-xl shadow-foreground/25" />
           </div>
         </section>
         </div>
