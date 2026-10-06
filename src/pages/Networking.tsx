@@ -171,7 +171,6 @@ const scrollToEvents = () => document.getElementById('networking-events')?.scrol
 
 const Networking = () => {
   const [showAll, setShowAll] = useState(false);
-  const [showMoments, setShowMoments] = useState(false);
   const [city, setCity] = useState('All');
   const [memberStart, setMemberStart] = useState(0);
   const filteredEvents = upcoming.filter(event => city === 'All' || event.city === city);
