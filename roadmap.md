@@ -1,9 +1,9 @@
 # Roadmap
 
 ## Networking page — Modern Networking Hub
-- Preserve the current opening banner — in progress
-- Restyle the remaining sections around the selected reference — in progress
-- Verify images, event browsing, FAQ and layout — pending
+- Preserve the current opening banner — done; original banner retained verbatim
+- Restyle the remaining sections around the selected reference — done
+- Verify images, event browsing, FAQ and layout — done; city filtering, event expansion and FAQ passed, no desktop/mobile overflow or page errors; CDN images checked through the preview asset service
 
 ## Podcasts page — Studio contrast redesign
 - Rebuild the selected photo-led studio layout with consistent headings and spacing — done
