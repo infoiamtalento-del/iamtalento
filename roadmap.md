@@ -1,5 +1,10 @@
 # Roadmap
 
+## Networking page — Modern Networking Hub
+- Preserve the current opening banner — in progress
+- Restyle the remaining sections around the selected reference — in progress
+- Verify images, event browsing, FAQ and layout — pending
+
 ## Podcasts page — Studio contrast redesign
 - Rebuild the selected photo-led studio layout with consistent headings and spacing — done
 - Preserve episode playback and filters, and retain live webinar content — done
