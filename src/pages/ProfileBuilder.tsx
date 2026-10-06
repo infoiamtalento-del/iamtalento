@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import siteLogo from "@/assets/I-am-Talento-2.png.asset.json";
 import { Button } from "@/components/ui/button";
 import {
   Zap, User, FileText, Briefcase, GraduationCap, Code2,
@@ -217,7 +218,7 @@ const ProfileBuilder = () => {
           <div className="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
             <div className="flex items-center gap-3">
               <Link to="/" className="flex items-center gap-2">
-                <img src="/logo.png" alt="I Am Talento" className="h-16 w-auto object-contain" />
+                <img src={siteLogo.url} alt="I Am Talento" className="h-10 w-auto object-contain" />
               </Link>
               <div className="h-5 w-px bg-border" />
               <span className="text-sm font-medium text-muted-foreground">Profile Builder</span>

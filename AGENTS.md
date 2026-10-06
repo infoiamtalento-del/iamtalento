@@ -6,3 +6,4 @@
 - Build event marketing pages as image-led editorial journeys with real event content, clear participation steps, and prominent registration actions.
 - Keep podcast episode selection and audio playback in shared page state so every play action opens the same listening experience.
 - Keep Networking section introductions in one shared heading component and city selection in page state so visual rhythm and event filtering stay consistent.
+- Use the same CDN-hosted logo asset in all site and profile headers and the footer so branding stays consistent.
