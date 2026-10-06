@@ -4,6 +4,7 @@ import { Menu, X, Zap, ChevronDown, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import ThemeToggle from "./ThemeToggle";
+import siteLogo from "@/assets/I-am-Talento-2.png.asset.json";
 
 const eventsDropdownItems = [
   { label: "Hackathons", href: "/hackathons" },
@@ -74,7 +75,7 @@ const Navbar = () => {
     >
       <nav className="container flex items-center" aria-label="Main navigation">
         <Link to="/" className="flex items-center gap-2 group mr-auto" aria-label="IAmTalento Home">
-          <img src="/logo.png" alt="I Am Talento" className="h-10 w-auto object-contain" />
+          <img src={siteLogo.url} alt="I Am Talento" className="h-10 w-auto object-contain" />
         </Link>
 
         {/* Desktop */}

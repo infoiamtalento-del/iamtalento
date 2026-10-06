@@ -18,6 +18,7 @@ import {
   Quote, Circle,
 } from "lucide-react";
 import demoAvatar from "@/assets/demo-avatar.jpg";
+import siteLogo from "@/assets/I-am-Talento-2.png.asset.json";
 import logoAws from "@/assets/logo-aws.svg";
 import logoGoogle from "@/assets/logo-google.svg";
 import logoMeta from "@/assets/logo-meta.svg";
@@ -166,7 +167,7 @@ const DemoProfile = () => {
         >
           <nav className="container flex items-center" aria-label="Main navigation">
             <Link to="/" className="flex items-center gap-2 group mr-auto" aria-label="IAmTalento Home">
-              <img src="/logo.png" alt="I Am Talento" className="h-16 w-auto object-contain" />
+              <img src={siteLogo.url} alt="I Am Talento" className="h-10 w-auto object-contain" />
             </Link>
 
             <div className="hidden lg:flex items-center gap-1">
