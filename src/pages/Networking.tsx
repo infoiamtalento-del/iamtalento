@@ -1,3 +1,24 @@
+import { useState } from "react";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import communityPhoto from "@/assets/networking-community.jpg";
+import panelPhoto from "@/assets/networking-panel.jpg";
+import meetupPhoto from "@/assets/event-meetup.jpg";
+import industryPhoto from "@/assets/event-industry.jpg";
+import eventPhoto from "@/assets/event-networking.jpg";
+import rohanPhoto from "@/assets/speaker-rohan.jpg";
+import meeraPhoto from "@/assets/speaker-meera.jpg";
+import arjunPhoto from "@/assets/speaker-arjun.jpg";
+import kavyaPhoto from "@/assets/speaker-kavya.jpg";
+import priyaPhoto from "@/assets/learner-priya.jpg";
+import rahulPhoto from "@/assets/learner-rahul.jpg";
+import ananyaPhoto from "@/assets/learner-ananya.jpg";
+import vikramPhoto from "@/assets/learner-vikram.jpg";
+import bangalore from "@/assets/networking-bangalore.jpg.asset.json";
+import mumbai from "@/assets/networking-mumbai.jpg.asset.json";
+import delhi from "@/assets/networking-delhi.jpg.asset.json";
+import hyderabad from "@/assets/networking-hyderabad.jpg.asset.json";
+import pune from "@/assets/networking-pune.jpg.asset.json";
+import chennai from "@/assets/networking-chennai.jpg.asset.json";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -6,7 +27,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import SectionBadge from "@/components/ui/section-badge";
 import {
-  Users, Calendar, MapPin, ArrowRight, Sparkles, Coffee, Building2,
+  Users, Calendar, MapPin, ArrowLeft, ArrowRight, Sparkles, Coffee, Building2,
   MessageSquare, Globe, Star, CheckCircle, Quote, HelpCircle, Handshake,
   Briefcase, Mic, Network, Target, TrendingUp, Award, Camera, Heart,
   Gift, Zap, Shield, Clock, PlayCircle, Instagram,
@@ -124,18 +145,46 @@ const spotlight = [
   { name: "Nikhil Rao", role: "Eng @ Atlassian", img: "https://i.pravatar.cc/200?img=11", badge: "Mentor" },
 ];
 
-/* ───────── Page ───────── */
-const Networking = () => (
-  <Layout>
-    <Helmet>
-      <title>Networking Events | Talento</title>
-      <meta name="description" content="Curated networking events, meetups, and mixers to grow your career, find collaborators, and meet hiring teams." />
-    </Helmet>
+const Heading = ({ label, first, second, description, tail, inverse = false }: { label: string; first: string; second: string; description: string; tail: string; inverse?: boolean }) => (
+  <div className="text-center mb-10 md:mb-12">
+    <p className={`text-xs uppercase font-semibold mb-3 ${inverse ? 'text-primary-foreground/80' : 'text-primary'}`}>{label}</p>
+    <h2 className="font-display font-bold text-2xl sm:text-3xl md:text-4xl leading-[1.15] mb-4">{first}<br /><span className={inverse ? 'text-primary-foreground' : 'text-primary'}>{second}</span></h2>
+    <p className={`text-base md:text-lg leading-relaxed ${inverse ? 'text-primary-foreground/85' : 'text-muted-foreground'}`}>{description}{' '}<br className="hidden md:block" />{tail}</p>
+  </div>
+);
 
-    <main className="pt-28 pb-20">
-      <div className="container max-w-6xl">
+const connectionBenefits = [
+  { icon: Users, title: 'Meet like-minded people', desc: 'Connect with professionals who share your interests and ambitions.' },
+  { icon: MessageSquare, title: 'Learn from real experiences', desc: 'Hear useful lessons from people who have been there.' },
+  { icon: Briefcase, title: 'Access new opportunities', desc: 'Discover collaborators, hiring teams and fresh perspectives.' },
+  { icon: Calendar, title: 'Join exclusive events', desc: 'Find your place at coffee chats, roundtables and industry summits.' },
+  { icon: Handshake, title: 'Find mentors', desc: 'Build meaningful relationships with experienced professionals.' },
+  { icon: TrendingUp, title: 'Grow together', desc: 'Exchange ideas, support one another and keep moving forward.' },
+];
+const cityPhotos = [bangalore, mumbai, delhi, hyderabad, pune, chennai];
+const localCities = cities.slice(0, 6).map((city, i) => ({ ...city, img: cityPhotos[i] }));
+const eventPhotos = [communityPhoto, panelPhoto, meetupPhoto, industryPhoto, communityPhoto, panelPhoto];
+const hostPhotos = [rohanPhoto, meeraPhoto, arjunPhoto, kavyaPhoto];
+const memberPhotos = [priyaPhoto, rahulPhoto, ananyaPhoto, vikramPhoto, kavyaPhoto, arjunPhoto];
+const galleryPhotos = [communityPhoto, panelPhoto, meetupPhoto, industryPhoto, eventPhoto, communityPhoto, panelPhoto, meetupPhoto];
+const scrollToEvents = () => document.getElementById('networking-events')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
 
-        {/* 1. Hero — with photo collage */}
+const Networking = () => {
+  const [showAll, setShowAll] = useState(false);
+  const [showMoments, setShowMoments] = useState(false);
+  const [city, setCity] = useState('All');
+  const [memberStart, setMemberStart] = useState(0);
+  const filteredEvents = upcoming.filter(event => city === 'All' || event.city === city);
+  const displayedEvents = showAll ? filteredEvents : filteredEvents.slice(0, 3);
+  return (
+    <Layout>
+      <Helmet>
+        <title>Networking Events | Talento</title>
+        <meta name="description" content="Curated networking events, meetups, and mixers to grow your career, find collaborators, and meet hiring teams." />
+      </Helmet>
+      <main className="pt-28">
+        <div className="container max-w-6xl">
+          {/* 1. Hero — with photo collage */}
         <section className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center mb-24">
           <div>
             <SectionBadge label="Networking Events" icon={Network} />
@@ -167,274 +216,104 @@ const Networking = () => (
             <motion.img initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} src={PHOTO.hero3} alt="Fireside chat" className="h-full w-full object-cover rounded-2xl shadow-lg" />
           </div>
         </section>
+        </div>
 
-        {/* 2. Stats */}
-        <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-24">
-          {stats.map(({ icon: Icon, value, label }) => (
-            <motion.div key={label} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-              className="rounded-xl border border-border bg-card p-6">
-              <Icon className="h-5 w-5 text-primary mb-3" />
-              <p className="text-2xl md:text-3xl font-bold font-display">{value}</p>
-              <p className="text-xs text-muted-foreground mt-1">{label}</p>
-            </motion.div>
-          ))}
-        </section>
-
-        {/* 3. Event Formats */}
-        <section className="mb-24">
-          <SectionBadge label="Event Formats" icon={Sparkles} />
-          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Six Ways to Build<br /><span className="text-primary">Real Connections</span></h2>
-          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mb-8"><span className="block">Choose from coffee chats to industry summits.</span><span className="block">Find the format that fits you.</span></p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {formats.map(({ icon: Icon, title, desc }, i) => (
-              <motion.div key={title} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}
-                className="rounded-xl border border-border bg-card p-6 hover:border-primary/30 hover:shadow-md transition-all">
-                <div className="h-10 w-10 rounded-lg bg-accent flex items-center justify-center mb-4">
-                  <Icon className="h-5 w-5 text-primary" />
-                </div>
-                <p className="font-semibold font-display mb-1">{title}</p>
-                <p className="text-sm text-muted-foreground">{desc}</p>
-              </motion.div>
-            ))}
+        <section className="border-y border-border/60 bg-muted/20 py-9 md:py-12">
+          <div className="container max-w-6xl grid grid-cols-2 md:grid-cols-4 gap-8">
+            {stats.map(({ icon: Icon, value, label }) => <div key={label} className="flex items-center gap-3 md:gap-4"><Icon className="h-7 w-7 shrink-0 text-primary" /><div><p className="font-display text-xl md:text-3xl font-bold">{value}</p><p className="text-xs text-muted-foreground mt-1">{label}</p></div></div>)}
           </div>
         </section>
 
-        {/* 4. Upcoming Events — now with images */}
-        <section className="mb-24">
-          <SectionBadge label="Upcoming Events" icon={Calendar} />
-          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Find the Next Room Worth<br /><span className="text-primary">Showing Up For</span></h2>
-          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mb-8"><span className="block">Browse gatherings built around shared interests.</span><span className="block">Reserve your place before seats fill.</span></p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {upcoming.map((e, i) => (
-              <motion.div key={e.title} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}
-                className="rounded-xl border border-border bg-card overflow-hidden hover:border-primary/30 hover:shadow-md transition-all group">
-                <div className="relative h-44 overflow-hidden">
-                  <img src={e.img} alt={e.title} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <Badge className="absolute top-3 left-3 bg-background/90 text-foreground border-0">{e.tag}</Badge>
-                </div>
-                <div className="p-6">
-                  <p className="font-bold font-display mb-3">{e.title}</p>
-                  <div className="flex flex-col gap-1.5 text-xs text-muted-foreground mb-4">
-                    <span className="flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" />{e.date} · {e.time}</span>
-                    <span className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" />{e.city}</span>
-                    <span className="flex items-center gap-1.5"><Users className="h-3.5 w-3.5" />{e.spots} spots</span>
-                  </div>
-                  <Button size="sm" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 border-0 gap-1">
-                    RSVP <ArrowRight className="h-3.5 w-3.5" />
-                  </Button>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* 5. NEW — Featured Hosts & Speakers */}
-        <section className="mb-24">
-          <SectionBadge label="Featured Hosts" icon={Mic} />
-          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Learn From People<br /><span className="text-primary">Building What Is Next</span></h2>
-          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mb-8"><span className="block">Meet founders and creators with useful lessons.</span><span className="block">Learn directly from experience.</span></p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {hosts.map((h, i) => (
-              <motion.div key={h.name} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}
-                className="rounded-2xl overflow-hidden border border-border bg-card group">
-                <div className="relative aspect-[4/5] overflow-hidden">
-                  <img src={h.img} alt={h.name} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                  <div className="absolute bottom-4 left-4 right-4 text-white">
-                    <p className="font-bold font-display text-lg leading-tight">{h.name}</p>
-                    <p className="text-xs opacity-90">{h.role}</p>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <p className="text-xs text-muted-foreground mb-1">Speaking on</p>
-                  <p className="text-sm font-medium">{h.topic}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* 6. NEW — Why You'll Love It (Perks) */}
-        <section className="mb-24">
-          <SectionBadge label="Why You'll Love It" icon={Heart} />
-          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Conversations Designed<br /><span className="text-primary">For Real Connections</span></h2>
-          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mb-8"><span className="block">Meet the right people in focused gatherings.</span><span className="block">No forced networking or crowds.</span></p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {perks.map(({ icon: Icon, title, desc }, i) => (
-              <motion.div key={title} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}
-                className="rounded-xl border border-border bg-card p-6 hover:border-primary/30 transition-all">
-                <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                  <Icon className="h-5 w-5 text-primary" />
-                </div>
-                <p className="font-semibold font-display mb-1">{title}</p>
-                <p className="text-sm text-muted-foreground">{desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* 7. Cities */}
-        <section className="mb-24">
-          <SectionBadge label="Where We Meet" icon={Globe} />
-          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Explore Cities With<br /><span className="text-primary">Growing Communities</span></h2>
-          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mb-8"><span className="block">Find active professional communities nearby.</span><span className="block">Connect wherever your career takes you.</span></p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {cities.map((c) => (
-              <div key={c.name} className="rounded-xl border border-border bg-card p-5 hover:border-primary/30 transition-colors">
-                <MapPin className="h-4 w-4 text-primary mb-2" />
-                <p className="font-semibold font-display">{c.name}</p>
-                <p className="text-xs text-muted-foreground">{c.count}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* 8. NEW — Moments / Photo Gallery */}
-        <section className="mb-24">
-          <SectionBadge label="Moments" icon={Camera} />
-          <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
-            <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15]">Step Inside Recent<br /><span className="text-primary">Community Events</span></h2>
-          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mb-8"><span className="block">See conversations and memorable moments.</span><span className="block">Meet our community in action.</span></p>
-            <Button variant="outline" size="sm" className="gap-2"><Instagram className="h-4 w-4" /> See on Instagram</Button>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {moments.map((src, i) => (
-              <motion.div key={i} initial={{ opacity: 0, scale: 0.96 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.04 }}
-                className={`relative overflow-hidden rounded-xl group ${i === 0 || i === 5 ? "row-span-2 aspect-[3/5]" : "aspect-square"}`}>
-                <img src={src} alt="Event moment" className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* 9. How It Works */}
-        <section className="mb-24">
-          <SectionBadge label="How It Works" icon={Target} />
-          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">From Your First RSVP<br /><span className="text-primary">To a Real Connection</span></h2>
-          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mb-8"><span className="block">Discover the right room and keep talking.</span><span className="block">Every step stays simple.</span></p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {howItWorks.map((s, i) => (
-              <motion.div key={s.step} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}
-                className="rounded-xl border border-border bg-card p-6">
-                <p className="text-xs font-bold text-primary mb-3">{s.step}</p>
-                <p className="font-semibold font-display mb-1">{s.title}</p>
-                <p className="text-sm text-muted-foreground">{s.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* 10. NEW — Community Spotlight */}
-        <section className="mb-24">
-          <SectionBadge label="Community Spotlight" icon={Star} />
-          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Meet This Month's<br /><span className="text-primary">Community Standouts</span></h2>
-          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mb-8"><span className="block">Celebrate members who strengthen our community.</span><span className="block">Meet this month's standouts.</span></p>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {spotlight.map((p, i) => (
-              <motion.div key={p.name} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}
-                className="text-center">
-                <div className="relative inline-block mb-3">
-                  <img src={p.img} alt={p.name} className="h-24 w-24 rounded-full object-cover mx-auto border-4 border-card shadow-md" />
-                  <span className="absolute -bottom-1 -right-1 h-7 w-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
-                    <Star className="h-3.5 w-3.5 fill-current" />
-                  </span>
-                </div>
-                <p className="font-semibold text-sm leading-tight">{p.name}</p>
-                <p className="text-xs text-muted-foreground mb-2">{p.role}</p>
-                <Badge variant="secondary" className="text-[10px]">{p.badge}</Badge>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* 11. Success Stories */}
-        <section className="mb-24">
-          <SectionBadge label="Success Stories" icon={Award} />
-          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Real Conversations<br /><span className="text-primary">Meaningful Outcomes</span></h2>
-          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mb-8"><span className="block">See how one conversation opened new doors.</span><span className="block">These stories started in person.</span></p>
-          <div className="grid md:grid-cols-3 gap-5">
-            {stories.map((s, i) => (
-              <motion.div key={s.name} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}
-                className="rounded-xl border border-border bg-card p-6">
-                <Quote className="h-5 w-5 text-primary mb-3" />
-                <p className="text-sm mb-5">"{s.quote}"</p>
-                <div className="flex items-center gap-3">
-                  <img src={s.avatar} alt={s.name} className="h-10 w-10 rounded-full object-cover" />
-                  <div>
-                    <p className="text-sm font-semibold">{s.name}</p>
-                    <p className="text-xs text-muted-foreground">{s.role}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          <div className="mt-10">
-            <p className="text-xs text-muted-foreground mb-4 uppercase tracking-wide">Companies in the room</p>
-            <div className="flex flex-wrap gap-2">
-              {partners.map((p) => (
-                <span key={p} className="px-3 py-1.5 rounded-full bg-muted text-xs font-medium">{p}</span>
-              ))}
+        <section className="py-16 md:py-20 bg-accent/30">
+          <div className="container max-w-6xl">
+            <Heading label="Real connections" first="Six Ways to Build" second="Real Connections" description="Make space for people, ideas and opportunities." tail="Build a network that matters." />
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {connectionBenefits.map(({ icon: Icon, title, desc }) => <article key={title} className="flex gap-4 p-6 bg-card rounded-lg border border-border/40"><div className="h-12 w-12 shrink-0 flex items-center justify-center bg-accent text-primary rounded-full"><Icon className="h-6 w-6" /></div><div><h3 className="font-display font-semibold text-base mb-2">{title}</h3><p className="text-sm text-muted-foreground leading-relaxed">{desc}</p></div></article>)}
             </div>
           </div>
         </section>
 
-        {/* 12. NEW — Become a Host CTA strip */}
-        <section className="mb-24">
-          <div className="relative rounded-3xl overflow-hidden">
-            <img src={PHOTO.hero4} alt="Host an event" className="absolute inset-0 h-full w-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/30" />
-            <div className="relative grid md:grid-cols-2 gap-8 p-10 md:p-14 items-center">
-              <div>
-                <SectionBadge label="For Hosts" icon={Mic} />
-                <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Bring People Together<br /><span className="text-primary">Host With Us</span></h2>
-                <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mb-6"><span className="block">We shape the format and run the room.</span><span className="block">You bring the topic and community.</span></p>
-                <div className="flex flex-wrap gap-3">
-                  <Button size="lg" className="bg-[hsl(33,100%,50%)] text-white hover:bg-[hsl(33,100%,45%)] border-0 gap-2">Apply to Host <ArrowRight className="h-4 w-4" /></Button>
-                  <Button size="lg" variant="outline">See Host Perks</Button>
-                </div>
-              </div>
+        <section id="networking-events" className="py-16 md:py-20 scroll-mt-24">
+          <div className="container max-w-6xl">
+            <Heading label="Upcoming events" first="Find Your Next Room" second="Make It Count" description="Explore gatherings built around your interests and goals." tail="Find your next conversation." />
+            {city !== 'All' && <div className="flex items-center justify-center gap-3 mb-6"><span className="text-sm text-muted-foreground">{city}</span><Button variant="ghost" size="sm" onClick={() => setCity('All')}>Show all cities</Button></div>}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {displayedEvents.map(event => { const index = upcoming.indexOf(event); return <article key={event.title} className="group rounded-lg overflow-hidden border border-border bg-card flex flex-col"><div className="relative aspect-[4/3] overflow-hidden"><img src={eventPhotos[index]} alt={event.title} loading="lazy" width={800} height={600} className="w-full h-full object-cover motion-safe:group-hover:scale-105 transition-transform duration-500" /><div className="absolute left-4 top-4 rounded-md bg-background px-3 py-2 text-center"><span className="block font-display font-bold text-xl leading-tight">{event.date.split(' ')[1].replace(',', '')}</span><span className="text-xs uppercase font-semibold text-primary">{event.date.split(' ')[0]}</span></div><Badge variant="secondary" className="absolute right-4 top-4">{event.tag}</Badge></div><div className="p-5 flex flex-col flex-1"><h3 className="font-display font-bold text-lg mb-4 min-h-14">{event.title}</h3><div className="flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground mb-3"><span className="flex gap-1.5 items-center"><MapPin className="h-3.5 w-3.5 text-primary" />{event.city}</span><span className="flex gap-1.5 items-center"><Users className="h-3.5 w-3.5 text-primary" />{event.spots} spots</span></div><p className="text-xs text-muted-foreground mb-5">{event.date} · {event.time}</p><Button asChild className="mt-auto w-full gap-2"><Link to={`/contact?event=${encodeURIComponent(event.title)}`}>Ask About This Event <ArrowRight className="h-4 w-4" /></Link></Button></div></article> })}
+            </div>
+            {displayedEvents.length === 0 && <p className="text-center text-muted-foreground py-8">No events listed for {city} yet.</p>}
+            <div className="text-center mt-8"><Button variant="ghost" className="text-primary gap-2" onClick={() => setShowAll(!showAll)}>{showAll ? 'Show Fewer Events' : 'View All Events'}<ArrowRight className="h-4 w-4" /></Button></div>
+          </div>
+        </section>
+
+        <section className="py-16 md:py-20 bg-muted/20">
+          <div className="container max-w-6xl">
+            <Heading label="Learn from people" first="Meet People Building" second="What Is Next" description="Hear from founders and leaders with practical experience." tail="Learn directly from the source." />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10">
+              {hosts.map((host, i) => <article key={host.name} className="text-center"><img src={hostPhotos[i]} alt={host.name} loading="lazy" width={400} height={400} className="w-28 h-28 md:w-36 md:h-36 rounded-full object-cover mx-auto mb-5" /><h3 className="font-display font-semibold mb-1">{host.name}</h3><p className="text-xs text-muted-foreground mb-3">{host.role}</p><p className="text-xs text-primary">{host.topic}</p></article>)}
             </div>
           </div>
         </section>
 
-        {/* 13. FAQ + CTA */}
-        <section>
-          <SectionBadge label="FAQ" icon={HelpCircle} />
-          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">What You Need to Know<br /><span className="text-primary">Before You Join</span></h2>
-          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mb-8"><span className="block">Find answers about tickets and event access.</span><span className="block">Join with complete confidence.</span></p>
-          <div className="grid md:grid-cols-2 gap-5 mb-12">
-            {faqs.map((f) => (
-              <div key={f.q} className="rounded-xl border border-border bg-card p-6">
-                <p className="font-semibold font-display mb-2 flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                  {f.q}
-                </p>
-                <p className="text-sm text-muted-foreground pl-6">{f.a}</p>
-              </div>
-            ))}
-          </div>
-
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            className="rounded-2xl bg-accent p-10 md:p-14 text-center">
-            <TrendingUp className="h-8 w-8 text-primary mx-auto mb-4" />
-            <h2 className="text-xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">Your Next Opportunity<br /><span className="text-primary">Is One Room Away</span></h2>
-            <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto mb-6"><span className="block">Turn thoughtful conversations into momentum.</span><span className="block">Your next connection starts here.</span></p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <Button size="lg" className="bg-[hsl(33,100%,50%)] text-white hover:bg-[hsl(33,100%,45%)] border-0 gap-2">
-                Browse All Events <ArrowRight className="h-4 w-4" />
-              </Button>
-              <Link to="/contact">
-                <Button size="lg" variant="outline" className="gap-2"><MessageSquare className="h-4 w-4" /> Talk to Us</Button>
-              </Link>
+        <section className="py-16 md:py-20">
+          <div className="container max-w-6xl">
+            <Heading label="A growing community" first="Find Your Community" second="In Your City" description="Explore professional communities across India's cities." tail="Connect closer to home." />
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+              {localCities.map(item => <Button key={item.name} aria-label={`Explore events in ${item.name}`} variant="ghost" className="group block h-auto p-0 rounded-lg overflow-hidden border border-border text-left whitespace-normal" onClick={() => { setCity(item.name); setShowAll(true); scrollToEvents(); }}><img src={item.img.url} alt={item.name} loading="lazy" width={600} height={450} className="w-full aspect-[4/3] object-cover motion-safe:group-hover:scale-105 transition-transform duration-500" /><span className="block px-3 py-3 font-semibold text-sm">{item.name}</span></Button>)}
             </div>
-          </motion.div>
+            <div className="flex justify-center gap-3 mt-5"><Button variant="ghost" size="sm" onClick={() => { setCity('Remote'); setShowAll(true); scrollToEvents(); }}><Globe className="h-4 w-4 mr-2" />Explore Remote Events</Button></div>
+          </div>
         </section>
 
-      </div>
-    </main>
-  </Layout>
-);
+        <section className="py-16 md:py-20 bg-accent/20">
+          <div className="container max-w-6xl">
+            <Heading label="Community in action" first="Step Inside Our" second="Community Events" description="Shared ideas, new introductions and moments that matter." tail="A glimpse into the room." />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 auto-rows-[140px] md:auto-rows-[180px]">
+              {galleryPhotos.slice(0, showMoments ? 8 : 7).map((photo, i) => <div key={i} className={`overflow-hidden rounded-lg ${i === 0 ? 'col-span-2 row-span-2' : ''}`}><img src={photo} alt={`Networking community moment ${i + 1}`} loading="lazy" width={800} height={600} className="w-full h-full object-cover" /></div>)}
+            </div>
+            <div className="text-center mt-7"><Button variant="outline" className="gap-2" onClick={() => setShowMoments(!showMoments)}>{showMoments ? 'Show Fewer Moments' : 'View More Moments'}<ArrowRight className="h-4 w-4" /></Button></div>
+          </div>
+        </section>
 
+        <section className="py-16 md:py-20">
+          <div className="container max-w-6xl">
+            <Heading label="Get started" first="From Your First RSVP" second="To a Real Connection" description="Find the right room and keep the conversation going." tail="Every step stays simple." />
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {howItWorks.map((step, i) => <div key={step.step} className="text-center relative"><div className="w-12 h-12 bg-accent text-primary rounded-full mx-auto mb-5 flex items-center justify-center font-display font-bold">{step.step}</div>{i < 3 && <div className="hidden lg:block absolute top-6 left-[70%] w-[60%] border-t border-border" />}<h3 className="font-display font-semibold mb-2">{step.title}</h3><p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p></div>)}
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16 md:py-20 bg-muted/20">
+          <div className="container max-w-6xl">
+            <Heading label="This month's standouts" first="Meet Our Community" second="And Its Connectors" description="Celebrate members who bring people and ideas together." tail="Meet this month's standouts." />
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
+              {spotlight.map((_, i) => { const index = (i + memberStart) % spotlight.length; const person = spotlight[index]; return <article key={person.name} className="text-center"><img src={memberPhotos[index]} alt={person.name} loading="lazy" width={200} height={200} className="h-20 w-20 rounded-full object-cover mx-auto mb-4" /><h3 className="font-display text-sm font-semibold">{person.name}</h3><p className="text-xs text-muted-foreground mt-1 mb-2">{person.role}</p><p className="text-xs text-primary">{person.badge}</p></article> })}
+            </div>
+            <div className="flex gap-3 justify-center mt-8"><Button size="icon" variant="outline" aria-label="Previous community members" onClick={() => setMemberStart((memberStart + 5) % 6)}><ArrowLeft className="h-4 w-4" /></Button><Button size="icon" variant="outline" aria-label="Next community members" onClick={() => setMemberStart((memberStart + 1) % 6)}><ArrowRight className="h-4 w-4" /></Button></div>
+          </div>
+        </section>
+
+        <section className="py-16 md:py-20">
+          <div className="container max-w-6xl">
+            <Heading label="Real stories" first="Real Conversations" second="Meaningful Outcomes" description="Discover how one conversation opened a new door." tail="Every story starts with people." />
+            <div className="grid md:grid-cols-3 gap-6">{stories.map((story, i) => <article key={story.name} className="p-6 rounded-lg border border-border bg-card"><Quote className="h-5 w-5 text-primary mb-4" /><p className="text-sm leading-relaxed text-muted-foreground mb-6">“{story.quote}”</p><div className="flex gap-3 items-center"><img src={memberPhotos[i]} alt={story.name} loading="lazy" width={80} height={80} className="h-10 w-10 rounded-full object-cover" /><div><h3 className="text-sm font-semibold">{story.name}</h3><p className="text-xs text-muted-foreground">{story.role}</p></div></div></article>)}</div>
+            <p className="text-xs text-muted-foreground text-center mt-10 mb-5 uppercase">Companies in the room</p><div className="flex justify-center flex-wrap gap-x-8 gap-y-4">{partners.map(partner => <span key={partner} className="font-display font-semibold text-sm text-muted-foreground">{partner}</span>)}</div>
+          </div>
+        </section>
+
+        <section className="py-16 md:py-20 bg-muted/20">
+          <div className="container max-w-6xl">
+            <Heading label="FAQ" first="What You Need to Know" second="Before You Join" description="Find answers about event access, hosting and community." tail="Join with confidence." />
+            <Accordion type="single" collapsible className="max-w-3xl mx-auto">{faqs.map((faq, i) => <AccordionItem value={`faq-${i}`} key={faq.q}><AccordionTrigger className="text-left font-display">{faq.q}</AccordionTrigger><AccordionContent className="text-muted-foreground leading-relaxed">{faq.a}</AccordionContent></AccordionItem>)}</Accordion>
+          </div>
+        </section>
+
+        <section className="relative py-16 md:py-20 text-primary-foreground overflow-hidden">
+          <img src={communityPhoto} alt="Professionals connecting at a community gathering" loading="lazy" width={1536} height={1024} className="absolute inset-0 w-full h-full object-cover" /><div className="absolute inset-0 bg-foreground/80" />
+          <div className="container max-w-6xl relative"><Heading inverse label="Join our community" first="Bring People Together" second="Host With Us" description="Share your expertise and bring your community together." tail="We help you shape the room." /><div className="flex flex-wrap justify-center gap-3"><Button asChild size="lg" className="gap-2"><Link to="/contact?interest=host-event">Host an Event<ArrowRight className="h-4 w-4" /></Link></Button><Button asChild size="lg" variant="secondary"><Link to="/contact">Learn More</Link></Button></div></div>
+        </section>
+      </main>
+    </Layout>
+  );
+};
 export default Networking;
