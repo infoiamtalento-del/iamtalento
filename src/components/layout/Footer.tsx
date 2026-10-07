@@ -10,6 +10,7 @@ const footerLinks = {
     { label: "Enterprise", href: "/contact" },
   ],
   "For Candidates": [
+    { label: "Talento Pro Portal", href: "/pro" },
     { label: "Take Assessment", href: "/assessments/explore" },
     { label: "Industry Readiness Score", href: "/features" },
     { label: "Verified Skill Badge", href: "/features" },

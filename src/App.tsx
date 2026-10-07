@@ -37,8 +37,11 @@ const Networking = lazy(() => import("./pages/Networking"));
 const AssessmentDiscovery = lazy(() => import("./pages/assessment/AssessmentDiscovery"));
 const AssessmentDetail = lazy(() => import("./pages/assessment/AssessmentDetail"));
 const AssessmentPreCheck = lazy(() => import("./pages/assessment/AssessmentPreCheck"));
+const AssessmentPrepare = lazy(() => import("./pages/assessment/AssessmentPrepare"));
+const AssessmentPractice = lazy(() => import("./pages/assessment/AssessmentPractice"));
 const AssessmentTest = lazy(() => import("./pages/assessment/AssessmentTest"));
 const AssessmentResult = lazy(() => import("./pages/assessment/AssessmentResult"));
+const TalentoPro = lazy(() => import("./pages/TalentoPro"));
 
 const queryClient = new QueryClient();
 
@@ -59,6 +62,8 @@ const AnimatedRoutes = () => {
           <Route path="/assessments" element={<PageTransition><Assessments /></PageTransition>} />
           <Route path="/assessments/explore" element={<PageTransition><AssessmentDiscovery /></PageTransition>} />
           <Route path="/assessments/:assessmentId" element={<PageTransition><AssessmentDetail /></PageTransition>} />
+          <Route path="/assessments/:assessmentId/prepare" element={<AssessmentPrepare />} />
+          <Route path="/assessments/:assessmentId/practice/:subId/:mode" element={<AssessmentPractice />} />
           <Route path="/assessments/:assessmentId/pre-check" element={<AssessmentPreCheck />} />
           <Route path="/assessments/:assessmentId/test" element={<AssessmentTest />} />
           <Route path="/assessments/:assessmentId/result" element={<PageTransition><AssessmentResult /></PageTransition>} />
@@ -80,6 +85,8 @@ const AnimatedRoutes = () => {
           <Route path="/demo-profile" element={<PageTransition><DemoProfile /></PageTransition>} />
           <Route path="/skill-assessment" element={<PageTransition><SkillAssessment /></PageTransition>} />
           <Route path="/networking" element={<PageTransition><Networking /></PageTransition>} />
+          <Route path="/pro" element={<PageTransition><TalentoPro /></PageTransition>} />
+          <Route path="/talento-pro" element={<PageTransition><TalentoPro /></PageTransition>} />
           <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
         </Routes>
       </Suspense>

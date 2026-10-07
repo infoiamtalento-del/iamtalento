@@ -107,6 +107,7 @@ const stats = [
 
 const navLinks = [
   { label: "Jobs", href: "/jobs" },
+  { label: "Talento Pro", href: "/pro" },
   { label: "Assessments", href: "/assessments" },
   { label: "Learning", href: "/learning" },
   { label: "Pricing", href: "/pricing" },
@@ -203,6 +204,11 @@ const DemoProfile = () => {
                           <p className="text-[11px] text-muted-foreground truncate">{profile.professional_headline}</p>
                         </div>
                       </div>
+                      <Link to="/pro" className="inline-block w-full mb-1.5">
+                        <Button variant="default" size="sm" className="w-full h-8 text-xs font-semibold rounded-full bg-primary hover:bg-primary/90 text-white gap-1.5">
+                          <Crown className="h-3.5 w-3.5" /> Talento Pro Portal
+                        </Button>
+                      </Link>
                       <Link to="/my-profile">
                         <Button variant="outline" size="sm" className="w-full mt-3 h-8 text-xs font-semibold rounded-full border-primary/30 text-primary hover:bg-primary/5">
                           View Profile

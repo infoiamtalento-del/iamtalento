@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Zap, ChevronDown, ChevronRight } from "lucide-react";
+import { Menu, X, Zap, ChevronDown, ChevronRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import ThemeToggle from "./ThemeToggle";
@@ -13,8 +13,8 @@ const eventsDropdownItems = [
 ];
 
 const pricingDropdownItems = [
-  { label: "For Candidates", href: "/pricing?type=candidate" },
-  { label: "For Employers", href: "/pricing?type=employer" },
+  { label: "For Candidates", href: "/pricing?tab=candidates" },
+  { label: "For Employers", href: "/pricing?tab=employers" },
 ];
 
 type DropdownId = "events" | "pricing";
@@ -127,6 +127,12 @@ const Navbar = () => {
           )}
           <div className="flex items-center gap-2 ml-4 pl-4 border-l border-border">
             <ThemeToggle />
+            <Link to="/pro">
+              <Button size="sm" variant="outline" className="border-primary/40 text-primary hover:bg-primary/10 font-bold gap-1.5 shadow-xs">
+                <Sparkles className="h-3.5 w-3.5" />
+                <span>Talento Pro</span>
+              </Button>
+            </Link>
             <Link to="/auth">
               <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
                 Login
@@ -202,6 +208,7 @@ const Navbar = () => {
               )
             )}
             <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-border">
+              <Link to="/pro"><Button variant="outline" className="w-full border-primary/40 text-primary font-bold gap-1.5"><Sparkles className="h-3.5 w-3.5" /> Talento Pro</Button></Link>
               <Link to="/auth"><Button variant="ghost" className="w-full">Login</Button></Link>
               <Link to="/for-employers"><Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 border-0">For Employers</Button></Link>
             </div>

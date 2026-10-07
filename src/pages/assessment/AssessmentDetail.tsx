@@ -40,7 +40,12 @@ import bannerImg from "@/assets/assessment-banner.jpg";
 import ctaBandImg from "@/assets/assessment-cta-band.jpg";
 import reportImg from "@/assets/step-report.jpg";
 import proctorImg from "@/assets/step-proctoring.jpg";
-import dashboardImg from "@/assets/carousel-dashboard.jpg";
+import { getSubDomains, subDomainPrice } from "@/data/subDomains";
+import { savePaidOrder } from "@/data/practiceQuestions";
+import { SubDomainPicker, AssessmentCart, cartTotals, formatINR } from "@/components/assessments/SubDomainPicker";
+import MarketingExperts from "@/components/assessments/MarketingExperts";
+import AssessmentHowItWorks from "@/components/assessments/AssessmentHowItWorks";
+import BrandLogo from "@/components/ui/BrandLogo";
 import { useState } from "react";
 
 const proctoringLayers = [
@@ -54,8 +59,6 @@ const proctoringLayers = [
   { icon: BadgeCheck, name: "Assessment integrity", text: "Every score is auditable and verifiable." },
 ];
 
-const DOMAIN_PRICE = 1999;
-const GST = Math.round(DOMAIN_PRICE * 0.18);
 
 const testParts = [
   { icon: ListChecks, name: "MCQ", text: "Concept and knowledge questions on core domain topics." },
@@ -108,6 +111,16 @@ const AssessmentDetail = () => {
   const a = getAssessment(assessmentId);
   const [method, setMethod] = useState("UPI");
 
+  const subDomainOptions = getSubDomains(a?.industry ?? "");
+  const [selectedIds, setSelectedIds] = useState<string[]>(() => {
+    const own = subDomainOptions.find((s) => s.name.toLowerCase() === a?.domain.toLowerCase());
+    return [(own ?? subDomainOptions[0]).id];
+  });
+  const selectedSubs = subDomainOptions.filter((s) => selectedIds.includes(s.id));
+  const cart = cartTotals(selectedSubs);
+  const toggleSub = (id: string) =>
+    setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+
   if (!a) {
     return (
       <Layout>
@@ -129,7 +142,15 @@ const AssessmentDetail = () => {
     ).values()
   ).slice(0, 6);
 
-  const start = () => navigate(`/assessments/${a.id}/pre-check`);
+  const start = () => {
+    savePaidOrder(a.id, {
+      orderId: `TLN-${Date.now().toString(36).toUpperCase().slice(-6)}`,
+      subDomainIds: selectedIds,
+      total: cart.total,
+      paidAt: Date.now(),
+    });
+    navigate(`/assessments/${a.id}/prepare`);
+  };
   const goToPayment = () => document.getElementById("payment")?.scrollIntoView({ behavior: "smooth" });
 
   return (
@@ -174,6 +195,25 @@ const AssessmentDetail = () => {
                   <span>{a.type} assessment</span>
                   <span>For {a.experienceLevels.join(", ")}</span>
                 </div>
+
+                <div className="relative mt-8 overflow-hidden rounded-2xl border border-border shadow-[0_28px_60px_-40px_hsl(var(--foreground)/0.45)]">
+                  <img
+                    src={bannerImg}
+                    alt="Professionals preparing for a proctored assessment"
+                    width={1920}
+                    height={800}
+                    className="h-48 w-full object-cover object-center md:h-60"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 flex flex-wrap items-center gap-x-3 gap-y-2 p-4 md:p-5">
+                    <span className="rounded-full bg-primary px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-primary-foreground">
+                      Proctored session
+                    </span>
+                    <span className="text-xs font-bold text-background">
+                      Identity check · Camera, mic and screen monitoring · Verified CIR report
+                    </span>
+                  </div>
+                </div>
               </div>
 
               <div className="rounded-xl border border-border bg-background p-6">
@@ -192,27 +232,10 @@ const AssessmentDetail = () => {
                 <p className="text-xs text-muted-foreground text-center mt-3">You'll run a quick device check first.</p>
               </div>
             </div>
-
-            <div className="relative mt-12 overflow-hidden rounded-2xl border border-border shadow-[0_28px_60px_-40px_hsl(var(--foreground)/0.45)]">
-              <img
-                src={bannerImg}
-                alt="Professionals preparing for a proctored assessment"
-                width={1920}
-                height={800}
-                className="h-52 w-full object-cover md:h-72"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-foreground/75 via-foreground/35 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 flex flex-wrap items-center gap-3 p-5 md:p-6">
-                <span className="rounded-full bg-primary px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-primary-foreground">
-                  Proctored session
-                </span>
-                <span className="text-xs font-bold text-background md:text-sm">
-                  Identity check · Camera, mic and screen monitoring · Verified CIR report
-                </span>
-              </div>
-            </div>
           </div>
         </section>
+
+        <AssessmentHowItWorks onStart={goToPayment} />
 
         {/* ============ TEST JOURNEY ============ */}
         <section className="py-16 md:py-20 bg-secondary/30">
@@ -226,7 +249,7 @@ const AssessmentDetail = () => {
               desc2={`${a.domain} assessment proves your expertise.`}
             />
 
-            <div className="grid lg:grid-cols-[minmax(0,1fr)_280px] gap-6 items-start">
+            <div className="grid lg:grid-cols-[minmax(0,1fr)_340px] gap-6 items-start">
               <div className="space-y-6">
                 <div className="rounded-xl border border-border bg-background overflow-hidden">
                   <div className="flex flex-col gap-2 border-b border-border bg-accent/45 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
@@ -275,94 +298,77 @@ const AssessmentDetail = () => {
                 </div>
 
                 <div className="rounded-xl border border-primary/30 bg-background overflow-hidden shadow-[0_16px_40px_-28px_hsl(var(--foreground)/0.3)]">
-                  <div className="grid md:grid-cols-[minmax(0,1fr)_220px]">
-                    <div className="p-6 md:p-7">
-                      <div className="flex flex-wrap items-center gap-2 mb-4">
-                        <span className="rounded-full bg-primary px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-primary-foreground">
-                          Domain-specific test
-                        </span>
-                        <span className="rounded-full bg-secondary px-3 py-1 text-[11px] font-semibold text-muted-foreground">
-                          {a.difficulty}
-                        </span>
-                      </div>
-                      <h3 className="font-display text-2xl font-bold mb-2">{a.title}</h3>
-                      <p className="text-sm leading-relaxed text-muted-foreground mb-6">{a.description}</p>
-                      <div className="grid gap-4 sm:grid-cols-3">
-                        {testParts.map((t, index) => (
-                          <div key={t.name} className="border-t-2 border-primary/25 pt-3">
-                            <div className="flex items-center gap-2 mb-1.5">
-                              <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10 text-primary">
-                                <t.icon className="h-3.5 w-3.5" />
-                              </span>
-                              <span className="text-xs font-bold">0{index + 1} · {t.name}</span>
-                            </div>
-                            <p className="text-[11px] leading-relaxed text-muted-foreground">{t.text}</p>
-                          </div>
-                        ))}
-                      </div>
+                  <div className="p-6 md:p-7">
+                    <div className="flex flex-wrap items-center gap-2 mb-4">
+                      <span className="rounded-full bg-primary px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-primary-foreground">
+                        Domain-specific test
+                      </span>
+                      <span className="rounded-full bg-secondary px-3 py-1 text-[11px] font-semibold text-muted-foreground">
+                        {a.difficulty}
+                      </span>
                     </div>
-                    <div className="flex flex-col justify-between border-t border-border bg-accent/40 p-6 md:border-l md:border-t-0">
-                      <div>
-                        <p className="text-xs font-bold uppercase tracking-wider text-primary mb-4">Test snapshot</p>
-                        <dl className="space-y-4">
-                          {[
-                            ["Duration", a.duration],
-                            ["Questions", String(a.questionCount)],
-                            ["Format", a.type],
-                            ["Monitoring", "Proctored"],
-                          ].map(([label, value]) => (
-                            <div key={label} className="flex items-end justify-between gap-3 border-b border-border pb-2">
-                              <dt className="text-xs text-muted-foreground">{label}</dt>
-                              <dd className="text-sm font-bold text-right">{value}</dd>
-                            </div>
-                          ))}
-                        </dl>
-                      </div>
-                      <div className="mt-6 flex flex-wrap gap-1.5">
-                        {a.skills.slice(0, 4).map((skill) => (
-                          <span
-                            key={skill}
-                            className="rounded-full bg-background px-2.5 py-1 text-[10px] font-semibold text-muted-foreground border border-border"
-                          >
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
+                    <h3 className="font-display text-2xl font-bold mb-2">{a.title}</h3>
+                    <p className="text-sm leading-relaxed text-muted-foreground mb-6">{a.description}</p>
+                    <div className="grid gap-4 sm:grid-cols-3">
+                      {testParts.map((t, index) => (
+                        <div key={t.name} className="border-t-2 border-primary/25 pt-3">
+                          <div className="flex items-center gap-2 mb-1.5">
+                            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10 text-primary">
+                              <t.icon className="h-3.5 w-3.5" />
+                            </span>
+                            <span className="text-xs font-bold">0{index + 1} · {t.name}</span>
+                          </div>
+                          <p className="text-[11px] leading-relaxed text-muted-foreground">{t.text}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="border-t border-border bg-accent/40 p-6 md:p-7">
+                    <p className="text-xs font-bold uppercase tracking-wider text-primary mb-4">Test snapshot</p>
+                    <dl className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-4">
+                      {[
+                        ["Duration", a.duration],
+                        ["Questions", String(a.questionCount)],
+                        ["Format", a.type],
+                        ["Monitoring", "Proctored"],
+                      ].map(([label, value]) => (
+                        <div
+                          key={label}
+                          className="rounded-lg border border-border/80 bg-background/90 p-3.5 flex flex-col justify-between"
+                        >
+                          <dt className="text-xs text-muted-foreground">{label}</dt>
+                          <dd className="text-sm sm:text-base font-bold text-foreground mt-1">{value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      {a.skills.map((skill) => (
+                        <span
+                          key={skill}
+                          className="rounded-full bg-background px-2.5 py-1 text-[11px] font-semibold text-muted-foreground border border-border shadow-xs"
+                        >
+                          {skill}
+                        </span>
+                      ))}
                     </div>
                   </div>
                 </div>
+
+                <SubDomainPicker
+                  domainTitle={a.industry}
+                  options={subDomainOptions}
+                  selected={selectedIds}
+                  onToggle={toggleSub}
+                />
               </div>
 
-              <aside className="rounded-xl border border-border bg-foreground p-6 text-background lg:sticky lg:top-24">
-                <img
-                  src={dashboardImg}
-                  alt="Candidate viewing an assessment dashboard"
-                  width={800}
-                  height={1024}
-                  loading="lazy"
-                  className="mb-5 h-28 w-full rounded-lg object-cover"
-                />
-                <p className="text-xs font-bold uppercase tracking-wider text-primary mb-5">Assessment plan</p>
-                <div className="space-y-5">
-                  <div>
-                    <p className="font-display text-3xl font-bold text-background">4</p>
-                    <p className="text-xs text-background/65">tests in one journey</p>
-                  </div>
-                  <div className="h-px bg-background/15" />
-                  <div>
-                    <p className="font-display text-3xl font-bold text-background">3 + 1</p>
-                    <p className="text-xs text-background/65">core plus domain-specific</p>
-                  </div>
-                  <div className="h-px bg-background/15" />
-                  <div className="flex items-start gap-2 text-xs leading-relaxed text-background/75">
-                    <ShieldCheck className="h-4 w-4 shrink-0 text-primary" />
-                    One secure, proctored session with a verified result.
-                  </div>
-                  <Button className="w-full gap-2" onClick={goToPayment}>
-                    Start Assessment <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </div>
-              </aside>
+              <AssessmentCart
+                selected={selectedSubs}
+                coreNames={MANDATORY_TESTS.map((m) => m.name)}
+                onRemove={toggleSub}
+                onCheckout={goToPayment}
+              />
             </div>
           </div>
         </section>
@@ -373,14 +379,14 @@ const AssessmentDetail = () => {
             <div className="overflow-hidden rounded-2xl bg-primary text-primary-foreground shadow-[0_30px_70px_-45px_hsl(var(--primary))]">
               <div className="grid md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] items-stretch">
                 <div className="p-8 md:p-12">
-                  <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary-foreground mb-5">
+                  <span className="inline-flex items-center gap-2 rounded-full bg-primary-foreground/15 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-primary-foreground mb-6">
                     <FileBarChart2 className="h-4 w-4" /> Included with every assessment
                   </span>
-                  <h2 className="font-display text-xl md:text-3xl font-bold leading-[1.15] mb-4">
+                  <h2 className="font-display text-2xl md:text-4xl font-bold leading-[1.15] mb-4 text-primary-foreground">
                     Your Score and Next Steps
-                    <br className="hidden md:block" /> <span className="text-primary-foreground/75">In One Verified Report.</span>
+                    <br className="hidden md:block" /> <span className="text-primary-foreground/70">In One Verified Report.</span>
                   </h2>
-                  <p className="text-sm md:text-base leading-relaxed text-primary-foreground/85 max-w-md mb-7">
+                  <p className="text-sm md:text-base leading-relaxed text-primary-foreground/90 max-w-md mb-8">
                     Finish the session and your report is ready the same day.
                     <br className="hidden md:block" /> Share it with employers or keep it as your roadmap.
                   </p>
@@ -420,6 +426,9 @@ const AssessmentDetail = () => {
               desc2="from leading companies in this field."
             />
 
+            {a.industry === "Marketing" ? (
+              <MarketingExperts />
+            ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {creators.map((c) => (
                 <div
@@ -442,8 +451,8 @@ const AssessmentDetail = () => {
                   </div>
                   <div className="min-w-0">
                     <p className="font-display font-bold">{c.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {c.title} · {c.company}
+                    <p className="mt-0.5 flex items-center gap-2 text-sm text-muted-foreground">
+                      <BrandLogo name={c.company} size="xs" /> {c.title} · {c.company}
                     </p>
                     <p className="text-xs text-primary font-semibold mt-1">{c.experience}</p>
                     <div className="flex flex-wrap gap-1 mt-2">
@@ -457,6 +466,7 @@ const AssessmentDetail = () => {
                 </div>
               ))}
             </div>
+            )}
           </div>
         </section>
 
@@ -566,18 +576,22 @@ const AssessmentDetail = () => {
                 <div className="flex items-center justify-between mb-5">
                   <p className="font-display font-bold">Order summary</p>
                   <span className="rounded-full bg-primary/10 px-3 py-1 text-[11px] font-bold text-primary">
-                    4 tests included
+                    {selectedSubs.length} sub-domain{selectedSubs.length === 1 ? "" : "s"} + 3 core tests
                   </span>
                 </div>
                 <ul className="divide-y divide-border text-sm">
-                  <li className="flex justify-between gap-4 py-3">
-                    <span>{a.title} (MCQ · Technical · Experience)</span>
-                    <span className="font-semibold shrink-0">₹{DOMAIN_PRICE}</span>
-                  </li>
                   {MANDATORY_TESTS.map((m) => (
                     <li key={m.name} className="flex justify-between gap-4 py-3">
                       <span>{m.name}</span>
                       <span className="text-primary font-semibold shrink-0">Included</span>
+                    </li>
+                  ))}
+                  {selectedSubs.map((s) => (
+                    <li key={s.id} className="flex justify-between gap-4 py-3">
+                      <span>
+                        {s.name} <span className="text-muted-foreground">(3 rounds · 6 tests)</span>
+                      </span>
+                      <span className="font-semibold shrink-0">{formatINR(subDomainPrice(s))}</span>
                     </li>
                   ))}
                   <li className="flex justify-between gap-4 py-3">
@@ -586,12 +600,12 @@ const AssessmentDetail = () => {
                   </li>
                   <li className="flex justify-between gap-4 py-3">
                     <span>GST (18%)</span>
-                    <span className="shrink-0">₹{GST}</span>
+                    <span className="shrink-0">{formatINR(cart.gst)}</span>
                   </li>
                 </ul>
                 <div className="flex justify-between pt-5 mt-3 border-t border-border font-display text-lg font-bold">
                   <span>Total</span>
-                  <span>₹{DOMAIN_PRICE + GST}</span>
+                  <span>{formatINR(cart.total)}</span>
                 </div>
               </div>
 
@@ -621,8 +635,8 @@ const AssessmentDetail = () => {
                     </button>
                   ))}
                 </div>
-                <Button className="w-full gap-2" size="lg" onClick={start}>
-                  <Lock className="h-4 w-4" /> Pay ₹{DOMAIN_PRICE + GST} & Start <ArrowRight className="h-4 w-4" />
+                <Button className="w-full gap-2" size="lg" onClick={start} disabled={selectedSubs.length === 0}>
+                  <Lock className="h-4 w-4" /> Pay {formatINR(cart.total)} & Start <ArrowRight className="h-4 w-4" />
                 </Button>
                 <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-[11px] text-muted-foreground">
                   <span className="flex items-center gap-1">

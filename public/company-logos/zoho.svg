@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 35" fill="none">
+  <!-- Zoho red block logo -->
+  <rect x="2" y="5" width="22" height="22" rx="4" fill="#E42528"/>
+  <rect x="26" y="5" width="22" height="22" rx="4" fill="#00904B"/>
+  <rect x="50" y="5" width="22" height="22" rx="4" fill="#0069B4"/>
+  <rect x="74" y="5" width="22" height="22" rx="4" fill="#ED1C24"/>
+  <text x="13" y="21" font-family="system-ui, sans-serif" font-weight="900" font-size="14" fill="#FFFFFF" text-anchor="middle">Z</text>
+  <text x="37" y="21" font-family="system-ui, sans-serif" font-weight="900" font-size="14" fill="#FFFFFF" text-anchor="middle">O</text>
+  <text x="61" y="21" font-family="system-ui, sans-serif" font-weight="900" font-size="14" fill="#FFFFFF" text-anchor="middle">H</text>
+  <text x="85" y="21" font-family="system-ui, sans-serif" font-weight="900" font-size="14" fill="#FFFFFF" text-anchor="middle">O</text>
+</svg>

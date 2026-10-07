@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 40" fill="none">
+  <path d="M17 28c0-3.3 2.1-6.2 5.2-7.3l4.3-1.5c-2.3 4.2-2.3 9.3 0 13.5l-4.3-1.5c-3.1-1.1-5.2-4-5.2-7.2z" fill="#0052CC"/>
+  <path d="M26.5 19.2l4.3-1.5c3.1 1.1 5.2 4 5.2 7.3s-2.1 6.2-5.2 7.3l-4.3-1.5c2.3-4.2 2.3-9.3 0-13.6z" fill="#2684FF"/>
+  <text x="38" y="27" font-family="system-ui, sans-serif" font-weight="800" font-size="13" fill="#0052CC">Atlassian</text>
+</svg>
