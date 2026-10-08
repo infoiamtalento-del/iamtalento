@@ -68,26 +68,48 @@ export const hasBrandLogo = (name: string) => resolve(name).src !== null;
 interface Props {
   name: string;
   size?: "xs" | "sm" | "md" | "lg";
+  variant?: "square" | "badge";
   /** show the brand name beside the mark */
   label?: boolean;
   className?: string;
 }
 
 const SIZES = {
-  xs: { box: "h-5 w-5 rounded", img: "h-3 w-3", text: "text-[9px]" },
-  sm: { box: "h-7 w-7 rounded-md", img: "h-4 w-4", text: "text-[10px]" },
-  md: { box: "h-10 w-10 rounded-lg", img: "h-6 w-6", text: "text-xs" },
-  lg: { box: "h-12 w-12 rounded-xl", img: "h-7 w-7", text: "text-sm" },
+  xs: { box: "h-5 w-5 rounded", img: "h-3.5 w-3.5", text: "text-[9px]" },
+  sm: { box: "h-8 w-8 rounded-lg", img: "h-5.5 w-5.5", text: "text-[10px]" },
+  md: { box: "h-10 w-10 rounded-xl", img: "h-7 w-7", text: "text-xs" },
+  lg: { box: "h-12 w-12 rounded-xl", img: "h-8.5 w-8.5", text: "text-sm" },
 };
 
-const BrandLogo = ({ name, size = "sm", label = false, className = "" }: Props) => {
+const BrandLogo = ({ name, size = "sm", variant = "square", label = false, className = "" }: Props) => {
   const { src } = resolve(name);
   const [failed, setFailed] = useState(false);
   const s = SIZES[size];
 
+  if (variant === "badge") {
+    return (
+      <span
+        className={`inline-flex shrink-0 items-center justify-center rounded-lg border border-border/80 bg-white px-2.5 h-8 min-w-[34px] shadow-2xs transition-all hover:border-foreground/30 ${className}`}
+        title={name}
+      >
+        {src && !failed ? (
+          <img
+            src={src}
+            alt={`${name} logo`}
+            loading="lazy"
+            onError={() => setFailed(true)}
+            className="h-5 max-w-[76px] w-auto object-contain shrink-0"
+          />
+        ) : (
+          <span className="text-[11px] font-bold text-foreground/80">{name}</span>
+        )}
+      </span>
+    );
+  }
+
   const mark = (
     <span
-      className={`inline-flex shrink-0 items-center justify-center border border-border bg-white ${s.box}`}
+      className={`inline-flex shrink-0 items-center justify-center border border-border/80 bg-white ${s.box}`}
       title={name}
     >
       {src && !failed ? (
@@ -96,7 +118,7 @@ const BrandLogo = ({ name, size = "sm", label = false, className = "" }: Props) 
           alt={`${name} logo`}
           loading="lazy"
           onError={() => setFailed(true)}
-          className={`${s.img} object-contain`}
+          className={`${s.img} max-h-[85%] max-w-[85%] object-contain`}
         />
       ) : (
         <span className={`${s.text} font-bold text-muted-foreground`}>{name.trim().charAt(0).toUpperCase()}</span>

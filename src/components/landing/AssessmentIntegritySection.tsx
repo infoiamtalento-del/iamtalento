@@ -58,17 +58,20 @@ const proctorPhases = [
   },
 ];
 
-const AssessmentIntegritySection = () => {
+type Align = "center" | "start" | "left";
+
+const AssessmentIntegritySection = ({ align = "center" }: { align?: Align }) => {
   const { ref, isVisible } = useScrollAnimation();
   const [activeTab, setActiveTab] = useState(1);
+  const centered = align === "center";
 
   return (
     <section ref={ref} className="py-16 md:py-20 relative overflow-hidden bg-white">
       <div className="container">
-        <div className={cn("text-center max-w-2xl mx-auto mb-14 transition-all duration-700", isVisible ? "opacity-100" : "opacity-0 translate-y-8")}>
+        <div className={cn(centered ? "text-center max-w-2xl mx-auto mb-14" : "text-left max-w-3xl mb-10", "transition-all duration-700", isVisible ? "opacity-100" : "opacity-0 translate-y-8")}>
           <SectionBadge label="30-Layer Proctoring" icon={Shield} />
           <motion.h2
-            className="text-3xl md:text-4xl font-bold font-display mb-3 text-foreground leading-[1.15]"
+            className="text-3xl md:text-4xl font-bold font-display mt-3 mb-3 text-foreground leading-[1.15]"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -76,7 +79,7 @@ const AssessmentIntegritySection = () => {
             30 Layers of Integrity.<br />
             <span className="text-primary">Zero Tolerance.</span>
           </motion.h2>
-          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+          <p className={cn("text-muted-foreground text-base md:text-lg leading-relaxed", centered ? "max-w-2xl mx-auto" : "")}>
             Every assessment is protected before, during, and after —
             <br className="hidden md:block" />
             so every score is actually earned.
@@ -84,14 +87,14 @@ const AssessmentIntegritySection = () => {
         </div>
 
         {/* Tabs */}
-        <div className="max-w-5xl mx-auto">
-          <div className="flex justify-center gap-2 mb-10">
+        <div className={cn("w-full", centered && "max-w-5xl mx-auto")}>
+          <div className={cn("flex gap-2 mb-8 flex-wrap", centered ? "justify-center" : "justify-start")}>
             {proctorPhases.map((group, i) => (
               <button
                 key={group.phase}
                 onClick={() => setActiveTab(i)}
                 className={cn(
-                  "px-5 py-2.5 rounded-full text-sm font-semibold font-display transition-all duration-300 border",
+                  "px-5 py-2.5 rounded-full text-sm font-semibold font-display transition-all duration-300 border cursor-pointer",
                   activeTab === i
                     ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20"
                     : "text-muted-foreground hover:text-foreground border-border hover:border-foreground/20"
@@ -149,7 +152,7 @@ const AssessmentIntegritySection = () => {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.3 }}
-          className="text-center text-base font-semibold font-display mt-16 text-foreground"
+          className={cn("text-base font-semibold font-display mt-12 text-foreground", centered ? "text-center" : "text-left")}
         >
           Credible Scores. Trusted Outcomes.
         </motion.p>

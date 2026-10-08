@@ -69,8 +69,8 @@ const Navbar = () => {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        scrolled ? "bg-background/95 backdrop-blur-md shadow-sm py-3" : "bg-transparent py-5"
+        "fixed top-0 left-0 right-0 z-50 border-b border-border bg-background shadow-sm transition-all duration-300",
+        scrolled ? "py-3" : "py-4"
       )}
     >
       <nav className="container flex items-center" aria-label="Main navigation">

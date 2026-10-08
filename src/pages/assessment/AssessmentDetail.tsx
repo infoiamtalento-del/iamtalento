@@ -36,28 +36,17 @@ import { Button } from "@/components/ui/button";
 import { ASSESSMENTS, getAssessment } from "@/data/assessments";
 import { MANDATORY_TESTS } from "@/pages/assessment/AssessmentDiscovery";
 import CredibilityTrustSection from "@/components/assessments/CredibilityTrustSection";
-import bannerImg from "@/assets/assessment-banner.jpg";
 import ctaBandImg from "@/assets/assessment-cta-band.jpg";
-import reportImg from "@/assets/step-report.jpg";
-import proctorImg from "@/assets/step-proctoring.jpg";
 import { getSubDomains, subDomainPrice } from "@/data/subDomains";
 import { savePaidOrder } from "@/data/practiceQuestions";
 import { SubDomainPicker, AssessmentCart, cartTotals, formatINR } from "@/components/assessments/SubDomainPicker";
 import MarketingExperts from "@/components/assessments/MarketingExperts";
-import AssessmentHowItWorks from "@/components/assessments/AssessmentHowItWorks";
+import AssessmentVideoCard from "@/components/assessments/AssessmentVideoCard";
+import { MandatoryCoreTestsSection } from "@/components/assessments/MandatoryCoreTests";
+import { AssessmentStickyBar } from "@/components/assessments/AssessmentStickyBar";
+import AssessmentIntegritySection from "@/components/landing/AssessmentIntegritySection";
 import BrandLogo from "@/components/ui/BrandLogo";
 import { useState } from "react";
-
-const proctoringLayers = [
-  { icon: Fingerprint, name: "Identity verification", text: "Photo ID and face match before the test begins." },
-  { icon: Camera, name: "Camera monitoring", text: "Continuous gaze and presence checks throughout." },
-  { icon: Mic, name: "Microphone monitoring", text: "Ambient audio flags for unusual conversation." },
-  { icon: Monitor, name: "Screen monitoring", text: "Screen activity recorded for the full session." },
-  { icon: AppWindow, name: "Tab & browser activity", text: "Tab switches and copy attempts are logged." },
-  { icon: Maximize, name: "Full-screen enforcement", text: "The test runs locked in full-screen mode." },
-  { icon: AlertTriangle, name: "Suspicious activity detection", text: "AI flags anomalies in real time." },
-  { icon: BadgeCheck, name: "Assessment integrity", text: "Every score is auditable and verifiable." },
-];
 
 
 const testParts = [
@@ -152,6 +141,7 @@ const AssessmentDetail = () => {
     navigate(`/assessments/${a.id}/prepare`);
   };
   const goToPayment = () => document.getElementById("payment")?.scrollIntoView({ behavior: "smooth" });
+  const goToJourney = () => document.getElementById("journey")?.scrollIntoView({ behavior: "smooth" });
 
   return (
     <>
@@ -161,8 +151,7 @@ const AssessmentDetail = () => {
       </Helmet>
       <Layout>
         {/* ============ HEADER ============ */}
-        <section className="relative overflow-hidden bg-gradient-to-b from-accent/60 via-accent/25 to-background pt-28 pb-14 md:pt-36 md:pb-16">
-          <div className="pointer-events-none absolute -top-28 right-[-8%] h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
+        <section className="relative overflow-hidden bg-background pt-28 pb-14 md:pt-36 md:pb-16 border-b border-border/40">
           <div className="container relative">
             <Link
               to="/assessments/explore"
@@ -196,49 +185,88 @@ const AssessmentDetail = () => {
                   <span>For {a.experienceLevels.join(", ")}</span>
                 </div>
 
-                <div className="relative mt-8 overflow-hidden rounded-2xl border border-border shadow-[0_28px_60px_-40px_hsl(var(--foreground)/0.45)]">
-                  <img
-                    src={bannerImg}
-                    alt="Professionals preparing for a proctored assessment"
-                    width={1920}
-                    height={800}
-                    className="h-48 w-full object-cover object-center md:h-60"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent" />
-                  <div className="absolute inset-x-0 bottom-0 flex flex-wrap items-center gap-x-3 gap-y-2 p-4 md:p-5">
-                    <span className="rounded-full bg-primary px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-primary-foreground">
-                      Proctored session
+                {/* Hero CTAs */}
+                <div className="flex flex-wrap items-center gap-3.5 mt-6">
+                  <Button size="lg" className="gap-2 font-bold cursor-pointer shadow-md" onClick={goToPayment}>
+                    <span>Start Assessment</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="gap-2 font-semibold cursor-pointer border-border/80 hover:bg-secondary"
+                    onClick={goToJourney}
+                  >
+                    <ListChecks className="h-4 w-4 text-primary" />
+                    <span>View Curriculum</span>
+                  </Button>
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground ml-1">
+                    <span className="font-bold text-foreground text-sm">{formatINR(cart.total)}</span>
+                    <span>· 4 tests + CIR report</span>
+                  </div>
+                </div>
+
+                {/* Reassurance Grid & Skills */}
+                <div className="mt-7 rounded-2xl border border-border/80 bg-background/90 p-5 shadow-xs backdrop-blur-xs">
+                  <div className="grid sm:grid-cols-3 gap-4 pb-4 border-b border-border/60">
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                        <ShieldCheck className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-foreground">Proctored Session</p>
+                        <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">
+                          ID verification, camera, microphone &amp; screen monitoring
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-secondary text-foreground">
+                        <ListChecks className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-foreground">4 Tests Included</p>
+                        <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">
+                          3 core career tests plus 1 focused {a.domain} test
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-secondary text-foreground">
+                        <FileBarChart2 className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-foreground">Verified CIR Report</p>
+                        <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">
+                          Same-day auditable result with employer share link
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-3.5 flex flex-wrap items-center gap-2">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground shrink-0">
+                      Core skills evaluated:
                     </span>
-                    <span className="text-xs font-bold text-background">
-                      Identity check · Camera, mic and screen monitoring · Verified CIR report
-                    </span>
+                    {a.skills.map((skill) => (
+                      <span
+                        key={skill}
+                        className="rounded-full bg-secondary/80 border border-border/60 px-2.5 py-0.5 text-[11px] font-medium text-foreground"
+                      >
+                        {skill}
+                      </span>
+                    ))}
                   </div>
                 </div>
               </div>
 
-              <div className="rounded-xl border border-border bg-background p-6">
-                <p className="text-sm text-muted-foreground mb-1">Ready when you are</p>
-                <h2 className="font-display text-xl font-bold mb-4">Start this assessment</h2>
-                <ul className="space-y-2 mb-5 text-sm">
-                  {[`${a.questionCount} questions`, a.duration, a.difficulty, "Proctored session"].map((x) => (
-                    <li key={x} className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-primary" /> {x}
-                    </li>
-                  ))}
-                </ul>
-                <Button className="w-full gap-2" onClick={goToPayment}>
-                  Start Assessment <ArrowRight className="h-4 w-4" />
-                </Button>
-                <p className="text-xs text-muted-foreground text-center mt-3">You'll run a quick device check first.</p>
-              </div>
+              <AssessmentVideoCard />
             </div>
           </div>
         </section>
 
-        <AssessmentHowItWorks onStart={goToPayment} />
-
         {/* ============ TEST JOURNEY ============ */}
-        <section className="py-16 md:py-20 bg-secondary/30">
+        <section id="journey" className="py-16 md:py-20 bg-muted/20 scroll-mt-24">
           <div className="container">
             <SectionHeading
               eyebrow="Inside this assessment"
@@ -251,72 +279,36 @@ const AssessmentDetail = () => {
 
             <div className="grid lg:grid-cols-[minmax(0,1fr)_340px] gap-6 items-start">
               <div className="space-y-6">
-                <div className="rounded-xl border border-border bg-background overflow-hidden">
-                  <div className="flex flex-col gap-2 border-b border-border bg-accent/45 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <p className="font-display text-lg font-bold">Mandatory Core Tests</p>
-                      <p className="text-sm text-muted-foreground">Included by default for every candidate</p>
-                    </div>
-                    <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
-                      <CircleCheckBig className="h-3.5 w-3.5" /> 3 selected
-                    </span>
-                  </div>
-                  <div className="grid md:grid-cols-3">
-                    {MANDATORY_TESTS.map((m, index) => {
-                      const MandatoryIcon = mandatoryIcons[index] ?? ListChecks;
-                      return (
-                        <label
-                          key={m.name}
-                          className="flex cursor-default gap-3 border-b border-border p-6 last:border-b-0 md:border-b-0 md:border-r md:last:border-r-0"
-                        >
-                          <input
-                            type="checkbox"
-                            checked
-                            readOnly
-                            aria-label={`${m.name}, mandatory and selected`}
-                            className="mt-1 h-4 w-4 shrink-0 accent-primary"
-                          />
-                          <span>
-                            <span className="mb-3 flex h-9 w-9 items-center justify-center rounded-md bg-primary/10 text-primary">
-                              <MandatoryIcon className="h-4 w-4" />
-                            </span>
-                            <span className="block font-display text-sm font-bold mb-1">{m.name}</span>
-                            <span className="block text-xs leading-relaxed text-muted-foreground">{m.text}</span>
-                          </span>
-                        </label>
-                      );
-                    })}
-                  </div>
-                </div>
+                <MandatoryCoreTestsSection />
 
                 <div className="relative flex items-center gap-3 px-2" aria-hidden="true">
-                  <div className="h-px flex-1 bg-border" />
-                  <span className="rounded-full border border-primary/20 bg-background px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-primary">
+                  <div className="h-px flex-1 bg-border/80" />
+                  <span className="rounded-full border border-border/80 bg-background px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                     Then continue to
                   </span>
-                  <div className="h-px flex-1 bg-border" />
+                  <div className="h-px flex-1 bg-border/80" />
                 </div>
 
-                <div className="rounded-xl border border-primary/30 bg-background overflow-hidden shadow-[0_16px_40px_-28px_hsl(var(--foreground)/0.3)]">
+                <div className="rounded-2xl border border-border/80 bg-background overflow-hidden shadow-xs">
                   <div className="p-6 md:p-7">
                     <div className="flex flex-wrap items-center gap-2 mb-4">
-                      <span className="rounded-full bg-primary px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-primary-foreground">
+                      <span className="rounded-full bg-primary/10 text-primary border border-primary/20 px-3 py-1 text-[11px] font-bold uppercase tracking-wider">
                         Domain-specific test
                       </span>
                       <span className="rounded-full bg-secondary px-3 py-1 text-[11px] font-semibold text-muted-foreground">
                         {a.difficulty}
                       </span>
                     </div>
-                    <h3 className="font-display text-2xl font-bold mb-2">{a.title}</h3>
+                    <h3 className="font-display text-2xl font-bold mb-2 text-foreground">{a.title}</h3>
                     <p className="text-sm leading-relaxed text-muted-foreground mb-6">{a.description}</p>
                     <div className="grid gap-4 sm:grid-cols-3">
                       {testParts.map((t, index) => (
-                        <div key={t.name} className="border-t-2 border-primary/25 pt-3">
+                        <div key={t.name} className="rounded-xl border border-border/70 bg-muted/10 p-3.5">
                           <div className="flex items-center gap-2 mb-1.5">
-                            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10 text-primary">
+                            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-secondary text-foreground">
                               <t.icon className="h-3.5 w-3.5" />
                             </span>
-                            <span className="text-xs font-bold">0{index + 1} · {t.name}</span>
+                            <span className="text-xs font-bold text-foreground">0{index + 1} · {t.name}</span>
                           </div>
                           <p className="text-[11px] leading-relaxed text-muted-foreground">{t.text}</p>
                         </div>
@@ -324,8 +316,8 @@ const AssessmentDetail = () => {
                     </div>
                   </div>
 
-                  <div className="border-t border-border bg-accent/40 p-6 md:p-7">
-                    <p className="text-xs font-bold uppercase tracking-wider text-primary mb-4">Test snapshot</p>
+                  <div className="border-t border-border/80 bg-muted/30 p-6 md:p-7">
+                    <p className="text-xs font-bold uppercase tracking-wider text-foreground/80 mb-3.5">Test snapshot</p>
                     <dl className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-4">
                       {[
                         ["Duration", a.duration],
@@ -335,7 +327,7 @@ const AssessmentDetail = () => {
                       ].map(([label, value]) => (
                         <div
                           key={label}
-                          className="rounded-lg border border-border/80 bg-background/90 p-3.5 flex flex-col justify-between"
+                          className="rounded-xl border border-border/80 bg-background p-3.5 flex flex-col justify-between shadow-2xs"
                         >
                           <dt className="text-xs text-muted-foreground">{label}</dt>
                           <dd className="text-sm sm:text-base font-bold text-foreground mt-1">{value}</dd>
@@ -346,7 +338,7 @@ const AssessmentDetail = () => {
                       {a.skills.map((skill) => (
                         <span
                           key={skill}
-                          className="rounded-full bg-background px-2.5 py-1 text-[11px] font-semibold text-muted-foreground border border-border shadow-xs"
+                          className="rounded-full bg-background px-2.5 py-1 text-[11px] font-medium text-muted-foreground border border-border/70 shadow-2xs"
                         >
                           {skill}
                         </span>
@@ -373,46 +365,6 @@ const AssessmentDetail = () => {
           </div>
         </section>
 
-        {/* ============ CTA BAND — CIR REPORT ============ */}
-        <section className="py-16 md:py-20">
-          <div className="container">
-            <div className="overflow-hidden rounded-2xl bg-primary text-primary-foreground shadow-[0_30px_70px_-45px_hsl(var(--primary))]">
-              <div className="grid md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] items-stretch">
-                <div className="p-8 md:p-12">
-                  <span className="inline-flex items-center gap-2 rounded-full bg-primary-foreground/15 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-primary-foreground mb-6">
-                    <FileBarChart2 className="h-4 w-4" /> Included with every assessment
-                  </span>
-                  <h2 className="font-display text-2xl md:text-4xl font-bold leading-[1.15] mb-4 text-primary-foreground">
-                    Your Score and Next Steps
-                    <br className="hidden md:block" /> <span className="text-primary-foreground/70">In One Verified Report.</span>
-                  </h2>
-                  <p className="text-sm md:text-base leading-relaxed text-primary-foreground/90 max-w-md mb-8">
-                    Finish the session and your report is ready the same day.
-                    <br className="hidden md:block" /> Share it with employers or keep it as your roadmap.
-                  </p>
-                  <Button
-                    variant="secondary"
-                    className="gap-2 bg-background text-primary hover:bg-background/90"
-                    onClick={goToPayment}
-                  >
-                    Get Your Report <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </div>
-                <div className="relative min-h-[200px] md:min-h-[300px]">
-                  <img
-                    src={reportImg}
-                    alt="Career Intelligence Report shown on a laptop and printed page"
-                    width={800}
-                    height={600}
-                    loading="lazy"
-                    className="absolute inset-0 h-full w-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/55 to-primary/10" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* ============ CREATORS ============ */}
         <section className="py-16 md:py-20 bg-secondary/40">
@@ -440,14 +392,11 @@ const AssessmentDetail = () => {
                     <img
                       src={c.photo}
                       alt={c.name}
-                      width={64}
-                      height={64}
+                      width={112}
+                      height={112}
                       loading="lazy"
-                      className="h-16 w-16 rounded-xl object-cover border border-border"
+                      className="h-24 w-24 sm:h-28 sm:w-28 rounded-2xl object-cover border border-border shadow-xs"
                     />
-                    <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                      <BadgeCheck className="h-3 w-3" />
-                    </span>
                   </div>
                   <div className="min-w-0">
                     <p className="font-display font-bold">{c.name}</p>
@@ -473,63 +422,12 @@ const AssessmentDetail = () => {
         <CredibilityTrustSection align="start" />
 
         {/* ============ PROCTORING ============ */}
-        <section className="py-16 md:py-20">
-          <div className="container">
-            <div className="grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-8 lg:gap-10 items-start">
-              <div className="lg:sticky lg:top-24">
-                <SectionHeading
-                  eyebrow="Proctoring"
-                  eyebrowIcon={ShieldCheck}
-                  line1="Your Assessment Is"
-                  line2="Secure and Fair."
-                  desc1="Every session runs through eight layers of integrity checks,"
-                  desc2="so your score means exactly what it says."
-                />
-                <div className="relative overflow-hidden rounded-2xl border border-border shadow-[0_28px_60px_-45px_hsl(var(--foreground)/0.5)]">
-                  <img
-                    src={proctorImg}
-                    alt="Candidate taking a proctored online assessment"
-                    width={800}
-                    height={600}
-                    loading="lazy"
-                    className="h-56 w-full object-cover md:h-72"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/75 via-foreground/10 to-transparent" />
-                  <div className="absolute inset-x-0 bottom-0 flex flex-wrap items-center gap-2 p-5">
-                    <span className="rounded-full bg-primary px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-primary-foreground">
-                      Live monitoring
-                    </span>
-                    <span className="text-xs font-bold text-background">8 integrity layers · full audit trail</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                {proctoringLayers.map((l, i) => (
-                  <motion.div
-                    key={l.name}
-                    initial={{ opacity: 0, y: 14 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.04 }}
-                    className="rounded-xl border border-border bg-background p-5 transition-colors hover:border-primary/35 hover:bg-accent/25"
-                  >
-                    <div className="h-9 w-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-3">
-                      <l.icon className="h-4 w-4" />
-                    </div>
-                    <p className="font-semibold text-sm mb-1">{l.name}</p>
-                    <p className="text-xs leading-relaxed text-muted-foreground">{l.text}</p>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
+        <AssessmentIntegritySection align="start" />
 
         {/* ============ CTA BAND — START NOW ============ */}
-        <section className="py-16 md:py-20 bg-secondary/40">
+        <section className="py-16 md:py-20 bg-muted/20">
           <div className="container">
-            <div className="relative overflow-hidden rounded-2xl border border-border">
+            <div className="relative overflow-hidden rounded-2xl border border-border/80 shadow-md">
               <img
                 src={ctaBandImg}
                 alt="Professional ready to start her assessment"
@@ -551,7 +449,7 @@ const AssessmentDetail = () => {
                   Pay once, complete every test in one proctored session,
                   <br className="hidden md:block" /> and get a report employers can verify.
                 </p>
-                <Button size="lg" className="gap-2" onClick={goToPayment}>
+                <Button size="lg" className="gap-2 font-bold cursor-pointer" onClick={goToPayment}>
                   Start Now <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>
@@ -560,7 +458,7 @@ const AssessmentDetail = () => {
         </section>
 
         {/* ============ PAYMENT ============ */}
-        <section id="payment" className="py-16 md:py-20 scroll-mt-24">
+        <section id="payment" className="py-16 md:py-20 scroll-mt-24 pb-28 md:pb-36">
           <div className="container">
             <SectionHeading
               eyebrow="Payment"
@@ -572,71 +470,71 @@ const AssessmentDetail = () => {
             />
 
             <div className="grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] gap-6 items-start">
-              <div className="rounded-xl border border-border bg-background p-6">
+              <div className="rounded-2xl border border-border/80 bg-background p-6 shadow-xs">
                 <div className="flex items-center justify-between mb-5">
-                  <p className="font-display font-bold">Order summary</p>
-                  <span className="rounded-full bg-primary/10 px-3 py-1 text-[11px] font-bold text-primary">
+                  <h3 className="font-display font-bold text-foreground">Order summary</h3>
+                  <span className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-foreground">
                     {selectedSubs.length} sub-domain{selectedSubs.length === 1 ? "" : "s"} + 3 core tests
                   </span>
                 </div>
-                <ul className="divide-y divide-border text-sm">
+                <ul className="divide-y divide-border/80 text-sm">
                   {MANDATORY_TESTS.map((m) => (
                     <li key={m.name} className="flex justify-between gap-4 py-3">
-                      <span>{m.name}</span>
+                      <span className="text-foreground">{m.name}</span>
                       <span className="text-primary font-semibold shrink-0">Included</span>
                     </li>
                   ))}
                   {selectedSubs.map((s) => (
                     <li key={s.id} className="flex justify-between gap-4 py-3">
-                      <span>
-                        {s.name} <span className="text-muted-foreground">(3 rounds · 6 tests)</span>
+                      <span className="text-foreground">
+                        {s.name} <span className="text-xs text-muted-foreground">(3 rounds · 6 tests)</span>
                       </span>
-                      <span className="font-semibold shrink-0">{formatINR(subDomainPrice(s))}</span>
+                      <span className="font-semibold text-foreground shrink-0">{formatINR(subDomainPrice(s))}</span>
                     </li>
                   ))}
                   <li className="flex justify-between gap-4 py-3">
-                    <span>Career Intelligence Report</span>
+                    <span className="text-foreground">Career Intelligence Report</span>
                     <span className="text-primary font-semibold shrink-0">Included</span>
                   </li>
                   <li className="flex justify-between gap-4 py-3">
-                    <span>GST (18%)</span>
-                    <span className="shrink-0">{formatINR(cart.gst)}</span>
+                    <span className="text-muted-foreground">GST (18%)</span>
+                    <span className="text-muted-foreground shrink-0">{formatINR(cart.gst)}</span>
                   </li>
                 </ul>
-                <div className="flex justify-between pt-5 mt-3 border-t border-border font-display text-lg font-bold">
+                <div className="flex justify-between pt-5 mt-3 border-t border-border/80 font-display text-lg font-bold text-foreground">
                   <span>Total</span>
                   <span>{formatINR(cart.total)}</span>
                 </div>
               </div>
 
-              <div className="rounded-xl border border-border bg-background p-6">
-                <p className="font-display font-bold mb-5">Pay with</p>
+              <div className="rounded-2xl border border-border/80 bg-background p-6 shadow-xs">
+                <h3 className="font-display font-bold text-foreground mb-5">Pay with</h3>
                 <div className="grid gap-3 mb-6">
                   {paymentMethods.map((m) => (
                     <button
                       key={m.name}
                       onClick={() => setMethod(m.name)}
-                      className={`flex items-center gap-3 rounded-lg border px-4 py-3 text-left text-sm font-medium transition-colors ${
-                        method === m.name ? "border-primary bg-primary/5 text-primary" : "border-border hover:border-primary/40"
+                      className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm font-medium transition-all cursor-pointer ${
+                        method === m.name ? "border-primary bg-primary/5 text-primary shadow-xs" : "border-border/80 hover:border-foreground/30 bg-background"
                       }`}
                     >
                       <span
-                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-md ${
-                          method === m.name ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
+                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
+                          method === m.name ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground"
                         }`}
                       >
                         <m.icon className="h-4 w-4" />
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="block">{m.name}</span>
+                        <span className="block font-semibold text-foreground">{m.name}</span>
                         <span className="block text-[11px] font-normal text-muted-foreground">{m.note}</span>
                       </span>
-                      {method === m.name && <Check className="h-4 w-4 shrink-0" />}
+                      {method === m.name && <Check className="h-4 w-4 shrink-0 text-primary stroke-[2.5]" />}
                     </button>
                   ))}
                 </div>
-                <Button className="w-full gap-2" size="lg" onClick={start} disabled={selectedSubs.length === 0}>
-                  <Lock className="h-4 w-4" /> Pay {formatINR(cart.total)} & Start <ArrowRight className="h-4 w-4" />
+                <Button className="w-full gap-2 font-bold cursor-pointer shadow-md" size="lg" onClick={start} disabled={selectedSubs.length === 0}>
+                  <Lock className="h-4 w-4" /> Pay {formatINR(cart.total)} &amp; Start <ArrowRight className="h-4 w-4" />
                 </Button>
                 <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-[11px] text-muted-foreground">
                   <span className="flex items-center gap-1">
@@ -654,6 +552,11 @@ const AssessmentDetail = () => {
             </div>
           </div>
         </section>
+        <AssessmentStickyBar
+          selected={selectedSubs}
+          total={cart.total}
+          onCheckout={goToPayment}
+        />
       </Layout>
     </>
   );
