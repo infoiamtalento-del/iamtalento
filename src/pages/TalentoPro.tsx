@@ -55,17 +55,45 @@ const saveStorage = <T,>(key: string, val: T): void => {
   }
 };
 
+const normalizeUsers = (raw: any): Record<string, ProUser> => {
+  const result: Record<string, ProUser> = { ...DEFAULT_USERS };
+  if (Array.isArray(raw)) {
+    raw.forEach((u) => {
+      if (u && u.email) result[u.email] = { ...DEFAULT_USERS[u.email], ...u };
+    });
+  } else if (raw && typeof raw === "object") {
+    Object.entries(raw).forEach(([k, u]: [string, any]) => {
+      if (u && typeof u === "object") {
+        result[k] = { ...DEFAULT_USERS[k], ...u };
+      }
+    });
+  }
+  return result;
+};
+
 const TalentoPro: React.FC = () => {
   // Navigation & Shell State
-  const [sessionEmail, setSessionEmail] = useState<string>(() =>
-    loadStorage("sess", "demo.candidate@talento.app")
-  );
-  const [users, setUsers] = useState<Record<string, ProUser>>(() =>
-    loadStorage("users", DEFAULT_USERS)
-  );
+  const [sessionEmail, setSessionEmail] = useState<string>(() => {
+    const s = loadStorage("sess", "demo.candidate@talento.app");
+    return s && typeof s === "string" ? s : "demo.candidate@talento.app";
+  });
+
+  const [users, setUsers] = useState<Record<string, ProUser>>(() => {
+    const raw = loadStorage("users", DEFAULT_USERS);
+    return normalizeUsers(raw);
+  });
 
   const currentUser: ProUser = useMemo(() => {
-    return users[sessionEmail] || DEFAULT_USERS["demo.candidate@talento.app"];
+    if (users && users[sessionEmail]) return users[sessionEmail];
+    if (sessionEmail && sessionEmail.includes("employer")) {
+      return users["demo.employer@talento.app"] || DEFAULT_USERS["demo.employer@talento.app"];
+    }
+    return (
+      users["demo.candidate@talento.app"] ||
+      DEFAULT_USERS["demo.candidate@talento.app"] ||
+      Object.values(users)[0] ||
+      DEFAULT_USERS["demo.candidate@talento.app"]
+    );
   }, [users, sessionEmail]);
 
   const currentRole: "candidate" | "employer" = currentUser.role || "candidate";
@@ -101,16 +129,64 @@ const TalentoPro: React.FC = () => {
       const val = localStorage.getItem("tq_jobs");
       if (!val) return INITIAL_JOBS;
       const parsed = JSON.parse(val);
-      if (Array.isArray(parsed) && parsed.length > 0 && typeof parsed[0].t === "string") {
+      if (
+        Array.isArray(parsed) &&
+        parsed.length > 0 &&
+        typeof parsed[0] === "object" &&
+        parsed[0] !== null &&
+        typeof parsed[0].t === "string" &&
+        Array.isArray(parsed[0].sk)
+      ) {
         return parsed;
       }
     } catch {}
     return INITIAL_JOBS;
   });
 
-  const [apps, setApps] = useState<ProApplication[]>(() =>
-    loadStorage("apps", DEFAULT_APPS)
-  );
+  const [apps, setApps] = useState<ProApplication[]>(() => {
+    try {
+      const val = localStorage.getItem("tq_apps");
+      if (!val) return DEFAULT_APPS;
+      const parsed = JSON.parse(val);
+      if (Array.isArray(parsed)) return parsed;
+    } catch {}
+    return DEFAULT_APPS;
+  });
+
+  // Effective view validation so invalid/mismatched view never renders blank
+  const candidateViews: ProView[] = [
+    "jobs",
+    "saved",
+    "profile",
+    "dash",
+    "applied",
+    "upd",
+    "disc",
+    "resume",
+    "cert",
+    "wallet",
+    "port",
+    "ver",
+  ];
+
+  const employerViews: ProView[] = [
+    "dash",
+    "pipe",
+    "talent",
+    "post",
+    "cp",
+    "notif",
+    "wallet",
+    "port",
+    "ver",
+  ];
+
+  const effectiveView: ProView = useMemo(() => {
+    if (currentRole === "employer") {
+      return employerViews.includes(activeView) ? activeView : "dash";
+    }
+    return candidateViews.includes(activeView) ? activeView : "jobs";
+  }, [currentRole, activeView]);
 
   // Drawer & Comparison States
   const [drawerState, setDrawerState] = useState<ProDrawerState>(null);
@@ -453,7 +529,7 @@ const TalentoPro: React.FC = () => {
       <ProHeader
         currentUser={currentUser}
         currentRole={currentRole}
-        activeView={activeView}
+        activeView={effectiveView}
         setActiveView={setActiveView}
         onSwitchRole={handleSwitchRole}
         isDarkMode={isDarkMode}
@@ -468,7 +544,7 @@ const TalentoPro: React.FC = () => {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8">
         <AnimatePresence mode="wait">
           <motion.div
-            key={`${currentRole}-${activeView}`}
+            key={`${currentRole}-${effectiveView}`}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
@@ -477,7 +553,7 @@ const TalentoPro: React.FC = () => {
             {/* CANDIDATE VIEWS */}
             {currentRole === "candidate" && (
               <>
-                {activeView === "jobs" && (
+                {effectiveView === "jobs" && (
                   <ProJobsView
                     user={currentUser}
                     jobs={jobs}
@@ -496,7 +572,7 @@ const TalentoPro: React.FC = () => {
                   />
                 )}
 
-                {activeView === "saved" && (
+                {effectiveView === "saved" && (
                   <ProJobsView
                     user={currentUser}
                     jobs={jobs}
@@ -516,7 +592,7 @@ const TalentoPro: React.FC = () => {
                   />
                 )}
 
-                {activeView === "profile" && (
+                {effectiveView === "profile" && (
                   <ProProfileView
                     user={currentUser}
                     onSaveProfile={handleUpdateUser}
@@ -524,7 +600,7 @@ const TalentoPro: React.FC = () => {
                   />
                 )}
 
-                {activeView === "dash" && (
+                {effectiveView === "dash" && (
                   <ProDashboardView
                     user={currentUser}
                     jobs={jobs}
@@ -544,7 +620,7 @@ const TalentoPro: React.FC = () => {
                   />
                 )}
 
-                {activeView === "applied" && (
+                {effectiveView === "applied" && (
                   <ProApplicationsView
                     user={currentUser}
                     jobs={jobs}
@@ -554,7 +630,7 @@ const TalentoPro: React.FC = () => {
                   />
                 )}
 
-                {activeView === "upd" && (
+                {effectiveView === "upd" && (
                   <ProNotificationsView
                     user={currentUser}
                     jobs={jobs}
@@ -569,7 +645,7 @@ const TalentoPro: React.FC = () => {
                   />
                 )}
 
-                {activeView === "disc" && (
+                {effectiveView === "disc" && (
                   <ProDiscoverView
                     user={currentUser}
                     jobs={jobs}
@@ -580,7 +656,7 @@ const TalentoPro: React.FC = () => {
                   />
                 )}
 
-                {activeView === "resume" && (
+                {effectiveView === "resume" && (
                   <ProResumeBuilderView
                     user={currentUser}
                     jobs={jobs}
@@ -589,7 +665,7 @@ const TalentoPro: React.FC = () => {
                   />
                 )}
 
-                {activeView === "cert" && (
+                {effectiveView === "cert" && (
                   <ProCertificationsView
                     user={currentUser}
                     onAddCertification={(certStr) => {
@@ -607,7 +683,7 @@ const TalentoPro: React.FC = () => {
                   />
                 )}
 
-                {activeView === "wallet" && (
+                {effectiveView === "wallet" && (
                   <ProWalletView
                     user={currentUser}
                     onUpdateWallet={handleUpdateWallet}
@@ -616,7 +692,7 @@ const TalentoPro: React.FC = () => {
                   />
                 )}
 
-                {activeView === "port" && (
+                {effectiveView === "port" && (
                   <ProPortfolioView
                     user={currentUser}
                     jobs={jobs}
@@ -625,7 +701,7 @@ const TalentoPro: React.FC = () => {
                   />
                 )}
 
-                {activeView === "ver" && (
+                {effectiveView === "ver" && (
                   <ProVerifiedView
                     user={currentUser}
                     jobs={jobs}
@@ -641,7 +717,7 @@ const TalentoPro: React.FC = () => {
             {/* EMPLOYER VIEWS */}
             {currentRole === "employer" && (
               <>
-                {activeView === "dash" && (
+                {effectiveView === "dash" && (
                   <ProDashboardView
                     user={currentUser}
                     jobs={jobs}
@@ -654,12 +730,12 @@ const TalentoPro: React.FC = () => {
                   />
                 )}
 
-                {(activeView === "pipe" ||
-                  activeView === "post" ||
-                  activeView === "talent" ||
-                  activeView === "cp") && (
+                {(effectiveView === "pipe" ||
+                  effectiveView === "post" ||
+                  effectiveView === "talent" ||
+                  effectiveView === "cp") && (
                   <ProEmployerViews
-                    view={activeView}
+                    view={effectiveView}
                     user={currentUser}
                     jobs={jobs}
                     applications={apps}
@@ -675,7 +751,7 @@ const TalentoPro: React.FC = () => {
                   />
                 )}
 
-                {activeView === "notif" && (
+                {effectiveView === "notif" && (
                   <ProNotificationsView
                     user={currentUser}
                     jobs={jobs}
@@ -687,7 +763,7 @@ const TalentoPro: React.FC = () => {
                   />
                 )}
 
-                {activeView === "wallet" && (
+                {effectiveView === "wallet" && (
                   <ProWalletView
                     user={currentUser}
                     onUpdateWallet={handleUpdateWallet}
@@ -696,7 +772,7 @@ const TalentoPro: React.FC = () => {
                   />
                 )}
 
-                {activeView === "port" && (
+                {effectiveView === "port" && (
                   <ProPortfolioView
                     user={currentUser}
                     jobs={jobs}
@@ -705,7 +781,7 @@ const TalentoPro: React.FC = () => {
                   />
                 )}
 
-                {activeView === "ver" && (
+                {effectiveView === "ver" && (
                   <ProVerifiedView
                     user={currentUser}
                     jobs={jobs}

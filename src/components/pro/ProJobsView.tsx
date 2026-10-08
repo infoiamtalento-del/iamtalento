@@ -20,70 +20,127 @@ import {
   Sliders,
   ChevronDown,
 } from "lucide-react";
-import { ProJob, ProUser, calcScore, fitAnalysis, formatINR, timeAgo, COMPANY_INFO } from "@/data/proData";
+import { ProJob, ProUser, ProApplication, calcScore, fitAnalysis, formatINR, timeAgo, COMPANY_INFO } from "@/data/proData";
 import { getCompanyLogo } from "@/data/portalAssets";
 import { cn } from "@/lib/utils";
 
 interface ProJobsViewProps {
-  currentUser: ProUser;
+  user: ProUser;
   jobs: ProJob[];
-  filters: any;
-  setFilters: React.Dispatch<React.SetStateAction<any>>;
-  searchQuery: string;
-  setSearchQuery: (q: string) => void;
-  searchLocation: string;
-  setSearchLocation: (l: string) => void;
-  smartSearchQuery: string;
-  setSmartSearchQuery: (q: string) => void;
-  onSmartSearch: () => void;
-  sortBy: string;
-  setSortBy: (s: any) => void;
-  compareJobs: number[];
-  onToggleCompareJob: (id: number) => void;
+  applications: ProApplication[];
+  initialOnlySaved?: boolean;
+  onOpenJob: (id: number) => void;
+  onApplyJob: (id: number, coverNote?: string) => void;
+  onSaveJob: (id: number) => void;
+  compareSelection: number[];
+  onCompareToggle: (id: number) => void;
   onOpenCompareDrawer: () => void;
-  onOpenJobDrawer: (id: number) => void;
-  onQuickApply: (id: number) => void;
-  onToggleSaveJob: (id: number) => void;
-  appliedJobIds: number[];
-  savedJobIds: number[];
-  onResetFilters: () => void;
-  onSaveSearch: () => void;
-  onApplySavedSearch: (saved: any) => void;
-  onDeleteSavedSearch: (index: number) => void;
-  savedSearches: { n: string; f: any }[];
-  searchRef?: React.RefObject<HTMLInputElement>;
+  onToast: (msg: string) => void;
 }
 
 export const ProJobsView: React.FC<ProJobsViewProps> = ({
-  currentUser,
+  user,
   jobs,
-  filters,
-  setFilters,
-  searchQuery,
-  setSearchQuery,
-  searchLocation,
-  setSearchLocation,
-  smartSearchQuery,
-  setSmartSearchQuery,
-  onSmartSearch,
-  sortBy,
-  setSortBy,
-  compareJobs,
-  onToggleCompareJob,
+  applications,
+  initialOnlySaved = false,
+  onOpenJob,
+  onApplyJob,
+  onSaveJob,
+  compareSelection,
+  onCompareToggle,
   onOpenCompareDrawer,
-  onOpenJobDrawer,
-  onQuickApply,
-  onToggleSaveJob,
-  appliedJobIds,
-  savedJobIds,
-  onResetFilters,
-  onSaveSearch,
-  onApplySavedSearch,
-  onDeleteSavedSearch,
-  savedSearches,
-  searchRef,
+  onToast,
 }) => {
+  const currentUser = user;
+  const appliedJobIds = React.useMemo(
+    () => (applications || []).filter((a) => a.who === user.email).map((a) => a.jid),
+    [applications, user.email]
+  );
+  const savedJobIds = user.saved || [];
+  const compareJobs = compareSelection || [];
+  const onToggleCompareJob = onCompareToggle;
+  const onOpenJobDrawer = onOpenJob;
+  const onQuickApply = onApplyJob;
+  const onToggleSaveJob = onSaveJob;
+
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const [searchLocation, setSearchLocation] = React.useState("");
+  const [smartSearchQuery, setSmartSearchQuery] = React.useState("");
+  const [sortBy, setSortBy] = React.useState<string>("default");
   const [isCompact, setIsCompact] = React.useState(false);
+  const searchRef = React.useRef<HTMLInputElement>(null);
+
+  const defaultFilters = {
+    q: "",
+    loc: "",
+    sk: "",
+    e: 30,
+    sal: 0,
+    p: 0,
+    m: [] as string[],
+    ty: [] as string[],
+    lvl: [] as string[],
+    co: [] as string[],
+    ind: [] as string[],
+    sz: [] as string[],
+    cities: [] as string[],
+    any: [] as string[],
+    hide: false,
+    onlySaved: !!initialOnlySaved,
+    mm: 0,
+    ex: "",
+    miss: "",
+    sr: "all",
+  };
+
+  const [filters, setFilters] = React.useState<any>(defaultFilters);
+  const [savedSearches, setSavedSearches] = React.useState<{ n: string; f: any }[]>(() => user.ss || []);
+
+  const onResetFilters = () => {
+    setSearchQuery("");
+    setSearchLocation("");
+    setSmartSearchQuery("");
+    setFilters(defaultFilters);
+    onToast("Filters reset to default.");
+  };
+
+  const onSmartSearch = () => {
+    const q = smartSearchQuery.toLowerCase();
+    if (!q) return;
+    const f: any = { ...filters };
+    if (q.includes("remote")) f.m = ["Remote"];
+    if (q.includes("hybrid")) f.m = ["Hybrid"];
+    if (q.includes("onsite")) f.m = ["Onsite"];
+    if (q.includes("intern")) f.ty = ["Internship"];
+    if (q.includes("fresher")) f.e = 0;
+    const salMatch = q.match(/(\d+)\s*lpa/);
+    if (salMatch) f.sal = +salMatch[1];
+    const expMatch = q.match(/(\d+)\s*(?:yrs|years)/);
+    if (expMatch) f.e = +expMatch[1];
+
+    const clean = q
+      .replace(/\b(remote|hybrid|onsite|fresher|internship|intern|\d+\s*lpa|\d+\s*yrs|\d+\s*years)\b/g, "")
+      .trim();
+    if (clean) f.q = clean;
+    setFilters(f);
+    onToast(`Smart search applied: "${smartSearchQuery}"`);
+  };
+
+  const onSaveSearch = () => {
+    const name = searchQuery || filters.q || (filters.m?.length ? filters.m.join(", ") : "Custom Search");
+    setSavedSearches((prev) => [...prev, { n: name, f: { ...filters } }]);
+    onToast(`Search "${name}" saved!`);
+  };
+
+  const onApplySavedSearch = (saved: any) => {
+    setFilters(saved.f);
+    onToast(`Applied saved search: "${saved.n}"`);
+  };
+
+  const onDeleteSavedSearch = (idx: number) => {
+    setSavedSearches((prev) => prev.filter((_, i) => i !== idx));
+    onToast("Saved search removed.");
+  };
 
   // Filter calculations
   const filteredJobs = React.useMemo(() => {
