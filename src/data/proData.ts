@@ -50,8 +50,13 @@ export interface ProUser {
   name: string;
   exp?: number;
   city?: string;
+  state?: string;
+  cl?: string;
+  pemail?: string;
   sk?: string[];
+  fsk?: string[];
   head?: string;
+  tag?: string;
   about?: string;
   saved?: number[];
   skip?: number[];
@@ -61,7 +66,8 @@ export interface ProUser {
   ex?: { co: string; role: string; fr: string; to: string; d: string }[];
   ed?: { sc: string; dg: string; yr: string }[];
   ce?: string[];
-  pj?: { t: string; l?: string; d?: string }[];
+  pj?: { t: string; l?: string; d?: string; s?: string; m?: string }[];
+  lg?: { n: string; lv: string }[];
   sl?: Record<string, string>; // skill levels
   pf?: {
     sal?: number;
@@ -71,7 +77,7 @@ export interface ProUser {
     loc?: string;
     rl?: boolean;
   };
-  st?: string;
+  st?: string; // "Actively looking" | "Open to offers" | "Not looking"
   views?: number;
   as?: Record<string, number>;
   seen?: number;
@@ -82,9 +88,10 @@ export interface ProUser {
   wal?: {
     bal: number;
     pm: { id: number; type: string; label: string; sub?: string; def?: boolean }[];
-    tx: { at: number; type: "credit" | "debit"; amt: number; desc: string; via: string }[];
+    tx: { id: string; at: number; type: "credit" | "debit"; amt: number; desc: string; via: string; st?: string; bal?: number; reason?: string }[];
   };
   cp?: {
+    name?: string;
     about?: string;
     mission?: string;
     ind?: string;
@@ -97,11 +104,20 @@ export interface ProUser {
     tpl?: string;
     role?: string;
     tone?: string;
+    lvl?: string;
     sum?: string;
     ex?: string[][];
     sk?: string[] | null;
+    skl?: string[] | null;
+    bi?: { name?: string; em?: string; ph?: string; city?: string; li?: string; pf?: string; gh?: string };
+    ed?: { sc: string; dg: string; yr: string }[];
+    lg?: { n: string; lv: string }[];
+    ac?: string;
+    inc?: Record<string, boolean>;
+    pjOff?: number[];
+    cover?: string;
   };
-  links?: { li?: string; gh?: string };
+  links?: { li?: string; gh?: string; pf?: string };
 }
 
 export const D_MS = 86400000;
@@ -166,6 +182,91 @@ export const COMPANY_INFO: Record<string, [string, string]> = {
   Atlassian: ["SaaS", "Large"],
   Super30: ["Fintech", "Mid"],
 };
+
+export const DEFAULT_USERS: Record<string, ProUser> = {
+  "demo.candidate@talento.app": {
+    email: "demo.candidate@talento.app",
+    role: "candidate",
+    name: "Arjun Mehta",
+    exp: 3,
+    city: "Bengaluru",
+    head: "Senior Full-Stack Engineer · Cloud & AI Specialist",
+    about: "Frontend engineer with 3+ years delivering accessible, high-performance web products. Experienced in modern component architectures, TypeScript, state machines, and Web Vitals optimization. Passionate about developer tooling and bridging UX with rock-solid frontend engineering.",
+    sk: ["React", "TypeScript", "Next.js", "Tailwind CSS", "Node.js", "SQL", "GraphQL", "Docker", "Jest", "Git"],
+    sl: { React: "Expert", TypeScript: "Advanced", "Next.js": "Advanced", "Tailwind CSS": "Expert", "Node.js": "Intermediate", SQL: "Intermediate", GraphQL: "Intermediate", Docker: "Basic", Jest: "Advanced", Git: "Advanced" },
+    as: { React: 88, SQL: 82, Python: 75, "System Design": 85 },
+    ce: ["Meta Certified Frontend Developer · Meta · 2024", "AWS Certified Cloud Practitioner · Amazon Web Services · 2023"],
+    ex: [
+      { co: "Swiggy", role: "Frontend Developer", fr: "2023", to: "Present", d: "Engineered customer checkout flow reducing page load by 35%. Spearheaded design system migration to Tailwind CSS and Radix UI across 6 pods." },
+      { co: "Infosys", role: "Junior Software Engineer", fr: "2021", to: "2023", d: "Modernized legacy enterprise banking dashboards into responsive React apps. Automated unit testing suite achieving 92% code coverage with Jest." },
+    ],
+    ed: [{ sc: "VTU Bengaluru (Anna University Affiliate)", dg: "B.Tech Computer Science & Engineering", yr: "2017 – 2021" }],
+    pj: [
+      { t: "OpenUI React Components", l: "github.com/vignesh/openui", d: "Tree-shakeable, WCAG AA compliant headless UI system with 1.2k stars." },
+      { t: "Pulse Health Tracker", l: "pulse-demo.app", d: "Realtime health tracking PWA built with Next.js, IndexedDB, and WebSockets." },
+    ],
+    links: { li: "linkedin.com/in/vignesh-dev", gh: "github.com/vignesh" },
+    pf: { sal: 22, np: 15, wm: "Remote / Hybrid", ty: "Full-time", loc: "Bengaluru, Hyderabad, Remote", rl: true },
+    st: "Open to offers",
+    saved: [1, 3, 5],
+    wal: { bal: 1450, hist: [{ id: "TXN-1001", desc: "Bonus: React Skill Verified 88%", amt: 500, type: "credit", at: Date.now() - 86400000 * 2, via: "Skill Bounty" }] },
+    ver: { id: true, test: true, exp: true },
+    views: 148,
+  },
+  "demo.employer@talento.app": {
+    email: "demo.employer@talento.app",
+    role: "employer",
+    name: "Super30",
+    cp: {
+      name: "Super30 Technologies",
+      about: "Building next-generation AI agents and developer tooling for global engineering teams.",
+      ind: "Software",
+      size: "Mid",
+      hq: "Bengaluru",
+      site: "super30.ai",
+      mission: "Empowering developers to build 10x faster with verified engineering trust.",
+      ben: ["Remote work", "Health insurance", "Learning budget", "Flexible hours", "Stock options"],
+    },
+    wal: { bal: 9200, hist: [{ id: "TXN-2001", desc: "Recruiter Credits Refill", amt: 10000, type: "credit", at: Date.now() - 86400000 * 5, via: "Net Banking" }] },
+    ver: { id: true, test: true, exp: true },
+  },
+};
+
+export const DEFAULT_APPS: ProApplication[] = [
+  {
+    id: 1001,
+    jid: 1,
+    who: "demo.candidate@talento.app",
+    name: "Arjun Mehta",
+    exp: 3,
+    sk: ["React", "TypeScript", "SQL"],
+    ce: ["Meta Certified Frontend Developer"],
+    as: { React: 88, SQL: 82 },
+    st: "Shortlisted",
+    at: Date.now() - 86400000 * 1.5,
+    cn: "Very excited to bring my experience building design systems at scale to Zoho.",
+    upd: [
+      { msg: "Application received. 24-hour review SLA activated.", at: Date.now() - 86400000 * 1.4, auto: true },
+      { msg: "Your profile has been shortlisted by the engineering lead. Technical interview round is scheduled.", at: Date.now() - 86400000 * 0.8 },
+    ],
+  },
+  {
+    id: 1002,
+    jid: 3,
+    who: "demo.candidate@talento.app",
+    name: "Arjun Mehta",
+    exp: 3,
+    sk: ["React", "TypeScript", "SQL"],
+    ce: ["AWS Certified Cloud Practitioner"],
+    as: { React: 88 },
+    st: "Applied",
+    at: Date.now() - 3600000 * 14,
+    cn: "Looking forward to contributing to Razorpay's high-frequency payments frontend.",
+    upd: [
+      { msg: "Application received. Employer notified of 24h SLA response window.", at: Date.now() - 3600000 * 14, auto: true },
+    ],
+  },
+];
 
 export const POPULAR_CERTS = [
   ["Google Data Analytics", "Coursera"],
