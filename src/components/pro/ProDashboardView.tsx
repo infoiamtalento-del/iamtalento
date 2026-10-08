@@ -24,8 +24,12 @@ import {
   Check,
   MessageSquare,
   AlertCircle,
+  Bell,
+  UserCircle,
+  Search,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ProHero } from "./ProHero";
 import { cn } from "@/lib/utils";
 import { ProUser, ProJob, ProApplication, calcScore, levelFromExp, formatINR } from "@/data/proData";
 import { getCompanyLogo } from "@/data/portalAssets";
@@ -505,22 +509,22 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
   // Profile readiness checklist
   const actionsList: Array<{ title: string; done: boolean; view: ProView; subtitle: string }> = [
     {
-      title: "Add headline & about me",
+      title: "Add headline & about",
       done: !!(user.head && user.about),
       view: "profile",
       subtitle: "Tell recruiters who you are and what you specialize in",
     },
     {
-      title: "Add 3+ core skills",
+      title: "Add 3+ skills",
       done: (user.sk || []).length >= 3,
       view: "profile",
-      subtitle: "Verified skills drive matching algorithms",
+      subtitle: "Skills drive job matching",
     },
     {
-      title: "Add a verified certification",
+      title: "Add a certification",
       done: (user.ce || []).length > 0,
       view: "cert",
-      subtitle: "Demonstrated proof builds immediate trust",
+      subtitle: "Proof of skill builds immediate trust",
     },
     {
       title: "Apply to your top match",
@@ -529,299 +533,327 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
       subtitle: "Your best-fit opening is ready for review",
     },
     {
-      title: "Create an ATS resume",
-      done: !!user.rs?.t,
-      view: "resume",
-      subtitle: "Optimize your resume format for high pass-rates",
+      title: "Save a search",
+      done: (user.ss || []).length > 0,
+      view: "jobs",
+      subtitle: "Get alerted for new jobs",
     },
   ];
 
   const doneCount = actionsList.filter((x) => x.done).length;
-  const strengthPercent = doneCount * 20;
+  const strengthPercent = Math.round((doneCount / actionsList.length) * 100);
   const goodFitJobs = jobs.filter((j) => calcScore(j, user) >= 50);
   const scheduledInterviews = myApps.filter((a) => a.iv || a.st === "Interview");
+  const nextAction = actionsList.find((x) => !x.done);
+  const completedActions = actionsList.filter((x) => x.done);
+
+  const scoreTier = (n: number) =>
+    n >= 70
+      ? { stroke: "stroke-emerald-500", text: "text-emerald-600 dark:text-emerald-400" }
+      : n >= 40
+      ? { stroke: "stroke-amber-500", text: "text-amber-600 dark:text-amber-400" }
+      : { stroke: "stroke-red-500", text: "text-red-600 dark:text-red-400" };
+
+  const topTier = scoreTier(topScore);
+  const RING_R = 15.9155;
+
+  const statCards: Array<{
+    label: string;
+    value: React.ReactNode;
+    helper: string;
+    icon: React.ReactNode;
+    view: ProView;
+  }> = [
+    {
+      label: "Applications sent",
+      value: myApps.length,
+      helper: myApps.length ? "Jobs you have applied to" : "You have not applied yet",
+      icon: <Send className="h-4 w-4" />,
+      view: "applied",
+    },
+    {
+      label: "Jobs that fit you",
+      value: goodFitJobs.length,
+      helper: "Open jobs matching 50%+ of your skills",
+      icon: <Compass className="h-4 w-4" />,
+      view: "jobs",
+    },
+    {
+      label: "Interviews",
+      value: scheduledInterviews.length,
+      helper: scheduledInterviews.length ? "Employer rounds active" : "None yet, keep applying",
+      icon: <Calendar className="h-4 w-4" />,
+      view: "applied",
+    },
+    {
+      label: "Profile strength",
+      value: `${strengthPercent}%`,
+      helper: `${doneCount} of ${actionsList.length} steps done`,
+      icon: <Award className="h-4 w-4" />,
+      view: "profile",
+    },
+  ];
+
+  const heroPill =
+    "inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/30 backdrop-blur-sm transition-colors hover:bg-white/25";
+
+  const userSkillRows = (user.sk || []).map((skill) => {
+    const key = Object.keys(skillDemand).find((k) => k.toLowerCase() === skill.toLowerCase()) || "";
+    return { skill, count: skillDemand[key] || 0 };
+  });
+  const maxSkillRow = Math.max(1, ...userSkillRows.map((r) => r.count));
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Hero Welcome Banner */}
-      <div className="bg-card border border-border/80 rounded-2xl p-6 relative overflow-hidden shadow-sm">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
-          <div>
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold mb-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              Live Candidate Dashboard
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground font-display">
-              Welcome back, {user.name.split(" ")[0]}
-            </h1>
-            <p className="text-muted-foreground text-sm mt-1 max-w-2xl">
-              {goodFitJobs.length} openings match 50%+ of your skills.{" "}
-              {doneCount < 5
-                ? "Finish your next steps below to boost your recruiter response rate."
-                : "Your verified profile is in excellent shape."}
-            </p>
-          </div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <Button onClick={() => onNavigate("jobs")} className="rounded-xl gap-2 font-medium shadow-sm">
-              <Compass className="w-4 h-4" /> Find Jobs
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => onNavigate("upd")}
-              className="rounded-xl gap-2 font-medium bg-background"
-            >
-              <Clock className="w-4 h-4" /> 24h SLA Updates
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => onNavigate("profile")}
-              className="rounded-xl gap-2 font-medium bg-background"
-            >
-              <Award className="w-4 h-4" /> My Profile
-            </Button>
-          </div>
+      <ProHero
+        title={`Welcome back, ${user.name.split(" ")[0]}`}
+        subtitle={`${goodFitJobs.length} ${goodFitJobs.length === 1 ? "job matches" : "jobs match"} 50%+ of your skills. Finish the steps below to get noticed faster.`}
+      >
+        <div className="flex flex-wrap items-center gap-2 pt-1">
+          <button type="button" onClick={() => onNavigate("jobs")} className={heroPill}>
+            <Compass className="h-3.5 w-3.5" /> Find jobs
+          </button>
+          <button type="button" onClick={() => onNavigate("notif")} className={heroPill}>
+            <Bell className="h-3.5 w-3.5" /> Notifications
+          </button>
+          <button type="button" onClick={() => onNavigate("profile")} className={heroPill}>
+            <UserCircle className="h-3.5 w-3.5" /> My Profile
+          </button>
         </div>
-      </div>
+      </ProHero>
 
       {/* 4 Stat Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-card border border-border/70 rounded-2xl p-4 shadow-sm flex items-center justify-between">
-          <div>
-            <span className="text-xs font-medium text-muted-foreground block">Applications Sent</span>
-            <div className="text-2xl font-bold text-foreground mt-1 font-display">{myApps.length}</div>
-            <span className="text-[11px] text-muted-foreground mt-0.5 block">Active tracking</span>
-          </div>
-          <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
-            <Send className="w-5 h-5" />
-          </div>
-        </div>
-
-        <div className="bg-card border border-border/70 rounded-2xl p-4 shadow-sm flex items-center justify-between">
-          <div>
-            <span className="text-xs font-medium text-muted-foreground block">Jobs That Fit You</span>
-            <div className="text-2xl font-bold text-foreground mt-1 font-display">{goodFitJobs.length}</div>
-            <span className="text-[11px] text-muted-foreground mt-0.5 block">50%+ match score</span>
-          </div>
-          <div className="w-11 h-11 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-            <Compass className="w-5 h-5" />
-          </div>
-        </div>
-
-        <div className="bg-card border border-border/70 rounded-2xl p-4 shadow-sm flex items-center justify-between">
-          <div>
-            <span className="text-xs font-medium text-muted-foreground block">Interviews</span>
-            <div className="text-2xl font-bold text-foreground mt-1 font-display">
-              {scheduledInterviews.length}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {statCards.map((s) => (
+          <div
+            key={s.label}
+            className="flex items-start gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm"
+          >
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              {s.icon}
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="font-display text-2xl font-bold leading-none text-primary">{s.value}</div>
+              <div className="mt-1.5 text-sm font-semibold text-foreground">{s.label}</div>
+              <div className="mt-0.5 text-[11px] leading-snug text-muted-foreground">{s.helper}</div>
             </div>
-            <span className="text-[11px] text-muted-foreground mt-0.5 block">
-              {scheduledInterviews.length ? "Employer rounds active" : "None scheduled yet"}
-            </span>
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-7 shrink-0 rounded-lg border-primary/30 px-2.5 text-xs font-semibold text-primary hover:bg-primary/5 hover:text-primary"
+              onClick={() => onNavigate(s.view)}
+            >
+              View
+            </Button>
           </div>
-          <div className="w-11 h-11 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-            <Calendar className="w-5 h-5" />
-          </div>
-        </div>
-
-        <div className="bg-card border border-border/70 rounded-2xl p-4 shadow-sm flex items-center justify-between">
-          <div>
-            <span className="text-xs font-medium text-muted-foreground block">Profile Strength</span>
-            <div className="text-2xl font-bold text-foreground mt-1 font-display">{strengthPercent}%</div>
-            <span className="text-[11px] text-muted-foreground mt-0.5 block">
-              {doneCount} of {actionsList.length} steps completed
-            </span>
-          </div>
-          <div className="w-11 h-11 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
-            <Award className="w-5 h-5" />
-          </div>
-        </div>
+        ))}
       </div>
 
       {/* Checklist & Best Fit Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {/* Next Steps Checklist */}
-        <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-4">
-          <div className="flex items-center justify-between">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        {/* What to do next */}
+        <div className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
+          <div className="flex items-center gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <CheckCircle2 className="h-4 w-4" />
+            </span>
             <div>
-              <h3 className="font-semibold text-foreground text-sm flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500" /> What to do next
-              </h3>
-              <p className="text-xs text-muted-foreground">Complete key steps to stand out to hiring managers.</p>
+              <h3 className="font-display text-sm font-semibold text-foreground">What to do next</h3>
+              <p className="text-xs text-muted-foreground">
+                {doneCount} of {actionsList.length} steps done
+              </p>
             </div>
-            <span className="text-xs font-bold text-primary">{doneCount} / {actionsList.length} done</span>
           </div>
 
-          <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+          <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
             <div
-              className="h-full bg-primary rounded-full transition-all duration-500"
+              className="h-full rounded-full bg-primary transition-all duration-500"
               style={{ width: `${strengthPercent}%` }}
             />
           </div>
 
-          <div className="space-y-2.5 pt-1">
-            {actionsList.map((item, idx) => (
-              <div
-                key={item.title}
-                className={cn(
-                  "p-3 rounded-xl border flex items-center justify-between gap-3 text-xs transition-colors",
-                  item.done
-                    ? "bg-muted/30 border-border/40 text-muted-foreground"
-                    : "bg-background border-border/80 text-foreground hover:border-primary/40"
-                )}
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={cn(
-                      "w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0",
-                      item.done
-                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                        : "bg-muted text-muted-foreground"
-                    )}
-                  >
-                    {item.done ? <Check className="w-3 h-3" /> : idx + 1}
-                  </div>
-                  <div>
-                    <div className={cn("font-medium", item.done && "line-through opacity-80")}>
-                      {item.title}
-                    </div>
-                    <div className="text-[11px] text-muted-foreground">{item.subtitle}</div>
-                  </div>
+          {nextAction ? (
+            <div className="flex items-center justify-between gap-3 rounded-xl border border-primary/30 bg-primary/5 p-3">
+              <div className="flex min-w-0 items-center gap-3">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                  <Search className="h-4 w-4" />
+                </span>
+                <div className="min-w-0">
+                  <div className="truncate text-sm font-semibold text-foreground">{nextAction.title}</div>
+                  <div className="truncate text-xs text-muted-foreground">{nextAction.subtitle}</div>
                 </div>
-                {!item.done && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-7 text-xs rounded-lg px-2.5 shrink-0"
-                    onClick={() => onNavigate(item.view)}
-                  >
-                    Do it <ChevronRight className="w-3 h-3 ml-0.5" />
-                  </Button>
-                )}
               </div>
-            ))}
-          </div>
+              <Button
+                size="sm"
+                className="h-8 shrink-0 rounded-lg px-3.5 text-xs font-semibold"
+                onClick={() => onNavigate(nextAction.view)}
+              >
+                Do it
+              </Button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-sm font-medium text-emerald-700 dark:text-emerald-400">
+              <CheckCircle2 className="h-4 w-4" /> All steps complete. Your profile is in great shape.
+            </div>
+          )}
+
+          {completedActions.length > 0 && (
+            <div className="space-y-2">
+              <div className="text-xs font-medium text-muted-foreground">Completed</div>
+              <div className="flex flex-wrap gap-1.5">
+                {completedActions.map((item) => (
+                  <span
+                    key={item.title}
+                    className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-700 dark:text-emerald-400"
+                  >
+                    <Check className="h-3 w-3" /> {item.title}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Best Job Fit & Upcoming Interviews */}
-        <div className="space-y-4">
-          {/* Top Job Card */}
-          <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-foreground text-sm flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-primary" /> Best job match for you
-              </h3>
-              <span className="text-xs text-muted-foreground">Calculated from your skills</span>
+        {/* Best job & Upcoming interviews */}
+        <div className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
+          <div className="flex items-center gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <Sparkles className="h-4 w-4" />
+            </span>
+            <div>
+              <h3 className="font-display text-sm font-semibold text-foreground">Best job for you</h3>
+              <p className="text-xs text-muted-foreground">The open job closest to your skills</p>
             </div>
-
-            {topJob ? (
-              <div
-                onClick={() => onOpenDrawer({ type: "job", id: topJob.id })}
-                className="p-4 rounded-xl border border-border/80 bg-background hover:border-primary/50 transition-all cursor-pointer group space-y-3"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={getCompanyLogo(topJob.c)}
-                      alt={topJob.c}
-                      className="w-10 h-10 rounded-xl object-contain p-1 border border-border/60 bg-muted/30"
-                    />
-                    <div>
-                      <div className="font-semibold text-foreground text-sm group-hover:text-primary transition-colors">
-                        {topJob.t}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {topJob.c} • {topJob.l} • ₹{topJob.a}–{topJob.b} LPA
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-right shrink-0">
-                    <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-bold">
-                      {topScore}%
-                    </div>
-                    <div className="text-[10px] text-muted-foreground mt-0.5">{matchLabel}</div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between text-xs pt-1 border-t border-border/50 text-muted-foreground">
-                  <span className="text-primary font-medium group-hover:underline flex items-center gap-1">
-                    Tap to view details & 24h SLA apply <ArrowRight className="w-3 h-3" />
-                  </span>
-                  <span>{topJob.m}</span>
-                </div>
-              </div>
-            ) : (
-              <p className="text-xs text-muted-foreground py-4 text-center">No open jobs available.</p>
-            )}
           </div>
 
+          {topJob ? (
+            <div
+              onClick={() => onOpenDrawer({ type: "job", id: topJob.id })}
+              className="group cursor-pointer space-y-2 rounded-xl border border-border bg-background p-4 transition-colors hover:border-primary/50"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex min-w-0 items-center gap-3">
+                  <img
+                    src={getCompanyLogo(topJob.c)}
+                    alt={topJob.c}
+                    className="h-11 w-11 shrink-0 rounded-xl border border-border bg-muted/30 object-contain p-1"
+                  />
+                  <div className="min-w-0">
+                    <div className="truncate font-display text-sm font-semibold text-foreground transition-colors group-hover:text-primary">
+                      {topJob.t}
+                    </div>
+                    <div className="truncate text-xs font-medium text-foreground/80">{topJob.c}</div>
+                    <div className="truncate text-[11px] text-muted-foreground">
+                      {topJob.l} · ₹{topJob.a}–{topJob.b} LPA
+                    </div>
+                  </div>
+                </div>
+                <div className="flex shrink-0 flex-col items-center gap-1">
+                  <div className="relative h-14 w-14">
+                    <svg className="h-full w-full -rotate-90" viewBox="0 0 36 36" aria-hidden>
+                      <circle cx="18" cy="18" r={RING_R} fill="none" strokeWidth="3.5" className="stroke-muted" />
+                      <circle
+                        cx="18"
+                        cy="18"
+                        r={RING_R}
+                        fill="none"
+                        strokeWidth="3.5"
+                        strokeLinecap="round"
+                        strokeDasharray={`${topScore}, 100`}
+                        className={cn("transition-all duration-700", topTier.stroke)}
+                      />
+                    </svg>
+                    <span
+                      className={cn(
+                        "absolute inset-0 flex items-center justify-center text-xs font-bold",
+                        topTier.text
+                      )}
+                    >
+                      {topScore}%
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-medium text-muted-foreground">{matchLabel}</span>
+                </div>
+              </div>
+              <span className="inline-flex items-center gap-1 text-xs font-medium text-primary group-hover:underline">
+                Tap to see details and apply <ArrowRight className="h-3 w-3" />
+              </span>
+            </div>
+          ) : (
+            <p className="py-4 text-center text-xs text-muted-foreground">No open jobs available.</p>
+          )}
+
           {/* Upcoming Interviews */}
-          <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-3">
-            <h3 className="font-semibold text-foreground text-sm flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-primary" /> Upcoming Interviews
-            </h3>
-            <div className="space-y-2">
-              {scheduledInterviews.length === 0 ? (
-                <p className="text-xs text-muted-foreground py-3 text-center">
-                  No interviews scheduled yet. Keep applying to verified roles!
-                </p>
-              ) : (
-                scheduledInterviews.map((a) => {
+          <div className="space-y-3 rounded-xl border border-border bg-background p-4">
+            <div className="flex items-center gap-3">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <Calendar className="h-4 w-4" />
+              </span>
+              <div>
+                <h4 className="font-display text-sm font-semibold text-foreground">Upcoming interviews</h4>
+                <p className="text-xs text-muted-foreground">Scheduled by employers</p>
+              </div>
+            </div>
+            {scheduledInterviews.length === 0 ? (
+              <p className="text-xs text-muted-foreground">No interviews scheduled yet.</p>
+            ) : (
+              <div className="space-y-2">
+                {scheduledInterviews.map((a) => {
                   const j = jobs.find((x) => x.id === a.jid);
                   return (
                     <div
                       key={a.id}
-                      className="p-3 rounded-xl bg-muted/30 border border-border/60 flex items-center justify-between text-xs"
+                      className="flex items-center justify-between gap-2 rounded-xl border border-border/60 bg-muted/30 p-3 text-xs"
                     >
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-                          <Calendar className="w-4 h-4" />
-                        </div>
-                        <div>
-                          <div className="font-semibold text-foreground">{j?.t || "Interview Round"}</div>
-                          <div className="text-muted-foreground text-[11px]">{j?.c} • {a.iv || "Date TBD"}</div>
+                      <div className="min-w-0">
+                        <div className="truncate font-semibold text-foreground">{j?.t || "Interview Round"}</div>
+                        <div className="truncate text-[11px] text-muted-foreground">
+                          {j?.c} · {a.iv || "Date TBD"}
                         </div>
                       </div>
-                      <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-semibold">
+                      <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
                         Scheduled
                       </span>
                     </div>
                   );
-                })
-              )}
-            </div>
+                })}
+              </div>
+            )}
           </div>
         </div>
       </div>
 
       {/* 7-Day Chart & Skills Demand */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         {/* Weekly Chart */}
-        <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-4">
-          <div className="flex items-center justify-between">
+        <div className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
+          <div className="flex items-center gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <TrendingUp className="h-4 w-4" />
+            </span>
             <div>
-              <h3 className="font-semibold text-foreground text-sm flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-primary" /> Applications in Last 7 Days
-              </h3>
-              <p className="text-xs text-muted-foreground">
-                {weekTotal ? `${weekTotal} applications submitted this week` : "No applications sent in the last 7 days"}
-              </p>
+              <h3 className="font-display text-sm font-semibold text-foreground">Your applications this week</h3>
+              <p className="text-xs text-muted-foreground">{weekTotal} sent in the last 7 days</p>
             </div>
           </div>
 
-          <div className="h-40 flex items-end justify-between gap-2 pt-6 pb-2 px-2">
+          <div className="flex h-44 items-end justify-between gap-2 px-1 pt-4">
             {daysCounts.map((count, i) => {
-              const heightPct = count ? Math.max(15, (count / peakDay) * 100) : 6;
+              const heightPct = count ? Math.max(18, (count / peakDay) * 100) : 6;
               return (
-                <div key={dayLabels[i]} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
-                  <span className="text-[10px] font-semibold text-muted-foreground">{count || ""}</span>
-                  <div
-                    className={cn(
-                      "w-full max-w-[36px] rounded-t-lg transition-all duration-500",
-                      count > 0 ? "bg-primary" : "bg-muted/60"
-                    )}
-                    style={{ height: `${heightPct}%` }}
-                  />
-                  <span className="text-[10px] text-muted-foreground font-medium">{dayLabels[i]}</span>
+                <div key={dayLabels[i]} className="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
+                  <span className="h-4 text-[11px] font-semibold text-foreground">{count}</span>
+                  <div className="flex w-full flex-1 items-end justify-center">
+                    <div
+                      className={cn(
+                        "w-full max-w-[40px] rounded-md transition-all duration-500",
+                        count > 0 ? "bg-primary" : "bg-primary/15"
+                      )}
+                      style={{ height: `${heightPct}%` }}
+                    />
+                  </div>
+                  <span className="text-[10px] font-medium text-muted-foreground">{dayLabels[i]}</span>
                 </div>
               );
             })}
@@ -829,53 +861,50 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
         </div>
 
         {/* Skills vs Demand */}
-        <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-4">
-          <div className="flex items-center justify-between">
+        <div className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
+          <div className="flex items-center gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <Brain className="h-4 w-4" />
+            </span>
             <div>
-              <h3 className="font-semibold text-foreground text-sm flex items-center gap-2">
-                <Brain className="w-4 h-4 text-primary" /> Your Skills vs. Job Demand
-              </h3>
-              <p className="text-xs text-muted-foreground">How many open jobs require each of your verified skills</p>
+              <h3 className="font-display text-sm font-semibold text-foreground">Your skills vs. job demand</h3>
+              <p className="text-xs text-muted-foreground">How many open jobs ask for each of your skills</p>
             </div>
           </div>
 
-          <div className="space-y-2.5">
-            {(user.sk || []).slice(0, 5).map((skill) => {
-              const count =
-                skillDemand[
-                  Object.keys(skillDemand).find((k) => k.toLowerCase() === skill.toLowerCase()) || ""
-                ] || 0;
-              const pct = Math.round((count / maxDemand) * 100);
-              return (
-                <div key={skill} className="space-y-1">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-medium text-foreground">{skill}</span>
-                    <span className="text-muted-foreground">{count} jobs ask for this</span>
-                  </div>
-                  <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+          {userSkillRows.length === 0 ? (
+            <p className="py-2 text-xs text-muted-foreground">Add skills to your profile to compare with job demand.</p>
+          ) : (
+            <div className="space-y-2">
+              {userSkillRows.map(({ skill, count }) => (
+                <div key={skill} className="grid grid-cols-[minmax(0,7rem)_1fr_3.5rem] items-center gap-3 text-xs">
+                  <span className="truncate font-medium text-foreground">{skill}</span>
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
                     <div
-                      className="h-full bg-primary/80 rounded-full transition-all"
-                      style={{ width: `${Math.max(4, pct)}%` }}
+                      className="h-full rounded-full bg-primary transition-all"
+                      style={{ width: `${Math.round((count / maxSkillRow) * 100)}%` }}
                     />
                   </div>
+                  <span className="text-right text-[11px] text-muted-foreground">{count} jobs</span>
                 </div>
-              );
-            })}
-          </div>
+              ))}
+            </div>
+          )}
 
           {skillGaps.length > 0 && (
-            <div className="pt-3 border-t border-border/60">
-              <span className="text-xs font-semibold text-foreground block mb-2">
-                Skills worth learning next (click to add):
+            <div className="border-t border-border pt-3">
+              <span className="mb-2 block text-xs font-semibold text-foreground">
+                Skills worth learning next <span className="font-normal text-muted-foreground">(tap to add)</span>
               </span>
               <div className="flex flex-wrap gap-1.5">
                 {skillGaps.map((k) => (
                   <button
                     key={k}
+                    type="button"
                     onClick={() => onAddSkill(k)}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-muted/60 hover:bg-primary/10 hover:text-primary text-xs font-medium text-foreground transition-colors border border-border/60"
+                    className="inline-flex items-center gap-1 rounded-full border border-border bg-background px-3 py-1 text-xs font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary"
                   >
-                    <Plus className="w-3 h-3" /> {k} ({skillDemand[k]} jobs)
+                    <Plus className="h-3 w-3" /> {k} · {skillDemand[k]} jobs
                   </button>
                 ))}
               </div>

@@ -165,3 +165,19 @@
   --secondary: var(--podcast-gray);
   letter-spacing: 0;
 }
+
+/* Talento Pro hero: headings must stay white on the red gradient (beats the global h1-h6 color rule) */
+.pro-hero h1,
+.pro-hero h2,
+.pro-hero h3,
+.pro-hero h4,
+.dark .pro-hero h1,
+.dark .pro-hero h2,
+.dark .pro-hero h3,
+.dark .pro-hero h4 {
+  color: #fff;
+}
+.pro-hero {
+  color: #fff;
+}
+

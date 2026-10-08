@@ -1,28 +1,46 @@
 import React from "react";
 import {
   Search,
-  MapPin,
-  Briefcase,
-  Clock,
   Sparkles,
-  Zap,
-  SlidersHorizontal,
-  Bookmark,
-  Check,
-  CheckCircle2,
-  DollarSign,
-  Building2,
-  ArrowRightLeft,
-  Bot,
+  MapPin,
   Home,
   GraduationCap,
+  Zap,
+  Bookmark,
+  BookmarkCheck,
+  ArrowRightLeft,
+  Check,
   X,
-  Sliders,
+  Bot,
+  Building2,
+  Briefcase,
+  Clock,
   ChevronDown,
+  LayoutList,
+  LayoutGrid,
+  IndianRupee,
+  Wrench,
+  Target,
+  Filter,
+  Save,
+  Lightbulb,
 } from "lucide-react";
-import { ProJob, ProUser, ProApplication, calcScore, fitAnalysis, formatINR, timeAgo, COMPANY_INFO } from "@/data/proData";
+import {
+  ProJob,
+  ProUser,
+  ProApplication,
+  calcScore,
+  fitAnalysis,
+  levelFromExp,
+  parseSmartSearch,
+  timeAgo,
+  COMPANY_INFO,
+} from "@/data/proData";
+import { companyBlurb, SALARY_BANDS, salaryBandOk } from "@/data/proJobMeta";
 import { getCompanyLogo } from "@/data/portalAssets";
 import { cn } from "@/lib/utils";
+import { ProHero } from "./ProHero";
+import { MatchRing, matchTier } from "./ProMatchRing";
 
 interface ProJobsViewProps {
   user: ProUser;
@@ -38,6 +56,126 @@ interface ProJobsViewProps {
   onToast: (msg: string) => void;
 }
 
+interface JobFilters {
+  q: string;
+  loc: string;
+  sk: string;
+  e: number;
+  sal: number;
+  sr: string;
+  p: number;
+  m: string[];
+  ty: string[];
+  lvl: string[];
+  co: string[];
+  ind: string[];
+  sz: string[];
+  cities: string[];
+  any: string[];
+  hide: boolean;
+  onlySaved: boolean;
+  mm: number;
+  ex: string;
+  miss: string;
+  sort: string;
+}
+
+const makeDefaults = (onlySaved: boolean): JobFilters => ({
+  q: "",
+  loc: "",
+  sk: "",
+  e: 30,
+  sal: 0,
+  sr: "",
+  p: 0,
+  m: [],
+  ty: [],
+  lvl: [],
+  co: [],
+  ind: [],
+  sz: [],
+  cities: [],
+  any: [],
+  hide: false,
+  onlySaved,
+  mm: 0,
+  ex: "",
+  miss: "",
+  sort: "recent",
+});
+
+const splitList = (s: string) =>
+  (s || "")
+    .split(",")
+    .map((x) => x.trim().toLowerCase())
+    .filter(Boolean);
+
+const selectCls =
+  "w-full appearance-none rounded-lg border border-border bg-background pl-3 pr-8 py-2 text-xs font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer";
+const inputCls =
+  "w-full rounded-lg border border-border bg-background px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30";
+
+const SelectField: React.FC<{
+  label: string;
+  value: string | number;
+  onChange: (v: string) => void;
+  options: [string | number, string][];
+}> = ({ label, value, onChange, options }) => (
+  <div className="min-w-0">
+    <label className="mb-1 block text-[10px] font-bold uppercase tracking-wide text-muted-foreground">{label}</label>
+    <div className="relative">
+      <select value={String(value)} onChange={(e) => onChange(e.target.value)} className={selectCls}>
+        {options.map(([v, l]) => (
+          <option key={String(v)} value={String(v)}>
+            {l}
+          </option>
+        ))}
+      </select>
+      <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+    </div>
+  </div>
+);
+
+const FilterGroup: React.FC<{
+  icon: React.ReactNode;
+  title: string;
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+}> = ({ icon, title, defaultOpen = true, children }) => (
+  <details open={defaultOpen} className="group border-t border-border/70 py-3 first:border-t-0">
+    <summary className="flex cursor-pointer list-none items-center gap-2 text-xs font-bold text-foreground [&::-webkit-details-marker]:hidden">
+      <span className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10 text-primary [&_svg]:h-3.5 [&_svg]:w-3.5">
+        {icon}
+      </span>
+      <span className="flex-1">{title}</span>
+      <ChevronDown className="h-3.5 w-3.5 text-muted-foreground transition-transform group-open:rotate-180" />
+    </summary>
+    <div className="mt-3 space-y-2.5 text-xs">{children}</div>
+  </details>
+);
+
+const CheckRow: React.FC<{
+  label: string;
+  count?: number;
+  checked: boolean;
+  onChange: () => void;
+}> = ({ label, count, checked, onChange }) => (
+  <label className="flex cursor-pointer items-center justify-between gap-2 text-muted-foreground hover:text-foreground">
+    <span className="flex min-w-0 items-center gap-2">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={onChange}
+        className="h-3.5 w-3.5 shrink-0 rounded border-border accent-[#ec2639]"
+      />
+      <span className="truncate">{label}</span>
+    </span>
+    {count !== undefined && (
+      <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-bold text-muted-foreground">{count}</span>
+    )}
+  </label>
+);
+
 export const ProJobsView: React.FC<ProJobsViewProps> = ({
   user,
   jobs,
@@ -51,816 +189,713 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
   onOpenCompareDrawer,
   onToast,
 }) => {
-  const currentUser = user;
   const appliedJobIds = React.useMemo(
     () => (applications || []).filter((a) => a.who === user.email).map((a) => a.jid),
     [applications, user.email]
   );
   const savedJobIds = user.saved || [];
   const compareJobs = compareSelection || [];
-  const onToggleCompareJob = onCompareToggle;
-  const onOpenJobDrawer = onOpenJob;
-  const onQuickApply = onApplyJob;
-  const onToggleSaveJob = onSaveJob;
+  const userSkills = React.useMemo(() => (user.sk || []).map((x) => x.toLowerCase()), [user.sk]);
 
-  const [searchQuery, setSearchQuery] = React.useState("");
-  const [searchLocation, setSearchLocation] = React.useState("");
-  const [smartSearchQuery, setSmartSearchQuery] = React.useState("");
-  const [sortBy, setSortBy] = React.useState<string>("default");
+  const [F, setF] = React.useState<JobFilters>(() => makeDefaults(!!initialOnlySaved));
+  const [smartQuery, setSmartQuery] = React.useState("");
   const [isCompact, setIsCompact] = React.useState(false);
-  const searchRef = React.useRef<HTMLInputElement>(null);
+  const [savedSearches, setSavedSearches] = React.useState<{ n: string; f: JobFilters }[]>(() => user.ss || []);
+  const smartRef = React.useRef<HTMLInputElement>(null);
 
-  const defaultFilters = {
-    q: "",
-    loc: "",
-    sk: "",
-    e: 30,
-    sal: 0,
-    p: 0,
-    m: [] as string[],
-    ty: [] as string[],
-    lvl: [] as string[],
-    co: [] as string[],
-    ind: [] as string[],
-    sz: [] as string[],
-    cities: [] as string[],
-    any: [] as string[],
-    hide: false,
-    onlySaved: !!initialOnlySaved,
-    mm: 0,
-    ex: "",
-    miss: "",
-    sr: "all",
+  const patch = (p: Partial<JobFilters>) => setF((f) => ({ ...f, ...p }));
+  const toggleIn = (key: "m" | "ty" | "lvl" | "co" | "ind" | "sz" | "cities" | "any", v: string) =>
+    setF((f) => ({ ...f, [key]: f[key].includes(v) ? f[key].filter((x) => x !== v) : [...f[key], v] }));
+
+  // Press "/" anywhere to jump to the smart search bar
+  React.useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (e.key === "/" && tag !== "INPUT" && tag !== "TEXTAREA" && tag !== "SELECT") {
+        e.preventDefault();
+        smartRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const resetAll = () => {
+    setF(makeDefaults(false));
+    setSmartQuery("");
+    onToast("Filters reset.");
   };
 
-  const [filters, setFilters] = React.useState<any>(defaultFilters);
-  const [savedSearches, setSavedSearches] = React.useState<{ n: string; f: any }[]>(() => user.ss || []);
-
-  const onResetFilters = () => {
-    setSearchQuery("");
-    setSearchLocation("");
-    setSmartSearchQuery("");
-    setFilters(defaultFilters);
-    onToast("Filters reset to default.");
+  const runSmartSearch = () => {
+    const raw = smartQuery.trim();
+    if (!raw) return;
+    const p = parseSmartSearch(raw);
+    const next: Partial<JobFilters> = {};
+    if (p.sk.length) next.sk = p.sk.join(", ");
+    if (p.m.length) next.m = p.m;
+    if (p.ty.length) next.ty = p.ty;
+    if (p.sal) next.sal = p.sal;
+    if (p.lv.length) next.lvl = p.lv;
+    if (p.ex !== null) next.e = p.ex;
+    if (p.loc) {
+      if (p.loc === "Remote") next.m = ["Remote"];
+      else next.cities = [p.loc];
+    }
+    const understood = Object.keys(next).length > 0;
+    if (!understood) next.q = raw;
+    setF((f) => ({ ...makeDefaults(f.onlySaved), ...next }));
+    onToast(understood ? `Smart search applied: ${raw}` : `Searching for "${raw}"`);
   };
 
-  const onSmartSearch = () => {
-    const q = smartSearchQuery.toLowerCase();
-    if (!q) return;
-    const f: any = { ...filters };
-    if (q.includes("remote")) f.m = ["Remote"];
-    if (q.includes("hybrid")) f.m = ["Hybrid"];
-    if (q.includes("onsite")) f.m = ["Onsite"];
-    if (q.includes("intern")) f.ty = ["Internship"];
-    if (q.includes("fresher")) f.e = 0;
-    const salMatch = q.match(/(\d+)\s*lpa/);
-    if (salMatch) f.sal = +salMatch[1];
-    const expMatch = q.match(/(\d+)\s*(?:yrs|years)/);
-    if (expMatch) f.e = +expMatch[1];
-
-    const clean = q
-      .replace(/\b(remote|hybrid|onsite|fresher|internship|intern|\d+\s*lpa|\d+\s*yrs|\d+\s*years)\b/g, "")
-      .trim();
-    if (clean) f.q = clean;
-    setFilters(f);
-    onToast(`Smart search applied: "${smartSearchQuery}"`);
+  const saveSearch = () => {
+    const name = F.q || smartQuery || (F.m.length ? F.m.join(", ") : F.sk ? F.sk : "Custom search");
+    setSavedSearches((prev) => [...prev, { n: name, f: { ...F } }]);
+    onToast(`Search "${name}" saved.`);
   };
 
-  const onSaveSearch = () => {
-    const name = searchQuery || filters.q || (filters.m?.length ? filters.m.join(", ") : "Custom Search");
-    setSavedSearches((prev) => [...prev, { n: name, f: { ...filters } }]);
-    onToast(`Search "${name}" saved!`);
-  };
+  // Aggregate metadata for the sidebar
+  const locationCounts = React.useMemo(() => {
+    const c: Record<string, number> = {};
+    jobs.forEach((j) => (c[j.l] = (c[j.l] || 0) + 1));
+    return Object.entries(c).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  }, [jobs]);
 
-  const onApplySavedSearch = (saved: any) => {
-    setFilters(saved.f);
-    onToast(`Applied saved search: "${saved.n}"`);
-  };
+  const skillDemand = React.useMemo(() => {
+    const c: Record<string, number> = {};
+    jobs.forEach((j) => j.sk.forEach((s) => (c[s] = (c[s] || 0) + 1)));
+    return c;
+  }, [jobs]);
+  const popularSkills = React.useMemo(
+    () =>
+      Object.keys(skillDemand)
+        .sort((a, b) => skillDemand[b] - skillDemand[a])
+        .slice(0, 12),
+    [skillDemand]
+  );
+  const allSkills = React.useMemo(() => Object.keys(skillDemand).sort(), [skillDemand]);
+  const allCompanies = React.useMemo(() => [...new Set(jobs.map((j) => j.c))].sort(), [jobs]);
+  const allIndustries = React.useMemo(
+    () => [...new Set(jobs.map((j) => (COMPANY_INFO[j.c] || ["Other", "Startup"])[0]))].sort(),
+    [jobs]
+  );
 
-  const onDeleteSavedSearch = (idx: number) => {
-    setSavedSearches((prev) => prev.filter((_, i) => i !== idx));
-    onToast("Saved search removed.");
-  };
-
-  // Filter calculations
-  const filteredJobs = React.useMemo(() => {
-    const q = (searchQuery || filters.q || "").toLowerCase();
-    const loc = (searchLocation || filters.loc || "").toLowerCase();
-    const userSkills = (currentUser.sk || []).map((x) => x.toLowerCase());
-    const reqSkills = (filters.sk || "")
-      .split(",")
-      .map((x: string) => x.trim().toLowerCase())
-      .filter(Boolean);
-    const excludeWords = (filters.ex || "")
-      .split(",")
-      .map((x: string) => x.trim().toLowerCase())
-      .filter(Boolean);
+  const results = React.useMemo(() => {
+    const q = F.q.toLowerCase();
+    const loc = F.loc.toLowerCase();
+    const mustAll = splitList(F.sk);
+    const excluded = splitList(F.ex);
+    const now = Date.now();
 
     return jobs
       .filter((j) => {
-        const titleComp = (j.t + " " + j.c).toLowerCase();
-        const jSkills = j.sk.map((x) => x.toLowerCase());
-        const missingCount = jSkills.filter((x) => !userSkills.includes(x)).length;
-
-        // Text & location query
-        if (q && !titleComp.includes(q)) return false;
-        if (loc && !j.l.toLowerCase().includes(loc)) return false;
-
-        // Work mode & type
-        if (filters.m?.length && !filters.m.includes(j.m)) return false;
-        if (filters.ty?.length && !filters.ty.includes(j.ty)) return false;
-
-        // Sliders & bounds
-        if (j.e > (filters.e ?? 30)) return false;
-        if (j.b < (filters.sal ?? 0)) return false;
-
-        // Required skills
-        if (reqSkills.length && !reqSkills.every((s: string) => jSkills.includes(s))) return false;
-
-        // Any skills match
-        if (filters.any?.length && !j.sk.some((x) => filters.any.includes(x))) return false;
-
-        // Time threshold
-        if (filters.p > 0 && (Date.now() - j.at) / 86400000 > filters.p) return false;
-
-        // Hide applied
-        if (filters.hide && appliedJobIds.includes(j.id)) return false;
-
-        // Saved only
-        if (filters.onlySaved && !savedJobIds.includes(j.id)) return false;
-
-        // Missing skills threshold
-        if (filters.miss !== "" && filters.miss != null && missingCount > +filters.miss) return false;
-
-        // Exclude keywords
-        if (excludeWords.length && excludeWords.some((w: string) => titleComp.includes(w))) return false;
-
-        // Company, Industry, Size
-        const compMeta = COMPANY_INFO[j.c] || ["Other", "Startup"];
-        if (filters.co?.length && !filters.co.includes(j.c)) return false;
-        if (filters.ind?.length && !filters.ind.includes(compMeta[0])) return false;
-        if (filters.sz?.length && !filters.sz.includes(compMeta[1])) return false;
-        if (filters.cities?.length && !filters.cities.includes(j.l)) return false;
-
-        // AI Match percentage
-        if (filters.mm > 0 && calcScore(j, currentUser) < filters.mm) return false;
-
-        return true;
+        const jSk = j.sk.map((x) => x.toLowerCase());
+        const missing = jSk.filter((x) => !userSkills.includes(x)).length;
+        const ttl = `${j.t} ${j.c}`.toLowerCase();
+        const meta = COMPANY_INFO[j.c] || ["Other", "Startup"];
+        return (
+          (!q || ttl.includes(q)) &&
+          (!loc || j.l.toLowerCase().includes(loc)) &&
+          (!F.m.length || F.m.includes(j.m)) &&
+          (!F.ty.length || F.ty.includes(j.ty)) &&
+          j.e <= F.e &&
+          j.b >= F.sal &&
+          (!F.sr || salaryBandOk(j, F.sr)) &&
+          mustAll.every((s) => jSk.includes(s)) &&
+          (!F.p || (now - j.at) / 86400000 <= F.p) &&
+          !(F.hide && appliedJobIds.includes(j.id)) &&
+          (!F.lvl.length || F.lvl.includes(levelFromExp(j.e))) &&
+          calcScore(j, user) >= F.mm &&
+          (!F.co.length || F.co.includes(j.c)) &&
+          (!F.ind.length || F.ind.includes(meta[0])) &&
+          (!F.sz.length || F.sz.includes(meta[1])) &&
+          (!F.cities.length || F.cities.includes(j.l)) &&
+          (!F.any.length || j.sk.some((x) => F.any.includes(x))) &&
+          (F.miss === "" || missing <= +F.miss) &&
+          !excluded.some((w) => ttl.includes(w)) &&
+          (!F.onlySaved || savedJobIds.includes(j.id))
+        );
       })
-      .sort((a, b) => {
-        if (sortBy === "sal") return b.b - a.b;
-        if (sortBy === "match") return calcScore(b, currentUser) - calcScore(a, currentUser);
-        if (sortBy === "fit") return fitAnalysis(b, currentUser).tot - fitAnalysis(a, currentUser).tot;
-        return b.at - a.at;
+      .sort((a, b) =>
+        F.sort === "sal"
+          ? b.b - a.b
+          : F.sort === "match"
+          ? calcScore(b, user) - calcScore(a, user)
+          : F.sort === "fit"
+          ? fitAnalysis(b, user).tot - fitAnalysis(a, user).tot
+          : b.at - a.at
+      );
+  }, [jobs, F, user, userSkills, appliedJobIds, savedJobIds]);
+
+  // Active filter chips (click to remove)
+  const activeChips = React.useMemo(() => {
+    const chips: { key: string; label: string; clear: () => void }[] = [];
+    const d = makeDefaults(false);
+    if (F.q) chips.push({ key: "q", label: `"${F.q}"`, clear: () => patch({ q: "" }) });
+    if (F.loc) chips.push({ key: "loc", label: F.loc, clear: () => patch({ loc: "" }) });
+    F.m.forEach((v) => chips.push({ key: `m-${v}`, label: v, clear: () => toggleIn("m", v) }));
+    F.ty.forEach((v) => chips.push({ key: `ty-${v}`, label: v, clear: () => toggleIn("ty", v) }));
+    F.lvl.forEach((v) => chips.push({ key: `lvl-${v}`, label: v, clear: () => toggleIn("lvl", v) }));
+    F.cities.forEach((v) => chips.push({ key: `c-${v}`, label: v, clear: () => toggleIn("cities", v) }));
+    F.co.forEach((v) => chips.push({ key: `co-${v}`, label: v, clear: () => toggleIn("co", v) }));
+    F.ind.forEach((v) => chips.push({ key: `ind-${v}`, label: v, clear: () => toggleIn("ind", v) }));
+    F.sz.forEach((v) => chips.push({ key: `sz-${v}`, label: `${v} size`, clear: () => toggleIn("sz", v) }));
+    F.any.forEach((v) => chips.push({ key: `any-${v}`, label: `Any: ${v}`, clear: () => toggleIn("any", v) }));
+    if (F.sk) chips.push({ key: "sk", label: `Must have: ${F.sk}`, clear: () => patch({ sk: "" }) });
+    if (F.sal > 0) chips.push({ key: "sal", label: `\u20B9${F.sal}+ LPA`, clear: () => patch({ sal: 0 }) });
+    if (F.sr)
+      chips.push({
+        key: "sr",
+        label: (SALARY_BANDS.find((b) => b[0] === F.sr) || ["", F.sr])[1],
+        clear: () => patch({ sr: "" }),
       });
-  }, [jobs, searchQuery, searchLocation, filters, currentUser, appliedJobIds, savedJobIds, sortBy]);
+    if (F.e < d.e) chips.push({ key: "e", label: `Up to ${F.e} yrs`, clear: () => patch({ e: d.e }) });
+    if (F.p) chips.push({ key: "p", label: F.p === 1 ? "Last 24 hours" : `Last ${F.p} days`, clear: () => patch({ p: 0 }) });
+    if (F.mm) chips.push({ key: "mm", label: `AI match ${F.mm}%+`, clear: () => patch({ mm: 0 }) });
+    if (F.miss !== "") chips.push({ key: "miss", label: `Missing at most ${F.miss}`, clear: () => patch({ miss: "" }) });
+    if (F.ex) chips.push({ key: "ex", label: `Hide: ${F.ex}`, clear: () => patch({ ex: "" }) });
+    if (F.hide) chips.push({ key: "hide", label: "Hide applied", clear: () => patch({ hide: false }) });
+    if (F.onlySaved) chips.push({ key: "onlySaved", label: "Saved only", clear: () => patch({ onlySaved: false }) });
+    return chips;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [F]);
 
-  // Aggregate metadata for sidebar
-  const locationCounts = React.useMemo(() => {
-    const counts: Record<string, number> = {};
-    jobs.forEach((j) => {
-      counts[j.l] = (counts[j.l] || 0) + 1;
-    });
-    return Object.entries(counts).sort((a, b) => b[1] - a[1]);
-  }, [jobs]);
+  const firstName = (user.name || "there").split(" ")[0];
+  const companyCount = new Set(jobs.map((j) => j.c)).size;
 
-  const skillCounts = React.useMemo(() => {
-    const counts: Record<string, number> = {};
-    jobs.forEach((j) => j.sk.forEach((s) => (counts[s] = (counts[s] || 0) + 1)));
-    return Object.entries(counts).sort((a, b) => b[1] - a[1]);
-  }, [jobs]);
-
-  const allCompanies = React.useMemo(() => [...new Set(jobs.map((j) => j.c))].sort(), [jobs]);
-  const allIndustries = React.useMemo(() => [...new Set(jobs.map((j) => (COMPANY_INFO[j.c] || ["Other"])[0]))].sort(), [jobs]);
+  const presetCls = (on: boolean) =>
+    cn(
+      "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-bold transition-all cursor-pointer",
+      on ? "border-white bg-white text-primary" : "border-white/40 bg-white/15 text-white hover:bg-white/25"
+    );
 
   return (
-    <div className="space-y-6">
-      {/* Hero Search Box */}
-      <div className="rounded-2xl bg-gradient-to-r from-[#ec2639] via-[#f0364a] to-[#d61e31] text-white p-6 sm:p-8 shadow-xl relative overflow-hidden">
-        <div className="relative z-10 max-w-3xl space-y-4">
-          <div className="space-y-1">
-            <span className="text-xs font-bold uppercase tracking-wider text-white/80 flex items-center gap-1.5">
-              <Zap className="h-3.5 w-3.5 fill-current" />
-              Verified Roles &amp; Guaranteed 24-Hour Review SLA
-            </span>
-            <h1 className="text-2xl sm:text-3xl font-display font-extrabold tracking-tight">
-              Ready for your next verified role, {currentUser.name.split(" ")[0]}?
-            </h1>
-            <p className="text-white/90 text-xs sm:text-sm">
-              Explore {jobs.length} verified engineering openings matched directly against your validated skill profile.
-            </p>
+    <div className="space-y-5">
+      {/* Hero */}
+      <ProHero
+        title={`Hi ${firstName}, ready for your next role?`}
+        subtitle={`${jobs.length} openings from ${companyCount} companies, matched to your skills.`}
+      >
+        <div className="flex flex-col gap-2 pt-1 sm:flex-row">
+          <div className="relative flex-1">
+            <Sparkles className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-primary" />
+            <input
+              ref={smartRef}
+              value={smartQuery}
+              onChange={(e) => setSmartQuery(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && runSmartSearch()}
+              placeholder='Smart search: try "react remote 15 lpa" or "fresher java pune"'
+              className="w-full rounded-xl border-0 bg-white py-3 pl-10 pr-3 text-xs font-medium text-foreground shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-black/20"
+            />
           </div>
-
-          {/* Primary Search Inputs */}
-          <div className="grid sm:grid-cols-[1.5fr_1fr_auto] gap-2 pt-2">
-            <div className="relative">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input
-                ref={searchRef}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Title, skill or company (press / to focus)"
-                className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-white text-foreground placeholder:text-muted-foreground text-xs font-medium border-0 focus:outline-none focus:ring-2 focus:ring-black/20 shadow-sm"
-              />
-            </div>
-            <div className="relative">
-              <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input
-                value={searchLocation}
-                onChange={(e) => setSearchLocation(e.target.value)}
-                placeholder="City or Remote"
-                className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-white text-foreground placeholder:text-muted-foreground text-xs font-medium border-0 focus:outline-none focus:ring-2 focus:ring-black/20 shadow-sm"
-              />
-            </div>
-            <button
-              onClick={() => {
-                setFilters((f: any) => ({ ...f, q: searchQuery, loc: searchLocation }));
-              }}
-              className="px-5 py-2.5 rounded-xl bg-foreground text-background text-xs font-bold hover:bg-foreground/90 transition-all shadow-sm cursor-pointer"
-            >
-              Search
-            </button>
-          </div>
-
-          {/* Smart Search Bar */}
-          <div className="flex gap-2 pt-1">
-            <div className="relative flex-1">
-              <Sparkles className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#ec2639]" />
-              <input
-                value={smartSearchQuery}
-                onChange={(e) => setSmartSearchQuery(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && onSmartSearch()}
-                placeholder='Smart search: try "react remote 15 lpa" or "fresher java pune"'
-                className="w-full pl-9 pr-3 py-2 rounded-xl bg-white/95 text-foreground placeholder:text-muted-foreground text-xs font-medium border-0 focus:outline-none focus:ring-2 focus:ring-black/20 shadow-sm"
-              />
-            </div>
-            <button
-              onClick={onSmartSearch}
-              className="px-4 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-bold border border-white/30 backdrop-blur-xs transition-all cursor-pointer flex items-center gap-1.5"
-            >
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>Smart Find</span>
-            </button>
-          </div>
-
-          {/* Preset Buttons */}
-          <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
-            <span className="text-white/70 font-semibold text-[11px] mr-1">Quick Presets:</span>
-            <button
-              onClick={() => setFilters((f: any) => ({ ...f, m: f.m?.includes("Remote") ? [] : ["Remote"] }))}
-              className={cn(
-                "px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer border flex items-center gap-1.5",
-                filters.m?.includes("Remote")
-                  ? "bg-white text-primary border-white"
-                  : "bg-white/15 text-white border-white/25 hover:bg-white/25"
-              )}
-            >
-              <Home className="h-3 w-3" />
-              <span>Remote</span>
-            </button>
-            <button
-              onClick={() => setFilters((f: any) => ({ ...f, lvl: f.lvl?.includes("Fresher") ? [] : ["Fresher"] }))}
-              className={cn(
-                "px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer border flex items-center gap-1.5",
-                filters.lvl?.includes("Fresher")
-                  ? "bg-white text-primary border-white"
-                  : "bg-white/15 text-white border-white/25 hover:bg-white/25"
-              )}
-            >
-              <GraduationCap className="h-3 w-3" />
-              <span>Freshers</span>
-            </button>
-            <button
-              onClick={() => setFilters((f: any) => ({ ...f, p: f.p === 1 ? 0 : 1 }))}
-              className={cn(
-                "px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer border flex items-center gap-1.5",
-                filters.p === 1
-                  ? "bg-white text-primary border-white"
-                  : "bg-white/15 text-white border-white/25 hover:bg-white/25"
-              )}
-            >
-              <Zap className="h-3 w-3" />
-              <span>New Today</span>
-            </button>
-            <button
-              onClick={() => setSortBy(sortBy === "match" ? "recent" : "match")}
-              className={cn(
-                "px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer border flex items-center gap-1.5",
-                sortBy === "match"
-                  ? "bg-white text-primary border-white"
-                  : "bg-white/15 text-white border-white/25 hover:bg-white/25"
-              )}
-            >
-              <Sparkles className="h-3 w-3" />
-              <span>Best Match</span>
-            </button>
-          </div>
+          <button
+            onClick={runSmartSearch}
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-neutral-900 px-5 py-3 text-xs font-bold text-white shadow-sm transition-colors hover:bg-black cursor-pointer"
+          >
+            <Search className="h-3.5 w-3.5" />
+            Smart find
+          </button>
         </div>
+        <div className="flex flex-wrap items-center gap-2 pt-1">
+          <button onClick={() => toggleIn("m", "Remote")} className={presetCls(F.m.includes("Remote"))}>
+            <Home className="h-3 w-3" />
+            Remote
+          </button>
+          <button onClick={() => toggleIn("lvl", "Fresher")} className={presetCls(F.lvl.includes("Fresher"))}>
+            <GraduationCap className="h-3 w-3" />
+            Freshers
+          </button>
+          <button onClick={() => patch({ p: F.p === 1 ? 0 : 1 })} className={presetCls(F.p === 1)}>
+            <Zap className="h-3 w-3" />
+            New today
+          </button>
+          <button
+            onClick={() => patch({ sort: F.sort === "match" ? "recent" : "match" })}
+            className={presetCls(F.sort === "match")}
+          >
+            <Target className="h-3 w-3" />
+            Best match
+          </button>
+        </div>
+      </ProHero>
+
+      {/* Horizontal filter bar */}
+      <div className="grid grid-cols-2 gap-3 rounded-2xl border border-border bg-background p-4 shadow-sm sm:grid-cols-3 lg:grid-cols-6">
+        <SelectField
+          label="Work mode"
+          value={F.m[0] || ""}
+          onChange={(v) => patch({ m: v ? [v] : [] })}
+          options={[["", "Any"], ["Remote", "Remote"], ["Hybrid", "Hybrid"], ["Onsite", "Onsite"]]}
+        />
+        <SelectField
+          label="Job type"
+          value={F.ty[0] || ""}
+          onChange={(v) => patch({ ty: v ? [v] : [] })}
+          options={[["", "Any"], ["Full-time", "Full-time"], ["Internship", "Internship"], ["Contract", "Contract"]]}
+        />
+        <SelectField
+          label="Experience"
+          value={F.lvl[0] || ""}
+          onChange={(v) => patch({ lvl: v ? [v] : [] })}
+          options={[
+            ["", "Any level"],
+            ["Fresher", "Fresher (under 1 yr)"],
+            ["Junior", "Junior (1\u20133 yrs)"],
+            ["Mid", "Mid (3\u20136 yrs)"],
+            ["Senior", "Senior (6+ yrs)"],
+          ]}
+        />
+        <SelectField label="Salary" value={F.sr} onChange={(v) => patch({ sr: v })} options={SALARY_BANDS} />
+        <SelectField
+          label="Posted"
+          value={F.p}
+          onChange={(v) => patch({ p: +v })}
+          options={[[0, "Any time"], [1, "Last 24 hours"], [7, "Last 7 days"], [30, "Last 30 days"]]}
+        />
+        <SelectField
+          label="Sort by"
+          value={F.sort}
+          onChange={(v) => patch({ sort: v })}
+          options={[["recent", "Most recent"], ["sal", "Highest salary"], ["match", "Best AI match"], ["fit", "Best overall fit"]]}
+        />
       </div>
 
-      {/* Saved Searches Chips */}
-      {savedSearches?.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2 text-xs">
-          <span className="font-bold text-muted-foreground flex items-center gap-1">
-            <Bookmark className="h-3.5 w-3.5 text-primary" />
-            Saved Searches:
-          </span>
-          {savedSearches.map((s, idx) => (
-            <span
-              key={idx}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary border border-border/80 text-foreground font-semibold"
-            >
-              <button onClick={() => onApplySavedSearch(s.f)} className="hover:text-primary cursor-pointer">
-                {s.n}
-              </button>
-              <button onClick={() => onDeleteSavedSearch(idx)} className="text-muted-foreground hover:text-primary ml-1 cursor-pointer">
-                <X className="h-3 w-3" />
-              </button>
-            </span>
-          ))}
-        </div>
-      )}
-
-      {/* Horizontal Filter Bar */}
-      <div className="rounded-xl border border-border/80 bg-background p-3.5 flex flex-wrap items-center gap-3 text-xs shadow-xs">
-        <div className="flex-1 min-w-[140px]">
-          <label className="block text-[10px] font-bold text-muted-foreground uppercase mb-1">Work Mode</label>
-          <select
-            value={filters.m?.[0] || ""}
-            onChange={(e) => setFilters((f: any) => ({ ...f, m: e.target.value ? [e.target.value] : [] }))}
-            className="w-full bg-secondary/60 border border-border/70 rounded-lg px-2.5 py-1.5 font-semibold text-foreground text-xs"
-          >
-            <option value="">Any Mode</option>
-            <option value="Remote">Remote</option>
-            <option value="Hybrid">Hybrid</option>
-            <option value="Onsite">Onsite</option>
-          </select>
-        </div>
-
-        <div className="flex-1 min-w-[140px]">
-          <label className="block text-[10px] font-bold text-muted-foreground uppercase mb-1">Job Type</label>
-          <select
-            value={filters.ty?.[0] || ""}
-            onChange={(e) => setFilters((f: any) => ({ ...f, ty: e.target.value ? [e.target.value] : [] }))}
-            className="w-full bg-secondary/60 border border-border/70 rounded-lg px-2.5 py-1.5 font-semibold text-foreground text-xs"
-          >
-            <option value="">Any Type</option>
-            <option value="Full-time">Full-time</option>
-            <option value="Internship">Internship</option>
-            <option value="Contract">Contract</option>
-          </select>
-        </div>
-
-        <div className="flex-1 min-w-[140px]">
-          <label className="block text-[10px] font-bold text-muted-foreground uppercase mb-1">Experience</label>
-          <select
-            value={filters.lvl?.[0] || ""}
-            onChange={(e) => setFilters((f: any) => ({ ...f, lvl: e.target.value ? [e.target.value] : [] }))}
-            className="w-full bg-secondary/60 border border-border/70 rounded-lg px-2.5 py-1.5 font-semibold text-foreground text-xs"
-          >
-            <option value="">Any Level</option>
-            <option value="Fresher">Fresher (under 1 yr)</option>
-            <option value="Junior">Junior (1–3 yrs)</option>
-            <option value="Mid">Mid (3–6 yrs)</option>
-            <option value="Senior">Senior (6+ yrs)</option>
-          </select>
-        </div>
-
-        <div className="flex-1 min-w-[140px]">
-          <label className="block text-[10px] font-bold text-muted-foreground uppercase mb-1">Posted</label>
-          <select
-            value={filters.p || 0}
-            onChange={(e) => setFilters((f: any) => ({ ...f, p: +e.target.value }))}
-            className="w-full bg-secondary/60 border border-border/70 rounded-lg px-2.5 py-1.5 font-semibold text-foreground text-xs"
-          >
-            <option value="0">Any time</option>
-            <option value="1">Last 24 hours</option>
-            <option value="7">Last 7 days</option>
-            <option value="30">Last 30 days</option>
-          </select>
-        </div>
-
-        <div className="flex-1 min-w-[140px]">
-          <label className="block text-[10px] font-bold text-muted-foreground uppercase mb-1">Sort By</label>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="w-full bg-secondary/60 border border-border/70 rounded-lg px-2.5 py-1.5 font-semibold text-foreground text-xs"
-          >
-            <option value="recent">Most Recent</option>
-            <option value="sal">Highest Salary</option>
-            <option value="match">Best AI Match</option>
-            <option value="fit">Best Overall Fit</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Main Grid: Sidebar + Job Results */}
-      <div className="grid lg:grid-cols-[280px_1fr] gap-6 items-start">
-        {/* Sidebar Filters */}
-        <aside className="rounded-2xl border border-border/80 bg-background p-5 space-y-5 text-xs shadow-xs">
-          <div className="flex items-center justify-between pb-3 border-b border-border/60">
-            <span className="font-display font-bold text-sm text-foreground flex items-center gap-1.5">
-              <Sliders className="h-4 w-4 text-primary" />
-              Detailed Filters
+      {/* Sidebar + results */}
+      <div className="grid items-start gap-5 lg:grid-cols-[270px_1fr]">
+        {/* Filters sidebar */}
+        <aside className="rounded-2xl border border-border bg-background p-4 shadow-sm lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="flex items-center gap-2 font-display text-base font-bold text-foreground">
+              <Filter className="h-4 w-4 text-primary" />
+              Filters
             </span>
             <button
-              onClick={onResetFilters}
-              className="text-primary hover:underline font-semibold text-xs cursor-pointer"
+              onClick={resetAll}
+              className="rounded-lg border border-primary/40 px-2.5 py-1 text-[11px] font-bold text-primary transition-colors hover:bg-primary/10 cursor-pointer"
             >
               Reset all
             </button>
           </div>
 
-          {/* Location Checkboxes */}
-          <div className="space-y-2">
-            <span className="font-bold text-foreground block">Locations</span>
-            <div className="max-h-36 overflow-y-auto space-y-1.5 pr-1">
-              {locationCounts.map(([loc, count]) => {
-                const checked = filters.cities?.includes(loc);
-                return (
-                  <label key={loc} className="flex items-center justify-between gap-2 cursor-pointer text-muted-foreground hover:text-foreground">
-                    <span className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={checked}
-                        onChange={() => {
-                          setFilters((f: any) => ({
-                            ...f,
-                            cities: checked ? f.cities.filter((c: string) => c !== loc) : [...(f.cities || []), loc],
-                          }));
-                        }}
-                        className="rounded border-border text-primary focus:ring-primary h-3.5 w-3.5"
-                      />
-                      <span>{loc}</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-secondary text-muted-foreground">
-                      {count}
-                    </span>
-                  </label>
-                );
-              })}
+          <FilterGroup icon={<MapPin />} title="Location">
+            <div className="max-h-40 space-y-1.5 overflow-y-auto pr-1">
+              {locationCounts.map(([city, n]) => (
+                <CheckRow
+                  key={city}
+                  label={city}
+                  count={n}
+                  checked={F.cities.includes(city)}
+                  onChange={() => toggleIn("cities", city)}
+                />
+              ))}
             </div>
-          </div>
+          </FilterGroup>
 
-          {/* Salary Slider */}
-          <div className="space-y-2 pt-2 border-t border-border/60">
-            <div className="flex justify-between font-bold">
-              <span>Minimum Salary</span>
-              <span className="text-primary font-display font-black">₹{filters.sal || 0} LPA+</span>
-            </div>
-            <input
-              type="range"
-              min="0"
-              max="60"
-              step="2"
-              value={filters.sal || 0}
-              onChange={(e) => setFilters((f: any) => ({ ...f, sal: +e.target.value }))}
-              className="w-full accent-primary cursor-pointer"
-            />
-          </div>
-
-          {/* Experience Slider */}
-          <div className="space-y-2 pt-2 border-t border-border/60">
-            <div className="flex justify-between font-bold">
-              <span>Max Exp Asked</span>
-              <span className="text-primary font-display font-black">≤ {filters.e ?? 30} yrs</span>
-            </div>
-            <input
-              type="range"
-              min="0"
-              max="15"
-              step="1"
-              value={filters.e ?? 30}
-              onChange={(e) => setFilters((f: any) => ({ ...f, e: +e.target.value }))}
-              className="w-full accent-primary cursor-pointer"
-            />
-          </div>
-
-          {/* Must-have skills input */}
-          <div className="space-y-2 pt-2 border-t border-border/60">
-            <span className="font-bold text-foreground block">Must-have Skills</span>
-            <input
-              value={filters.sk || ""}
-              onChange={(e) => setFilters((f: any) => ({ ...f, sk: e.target.value }))}
-              placeholder="e.g. React, SQL, TypeScript"
-              className="w-full px-3 py-1.5 rounded-lg border border-border bg-secondary/40 text-xs text-foreground placeholder:text-muted-foreground"
-            />
-          </div>
-
-          {/* Any skills match */}
-          <div className="space-y-2 pt-2 border-t border-border/60">
-            <span className="font-bold text-foreground block">Job asks for any of these</span>
-            <div className="max-h-36 overflow-y-auto space-y-1.5 pr-1">
-              {skillCounts.slice(0, 8).map(([skill, count]) => {
-                const checked = filters.any?.includes(skill);
-                return (
-                  <label key={skill} className="flex items-center justify-between gap-2 cursor-pointer text-muted-foreground hover:text-foreground">
-                    <span className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={checked}
-                        onChange={() => {
-                          setFilters((f: any) => ({
-                            ...f,
-                            any: checked ? f.any.filter((s: string) => s !== skill) : [...(f.any || []), skill],
-                          }));
-                        }}
-                        className="rounded border-border text-primary focus:ring-primary h-3.5 w-3.5"
-                      />
-                      <span>{skill}</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-secondary text-muted-foreground">
-                      {count}
-                    </span>
-                  </label>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Minimum AI Match Slider */}
-          <div className="space-y-2 pt-2 border-t border-border/60">
-            <div className="flex justify-between font-bold">
-              <span>Min AI Match</span>
-              <span className="text-primary font-display font-black">{filters.mm || 0}%</span>
-            </div>
-            <input
-              type="range"
-              min="0"
-              max="90"
-              step="10"
-              value={filters.mm || 0}
-              onChange={(e) => setFilters((f: any) => ({ ...f, mm: +e.target.value }))}
-              className="w-full accent-primary cursor-pointer"
-            />
-          </div>
-
-          {/* Additional toggles */}
-          <div className="space-y-2 pt-2 border-t border-border/60">
-            <label className="flex items-center gap-2 cursor-pointer font-medium text-foreground">
-              <input
-                type="checkbox"
-                checked={filters.hide || false}
-                onChange={(e) => setFilters((f: any) => ({ ...f, hide: e.target.checked }))}
-                className="rounded border-border text-primary focus:ring-primary h-3.5 w-3.5"
-              />
-              <span>Hide jobs I applied to</span>
+          <FilterGroup icon={<IndianRupee />} title="Salary & experience">
+            <label className="block font-medium text-muted-foreground">
+              Minimum salary: <b className="text-primary">{"\u20B9"}{F.sal}</b> LPA+
             </label>
-            <label className="flex items-center gap-2 cursor-pointer font-medium text-foreground">
-              <input
-                type="checkbox"
-                checked={filters.onlySaved || false}
-                onChange={(e) => setFilters((f: any) => ({ ...f, onlySaved: e.target.checked }))}
-                className="rounded border-border text-primary focus:ring-primary h-3.5 w-3.5"
-              />
-              <span>Show only saved jobs</span>
+            <input
+              type="range"
+              min={0}
+              max={70}
+              step={1}
+              value={F.sal}
+              onChange={(e) => patch({ sal: +e.target.value })}
+              className="w-full cursor-pointer accent-[#ec2639]"
+            />
+            <label className="block font-medium text-muted-foreground">
+              Max experience asked: <b className="text-primary">{F.e}</b> yrs
             </label>
-          </div>
+            <input
+              type="range"
+              min={0}
+              max={30}
+              step={1}
+              value={F.e}
+              onChange={(e) => patch({ e: +e.target.value })}
+              className="w-full cursor-pointer accent-[#ec2639]"
+            />
+          </FilterGroup>
 
-          {/* Save Search Button */}
-          <div className="pt-2 border-t border-border/60">
-            <button
-              onClick={onSaveSearch}
-              className="w-full py-2 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground font-bold text-xs flex items-center justify-center gap-1.5 border border-border/80 transition-all cursor-pointer"
-            >
-              <Bookmark className="h-3.5 w-3.5 text-primary" />
-              <span>Save Current Search</span>
-            </button>
-          </div>
+          <FilterGroup icon={<Wrench />} title="Skills">
+            <label className="block font-medium text-muted-foreground">
+              Must have <i>all</i> of these
+            </label>
+            <input
+              list="pro-skill-list"
+              value={F.sk}
+              onChange={(e) => patch({ sk: e.target.value })}
+              placeholder="Type any skill, e.g. Figma, SQL"
+              className={inputCls}
+            />
+            <datalist id="pro-skill-list">
+              {allSkills.map((s) => (
+                <option key={s} value={s} />
+              ))}
+            </datalist>
+            <label className="block pt-1 font-medium text-muted-foreground">
+              Job asks for <i>any</i> of these
+            </label>
+            <div className="max-h-44 space-y-1.5 overflow-y-auto pr-1">
+              {popularSkills.map((s) => (
+                <CheckRow
+                  key={s}
+                  label={s}
+                  count={skillDemand[s]}
+                  checked={F.any.includes(s)}
+                  onChange={() => toggleIn("any", s)}
+                />
+              ))}
+            </div>
+          </FilterGroup>
+
+          <FilterGroup icon={<Bot />} title="Fit with my profile">
+            <label className="block font-medium text-muted-foreground">
+              Min AI match: <b className="text-primary">{F.mm}</b>%
+            </label>
+            <input
+              type="range"
+              min={0}
+              max={100}
+              step={10}
+              value={F.mm}
+              onChange={(e) => patch({ mm: +e.target.value })}
+              className="w-full cursor-pointer accent-[#ec2639]"
+            />
+            <label className="block font-medium text-muted-foreground">Skills I can be missing</label>
+            <div className="relative">
+              <select value={F.miss} onChange={(e) => patch({ miss: e.target.value })} className={selectCls}>
+                <option value="">Any</option>
+                <option value="0">None, I have all</option>
+                <option value="1">At most 1</option>
+                <option value="2">At most 2</option>
+                <option value="3">At most 3</option>
+              </select>
+              <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+            </div>
+          </FilterGroup>
+
+          <FilterGroup icon={<Building2 />} title="Company" defaultOpen={false}>
+            <label className="block font-medium text-muted-foreground">Industry</label>
+            <div className="space-y-1.5">
+              {allIndustries.map((x) => (
+                <CheckRow key={x} label={x} checked={F.ind.includes(x)} onChange={() => toggleIn("ind", x)} />
+              ))}
+            </div>
+            <label className="block pt-1 font-medium text-muted-foreground">Company size</label>
+            <div className="space-y-1.5">
+              {["Startup", "Mid", "Large", "Enterprise"].map((x) => (
+                <CheckRow key={x} label={x} checked={F.sz.includes(x)} onChange={() => toggleIn("sz", x)} />
+              ))}
+            </div>
+            <label className="block pt-1 font-medium text-muted-foreground">Companies</label>
+            <div className="max-h-40 space-y-1.5 overflow-y-auto pr-1">
+              {allCompanies.map((x) => (
+                <CheckRow key={x} label={x} checked={F.co.includes(x)} onChange={() => toggleIn("co", x)} />
+              ))}
+            </div>
+          </FilterGroup>
+
+          <FilterGroup icon={<Search />} title="Keywords & status">
+            <label className="block font-medium text-muted-foreground">Hide titles/companies containing</label>
+            <input
+              value={F.ex}
+              onChange={(e) => patch({ ex: e.target.value })}
+              placeholder="e.g. intern, sales"
+              className={inputCls}
+            />
+            <div className="space-y-1.5 pt-1">
+              <CheckRow label="Hide jobs I applied to" checked={F.hide} onChange={() => patch({ hide: !F.hide })} />
+              <CheckRow
+                label="Show only my saved jobs"
+                checked={F.onlySaved}
+                onChange={() => patch({ onlySaved: !F.onlySaved })}
+              />
+            </div>
+          </FilterGroup>
         </aside>
 
-        {/* Results Area */}
-        <section className="space-y-4">
-          {/* Header Controls: Count, Compare, Compact View */}
-          <div className="flex items-center justify-between gap-3 pb-2 border-b border-border/60 text-xs">
-            <div className="flex items-center gap-2">
-              <b className="font-display font-bold text-sm text-foreground">{filteredJobs.length} verified jobs found</b>
-            </div>
+        {/* Results */}
+        <section className="min-w-0 space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+            <span className="text-muted-foreground">
+              <b className="font-display text-sm text-foreground">{results.length}</b> jobs found
+            </span>
             <div className="flex items-center gap-2">
               {compareJobs.length > 1 && (
                 <button
                   onClick={onOpenCompareDrawer}
-                  className="px-3 py-1.5 rounded-lg bg-primary text-white font-bold text-xs flex items-center gap-1.5 shadow-sm shadow-primary/20 cursor-pointer"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-bold text-primary-foreground shadow-sm cursor-pointer"
                 >
                   <ArrowRightLeft className="h-3.5 w-3.5" />
-                  <span>Compare ({compareJobs.length})</span>
+                  Compare {compareJobs.length}
                 </button>
               )}
               <button
-                onClick={() => setIsCompact(!isCompact)}
-                className="px-3 py-1.5 rounded-lg border border-border bg-background hover:bg-secondary text-muted-foreground hover:text-foreground font-semibold cursor-pointer transition-all"
+                onClick={() => setIsCompact((c) => !c)}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-primary/40 bg-background px-3 py-1.5 text-xs font-bold text-primary transition-colors hover:bg-primary/10 cursor-pointer"
               >
-                {isCompact ? "Card View" : "Compact View"}
+                {isCompact ? <LayoutGrid className="h-3.5 w-3.5" /> : <LayoutList className="h-3.5 w-3.5" />}
+                {isCompact ? "Comfortable" : "Compact"}
               </button>
             </div>
           </div>
 
-          {/* AI Match Explanation Bar */}
-          <div className="rounded-xl border border-border/80 bg-secondary/40 p-3 flex items-center justify-between text-xs text-muted-foreground gap-3">
-            <div className="flex items-center gap-2">
-              <Bot className="h-4 w-4 text-primary shrink-0" />
-              <span><b>AI Match</b> scores your validated skills against each employer's requirements in real time.</span>
-            </div>
-            <div className="flex items-center gap-3 font-semibold text-[11px] shrink-0">
-              <span className="text-emerald-600 font-bold">70%+ Strong</span>
-              <span className="text-amber-600 font-bold">40–69% Fair</span>
-              <span className="text-rose-600 font-bold">&lt;40% Low</span>
-            </div>
+          {/* Legend */}
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl border border-border bg-secondary/40 px-3 py-2 text-[11px] text-muted-foreground">
+            <Bot className="h-3.5 w-3.5 text-primary" />
+            <span>
+              <b className="text-foreground">AI Match</b> shows how many of the job's required skills are in your profile.
+            </span>
+            <span className="font-semibold text-emerald-600">&#9679; 70%+ Strong</span>
+            <span className="font-semibold text-amber-600">&#9679; 40&ndash;69% Fair</span>
+            <span className="font-semibold text-primary">&#9679; Below 40% Low</span>
           </div>
 
-          {/* Job List */}
-          {filteredJobs.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-border p-12 text-center space-y-3">
-              <Building2 className="h-10 w-10 text-muted-foreground/40 mx-auto" />
-              <b className="font-display font-bold text-base text-foreground block">No jobs match your filter criteria</b>
-              <p className="text-muted-foreground text-xs max-w-sm mx-auto">
-                Try loosening your salary threshold, removing specific location restrictions, or clearing skill filters.
+          {/* Active chips + saved searches */}
+          {(activeChips.length > 0 || savedSearches.length > 0) && (
+            <div className="flex flex-wrap items-center gap-1.5">
+              {activeChips.map((c) => (
+                <button
+                  key={c.key}
+                  onClick={c.clear}
+                  className="inline-flex items-center gap-1 rounded-full border border-primary/40 bg-primary/10 px-2.5 py-1 text-[11px] font-semibold text-primary cursor-pointer"
+                >
+                  {c.label}
+                  <X className="h-3 w-3" />
+                </button>
+              ))}
+              {activeChips.length > 0 && (
+                <>
+                  <button
+                    onClick={resetAll}
+                    className="rounded-full border border-border px-2.5 py-1 text-[11px] font-semibold text-muted-foreground hover:text-foreground cursor-pointer"
+                  >
+                    Clear all
+                  </button>
+                  <button
+                    onClick={saveSearch}
+                    className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-[11px] font-semibold text-muted-foreground hover:text-foreground cursor-pointer"
+                  >
+                    <Save className="h-3 w-3" />
+                    Save search
+                  </button>
+                </>
+              )}
+              {savedSearches.map((s, i) => (
+                <span
+                  key={`${s.n}-${i}`}
+                  className="inline-flex items-center gap-1 rounded-full border border-border bg-secondary px-2.5 py-1 text-[11px] font-semibold text-foreground"
+                >
+                  <button
+                    onClick={() => {
+                      setF(s.f);
+                      onToast(`Applied saved search: ${s.n}`);
+                    }}
+                    className="inline-flex items-center gap-1 hover:text-primary cursor-pointer"
+                  >
+                    <Bookmark className="h-3 w-3 text-primary" />
+                    {s.n}
+                  </button>
+                  <button
+                    onClick={() => setSavedSearches((prev) => prev.filter((_, k) => k !== i))}
+                    aria-label={`Remove saved search ${s.n}`}
+                    className="text-muted-foreground hover:text-primary cursor-pointer"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Cards */}
+          {results.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-border bg-background p-10 text-center">
+              <Building2 className="mx-auto mb-2 h-9 w-9 text-muted-foreground/40" />
+              <b className="block font-display text-base text-foreground">No jobs match.</b>
+              <p className="mx-auto mt-1 max-w-sm text-xs text-muted-foreground">
+                Remove a filter chip above or clear all filters.
               </p>
               <button
-                onClick={onResetFilters}
-                className="px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-sm shadow-primary/30 cursor-pointer"
+                onClick={resetAll}
+                className="mt-3 rounded-xl bg-primary px-4 py-2 text-xs font-bold text-primary-foreground cursor-pointer"
               >
                 Clear all filters
               </button>
             </div>
           ) : (
             <div className="space-y-3">
-              {filteredJobs.map((j) => {
-                const score = calcScore(j, currentUser);
-                const isApplied = appliedJobIds.includes(j.id);
-                const isSaved = savedJobIds.includes(j.id);
-                const isComparing = compareJobs.includes(j.id);
-                const userSkills = (currentUser.sk || []).map((x) => x.toLowerCase());
-                const missingSkills = j.sk.filter((s) => !userSkills.includes(s.toLowerCase()));
+              {results.map((j) => {
+                const pct = calcScore(j, user);
+                const tier = matchTier(pct);
+                const applied = appliedJobIds.includes(j.id);
+                const saved = savedJobIds.includes(j.id);
+                const comparing = compareJobs.includes(j.id);
+                const gap = j.sk.filter((s) => !userSkills.includes(s.toLowerCase()));
+                const have = j.sk.length - gap.length;
+                const meta = COMPANY_INFO[j.c] || ["Other", "Startup"];
+                const [l1, l2] = companyBlurb(j.c, meta[0], meta[1]);
 
                 return (
                   <article
                     key={j.id}
-                    className={cn(
-                      "rounded-2xl border border-border/80 bg-background transition-all hover:border-foreground/20 hover:shadow-sm group cursor-pointer",
-                      isCompact ? "p-4" : "p-5 space-y-3.5"
-                    )}
                     onClick={(e) => {
                       if ((e.target as HTMLElement).closest("button")) return;
-                      onOpenJobDrawer(j.id);
+                      onOpenJob(j.id);
                     }}
+                    className={cn(
+                      "group cursor-pointer rounded-2xl border border-border bg-background shadow-sm transition-all hover:border-primary/40 hover:shadow-md",
+                      isCompact ? "p-3.5" : "p-4 sm:p-5"
+                    )}
                   >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-start gap-3.5 min-w-0">
-                        <div className="h-11 w-11 rounded-xl bg-white border border-border/80 p-1.5 flex items-center justify-center shrink-0 shadow-2xs">
-                          <img src={getCompanyLogo(j.c)} alt={j.c} className="max-h-full max-w-full object-contain" />
-                        </div>
-                        <div className="min-w-0">
-                          <h3 className="font-display font-bold text-sm sm:text-base text-foreground group-hover:text-primary transition-colors truncate">
-                            {j.t}
-                          </h3>
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5 flex-wrap">
-                            <span className="font-semibold text-foreground">{j.c}</span>
-                            <span>•</span>
-                            <span className="flex items-center gap-1">
-                              <MapPin className="h-3 w-3" />
-                              {j.l}
-                            </span>
-                            <span>•</span>
-                            <span className="px-2 py-0.5 rounded-full bg-secondary text-[11px] font-medium text-foreground">
-                              {j.m}
-                            </span>
-                            <span>•</span>
-                            <span className="font-bold text-foreground">₹{j.a}–{j.b} LPA</span>
-                          </div>
-                        </div>
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-white p-1.5">
+                        <img src={getCompanyLogo(j.c)} alt={j.c} className="max-h-full max-w-full object-contain" />
                       </div>
-
-                      {/* AI Match Ring Indicator */}
-                      <div className="flex items-center gap-2 shrink-0">
-                        <div
-                          className={cn(
-                            "px-2.5 py-1 rounded-full text-xs font-black font-display border",
-                            score >= 70
-                              ? "bg-emerald-500/10 text-emerald-700 border-emerald-500/20"
-                              : score >= 40
-                              ? "bg-amber-500/10 text-amber-700 border-amber-500/20"
-                              : "bg-rose-500/10 text-rose-700 border-rose-500/20"
-                          )}
-                          title={`${score}% skill match with your verified profile`}
-                        >
-                          {score}% Match
-                        </div>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="truncate font-display text-base font-bold text-foreground transition-colors group-hover:text-primary">
+                          {j.t}
+                        </h3>
+                        <div className="text-sm font-semibold text-primary">{j.c}</div>
+                      </div>
+                      <div
+                        className="flex shrink-0 flex-col items-center gap-0.5"
+                        title={`AI Match: ${pct}% of this job's required skills are in your profile`}
+                      >
+                        <small className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
+                          <Bot className="h-3 w-3" />
+                          AI match
+                        </small>
+                        <MatchRing percent={pct} size={isCompact ? 42 : 50} />
+                        {!isCompact && <em className={cn("text-[10px] font-bold not-italic", tier.text)}>{tier.label}</em>}
                       </div>
                     </div>
 
                     {!isCompact && (
-                      <>
-                        {/* Company blurb */}
-                        <div className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
-                          Join {j.c} as {j.t}. Requires {j.e}+ years experience. Fast-track hiring with verified 24-hour review SLA.
+                      <div className="mt-3 space-y-1 text-xs text-muted-foreground">
+                        <div className="flex items-start gap-2">
+                          <Building2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground/70" />
+                          <span>{l1}</span>
                         </div>
-
-                        {/* Skills Chips */}
-                        <div className="flex flex-wrap gap-1.5 pt-1">
-                          {j.sk.map((s) => {
-                            const hasSkill = userSkills.includes(s.toLowerCase());
-                            return (
-                              <span
-                                key={s}
-                                className={cn(
-                                  "px-2.5 py-0.5 rounded-md text-[11px] font-medium border transition-colors",
-                                  hasSkill
-                                    ? "bg-emerald-500/10 text-emerald-800 border-emerald-500/25 font-semibold"
-                                    : "bg-secondary text-muted-foreground border-border/50"
-                                )}
-                              >
-                                {s}
-                              </span>
-                            );
-                          })}
+                        <div className="flex items-start gap-2">
+                          <Briefcase className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground/70" />
+                          <span>{l2}</span>
                         </div>
-
-                        {/* AI Match Status Line */}
-                        <div className="text-[11px] font-medium text-muted-foreground flex items-center gap-2 pt-1 border-t border-border/60">
-                          <Bot className="h-3.5 w-3.5 text-primary shrink-0" />
-                          <span>
-                            {missingSkills.length === 0 ? (
-                              <b className="text-emerald-600">You cover all {j.sk.length} required skills. Excellent fit to apply!</b>
-                            ) : (
-                              <span>
-                                You match <b>{j.sk.length - missingSkills.length} of {j.sk.length}</b> skills. Missing: {missingSkills.slice(0, 3).join(", ")}
-                              </span>
-                            )}
-                          </span>
-                        </div>
-                      </>
+                      </div>
                     )}
 
-                    {/* Card Footer Actions */}
-                    <div className="flex items-center justify-between pt-2 border-t border-border/60 text-xs">
-                      <span className="text-[11px] text-muted-foreground flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        Posted {timeAgo(j.at)}
+                    <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-muted-foreground">
+                      <span className="inline-flex items-center gap-1">
+                        <MapPin className="h-3 w-3 text-primary" />
+                        {j.l}
                       </span>
+                      <span className="rounded-md bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">{j.m}</span>
+                      <span className="rounded-md bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">{j.ty}</span>
+                      <span>{j.e}+ yrs</span>
+                      <span className="font-semibold text-foreground">
+                        {"\u20B9"}
+                        {j.a}&ndash;{j.b} LPA
+                      </span>
+                      <span className="inline-flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {timeAgo(j.at)}
+                      </span>
+                    </div>
 
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onToggleCompareJob(j.id);
-                          }}
-                          className={cn(
-                            "px-2.5 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1 transition-all cursor-pointer",
-                            isComparing
-                              ? "border-primary bg-primary/10 text-primary font-bold"
-                              : "border-border text-muted-foreground hover:text-foreground"
-                          )}
-                        >
-                          <ArrowRightLeft className="h-3.5 w-3.5" />
-                          <span>{isComparing ? "Comparing" : "Compare"}</span>
-                        </button>
+                    <div className="mt-2.5 flex flex-wrap gap-1.5">
+                      {j.sk.map((s) => {
+                        const hit = userSkills.includes(s.toLowerCase());
+                        return (
+                          <span
+                            key={s}
+                            className={cn(
+                              "rounded-md border px-2.5 py-0.5 text-[11px] font-medium",
+                              hit
+                                ? "border-emerald-500/40 bg-emerald-500/10 font-semibold text-emerald-700 dark:text-emerald-400"
+                                : "border-border bg-secondary/60 text-muted-foreground"
+                            )}
+                          >
+                            {s}
+                          </span>
+                        );
+                      })}
+                    </div>
 
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onToggleSaveJob(j.id);
-                          }}
-                          className={cn(
-                            "p-1.5 rounded-lg border text-xs font-semibold transition-all cursor-pointer",
-                            isSaved
-                              ? "border-amber-500 bg-amber-500/10 text-amber-600"
-                              : "border-border text-muted-foreground hover:text-foreground"
-                          )}
-                          title={isSaved ? "Remove from saved" : "Save role"}
-                        >
-                          <Bookmark className={cn("h-3.5 w-3.5", isSaved && "fill-current")} />
-                        </button>
-
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (!isApplied) onQuickApply(j.id);
-                          }}
-                          disabled={isApplied}
-                          className={cn(
-                            "px-3.5 py-1.5 rounded-lg font-bold text-xs transition-all flex items-center gap-1 cursor-pointer",
-                            isApplied
-                              ? "bg-secondary text-muted-foreground cursor-not-allowed border border-border"
-                              : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs"
-                          )}
-                        >
-                          {isApplied ? (
-                            <>
-                              <Check className="h-3.5 w-3.5 text-emerald-600" />
-                              <span>Applied</span>
-                            </>
-                          ) : (
-                            <span>Quick Apply</span>
-                          )}
-                        </button>
+                    {!isCompact && (
+                      <div className="mt-3 flex items-center gap-2 rounded-lg bg-secondary/60 px-3 py-2 text-[11px] text-muted-foreground">
+                        <Bot className="h-3.5 w-3.5 shrink-0 text-primary" />
+                        {!userSkills.length ? (
+                          <span>Add your skills in Profile to see how well you match this job.</span>
+                        ) : gap.length ? (
+                          <span>
+                            You have <b className="text-foreground">{have} of {j.sk.length}</b> required skills &middot; Missing:{" "}
+                            {gap.slice(0, 3).join(", ")}
+                          </span>
+                        ) : (
+                          <span>
+                            You have <b className="text-emerald-600">all {j.sk.length}</b> required skills &middot; Apply now!
+                          </span>
+                        )}
                       </div>
+                    )}
+
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
+                      <button
+                        disabled={applied}
+                        onClick={() => !applied && onApplyJob(j.id)}
+                        className={cn(
+                          "inline-flex items-center gap-1 rounded-lg px-4 py-1.5 text-xs font-bold transition-all",
+                          applied
+                            ? "cursor-not-allowed border border-border bg-secondary text-muted-foreground"
+                            : "bg-primary text-primary-foreground shadow-sm shadow-primary/30 hover:bg-primary/90 cursor-pointer"
+                        )}
+                      >
+                        {applied ? (
+                          <>
+                            <Check className="h-3.5 w-3.5 text-emerald-600" />
+                            Applied
+                          </>
+                        ) : (
+                          "Quick apply"
+                        )}
+                      </button>
+                      <button
+                        onClick={() => onSaveJob(j.id)}
+                        className={cn(
+                          "inline-flex items-center gap-1 rounded-lg border px-3 py-1.5 text-xs font-bold transition-colors cursor-pointer",
+                          saved
+                            ? "border-primary bg-primary/10 text-primary"
+                            : "border-primary/40 text-primary hover:bg-primary/10"
+                        )}
+                      >
+                        {saved ? <BookmarkCheck className="h-3.5 w-3.5" /> : <Bookmark className="h-3.5 w-3.5" />}
+                        {saved ? "Saved" : "Save"}
+                      </button>
+                      <button
+                        onClick={() => onCompareToggle(j.id)}
+                        className={cn(
+                          "inline-flex items-center gap-1 rounded-lg border px-3 py-1.5 text-xs font-bold transition-colors cursor-pointer",
+                          comparing
+                            ? "border-primary bg-primary/10 text-primary"
+                            : "border-primary/40 text-primary hover:bg-primary/10"
+                        )}
+                      >
+                        {comparing ? <Check className="h-3.5 w-3.5" /> : <ArrowRightLeft className="h-3.5 w-3.5" />}
+                        {comparing ? "Comparing" : "Compare"}
+                      </button>
                     </div>
                   </article>
                 );
               })}
             </div>
+          )}
+
+          {results.length > 0 && (
+            <p className="flex items-center justify-center gap-1.5 pt-1 text-[11px] text-muted-foreground">
+              <Lightbulb className="h-3.5 w-3.5 text-primary" />
+              Press <kbd className="rounded border border-border px-1 font-mono">/</kbd> to jump to smart search.
+            </p>
           )}
         </section>
       </div>
