@@ -25,6 +25,9 @@ import { ProUser, POPULAR_CERTS } from "@/data/proData";
 import { ProHero } from "./ProHero";
 import { MatchRing } from "./ProMatchRing";
 import { ProDrawerState } from "./proTypes";
+import logoAws from "@/assets/logo-aws.svg";
+import logoGoogle from "@/assets/logo-google.svg";
+import logoMeta from "@/assets/logo-meta.svg";
 
 interface ProCertificationsViewProps {
   user: ProUser;
@@ -47,17 +50,33 @@ const initials = (s: string) =>
 
 const tile = "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary";
 
-const IssuerMark: React.FC<{ name: string; size?: "sm" | "md" }> = ({ name, size = "md" }) => (
-  <span
-    aria-hidden
-    className={cn(
-      "flex shrink-0 items-center justify-center rounded-xl border border-border bg-muted/40 font-display font-bold text-primary",
-      size === "md" ? "h-11 w-11 text-sm" : "h-9 w-9 text-xs"
-    )}
-  >
-    {initials(name)}
-  </span>
-);
+const issuerLogo = (name: string): string | undefined => {
+  const n = name.toLowerCase();
+  if (n.includes("amazon") || n.includes("aws")) return logoAws;
+  if (n.includes("google")) return logoGoogle;
+  if (n.includes("meta")) return logoMeta;
+  return undefined;
+};
+
+const IssuerMark: React.FC<{ name: string; size?: "sm" | "md" }> = ({ name, size = "md" }) => {
+  const logo = issuerLogo(name);
+  return (
+    <span
+      aria-hidden
+      className={cn(
+        "flex shrink-0 items-center justify-center rounded-xl border border-border bg-muted/40 font-display font-bold text-primary",
+        size === "md" ? "h-11 w-11 text-sm" : "h-9 w-9 text-xs"
+      )}
+    >
+      {logo ? (
+        <img src={logo} alt="" className={cn("object-contain", size === "md" ? "h-7 w-7" : "h-5 w-5")} loading="lazy" />
+      ) : (
+        initials(name)
+      )}
+    </span>
+  );
+};
+
 
 export const ProCertificationsView: React.FC<ProCertificationsViewProps> = ({
   user,
