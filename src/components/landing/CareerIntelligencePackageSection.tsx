@@ -89,7 +89,7 @@ const benefits: Benefit[] = [
 
 const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode } = {}) => {
   return (
-    <section className="py-12 md:py-16 bg-muted/30">
+    <section id="cir-report" className="py-12 md:py-16 bg-muted/30 scroll-mt-20">
       <div className="container px-4 md:px-6">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-10 md:mb-12">

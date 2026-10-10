@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Play, Sparkles, TrendingUp, ShieldCheck, Award, Target } from "lucide-react";
+import { ArrowRight, Play, Sparkles, TrendingUp, ShieldCheck, Award, Target, FileBarChart2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import SectionBadge from "@/components/ui/section-badge";
@@ -15,8 +15,11 @@ const usps = [
 
 const typewriterText = "You Don't Lack Talent. You Lack Proof.";
 
+const SampleCirDialog = lazy(() => import("@/components/assessments/cir/SampleCirDialog"));
+
 const AssessmentHero = () => {
   const [displayedChars, setDisplayedChars] = useState(0);
+  const [cirOpen, setCirOpen] = useState(false);
 
   useEffect(() => {
     if (displayedChars < typewriterText.length) {
@@ -94,11 +97,13 @@ const AssessmentHero = () => {
                   Take Your Assessment <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
-              <Link to="/for-employers">
-                <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 border-0 gap-2 h-12 px-6">
-                  I'm an Employer
-                </Button>
-              </Link>
+              <Button
+                size="lg"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 border-0 gap-2 h-12 px-6"
+                onClick={() => setCirOpen(true)}
+              >
+                <FileBarChart2 className="h-4 w-4" /> Get Sample CIR Report
+              </Button>
             </motion.div>
 
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 3 }} className="flex flex-wrap items-center gap-6 text-xs text-muted-foreground">
@@ -147,6 +152,11 @@ const AssessmentHero = () => {
           </motion.div>
         </div>
       </div>
+      {cirOpen && (
+        <Suspense fallback={null}>
+          <SampleCirDialog open={cirOpen} onOpenChange={setCirOpen} />
+        </Suspense>
+      )}
     </section>
   );
 };

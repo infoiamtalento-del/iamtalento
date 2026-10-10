@@ -65,7 +65,7 @@ const Assessments = () => (
       <PlatformFeaturesSection />
       <SuccessStoriesCarousel />
       <AssessmentIntegritySection />
-      <SelectAssessmentSection />
+      {/* <SelectAssessmentSection /> */}
 
       {/* ── 2. CREDIBILITY & TRUST ── */}
       {/* <TrustAuthoritySection /> */}
@@ -77,12 +77,12 @@ const Assessments = () => (
       <JobsEventsSection />
 
       {/* ── 4. TRUST & INTEGRITY ── */}
-      <ProctoringSection />
+      {/* <ProctoringSection /> */}
 
       {/* ── 6. SOCIAL PROOF → CONVERT ── */}
-      <CandidateStories />
+      {/* <CandidateStories /> */}
       <PhoneMockupSection />
-      <PricingBundles />
+      {/* <PricingBundles /> */}
       <AssessmentFAQ />
       <AssessmentFinalCTA />
       <ComplianceSection />
