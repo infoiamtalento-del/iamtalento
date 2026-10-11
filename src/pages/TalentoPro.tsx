@@ -57,14 +57,33 @@ const saveStorage = <T,>(key: string, val: T): void => {
 
 const normalizeUsers = (raw: any): Record<string, ProUser> => {
   const result: Record<string, ProUser> = { ...DEFAULT_USERS };
+  const mergeUser = (base: ProUser, incoming: any): ProUser => {
+    if (!incoming || typeof incoming !== "object") return base;
+    const isCand = base.role === "candidate" || incoming.role === "candidate";
+    const name = isCand && (incoming.name === "Arjun Mehta" || !incoming.name) ? base.name : incoming.name;
+    const sk = isCand && base.sk ? [...new Set([...(base.sk || []), ...(incoming.sk || [])])] : incoming.sk || base.sk;
+    return {
+      ...base,
+      ...incoming,
+      name,
+      sk,
+      ce: incoming.ce && incoming.ce.length ? incoming.ce : base.ce,
+      wal: incoming.wal && incoming.wal.bal ? incoming.wal : base.wal,
+    };
+  };
+
   if (Array.isArray(raw)) {
     raw.forEach((u) => {
-      if (u && u.email) result[u.email] = { ...DEFAULT_USERS[u.email], ...u };
+      if (u && u.email) {
+        const base = DEFAULT_USERS[u.email] || result[u.email] || u;
+        result[u.email] = mergeUser(base, u);
+      }
     });
   } else if (raw && typeof raw === "object") {
     Object.entries(raw).forEach(([k, u]: [string, any]) => {
       if (u && typeof u === "object") {
-        result[k] = { ...DEFAULT_USERS[k], ...u };
+        const base = DEFAULT_USERS[k] || result[k] || u;
+        result[k] = mergeUser(base, u);
       }
     });
   }

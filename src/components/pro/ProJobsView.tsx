@@ -273,11 +273,35 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
     [skillDemand]
   );
   const allSkills = React.useMemo(() => Object.keys(skillDemand).sort(), [skillDemand]);
-  const allCompanies = React.useMemo(() => [...new Set(jobs.map((j) => j.c))].sort(), [jobs]);
-  const allIndustries = React.useMemo(
-    () => [...new Set(jobs.map((j) => (COMPANY_INFO[j.c] || ["Other", "Startup"])[0]))].sort(),
-    [jobs]
+  const companyCounts = React.useMemo(() => {
+    const c: Record<string, number> = {};
+    jobs.forEach((j) => (c[j.c] = (c[j.c] || 0) + 1));
+    return c;
+  }, [jobs]);
+  const allCompanies = React.useMemo(
+    () => Object.keys(companyCounts).sort((a, b) => companyCounts[b] - companyCounts[a] || a.localeCompare(b)),
+    [companyCounts]
   );
+  const industryCounts = React.useMemo(() => {
+    const c: Record<string, number> = {};
+    jobs.forEach((j) => {
+      const ind = (COMPANY_INFO[j.c] || ["Other", "Startup"])[0];
+      c[ind] = (c[ind] || 0) + 1;
+    });
+    return c;
+  }, [jobs]);
+  const allIndustries = React.useMemo(
+    () => Object.keys(industryCounts).sort((a, b) => industryCounts[b] - industryCounts[a] || a.localeCompare(b)),
+    [industryCounts]
+  );
+  const sizeCounts = React.useMemo(() => {
+    const c: Record<string, number> = {};
+    jobs.forEach((j) => {
+      const sz = (COMPANY_INFO[j.c] || ["Other", "Startup"])[1];
+      c[sz] = (c[sz] || 0) + 1;
+    });
+    return c;
+  }, [jobs]);
 
   const results = React.useMemo(() => {
     const q = F.q.toLowerCase();
@@ -477,6 +501,28 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
           </div>
 
           <FilterGroup icon={<MapPin />} title="Location">
+            <label className="block font-medium text-muted-foreground">Work mode</label>
+            <div className="flex flex-wrap gap-1.5 pb-1">
+              {["Remote", "Hybrid", "Onsite"].map((m) => {
+                const on = F.m.includes(m);
+                return (
+                  <button
+                    key={m}
+                    type="button"
+                    onClick={() => toggleIn("m", m)}
+                    className={cn(
+                      "rounded-lg border px-2 py-0.5 text-[11px] font-semibold transition-colors cursor-pointer",
+                      on
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border bg-secondary/50 text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    {m}
+                  </button>
+                );
+              })}
+            </div>
+            <label className="block pt-1 font-medium text-muted-foreground">Cities</label>
             <div className="max-h-40 space-y-1.5 overflow-y-auto pr-1">
               {locationCounts.map(([city, n]) => (
                 <CheckRow
@@ -515,6 +561,32 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
               onChange={(e) => patch({ e: +e.target.value })}
               className="w-full cursor-pointer accent-[#ec2639]"
             />
+            <label className="block pt-1 font-medium text-muted-foreground">Experience level</label>
+            <div className="flex flex-wrap gap-1.5">
+              {[
+                ["Fresher", "Fresher (<1 yr)"],
+                ["Junior", "Junior (1–3 yrs)"],
+                ["Mid", "Mid (3–6 yrs)"],
+                ["Senior", "Senior (6+ yrs)"],
+              ].map(([lvlKey, lvlLabel]) => {
+                const on = F.lvl.includes(lvlKey);
+                return (
+                  <button
+                    key={lvlKey}
+                    type="button"
+                    onClick={() => toggleIn("lvl", lvlKey)}
+                    className={cn(
+                      "rounded-lg border px-2 py-0.5 text-[11px] font-semibold transition-colors cursor-pointer",
+                      on
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border bg-secondary/50 text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    {lvlLabel}
+                  </button>
+                );
+              })}
+            </div>
           </FilterGroup>
 
           <FilterGroup icon={<Wrench />} title="Skills">
@@ -575,23 +647,41 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
             </div>
           </FilterGroup>
 
-          <FilterGroup icon={<Building2 />} title="Company" defaultOpen={false}>
+          <FilterGroup icon={<Building2 />} title="Company" defaultOpen={true}>
             <label className="block font-medium text-muted-foreground">Industry</label>
             <div className="space-y-1.5">
               {allIndustries.map((x) => (
-                <CheckRow key={x} label={x} checked={F.ind.includes(x)} onChange={() => toggleIn("ind", x)} />
+                <CheckRow
+                  key={x}
+                  label={x}
+                  count={industryCounts[x]}
+                  checked={F.ind.includes(x)}
+                  onChange={() => toggleIn("ind", x)}
+                />
               ))}
             </div>
             <label className="block pt-1 font-medium text-muted-foreground">Company size</label>
             <div className="space-y-1.5">
               {["Startup", "Mid", "Large", "Enterprise"].map((x) => (
-                <CheckRow key={x} label={x} checked={F.sz.includes(x)} onChange={() => toggleIn("sz", x)} />
+                <CheckRow
+                  key={x}
+                  label={x}
+                  count={sizeCounts[x]}
+                  checked={F.sz.includes(x)}
+                  onChange={() => toggleIn("sz", x)}
+                />
               ))}
             </div>
             <label className="block pt-1 font-medium text-muted-foreground">Companies</label>
             <div className="max-h-40 space-y-1.5 overflow-y-auto pr-1">
               {allCompanies.map((x) => (
-                <CheckRow key={x} label={x} checked={F.co.includes(x)} onChange={() => toggleIn("co", x)} />
+                <CheckRow
+                  key={x}
+                  label={x}
+                  count={companyCounts[x]}
+                  checked={F.co.includes(x)}
+                  onChange={() => toggleIn("co", x)}
+                />
               ))}
             </div>
           </FilterGroup>

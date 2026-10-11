@@ -21,24 +21,37 @@ interface ProHeroProps {
 export const ProHero: React.FC<ProHeroProps> = ({ icon, title, subtitle, children, aside, className }) => (
   <section
     className={cn(
-      "pro-hero relative overflow-hidden rounded-2xl p-5 sm:p-7 shadow-lg shadow-primary/20",
+      "pro-hero relative overflow-hidden rounded-2xl p-5 sm:p-7 shadow-lg shadow-primary/20 text-white !text-white",
       "bg-gradient-to-br from-[#ec2639] via-[#f03a4d] to-[#ff5566]",
       className
     )}
+    style={{ color: "#ffffff" }}
   >
     <span aria-hidden className="pointer-events-none absolute -right-10 -top-14 h-52 w-52 rounded-full bg-white/10" />
     <span aria-hidden className="pointer-events-none absolute right-24 -bottom-20 h-44 w-44 rounded-full bg-white/10" />
-    <div className="relative z-10 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-      <div className="min-w-0 max-w-3xl space-y-3">
-        <div className="flex items-center gap-3">
+    <div className="relative z-10 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between text-white !text-white">
+      <div className="min-w-0 max-w-3xl space-y-3 text-white !text-white">
+        <div className="flex items-center gap-3 text-white !text-white">
           {icon && (
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/20 ring-1 ring-white/30 [&_svg]:h-5 [&_svg]:w-5">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/20 ring-1 ring-white/30 text-white [&_svg]:h-5 [&_svg]:w-5">
               {icon}
             </span>
           )}
-          <h1 className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight">{title}</h1>
+          <h1
+            className="hero-title font-display text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight text-white !text-white"
+            style={{ color: "#ffffff" }}
+          >
+            {title}
+          </h1>
         </div>
-        {subtitle && <p className="text-xs sm:text-sm leading-relaxed text-white/90">{subtitle}</p>}
+        {subtitle && (
+          <p
+            className="hero-sub text-xs sm:text-sm leading-relaxed text-white/90 !text-white"
+            style={{ color: "rgba(255, 255, 255, 0.95)" }}
+          >
+            {subtitle}
+          </p>
+        )}
         {children}
       </div>
       {aside && <div className="relative shrink-0">{aside}</div>}

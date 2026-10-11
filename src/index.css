@@ -167,17 +167,20 @@
 }
 
 /* Talento Pro hero: headings must stay white on the red gradient (beats the global h1-h6 color rule) */
+.pro-hero,
 .pro-hero h1,
 .pro-hero h2,
 .pro-hero h3,
 .pro-hero h4,
+.pro-hero .hero-title,
+.pro-hero .hero-sub,
+.dark .pro-hero,
 .dark .pro-hero h1,
 .dark .pro-hero h2,
 .dark .pro-hero h3,
-.dark .pro-hero h4 {
-  color: #fff;
-}
-.pro-hero {
-  color: #fff;
+.dark .pro-hero h4,
+.dark .pro-hero .hero-title,
+.dark .pro-hero .hero-sub {
+  color: #ffffff !important;
 }
 
