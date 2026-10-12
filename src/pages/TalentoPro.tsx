@@ -13,6 +13,7 @@ import {
   DEFAULT_USERS,
   DEFAULT_APPS,
   CANDIDATES_SEED,
+  STAGES,
 } from "@/data/proData";
 
 import { getCandidatePhoto } from "@/data/portalAssets";
@@ -345,12 +346,14 @@ const TalentoPro: React.FC = () => {
 
   // Applicant & Pipeline Actions (Employer)
   const handleUpdateApplicantStage = (appId: number, stage: string) => {
+    const validStage = STAGES.find((value) => value === stage);
+    if (!validStage) return;
     setApps((prev) =>
       prev.map((a) => {
         if (a.id === appId) {
           return {
             ...a,
-            st: stage,
+            st: validStage,
             upd: [
               ...(a.upd || []),
               {
@@ -420,12 +423,14 @@ const TalentoPro: React.FC = () => {
   };
 
   const handleBulkUpdateStage = (appIds: number[], stage: string) => {
+    const validStage = STAGES.find((value) => value === stage);
+    if (!validStage) return;
     setApps((prev) =>
       prev.map((a) => {
         if (appIds.includes(a.id)) {
           return {
             ...a,
-            st: stage,
+            st: validStage,
             upd: [
               ...(a.upd || []),
               {
@@ -507,6 +512,7 @@ const TalentoPro: React.FC = () => {
     const updatedUser: ProUser = {
       ...currentUser,
       wal: {
+        ...wal,
         bal: newBalance,
         hist: [newTx, ...(wal.hist || [])],
       },

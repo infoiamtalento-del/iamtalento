@@ -223,8 +223,8 @@ export const ProDiscoverView: React.FC<ProDiscoverViewProps> = ({
               <div className="space-y-1.5">
                 {fit.rows.map((row, idx) => (
                   <div key={idx} className="flex items-center justify-between text-xs py-1">
-                    <span className="text-muted-foreground">{row.label}</span>
-                    <span className="font-semibold text-foreground">{row.text}</span>
+                    <span className="text-muted-foreground">{row.name}</span>
+                    <span className="font-semibold text-foreground">{row.note}</span>
                   </div>
                 ))}
               </div>
