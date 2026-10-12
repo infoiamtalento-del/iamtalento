@@ -112,13 +112,19 @@ const hiringUSPs = {
 };
 
 const USPList = ({ items }: { items: typeof hiringUSPs.search }) => (
-  <div className="mt-8 space-y-5 border-t border-border pt-6">
-    {items.map(({ icon: Icon, title, text }) => (
-      <div key={title} className="flex gap-4">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent text-primary"><Icon className="h-5 w-5" /></span>
-        <div><h3 className="mb-1 font-display text-lg font-bold">{title}</h3><p className="max-w-md text-sm leading-relaxed text-muted-foreground">{text}</p></div>
-      </div>
-    ))}
+  <div className="mt-8">
+    <p className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-primary">
+      <Sparkles className="h-4 w-4" /> Hiring Benefits
+    </p>
+    <div className="grid gap-4 sm:grid-cols-2">
+      {items.map(({ icon: Icon, title, text }) => (
+        <div key={title} className="rounded-lg border border-primary/20 bg-accent/70 p-5 transition hover:border-primary/50 hover:shadow-md">
+          <span className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground"><Icon className="h-5 w-5" /></span>
+          <h3 className="mb-1 font-display text-base font-bold">{title}</h3>
+          <p className="text-sm leading-relaxed text-muted-foreground">{text}</p>
+        </div>
+      ))}
+    </div>
   </div>
 );
 
