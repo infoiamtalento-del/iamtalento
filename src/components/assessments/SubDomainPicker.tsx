@@ -294,78 +294,178 @@ interface PickerProps {
 
 export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: PickerProps) => {
   const [open, setOpen] = useState<string | null>(options.find((o) => selected.includes(o.id))?.id ?? null);
+  const openSub = options.find((o) => o.id === open);
 
   return (
-    <div className="rounded-2xl border border-border bg-background overflow-hidden">
-      <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
+    <div className="rounded-2xl border border-border bg-background overflow-hidden shadow-xs">
+      {/* Header */}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-muted/20 px-5 py-4 sm:px-6">
         <div>
-          <h3 className="font-display text-lg font-bold text-foreground">Choose your {domainTitle} test</h3>
-          <p className="text-xs md:text-sm text-muted-foreground mt-0.5">3 rounds, 2 tests each.</p>
+          <div className="flex items-center gap-2">
+            <h3 className="font-display text-lg font-bold text-foreground">
+              Choose your {domainTitle} specialisation
+            </h3>
+            <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-bold text-primary">
+              3 rounds · 6 tests
+            </span>
+          </div>
+          <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
+            Select the focus area matched to your target role. Every track includes full proctoring and verified CIR report.
+          </p>
         </div>
-        <span className="shrink-0 rounded-full bg-primary px-3 py-1 text-xs font-bold text-primary-foreground">
-          {selected.length} added
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="shrink-0 rounded-full bg-primary px-3 py-1 text-xs font-bold text-primary-foreground shadow-2xs">
+            {selected.length} added
+          </span>
+        </div>
       </div>
 
-      <ul className="divide-y divide-border">
+      {/* Modern Bento Track Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 p-4 sm:p-5 bg-slate-50/50 dark:bg-muted/10">
         {options.map((s) => {
           const isSelected = selected.includes(s.id);
           const isOpen = open === s.id;
           const price = subDomainPrice(s);
+          const brandInfo = SUB_DOMAIN_BRANDS[s.id];
+          const brandName = brandInfo?.brand ?? s.name;
+          const tools = brandInfo?.tools ?? s.topics ?? [];
+
           return (
-            <li key={s.id} className={isSelected ? "shadow-[inset_3px_0_0_hsl(var(--primary))]" : undefined}>
-              <div className="flex flex-wrap items-start gap-4 p-5">
-                <BrandLogo name={SUB_DOMAIN_BRANDS[s.id]?.brand ?? s.name} size="lg" className="mt-0.5" />
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h4 className="font-display text-base font-bold text-foreground">{s.name}</h4>
-                    {isSelected && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
-                        <Check className="h-3 w-3 stroke-[2.5]" /> Selected
+            <div
+              key={s.id}
+              onClick={() => onToggle(s.id)}
+              className={`group relative flex flex-col justify-between rounded-xl border p-4 sm:p-4.5 transition-all duration-200 cursor-pointer ${
+                isSelected
+                  ? "border-primary bg-background shadow-xs ring-1.5 ring-primary/30"
+                  : "border-border/80 bg-background hover:border-primary/40 hover:shadow-xs"
+              }`}
+            >
+              <div>
+                {/* Top Row: Logo, Title & Select Pill */}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-3 min-w-0">
+                    <div className="h-11 w-11 rounded-xl bg-muted/30 border border-border/80 p-2 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                      <BrandLogo name={brandName} size="md" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <h4 className="font-display text-sm sm:text-base font-bold text-foreground leading-snug group-hover:text-primary transition-colors">
+                          {s.name}
+                        </h4>
+                      </div>
+                      <span className="text-[11px] font-medium text-muted-foreground block mt-0.5">
+                        6 tests · 3 rounds · ~125m
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="shrink-0">
+                    {isSelected ? (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-0.5 text-[11px] font-bold text-primary-foreground shadow-2xs">
+                        <Check className="h-3 w-3 stroke-[3]" /> Added
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-secondary/80 px-2.5 py-0.5 text-[11px] font-semibold text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                        + Select
                       </span>
                     )}
                   </div>
-                  <p className="mt-1 text-xs md:text-sm text-muted-foreground leading-relaxed">{s.text}</p>
-
-                  <button
-                    type="button"
-                    onClick={() => setOpen(isOpen ? null : s.id)}
-                    aria-expanded={isOpen}
-                    className="mt-3.5 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline cursor-pointer"
-                  >
-                    <span>{isOpen ? "Hide" : "View"} test breakdown</span>
-                    <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
-                  </button>
                 </div>
 
-                <div className="flex shrink-0 flex-col items-end gap-2 ml-auto sm:ml-0">
-                  <div className="text-right">
-                    <p className="font-display text-xl font-bold text-foreground">{formatINR(price)}</p>
-                    <p className="text-[11px] text-muted-foreground">6 tests · 3 rounds</p>
+                {/* Description */}
+                <p className="mt-2.5 text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                  {s.text}
+                </p>
+
+                {/* Tools Stack Chips */}
+                {tools.length > 0 && (
+                  <div className="flex flex-wrap items-center gap-1.5 mt-3">
+                    {tools.slice(0, 3).map((tool) => (
+                      <span
+                        key={tool}
+                        className="inline-flex items-center rounded-md bg-secondary/70 border border-border/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
+                      >
+                        {tool}
+                      </span>
+                    ))}
+                    {tools.length > 3 && (
+                      <span className="text-[10px] font-semibold text-muted-foreground">
+                        +{tools.length - 3} more
+                      </span>
+                    )}
                   </div>
+                )}
+              </div>
+
+              {/* Bottom Footer: Price + Actions */}
+              <div className="mt-4 pt-3 border-t border-border/60 flex items-center justify-between gap-2">
+                <div>
+                  <span className="font-display text-base font-bold text-foreground">
+                    {formatINR(price)}
+                  </span>
+                  <span className="text-[10px] text-muted-foreground block -mt-0.5">
+                    Sub-domain pass
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpen(isOpen ? null : s.id);
+                    }}
+                    className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg border transition-colors cursor-pointer ${
+                      isOpen
+                        ? "bg-primary/10 text-primary border-primary/30"
+                        : "text-muted-foreground hover:text-foreground border-transparent hover:border-border"
+                    }`}
+                  >
+                    <span>{isOpen ? "Hide syllabus" : "Syllabus"}</span>
+                    <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+                  </button>
+
                   <Button
                     size="sm"
                     variant={isSelected ? "outline" : "default"}
-                    className="gap-1.5 cursor-pointer font-semibold shadow-xs"
-                    onClick={() => onToggle(s.id)}
-                    aria-pressed={isSelected}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onToggle(s.id);
+                    }}
+                    className="h-8 px-3 text-xs font-bold cursor-pointer"
                   >
-                    {isSelected ? (
-                      <>
-                        <Check className="h-3.5 w-3.5 text-primary stroke-[2.5]" /> Added
-                      </>
-                    ) : (
-                      "Add to cart"
-                    )}
+                    {isSelected ? "Remove" : "Add track"}
                   </Button>
                 </div>
               </div>
-
-              {isOpen && <SubDomainBreakdown subDomain={s} price={price} />}
-            </li>
+            </div>
           );
         })}
-      </ul>
+      </div>
+
+      {/* Active Track Syllabus Inspector Drawer */}
+      {openSub && (
+        <div className="border-t border-border bg-background">
+          <div className="flex items-center justify-between px-5 py-3 bg-muted/40 border-b border-border">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-primary" />
+              <span className="font-display text-xs sm:text-sm font-bold text-foreground">
+                Syllabus Breakdown: {openSub.name} Track
+              </span>
+              <span className="text-xs text-muted-foreground hidden sm:inline">
+                · 6 tests across 3 rounds
+              </span>
+            </div>
+            <button
+              onClick={() => setOpen(null)}
+              className="text-xs text-muted-foreground hover:text-foreground font-semibold flex items-center gap-1 cursor-pointer"
+            >
+              Close syllabus <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+          <SubDomainBreakdown subDomain={openSub} price={subDomainPrice(openSub)} />
+        </div>
+      )}
     </div>
   );
 };
