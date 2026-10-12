@@ -4,6 +4,7 @@ import {
   BookOpen,
   Briefcase,
   Check,
+  CheckCircle2,
   ChevronDown,
   Clock,
   FileText,
@@ -11,6 +12,8 @@ import {
   ShieldCheck,
   ShoppingCart,
   Sparkles,
+  Star,
+  Wrench,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -297,77 +300,211 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
 
   return (
     <div className="space-y-4">
-      {/* Section Header Card */}
-      <div className="rounded-2xl border border-border bg-background p-5 flex items-center justify-between gap-3 shadow-xs">
-        <div>
-          <h3 className="font-display text-lg font-bold text-foreground">Choose your {domainTitle} test</h3>
-          <p className="text-xs md:text-sm text-muted-foreground mt-0.5">3 rounds, 2 tests each.</p>
+      {/* Section Header Banner matching Reference Peach-to-Blue Palette */}
+      <div className="relative overflow-hidden rounded-2xl border border-rose-150/70 dark:border-border/60 bg-gradient-to-r from-[#fff1f3] via-[#fff7f8] to-[#f0f5ff] dark:from-muted/40 dark:to-muted/20 p-5 sm:p-6 shadow-2xs">
+        <div className="flex flex-wrap items-center justify-between gap-4 relative z-10">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600/10 text-blue-600 dark:text-blue-400">
+                <Sparkles className="h-4 w-4" />
+              </span>
+              <h3 className="font-display text-lg sm:text-xl font-bold text-slate-900 dark:text-foreground">
+                Choose your {domainTitle} Specialisation
+              </h3>
+            </div>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-muted-foreground mt-1 max-w-xl leading-relaxed">
+              3 rounds · 6 comprehensive skill tests · Proctored with verified Career Intelligence Report.
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-600 text-white font-bold px-3.5 py-1.5 text-xs shadow-xs">
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              <span>{selected.length} Track{selected.length === 1 ? "" : "s"} Selected</span>
+            </span>
+          </div>
         </div>
-        <span className="shrink-0 rounded-full bg-primary px-3 py-1 text-xs font-bold text-primary-foreground shadow-2xs">
-          {selected.length} added
-        </span>
       </div>
 
-      {/* Separated Sub-Domain Cards with Distinct Breaking */}
-      <div className="space-y-3.5">
+      {/* Differentiated Sub-Domain Cards matching the Reference Card Architecture */}
+      <div className="space-y-4">
         {options.map((s) => {
           const isSelected = selected.includes(s.id);
           const isOpen = open === s.id;
           const price = subDomainPrice(s);
+          const brandInfo = SUB_DOMAIN_BRANDS[s.id];
+          const brandName = brandInfo?.brand ?? s.name;
+          const tools = brandInfo?.tools ?? s.topics ?? [];
 
           return (
             <div
               key={s.id}
-              className={`rounded-2xl border transition-all duration-200 overflow-hidden bg-background ${
+              className={`rounded-2xl border transition-all duration-200 overflow-hidden bg-white dark:bg-background ${
                 isSelected
-                  ? "border-primary/80 ring-2 ring-primary/20 shadow-sm"
-                  : "border-border/80 hover:border-border hover:shadow-xs"
+                  ? "border-2 border-blue-600 dark:border-primary shadow-md ring-4 ring-blue-500/10 dark:ring-primary/20"
+                  : "border-slate-200/90 dark:border-border/80 hover:border-blue-300 dark:hover:border-primary/40 hover:shadow-md"
               }`}
             >
-              <div className="flex flex-wrap items-start gap-4 p-5 sm:p-5.5">
-                <BrandLogo name={SUB_DOMAIN_BRANDS[s.id]?.brand ?? s.name} size="lg" className="mt-0.5 shrink-0" />
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h4 className="font-display text-base font-bold text-foreground">{s.name}</h4>
-                    {isSelected && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
-                        <Check className="h-3 w-3 stroke-[2.5]" /> Selected
-                      </span>
-                    )}
+              <div className="p-5 sm:p-6">
+                {/* Header Row: Brand Logo, Role Title & Match Rating */}
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="flex items-start gap-3.5 min-w-0">
+                    <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-xl bg-white border border-slate-200/90 shadow-2xs p-2 sm:p-2.5 flex items-center justify-center shrink-0">
+                      <BrandLogo name={brandName} size="lg" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h4 className="font-display text-base sm:text-lg font-bold text-slate-900 dark:text-foreground leading-snug">
+                          {s.name}
+                        </h4>
+                        {isSelected && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 px-2.5 py-0.5 text-[11px] font-bold dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800 shadow-2xs">
+                            <CheckCircle2 className="h-3.5 w-3.5 stroke-[2.5]" /> Selected Track
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 mt-1 text-xs text-slate-500 dark:text-muted-foreground flex-wrap">
+                        <span className="font-medium text-slate-700 dark:text-foreground/90">{domainTitle} Specialisation</span>
+                        <span>·</span>
+                        <span className="flex items-center gap-1 text-amber-600 font-semibold">
+                          <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-500" /> 4.9 Rating
+                        </span>
+                        <span>·</span>
+                        <span className="text-slate-500">Industry benchmark</span>
+                      </div>
+                    </div>
                   </div>
-                  <p className="mt-1 text-xs md:text-sm text-muted-foreground leading-relaxed">{s.text}</p>
 
-                  <button
-                    type="button"
-                    onClick={() => setOpen(isOpen ? null : s.id)}
-                    aria-expanded={isOpen}
-                    className="mt-3.5 inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline cursor-pointer"
-                  >
-                    <span>{isOpen ? "Hide" : "View"} test breakdown</span>
-                    <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
-                  </button>
+                  {/* Readiness / Tests Badge (From Reference Job Card Match Pill) */}
+                  <div className="shrink-0 flex items-center gap-2 ml-auto sm:ml-0">
+                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-bold ${
+                      isSelected
+                        ? "bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800"
+                        : "bg-slate-50 border-slate-200 text-slate-700 dark:bg-muted/40 dark:text-muted-foreground"
+                    }`}>
+                      <div className={`h-5 w-5 rounded-full flex items-center justify-center text-[10px] font-black border-2 ${
+                        isSelected
+                          ? "border-emerald-600 bg-white text-emerald-700"
+                          : "border-blue-600 bg-white text-blue-700"
+                      }`}>
+                        {isSelected ? "✓" : "6"}
+                      </div>
+                      <span>{isSelected ? "Selected" : "6 Tests"}</span>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="flex shrink-0 flex-col items-end gap-2 ml-auto sm:ml-0">
-                  <div className="text-right">
-                    <p className="font-display text-xl font-bold text-foreground">{formatINR(price)}</p>
-                    <p className="text-[11px] text-muted-foreground">6 tests · 3 rounds</p>
+                {/* Description */}
+                <p className="mt-3 text-xs sm:text-sm text-slate-600 dark:text-muted-foreground leading-relaxed">
+                  {s.text}
+                </p>
+
+                {/* 4-Box Structured Parameter Specs Grid (Reference Image Style) */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-4">
+                  <div className="rounded-lg bg-slate-50/90 dark:bg-muted/30 border border-slate-200/70 dark:border-border/60 p-2.5 text-center">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-muted-foreground block">
+                      Round 1
+                    </span>
+                    <span className="font-semibold text-xs text-slate-800 dark:text-foreground mt-0.5 block truncate">
+                      Knowledge (30m)
+                    </span>
                   </div>
-                  <Button
-                    size="sm"
-                    variant={isSelected ? "outline" : "default"}
-                    className="gap-1.5 cursor-pointer font-semibold shadow-xs"
-                    onClick={() => onToggle(s.id)}
-                    aria-pressed={isSelected}
-                  >
-                    {isSelected ? (
-                      <>
-                        <Check className="h-3.5 w-3.5 text-primary stroke-[2.5]" /> Added
-                      </>
-                    ) : (
-                      "Add to cart"
-                    )}
-                  </Button>
+
+                  <div className="rounded-lg bg-slate-50/90 dark:bg-muted/30 border border-slate-200/70 dark:border-border/60 p-2.5 text-center">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-muted-foreground block">
+                      Round 2
+                    </span>
+                    <span className="font-semibold text-xs text-slate-800 dark:text-foreground mt-0.5 block truncate">
+                      Technical Tasks (55m)
+                    </span>
+                  </div>
+
+                  <div className="rounded-lg bg-slate-50/90 dark:bg-muted/30 border border-slate-200/70 dark:border-border/60 p-2.5 text-center">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-muted-foreground block">
+                      Round 3
+                    </span>
+                    <span className="font-semibold text-xs text-slate-800 dark:text-foreground mt-0.5 block truncate">
+                      Scenarios (40m)
+                    </span>
+                  </div>
+
+                  <div className="rounded-lg bg-slate-50/90 dark:bg-muted/30 border border-slate-200/70 dark:border-border/60 p-2.5 text-center">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-muted-foreground block">
+                      Integrity
+                    </span>
+                    <span className="font-semibold text-xs text-blue-700 dark:text-primary mt-0.5 flex items-center justify-center gap-1">
+                      <ShieldCheck className="h-3 w-3" /> 30-Layer Proctored
+                    </span>
+                  </div>
+                </div>
+
+                {/* Tools & Skills Pill Cloud */}
+                {tools.length > 0 && (
+                  <div className="flex flex-wrap items-center gap-2 mt-4 pt-3.5 border-t border-slate-100 dark:border-border/50">
+                    <span className="text-xs font-semibold text-slate-500 dark:text-muted-foreground flex items-center gap-1.5">
+                      <Wrench className="h-3.5 w-3.5 text-blue-600" /> Tools & Skills:
+                    </span>
+                    {tools.map((t) => (
+                      <span
+                        key={t}
+                        className="inline-flex items-center rounded-md bg-blue-50/70 border border-blue-200/60 text-blue-800 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800 text-xs px-2.5 py-0.5 font-medium"
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {/* Footer: Price + Actions in Reference Screenshot Styling */}
+                <div className="mt-5 pt-4 border-t border-slate-200/80 dark:border-border/70 flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-foreground">
+                        {formatINR(price)}
+                      </span>
+                      <span className="text-xs text-slate-500 font-medium">
+                        · All 3 rounds included
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-slate-400 block">
+                      6 tests + verified Career Intelligence Report
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2.5 ml-auto">
+                    <button
+                      type="button"
+                      onClick={() => setOpen(isOpen ? null : s.id)}
+                      className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-lg border transition-all cursor-pointer ${
+                        isOpen
+                          ? "bg-blue-50 border-blue-300 text-blue-700 shadow-2xs"
+                          : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300"
+                      }`}
+                    >
+                      <span>{isOpen ? "Hide syllabus" : "View syllabus breakdown"}</span>
+                      <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+                    </button>
+
+                    <Button
+                      size="sm"
+                      variant={isSelected ? "outline" : "default"}
+                      className={`gap-1.5 font-bold px-4 py-2 h-9 rounded-lg cursor-pointer transition-all shadow-sm ${
+                        isSelected
+                          ? "border-emerald-600 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 hover:text-emerald-900"
+                          : "bg-blue-600 hover:bg-blue-700 text-white"
+                      }`}
+                      onClick={() => onToggle(s.id)}
+                    >
+                      {isSelected ? (
+                        <>
+                          <CheckCircle2 className="h-4 w-4 stroke-[2.5] text-emerald-600" /> Added to Journey
+                        </>
+                      ) : (
+                        <>
+                          Select Track <ArrowRight className="h-4 w-4" />
+                        </>
+                      )}
+                    </Button>
+                  </div>
                 </div>
               </div>
 
