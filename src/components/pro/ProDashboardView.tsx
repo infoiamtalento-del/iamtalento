@@ -552,7 +552,7 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
       ? { stroke: "stroke-emerald-500", text: "text-emerald-600 dark:text-emerald-400" }
       : n >= 40
       ? { stroke: "stroke-amber-500", text: "text-amber-600 dark:text-amber-400" }
-      : { stroke: "stroke-red-500", text: "text-red-600 dark:text-red-400" };
+      : { stroke: "stroke-blue-500", text: "text-blue-600 dark:text-blue-400" };
 
   const topTier = scoreTier(topScore);
   const RING_R = 15.9155;

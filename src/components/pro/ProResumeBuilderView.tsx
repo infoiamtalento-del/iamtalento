@@ -72,7 +72,7 @@ export const ProResumeBuilderView: React.FC<ProResumeBuilderViewProps> = ({
   const [expLevel, setExpLevel] = useState(levelFromYears(user.exp));
   const [activeTab, setActiveTab] = useState<TabKey>("basic");
   const [activeTemplate, setActiveTemplate] = useState<TemplateKey>("modern");
-  const [accentColor, setAccentColor] = useState("#ec2639");
+  const [accentColor, setAccentColor] = useState("#2563eb");
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [showCerts, setShowCerts] = useState(true);
   const [showLanguages, setShowLanguages] = useState(true);
@@ -718,8 +718,8 @@ ${resumeData.education.map((ed) => `${ed.degree}, ${ed.school} (${ed.year})`).jo
                     <span className="text-xs font-medium text-foreground">Accent color</span>
                     <div className="flex items-center gap-2">
                       {[
-                        { color: "#ec2639", label: "Talento Red" },
                         { color: "#2563eb", label: "Royal Blue" },
+                        { color: "#0284c7", label: "Sky Blue" },
                         { color: "#16a34a", label: "Forest Green" },
                         { color: "#7c3aed", label: "Purple" },
                         { color: "#1f2937", label: "Charcoal" },
@@ -745,7 +745,7 @@ ${resumeData.education.map((ed) => `${ed.degree}, ${ed.school} (${ed.year})`).jo
                         type="checkbox"
                         checked={showCerts}
                         onChange={(e) => setShowCerts(e.target.checked)}
-                        className="h-3.5 w-3.5 accent-[#ec2639]"
+                        className="h-3.5 w-3.5 accent-blue-600"
                       />
                       Show certifications
                     </label>
@@ -754,7 +754,7 @@ ${resumeData.education.map((ed) => `${ed.degree}, ${ed.school} (${ed.year})`).jo
                         type="checkbox"
                         checked={showLanguages}
                         onChange={(e) => setShowLanguages(e.target.checked)}
-                        className="h-3.5 w-3.5 accent-[#ec2639]"
+                        className="h-3.5 w-3.5 accent-blue-600"
                       />
                       Show languages
                     </label>

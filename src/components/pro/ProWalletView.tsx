@@ -412,7 +412,7 @@ export const ProWalletView: React.FC<ProWalletViewProps> = ({
                     type="checkbox"
                     checked={saveCard}
                     onChange={(e) => setSaveCard(e.target.checked)}
-                    className="h-3.5 w-3.5 accent-[#ec2639]"
+                    className="h-3.5 w-3.5 accent-blue-600"
                   />
                   Save this card (only brand and last 4 digits are kept)
                 </label>

@@ -174,7 +174,7 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-full border border-slate-200/90 hover:border-slate-300 bg-white transition-all shadow-2xs cursor-pointer"
             >
-              <div className="h-7 w-7 rounded-full bg-[#ec2639] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs overflow-hidden">
+              <div className="h-7 w-7 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs overflow-hidden">
                 {avatarSrc ? (
                   <img src={avatarSrc} alt={currentUser.name} className="h-full w-full object-cover" />
                 ) : (
@@ -187,14 +187,14 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
               <ChevronDown className={cn("h-3.5 w-3.5 text-slate-400 transition-transform", isMenuOpen && "rotate-180")} />
             </button>
 
-          {/* Red-Themed Popout Profile Menu (faithfully matching reference) */}
+          {/* Profile Menu Popover */}
           {isMenuOpen && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setIsMenuOpen(false)} />
-              <div className="absolute right-0 top-full mt-2 w-80 rounded-2xl bg-[#ec2639] text-white shadow-2xl z-50 p-4 border border-white/20 animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="absolute right-0 top-full mt-2 w-80 rounded-2xl bg-white text-slate-800 shadow-xl z-50 p-4 border border-slate-200/90 animate-in fade-in slide-in-from-top-2 duration-200">
                 {/* Menu Header with User Info */}
-                <div className="flex items-center gap-3 pb-3 border-b border-white/20">
-                  <div className="h-12 w-12 rounded-full bg-white/20 text-white font-display font-black text-lg flex items-center justify-center border-2 border-white shrink-0 overflow-hidden">
+                <div className="flex items-center gap-3 pb-3 border-b border-slate-100">
+                  <div className="h-12 w-12 rounded-full bg-blue-50 text-blue-600 font-display font-black text-lg flex items-center justify-center border-2 border-blue-200/80 shrink-0 overflow-hidden shadow-2xs">
                     {avatarSrc ? (
                       <img src={avatarSrc} alt={currentUser.name} className="h-full w-full object-cover" />
                     ) : (
@@ -202,9 +202,9 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <b className="block text-sm font-display font-bold truncate">{currentUser.name}</b>
-                    <span className="inline-flex items-center gap-1 text-[11px] text-white/90">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    <b className="block text-sm font-display font-bold text-slate-900 truncate">{currentUser.name}</b>
+                    <span className="inline-flex items-center gap-1 text-[11px] text-slate-500">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                       {currentRole === "candidate" ? "Verified Candidate" : "Employer Partner"}
                     </span>
                   </div>
@@ -225,8 +225,8 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
                         className={cn(
                           "w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-left",
                           isActive
-                            ? "bg-white text-[#ec2639] shadow-md"
-                            : "text-white hover:bg-white/15"
+                            ? "bg-blue-600 text-white shadow-sm"
+                            : "text-slate-700 hover:bg-slate-100/80"
                         )}
                       >
                         <span className="flex items-center gap-2.5">
@@ -237,7 +237,7 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
                           <span
                             className={cn(
                               "px-2 py-0.5 rounded-full text-[10px] font-black",
-                              isActive ? "bg-[#ec2639] text-white" : "bg-white text-[#ec2639]"
+                              isActive ? "bg-white text-blue-600" : "bg-blue-50 text-blue-600"
                             )}
                           >
                             {item.badge}
@@ -249,13 +249,13 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
                 </div>
 
                 {/* Footer Controls */}
-                <div className="pt-3 border-t border-white/20 space-y-1">
+                <div className="pt-3 border-t border-slate-100 space-y-1">
                   <button
                     onClick={() => {
                       onSwitchRole(currentRole === "candidate" ? "employer" : "candidate");
                       setIsMenuOpen(false);
                     }}
-                    className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold text-white hover:bg-white/15 cursor-pointer text-left"
+                    className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 cursor-pointer text-left transition-colors"
                   >
                     <ArrowRightLeft className="h-4 w-4" />
                     <span>Switch to {currentRole === "candidate" ? "Employer (Super30)" : "Candidate (Vignesh)"}</span>
@@ -266,7 +266,7 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
                       onToggleTheme();
                       setIsMenuOpen(false);
                     }}
-                    className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold text-white hover:bg-white/15 cursor-pointer text-left"
+                    className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 cursor-pointer text-left transition-colors"
                   >
                     {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
                     <span>{isDarkMode ? "Light Theme" : "Dark Theme"}</span>
@@ -277,7 +277,7 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
                       onSignOut();
                       setIsMenuOpen(false);
                     }}
-                    className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold text-white/90 hover:bg-white/15 cursor-pointer text-left"
+                    className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-900 hover:bg-slate-100/80 cursor-pointer text-left transition-colors"
                   >
                     <LogOut className="h-4 w-4" />
                     <span>Sign Out</span>

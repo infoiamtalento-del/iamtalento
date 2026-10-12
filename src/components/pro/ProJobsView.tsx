@@ -276,7 +276,7 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
       {/* ======================================================== */}
       {/* HERO / SEARCH BANNER - EXACT REPLICA OF REFERENCE       */}
       {/* ======================================================== */}
-      <section className="relative overflow-hidden rounded-3xl border border-rose-150/70 bg-gradient-to-r from-[#fff0f3] via-[#fff7f8] to-[#edf3ff] p-6 sm:p-8 shadow-xs">
+      <section className="relative overflow-hidden rounded-3xl border border-rose-100/80 bg-gradient-to-r from-[#fff0f3] via-[#fff7f8] to-[#edf3ff] p-6 sm:p-8 shadow-xs">
         <div className="max-w-4xl space-y-4">
           {/* Greeting */}
           <div>
