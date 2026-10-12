@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import JobsSocialProof from "@/components/jobs/JobsSocialProof";
 import FeaturedCompanies from "@/components/jobs/FeaturedCompanies";
 import TopCategoriesSection from "@/components/jobs/TopCategoriesSection";
@@ -79,6 +79,7 @@ const industries = [
 ];
 
 const Jobs = () => {
+  const navigate = useNavigate();
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
   const [selectedTools, setSelectedTools] = useState<string[]>([]);
@@ -155,7 +156,7 @@ const Jobs = () => {
                   className="border-0 shadow-none focus-visible:ring-0 bg-transparent h-12 text-base"
                 />
               </div>
-              <Button className="bg-primary text-primary-foreground hover:bg-primary/90 h-12 px-8 rounded-xl gap-2 shrink-0 text-base">
+              <Button onClick={() => navigate("/talento-pro")} className="bg-primary text-primary-foreground hover:bg-primary/90 h-12 px-8 rounded-xl gap-2 shrink-0 text-base">
                 <Search className="h-4 w-4" /> Search
               </Button>
             </motion.div>
