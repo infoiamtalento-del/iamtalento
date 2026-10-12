@@ -120,7 +120,7 @@ const Navbar = () => {
               <div key={link.href} className="relative" ref={(el) => { if (link.dropdownId) dropdownRefs.current[link.dropdownId] = el; }}>
                 <Button variant="ghost"
                   aria-expanded={openDropdown === link.dropdownId}
-                  onClick={() => setOpenDropdown(openDropdown === link.dropdownId ? null : link.dropdownId)}
+                  onClick={() => setOpenDropdown(openDropdown === link.dropdownId ? null : link.dropdownId ?? null)}
                   className={cn(
                     "px-3.5 py-2 rounded-lg text-sm font-medium transition-colors relative inline-flex items-center gap-1",
                     location.pathname === link.href
@@ -134,7 +134,7 @@ const Navbar = () => {
                 {openDropdown === link.dropdownId && (
                   <div className={cn("absolute top-full mt-1 rounded-lg border bg-popover text-popover-foreground shadow-lg z-50 py-1 animate-fade-in", link.dropdownId === "products" ? "right-0 w-[640px] max-w-[calc(100vw-2rem)]" : "left-0 w-40")}>
                     {link.dropdownId === "products" ? <ProductMenu /> : (
-                    {dropdownItemsMap[link.dropdownId].map((item) => (
+                    dropdownItemsMap[link.dropdownId].map((item) => (
                       <Link
                         key={item.href}
                         to={item.href}
@@ -192,7 +192,7 @@ const Navbar = () => {
                 <div key={link.href}>
                   <Button variant="ghost"
                     aria-expanded={mobileOpenDropdown === link.dropdownId}
-                    onClick={() => setMobileOpenDropdown(mobileOpenDropdown === link.dropdownId ? null : link.dropdownId)}
+                    onClick={() => setMobileOpenDropdown(mobileOpenDropdown === link.dropdownId ? null : link.dropdownId ?? null)}
                     className={cn(
                       "w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium transition-colors",
                       location.pathname === link.href
