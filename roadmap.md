@@ -1,10 +1,10 @@
 # Roadmap
 
 ## Employer page updates
-- Add six two-word USPs across three sections — in progress
-- Show the existing demo candidate in AI Talent Search — in progress
-- Expand create, post, talent hunt and shortlist steps — in progress
-- Add pricing and company-profile closing actions and verify — in progress
+- Add six two-word USPs across three sections — done
+- Show the existing demo candidate in AI Talent Search — done; linked to Arjun Mehta's full demo profile
+- Expand create, post, talent hunt and shortlist steps — done
+- Add pricing and company-profile closing actions and verify — done; both destinations opened, desktop/mobile showed no overflow or page errors
 
 ## Networking page — Modern Networking Hub
 - Preserve the current opening banner — done; original banner retained verbatim

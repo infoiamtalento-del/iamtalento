@@ -85,6 +85,7 @@ export interface ProUser {
   phv?: boolean;
   gst?: string;
   vr?: { at: number; id: string };
+  ver?: { id: boolean; test: boolean; exp: boolean };
   wal?: {
     bal: number;
     pm?: { id: number; type: string; label: string; sub?: string; def?: boolean }[];
