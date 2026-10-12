@@ -197,7 +197,7 @@
  .dp-topnav { display:none; } .dp-columns { grid-template-columns:minmax(0,1fr); } .dp-right-column { display:grid; grid-template-columns:1fr 1fr; align-items:start; }
  .dp-quote { display:none; } .dp-name { padding-right:0; } .dp-intro { max-width:none; } .dp-job-heading { flex-wrap:wrap; gap:2px; }
   .dp-lower-grid { grid-template-columns:1fr 1fr; }
-  .dp-rail { top:auto; bottom:0; left:0; right:0; width:auto; height:58px; flex-direction:row; padding:0 8px; gap:0; border-right:0; border-top:1px solid hsl(var(--border) / .5); }
+  .dp-rail { top:auto; bottom:0; left:0; right:0; width:auto; height:auto; min-height:58px; flex-direction:row; padding:4px 8px calc(4px + env(safe-area-inset-bottom)); gap:0; border-right:0; border-top:1px solid hsl(var(--border) / .6); background:hsl(var(--background)); box-shadow:0 -3px 14px hsl(0 0% 0% / .09); }
   .dp-rail-item { flex:1; gap:3px; padding:7px 2px; font-size:8px; }
   .dp-rail-item.active:after { left:28%; right:28%; bottom:0; }
   .dp-main { margin-left:0; padding-bottom:80px; }
