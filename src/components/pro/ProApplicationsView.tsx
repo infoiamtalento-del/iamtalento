@@ -51,16 +51,15 @@ export const ProApplicationsView: React.FC<ProApplicationsViewProps> = ({
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="bg-card border border-border/80 rounded-2xl p-6 relative overflow-hidden shadow-sm">
-        <div className="absolute top-0 right-0 w-72 h-72 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="relative overflow-hidden rounded-3xl border border-rose-100/70 bg-gradient-to-r from-[#fff0f3] via-[#fff7f8] to-[#edf3ff] p-6 sm:p-8 shadow-xs">
         <div className="relative z-10">
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-2">
-            <Clock className="w-3.5 h-3.5" /> 24-Hour SLA Guarantee
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200/60 text-xs font-semibold mb-2">
+            <Clock className="w-3.5 h-3.5 text-blue-600" /> 24-Hour SLA Guarantee
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground font-display">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 font-display">
             Application Tracker
           </h1>
-          <p className="text-muted-foreground text-sm mt-1 max-w-2xl">
+          <p className="text-slate-600 text-sm mt-1 max-w-2xl leading-relaxed">
             Track every application through each hiring milestone. Verified employers must respond within 24 hours, or Talento triggers an automatic status update.
           </p>
         </div>
@@ -68,20 +67,20 @@ export const ProApplicationsView: React.FC<ProApplicationsViewProps> = ({
 
       {/* Stat Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-card border border-border/70 rounded-2xl p-4 shadow-sm">
-          <span className="text-xs font-medium text-muted-foreground block">Total Applications</span>
-          <div className="text-2xl font-bold text-foreground mt-1 font-display">{myApps.length}</div>
-          <span className="text-[11px] text-muted-foreground mt-0.5 block">Sent across all companies</span>
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs">
+          <span className="text-xs font-medium text-slate-500 block">Total Applications</span>
+          <div className="text-2xl font-extrabold text-blue-600 mt-1 font-display">{myApps.length}</div>
+          <span className="text-[11px] text-slate-400 mt-0.5 block">Sent across all companies</span>
         </div>
-        <div className="bg-card border border-border/70 rounded-2xl p-4 shadow-sm">
-          <span className="text-xs font-medium text-muted-foreground block">In Progress</span>
-          <div className="text-2xl font-bold text-foreground mt-1 font-display">{inProgress.length}</div>
-          <span className="text-[11px] text-muted-foreground mt-0.5 block">Actively moving forward</span>
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs">
+          <span className="text-xs font-medium text-slate-500 block">In Progress</span>
+          <div className="text-2xl font-extrabold text-blue-600 mt-1 font-display">{inProgress.length}</div>
+          <span className="text-[11px] text-slate-400 mt-0.5 block">Actively moving forward</span>
         </div>
-        <div className="bg-card border border-border/70 rounded-2xl p-4 shadow-sm">
-          <span className="text-xs font-medium text-muted-foreground block">Interviews</span>
-          <div className="text-2xl font-bold text-foreground mt-1 font-display">{interviews.length}</div>
-          <span className="text-[11px] text-muted-foreground mt-0.5 block">Scheduled discussions</span>
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs">
+          <span className="text-xs font-medium text-slate-500 block">Interviews</span>
+          <div className="text-2xl font-extrabold text-emerald-600 mt-1 font-display">{interviews.length}</div>
+          <span className="text-[11px] text-slate-400 mt-0.5 block">Scheduled discussions</span>
         </div>
       </div>
 
@@ -92,10 +91,10 @@ export const ProApplicationsView: React.FC<ProApplicationsViewProps> = ({
             key={status}
             onClick={() => setActiveStatus(status)}
             className={cn(
-              "px-4 py-2 rounded-xl text-xs font-semibold transition-all border",
+              "px-4 py-2 rounded-xl text-xs font-semibold transition-all border cursor-pointer",
               activeStatus === status
-                ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                : "bg-card text-muted-foreground border-border/80 hover:bg-muted hover:text-foreground"
+                ? "bg-blue-600 text-white border-blue-600 shadow-xs shadow-blue-500/20 font-bold"
+                : "bg-white text-slate-700 border-slate-200/90 hover:bg-slate-50 hover:border-slate-300"
             )}
           >
             {status}

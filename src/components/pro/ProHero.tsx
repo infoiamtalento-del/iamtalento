@@ -21,34 +21,25 @@ interface ProHeroProps {
 export const ProHero: React.FC<ProHeroProps> = ({ icon, title, subtitle, children, aside, className }) => (
   <section
     className={cn(
-      "pro-hero relative overflow-hidden rounded-2xl p-5 sm:p-7 shadow-lg shadow-primary/20 text-white !text-white",
-      "bg-gradient-to-br from-[#ec2639] via-[#f03a4d] to-[#ff5566]",
+      "pro-hero relative overflow-hidden rounded-3xl p-6 sm:p-8 border border-rose-100/80 shadow-xs",
+      "bg-gradient-to-r from-[#fff0f3] via-[#fff7f8] to-[#edf3ff] text-slate-900",
       className
     )}
-    style={{ color: "#ffffff" }}
   >
-    <span aria-hidden className="pointer-events-none absolute -right-10 -top-14 h-52 w-52 rounded-full bg-white/10" />
-    <span aria-hidden className="pointer-events-none absolute right-24 -bottom-20 h-44 w-44 rounded-full bg-white/10" />
-    <div className="relative z-10 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between text-white !text-white">
-      <div className="min-w-0 max-w-3xl space-y-3 text-white !text-white">
-        <div className="flex items-center gap-3 text-white !text-white">
+    <div className="relative z-10 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+      <div className="min-w-0 max-w-3xl space-y-3">
+        <div className="flex items-center gap-3">
           {icon && (
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/20 ring-1 ring-white/30 text-white [&_svg]:h-5 [&_svg]:w-5">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-200/80 [&_svg]:h-5 [&_svg]:w-5 shadow-2xs">
               {icon}
             </span>
           )}
-          <h1
-            className="hero-title font-display text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight text-white !text-white"
-            style={{ color: "#ffffff" }}
-          >
+          <h1 className="hero-title font-display text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight text-slate-900">
             {title}
           </h1>
         </div>
         {subtitle && (
-          <p
-            className="hero-sub text-xs sm:text-sm leading-relaxed text-white/90 !text-white"
-            style={{ color: "rgba(255, 255, 255, 0.95)" }}
-          >
+          <p className="hero-sub text-xs sm:text-sm leading-relaxed text-slate-600">
             {subtitle}
           </p>
         )}

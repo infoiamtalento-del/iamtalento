@@ -537,7 +537,7 @@ const TalentoPro: React.FC = () => {
   const savedCount = (currentUser.saved || []).length;
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-primary/20 selection:text-primary">
+    <div className="min-h-screen bg-[#f8fafd] text-slate-900 flex flex-col font-sans selection:bg-blue-500/20 selection:text-blue-700">
       <Helmet>
         <title>
           {currentRole === "employer"

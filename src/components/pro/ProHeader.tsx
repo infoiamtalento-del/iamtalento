@@ -154,24 +154,38 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
           })}
         </nav>
 
-        {/* Profile Pill & Dropdown */}
-        <div className="relative">
+        {/* Right Controls: Notification Bell & Profile Dropdown */}
+        <div className="flex items-center gap-2 sm:gap-3">
           <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="flex items-center gap-2.5 pl-2 pr-3 py-1.5 rounded-full border border-border hover:border-foreground/20 bg-background transition-all shadow-xs cursor-pointer"
+            type="button"
+            onClick={() => setActiveView(currentRole === "candidate" ? "upd" : "notif")}
+            aria-label="Notifications"
+            className="relative p-2 rounded-full text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 transition-colors cursor-pointer"
           >
-            <div className="h-7 w-7 rounded-full bg-primary/10 text-primary font-bold text-xs flex items-center justify-center shrink-0 border border-primary/20 overflow-hidden">
-              {avatarSrc ? (
-                <img src={avatarSrc} alt={currentUser.name} className="h-full w-full object-cover" />
-              ) : (
-                currentUser.name.charAt(0).toUpperCase()
-              )}
-            </div>
-            <span className="text-xs font-bold text-foreground max-w-[100px] sm:max-w-[140px] truncate">
-              {currentUser.name}
-            </span>
-            <ChevronDown className={cn("h-3.5 w-3.5 text-muted-foreground transition-transform", isMenuOpen && "rotate-180")} />
+            <Bell className="h-5 w-5" />
+            {unreadCount > 0 && (
+              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-blue-600 ring-2 ring-white" />
+            )}
           </button>
+
+          {/* Profile Pill & Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-full border border-slate-200/90 hover:border-slate-300 bg-white transition-all shadow-2xs cursor-pointer"
+            >
+              <div className="h-7 w-7 rounded-full bg-[#ec2639] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs overflow-hidden">
+                {avatarSrc ? (
+                  <img src={avatarSrc} alt={currentUser.name} className="h-full w-full object-cover" />
+                ) : (
+                  currentUser.name.charAt(0).toUpperCase()
+                )}
+              </div>
+              <span className="text-xs font-bold text-slate-800 max-w-[100px] sm:max-w-[140px] truncate">
+                {currentUser.name}
+              </span>
+              <ChevronDown className={cn("h-3.5 w-3.5 text-slate-400 transition-transform", isMenuOpen && "rotate-180")} />
+            </button>
 
           {/* Red-Themed Popout Profile Menu (faithfully matching reference) */}
           {isMenuOpen && (
@@ -274,7 +288,8 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
           )}
         </div>
       </div>
-    </header>
+    </div>
+  </header>
   );
 };
 

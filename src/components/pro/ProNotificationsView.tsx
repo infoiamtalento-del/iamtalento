@@ -227,16 +227,15 @@ export const ProNotificationsView: React.FC<ProNotificationsViewProps> = ({
   return (
     <div className="space-y-6">
       {/* Hero Banner */}
-      <div className="bg-card border border-border/80 rounded-2xl p-6 relative overflow-hidden shadow-sm">
-        <div className="absolute top-0 right-0 w-72 h-72 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="relative overflow-hidden rounded-3xl border border-rose-100/70 bg-gradient-to-r from-[#fff0f3] via-[#fff7f8] to-[#edf3ff] p-6 sm:p-8 shadow-xs">
         <div className="relative z-10">
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-2">
-            <ShieldCheck className="w-3.5 h-3.5" /> Talento SLA Transparency
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200/60 text-xs font-semibold mb-2">
+            <ShieldCheck className="w-3.5 h-3.5 text-blue-600" /> Talento SLA Transparency
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground font-display">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 font-display">
             Notification Center
           </h1>
-          <p className="text-muted-foreground text-sm mt-1 max-w-2xl">
+          <p className="text-slate-600 text-sm mt-1 max-w-2xl leading-relaxed">
             Every application is guaranteed a status update within 24 hours. If an employer has not responded manually, our autonomous SLA system provides an automated pipeline status.
           </p>
         </div>
