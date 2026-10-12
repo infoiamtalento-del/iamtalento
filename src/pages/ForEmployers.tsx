@@ -328,7 +328,7 @@ const VerificationSection = () => (
   <section aria-label="Candidate verification" className="overflow-hidden bg-secondary/30 py-20 md:py-28">
     <div className="container grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
       <motion.div {...reveal}>
-        <SectionIntro eyebrow="Verification" first="Proof Behind" second="Every Profile." description={<>We verify candidates across identity, employment, education, and skills.<br className="hidden md:block" /> Your team sees evidence before the first conversation.</>} />
+        <SectionIntro eyebrow="Verification" first="Proof Behind" second="Every Profile." description={<>Verify identity, work history, education, and skills.<br className="hidden md:block" /> See the evidence before you connect.</>} />
         <div className="mt-8 flex items-center gap-4 border-l-2 border-primary pl-4">
           <ShieldCheck className="h-8 w-8 shrink-0 text-primary" />
           <div>
