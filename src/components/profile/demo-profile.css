@@ -80,12 +80,7 @@
 .dp-quote>svg { color:hsl(var(--dp-muted) / .7); fill:hsl(var(--dp-muted) / .7); }
 .dp-quote p { font-size:12px; line-height:1.7; margin-top:8px; }
 .dp-quote>span { display:block; margin-top:12px; font-size:23px; font-family:cursive; font-style:italic; color:hsl(var(--dp-muted)); }
-.dp-summary { border-top:1px solid hsl(var(--border) / .3); padding:17px 28px; display:flex; align-items:center; justify-content:space-between; gap:20px; }
-.dp-stats { display:flex; align-items:center; flex:1; max-width:570px; }
-.dp-stats>div:not(:first-child) { flex:1; padding:0 16px; border-right:1px solid hsl(var(--border)); }
-.dp-stats strong { display:block; font-size:18px; line-height:1.2; font-family:'Space Grotesk',sans-serif; }
-.dp-stats span { display:block; font-size:8px; color:hsl(var(--dp-muted)); margin-top:4px; white-space:nowrap; }
-.dp-stat-icon { border-radius:50%; padding:8px; }
+.dp-summary { border-top:1px solid hsl(var(--border) / .3); padding:17px 28px; display:flex; align-items:center; }
 .dp-candidate-actions { display:flex; gap:10px; }
 .dp-candidate-actions button { font-size:11px; height:38px; padding:0 13px; }
 .dp-candidate-actions button:last-child { padding:0; width:38px; }
@@ -189,7 +184,7 @@
 @media(max-width:1200px) {
  .dp-header { gap:24px; padding:0 22px; } .dp-topnav { gap:18px; } .dp-header-actions { gap:8px; }
  .dp-main { padding-left:22px; padding-right:22px; } .dp-name { padding-right:155px; } .dp-person { gap:20px; }
- .dp-summary { flex-wrap:wrap; } .dp-stats { max-width:none; } .dp-candidate-actions { margin-left:auto; }
+ .dp-summary { flex-wrap:wrap; }
  .dp-expertise { grid-template-columns:1fr 1fr; } .dp-expertise strong { font-size:10px; } .dp-expertise span { font-size:9px; }
  .dp-tabs { gap:0; } .dp-tabs button { padding:0 9px; font-size:9px; } .dp-lower-grid { grid-template-columns:1fr; }
 }
@@ -209,7 +204,7 @@
  .dp-name { padding-top:9px; } .dp-name h1 { font-size:24px; } .dp-name-line { gap:7px; } .dp-talent { font-size:8px; padding:3px 7px; }
  .dp-designation { font-size:12px; } .dp-specialty { font-size:10px; } .dp-contact-details { gap:8px; font-size:9px; overflow-wrap:anywhere; }
  .dp-intro>p { font-size:10px; } .dp-badges { gap:5px; margin-top:10px; } .dp-badges>span { font-size:8px; padding-right:7px; }
- .dp-summary { padding:14px; gap:16px; } .dp-stat-icon { display:none; } .dp-stats>div:not(:first-child) { padding:0 8px; } .dp-stats>div:nth-child(2) { padding-left:0; } .dp-stats strong { font-size:16px; } .dp-stats span { font-size:6px; }
+ .dp-summary { padding:14px; gap:16px; }
  .dp-candidate-actions { display:grid; grid-template-columns:1fr 1fr auto auto; gap:5px; width:100%; } .dp-candidate-actions button { height:32px; padding:0 7px; gap:5px; font-size:8px; } .dp-candidate-actions button:nth-child(3) span { display:none; } .dp-candidate-actions button:last-child { width:30px; } .dp-candidate-actions button svg { width:12px; }
  .dp-tabs button { font-size:9px; padding:0 10px; } .dp-panel { padding:13px; } .dp-panel-heading h2 { font-size:13px; gap:7px; } .dp-panel p { font-size:10px; } .dp-panel h3 { font-size:11px; }
  .dp-expertise { gap:6px; } .dp-expertise>div { padding:7px 5px; gap:5px; } .dp-expertise i { width:27px; height:32px; } .dp-expertise i svg { width:18px; } .dp-expertise strong { font-size:7px; } .dp-expertise span { font-size:6px; }
