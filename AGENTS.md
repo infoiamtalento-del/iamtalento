@@ -9,3 +9,4 @@
 - Keep Networking section introductions in one shared heading component and city selection in page state so visual rhythm and event filtering stay consistent.
 - Use the same CDN-hosted logo asset in all site and profile headers and the footer so branding stays consistent.
 - Keep the reference-style demo profile dashboard separate from the reusable profile body, while sourcing candidate identity and sections from the shared demo data, so other profile views do not change unexpectedly.
+- Keep the demo profile's left menu (Home, Jobs, Notifications, Messages, Me) in its own component with its own demo data, so the rail and its panels stay consistent with the shared candidate without touching other profile views.

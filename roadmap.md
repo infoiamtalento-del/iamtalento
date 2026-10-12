@@ -2,7 +2,7 @@
 
 ## Demo profile — left menu rail
 - Remove the fixed left sidebar and let the profile use the full page width — done; the top bar keeps all six destinations, content edges align with the logo on desktop and phone, and the bar is now solid so scrolled content no longer shows through
-- Add a LinkedIn-style left rail with Home, Jobs, Notifications, Messages and Me — pending
+- Add a LinkedIn-style left rail with Home, Jobs, Notifications, Messages and Me — done; icons above labels, red count badges, Jobs/Notifications/Messages open slide-over panels with demo content, Me opens the profile menu; on phone it becomes a solid bottom bar; verified at 1280, 1497 and 390 with no overflow or page errors
 
 ## Demo profile — reference dashboard
 - Match reference header, sidebar, cover and candidate overview — done
