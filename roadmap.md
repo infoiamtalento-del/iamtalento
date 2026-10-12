@@ -1,5 +1,11 @@
 # Roadmap
 
+## Employer page updates
+- Add six two-word USPs across three sections — in progress
+- Show the existing demo candidate in AI Talent Search — in progress
+- Expand create, post, talent hunt and shortlist steps — in progress
+- Add pricing and company-profile closing actions and verify — in progress
+
 ## Networking page — Modern Networking Hub
 - Preserve the current opening banner — done; original banner retained verbatim
 - Restyle the remaining sections around the selected reference — done
