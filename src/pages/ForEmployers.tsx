@@ -325,20 +325,46 @@ const verificationItems = [
 ];
 
 const VerificationSection = () => (
-  <section className="bg-secondary/30 py-20 md:py-28">
-    <div className="container grid items-center gap-14 lg:grid-cols-2">
+  <section aria-label="Candidate verification" className="overflow-hidden bg-secondary/30 py-20 md:py-28">
+    <div className="container grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
       <motion.div {...reveal}>
         <SectionIntro eyebrow="Verification" first="Proof Behind" second="Every Profile." description={<>We verify candidates across identity, employment, education, and skills.<br className="hidden md:block" /> Your team sees evidence before the first conversation.</>} />
-        <Button asChild variant="outline" className="mt-8 gap-2"><Link to="/features">Learn More <ArrowRight className="h-4 w-4" /></Link></Button>
-      </motion.div>
-      <motion.div {...reveal} className="space-y-3">
-        {verificationItems.map(({ icon: Icon, title, text }) => (
-          <div key={title} className="flex items-center gap-4 rounded-lg border border-border bg-card p-5 shadow-sm">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-accent text-primary"><Icon className="h-5 w-5" /></span>
-            <div className="flex-1"><h3 className="text-sm font-bold">{title}</h3><p className="text-xs text-muted-foreground">{text}</p></div>
-            <CheckCircle2 className="h-5 w-5 text-success" />
+        <div className="mt-8 flex items-center gap-4 border-l-2 border-primary pl-4">
+          <ShieldCheck className="h-8 w-8 shrink-0 text-primary" />
+          <div>
+            <p className="font-display text-base font-bold">Less uncertainty. More confidence.</p>
+            <p className="mt-1 text-sm text-muted-foreground">Evidence that goes beyond a resume.</p>
           </div>
-        ))}
+        </div>
+        <Button asChild variant="outline" className="mt-8 gap-2"><Link to="/features">Explore Verification <ArrowRight className="h-4 w-4" /></Link></Button>
+      </motion.div>
+      <motion.div {...reveal}>
+        <div className="grid grid-cols-[120px_1fr] overflow-hidden rounded-lg bg-foreground text-background sm:grid-cols-[180px_1fr]">
+          <img src={demoProfile.profile_photo_url} alt={demoProfile.full_name} className="h-full min-h-56 w-full object-cover object-top" loading="lazy" />
+          <div className="flex min-w-0 flex-col justify-between p-5 sm:p-7">
+            <p className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest text-background/65"><FileCheck2 className="h-4 w-4 shrink-0" /> Profile evidence</p>
+            <div className="py-5">
+              <p className="font-display text-2xl font-bold sm:text-3xl">{demoProfile.full_name}</p>
+              <p className="mt-2 text-xs leading-relaxed text-background/70">{demoProfile.professional_headline}</p>
+            </div>
+            <div className="flex items-center justify-between gap-2 border-t border-background/20 pt-3">
+              <span className="flex items-center gap-1.5 text-xs font-medium"><ShieldCheck className="h-4 w-4" /> Four proof pillars</span>
+              <span className="text-[10px] text-background/60">Demo preview</span>
+            </div>
+          </div>
+        </div>
+        <div className="mt-7 grid grid-cols-1 gap-x-8 sm:grid-cols-2">
+          {verificationItems.map(({ icon: Icon, title, text }, index) => (
+            <div key={title} className="flex gap-3 border-b border-border py-5">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent text-primary"><Icon className="h-5 w-5" /></span>
+              <div className="min-w-0 flex-1">
+                <div className="mb-1 flex items-center justify-between gap-2"><h3 className="font-display text-base font-bold">{title}</h3><span className="text-[10px] font-semibold text-muted-foreground">0{index + 1}</span></div>
+                <p className="text-xs leading-relaxed text-muted-foreground">{text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <Link to="/demo-profile" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">Explore the demo profile <ArrowRight className="h-4 w-4" /></Link>
       </motion.div>
     </div>
   </section>
