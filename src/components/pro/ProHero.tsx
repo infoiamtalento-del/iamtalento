@@ -21,8 +21,8 @@ interface ProHeroProps {
 export const ProHero: React.FC<ProHeroProps> = ({ icon, title, subtitle, children, aside, className }) => (
   <section
     className={cn(
-      "pro-hero relative overflow-hidden rounded-3xl p-6 sm:p-8 border border-rose-100/80 shadow-xs",
-      "bg-gradient-to-r from-[#fff0f3] via-[#fff7f8] to-[#edf3ff] text-slate-900",
+      "pro-hero relative overflow-hidden rounded-3xl p-6 sm:p-8 border border-blue-200/80 shadow-xs",
+      "bg-gradient-to-r from-[#dbeafe] via-[#eff6ff] to-[#dbeafe] text-slate-900",
       className
     )}
   >

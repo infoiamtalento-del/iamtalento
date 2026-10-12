@@ -51,7 +51,7 @@ export const ProApplicationsView: React.FC<ProApplicationsViewProps> = ({
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl border border-rose-100/70 bg-gradient-to-r from-[#fff0f3] via-[#fff7f8] to-[#edf3ff] p-6 sm:p-8 shadow-xs">
+      <div className="relative overflow-hidden rounded-3xl border border-blue-200/80 bg-gradient-to-r from-[#dbeafe] via-[#eff6ff] to-[#dbeafe] p-6 sm:p-8 shadow-xs">
         <div className="relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200/60 text-xs font-semibold mb-2">
             <Clock className="w-3.5 h-3.5 text-blue-600" /> 24-Hour SLA Guarantee
