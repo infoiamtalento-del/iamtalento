@@ -20,6 +20,7 @@ import { getCandidatePhoto } from "@/data/portalAssets";
 import { ProView, ProDrawerState } from "@/components/pro/proTypes";
 import { ProHeader } from "@/components/pro/ProHeader";
 import { ProJobsView } from "@/components/pro/ProJobsView";
+import { ProJobDetail } from "@/components/pro/ProJobDetail";
 import { ProProfileView } from "@/components/pro/ProProfileView";
 import { ProDashboardView } from "@/components/pro/ProDashboardView";
 import { ProApplicationsView } from "@/components/pro/ProApplicationsView";
@@ -535,6 +536,7 @@ const TalentoPro: React.FC = () => {
 
   // Saved count
   const savedCount = (currentUser.saved || []).length;
+  const selectedJob = drawerState?.type === "job" ? jobs.find(job => job.id === drawerState.id) : undefined;
 
   return (
     <div
@@ -565,7 +567,7 @@ const TalentoPro: React.FC = () => {
         currentUser={currentUser}
         currentRole={currentRole}
         activeView={effectiveView}
-        setActiveView={setActiveView}
+        setActiveView={(view) => { setDrawerState(null); setActiveView(view); }}
         onSwitchRole={handleSwitchRole}
         isDarkMode={isDarkMode}
         onToggleTheme={() => setIsDarkMode(!isDarkMode)}
@@ -577,6 +579,7 @@ const TalentoPro: React.FC = () => {
 
       {/* Main Content View Switcher */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8">
+        {selectedJob ? <ProJobDetail key={selectedJob.id} job={selectedJob} user={currentUser} jobs={jobs} applications={apps} onBack={() => setDrawerState(null)} onOpenJob={(id) => { setDrawerState({ type: "job", id }); window.scrollTo({ top: 0 }); }} onApply={handleApplyJob} onSave={handleSaveJob} /> : (
         <AnimatePresence mode="wait">
           <motion.div
             key={`${currentRole}-${effectiveView}`}
@@ -830,11 +833,12 @@ const TalentoPro: React.FC = () => {
             )}
           </motion.div>
         </AnimatePresence>
+        )}
       </main>
 
       {/* Global Drawers & Modals */}
       <ProDrawers
-        drawerState={drawerState}
+        drawerState={drawerState?.type === "job" ? null : drawerState}
         user={currentUser}
         jobs={jobs}
         applications={apps}

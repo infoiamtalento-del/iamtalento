@@ -1,0 +1,61 @@
+.pro-job-detail { --primary:var(--job-brand); --primary-foreground:0 0% 100%; --ring:var(--job-brand); --foreground:var(--job-ink); --muted-foreground:var(--job-muted); --border:var(--job-border); --input:var(--job-border); --accent:var(--job-tint); --accent-foreground:var(--job-brand); color:hsl(var(--job-ink)); max-width:1100px; margin:auto; font-size:12px; line-height:1.65; }
+.jd-toolbar { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:20px; }
+.jd-breadcrumb { color:hsl(var(--job-muted)); font-size:11px; }
+.jd-buttons { display:flex; gap:8px; }
+.pro-job-detail button { font-size:12px; height:34px; border-radius:6px; gap:6px; }
+.pro-job-detail button svg { width:14px; height:14px; }
+.jd-summary,.jd-panel { background:hsl(var(--card)); border:1px solid hsl(var(--job-border) / .7); border-radius:8px; }
+.jd-summary { padding:22px; margin-bottom:18px; }
+.jd-identity { display:flex; align-items:flex-start; gap:16px; }
+.jd-logo { width:64px; height:64px; padding:10px; border:1px solid hsl(var(--job-border)); border-radius:8px; background:hsl(var(--card)); box-shadow:var(--job-shadow); object-fit:contain; flex-shrink:0; }
+.jd-identity h1 { font-size:23px; line-height:1.3; margin:0 0 5px; }
+.jd-company { font-weight:600; color:hsl(var(--job-brand)); }
+.jd-meta { display:flex; flex-wrap:wrap; gap:12px; margin-top:7px; color:hsl(var(--job-muted)); font-size:11px; }
+.jd-meta span { display:flex; align-items:center; gap:4px; }
+.jd-meta svg { width:12px; height:12px; }
+.jd-match { margin-left:auto; text-align:center; flex-shrink:0; }
+.jd-match small { display:block; font-size:8px; margin-bottom:4px; color:hsl(var(--job-muted)); }
+.pro-job-detail svg circle[stroke] { stroke:hsl(var(--job-brand)); }
+.jd-facts { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:8px; margin-top:20px; }
+.jd-fact { display:flex; align-items:center; gap:9px; padding:11px 9px; background:hsl(var(--job-surface)); border:1px solid hsl(var(--job-border) / .6); border-radius:6px; min-width:0; }
+.jd-fact>svg { width:17px; height:17px; color:hsl(var(--job-brand)); flex-shrink:0; }
+.jd-fact small { display:block; font-size:9px; color:hsl(var(--job-muted)); }
+.jd-fact strong { display:block; font-size:11px; line-height:1.4; overflow-wrap:anywhere; }
+.jd-grid { display:grid; grid-template-columns:minmax(0,2.3fr) minmax(250px,1fr); gap:18px; align-items:start; }
+.jd-content,.jd-sidebar { display:flex; flex-direction:column; gap:14px; min-width:0; }
+.jd-panel { padding:18px; }
+.jd-panel h2,.jd-similar h2 { font-family:inherit; font-size:14px; font-weight:700; margin:0 0 9px; }
+.jd-panel h3 { font-family:inherit; font-size:12px; font-weight:600; margin:12px 0 6px; }
+.jd-panel p,.jd-panel li { color:hsl(var(--job-muted)); }
+.jd-panel ul { list-style:disc; padding-left:16px; margin-top:6px; }
+.jd-panel li+li { margin-top:4px; }
+.jd-requirements { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.jd-requirements>div { padding:12px; background:hsl(var(--job-surface)); border:1px solid hsl(var(--job-border) / .7); border-radius:6px; }
+.jd-requirements small { display:block; color:hsl(var(--job-muted)); font-size:10px; }
+.jd-requirements strong { font-size:14px; }
+.jd-tags { display:flex; flex-wrap:wrap; gap:6px; }
+.jd-tag { border:1px solid hsl(var(--job-border)); border-radius:4px; padding:3px 8px; font-size:10px; color:hsl(var(--job-muted)); }
+.jd-tag.is-matched { background:hsl(var(--job-tint)); color:hsl(var(--job-brand)); border-color:hsl(var(--job-brand) / .35); }
+.jd-process { display:flex; justify-content:space-between; position:relative; margin:18px 0 12px; gap:6px; }
+.jd-process:before { content:""; position:absolute; top:7px; left:7px; right:7px; height:1px; background:hsl(var(--job-border)); }
+.jd-process span { position:relative; font-size:9px; color:hsl(var(--job-muted)); text-align:center; }
+.jd-process span:before { content:""; display:block; width:14px; height:14px; background:hsl(var(--card)); border:1px solid hsl(var(--job-border)); border-radius:50%; margin:0 auto 5px; }
+.jd-sidebar textarea { font-size:12px; margin:7px 0 12px; resize:vertical; min-height:100px; }
+.jd-sidebar label { font-size:10px; color:hsl(var(--job-muted)); }
+.jd-sidebar .jd-buttons button:first-child { flex:1; }
+.jd-personal-match { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+.jd-personal-match strong { font-size:13px; }
+.jd-fit-row { display:grid; grid-template-columns:65px 1fr 1.4fr; gap:7px; align-items:center; margin-top:10px; font-size:10px; }
+.jd-fit-row small { font-size:9px; color:hsl(var(--job-muted)); line-height:1.4; }
+.jd-meter { width:100%; height:6px; border:0; border-radius:5px; overflow:hidden; background:hsl(var(--job-tint)); }
+.jd-meter::-webkit-progress-bar { background:hsl(var(--job-tint)); }
+.jd-meter::-webkit-progress-value { background:hsl(var(--job-brand)); border-radius:5px; }
+.jd-meter::-moz-progress-bar { background:hsl(var(--job-brand)); }
+.jd-similar-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.pro-job-detail .jd-similar-job { height:auto; min-height:85px; padding:12px; justify-content:flex-start; align-items:flex-start; white-space:normal; text-align:left; background:hsl(var(--card)); border-color:hsl(var(--job-border)); }
+.jd-similar-job img { width:32px; height:32px; object-fit:contain; }
+.jd-similar-job strong { font-size:12px; display:block; }
+.jd-similar-job small { display:block; font-size:10px; font-weight:400; color:hsl(var(--job-muted)); }
+.jd-sample-note { font-size:10px; color:hsl(var(--job-muted)); margin-top:18px; }
+@media(max-width:1000px) { .jd-facts { grid-template-columns:repeat(3,minmax(0,1fr)); } .jd-grid { grid-template-columns:minmax(0,1.8fr) minmax(235px,1fr); } .jd-breadcrumb { display:none; } }
+@media(max-width:640px) { .jd-grid { grid-template-columns:1fr; } .jd-summary { padding:16px; } .jd-identity { gap:10px; } .jd-logo { width:44px; height:44px; padding:6px; } .jd-identity h1 { font-size:18px; } .jd-match svg { width:44px; height:44px; } .jd-facts { grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; } .jd-panel { padding:16px; } .jd-toolbar { gap:8px; } .jd-similar-grid { grid-template-columns:1fr; } .jd-sidebar { grid-row:1; } }

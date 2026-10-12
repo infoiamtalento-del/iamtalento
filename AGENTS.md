@@ -1,5 +1,7 @@
 # Project Rules
 
+- Render Pro job descriptions in a dedicated full-page detail component within the Pro shell, sharing the selected job, match calculations, and application/save handlers with all job-card entry points.
+
 - Keep Pro job card presentation in a dedicated component with container-responsive details and actions so cards fit both result layouts.
 
 - Keep assessment creator imagery in the shared assessment data model so discovery and detail views always use the same profile photo and company identity.

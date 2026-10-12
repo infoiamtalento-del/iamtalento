@@ -38,7 +38,7 @@ export function ProJobCard({ job: j, percent, applied, saved, comparing, rating,
     { icon: Clock, value: j.ty === "Full-time" ? "Full Time" : j.ty, label: "Job Type" },
     { icon: CalendarDays, value: timeAgo(j.at), label: "Posted" },
   ];
-  return <div className="pro-job-card-container"><article className="pro-job-card" aria-label={`${j.t} at ${j.c}`}>
+  return <div className="pro-job-card-container"><article className="pro-job-card cursor-pointer" aria-label={`${j.t} at ${j.c}`} onClick={(event) => { if (!(event.target instanceof Element) || event.target.closest("button, a")) return; onOpen(); }}>
     <div className="pj-header">
       <div className="pj-logo">{logoFailed ? <Building2 className="text-primary" aria-label={j.c} /> : <img src={getCompanyLogo(j.c)} alt={`${j.c} logo`} onError={() => setLogoFailed(true)} />}</div>
       <div><h3><Button variant="ghost" className="pj-title" onClick={onOpen}>{j.t}</Button></h3>
