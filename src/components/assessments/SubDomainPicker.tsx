@@ -150,42 +150,42 @@ const SubDomainBreakdown = ({ subDomain, price }: BreakdownProps) => {
                 if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
                 setActiveRound(idx);
               }}
-              className="rounded-2xl border border-border/80 bg-background/80 hover:bg-background hover:border-primary/40 p-3.5 sm:p-4 md:w-44 lg:w-48 md:shrink-0 flex flex-col justify-between transition-colors duration-150 cursor-pointer group select-none"
+              className="rounded-2xl border border-slate-200/80 bg-white/90 hover:bg-white hover:border-blue-400 p-3.5 sm:p-4 md:w-44 lg:w-48 md:shrink-0 flex flex-col justify-between transition-colors duration-150 cursor-pointer group select-none shadow-2xs"
             >
               <div>
                 {/* Top Header */}
-                <div className="flex items-center justify-between gap-1.5 pb-2.5 mb-2.5 border-b border-border/60">
+                <div className="flex items-center justify-between gap-1.5 pb-2.5 mb-2.5 border-b border-slate-100">
                   <div className="flex items-center gap-2 min-w-0">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-100 shrink-0">
                       <Icon className="h-4 w-4" />
                     </span>
                     <div className="min-w-0">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block leading-none">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block leading-none">
                         Round 0{r.id}
                       </span>
-                      <h6 className="font-display text-xs sm:text-sm font-bold text-foreground mt-0.5 leading-tight truncate">
+                      <h6 className="font-display text-xs sm:text-sm font-bold text-slate-900 mt-0.5 leading-tight truncate">
                         {meta.shortTitle}
                       </h6>
                     </div>
                   </div>
-                  <span className="text-[11px] font-medium text-muted-foreground shrink-0 whitespace-nowrap">
+                  <span className="text-[11px] font-medium text-slate-500 shrink-0 whitespace-nowrap">
                     {meta.duration}
                   </span>
                 </div>
 
-                {/* Compact Test List Preview: Fills the card naturally so there is NO blank gap! */}
+                {/* Compact Test List Preview */}
                 <div className="space-y-1.5 py-1">
                   {r.tests.map((t) => (
-                    <div key={t.name} className="flex items-center justify-between text-[11px] text-muted-foreground">
-                      <span className="truncate pr-1 group-hover:text-foreground transition-colors">• {t.name}</span>
-                      <span className="shrink-0 text-[10px] font-medium text-muted-foreground/80">{t.minutes}m</span>
+                    <div key={t.name} className="flex items-center justify-between text-[11px] text-slate-500">
+                      <span className="truncate pr-1 group-hover:text-slate-900 transition-colors">• {t.name}</span>
+                      <span className="shrink-0 text-[10px] font-medium text-slate-400">{t.minutes}m</span>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Bottom CTA */}
-              <div className="mt-2.5 pt-2 border-t border-border/50 flex items-center justify-between text-[11px] font-semibold text-primary">
+              <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-blue-600">
                 <span className="whitespace-nowrap">Hover to expand</span>
                 <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform shrink-0" />
               </div>
@@ -194,36 +194,36 @@ const SubDomainBreakdown = ({ subDomain, price }: BreakdownProps) => {
             /* Expanded State View */
             <div
               key={r.id}
-              className="rounded-2xl border border-primary/60 bg-background shadow-xs ring-1 ring-primary/20 p-4 sm:p-4.5 md:flex-1 min-w-0 flex flex-col justify-between transition-colors duration-150 cursor-default"
+              className="rounded-2xl border border-blue-600 bg-white shadow-xs ring-1 ring-blue-600/20 p-4 sm:p-4.5 md:flex-1 min-w-0 flex flex-col justify-between transition-colors duration-150 cursor-default"
             >
               <div>
                 {/* Expanded Card Header */}
-                <div className="flex items-center justify-between gap-2 pb-2.5 mb-2.5 border-b border-border/60">
+                <div className="flex items-center justify-between gap-2 pb-2.5 mb-2.5 border-b border-slate-100">
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-xs shrink-0">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white shadow-xs shrink-0">
                       <Icon className="h-4 w-4" />
                     </span>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-primary whitespace-nowrap">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 whitespace-nowrap">
                           Round 0{r.id}
                         </span>
-                        <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary whitespace-nowrap">
+                        <span className="rounded-full bg-blue-50 border border-blue-200/60 px-2 py-0.5 text-[10px] font-semibold text-blue-700 whitespace-nowrap">
                           {meta.badge}
                         </span>
                       </div>
-                      <h6 className="font-display text-sm sm:text-base font-bold text-foreground leading-tight mt-0.5 truncate">
+                      <h6 className="font-display text-sm sm:text-base font-bold text-slate-900 leading-tight mt-0.5 truncate">
                         {meta.title}
                       </h6>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-1.5 sm:gap-2 text-xs text-muted-foreground font-medium shrink-0">
-                    <span className="inline-flex items-center gap-1 bg-muted/60 px-2 py-0.5 rounded-md whitespace-nowrap">
-                      <Clock className="h-3 w-3 text-primary shrink-0" /> {meta.duration}
+                  <div className="flex items-center gap-1.5 sm:gap-2 text-xs text-slate-500 font-medium shrink-0">
+                    <span className="inline-flex items-center gap-1 bg-slate-100 px-2 py-0.5 rounded-md whitespace-nowrap">
+                      <Clock className="h-3 w-3 text-blue-600 shrink-0" /> {meta.duration}
                     </span>
-                    <span className="inline-flex items-center gap-1 bg-muted/60 px-2 py-0.5 rounded-md hidden sm:inline-flex whitespace-nowrap">
-                      <FileText className="h-3 w-3 text-primary shrink-0" /> {meta.items}
+                    <span className="inline-flex items-center gap-1 bg-slate-100 px-2 py-0.5 rounded-md hidden sm:inline-flex whitespace-nowrap">
+                      <FileText className="h-3 w-3 text-blue-600 shrink-0" /> {meta.items}
                     </span>
                   </div>
                 </div>
@@ -233,36 +233,36 @@ const SubDomainBreakdown = ({ subDomain, price }: BreakdownProps) => {
                   {r.tests.map((t) => (
                     <div
                       key={t.name}
-                      className="rounded-xl border border-border/80 bg-muted/20 p-3 hover:bg-muted/40 transition-colors flex flex-col justify-between"
+                      className="rounded-xl border border-slate-200/80 bg-slate-50/50 p-3 hover:bg-slate-50 transition-colors flex flex-col justify-between"
                     >
                       <div>
                         {/* Header: Tag, Name & Price */}
                         <div className="flex items-start justify-between gap-2">
                           <div className="min-w-0 flex-1">
-                            <span className="inline-block rounded bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-primary mb-1">
+                            <span className="inline-block rounded bg-blue-50 border border-blue-200/60 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-blue-700 mb-1">
                               {t.kind}
                             </span>
-                            <h6 className="font-semibold text-xs sm:text-sm text-foreground leading-snug">
+                            <h6 className="font-semibold text-xs sm:text-sm text-slate-900 leading-snug">
                               {t.name}
                             </h6>
                           </div>
-                          <span className="shrink-0 text-xs font-bold text-foreground bg-background px-2 py-0.5 rounded-md border border-border/70 shadow-2xs">
+                          <span className="shrink-0 text-xs font-bold text-slate-900 bg-white px-2 py-0.5 rounded-md border border-slate-200 shadow-2xs">
                             {formatINR(testPrice(t, subDomain))}
                           </span>
                         </div>
-                        <p className="text-[11px] text-muted-foreground mt-1.5 line-clamp-2 leading-relaxed">
+                        <p className="text-[11px] text-slate-500 mt-1.5 line-clamp-2 leading-relaxed">
                           {t.text}
                         </p>
                       </div>
 
-                      {/* Footer: Clean 2-column metrics that NEVER break across lines */}
-                      <div className="mt-3 pt-2 border-t border-border/40 flex items-center justify-between text-[11px] font-medium text-muted-foreground">
+                      {/* Footer: Clean 2-column metrics */}
+                      <div className="mt-3 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px] font-medium text-slate-500">
                         <span className="inline-flex items-center gap-1.5 shrink-0 whitespace-nowrap">
-                          <Clock className="h-3 w-3 text-primary shrink-0" />
+                          <Clock className="h-3 w-3 text-blue-600 shrink-0" />
                           <span>{t.minutes} min</span>
                         </span>
                         <span className="inline-flex items-center gap-1.5 shrink-0 whitespace-nowrap">
-                          <FileText className="h-3 w-3 text-primary shrink-0" />
+                          <FileText className="h-3 w-3 text-blue-600 shrink-0" />
                           <span>{t.questions} {t.kind === "Technical" ? "tasks" : "questions"}</span>
                         </span>
                       </div>
@@ -272,11 +272,11 @@ const SubDomainBreakdown = ({ subDomain, price }: BreakdownProps) => {
               </div>
 
               {/* Expanded Footer Tip */}
-              <div className="mt-2.5 pt-2 border-t border-border/50 flex items-center justify-between text-[11px] text-muted-foreground">
+              <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
                 <span className="flex items-center gap-1.5 whitespace-nowrap">
-                  <Sparkles className="h-3 w-3 text-primary shrink-0" /> Hover other rounds to switch
+                  <Sparkles className="h-3 w-3 text-blue-600 shrink-0" /> Hover other rounds to switch
                 </span>
-                <span className="font-semibold text-foreground whitespace-nowrap">
+                <span className="font-semibold text-slate-900 whitespace-nowrap">
                   Included with {subDomain.name} Pass
                 </span>
               </div>
@@ -300,8 +300,8 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
 
   return (
     <div className="space-y-4">
-      {/* Section Header Banner matching Reference Peach-to-Blue Palette */}
-      <div className="relative overflow-hidden rounded-2xl border border-rose-150/70 dark:border-border/60 bg-gradient-to-r from-[#fff1f3] via-[#fff7f8] to-[#f0f5ff] dark:from-muted/40 dark:to-muted/20 p-5 sm:p-6 shadow-2xs">
+      {/* Section Header Banner - Pure Blue and White */}
+      <div className="relative overflow-hidden rounded-2xl border border-blue-100 dark:border-border/60 bg-gradient-to-r from-blue-50/80 via-white to-blue-50/50 dark:from-muted/40 dark:to-muted/20 p-5 sm:p-6 shadow-2xs">
         <div className="flex flex-wrap items-center justify-between gap-4 relative z-10">
           <div>
             <div className="flex items-center gap-2">
@@ -340,8 +340,8 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
               key={s.id}
               className={`rounded-2xl border transition-all duration-200 overflow-hidden bg-white dark:bg-background ${
                 isSelected
-                  ? "border-2 border-blue-600 dark:border-primary shadow-md ring-4 ring-blue-500/10 dark:ring-primary/20"
-                  : "border-slate-200/90 dark:border-border/80 hover:border-blue-300 dark:hover:border-primary/40 hover:shadow-md"
+                  ? "border-2 border-blue-600 shadow-md ring-4 ring-blue-500/10"
+                  : "border-slate-200/90 dark:border-border/80 hover:border-blue-400 hover:shadow-md"
               }`}
             >
               <div className="p-5 sm:p-6">
@@ -431,7 +431,7 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                     <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-muted-foreground block">
                       Integrity
                     </span>
-                    <span className="font-semibold text-xs text-blue-700 dark:text-primary mt-0.5 flex items-center justify-center gap-1">
+                    <span className="font-semibold text-xs text-blue-700 dark:text-blue-400 mt-0.5 flex items-center justify-center gap-1">
                       <ShieldCheck className="h-3 w-3" /> 30-Layer Proctored
                     </span>
                   </div>

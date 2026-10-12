@@ -7,7 +7,7 @@ import {
 } from "@/data/assessmentExperts";
 
 const ExpertCard = ({ e }: { e: AssessmentExpert }) => (
-  <article className="flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-border/80 bg-background p-5 transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-xs">
+  <article className="flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/90 bg-white p-5 transition-all hover:-translate-y-0.5 hover:border-blue-400 hover:shadow-md">
     <div>
       {/* Profile Header with Company Logos on top */}
       <div className="flex items-start gap-4">
