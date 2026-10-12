@@ -1,8 +1,6 @@
 # Project Rules
 
 - Keep Pro job card presentation in a dedicated component with container-responsive details and actions so cards fit both result layouts.
-- Render Pro job details from the shell's job URL parameter with shared job, application and save state so every job entry opens the same bookmarkable page.
-- Paginate Pro job results through the shared page-size helper so filtering and navigation cannot produce inconsistent result pages.
 
 - Keep assessment creator imagery in the shared assessment data model so discovery and detail views always use the same profile photo and company identity.
 - Present every assessment journey with mandatory core tests first and exactly one selected domain-specific test below them.

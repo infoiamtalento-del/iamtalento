@@ -1,10 +1,5 @@
 # Roadmap
 
-## Pro job details and fixed results
-- Add reference-style full job details with shared apply/save actions — done; bookmarkable job pages open from the Pro views
-- Use dark-blue-only accents and 20 jobs per page in two desktop columns — done; single column on phones, fewer results when filtered
-- Verify job opening, applying, saving, layout and pagination — done; 20 cards at 1280 and 934, apply/save read back after reload, no mobile overflow or page errors, pagination tests passed
-
 ## Pro job cards — reference repair
 - Match the latest compact reference with smaller type, three-column details and single-row actions — done; verified at 1280, 934 and 390, saving and comparison work
 - Repair card layout, detail spacing, skills and actions using the supplied reference — done
