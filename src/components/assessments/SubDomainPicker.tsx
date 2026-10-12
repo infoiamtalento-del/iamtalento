@@ -1,5 +1,18 @@
 import { useState } from "react";
-import { ArrowRight, Check, ChevronDown, ShoppingCart, ShieldCheck, X } from "lucide-react";
+import {
+  ArrowRight,
+  BookOpen,
+  Briefcase,
+  Check,
+  ChevronDown,
+  Clock,
+  FileText,
+  Laptop,
+  ShieldCheck,
+  ShoppingCart,
+  Sparkles,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   ROUNDS,
@@ -41,6 +54,207 @@ const totals = (list: SubDomain[]) => {
   return { subtotal, gst, total: subtotal + gst };
 };
 export { totals as cartTotals };
+
+interface BreakdownProps {
+  subDomain: SubDomain;
+  price: number;
+}
+
+const SubDomainBreakdown = ({ subDomain, price }: BreakdownProps) => {
+  const [activeRound, setActiveRound] = useState<number>(0);
+
+  const roundMeta = [
+    {
+      id: 1,
+      title: "Knowledge & Concepts",
+      shortTitle: "Knowledge",
+      icon: BookOpen,
+      duration: "30 min",
+      items: "25 Questions",
+      badge: "Core Foundations",
+      tagline: "Validates core frameworks, essential terminology, and rapid diagnostic reasoning.",
+    },
+    {
+      id: 2,
+      title: "Applied Technical Tasks",
+      shortTitle: "Technical",
+      icon: Laptop,
+      duration: "55 min",
+      items: "7 Practical Tasks",
+      badge: "Execution & Tooling",
+      tagline: "Tests hands-on tool manipulation, problem briefs, and applied execution under timed constraints.",
+    },
+    {
+      id: 3,
+      title: "Workplace & Scenarios",
+      shortTitle: "Experience",
+      icon: Briefcase,
+      duration: "40 min",
+      items: "12 Scenarios",
+      badge: "Strategic Judgement",
+      tagline: "Evaluates trade-off handling, situational ethics, and high-impact workplace decision making.",
+    },
+  ];
+
+  return (
+    <div className="border-t border-border bg-slate-50/60 dark:bg-muted/15 px-4 py-3.5 sm:px-5 sm:py-4">
+      {/* Sleek Minimal Header */}
+      <div className="flex items-center justify-between gap-3 mb-3">
+        <div className="flex items-center gap-1.5 text-xs text-foreground font-semibold">
+          <span>Syllabus Breakdown</span>
+          <span className="text-muted-foreground font-normal">· Hover any round to inspect tests</span>
+        </div>
+        <span className="text-[11px] font-medium text-muted-foreground">
+          6 tests · 3 rounds · ~125 min total
+        </span>
+      </div>
+
+      {/* The Expanding Hover Bento Deck */}
+      <div className="flex flex-col md:flex-row gap-3 items-stretch">
+        {ROUNDS.map((r, idx) => {
+          const isExpanded = activeRound === idx;
+          const meta = roundMeta[idx] || roundMeta[0];
+          const Icon = meta.icon;
+
+          return !isExpanded ? (
+            /* Collapsed State View */
+            <div
+              key={r.id}
+              onMouseEnter={() => setActiveRound(idx)}
+              onClick={() => setActiveRound(idx)}
+              className="rounded-2xl border border-border/80 bg-background/80 hover:bg-background hover:border-primary/30 p-4 md:flex-1 flex flex-col justify-between transition-all duration-300 ease-out cursor-pointer group"
+            >
+              <div>
+                {/* Top Header */}
+                <div className="flex items-center justify-between gap-2 pb-2.5 mb-2.5 border-b border-border/60">
+                  <div className="flex items-center gap-2">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block leading-none">
+                        Round 0{r.id}
+                      </span>
+                      <h6 className="font-display text-sm font-bold text-foreground mt-0.5 leading-tight">
+                        {meta.shortTitle}
+                      </h6>
+                    </div>
+                  </div>
+                  <span className="text-[11px] font-medium text-muted-foreground">
+                    {meta.duration}
+                  </span>
+                </div>
+
+                {/* Compact Test List Preview: Fills the card naturally so there is NO blank gap! */}
+                <div className="space-y-1.5 py-1">
+                  {r.tests.map((t) => (
+                    <div key={t.name} className="flex items-center justify-between text-[11px] text-muted-foreground">
+                      <span className="truncate pr-1 group-hover:text-foreground transition-colors">• {t.name}</span>
+                      <span className="shrink-0 text-[10px] font-medium text-muted-foreground/80">{t.minutes}m</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Bottom CTA */}
+              <div className="mt-2.5 pt-2 border-t border-border/50 flex items-center justify-between text-[11px] font-semibold text-primary">
+                <span>Hover to expand</span>
+                <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
+              </div>
+            </div>
+          ) : (
+            /* Expanded State View */
+            <div
+              key={r.id}
+              onMouseEnter={() => setActiveRound(idx)}
+              onClick={() => setActiveRound(idx)}
+              className="rounded-2xl border-2 border-primary/50 bg-background shadow-xs p-4 sm:p-4.5 md:flex-[2.6] flex flex-col justify-between transition-all duration-300 ease-out cursor-pointer"
+            >
+              <div>
+                {/* Expanded Card Header */}
+                <div className="flex items-center justify-between gap-2 pb-2.5 mb-2.5 border-b border-border/60">
+                  <div className="flex items-center gap-2.5">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-xs shrink-0">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
+                          Round 0{r.id}
+                        </span>
+                        <span className="rounded-full bg-primary/10 px-2 py-0.2 text-[10px] font-semibold text-primary">
+                          {meta.badge}
+                        </span>
+                      </div>
+                      <h6 className="font-display text-sm sm:text-base font-bold text-foreground leading-tight mt-0.5">
+                        {meta.title}
+                      </h6>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium shrink-0">
+                    <span className="inline-flex items-center gap-1 bg-muted/60 px-2 py-0.5 rounded-md">
+                      <Clock className="h-3 w-3 text-primary" /> {meta.duration}
+                    </span>
+                    <span className="inline-flex items-center gap-1 bg-muted/60 px-2 py-0.5 rounded-md hidden sm:inline-flex">
+                      <FileText className="h-3 w-3 text-primary" /> {meta.items}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Test Micro-Cards Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {r.tests.map((t) => (
+                    <div
+                      key={t.name}
+                      className="rounded-xl border border-border/80 bg-muted/20 p-3 hover:bg-muted/40 transition-colors flex flex-col justify-between"
+                    >
+                      <div>
+                        <div className="flex items-start justify-between gap-2">
+                          <span className="font-semibold text-xs text-foreground leading-snug">
+                            {t.name}
+                          </span>
+                          <span className="shrink-0 text-xs font-bold text-foreground bg-background px-1.5 py-0.5 rounded border border-border/60 shadow-2xs">
+                            {formatINR(testPrice(t, subDomain))}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-muted-foreground mt-1 line-clamp-2 leading-normal">
+                          {t.text}
+                        </p>
+                      </div>
+
+                      <div className="mt-2.5 pt-2 border-t border-border/40 flex items-center justify-between text-[10px] font-semibold text-muted-foreground">
+                        <span className="inline-flex items-center gap-1">
+                          <Clock className="h-2.5 w-2.5 text-primary" /> {t.minutes} min
+                        </span>
+                        <span className="inline-flex items-center gap-1">
+                          <FileText className="h-2.5 w-2.5 text-primary" /> {t.questions} {t.kind === "Technical" ? "tasks" : "questions"}
+                        </span>
+                        <span className="text-primary uppercase tracking-wider text-[9px] font-bold">
+                          {t.kind}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Expanded Footer Tip */}
+              <div className="mt-2.5 pt-2 border-t border-border/50 flex items-center justify-between text-[11px] text-muted-foreground">
+                <span className="flex items-center gap-1.5">
+                  <Sparkles className="h-3 w-3 text-primary" /> Hover other rounds to switch
+                </span>
+                <span className="font-semibold text-foreground">
+                  Included with {subDomain.name} Pass
+                </span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
 
 interface PickerProps {
   domainTitle: string;
@@ -90,7 +304,7 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                     aria-expanded={isOpen}
                     className="mt-3.5 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline cursor-pointer"
                   >
-                    {isOpen ? "Hide" : "View"} test breakdown
+                    <span>{isOpen ? "Hide" : "View"} test breakdown</span>
                     <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
                   </button>
                 </div>
@@ -118,30 +332,7 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                 </div>
               </div>
 
-              {isOpen && (
-                <div className="border-t border-border px-5 py-5">
-                  <div className="grid gap-6 md:grid-cols-3 md:gap-0 md:divide-x md:divide-border">
-                    {ROUNDS.map((r) => (
-                      <div key={r.id} className="md:px-5 md:first:pl-0 md:last:pr-0">
-                        <p className="mb-3 text-xs font-bold uppercase tracking-wider text-primary">{r.title}</p>
-                        <ul className="space-y-3">
-                          {r.tests.map((t) => (
-                            <li key={t.name} title={t.text} className="flex items-start justify-between gap-3">
-                              <span className="min-w-0">
-                                <span className="block text-sm font-semibold leading-tight text-foreground">{t.name}</span>
-                                <span className="block text-xs text-muted-foreground mt-0.5">
-                                  {t.questions} {t.kind === "Technical" ? "tasks" : "questions"} · {t.minutes} min
-                                </span>
-                              </span>
-                              <span className="shrink-0 text-sm font-semibold text-foreground">{formatINR(testPrice(t, s))}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+              {isOpen && <SubDomainBreakdown subDomain={s} price={price} />}
             </li>
           );
         })}
