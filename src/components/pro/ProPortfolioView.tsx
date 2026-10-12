@@ -194,7 +194,7 @@ const outlineRed =
 const labelCls = "mb-1 block text-[11px] font-medium text-muted-foreground";
 const inputCls = "h-9 rounded-lg text-xs";
 const heroGhost =
-  "inline-flex items-center gap-1.5 rounded-full bg-white border border-slate-200/90 px-3.5 py-1.5 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 transition-colors cursor-pointer";
+  "inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white border border-white/20 backdrop-blur-xs shadow-2xs hover:bg-white/25 transition-colors cursor-pointer";
 
 const initialsOf = (s: string) =>
   s
@@ -259,21 +259,21 @@ const CandidatePortfolio: React.FC<{
   return (
     <div className="space-y-5">
       {/* Hero */}
-      <section className="relative overflow-hidden rounded-3xl border border-blue-200/80 bg-gradient-to-r from-[#dbeafe] via-[#eff6ff] to-[#dbeafe] p-6 sm:p-8 shadow-xs text-slate-900">
+      <section className="relative overflow-hidden rounded-3xl border border-blue-500/30 bg-gradient-to-r from-blue-600 via-blue-600 to-indigo-600 p-6 sm:p-8 shadow-md text-white">
         <div className="relative z-10 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 items-center gap-4 sm:gap-5">
-            <span className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-blue-50 text-blue-600 border border-blue-200/80 font-display text-3xl font-extrabold sm:h-24 sm:w-24 sm:text-4xl shadow-2xs">
+            <span className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white/20 text-white border border-white/30 font-display text-3xl font-extrabold sm:h-24 sm:w-24 sm:text-4xl shadow-2xs backdrop-blur-xs">
               {(user.name.charAt(0) || "U").toUpperCase()}
             </span>
             <div className="min-w-0 space-y-1.5">
-              <h1 className="flex items-center gap-2 font-display text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl text-slate-900">
+              <h1 className="flex items-center gap-2 font-display text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl text-white">
                 <span className="truncate">{user.name}</span>
-                <BadgeCheck className="h-5 w-5 shrink-0 text-blue-600" aria-label="Verified profile" />
+                <BadgeCheck className="h-5 w-5 shrink-0 text-white" aria-label="Verified profile" />
               </h1>
-              <p className="text-xs text-slate-600 sm:text-sm">
+              <p className="text-xs text-blue-100 sm:text-sm">
                 {user.head || "Add a headline to tell recruiters what you do"}
               </p>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-500">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-blue-100/90">
                 <span className="inline-flex items-center gap-1">
                   <MapPin className="h-3 w-3" /> {location}
                 </span>

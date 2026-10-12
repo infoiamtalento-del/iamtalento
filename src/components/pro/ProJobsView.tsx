@@ -276,18 +276,18 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
       {/* ======================================================== */}
       {/* HERO / SEARCH BANNER - EXACT REPLICA OF REFERENCE       */}
       {/* ======================================================== */}
-      <section className="relative overflow-hidden rounded-3xl border border-blue-200/80 bg-gradient-to-r from-[#dbeafe] via-[#eff6ff] to-[#dbeafe] p-6 sm:p-8 shadow-xs">
+      <section className="relative overflow-hidden rounded-3xl border border-blue-500/30 bg-gradient-to-r from-blue-600 via-blue-600 to-indigo-600 p-6 sm:p-8 shadow-md text-white">
         <div className="max-w-4xl space-y-4">
           {/* Greeting */}
           <div>
             <div className="flex items-center gap-2">
               <span className="text-2xl sm:text-3xl select-none" role="img" aria-label="wave">👋</span>
-              <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
                 Hi {firstName}
               </h1>
               <span className="text-2xl sm:text-3xl select-none" role="img" aria-label="wave">👋</span>
             </div>
-            <p className="mt-1 text-xs sm:text-sm text-slate-600 font-medium">
+            <p className="mt-1 text-xs sm:text-sm text-blue-100 font-medium">
               {jobs.length} openings from {companyCount} companies, matched to your skills.
             </p>
           </div>
@@ -302,7 +302,7 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
                 value={F.q}
                 onChange={(e) => patch({ q: e.target.value })}
                 placeholder="Job title or company (press / to focus)"
-                className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-xs font-medium text-slate-900 placeholder:text-slate-400 shadow-2xs focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                className="w-full rounded-xl border-0 bg-white py-3 pl-10 pr-4 text-xs font-medium text-slate-900 placeholder:text-slate-400 shadow-xs focus:outline-none focus:ring-2 focus:ring-white/80"
               />
             </div>
 
@@ -311,7 +311,7 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
               <select
                 value={F.loc}
                 onChange={(e) => patch({ loc: e.target.value })}
-                className="w-full appearance-none rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-9 text-xs font-medium text-slate-900 shadow-2xs focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer"
+                className="w-full appearance-none rounded-xl border-0 bg-white py-3 pl-10 pr-9 text-xs font-medium text-slate-900 shadow-xs focus:outline-none focus:ring-2 focus:ring-white/80 cursor-pointer"
               >
                 <option value="">City</option>
                 {locationCounts.map(([city]) => (
@@ -326,15 +326,15 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
             <button
               type="button"
               onClick={() => {}}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold px-7 py-3 text-xs shadow-md shadow-blue-500/20 transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-black text-white font-bold px-7 py-3 text-xs shadow-md transition-all cursor-pointer"
             >
-              <Search className="h-4 w-4" />
+              <Search className="h-4 w-4 text-white" />
               <span>Search</span>
             </button>
           </div>
 
           {/* Smart Search Bar */}
-          <div className="flex items-center justify-between gap-3 rounded-xl border border-purple-200/60 bg-white/95 px-4 py-2 shadow-2xs">
+          <div className="flex items-center justify-between gap-3 rounded-xl border-0 bg-white px-4 py-2 shadow-xs">
             <div className="flex items-center gap-2.5 min-w-0 flex-1">
               <Sparkles className="h-4 w-4 text-[#7c3aed] shrink-0" />
               <input
@@ -361,10 +361,10 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
               type="button"
               onClick={() => toggleIn("m", "Remote")}
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-semibold transition-all cursor-pointer shadow-2xs",
+                "inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold transition-all cursor-pointer shadow-xs",
                 F.m.includes("Remote")
-                  ? "border-blue-600 bg-blue-50 text-blue-700 ring-1 ring-blue-500/20"
-                  : "border-slate-200/90 bg-white text-slate-700 hover:border-blue-300 hover:bg-slate-50"
+                  ? "bg-white text-blue-700 ring-2 ring-white font-bold"
+                  : "bg-white/95 text-slate-800 hover:bg-white"
               )}
             >
               <Home className="h-3.5 w-3.5 text-blue-600" />
@@ -375,10 +375,10 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
               type="button"
               onClick={() => toggleIn("lvl", "Fresher")}
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-semibold transition-all cursor-pointer shadow-2xs",
+                "inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold transition-all cursor-pointer shadow-xs",
                 F.lvl.includes("Fresher")
-                  ? "border-blue-600 bg-blue-50 text-blue-700 ring-1 ring-blue-500/20"
-                  : "border-slate-200/90 bg-white text-slate-700 hover:border-blue-300 hover:bg-slate-50"
+                  ? "bg-white text-emerald-700 ring-2 ring-white font-bold"
+                  : "bg-white/95 text-slate-800 hover:bg-white"
               )}
             >
               <GraduationCap className="h-3.5 w-3.5 text-emerald-600" />
@@ -389,13 +389,13 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
               type="button"
               onClick={() => patch({ p: F.p === 7 ? 0 : 7 })}
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-semibold transition-all cursor-pointer shadow-2xs",
+                "inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold transition-all cursor-pointer shadow-xs",
                 F.p === 7
-                  ? "border-blue-600 bg-blue-50 text-blue-700 ring-1 ring-blue-500/20"
-                  : "border-slate-200/90 bg-white text-slate-700 hover:border-blue-300 hover:bg-slate-50"
+                  ? "bg-white text-blue-700 ring-2 ring-white font-bold"
+                  : "bg-white/95 text-slate-800 hover:bg-white"
               )}
             >
-              <Calendar className="h-3.5 w-3.5 text-amber-600" />
+              <Calendar className="h-3.5 w-3.5 text-blue-600" />
               <span>Last 7 days</span>
             </button>
 
@@ -403,10 +403,10 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
               type="button"
               onClick={() => patch({ sort: F.sort === "relevance" ? "recent" : "relevance" })}
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-semibold transition-all cursor-pointer shadow-2xs",
+                "inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold transition-all cursor-pointer shadow-xs",
                 F.sort === "relevance"
-                  ? "border-blue-600 bg-blue-50 text-blue-700 ring-1 ring-blue-500/20"
-                  : "border-slate-200/90 bg-white text-slate-700 hover:border-blue-300 hover:bg-slate-50"
+                  ? "bg-amber-100 text-amber-900 ring-2 ring-amber-300 font-bold"
+                  : "bg-white/95 text-slate-800 hover:bg-white"
               )}
             >
               <Star className="h-3.5 w-3.5 text-amber-500 fill-amber-500" />
