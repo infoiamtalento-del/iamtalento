@@ -88,7 +88,6 @@ export default function DemoProfile() {
         <DropdownMenu><DropdownMenuTrigger asChild><Button variant="ghost" className="dp-account" aria-label="Profile menu"><img src={profile.profile_photo_url} alt="Arjun Mehta" /><ChevronDown /></Button></DropdownMenuTrigger><DropdownMenuContent align="end"><DropdownMenuItem asChild><Link to="/profile">Edit Profile</Link></DropdownMenuItem><DropdownMenuItem asChild><Link to="/pro">Talento Pro</Link></DropdownMenuItem></DropdownMenuContent></DropdownMenu>
       </div>
     </header>
-    <aside className="dp-sidebar"><nav aria-label="Profile navigation">{navigation.map(({ label, href, icon: Icon }) => <Link key={label} to={href} className={cn(label === "Profile" && "active")}><span><Icon size={19} /></span>{label}</Link>)}</nav></aside>
     <main className="dp-main">
       <section id="overview" className="dp-overview">
         <div className="dp-cover"><img src={cover} width={1920} height={512} alt="Modern office overlooking the city at sunset" /><Button asChild variant="ghost" className="dp-back"><Link to="/jobs"><ArrowLeft />Back to Search</Link></Button>
