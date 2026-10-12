@@ -58,6 +58,8 @@
     --podcast-brand: 351 77% 50%;
     --podcast-gray: 0 0% 93.3%;
     --job-brand: 212 86% 37%;
+    --job-action: 230 68% 55%;
+    --job-surface: 220 60% 99%;
     --job-ink: 224 72% 17%;
     --job-muted: 215 30% 46%;
     --job-tint: 208 100% 96%;
@@ -104,6 +106,8 @@
     --sidebar-border: 0 0% 16%;
     --sidebar-ring: 355 84% 58%;
     --job-brand: 210 90% 68%;
+    --job-action: 230 75% 66%;
+    --job-surface: 220 25% 11%;
     --job-ink: 210 40% 94%;
     --job-muted: 215 25% 70%;
     --job-tint: 213 35% 15%;

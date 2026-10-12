@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Pro job cards — reference repair
+- Match the latest compact reference with smaller type, three-column details and single-row actions — done; verified at 1280, 934 and 390, saving and comparison work
 - Repair card layout, detail spacing, skills and actions using the supplied reference — done
 - Verify rendering and card actions — done; checked at 1280, 889 and 390 widths without overflow; saving, comparison and application succeeded
 
