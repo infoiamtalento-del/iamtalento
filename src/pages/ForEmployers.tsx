@@ -116,7 +116,7 @@ const USPSection = () => (
           <span className="text-primary">To Hire With Proof.</span>
         </h2>
         <p className="text-sm leading-relaxed text-muted-foreground md:text-base">
-          Six advantages built into every step of your hiring journey, from the first search to the final decision.
+          Six advantages built into every step of your hiring journey, from search to final decision.
           <br className="hidden md:block" /> Each one is included at no extra cost.
         </p>
       </motion.div>
