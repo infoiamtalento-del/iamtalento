@@ -96,20 +96,6 @@ const CandidateList = ({ compact = false }: { compact?: boolean }) => (
   </div>
 );
 
-const hiringUSPs = {
-  search: [
-    { icon: Zap, title: "Lower Costs", text: "Reduce hiring costs by up to 50% compared with traditional recruitment methods." },
-    { icon: Search, title: "Smart Screening", text: "AI-powered natural-language screening filters profiles against your role requirements." },
-  ],
-  verification: [
-    { icon: ShieldCheck, title: "Verified Skills", text: "Access skill-verified candidate profiles backed by practical assessment evidence." },
-    { icon: UserCheck, title: "Background Checks", text: "Complimentary background verification for every candidate adds confidence to your hiring decisions." },
-  ],
-  team: [
-    { icon: Users, title: "Team Workspace", text: "Collaborate on hiring decisions with shared tracking and automated updates." },
-    { icon: BarChart3, title: "Clear Analytics", text: "Transparent hiring metrics and recruitment analytics keep every decision measurable." },
-  ],
-};
 
 const allUSPs = [
   { icon: Zap, title: "Lower Costs", text: "Reduce hiring costs by up to 50% compared with traditional recruitment methods." },
