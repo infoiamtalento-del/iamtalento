@@ -143,6 +143,12 @@ const demoStats: ProfileStat[] = [
   { value: "7+", label: "Years Experience" },
 ];
 
+export const demoProfileDetails = {
+  experiences: demoExperiences, educations: demoEducations, skills: demoSkills,
+  projects: demoProjects, achievements: demoAchievements, certifications: demoCertifications,
+  tools: demoTools, primaryLinks: demoPrimaryLinks,
+};
+
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
   <h2 className="text-[11px] font-bold font-display tracking-[0.14em] uppercase text-muted-foreground mb-4">
     {children}

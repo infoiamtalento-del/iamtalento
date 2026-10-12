@@ -1,5 +1,10 @@
 # Roadmap
 
+## Demo profile — reference dashboard
+- Match reference header, sidebar, cover and candidate overview — done
+- Build compact two-column profile sections and working actions — done; shared demo identity retained, other profile views unchanged
+- Verify profile layout and interactions — done; images loaded at 1280, 1497 and 390 widths, no side scroll or page errors; contact, PDF download, tabs and availability checked; build OK
+
 ## Employer page updates
 - Add six two-word USPs across three sections — done
 - Show the existing demo candidate in AI Talent Search — done; linked to Arjun Mehta's full demo profile
