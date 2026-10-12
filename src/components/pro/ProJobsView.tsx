@@ -290,7 +290,7 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
   const companyCount = new Set(jobs.map((j) => j.c)).size;
 
   return (
-    <div className="space-y-6">
+    <div className="pro-find-jobs space-y-6">
       {/* ======================================================== */}
       {/* HERO / SEARCH BANNER - EXACT REPLICA OF REFERENCE       */}
       {/* ======================================================== */}
