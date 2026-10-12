@@ -2,7 +2,7 @@
 
 ## Pro job description page
 - Add the reference-style full job page and connect all job-card clicks — done
-- Verify opening details, saving, applying, similar jobs, and returning to results — pending
+- Verify opening details, saving, applying, similar jobs, and returning to results — done; desktop and phone checked, no overflow or page errors, build OK
 
 ## Pro job cards — reference repair
 - Match the latest compact reference with smaller type, three-column details and single-row actions — done; verified at 1280, 934 and 390, saving and comparison work
