@@ -8,7 +8,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { demoProfile as profile, demoProfileDetails as details } from "@/components/profile/DemoProfileBody";
 import { DemoProfileRail } from "@/components/profile/DemoProfileRail";
 import { cn } from "@/lib/utils";
-import { ArrowLeft, ArrowRight, Bell, BookOpen, Brain, BriefcaseBusiness, Check, CheckCircle2, ChevronDown, Cloud, Code2, Crown, Download, ExternalLink, FileCheck, FileText, Github, GraduationCap, Heart, Layers, Linkedin, Mail, MapPin, MoreHorizontal, Pencil, Phone, Quote, Search, Share2, ShieldCheck, Sparkles, Trophy, UserRound, Users, Wrench, type LucideIcon } from "lucide-react";
+import { ArrowLeft, ArrowRight, Bell, BookOpen, Brain, BriefcaseBusiness, CheckCircle2, ChevronDown, Cloud, Code2, Crown, Download, ExternalLink, FileCheck, FileText, Github, GraduationCap, Heart, Layers, Linkedin, Mail, MapPin, MoreHorizontal, Pencil, Phone, Quote, Search, Share2, ShieldCheck, UserRound, Users, type LucideIcon } from "lucide-react";
 import siteLogo from "@/assets/I-am-Talento-2.png.asset.json";
 import cover from "@/assets/profile-office-cover.jpg";
 import cloudProject from "@/assets/profile-cloudsync.jpg";
@@ -23,7 +23,7 @@ const navigation = [
   { label: "Meetups", href: "/meetups", icon: Users },
   { label: "Resources", href: "/resources", icon: FileText },
 ];
-const tabs = ["Overview", "Experience", "Projects", "Skills", "Education", "Certifications", "Achievements"];
+const tabs = ["Overview", "Experience", "Projects", "Education", "Certifications"];
 const badges = [
   { name: "Full-Stack", icon: Code2, tone: "red" }, { name: "Cloud Native", icon: Cloud, tone: "blue" },
   { name: "AI/ML", icon: Brain, tone: "green" }, { name: "System Design", icon: Layers, tone: "blue" }, { name: "Product Thinking", icon: Heart, tone: "violet" },
@@ -34,7 +34,6 @@ const expertise = [
   { title: "AI/ML Integration", sub: "Intelligent applications", icon: Brain, tone: "violet" },
   { title: "Product Thinking", sub: "User-centric solutions", icon: ShieldCheck, tone: "green" },
 ];
-const toolIcons: LucideIcon[] = [Code2, Github, BriefcaseBusiness, Layers, Cloud, FileText, Users, Wrench, Cloud, Layers, Code2, ShieldCheck];
 
 function Panel({ id, title, icon: Icon, action, children, className }: { id?: string; title: string; icon: LucideIcon; action?: ReactNode; children: ReactNode; className?: string }) {
   return <section id={id} className={cn("dp-panel", className)}><div className="dp-panel-heading"><h2><Icon size={18} />{title}</h2>{action}</div>{children}</section>;
@@ -104,7 +103,7 @@ export default function DemoProfile() {
       </section>
       <div className="dp-columns">
         <div className="dp-content-column">
-          <nav className="dp-tabs" aria-label="Profile sections">{tabs.map(tab => <Button key={tab} variant="ghost" className={cn(activeTab === tab && "active")} onClick={() => scrollTo(tab)}>{tab}</Button>)}<DropdownMenu><DropdownMenuTrigger asChild><Button variant="ghost">More<ChevronDown /></Button></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem onSelect={() => scrollTo("Tools")}>Tools & Technologies</DropdownMenuItem><DropdownMenuItem onSelect={() => scrollTo("Preferences")}>Work Preferences</DropdownMenuItem><DropdownMenuItem onSelect={() => scrollTo("Links")}>Profile Links</DropdownMenuItem></DropdownMenuContent></DropdownMenu></nav>
+          <nav className="dp-tabs" aria-label="Profile sections">{tabs.map(tab => <Button key={tab} variant="ghost" className={cn(activeTab === tab && "active")} onClick={() => scrollTo(tab)}>{tab}</Button>)}</nav>
           <Panel title="About Me" icon={UserRound} action={<Edit />}><p className="dp-body-text">{profile.about_summary}</p><div className="dp-expertise">{expertise.map(({ title, sub, icon: Icon, tone }) => <div key={title}><i className={`dp-tone-${tone}`}><Icon size={22} /></i><div><strong>{title}</strong><span>{sub}</span></div></div>)}</div></Panel>
           <Panel id="experience" title="Work Experience" icon={BriefcaseBusiness} action={<span className="dp-muted">3 positions</span>}><div className="dp-timeline">{details.experiences.map((e, i) => <article key={e.job_title}><div className={cn("dp-company-symbol", i === 0 ? "dp-tone-blue" : i === 1 ? "dp-tone-red" : "dp-tone-violet")}>{i === 0 ? "TN" : i === 1 ? <Cloud /> : <Layers />}</div><div className="dp-job"><div className="dp-job-heading"><h3>{e.job_title}</h3><span>{e.period}</span></div><p>{e.company_name}<span className="dp-separator">·</span>{e.location}</p><p>{e.description}</p><Chips items={e.tools} /></div></article>)}</div></Panel>
           <Panel id="projects" title="Featured Projects" icon={GraduationCap} action={<Button asChild variant="link" className="dp-text-action"><Link to="/pro?view=portfolio">View all projects<ArrowRight /></Link></Button>}><div className="dp-projects">{details.projects.map((p, i) => <article key={p.title}><img src={i === 0 ? cloudProject : parserProject} alt={`${p.title} application preview`} width={1024} height={640} loading="lazy" /><h3>{p.title}</h3><p>{p.description}</p><Chips items={p.tools} /><div className="dp-project-links"><Button variant="link" onClick={() => toast.info("This is a demo project preview.")}><ExternalLink />Live Demo</Button><a href="https://github.com" target="_blank" rel="noreferrer"><Github size={13} />GitHub</a></div></article>)}</div></Panel>
@@ -113,14 +112,6 @@ export default function DemoProfile() {
             <Panel id="certifications" title="Certifications" icon={FileCheck} action={view("Certifications", "View all")}><div className="dp-certifications">{details.certifications.map(c => <article key={c.name}>{c.logo && <img src={c.logo} alt={c.org} loading="lazy" />}<div><h3>{c.name}</h3><p>{c.org}</p><div className="dp-cert-date"><span>{c.date}</span><span className="dp-verified"><CheckCircle2 size={11} />Verified</span></div></div></article>)}</div></Panel>
           </div>
         </div>
-        <aside className="dp-right-column">
-          <div className="dp-premium"><div className="dp-premium-icon"><Crown /></div><div><h2>Premium Member</h2><p>Unlimited access to premium jobs &amp;<br /> exclusive support.</p><Button asChild size="sm"><Link to="/pricing">Go Premium<ArrowRight /></Link></Button></div></div>
-          <Panel title="Profile Completeness" icon={CheckCircle2}><div className="dp-completion"><div className="dp-ring"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="34" className="dp-ring-track" /><circle cx="40" cy="40" r="34" className="dp-ring-progress" /></svg><strong>85%</strong></div><div><h3>Almost there!</h3><p>Complete your profile to get more visibility and opportunities.</p></div></div><div className="dp-checklist">{["Basic Information", "Work Experience", "Skills (6/10)", "Education", "Add Projects"].map((s, i) => <span key={s}>{i === 4 ? <span className="dp-empty-check" /> : <CheckCircle2 size={14} className="text-success" />}{s}</span>)}</div><Button asChild variant="link" className="dp-text-action dp-improve"><Link to="/profile">Improve Profile<ArrowRight /></Link></Button></Panel>
-          <Panel id="skills" title="Top Skills" icon={Layers} action={<Button asChild variant="link" className="dp-text-action"><Link to="/assessments/explore">View all skills<ArrowRight /></Link></Button>}><div className="dp-skills">{details.skills.map((s, i) => <div key={s.name}><strong>{s.name}</strong><progress max="100" value={90 - i * 5} aria-label={`${s.name} proficiency`} /><span>{90 - i * 5}%</span></div>)}</div></Panel>
-          <Panel id="tools" title="Tools & Technologies" icon={Wrench} action={<Button asChild variant="link" className="dp-text-action"><Link to="/pro?view=portfolio">View all<ArrowRight /></Link></Button>}><div className="dp-tools">{details.tools.map((t, i) => { const Icon = toolIcons[i % toolIcons.length]; return <span key={t}><Icon size={14} className={i % 3 === 0 ? "text-primary" : "text-foreground"} />{t}</span>; })}</div></Panel>
-          <Panel id="preferences" title="Work Preferences" icon={BriefcaseBusiness} action={<Edit />}><div className="dp-preferences">{[{ title: "Looking for Job", sub: "Actively seeking opportunities", icon: UserRound }, { title: "Available for", sub: "Full-time, Contract", icon: BriefcaseBusiness }, { title: "Preferred Location", sub: "Bangalore (Open to Remote)", icon: MapPin }, { title: "Open to Relocate", sub: "Yes", icon: MapPin }].map(({ title, sub, icon: Icon }) => <div key={title}><i><Icon size={16} /></i><div><h3>{title}</h3><p>{sub}</p></div></div>)}</div></Panel>
-          <Panel id="achievements" title="Achievements" icon={Trophy} action={view("Achievements", "View all")}><div className="dp-achievements">{details.achievements.map(({ title, description, icon: Icon }) => <article key={title}><i className="dp-tone-red"><Icon size={17} /></i><div><h3>{title}</h3><p>{description}</p></div></article>)}</div></Panel>
-        </aside>
       </div>
       <section id="links" className="dp-profile-links">{details.primaryLinks.map(({ label, url, icon: Icon }) => <a key={label} href={url} target="_blank" rel="noreferrer"><Icon size={15} />{label}<ExternalLink size={12} /></a>)}<span><span className="dp-status-dot" />Last active: 2h ago</span></section>
     </main>
