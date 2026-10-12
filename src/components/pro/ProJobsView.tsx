@@ -276,7 +276,7 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
       {/* ======================================================== */}
       {/* HERO / SEARCH BANNER - EXACT REPLICA OF REFERENCE       */}
       {/* ======================================================== */}
-      <section className="relative overflow-hidden rounded-3xl border border-blue-500/30 bg-gradient-to-r from-blue-600 via-blue-600 to-indigo-600 p-6 sm:p-8 shadow-md text-white">
+      <section className="relative overflow-hidden rounded-3xl border border-[#0d5cb2]/30 bg-gradient-to-r from-[#0d5cb2] via-[#0e63be] to-[#0a4d96] p-6 sm:p-8 shadow-md text-white">
         <div className="max-w-4xl space-y-4">
           {/* Greeting */}
           <div>
@@ -295,7 +295,7 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
           {/* Search Inputs Row */}
           <div className="grid grid-cols-1 sm:grid-cols-[1fr_220px_auto] gap-3 pt-1">
             <div className="relative">
-              <Briefcase className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-blue-600" />
+              <Briefcase className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#0d5cb2]" />
               <input
                 ref={smartRef}
                 type="text"
@@ -307,7 +307,7 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
             </div>
 
             <div className="relative">
-              <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-blue-600" />
+              <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#0d5cb2]" />
               <select
                 value={F.loc}
                 onChange={(e) => patch({ loc: e.target.value })}
@@ -363,11 +363,11 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold transition-all cursor-pointer shadow-xs",
                 F.m.includes("Remote")
-                  ? "bg-white text-blue-700 ring-2 ring-white font-bold"
+                  ? "bg-white text-[#0d5cb2] ring-2 ring-white font-bold"
                   : "bg-white/95 text-slate-800 hover:bg-white"
               )}
             >
-              <Home className="h-3.5 w-3.5 text-blue-600" />
+              <Home className="h-3.5 w-3.5 text-[#0d5cb2]" />
               <span>Remote</span>
             </button>
 
@@ -391,11 +391,11 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold transition-all cursor-pointer shadow-xs",
                 F.p === 7
-                  ? "bg-white text-blue-700 ring-2 ring-white font-bold"
+                  ? "bg-white text-[#0d5cb2] ring-2 ring-white font-bold"
                   : "bg-white/95 text-slate-800 hover:bg-white"
               )}
             >
-              <Calendar className="h-3.5 w-3.5 text-blue-600" />
+              <Calendar className="h-3.5 w-3.5 text-[#0d5cb2]" />
               <span>Last 7 days</span>
             </button>
 
@@ -425,12 +425,12 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
           {/* Header */}
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
             <span className="flex items-center gap-2 font-display text-sm font-bold text-slate-900">
-              <SlidersHorizontal className="h-4 w-4 text-blue-600" />
+              <SlidersHorizontal className="h-4 w-4 text-[#0d5cb2]" />
               Filters
             </span>
             <button
               onClick={resetAll}
-              className="text-xs font-semibold text-blue-600 hover:text-blue-700 hover:underline cursor-pointer"
+              className="text-xs font-semibold text-[#0d5cb2] hover:underline cursor-pointer"
             >
               Clear all
             </button>
@@ -452,7 +452,7 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
                         type="checkbox"
                         checked={checked}
                         onChange={() => toggleIn("cities", city)}
-                        className="h-3.5 w-3.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                        className="h-3.5 w-3.5 rounded border-slate-300 text-[#0d5cb2] focus:ring-[#0d5cb2] cursor-pointer"
                       />
                       <span>{city}</span>
                     </span>
@@ -821,7 +821,7 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
 
                         <div className="rounded-xl bg-slate-50/80 border border-slate-150/70 p-2 text-left">
                           <span className="flex items-center gap-1 text-xs font-bold text-slate-800 truncate">
-                            <Clock className="h-3 w-3 text-blue-600 shrink-0" />
+                            <Clock className="h-3 w-3 text-[#0d5cb2] shrink-0" />
                             {j.ty}
                           </span>
                           <span className="text-[10px] text-slate-400 block mt-0.5 truncate">Job Type</span>
@@ -829,7 +829,7 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
 
                         <div className="rounded-xl bg-slate-50/80 border border-slate-150/70 p-2 text-left">
                           <span className="flex items-center gap-1 text-xs font-bold text-slate-800 truncate">
-                            <Calendar className="h-3 w-3 text-blue-600 shrink-0" />
+                            <Calendar className="h-3 w-3 text-[#0d5cb2] shrink-0" />
                             {timeAgo(j.at)}
                           </span>
                           <span className="text-[10px] text-slate-400 block mt-0.5 truncate">Posted</span>
@@ -839,14 +839,14 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
                       {/* Skills Section */}
                       <div className="mt-3.5 space-y-1.5">
                         <span className="flex items-center gap-1.5 text-xs font-semibold text-slate-700">
-                          <Wrench className="h-3.5 w-3.5 text-blue-600" />
+                          <Wrench className="h-3.5 w-3.5 text-[#0d5cb2]" />
                           Skills
                         </span>
                         <div className="flex flex-wrap gap-1.5">
                           {j.sk.map((s) => (
                             <span
                               key={s}
-                              className="inline-flex items-center rounded-md bg-blue-50/70 border border-blue-200/70 px-2.5 py-0.5 text-xs font-medium text-blue-800"
+                              className="inline-flex items-center rounded-md bg-[#0d5cb2]/10 border border-[#0d5cb2]/20 px-2.5 py-0.5 text-xs font-medium text-[#0d5cb2]"
                             >
                               {s}
                             </span>
@@ -864,8 +864,8 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
                         className={cn(
                           "inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold transition-all cursor-pointer",
                           applied
-                            ? "bg-blue-400 text-white cursor-default"
-                            : "bg-blue-600 hover:bg-blue-700 text-white shadow-xs shadow-blue-500/20"
+                            ? "bg-slate-400 text-white cursor-default"
+                            : "bg-[#0d5cb2] hover:bg-[#0a4d96] text-white shadow-xs shadow-[#0d5cb2]/20"
                         )}
                       >
                         {applied ? (
@@ -887,10 +887,10 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
                           onClick={() => onSaveJob(j.id)}
                           className={cn(
                             "inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 transition-colors cursor-pointer shadow-2xs",
-                            saved && "border-blue-400 bg-blue-50/50 text-blue-700"
+                            saved && "border-[#0d5cb2] bg-[#0d5cb2]/10 text-[#0d5cb2]"
                           )}
                         >
-                          {saved ? <BookmarkCheck className="h-3.5 w-3.5 text-blue-600" /> : <Bookmark className="h-3.5 w-3.5 text-slate-400" />}
+                          {saved ? <BookmarkCheck className="h-3.5 w-3.5 text-[#0d5cb2]" /> : <Bookmark className="h-3.5 w-3.5 text-slate-400" />}
                           <span className="hidden sm:inline">Save for Later</span>
                         </button>
 
@@ -899,7 +899,7 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
                           onClick={() => onCompareToggle(j.id)}
                           className={cn(
                             "inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 transition-colors cursor-pointer shadow-2xs",
-                            comparing && "border-blue-400 bg-blue-50/50 text-blue-700"
+                            comparing && "border-[#0d5cb2] bg-[#0d5cb2]/10 text-[#0d5cb2]"
                           )}
                         >
                           <ArrowRightLeft className="h-3.5 w-3.5 text-slate-400" />

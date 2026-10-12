@@ -259,7 +259,7 @@ const CandidatePortfolio: React.FC<{
   return (
     <div className="space-y-5">
       {/* Hero */}
-      <section className="relative overflow-hidden rounded-3xl border border-blue-500/30 bg-gradient-to-r from-blue-600 via-blue-600 to-indigo-600 p-6 sm:p-8 shadow-md text-white">
+      <section className="relative overflow-hidden rounded-3xl border border-[#0d5cb2]/30 bg-gradient-to-r from-[#0d5cb2] via-[#0e63be] to-[#0a4d96] p-6 sm:p-8 shadow-md text-white">
         <div className="relative z-10 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 items-center gap-4 sm:gap-5">
             <span className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white/20 text-white border border-white/30 font-display text-3xl font-extrabold sm:h-24 sm:w-24 sm:text-4xl shadow-2xs backdrop-blur-xs">

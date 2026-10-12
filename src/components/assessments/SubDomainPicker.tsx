@@ -194,21 +194,21 @@ const SubDomainBreakdown = ({ subDomain, price }: BreakdownProps) => {
             /* Expanded State View */
             <div
               key={r.id}
-              className="rounded-2xl border border-blue-600 bg-white shadow-xs ring-1 ring-blue-600/20 p-4 sm:p-4.5 md:flex-1 min-w-0 flex flex-col justify-between transition-colors duration-150 cursor-default"
+              className="rounded-2xl border border-[#0d5cb2] bg-white shadow-xs ring-1 ring-[#0d5cb2]/20 p-4 sm:p-4.5 md:flex-1 min-w-0 flex flex-col justify-between transition-colors duration-150 cursor-default"
             >
               <div>
                 {/* Expanded Card Header */}
                 <div className="flex items-center justify-between gap-2 pb-2.5 mb-2.5 border-b border-slate-100">
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white shadow-xs shrink-0">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0d5cb2] text-white shadow-xs shrink-0">
                       <Icon className="h-4 w-4" />
                     </span>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 whitespace-nowrap">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#0d5cb2] whitespace-nowrap">
                           Round 0{r.id}
                         </span>
-                        <span className="rounded-full bg-blue-50 border border-blue-200/60 px-2 py-0.5 text-[10px] font-semibold text-blue-700 whitespace-nowrap">
+                        <span className="rounded-full bg-[#0d5cb2]/10 border border-[#0d5cb2]/20 px-2 py-0.5 text-[10px] font-semibold text-[#0d5cb2] whitespace-nowrap">
                           {meta.badge}
                         </span>
                       </div>
@@ -490,7 +490,7 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                       className={`gap-1.5 font-bold px-4 py-2 h-9 rounded-lg cursor-pointer transition-all shadow-sm ${
                         isSelected
                           ? "border-emerald-600 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 hover:text-emerald-900"
-                          : "bg-blue-600 hover:bg-blue-700 text-white"
+                          : "bg-[#0d5cb2] hover:bg-[#0a4d96] text-white"
                       }`}
                       onClick={() => onToggle(s.id)}
                     >
@@ -530,7 +530,7 @@ export const AssessmentCart = ({ selected, coreNames, onRemove, onCheckout }: Ca
 
   return (
     <aside className="rounded-2xl border border-slate-200/90 bg-white lg:sticky lg:top-24 overflow-hidden shadow-2xs">
-      <div className="flex items-center justify-between bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-4 text-white">
+      <div className="flex items-center justify-between bg-gradient-to-r from-[#0d5cb2] via-[#0e63be] to-[#0a4d96] px-5 py-4 text-white">
         <p className="flex items-center gap-2 font-display text-sm font-bold">
           <ShoppingCart className="h-4 w-4" /> Your assessment cart
         </p>
@@ -594,7 +594,7 @@ export const AssessmentCart = ({ selected, coreNames, onRemove, onCheckout }: Ca
           </div>
           <div className="flex justify-between border-t border-slate-200/80 pt-3 font-display text-lg font-bold">
             <dt className="text-slate-900">Total</dt>
-            <dd className="text-blue-600 font-extrabold">{formatINR(total)}</dd>
+            <dd className="text-[#0d5cb2] font-extrabold">{formatINR(total)}</dd>
           </div>
         </dl>
         {selected.length > 0 && (
@@ -604,7 +604,7 @@ export const AssessmentCart = ({ selected, coreNames, onRemove, onCheckout }: Ca
         )}
 
         <Button
-          className="mt-5 w-full gap-2 font-bold cursor-pointer bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/20"
+          className="mt-5 w-full gap-2 font-bold cursor-pointer bg-[#0d5cb2] hover:bg-[#0a4d96] text-white shadow-md shadow-[#0d5cb2]/25"
           disabled={selected.length === 0}
           onClick={onCheckout}
         >

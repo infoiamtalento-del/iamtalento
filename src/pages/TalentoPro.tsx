@@ -540,11 +540,12 @@ const TalentoPro: React.FC = () => {
     <div
       className="min-h-screen bg-[#f8fafd] text-slate-900 flex flex-col font-sans selection:bg-blue-500/20 selection:text-blue-700"
       style={{
-        "--primary": "221.2 83.2% 53.3%",
+        "--primary": "211.3 86.4% 37.5%",
         "--primary-foreground": "0 0% 100%",
-        "--ring": "221.2 83.2% 53.3%",
-        "--accent": "214 95% 93%",
-        "--accent-foreground": "221.2 83.2% 53.3%",
+        "--ring": "211.3 86.4% 37.5%",
+        "--primary-glow": "211.3 86.4% 37.5%",
+        "--accent": "211 40% 96%",
+        "--accent-foreground": "211.3 86.4% 37.5%",
       } as React.CSSProperties}
     >
       <Helmet>

@@ -184,7 +184,18 @@ const AssessmentDiscovery = () => {
   };
 
   return (
-    <>
+    <div
+      style={
+        {
+          "--primary": "211.3 86.4% 37.5%",
+          "--primary-foreground": "0 0% 100%",
+          "--ring": "211.3 86.4% 37.5%",
+          "--primary-glow": "211.3 86.4% 37.5%",
+          "--accent": "211 40% 96%",
+          "--accent-foreground": "211.3 86.4% 37.5%",
+        } as React.CSSProperties
+      }
+    >
       <Helmet>
         <title>Explore Skill Assessments — I Am Talento</title>
         <meta
@@ -413,7 +424,7 @@ const AssessmentDiscovery = () => {
         {/* Why Start Today? Here's Why. */}
         <ProctoringSection />
       </Layout>
-    </>
+    </div>
   );
 };
 

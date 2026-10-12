@@ -7,7 +7,7 @@ export const matchTier = (p: number) =>
     ? { label: "Strong match", text: "text-emerald-600", stroke: "#16a34a" }
     : p >= 40
     ? { label: "Fair match", text: "text-amber-600", stroke: "#f59e0b" }
-    : { label: "Low match", text: "text-primary", stroke: "#2563eb" };
+    : { label: "Low match", text: "text-primary", stroke: "#0d5cb2" };
 
 interface MatchRingProps {
   percent: number;

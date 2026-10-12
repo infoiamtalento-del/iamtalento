@@ -227,7 +227,7 @@ export const ProNotificationsView: React.FC<ProNotificationsViewProps> = ({
   return (
     <div className="space-y-6">
       {/* Hero Banner */}
-      <div className="relative overflow-hidden rounded-3xl border border-blue-500/30 bg-gradient-to-r from-blue-600 via-blue-600 to-indigo-600 p-6 sm:p-8 shadow-md text-white">
+      <div className="relative overflow-hidden rounded-3xl border border-[#0d5cb2]/30 bg-gradient-to-r from-[#0d5cb2] via-[#0e63be] to-[#0a4d96] p-6 sm:p-8 shadow-md text-white">
         <div className="relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-white border border-white/20 text-xs font-semibold mb-2 backdrop-blur-xs">
             <ShieldCheck className="w-3.5 h-3.5 text-blue-200" /> Talento SLA Transparency

@@ -25,7 +25,7 @@ export const AssessmentStickyBar = ({ selected, total, onCheckout }: Props) => {
         <div className="flex items-center justify-between gap-3 sm:gap-4 rounded-2xl border border-slate-200/90 bg-white/95 p-3.5 sm:px-5 sm:py-3.5 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.18)] backdrop-blur-md">
           {/* Left: Cart badge & Selected Sub-domains */}
           <div className="flex items-center gap-3 min-w-0">
-            <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm">
+            <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#0d5cb2] text-white shadow-sm">
               <ShoppingCart className="h-5 w-5" />
               <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-slate-900 text-[10px] font-bold text-white">
                 {selected.length}
@@ -37,7 +37,7 @@ export const AssessmentStickyBar = ({ selected, total, onCheckout }: Props) => {
                 <span className="font-display text-sm font-bold leading-tight text-slate-900 truncate">
                   {selected.length} Sub-domain{selected.length === 1 ? "" : "s"} Added
                 </span>
-                <span className="text-[10px] font-semibold text-blue-700 px-1.5 py-0.5 rounded bg-blue-50 border border-blue-200/60">
+                <span className="text-[10px] font-semibold text-[#0d5cb2] px-1.5 py-0.5 rounded bg-[#0d5cb2]/10 border border-[#0d5cb2]/20">
                   + 3 Core Tests
                 </span>
               </div>
@@ -63,7 +63,7 @@ export const AssessmentStickyBar = ({ selected, total, onCheckout }: Props) => {
           {/* Right: Total Price & Checkout CTA */}
           <div className="flex items-center gap-3 shrink-0">
             <div className="text-right hidden sm:block">
-              <span className="font-display text-base sm:text-lg font-extrabold text-blue-600 leading-tight block">
+              <span className="font-display text-base sm:text-lg font-extrabold text-[#0d5cb2] leading-tight block">
                 {formatINR(total)}
               </span>
               <span className="text-[10px] text-slate-500 block -mt-0.5">
@@ -73,7 +73,7 @@ export const AssessmentStickyBar = ({ selected, total, onCheckout }: Props) => {
 
             <Button
               size="sm"
-              className="gap-1.5 font-bold shadow-md shadow-blue-500/20 px-3.5 sm:px-4 text-xs sm:text-sm h-9 sm:h-10 bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
+              className="gap-1.5 font-bold shadow-md shadow-[#0d5cb2]/25 px-3.5 sm:px-4 text-xs sm:text-sm h-9 sm:h-10 bg-[#0d5cb2] hover:bg-[#0a4d96] text-white cursor-pointer"
               onClick={onCheckout}
             >
               <span>Pay & Start</span>

@@ -46,7 +46,18 @@ import AssessmentFinalCTA from "@/components/assessments/AssessmentFinalCTA";
 import ComplianceSection from "@/components/landing/ComplianceSection";
 
 const Assessments = () => (
-  <>
+  <div
+    style={
+      {
+        "--primary": "211.3 86.4% 37.5%",
+        "--primary-foreground": "0 0% 100%",
+        "--ring": "211.3 86.4% 37.5%",
+        "--primary-glow": "211.3 86.4% 37.5%",
+        "--accent": "211 40% 96%",
+        "--accent-foreground": "211.3 86.4% 37.5%",
+      } as React.CSSProperties
+    }
+  >
     <Helmet>
       <title>Skill Assessments — I Am Talento</title>
       <meta name="description" content="Take AI-powered, proctored skill assessments to validate your industry readiness, earn a verified badge, and unlock better job opportunities." />
@@ -88,7 +99,7 @@ const Assessments = () => (
       <AssessmentFinalCTA />
       <ComplianceSection />
     </Layout>
-  </>
+  </div>
 );
 
 export default Assessments;
