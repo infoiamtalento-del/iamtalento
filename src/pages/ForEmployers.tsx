@@ -13,7 +13,6 @@ import {
   Clock3,
   FileCheck2,
   GraduationCap,
-  IdCard,
   LineChart,
   MapPin,
   Building2,
@@ -394,7 +393,6 @@ const ForEmployers = () => (
       <ProblemSection />
       <HowItWorks />
       <SearchSection />
-      <VerificationSection />
       <TeamSection />
       <FAQSection />
       <FinalCTA />
