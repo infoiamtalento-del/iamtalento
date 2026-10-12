@@ -138,10 +138,6 @@
 .dp-certifications article>div { flex:1; }
 .dp-cert-date { display:flex; align-items:center; justify-content:space-between; gap:5px; font-size:9px; color:hsl(var(--dp-muted)); margin-top:3px; }
 .dp-verified { display:inline-flex; align-items:center; gap:3px; color:hsl(var(--dp-green)); background:hsl(var(--dp-green) / .08); border-radius:12px; padding:3px 6px; font-size:8px; }
-.dp-preferences h3,.dp-achievements h3 { font-size:10px; }
-.dp-preferences p,.dp-achievements p { font-size:9px; }
-.dp-achievements { display:flex; flex-direction:column; gap:10px; }
-.dp-achievements i { background:hsl(var(--dp-red) / .08); }
 .dp-profile-links { max-width:var(--dp-col); margin:0 auto; display:flex; flex-wrap:wrap; gap:20px; padding:22px 4px 0; color:hsl(var(--dp-muted)); font-size:10px; scroll-margin-top:85px; }
 .dp-profile-links>a,.dp-profile-links>span { display:flex; align-items:center; gap:7px; }
 .dp-profile-links>span { margin-left:auto; }
