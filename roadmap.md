@@ -1,7 +1,8 @@
 # Roadmap
 
-## Demo profile — remove left navigation rail
+## Demo profile — left menu rail
 - Remove the fixed left sidebar and let the profile use the full page width — done; the top bar keeps all six destinations, content edges align with the logo on desktop and phone, and the bar is now solid so scrolled content no longer shows through
+- Add a LinkedIn-style left rail with Home, Jobs, Notifications, Messages and Me — pending
 
 ## Demo profile — reference dashboard
 - Match reference header, sidebar, cover and candidate overview — done
