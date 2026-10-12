@@ -99,7 +99,7 @@ export function DemoProfileRail() {
                 <i className={toneClass[job.tone]}><BriefcaseBusiness size={16} /></i>
                 <div className="min-w-0 flex-1">
                   <h3>{job.title}</h3>
-                  <p>{job.company}<span className="dp-rail-tag" style={{ visibility: "hidden" }}>.</span></p>
+                  <p>{job.company}</p>
                   <div className="dp-rail-meta">
                     <span className="dp-rail-tag" style={{ background: "hsl(var(--muted))", color: "hsl(var(--muted-foreground))" }}>{job.status}</span>
                     <span>{job.location}</span><span>·</span><span>Applied {job.applied}</span>
