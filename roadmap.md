@@ -1,5 +1,9 @@
 # Roadmap
 
+## Pro job cards — reference repair
+- Repair card layout, detail spacing, skills and actions using the supplied reference — in progress
+- Verify rendering and card actions — pending
+
 ## Demo profile — sidebar removal, centering and spacing
 - Remove the right-hand column and center the remaining profile content — done; the page is one 940px column centered in the space right of the rail, verified at 1497 and 390 with no overflow or page errors
 - Open up spacing across the page, its sections, panels, icons and the left rail — done; wider column and roomier panel, tab, timeline, chip, expertise and rail spacing, verified at 1497 and 390 with no clipped text, overlap or page errors

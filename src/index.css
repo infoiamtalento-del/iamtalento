@@ -57,6 +57,12 @@
     --podcast-paper: 0 0% 100%;
     --podcast-brand: 351 77% 50%;
     --podcast-gray: 0 0% 93.3%;
+    --job-brand: 212 86% 37%;
+    --job-ink: 224 72% 17%;
+    --job-muted: 215 30% 46%;
+    --job-tint: 208 100% 96%;
+    --job-border: 210 65% 87%;
+    --job-shadow: 0 4px 20px hsl(var(--job-brand) / .08);
   }
 
   .dark {
@@ -97,6 +103,11 @@
     --sidebar-accent-foreground: 355 50% 75%;
     --sidebar-border: 0 0% 16%;
     --sidebar-ring: 355 84% 58%;
+    --job-brand: 210 90% 68%;
+    --job-ink: 210 40% 94%;
+    --job-muted: 215 25% 70%;
+    --job-tint: 213 35% 15%;
+    --job-border: 213 35% 27%;
   }
 }
 
