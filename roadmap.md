@@ -1,5 +1,10 @@
 # Roadmap
 
+## Pro job details and fixed results
+- Add reference-style full job details with shared apply/save actions — in progress
+- Use dark-blue-only accents and 20 jobs per page in two desktop columns — in progress
+- Verify job opening, applying, saving, layout and pagination — in progress
+
 ## Pro job cards — reference repair
 - Match the latest compact reference with smaller type, three-column details and single-row actions — done; verified at 1280, 934 and 390, saving and comparison work
 - Repair card layout, detail spacing, skills and actions using the supplied reference — done
