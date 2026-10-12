@@ -15,6 +15,8 @@ import {
   GraduationCap,
   IdCard,
   LineChart,
+  MapPin,
+  Building2,
   Search,
   ShieldCheck,
   Sparkles,
@@ -26,6 +28,7 @@ import {
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { demoProfile } from "@/components/profile/DemoProfileBody";
 import recruiterImage from "@/assets/employer-recruiter.jpg";
 import challengeImage from "@/assets/employer-challenge.jpg";
 import teamImage from "@/assets/employer-team.jpg";
@@ -93,6 +96,32 @@ const CandidateList = ({ compact = false }: { compact?: boolean }) => (
   </div>
 );
 
+const hiringUSPs = {
+  search: [
+    { icon: Zap, title: "Lower Costs", text: "Reduce hiring costs by up to 50% compared with traditional recruitment methods." },
+    { icon: Search, title: "Smart Screening", text: "AI-powered natural-language screening filters profiles against your role requirements." },
+  ],
+  verification: [
+    { icon: ShieldCheck, title: "Verified Skills", text: "Access skill-verified candidate profiles backed by practical assessment evidence." },
+    { icon: UserCheck, title: "Background Checks", text: "Complimentary background verification for every candidate adds confidence to your hiring decisions." },
+  ],
+  team: [
+    { icon: Users, title: "Team Workspace", text: "Collaborate on hiring decisions with shared tracking and automated updates." },
+    { icon: BarChart3, title: "Clear Analytics", text: "Transparent hiring metrics and recruitment analytics keep every decision measurable." },
+  ],
+};
+
+const USPList = ({ items }: { items: typeof hiringUSPs.search }) => (
+  <div className="mt-8 space-y-5 border-t border-border pt-6">
+    {items.map(({ icon: Icon, title, text }) => (
+      <div key={title} className="flex gap-4">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent text-primary"><Icon className="h-5 w-5" /></span>
+        <div><h3 className="mb-1 font-display text-lg font-bold">{title}</h3><p className="max-w-md text-sm leading-relaxed text-muted-foreground">{text}</p></div>
+      </div>
+    ))}
+  </div>
+);
+
 const Hero = () => (
   <section className="relative overflow-hidden bg-background pb-16 pt-32 md:pb-20 md:pt-40">
     <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-accent/60 to-transparent" />
@@ -113,7 +142,7 @@ const Hero = () => (
               <Link to="/contact">Book a Demo <ArrowRight className="h-4 w-4" /></Link>
             </Button>
             <Button asChild size="lg" variant="ghost" className="h-12 gap-2 px-4">
-              <Link to="#how-it-works"><CirclePlay className="h-5 w-5 text-primary" /> See How It Works</Link>
+              <a href="#how-it-works"><CirclePlay className="h-5 w-5 text-primary" /> See How It Works</a>
             </Button>
           </div>
           <div className="flex flex-wrap gap-x-6 gap-y-3 text-xs font-medium text-muted-foreground">
@@ -207,40 +236,68 @@ const ProblemSection = () => (
   </section>
 );
 
-const steps = ["Find candidates with AI search", "Verify skills across 30+ checks", "Rank by job fit and readiness", "Shortlist and hire with confidence"];
+const steps = [
+  { icon: Building2, title: "Create Profile", text: "Create your company profile and introduce your team, culture, and hiring needs." },
+  { icon: BriefcaseBusiness, title: "Post Jobs", text: "Publish a role with the skills, experience, and expectations that matter." },
+  { icon: Search, title: "Talent Hunt", text: "Browse general profiles directly or explore selected candidates with verified profiles." },
+  { icon: UserCheck, title: "Shortlist Together", text: "Compare evidence, review with your team, and move the right candidates to interviews." },
+];
 
 const HowItWorks = () => (
   <section id="how-it-works" className="bg-accent/45 py-20 md:py-28">
     <div className="container grid items-center gap-14 lg:grid-cols-2">
       <motion.div {...reveal} className="relative order-2 lg:order-1">
         <img src={recruiterImage} alt="Recruiter using IAmTalento" className="aspect-[4/3] w-full rounded-lg object-cover" loading="lazy" width={1408} height={1056} />
-        <div className="absolute right-4 top-1/2 w-[min(82%,330px)] -translate-y-1/2 rounded-lg border border-border bg-card/95 p-5 shadow-xl backdrop-blur">
-          <div className="space-y-3">
-            {steps.map((step, index) => <div key={step} className="flex items-center gap-3"><span className={cn("flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold", index === 0 ? "bg-primary text-primary-foreground" : "bg-accent text-primary")}>{index + 1}</span><span className="text-xs font-semibold">{step}</span></div>)}
-          </div>
-        </div>
+        <div className="absolute bottom-5 left-5 right-5 flex items-center gap-3 rounded-lg border border-border bg-card/95 p-4 shadow-lg backdrop-blur"><ShieldCheck className="h-6 w-6 text-primary" /><div><p className="text-sm font-bold">Your team. Your decisions.</p><p className="text-xs text-muted-foreground">One connected hiring journey.</p></div></div>
       </motion.div>
       <motion.div {...reveal} className="order-1 lg:order-2">
-        <SectionIntro eyebrow="How IAmTalento Works" first="From Search to Shortlist." second="All in One Place." description={<>Turn role requirements into a clear, evidence-backed shortlist.<br className="hidden md:block" /> Your team moves faster without giving up control.</>} />
-        <Button asChild size="lg" className="mt-8 gap-2"><Link to="/contact">Book a Demo <ArrowRight className="h-4 w-4" /></Link></Button>
+        <SectionIntro eyebrow="How We Work" first="Your Next Great Hire." second="Four Clear Steps." description={<>Build your company presence and connect with the right talent.<br className="hidden md:block" /> Move from a new role to a confident shortlist.</>} />
+        <ol className="mt-8 space-y-5">
+          {steps.map(({ icon: Icon, title, text }, index) => <li key={title} className="flex gap-4"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">0{index + 1}</span><div><h3 className="mb-1 flex items-center gap-2 font-display text-base font-bold"><Icon className="h-4 w-4 text-primary" />{title}</h3><p className="text-sm leading-relaxed text-muted-foreground">{text}</p></div></li>)}
+        </ol>
+        <Button asChild size="lg" className="mt-8 gap-2"><Link to="/employer-profile">Create Company Profile <ArrowRight className="h-4 w-4" /></Link></Button>
       </motion.div>
     </div>
   </section>
+);
+
+const CandidatePreview = () => (
+  <article aria-label="Arjun Mehta demo candidate profile" className="overflow-hidden rounded-lg border border-border bg-card shadow-xl">
+    <div className="flex items-center justify-between gap-3 border-b border-border bg-accent/60 px-5 py-3">
+      <span className="flex items-center gap-2 text-xs font-bold text-primary"><Sparkles className="h-4 w-4" /> CANDIDATE SPOTLIGHT</span>
+      <span className="text-xs text-muted-foreground">Demo profile</span>
+    </div>
+    <div className="grid sm:grid-cols-[160px_1fr]">
+      <div className="relative bg-secondary/30">
+        <img src={demoProfile.profile_photo_url} alt={demoProfile.full_name} className="h-56 w-full object-cover sm:h-full" />
+        <div className="absolute bottom-3 left-3 right-3 rounded-md bg-card/95 px-3 py-2 backdrop-blur"><p className="font-display text-2xl font-bold">{demoProfile.years_of_experience}+ <span className="text-xs font-medium text-muted-foreground">years</span></p><p className="text-xs text-muted-foreground">Engineering experience</p></div>
+      </div>
+      <div className="min-w-0 p-5 md:p-6">
+        <p className="mb-2 flex items-center gap-1.5 text-xs font-semibold text-success"><CheckCircle2 className="h-4 w-4" /> Complete candidate profile</p>
+        <h3 className="font-display text-3xl font-bold">{demoProfile.full_name}</h3>
+        <p className="mt-1 text-sm font-semibold">{demoProfile.professional_headline}</p>
+        <p className="mt-1 text-xs text-primary">{demoProfile.sub_headline}</p>
+        <p className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground"><MapPin className="h-3.5 w-3.5" />{demoProfile.location}</p>
+        <div className="mt-5 flex flex-wrap gap-2">{demoProfile.tags.map(tag => <span key={tag} className="rounded-md bg-secondary px-2.5 py-1 text-xs font-medium">{tag}</span>)}</div>
+      </div>
+    </div>
+    <div className="border-t border-border p-5 md:p-6">
+      <p className="mb-2 text-xs font-bold uppercase text-muted-foreground">Beyond the resume</p>
+      <p className="text-sm leading-relaxed text-muted-foreground">{demoProfile.about_summary}</p>
+      <div className="my-5 grid grid-cols-3 divide-x divide-border border-y border-border py-4 text-center">{[{ icon: BriefcaseBusiness, label: "Experience" }, { icon: Target, label: "Skills" }, { icon: GraduationCap, label: "Education" }].map(({ icon: Icon, label }) => <div key={label}><Icon className="mx-auto mb-2 h-5 w-5 text-primary" /><span className="text-xs font-semibold">{label}</span></div>)}</div>
+      <Button asChild className="w-full gap-2"><Link to="/demo-profile">View Full Demo Profile <ArrowRight className="h-4 w-4" /></Link></Button>
+    </div>
+  </article>
 );
 
 const SearchSection = () => (
   <section className="py-20 md:py-28">
     <div className="container grid items-center gap-14 lg:grid-cols-[0.82fr_1.18fr]">
       <motion.div {...reveal}>
-        <SectionIntro eyebrow="AI Talent Search" first="Find the Right Candidate." second="Faster." description={<>Search in natural language and receive AI-ranked candidates.<br className="hidden md:block" /> Every result shows verified fit, skills, and experience.</>} />
-        <Button asChild className="mt-8 gap-2"><Link to="/contact">Try a Live Demo <ArrowRight className="h-4 w-4" /></Link></Button>
+        <SectionIntro eyebrow="AI Talent Search" first="Meet Your Next Hire." second="Beyond a Resume." description={<>Discover experience, skills, and the person behind the profile.<br className="hidden md:block" /> See the full picture before you connect.</>} />
+        <USPList items={hiringUSPs.search} />
       </motion.div>
-      <motion.div {...reveal} className="rounded-lg border border-border bg-card p-5 shadow-lg md:p-7">
-        <div className="mb-5 flex items-center gap-3 rounded-lg border border-border bg-secondary/30 p-3 text-xs text-muted-foreground">
-          <Search className="h-4 w-4" /><span className="flex-1">Senior Product Manager with 5+ years in SaaS, Bengaluru</span><span className="rounded-md bg-primary p-2 text-primary-foreground"><Search className="h-4 w-4" /></span>
-        </div>
-        <CandidateList />
-      </motion.div>
+      <motion.div {...reveal}><CandidatePreview /></motion.div>
     </div>
   </section>
 );
@@ -257,6 +314,7 @@ const VerificationSection = () => (
     <div className="container grid items-center gap-14 lg:grid-cols-2">
       <motion.div {...reveal}>
         <SectionIntro eyebrow="Verification" first="Proof Behind" second="Every Profile." description={<>We verify candidates across identity, employment, education, and skills.<br className="hidden md:block" /> Your team sees evidence before the first conversation.</>} />
+        <USPList items={hiringUSPs.verification} />
         <Button asChild variant="outline" className="mt-8 gap-2"><Link to="/features">Learn More <ArrowRight className="h-4 w-4" /></Link></Button>
       </motion.div>
       <motion.div {...reveal} className="space-y-3">
@@ -277,6 +335,7 @@ const TeamSection = () => (
     <div className="container grid items-center gap-14 lg:grid-cols-[0.85fr_1.15fr]">
       <motion.div {...reveal}>
         <SectionIntro eyebrow="Your Team, in Control" first="A Powerful Platform" second="For Modern Hiring." description={<>Give recruiters and hiring managers one shared view of every candidate.<br className="hidden md:block" /> Collaborate, track progress, and decide with confidence.</>} />
+        <USPList items={hiringUSPs.team} />
         <Button asChild variant="outline" className="mt-8 gap-2"><Link to="/features">Explore Features <ArrowRight className="h-4 w-4" /></Link></Button>
       </motion.div>
       <motion.div {...reveal} className="relative">
@@ -284,29 +343,6 @@ const TeamSection = () => (
         <div className="absolute right-5 top-5 flex items-center gap-2 rounded-lg border border-border bg-card/95 px-4 py-3 text-xs font-semibold shadow-lg"><CheckCircle2 className="h-4 w-4 text-primary" /> Shortlist approved</div>
         <div className="absolute bottom-5 left-5 flex gap-5 rounded-lg border border-border bg-card/95 px-4 py-3 text-xs font-semibold shadow-lg"><span className="flex items-center gap-2"><Users className="h-4 w-4 text-primary" /> Share</span><span className="flex items-center gap-2"><LineChart className="h-4 w-4 text-primary" /> Track</span></div>
       </motion.div>
-    </div>
-  </section>
-);
-
-const benefits = [
-  { icon: Zap, title: "Save time", text: "Move from search to shortlist with less manual screening." },
-  { icon: ShieldCheck, title: "Improve quality", text: "Evaluate verified, job-relevant evidence before interviews." },
-  { icon: Users, title: "Work together", text: "Keep recruiters and hiring managers aligned in one place." },
-  { icon: BarChart3, title: "Decide clearly", text: "Compare candidate fit through consistent data and reports." },
-];
-
-const BenefitsSection = () => (
-  <section className="bg-accent/45 py-20 md:py-24">
-    <div className="container">
-      <motion.div {...reveal}><SectionIntro eyebrow="Why Teams Choose IAmTalento" first="A Faster, More" second="Confident Hiring Process." description={<>Replace scattered decisions with a clear, structured workflow.<br className="hidden md:block" /> Every step stays measurable and accountable.</>} align="center" /></motion.div>
-      <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {benefits.map(({ icon: Icon, title, text }, index) => (
-          <motion.div key={title} {...reveal} transition={{ duration: 0.45, delay: index * 0.06 }} className="border-t-2 border-primary pt-5">
-            <span className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-background text-primary shadow-sm"><Icon className="h-5 w-5" /></span>
-            <h3 className="mb-2 text-sm font-bold">{title}</h3><p className="text-xs leading-relaxed text-muted-foreground">{text}</p>
-          </motion.div>
-        ))}
-      </div>
     </div>
   </section>
 );
@@ -346,8 +382,8 @@ const FinalCTA = () => (
         <div className="relative z-10 grid items-center gap-8 md:grid-cols-[1fr_auto]">
           <div><h2 className="font-display text-3xl font-bold leading-tight text-primary-foreground md:text-4xl">Ready to Hire Better?</h2><p className="mt-2 text-sm text-primary-foreground/80 md:text-base">See how IAmTalento helps your team find the right people, faster.</p></div>
           <div className="flex flex-wrap gap-3">
-            <Button asChild size="lg" variant="secondary"><Link to="/contact">Book a Demo <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
-            <Button asChild size="lg" variant="outline" className="border-primary-foreground/50 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"><Link to="/contact">Contact Sales</Link></Button>
+            <Button asChild size="lg" variant="secondary"><Link to="/pricing?tab=employers">Explore Pricing <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
+            <Button asChild size="lg" variant="outline" className="border-primary-foreground/50 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"><Link to="/employer-profile">Create Company Profile</Link></Button>
           </div>
         </div>
       </motion.div>
@@ -373,7 +409,6 @@ const ForEmployers = () => (
       <SearchSection />
       <VerificationSection />
       <TeamSection />
-      <BenefitsSection />
       <FAQSection />
       <FinalCTA />
     </Layout>

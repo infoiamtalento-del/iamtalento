@@ -119,14 +119,12 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
   const [jobSkills, setJobSkills] = useState("React, TypeScript, Next.js, Node.js");
 
   const handleApplyTemplate = (tpl: (typeof JOB_TEMPLATES)[0]) => {
-    setJobTitle(tpl[0]);
-    setJobLocation(tpl[1]);
-    setJobWorkMode(tpl[2] as any);
-    setJobType(tpl[3] as any);
-    setJobMinExp(tpl[4]);
-    setJobMinSal(tpl[5]);
-    setJobMaxSal(tpl[6]);
-    setJobSkills(tpl[7]);
+    setJobTitle(tpl[1]);
+    setJobWorkMode(tpl[2]);
+    setJobMinExp(tpl[3]);
+    setJobMinSal(tpl[4]);
+    setJobMaxSal(tpl[5]);
+    setJobSkills(tpl[6]);
     onToast(`Applied "${tpl[0]}" template!`);
   };
 

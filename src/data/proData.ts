@@ -85,10 +85,12 @@ export interface ProUser {
   phv?: boolean;
   gst?: string;
   vr?: { at: number; id: string };
+  ver?: { id: boolean; test: boolean; exp: boolean };
   wal?: {
     bal: number;
-    pm: { id: number; type: string; label: string; sub?: string; def?: boolean }[];
-    tx: { id: string; at: number; type: "credit" | "debit"; amt: number; desc: string; via: string; st?: string; bal?: number; reason?: string }[];
+    pm?: { id: number; type: string; label: string; sub?: string; def?: boolean }[];
+    tx?: { id: string; at: number; type: "credit" | "debit"; amt: number; desc: string; via: string; st?: string; bal?: number; reason?: string }[];
+    hist?: { id: string; at: number; type: "credit" | "debit"; amt: number; desc: string; via: string; st?: string; bal?: number; reason?: string }[];
   };
   cp?: {
     name?: string;
@@ -317,7 +319,7 @@ export const SKILL_QUIZZES: Record<string, [string, string[], number][]> = {
   ],
 };
 
-export const JOB_TEMPLATES = [
+export const JOB_TEMPLATES: [string, string, ProJob["m"], number, number, number, string][] = [
   ["Frontend Dev", "Frontend Developer", "Hybrid", 2, 8, 14, "React, TypeScript, CSS"],
   ["Data Analyst", "Data Analyst", "Onsite", 1, 8, 14, "SQL, Python, Tableau"],
   ["DevOps", "DevOps Engineer", "Remote", 3, 20, 32, "AWS, Kubernetes, Terraform"],
