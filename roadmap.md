@@ -69,4 +69,4 @@
 
 ## Header Products and job search
 - Replace Resources with grouped Candidate/Employer Products and remove theme, login and Pro header controls — implemented
-- Link Browse Jobs hero Search to Talento Pro and verify navigation — pending verification
+- Link Browse Jobs hero Search to Talento Pro and verify navigation — done; desktop/mobile menu checked, Search opens /talento-pro, build OK
