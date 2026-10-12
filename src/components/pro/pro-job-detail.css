@@ -59,3 +59,20 @@
 .jd-sample-note { font-size:10px; color:hsl(var(--job-muted)); margin-top:18px; }
 @media(max-width:1000px) { .jd-facts { grid-template-columns:repeat(3,minmax(0,1fr)); } .jd-grid { grid-template-columns:minmax(0,1.8fr) minmax(235px,1fr); } .jd-breadcrumb { display:none; } }
 @media(max-width:640px) { .jd-grid { grid-template-columns:1fr; } .jd-summary { padding:16px; } .jd-identity { gap:10px; } .jd-logo { width:44px; height:44px; padding:6px; } .jd-identity h1 { font-size:18px; } .jd-match svg { width:44px; height:44px; } .jd-facts { grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; } .jd-panel { padding:16px; } .jd-toolbar { gap:8px; } .jd-similar-grid { grid-template-columns:1fr; } .jd-sidebar { grid-row:1; } }
+/* Hero: brand-blue banner */
+.pro-job-detail .jd-summary { background:linear-gradient(135deg,hsl(var(--job-brand)),hsl(212 86% 26%)); border-color:transparent; box-shadow:0 12px 30px hsl(var(--job-brand) / .22); color:hsl(0 0% 100%); }
+.pro-job-detail .jd-summary h1 { color:hsl(0 0% 100%); }
+.pro-job-detail .jd-company { color:hsl(208 100% 82%); }
+.pro-job-detail .jd-meta { color:hsl(210 100% 88%); }
+.pro-job-detail .jd-logo { background:hsl(0 0% 100%); border-color:hsl(0 0% 100% / .35); }
+.pro-job-detail .jd-summary .jd-tag { background:hsl(0 0% 100% / .14); border-color:hsl(0 0% 100% / .3); color:hsl(0 0% 100%); }
+.pro-job-detail .jd-summary .jd-tag.is-matched { background:hsl(0 0% 100% / .18); border-color:hsl(0 0% 100% / .38); }
+.pro-job-detail .jd-fact { background:hsl(0 0% 100% / .1); border-color:hsl(0 0% 100% / .18); }
+.pro-job-detail .jd-fact small { color:hsl(210 100% 84%); }
+.pro-job-detail .jd-fact strong { color:hsl(0 0% 100%); }
+.pro-job-detail .jd-fact>svg { color:hsl(208 100% 80%); }
+.pro-job-detail .jd-match small { color:hsl(210 100% 84%); }
+.pro-job-detail .jd-summary svg circle[stroke] { stroke:hsl(0 0% 100%); }
+.pro-job-detail .jd-summary svg circle.stroke-border { stroke:hsl(0 0% 100% / .3); }
+.pro-job-detail .jd-summary svg text { fill:hsl(0 0% 100%); }
+@media(max-width:640px) { .pro-job-detail .jd-summary { box-shadow:0 8px 20px hsl(var(--job-brand) / .18); } }
