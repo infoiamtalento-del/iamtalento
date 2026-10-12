@@ -111,21 +111,45 @@ const hiringUSPs = {
   ],
 };
 
-const USPList = ({ items }: { items: typeof hiringUSPs.search }) => (
-  <div className="mt-8">
-    <p className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-primary">
-      <Sparkles className="h-4 w-4" /> Hiring Benefits
-    </p>
-    <div className="grid gap-4 sm:grid-cols-2">
-      {items.map(({ icon: Icon, title, text }) => (
-        <div key={title} className="rounded-lg border border-primary/20 bg-accent/70 p-5 transition hover:border-primary/50 hover:shadow-md">
-          <span className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground"><Icon className="h-5 w-5" /></span>
-          <h3 className="mb-1 font-display text-base font-bold">{title}</h3>
-          <p className="text-sm leading-relaxed text-muted-foreground">{text}</p>
-        </div>
-      ))}
+const allUSPs = [
+  { icon: Zap, title: "Lower Costs", text: "Reduce hiring costs by up to 50% compared with traditional recruitment methods." },
+  { icon: Search, title: "Smart Screening", text: "AI-powered natural-language screening filters profiles against your role requirements." },
+  { icon: ShieldCheck, title: "Verified Skills", text: "Access skill-verified candidate profiles backed by practical assessment evidence." },
+  { icon: UserCheck, title: "Background Checks", text: "Complimentary background verification for every candidate adds confidence to your hiring decisions." },
+  { icon: Users, title: "Team Workspace", text: "Collaborate on hiring decisions with shared tracking and automated updates." },
+  { icon: BarChart3, title: "Clear Analytics", text: "Transparent hiring metrics and recruitment analytics keep every decision measurable." },
+];
+
+const USPSection = () => (
+  <section className="bg-accent/45 py-20 md:py-28">
+    <div className="container">
+      <motion.div {...reveal} className="mx-auto max-w-2xl text-center">
+        <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-primary">Why IAmTalento</p>
+        <h2 className="mb-5 font-display text-3xl font-bold leading-[1.08] sm:text-4xl lg:text-5xl">
+          Everything Your Team Needs<br />
+          <span className="text-primary">To Hire With Proof.</span>
+        </h2>
+        <p className="text-sm leading-relaxed text-muted-foreground md:text-base">
+          Six advantages built into every step of your hiring journey, from the first search to the final decision.
+          <br className="hidden md:block" /> Each one is included at no extra cost.
+        </p>
+      </motion.div>
+      <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {allUSPs.map(({ icon: Icon, title, text }, index) => (
+          <motion.div
+            key={title}
+            {...reveal}
+            transition={{ duration: 0.55, delay: index * 0.07 }}
+            className="rounded-lg border border-primary/20 bg-card p-6 shadow-sm transition hover:border-primary/50 hover:shadow-md"
+          >
+            <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-primary-foreground"><Icon className="h-5 w-5" /></span>
+            <h3 className="mb-2 font-display text-lg font-bold">{title}</h3>
+            <p className="text-sm leading-relaxed text-muted-foreground">{text}</p>
+          </motion.div>
+        ))}
+      </div>
     </div>
-  </div>
+  </section>
 );
 
 const Hero = () => (
@@ -301,7 +325,6 @@ const SearchSection = () => (
     <div className="container grid items-center gap-14 lg:grid-cols-[0.82fr_1.18fr]">
       <motion.div {...reveal}>
         <SectionIntro eyebrow="AI Talent Search" first="Meet Your Next Hire." second="Beyond a Resume." description={<>Discover experience, skills, and the person behind the profile.<br className="hidden md:block" /> See the full picture before you connect.</>} />
-        <USPList items={hiringUSPs.search} />
       </motion.div>
       <motion.div {...reveal}><CandidatePreview /></motion.div>
     </div>
@@ -320,7 +343,6 @@ const VerificationSection = () => (
     <div className="container grid items-center gap-14 lg:grid-cols-2">
       <motion.div {...reveal}>
         <SectionIntro eyebrow="Verification" first="Proof Behind" second="Every Profile." description={<>We verify candidates across identity, employment, education, and skills.<br className="hidden md:block" /> Your team sees evidence before the first conversation.</>} />
-        <USPList items={hiringUSPs.verification} />
         <Button asChild variant="outline" className="mt-8 gap-2"><Link to="/features">Learn More <ArrowRight className="h-4 w-4" /></Link></Button>
       </motion.div>
       <motion.div {...reveal} className="space-y-3">
@@ -341,7 +363,6 @@ const TeamSection = () => (
     <div className="container grid items-center gap-14 lg:grid-cols-[0.85fr_1.15fr]">
       <motion.div {...reveal}>
         <SectionIntro eyebrow="Your Team, in Control" first="A Powerful Platform" second="For Modern Hiring." description={<>Give recruiters and hiring managers one shared view of every candidate.<br className="hidden md:block" /> Collaborate, track progress, and decide with confidence.</>} />
-        <USPList items={hiringUSPs.team} />
         <Button asChild variant="outline" className="mt-8 gap-2"><Link to="/features">Explore Features <ArrowRight className="h-4 w-4" /></Link></Button>
       </motion.div>
       <motion.div {...reveal} className="relative">
@@ -410,6 +431,7 @@ const ForEmployers = () => (
     <Layout>
       <Hero />
       <LogoStrip />
+      <USPSection />
       <ProblemSection />
       <HowItWorks />
       <SearchSection />
