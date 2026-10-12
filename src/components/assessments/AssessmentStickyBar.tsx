@@ -22,22 +22,22 @@ export const AssessmentStickyBar = ({ selected, total, onCheckout }: Props) => {
         transition={{ type: "spring", stiffness: 350, damping: 25 }}
         className="fixed bottom-5 sm:bottom-6 left-1/2 z-40 w-[94%] max-w-2xl"
       >
-        <div className="flex items-center justify-between gap-3 sm:gap-4 rounded-2xl border border-primary/25 bg-background/95 p-3.5 sm:px-5 sm:py-3.5 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.25)] backdrop-blur-md">
+        <div className="flex items-center justify-between gap-3 sm:gap-4 rounded-2xl border border-slate-200/90 bg-white/95 p-3.5 sm:px-5 sm:py-3.5 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.18)] backdrop-blur-md">
           {/* Left: Cart badge & Selected Sub-domains */}
           <div className="flex items-center gap-3 min-w-0">
-            <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+            <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm">
               <ShoppingCart className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-foreground text-[10px] font-bold text-background">
+              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-slate-900 text-[10px] font-bold text-white">
                 {selected.length}
               </span>
             </span>
 
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="font-display text-sm font-bold leading-tight text-foreground truncate">
+                <span className="font-display text-sm font-bold leading-tight text-slate-900 truncate">
                   {selected.length} Sub-domain{selected.length === 1 ? "" : "s"} Added
                 </span>
-                <span className="text-[10px] font-semibold text-primary px-1.5 py-0.2 rounded bg-primary/10">
+                <span className="text-[10px] font-semibold text-blue-700 px-1.5 py-0.5 rounded bg-blue-50 border border-blue-200/60">
                   + 3 Core Tests
                 </span>
               </div>
@@ -45,14 +45,14 @@ export const AssessmentStickyBar = ({ selected, total, onCheckout }: Props) => {
                 {selected.slice(0, 3).map((s) => (
                   <span
                     key={s.id}
-                    className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground bg-secondary/80 px-2 py-0.5 rounded-md truncate max-w-[120px]"
+                    className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-600 bg-slate-100/80 px-2 py-0.5 rounded-md truncate max-w-[120px]"
                   >
-                    <Check className="h-3 w-3 text-primary shrink-0" />
+                    <Check className="h-3 w-3 text-emerald-600 shrink-0" />
                     <span className="truncate">{s.name}</span>
                   </span>
                 ))}
                 {selected.length > 3 && (
-                  <span className="text-[11px] font-medium text-muted-foreground">
+                  <span className="text-[11px] font-medium text-slate-500">
                     +{selected.length - 3} more
                   </span>
                 )}
@@ -63,17 +63,17 @@ export const AssessmentStickyBar = ({ selected, total, onCheckout }: Props) => {
           {/* Right: Total Price & Checkout CTA */}
           <div className="flex items-center gap-3 shrink-0">
             <div className="text-right hidden sm:block">
-              <span className="font-display text-base sm:text-lg font-extrabold text-foreground leading-tight block">
+              <span className="font-display text-base sm:text-lg font-extrabold text-blue-600 leading-tight block">
                 {formatINR(total)}
               </span>
-              <span className="text-[10px] text-muted-foreground block -mt-0.5">
+              <span className="text-[10px] text-slate-500 block -mt-0.5">
                 incl. 18% GST
               </span>
             </div>
 
             <Button
               size="sm"
-              className="gap-1.5 font-bold shadow-md px-3.5 sm:px-4 text-xs sm:text-sm h-9 sm:h-10"
+              className="gap-1.5 font-bold shadow-md shadow-blue-500/20 px-3.5 sm:px-4 text-xs sm:text-sm h-9 sm:h-10 bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
               onClick={onCheckout}
             >
               <span>Pay & Start</span>

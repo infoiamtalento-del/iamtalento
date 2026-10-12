@@ -529,49 +529,51 @@ export const AssessmentCart = ({ selected, coreNames, onRemove, onCheckout }: Ca
   const minutes = selected.length * ROUNDS.reduce((s, r) => s + r.tests.reduce((a, t) => a + t.minutes, 0), 0);
 
   return (
-    <aside className="rounded-2xl border border-border bg-background lg:sticky lg:top-24 overflow-hidden">
-      <div className="flex items-center justify-between bg-primary px-5 py-4 text-primary-foreground">
+    <aside className="rounded-2xl border border-slate-200/90 bg-white lg:sticky lg:top-24 overflow-hidden shadow-2xs">
+      <div className="flex items-center justify-between bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-4 text-white">
         <p className="flex items-center gap-2 font-display text-sm font-bold">
-          <ShoppingCart className="h-4 w-4" /> Your cart
+          <ShoppingCart className="h-4 w-4" /> Your assessment cart
         </p>
-        <span className="rounded-full bg-white px-2.5 py-0.5 text-[11px] font-bold text-primary">
-          {selected.length}
+        <span className="rounded-full bg-white/20 backdrop-blur-xs border border-white/30 px-2.5 py-0.5 text-[11px] font-bold text-white">
+          {selected.length} track{selected.length === 1 ? "" : "s"}
         </span>
       </div>
 
       <div className="p-5">
-        <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Core tests</p>
+        <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2.5">Mandatory Core Tests</p>
         <ul className="mb-5 space-y-2 text-xs">
           {coreNames.map((n) => (
-            <li key={n} className="flex items-center justify-between gap-2 text-muted-foreground">
-              <span className="flex items-center gap-1.5 text-foreground">
-                <Check className="h-3.5 w-3.5 text-primary stroke-[2.5]" /> {n}
+            <li key={n} className="flex items-center justify-between gap-2 text-slate-600">
+              <span className="flex items-center gap-1.5 text-slate-800 font-medium">
+                <Check className="h-3.5 w-3.5 text-emerald-600 stroke-[2.5]" /> {n}
               </span>
-              <span className="font-semibold text-primary">Included</span>
+              <span className="font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/70 text-[10px]">
+                Included
+              </span>
             </li>
           ))}
         </ul>
 
-        <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Sub-domains</p>
+        <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2.5">Selected Sub-domain</p>
         {selected.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-border/80 p-4 text-xs text-muted-foreground text-center">
+          <p className="rounded-xl border border-dashed border-slate-200 p-4 text-xs text-slate-500 text-center bg-slate-50/50">
             Nothing added yet. Pick at least one sub-domain to continue.
           </p>
         ) : (
           <ul className="space-y-2">
             {selected.map((s) => (
-              <li key={s.id} className="flex items-start justify-between gap-2 rounded-xl border border-border/80 bg-muted/10 p-3">
+              <li key={s.id} className="flex items-start justify-between gap-2 rounded-xl border border-slate-200/80 bg-slate-50/60 p-3">
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold leading-tight text-foreground">{s.name}</p>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">MCQ · Technical · Experience</p>
+                  <p className="text-sm font-semibold leading-tight text-slate-900">{s.name}</p>
+                  <p className="text-[11px] text-slate-500 mt-0.5">MCQ · Technical · Experience</p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-sm font-bold text-foreground">{formatINR(subDomainPrice(s))}</span>
+                  <span className="text-sm font-bold text-slate-900">{formatINR(subDomainPrice(s))}</span>
                   <button
                     type="button"
                     onClick={() => onRemove(s.id)}
                     aria-label={`Remove ${s.name}`}
-                    className="rounded-md p-1 text-muted-foreground hover:bg-secondary hover:text-foreground cursor-pointer transition-colors"
+                    className="rounded-md p-1 text-slate-400 hover:bg-slate-200/70 hover:text-slate-800 cursor-pointer transition-colors"
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>
@@ -581,31 +583,35 @@ export const AssessmentCart = ({ selected, coreNames, onRemove, onCheckout }: Ca
           </ul>
         )}
 
-        <dl className="mt-5 space-y-2 border-t border-border/80 pt-4 text-sm">
+        <dl className="mt-5 space-y-2 border-t border-slate-100 pt-4 text-sm">
           <div className="flex justify-between">
-            <dt className="text-muted-foreground">Subtotal</dt>
-            <dd className="font-semibold text-foreground">{formatINR(subtotal)}</dd>
+            <dt className="text-slate-500">Subtotal</dt>
+            <dd className="font-semibold text-slate-800">{formatINR(subtotal)}</dd>
           </div>
           <div className="flex justify-between">
-            <dt className="text-muted-foreground">GST (18%)</dt>
-            <dd className="text-muted-foreground">{formatINR(gst)}</dd>
+            <dt className="text-slate-500">GST (18%)</dt>
+            <dd className="text-slate-500">{formatINR(gst)}</dd>
           </div>
-          <div className="flex justify-between border-t border-border/80 pt-3 font-display text-lg font-bold">
-            <dt className="text-foreground">Total</dt>
-            <dd className="text-foreground">{formatINR(total)}</dd>
+          <div className="flex justify-between border-t border-slate-200/80 pt-3 font-display text-lg font-bold">
+            <dt className="text-slate-900">Total</dt>
+            <dd className="text-blue-600 font-extrabold">{formatINR(total)}</dd>
           </div>
         </dl>
         {selected.length > 0 && (
-          <p className="mt-2 text-[11px] text-muted-foreground">
+          <p className="mt-2 text-[11px] text-slate-500">
             Approx. {minutes} min of domain tests across {selected.length * 3} rounds, plus core tests.
           </p>
         )}
 
-        <Button className="mt-5 w-full gap-2 font-bold cursor-pointer" disabled={selected.length === 0} onClick={onCheckout}>
+        <Button
+          className="mt-5 w-full gap-2 font-bold cursor-pointer bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/20"
+          disabled={selected.length === 0}
+          onClick={onCheckout}
+        >
           Proceed to payment <ArrowRight className="h-4 w-4" />
         </Button>
-        <p className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground">
-          <ShieldCheck className="h-3.5 w-3.5 text-primary" /> One proctored session, verified result
+        <p className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-slate-500">
+          <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" /> One proctored session, verified CIR report
         </p>
       </div>
     </aside>

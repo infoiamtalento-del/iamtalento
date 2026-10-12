@@ -38,9 +38,9 @@ const paymentMethods = [
 /* ---- shared, compact section heading ---- */
 const SectionHeading = ({ title, desc }: { title: string; desc: string }) => (
   <div className="max-w-2xl mb-8">
-    <span className="mb-3 block h-1 w-10 rounded-full bg-primary" />
-    <h2 className="font-display text-2xl md:text-3xl font-bold leading-tight mb-2">{title}</h2>
-    <p className="text-muted-foreground">{desc}</p>
+    <span className="mb-3 block h-1 w-10 rounded-full bg-blue-600" />
+    <h2 className="font-display text-2xl md:text-3xl font-bold leading-tight mb-2 text-slate-900">{title}</h2>
+    <p className="text-slate-600 text-sm md:text-base leading-relaxed">{desc}</p>
   </div>
 );
 
@@ -101,11 +101,11 @@ const AssessmentDetail = () => {
       </Helmet>
       <Layout>
         {/* ============ HERO BANNER ============ */}
-        <section className="bg-primary pt-28 pb-12 md:pt-36 md:pb-16 text-white">
+        <section className="bg-gradient-to-r from-[#fff1f3] via-[#fff8f8] to-[#f0f4ff] pt-28 pb-12 md:pt-36 md:pb-16 border-b border-rose-100/70">
           <div className="container">
             <Link
               to="/assessments/explore"
-              className="inline-flex items-center gap-1.5 text-sm text-white/80 hover:text-white mb-6"
+              className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 transition-colors mb-6 font-medium"
             >
               <ArrowLeft className="h-4 w-4" /> All assessments
             </Link>
@@ -113,22 +113,22 @@ const AssessmentDetail = () => {
             <div className="grid lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-8 lg:gap-12 items-center">
               <div>
                 <div className="flex flex-wrap items-center gap-2 mb-4">
-                  <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/20 text-white">
+                  <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200/80">
                     {a.domain}
                   </span>
-                  <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/20 text-white">
+                  <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200/80">
                     {a.difficulty}
                   </span>
-                  <span className="flex items-center gap-1 text-[11px] font-semibold text-white/90">
-                    <ShieldCheck className="h-3.5 w-3.5" /> Proctored
+                  <span className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2.5 py-1 rounded-full">
+                    <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" /> Proctored
                   </span>
                 </div>
-                <h1 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4 text-white">{a.title}</h1>
-                <p className="text-white/85 text-base md:text-lg max-w-2xl leading-relaxed">{a.description}</p>
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold font-display leading-[1.15] mb-4 text-slate-900">{a.title}</h1>
+                <p className="text-slate-600 text-base md:text-lg max-w-2xl leading-relaxed">{a.description}</p>
 
-                <div className="flex flex-wrap gap-x-6 gap-y-2 mt-5 text-sm text-white/85">
+                <div className="flex flex-wrap gap-x-6 gap-y-2 mt-5 text-sm text-slate-600 font-medium">
                   <span className="flex items-center gap-1.5">
-                    <Clock className="h-4 w-4" /> {a.duration}
+                    <Clock className="h-4 w-4 text-blue-600" /> {a.duration}
                   </span>
                   <span>{a.questionCount} questions</span>
                   <span>{a.type} assessment</span>
@@ -138,7 +138,7 @@ const AssessmentDetail = () => {
                 <div className="flex flex-wrap items-center gap-3 mt-7">
                   <Button
                     size="lg"
-                    className="gap-2 font-bold cursor-pointer bg-white text-primary hover:bg-white/90"
+                    className="gap-2 font-bold cursor-pointer bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-500/20"
                     onClick={goToPayment}
                   >
                     <span>Start Assessment</span>
@@ -147,14 +147,14 @@ const AssessmentDetail = () => {
                   <Button
                     variant="outline"
                     size="lg"
-                    className="gap-2 font-semibold cursor-pointer bg-transparent border-white/60 text-white hover:bg-white/15 hover:text-white"
+                    className="gap-2 font-semibold cursor-pointer bg-white/80 border-slate-300 text-slate-700 hover:bg-white hover:text-slate-900 shadow-2xs"
                     onClick={goToJourney}
                   >
-                    <ListChecks className="h-4 w-4" />
+                    <ListChecks className="h-4 w-4 text-slate-500" />
                     <span>View Curriculum</span>
                   </Button>
-                  <span className="text-sm text-white/90 ml-1">
-                    <span className="font-bold text-white">{formatINR(cart.total)}</span> · 4 tests + CIR report
+                  <span className="text-sm text-slate-600 ml-1">
+                    <span className="font-extrabold text-slate-900">{formatINR(cart.total)}</span> · 4 tests + CIR report
                   </span>
                 </div>
               </div>
@@ -177,29 +177,29 @@ const AssessmentDetail = () => {
                 <MandatoryCoreTestsSection />
 
                 <div className="flex items-center gap-3" aria-hidden="true">
-                  <div className="h-px flex-1 bg-border" />
-                  <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary">
+                  <div className="h-px flex-1 bg-slate-200" />
+                  <span className="rounded-full bg-blue-50 border border-blue-200/80 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
                     Then
                   </span>
-                  <div className="h-px flex-1 bg-border" />
+                  <div className="h-px flex-1 bg-slate-200" />
                 </div>
 
-                <div className="rounded-2xl border border-border bg-background p-5 shadow-[inset_4px_0_0_hsl(var(--primary))]">
+                <div className="rounded-2xl border border-slate-200/90 bg-white p-5 md:p-6 shadow-2xs border-l-4 border-l-blue-600">
                   <div className="flex flex-wrap items-center gap-2 mb-2">
-                    <span className="rounded-full bg-primary px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-primary-foreground">
+                    <span className="rounded-full bg-blue-600 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white shadow-2xs">
                       Domain test
                     </span>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs text-slate-500 font-medium">
                       {a.duration} · {a.questionCount} questions · {a.type}
                     </span>
                   </div>
-                  <h3 className="font-display text-xl font-bold mb-1.5 text-foreground">{a.title}</h3>
-                  <p className="text-sm leading-relaxed text-muted-foreground">{a.description}</p>
+                  <h3 className="font-display text-xl font-bold mb-1.5 text-slate-900">{a.title}</h3>
+                  <p className="text-sm leading-relaxed text-slate-600">{a.description}</p>
                   <div className="flex flex-wrap items-center gap-1.5 mt-4">
                     {a.skills.map((skill) => (
                       <span
                         key={skill}
-                        className="rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-medium text-primary"
+                        className="rounded-full bg-blue-50 border border-blue-200/60 px-2.5 py-1 text-[11px] font-semibold text-blue-800"
                       >
                         {skill}
                       </span>
@@ -227,7 +227,7 @@ const AssessmentDetail = () => {
 
 
         {/* ============ CREATORS ============ */}
-        <section className="py-12 md:py-16 border-t border-border">
+        <section className="py-12 md:py-16 border-t border-slate-200/80 bg-slate-50/40">
           <div className="container">
             <SectionHeading
               title="Built by practising experts"
@@ -241,7 +241,7 @@ const AssessmentDetail = () => {
               {creators.map((c) => (
                 <div
                   key={c.name}
-                  className="rounded-2xl border border-border bg-background p-4 flex items-center gap-4"
+                  className="rounded-2xl border border-slate-200/90 bg-white p-4.5 flex items-center gap-4 shadow-2xs"
                 >
                   <img
                     src={c.photo}
@@ -249,14 +249,14 @@ const AssessmentDetail = () => {
                     width={64}
                     height={64}
                     loading="lazy"
-                    className="h-16 w-16 shrink-0 rounded-xl object-cover border border-border"
+                    className="h-16 w-16 shrink-0 rounded-xl object-cover border border-slate-200"
                   />
                   <div className="min-w-0">
-                    <p className="font-display font-bold truncate">{c.name}</p>
-                    <p className="mt-0.5 flex items-center gap-2 text-sm text-muted-foreground">
+                    <p className="font-display font-bold text-slate-900 truncate">{c.name}</p>
+                    <p className="mt-0.5 flex items-center gap-2 text-sm text-slate-500">
                       <BrandLogo name={c.company} size="xs" /> <span className="truncate">{c.title} · {c.company}</span>
                     </p>
-                    <p className="text-xs text-primary font-semibold mt-1">{c.experience}</p>
+                    <p className="text-xs text-blue-600 font-semibold mt-1">{c.experience}</p>
                   </div>
                 </div>
               ))}
@@ -266,23 +266,23 @@ const AssessmentDetail = () => {
         </section>
 
         {/* ============ PROCTORING ============ */}
-        <section className="bg-primary text-primary-foreground">
+        <section className="border-y border-rose-100/70 bg-gradient-to-r from-[#fff1f3] via-[#fff8f8] to-[#f0f4ff]">
           <div className="container py-8 md:py-10">
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {[
                 { icon: ShieldCheck, title: "Proctored session", text: "Camera, mic and screen monitoring" },
                 { icon: Fingerprint, title: "ID verified", text: "Confirmed before you begin" },
                 { icon: BadgeCheck, title: "Verified result", text: "Employer-shareable CIR report" },
                 { icon: Clock, title: "Same-day report", text: "Delivered right after the test" },
               ].map((item) => (
-                <div key={item.title} className="flex items-start gap-3">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/20">
+                <div key={item.title} className="flex items-start gap-3.5 rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-2xs backdrop-blur-xs">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 border border-blue-100/80 text-blue-700">
                     <item.icon className="h-4 w-4" />
                   </span>
-                  <span>
-                    <span className="block text-sm font-bold">{item.title}</span>
-                    <span className="block text-xs text-primary-foreground/80">{item.text}</span>
-                  </span>
+                  <div>
+                    <span className="block text-sm font-bold text-slate-900">{item.title}</span>
+                    <span className="block text-xs text-slate-500 mt-0.5">{item.text}</span>
+                  </div>
                 </div>
               ))}
             </div>
@@ -290,7 +290,7 @@ const AssessmentDetail = () => {
         </section>
 
         {/* ============ PAYMENT ============ */}
-        <section id="payment" className="py-12 md:py-16 scroll-mt-24 pb-28 md:pb-32">
+        <section id="payment" className="py-12 md:py-16 scroll-mt-24 pb-28 md:pb-32 bg-slate-50/30">
           <div className="container">
             <SectionHeading
               title="Complete payment and start"
@@ -298,73 +298,84 @@ const AssessmentDetail = () => {
             />
 
             <div className="grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] gap-6 items-start">
-              <div className="rounded-2xl border border-border bg-background p-6">
+              <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-2xs">
                 <div className="flex items-center justify-between mb-5">
-                  <h3 className="font-display font-bold text-foreground">Order summary</h3>
-                  <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+                  <h3 className="font-display font-bold text-slate-900">Order summary</h3>
+                  <span className="rounded-full bg-blue-50 border border-blue-200/80 px-3 py-1 text-xs font-semibold text-blue-700">
                     {selectedSubs.length} sub-domain{selectedSubs.length === 1 ? "" : "s"} + 3 core tests
                   </span>
                 </div>
-                <ul className="divide-y divide-border/80 text-sm">
+                <ul className="divide-y divide-slate-100 text-sm">
                   {MANDATORY_TESTS.map((m) => (
-                    <li key={m.name} className="flex justify-between gap-4 py-3">
-                      <span className="text-foreground">{m.name}</span>
-                      <span className="text-primary font-semibold shrink-0">Included</span>
+                    <li key={m.name} className="flex justify-between items-center gap-4 py-3">
+                      <span className="text-slate-800 font-medium">{m.name}</span>
+                      <span className="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/70 text-[10px] font-semibold shrink-0">
+                        Included
+                      </span>
                     </li>
                   ))}
                   {selectedSubs.map((s) => (
-                    <li key={s.id} className="flex justify-between gap-4 py-3">
-                      <span className="text-foreground">
-                        {s.name} <span className="text-xs text-muted-foreground">(3 rounds · 6 tests)</span>
+                    <li key={s.id} className="flex justify-between items-center gap-4 py-3">
+                      <span className="text-slate-800 font-medium">
+                        {s.name} <span className="text-xs text-slate-500 font-normal">(3 rounds · 6 tests)</span>
                       </span>
-                      <span className="font-semibold text-foreground shrink-0">{formatINR(subDomainPrice(s))}</span>
+                      <span className="font-bold text-slate-900 shrink-0">{formatINR(subDomainPrice(s))}</span>
                     </li>
                   ))}
-                  <li className="flex justify-between gap-4 py-3">
-                    <span className="text-foreground">Career Intelligence Report</span>
-                    <span className="text-primary font-semibold shrink-0">Included</span>
+                  <li key="cir-report" className="flex justify-between items-center gap-4 py-3">
+                    <span className="text-slate-800 font-medium">Career Intelligence Report</span>
+                    <span className="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/70 text-[10px] font-semibold shrink-0">
+                      Included
+                    </span>
                   </li>
-                  <li className="flex justify-between gap-4 py-3">
-                    <span className="text-muted-foreground">GST (18%)</span>
-                    <span className="text-muted-foreground shrink-0">{formatINR(cart.gst)}</span>
+                  <li key="gst" className="flex justify-between items-center gap-4 py-3">
+                    <span className="text-slate-500">GST (18%)</span>
+                    <span className="text-slate-500 font-medium shrink-0">{formatINR(cart.gst)}</span>
                   </li>
                 </ul>
-                <div className="flex justify-between pt-5 mt-3 border-t border-border font-display text-lg font-bold text-foreground">
+                <div className="flex justify-between items-baseline pt-5 mt-3 border-t border-slate-200 font-display text-lg font-bold text-slate-900">
                   <span>Total</span>
-                  <span className="text-primary">{formatINR(cart.total)}</span>
+                  <span className="text-2xl text-blue-600 font-extrabold">{formatINR(cart.total)}</span>
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-border bg-background p-6">
-                <h3 className="font-display font-bold text-foreground mb-5">Pay with</h3>
+              <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-2xs">
+                <h3 className="font-display font-bold text-slate-900 mb-5">Pay with</h3>
                 <div className="grid gap-3 mb-6">
                   {paymentMethods.map((m) => (
                     <button
                       key={m.name}
                       onClick={() => setMethod(m.name)}
-                      className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm font-medium transition-all cursor-pointer ${
-                        method === m.name ? "border-primary bg-primary/5 text-primary shadow-xs" : "border-border/80 hover:border-foreground/30 bg-background"
+                      className={`flex items-center gap-3.5 rounded-xl border px-4 py-3.5 text-left text-sm font-medium transition-all cursor-pointer ${
+                        method === m.name
+                          ? "border-blue-600 bg-blue-50/40 text-blue-900 shadow-xs ring-1 ring-blue-600/30"
+                          : "border-slate-200 hover:border-slate-300 bg-white"
                       }`}
                     >
                       <span
-                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
-                          method === m.name ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground"
+                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors ${
+                          method === m.name ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600"
                         }`}
                       >
                         <m.icon className="h-4 w-4" />
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="block font-semibold text-foreground">{m.name}</span>
-                        <span className="block text-[11px] font-normal text-muted-foreground">{m.note}</span>
+                        <span className="block font-semibold text-slate-900">{m.name}</span>
+                        <span className="block text-[11px] font-normal text-slate-500">{m.note}</span>
                       </span>
-                      {method === m.name && <Check className="h-4 w-4 shrink-0 text-primary stroke-[2.5]" />}
+                      {method === m.name && <Check className="h-4 w-4 shrink-0 text-blue-600 stroke-[2.5]" />}
                     </button>
                   ))}
                 </div>
-                <Button className="w-full gap-2 font-bold cursor-pointer" size="lg" onClick={start} disabled={selectedSubs.length === 0}>
+                <Button
+                  className="w-full gap-2 font-bold cursor-pointer bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/20"
+                  size="lg"
+                  onClick={start}
+                  disabled={selectedSubs.length === 0}
+                >
                   <Lock className="h-4 w-4" /> Pay {formatINR(cart.total)} &amp; Start <ArrowRight className="h-4 w-4" />
                 </Button>
-                <p className="text-xs text-muted-foreground text-center mt-3">Secure checkout. You'll run a quick device check next.</p>
+                <p className="text-xs text-slate-500 text-center mt-3">Secure checkout. You'll run a quick device check next.</p>
               </div>
             </div>
           </div>
