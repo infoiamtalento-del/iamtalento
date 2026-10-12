@@ -49,7 +49,7 @@ import {
 import { companyBlurb, SALARY_BANDS, salaryBandOk } from "@/data/proJobMeta";
 import { getCompanyLogo } from "@/data/portalAssets";
 import { cn } from "@/lib/utils";
-import { MatchRing } from "./ProMatchRing";
+import { ProJobCard } from "./ProJobCard";
 
 interface ProJobsViewProps {
   user: ProUser;
@@ -138,73 +138,6 @@ const getCompanyRating = (company: string, id: number) => {
   return { r, reviews };
 };
 
-const renderSkillIcon = (skill: string) => {
-  const s = skill.toLowerCase();
-  if (s.includes("seo") || s.includes("search") || s.includes("audit")) {
-    return <Search className="h-3.5 w-3.5 text-[#0d5cb2] shrink-0" />;
-  }
-  if (
-    s.includes("social") ||
-    s.includes("market") ||
-    s.includes("brand") ||
-    s.includes("pr") ||
-    s.includes("ad") ||
-    s.includes("campaign")
-  ) {
-    return <Megaphone className="h-3.5 w-3.5 text-[#0d5cb2] shrink-0" />;
-  }
-  if (
-    s.includes("content") ||
-    s.includes("write") ||
-    s.includes("copy") ||
-    s.includes("blog") ||
-    s.includes("doc")
-  ) {
-    return <FileText className="h-3.5 w-3.5 text-[#0d5cb2] shrink-0" />;
-  }
-  if (s.includes("google")) {
-    return <Sparkles className="h-3.5 w-3.5 text-[#0d5cb2] shrink-0" />;
-  }
-  if (s.includes("meta") || s.includes("face")) {
-    return <Infinity className="h-3.5 w-3.5 text-[#0d5cb2] shrink-0" />;
-  }
-  if (
-    s.includes("analytic") ||
-    s.includes("data") ||
-    s.includes("metric") ||
-    s.includes("sql") ||
-    s.includes("bi") ||
-    s.includes("track")
-  ) {
-    return <BarChart3 className="h-3.5 w-3.5 text-[#0d5cb2] shrink-0" />;
-  }
-  if (
-    s.includes("web") ||
-    s.includes("code") ||
-    s.includes("react") ||
-    s.includes("node") ||
-    s.includes("python") ||
-    s.includes("java") ||
-    s.includes("html") ||
-    s.includes("css") ||
-    s.includes("develop") ||
-    s.includes("front") ||
-    s.includes("back")
-  ) {
-    return <Code className="h-3.5 w-3.5 text-[#0d5cb2] shrink-0" />;
-  }
-  if (
-    s.includes("design") ||
-    s.includes("ui") ||
-    s.includes("ux") ||
-    s.includes("figma") ||
-    s.includes("creative")
-  ) {
-    return <Palette className="h-3.5 w-3.5 text-[#0d5cb2] shrink-0" />;
-  }
-  return <Award className="h-3.5 w-3.5 text-[#0d5cb2] shrink-0" />;
-};
-
 export const ProJobsView: React.FC<ProJobsViewProps> = ({
   user,
   jobs,
@@ -225,7 +158,7 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
   const smartRef = useRef<HTMLInputElement>(null);
 
   const userSkills = useMemo(() => (user.sk || []).map((s) => s.toLowerCase()), [user.sk]);
-  const appliedJobIds = useMemo(() => applications.map((a) => a.jId), [applications]);
+  const appliedJobIds = useMemo(() => applications.map((a) => a.jid), [applications]);
   const savedJobIds = useMemo(() => user.saved || [], [user.saved]);
 
   const patch = (p: Partial<JobFilters>) => setF((prev) => ({ ...prev, ...p }));
@@ -248,12 +181,13 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
     if (!q) return;
     const parsed = parseSmartSearch(q);
     patch({
-      q: parsed.role || "",
-      loc: parsed.city || "",
-      m: parsed.mode ? [parsed.mode] : [],
-      lvl: parsed.level ? [parsed.level] : [],
-      sal: parsed.minSal || 0,
-      sk: parsed.skills && parsed.skills.length ? parsed.skills.join(",") : "",
+      q: "",
+      loc: parsed.loc || "",
+      m: parsed.m,
+      lvl: parsed.lv,
+      sal: parsed.sal || 0,
+      sk: parsed.sk.join(","),
+      ty: parsed.ty,
     });
     onToast(`Smart search applied: "${q}"`);
   };
@@ -826,7 +760,7 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
             <div
               className={cn(
                 "grid gap-5",
-                viewMode === "grid" ? "grid-cols-1 xl:grid-cols-2" : "grid-cols-1"
+                viewMode === "grid" ? "grid-cols-1 min-[1600px]:grid-cols-2" : "grid-cols-1"
               )}
             >
               {results.map((j) => {
@@ -837,257 +771,19 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
                 const ratingInfo = getCompanyRating(j.c, j.id);
 
                 return (
-                  <article
+                  <ProJobCard
                     key={j.id}
-                    onClick={(e) => {
-                      if ((e.target as HTMLElement).closest("button")) return;
-                      onOpenJob(j.id);
-                    }}
-                    className="group rounded-3xl border border-blue-100/90 bg-white p-6 sm:p-7 shadow-[0_4px_24px_rgba(13,92,178,0.06)] hover:shadow-[0_12px_36px_rgba(13,92,178,0.12)] hover:border-[#0d5cb2]/40 transition-all duration-300 relative overflow-hidden flex flex-col justify-between cursor-pointer"
-                  >
-                    {/* Subtle decorative background glow in corner */}
-                    <div className="pointer-events-none absolute -bottom-16 -right-16 h-48 w-48 rounded-full bg-blue-50/70 blur-2xl" />
-
-                    <div className="relative">
-                      {/* Top Header: Logo, Title, Company, Rating, AI Match */}
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex items-start gap-4 min-w-0">
-                          {/* Company Logo Tile */}
-                          <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl border border-slate-200/80 bg-white p-3 flex items-center justify-center shrink-0 shadow-2xs">
-                            <img
-                              src={getCompanyLogo(j.c)}
-                              alt={j.c}
-                              className="max-h-full max-w-full object-contain"
-                            />
-                          </div>
-
-                          {/* Title & Company & Reviews */}
-                          <div className="min-w-0 pt-0.5">
-                            <h3 className="font-display text-lg sm:text-xl font-bold text-slate-900 group-hover:text-[#0d5cb2] transition-colors leading-snug">
-                              {j.t}
-                            </h3>
-                            <p className="text-sm font-semibold text-slate-600 mt-1">{j.c}</p>
-                            <div className="flex items-center gap-1.5 mt-1.5 text-xs">
-                              <Star className="h-4 w-4 fill-amber-400 text-amber-400 shrink-0" />
-                              <span className="font-extrabold text-slate-900">{ratingInfo.r}</span>
-                              <span className="text-slate-300 font-normal">|</span>
-                              <span className="text-slate-500 font-medium">({ratingInfo.reviews} Reviews)</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* AI Match Badge (Top Right) */}
-                        <div className="shrink-0 flex flex-col items-center">
-                          <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1 text-center">
-                            AI MATCH
-                          </span>
-                          <MatchRing percent={pct} size={58} />
-                        </div>
-                      </div>
-
-                      {/* 6 Structured Parameter Specs in 2 Rows x 3 Columns */}
-                      <div className="mt-5 rounded-2xl bg-white">
-                        {/* Row 1 */}
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-                          {/* 1. Experience */}
-                          <div className="flex items-center gap-3 min-w-0">
-                            <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-blue-50 text-[#0d5cb2] flex items-center justify-center shrink-0 border border-blue-100/60 shadow-2xs">
-                              <Briefcase className="h-4 w-4 sm:h-5 sm:w-5 text-[#0d5cb2]" />
-                            </div>
-                            <div className="min-w-0">
-                              <span className="block font-bold text-slate-900 text-xs sm:text-sm truncate">
-                                {j.e === 0 ? "0 - 1 Yrs" : `${j.e} - ${j.e + (j.e >= 5 ? 4 : 3)} Yrs`}
-                              </span>
-                              <span className="block text-[11px] sm:text-xs text-slate-500 font-medium mt-0.5 truncate">
-                                Experience
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* 2. Expected Salary */}
-                          <div className="flex items-center gap-3 min-w-0">
-                            <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-blue-50 text-[#0d5cb2] flex items-center justify-center shrink-0 border border-blue-100/60 shadow-2xs">
-                              <Coins className="h-4 w-4 sm:h-5 sm:w-5 text-[#0d5cb2]" />
-                            </div>
-                            <div className="min-w-0">
-                              <span className="block font-bold text-slate-900 text-xs sm:text-sm truncate">
-                                {j.a} - {j.b} Lacs PA
-                              </span>
-                              <span className="block text-[11px] sm:text-xs text-slate-500 font-medium mt-0.5 truncate">
-                                Expected Salary
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* 3. Location */}
-                          <div className="flex items-center gap-3 min-w-0">
-                            <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-blue-50 text-[#0d5cb2] flex items-center justify-center shrink-0 border border-blue-100/60 shadow-2xs">
-                              <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-[#0d5cb2]" />
-                            </div>
-                            <div className="min-w-0">
-                              <span className="block font-bold text-slate-900 text-xs sm:text-sm truncate">
-                                {j.l}
-                              </span>
-                              <span className="block text-[11px] sm:text-xs text-slate-500 font-medium mt-0.5 truncate">
-                                Location
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Thin Divider Line */}
-                        <div className="border-t border-slate-100 my-3.5" />
-
-                        {/* Row 2 */}
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-                          {/* 4. Work Mode */}
-                          <div className="flex items-center gap-3 min-w-0">
-                            <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-blue-50 text-[#0d5cb2] flex items-center justify-center shrink-0 border border-blue-100/60 shadow-2xs">
-                              <Building2 className="h-4 w-4 sm:h-5 sm:w-5 text-[#0d5cb2]" />
-                            </div>
-                            <div className="min-w-0">
-                              <span className="block font-bold text-slate-900 text-xs sm:text-sm truncate">
-                                {j.m === "Onsite" ? "In Office" : j.m}
-                              </span>
-                              <span className="block text-[11px] sm:text-xs text-slate-500 font-medium mt-0.5 truncate">
-                                Work Mode
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* 5. Job Type */}
-                          <div className="flex items-center gap-3 min-w-0">
-                            <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-blue-50 text-[#0d5cb2] flex items-center justify-center shrink-0 border border-blue-100/60 shadow-2xs">
-                              <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-[#0d5cb2]" />
-                            </div>
-                            <div className="min-w-0">
-                              <span className="block font-bold text-slate-900 text-xs sm:text-sm truncate">
-                                {j.ty === "Full-time" ? "Full Time" : j.ty}
-                              </span>
-                              <span className="block text-[11px] sm:text-xs text-slate-500 font-medium mt-0.5 truncate">
-                                Job Type
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* 6. Posted */}
-                          <div className="flex items-center gap-3 min-w-0">
-                            <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-blue-50 text-[#0d5cb2] flex items-center justify-center shrink-0 border border-blue-100/60 shadow-2xs">
-                              <CalendarDays className="h-4 w-4 sm:h-5 sm:w-5 text-[#0d5cb2]" />
-                            </div>
-                            <div className="min-w-0">
-                              <span className="block font-bold text-slate-900 text-xs sm:text-sm truncate">
-                                {timeAgo(j.at)}
-                              </span>
-                              <span className="block text-[11px] sm:text-xs text-slate-500 font-medium mt-0.5 truncate">
-                                Posted
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Skills Section with Icon Badges */}
-                      <div className="mt-5">
-                        <div className="flex items-center gap-2 mb-2.5">
-                          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#0d5cb2] text-white">
-                            <Star className="h-3 w-3 fill-white text-white" />
-                          </span>
-                          <span className="text-xs sm:text-sm font-extrabold text-slate-900">Skills</span>
-                        </div>
-                        <div className="flex flex-wrap items-center gap-2">
-                          {j.sk.slice(0, 7).map((s) => (
-                            <span
-                              key={s}
-                              className="inline-flex items-center gap-1.5 rounded-full bg-[#f0f6ff] text-[#0d5cb2] border border-blue-150/70 px-3.5 py-1.5 text-xs font-semibold shadow-2xs hover:bg-blue-100/60 transition-colors"
-                            >
-                              {renderSkillIcon(s)}
-                              <span>{s}</span>
-                            </span>
-                          ))}
-                          {j.sk.length > 7 && (
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f0f6ff] text-[#0d5cb2] border border-blue-150/70 px-3 py-1.5 text-xs font-semibold shadow-2xs">
-                              <Users className="h-3.5 w-3.5 text-[#0d5cb2]" />
-                              <span>+{j.sk.length - 7} more</span>
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Bottom Action Row: Apply Now | Save for Later | Compare */}
-                    <div className="relative mt-6 pt-4 border-t border-slate-100 flex flex-wrap sm:flex-nowrap items-center gap-3">
-                      {/* Apply Now */}
-                      <button
-                        type="button"
-                        disabled={applied}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (!applied) onApplyJob(j.id);
-                        }}
-                        className={cn(
-                          "inline-flex items-center justify-center gap-2.5 rounded-xl px-7 py-3 text-xs sm:text-sm font-bold transition-all cursor-pointer shadow-sm flex-1 sm:flex-initial min-w-[150px]",
-                          applied
-                            ? "bg-slate-300 text-slate-600 cursor-default"
-                            : "bg-[#0d5cb2] hover:bg-[#0a4d96] text-white shadow-[#0d5cb2]/25"
-                        )}
-                      >
-                        {applied ? (
-                          <>
-                            <Check className="h-4 w-4" />
-                            <span>Applied ✓</span>
-                          </>
-                        ) : (
-                          <>
-                            <Send className="h-4 w-4 text-white -rotate-12" />
-                            <span>Apply Now</span>
-                            <ArrowRight className="h-4 w-4 text-white ml-0.5" />
-                          </>
-                        )}
-                      </button>
-
-                      {/* Save for Later */}
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onSaveJob(j.id);
-                        }}
-                        className={cn(
-                          "inline-flex items-center justify-center gap-2 rounded-xl border border-blue-200/90 bg-white hover:bg-blue-50/50 hover:border-blue-300 px-5 py-3 text-xs sm:text-sm font-bold text-[#0d5cb2] transition-colors cursor-pointer shadow-2xs flex-1 sm:flex-initial",
-                          saved && "border-[#0d5cb2] bg-blue-50 text-[#0d5cb2]"
-                        )}
-                      >
-                        {saved ? (
-                          <BookmarkCheck className="h-4 w-4 text-[#0d5cb2]" />
-                        ) : (
-                          <Bookmark className="h-4 w-4 text-[#0d5cb2]" />
-                        )}
-                        <span>Save for Later</span>
-                      </button>
-
-                      {/* Compare */}
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onCompareToggle(j.id);
-                        }}
-                        className={cn(
-                          "inline-flex items-center justify-center gap-2 rounded-xl border border-blue-200/90 bg-white hover:bg-blue-50/50 hover:border-blue-300 px-5 py-3 text-xs sm:text-sm font-bold text-[#0d5cb2] transition-colors cursor-pointer shadow-2xs flex-1 sm:flex-initial",
-                          comparing && "border-[#0d5cb2] bg-[#0d5cb2] text-white"
-                        )}
-                      >
-                        <RefreshCw
-                          className={cn(
-                            "h-4 w-4",
-                            comparing ? "text-white animate-spin-once" : "text-[#0d5cb2]"
-                          )}
-                        />
-                        <span>Compare</span>
-                      </button>
-                    </div>
-                  </article>
+                    job={j}
+                    percent={pct}
+                    applied={applied}
+                    saved={saved}
+                    comparing={comparing}
+                    rating={ratingInfo}
+                    onOpen={() => onOpenJob(j.id)}
+                    onApply={() => onApplyJob(j.id)}
+                    onSave={() => onSaveJob(j.id)}
+                    onCompare={() => onCompareToggle(j.id)}
+                  />
                 );
               })}
             </div>
