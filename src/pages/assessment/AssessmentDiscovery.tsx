@@ -23,6 +23,8 @@ import {
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { ASSESSMENTS, DOMAINS, EXPERIENCE_LEVELS, INDUSTRIES, Assessment } from "@/data/assessments";
+import AssessmentIntegritySection from "@/components/landing/AssessmentIntegritySection";
+import ProctoringSection from "@/components/assessments/ProctoringSection";
 
 export const MANDATORY_TESTS = [
   { name: "Communication Skills", text: "Written and verbal clarity, workplace tone." },
@@ -404,6 +406,12 @@ const AssessmentDiscovery = () => {
             )}
           </div>
         </section>
+
+        {/* 30-Layer Proctoring Breakdown */}
+        <AssessmentIntegritySection />
+
+        {/* Why Start Today? Here's Why. */}
+        <ProctoringSection />
       </Layout>
     </>
   );

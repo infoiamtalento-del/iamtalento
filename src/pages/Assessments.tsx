@@ -64,7 +64,8 @@ const Assessments = () => (
       
       <PlatformFeaturesSection />
       <SuccessStoriesCarousel />
-      <AssessmentIntegritySection />
+      {/* Moved to /assessments/explore */}
+      {/* <AssessmentIntegritySection /> */}
       {/* <SelectAssessmentSection /> */}
 
       {/* ── 2. CREDIBILITY & TRUST ── */}
