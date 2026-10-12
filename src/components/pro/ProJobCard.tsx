@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Award, BarChart3, Bookmark, BookmarkCheck, Briefcase, Building2, CalendarDays, Check, Clock, Code, Coins, FileText, MapPin, Megaphone, Palette, RefreshCw, Search, Send, Sparkles, Star, Users, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProJob, timeAgo } from "@/data/proData";
@@ -24,6 +25,7 @@ interface Props {
 }
 
 export function ProJobCard({ job: j, percent, applied, saved, comparing, rating, onOpen, onApply, onSave, onCompare }: Props) {
+  const [logoFailed, setLogoFailed] = useState(false);
   const details = [
     { icon: Briefcase, value: j.e === 0 ? "0 - 1 Yrs" : `${j.e} - ${j.e + (j.e >= 5 ? 4 : 3)} Yrs`, label: "Experience" },
     { icon: Coins, value: `${j.a} - ${j.b} Lacs PA`, label: "Expected Salary" },
@@ -34,7 +36,7 @@ export function ProJobCard({ job: j, percent, applied, saved, comparing, rating,
   ];
   return <div className="pro-job-card-container"><article className="pro-job-card" aria-label={`${j.t} at ${j.c}`}>
     <div className="pj-header">
-      <div className="pj-logo"><img src={getCompanyLogo(j.c)} alt={`${j.c} logo`} /></div>
+      <div className="pj-logo">{logoFailed ? <Building2 className="text-primary" aria-label={j.c} /> : <img src={getCompanyLogo(j.c)} alt={`${j.c} logo`} onError={() => setLogoFailed(true)} />}</div>
       <div><h3><Button variant="ghost" className="pj-title" onClick={onOpen}>{j.t}</Button></h3>
         <p className="pj-company">{j.c}</p>
         <div className="pj-rating"><Star /><strong>{rating.r}</strong><span>·</span><span>({rating.reviews} Reviews)</span></div>
