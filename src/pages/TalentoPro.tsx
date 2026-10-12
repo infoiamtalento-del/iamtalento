@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
+import { useSearchParams } from "react-router-dom";
+import { ProJobDetail } from "@/components/pro/ProJobDetail";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, AlertCircle, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -92,6 +94,7 @@ const normalizeUsers = (raw: any): Record<string, ProUser> => {
 };
 
 const TalentoPro: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   // Navigation & Shell State
   const [sessionEmail, setSessionEmail] = useState<string>(() => {
     const s = loadStorage("sess", "demo.candidate@talento.app");
@@ -210,6 +213,15 @@ const TalentoPro: React.FC = () => {
 
   // Drawer & Comparison States
   const [drawerState, setDrawerState] = useState<ProDrawerState>(null);
+  const detailJob = jobs.find(job => String(job.id) === searchParams.get("job"));
+  const openJob = (id: number) => {
+    setSearchParams({ job: String(id) });
+    window.scrollTo({ top: 0, behavior: "instant" });
+  };
+  const openDrawer = (state: ProDrawerState) => {
+    if (state?.type === "job") { openJob(state.id); return; }
+    setDrawerState(state);
+  };
   const [compareJobs, setCompareJobs] = useState<number[]>([]);
   const [compareCandidates, setCompareCandidates] = useState<string[]>([]);
 
@@ -565,7 +577,7 @@ const TalentoPro: React.FC = () => {
         currentUser={currentUser}
         currentRole={currentRole}
         activeView={effectiveView}
-        setActiveView={setActiveView}
+        setActiveView={(view) => { setSearchParams({}); setActiveView(view); }}
         onSwitchRole={handleSwitchRole}
         isDarkMode={isDarkMode}
         onToggleTheme={() => setIsDarkMode(!isDarkMode)}
@@ -585,15 +597,16 @@ const TalentoPro: React.FC = () => {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
           >
+            {detailJob && <ProJobDetail key={detailJob.id} job={detailJob} jobs={jobs} user={currentUser} applications={apps} onBack={() => setSearchParams({})} onOpen={openJob} onApply={handleApplyJob} onSave={handleSaveJob} />}
             {/* CANDIDATE VIEWS */}
-            {currentRole === "candidate" && (
+            {!detailJob && currentRole === "candidate" && (
               <>
                 {effectiveView === "jobs" && (
                   <ProJobsView
                     user={currentUser}
                     jobs={jobs}
                     applications={apps}
-                    onOpenJob={(jobId) => setDrawerState({ type: "job", id: jobId })}
+                    onOpenJob={openJob}
                     onApplyJob={handleApplyJob}
                     onSaveJob={handleSaveJob}
                     onCompareToggle={(jobId) => {
@@ -613,7 +626,7 @@ const TalentoPro: React.FC = () => {
                     jobs={jobs}
                     applications={apps}
                     initialOnlySaved={true}
-                    onOpenJob={(jobId) => setDrawerState({ type: "job", id: jobId })}
+                    onOpenJob={openJob}
                     onApplyJob={handleApplyJob}
                     onSaveJob={handleSaveJob}
                     onCompareToggle={(jobId) => {
@@ -750,7 +763,7 @@ const TalentoPro: React.FC = () => {
             )}
 
             {/* EMPLOYER VIEWS */}
-            {currentRole === "employer" && (
+            {!detailJob && currentRole === "employer" && (
               <>
                 {effectiveView === "dash" && (
                   <ProDashboardView

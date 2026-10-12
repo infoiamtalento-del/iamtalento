@@ -50,6 +50,8 @@ import { companyBlurb, SALARY_BANDS, salaryBandOk } from "@/data/proJobMeta";
 import { getCompanyLogo } from "@/data/portalAssets";
 import { cn } from "@/lib/utils";
 import { ProJobCard } from "./ProJobCard";
+import { Button } from "@/components/ui/button";
+import { JOBS_PER_PAGE, paginateJobs } from "./jobPagination";
 
 interface ProJobsViewProps {
   user: ProUser;
@@ -153,7 +155,7 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
 }) => {
   const [F, setF] = useState<JobFilters>(() => makeDefaults(initialOnlySaved));
   const [smartQuery, setSmartQuery] = useState("");
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [page, setPage] = useState(1);
   const [showAllCities, setShowAllCities] = useState(false);
   const smartRef = useRef<HTMLInputElement>(null);
 
@@ -279,6 +281,10 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
         return calcScore(b, user) - calcScore(a, user);
       });
   }, [jobs, F, user, savedJobIds]);
+  useEffect(() => { setPage(1); }, [F]);
+  const totalPages = Math.max(1, Math.ceil(results.length / JOBS_PER_PAGE));
+  const currentPage = Math.min(page, totalPages);
+  const pageJobs = paginateJobs(results, currentPage);
 
   const firstName = (user.name || "Vignesh").split(" ")[0];
   const companyCount = new Set(jobs.map((j) => j.c)).size;
@@ -709,35 +715,7 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
                 </button>
               </div>
 
-              {/* View Toggle */}
-              <div className="flex items-center gap-1">
-                <button
-                  type="button"
-                  onClick={() => setViewMode("grid")}
-                  className={cn(
-                    "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-all cursor-pointer",
-                    viewMode === "grid"
-                      ? "bg-blue-600 text-white shadow-xs"
-                      : "border border-slate-200 text-slate-600 hover:bg-slate-50"
-                  )}
-                >
-                  <LayoutGrid className="h-3.5 w-3.5" />
-                  <span>Grid</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setViewMode("list")}
-                  className={cn(
-                    "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all cursor-pointer",
-                    viewMode === "list"
-                      ? "bg-blue-600 text-white shadow-xs font-bold"
-                      : "border border-slate-200 text-slate-600 hover:bg-slate-50"
-                  )}
-                >
-                  <LayoutList className="h-3.5 w-3.5" />
-                  <span>List</span>
-                </button>
-              </div>
+              <span className="text-xs text-muted-foreground">20 jobs per page</span>
             </div>
           </div>
 
@@ -757,13 +735,8 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
               </button>
             </div>
           ) : (
-            <div
-              className={cn(
-                "grid gap-5",
-                viewMode === "grid" ? "grid-cols-1 min-[1600px]:grid-cols-2" : "grid-cols-1"
-              )}
-            >
-              {results.map((j) => {
+            <div className="pro-job-results">
+              {pageJobs.map((j) => {
                 const pct = calcScore(j, user);
                 const applied = appliedJobIds.includes(j.id);
                 const saved = savedJobIds.includes(j.id);
@@ -788,6 +761,7 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
               })}
             </div>
           )}
+          {results.length > 0 && <nav className="mt-6 flex items-center justify-between gap-3" aria-label="Job pages"><Button variant="outline" disabled={currentPage === 1} onClick={() => setPage(currentPage - 1)}>Previous</Button><span className="text-xs text-muted-foreground">Page {currentPage} of {totalPages} · {results.length} jobs</span><Button variant="outline" disabled={currentPage === totalPages} onClick={() => setPage(currentPage + 1)}>Next</Button></nav>}
         </section>
       </div>
     </div>
