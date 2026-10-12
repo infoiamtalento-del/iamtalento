@@ -654,7 +654,7 @@ const TalentoPro: React.FC = () => {
                     jobs={jobs}
                     applications={apps}
                     onNavigate={(v) => setActiveView(v)}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                     onAddSkill={(skill) => {
                       const currentSkills = currentUser.sk || [];
                       if (!currentSkills.includes(skill)) {
@@ -674,7 +674,7 @@ const TalentoPro: React.FC = () => {
                     jobs={jobs}
                     applications={apps}
                     onWithdrawApplication={handleWithdrawApplication}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                   />
                 )}
 
@@ -683,7 +683,7 @@ const TalentoPro: React.FC = () => {
                     user={currentUser}
                     jobs={jobs}
                     applications={apps}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                     onMarkSeen={() => {
                       handleUpdateUser({
                         ...currentUser,
@@ -726,7 +726,7 @@ const TalentoPro: React.FC = () => {
                       handleUpdateUser({ ...currentUser, ce: current.filter((_, i) => i !== index) });
                       addToast("Certification removed.");
                     }}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                     onNavigateToQuiz={() => setActiveView("profile")}
                   />
                 )}
@@ -735,7 +735,7 @@ const TalentoPro: React.FC = () => {
                   <ProWalletView
                     user={currentUser}
                     onUpdateWallet={handleUpdateWallet}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                     onToast={addToast}
                   />
                 )}
@@ -744,7 +744,7 @@ const TalentoPro: React.FC = () => {
                   <ProPortfolioView
                     user={currentUser}
                     jobs={jobs}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                     onToast={addToast}
                   />
                 )}
@@ -755,7 +755,7 @@ const TalentoPro: React.FC = () => {
                     jobs={jobs}
                     onNavigate={(v) => setActiveView(v)}
                     onUpdateUser={handleUpdateUser}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                     onToast={addToast}
                   />
                 )}
@@ -771,7 +771,7 @@ const TalentoPro: React.FC = () => {
                     jobs={jobs}
                     applications={apps}
                     onNavigate={(v) => setActiveView(v)}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                     onAddSkill={() => {}}
                     onDuplicateJob={handleDuplicateJob}
                     onCloseJob={handleCloseJob}
@@ -794,7 +794,7 @@ const TalentoPro: React.FC = () => {
                     onUpdateApplicantStage={handleUpdateApplicantStage}
                     onBulkUpdateStage={handleBulkUpdateStage}
                     onBulkSendReview={handleBulkSendReview}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                     onToast={addToast}
                   />
                 )}
@@ -804,7 +804,7 @@ const TalentoPro: React.FC = () => {
                     user={currentUser}
                     jobs={jobs}
                     applications={apps}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                     onMarkSeen={() => {
                       handleUpdateUser({ ...currentUser, seen: Date.now() });
                     }}
@@ -815,7 +815,7 @@ const TalentoPro: React.FC = () => {
                   <ProWalletView
                     user={currentUser}
                     onUpdateWallet={handleUpdateWallet}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                     onToast={addToast}
                   />
                 )}
@@ -824,7 +824,7 @@ const TalentoPro: React.FC = () => {
                   <ProPortfolioView
                     user={currentUser}
                     jobs={jobs}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                     onToast={addToast}
                   />
                 )}
@@ -835,7 +835,7 @@ const TalentoPro: React.FC = () => {
                     jobs={jobs}
                     onNavigate={(v) => setActiveView(v)}
                     onUpdateUser={handleUpdateUser}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                     onToast={addToast}
                   />
                 )}
