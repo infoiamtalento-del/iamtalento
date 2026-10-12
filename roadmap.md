@@ -1,5 +1,8 @@
 # Roadmap
 
+## Demo profile — remove left navigation rail
+- Remove the fixed left sidebar and let the profile use the full page width — done; the top bar keeps all six destinations, content edges align with the logo on desktop and phone, and the bar is now solid so scrolled content no longer shows through
+
 ## Demo profile — reference dashboard
 - Match reference header, sidebar, cover and candidate overview — done
 - Build compact two-column profile sections and working actions — done; shared demo identity retained, other profile views unchanged
