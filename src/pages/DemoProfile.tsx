@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { demoProfile as profile, demoProfileDetails as details } from "@/components/profile/DemoProfileBody";
+import { DemoProfileRail } from "@/components/profile/DemoProfileRail";
 import { cn } from "@/lib/utils";
 import { ArrowLeft, ArrowRight, Award, Bell, BookOpen, Brain, BriefcaseBusiness, Check, CheckCircle2, ChevronDown, Cloud, Code2, Crown, Download, ExternalLink, FileCheck, FileText, Github, GraduationCap, Heart, Layers, Linkedin, Mail, MapPin, MoreHorizontal, Pencil, Phone, Quote, Search, Share2, ShieldCheck, Sparkles, Trophy, UserRound, Users, Wrench, type LucideIcon } from "lucide-react";
 import siteLogo from "@/assets/I-am-Talento-2.png.asset.json";
@@ -88,7 +89,7 @@ export default function DemoProfile() {
         <DropdownMenu><DropdownMenuTrigger asChild><Button variant="ghost" className="dp-account" aria-label="Profile menu"><img src={profile.profile_photo_url} alt="Arjun Mehta" /><ChevronDown /></Button></DropdownMenuTrigger><DropdownMenuContent align="end"><DropdownMenuItem asChild><Link to="/profile">Edit Profile</Link></DropdownMenuItem><DropdownMenuItem asChild><Link to="/pro">Talento Pro</Link></DropdownMenuItem></DropdownMenuContent></DropdownMenu>
       </div>
     </header>
-    <aside className="dp-sidebar"><nav aria-label="Profile navigation">{navigation.map(({ label, href, icon: Icon }) => <Link key={label} to={href} className={cn(label === "Profile" && "active")}><span><Icon size={19} /></span>{label}</Link>)}</nav></aside>
+    <DemoProfileRail />
     <main className="dp-main">
       <section id="overview" className="dp-overview">
         <div className="dp-cover"><img src={cover} width={1920} height={512} alt="Modern office overlooking the city at sunset" /><Button asChild variant="ghost" className="dp-back"><Link to="/jobs"><ArrowLeft />Back to Search</Link></Button>
