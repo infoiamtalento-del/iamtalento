@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   ArrowRight,
   BookOpen,
@@ -62,6 +62,25 @@ interface BreakdownProps {
 
 const SubDomainBreakdown = ({ subDomain, price }: BreakdownProps) => {
   const [activeRound, setActiveRound] = useState<number>(0);
+  const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleMouseEnter = (idx: number) => {
+    if (activeRound === idx) return;
+    if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+    hoverTimerRef.current = setTimeout(() => {
+      setActiveRound(idx);
+    }, 75);
+  };
+
+  const handleMouseLeave = () => {
+    if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+    };
+  }, []);
 
   const roundMeta = [
     {
@@ -97,7 +116,10 @@ const SubDomainBreakdown = ({ subDomain, price }: BreakdownProps) => {
   ];
 
   return (
-    <div className="border-t border-border bg-slate-50/60 dark:bg-muted/15 px-4 py-3.5 sm:px-5 sm:py-4">
+    <div
+      onMouseLeave={handleMouseLeave}
+      className="border-t border-border bg-slate-50/60 dark:bg-muted/15 px-4 py-3.5 sm:px-5 sm:py-4"
+    >
       {/* Sleek Minimal Header */}
       <div className="flex items-center justify-between gap-3 mb-3">
         <div className="flex items-center gap-1.5 text-xs text-foreground font-semibold">
@@ -120,9 +142,12 @@ const SubDomainBreakdown = ({ subDomain, price }: BreakdownProps) => {
             /* Collapsed State View */
             <div
               key={r.id}
-              onMouseEnter={() => setActiveRound(idx)}
-              onClick={() => setActiveRound(idx)}
-              className="rounded-2xl border border-border/80 bg-background/80 hover:bg-background hover:border-primary/30 p-3.5 sm:p-4 md:w-44 lg:w-48 md:shrink-0 flex flex-col justify-between transition-all duration-300 ease-out cursor-pointer group"
+              onMouseEnter={() => handleMouseEnter(idx)}
+              onClick={() => {
+                if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+                setActiveRound(idx);
+              }}
+              className="rounded-2xl border border-border/80 bg-background/80 hover:bg-background hover:border-primary/40 p-3.5 sm:p-4 md:w-44 lg:w-48 md:shrink-0 flex flex-col justify-between transition-colors duration-150 cursor-pointer group select-none"
             >
               <div>
                 {/* Top Header */}
@@ -166,9 +191,7 @@ const SubDomainBreakdown = ({ subDomain, price }: BreakdownProps) => {
             /* Expanded State View */
             <div
               key={r.id}
-              onMouseEnter={() => setActiveRound(idx)}
-              onClick={() => setActiveRound(idx)}
-              className="rounded-2xl border-2 border-primary/50 bg-background shadow-xs p-4 sm:p-5 md:flex-1 min-w-0 flex flex-col justify-between transition-all duration-300 ease-out cursor-pointer"
+              className="rounded-2xl border border-primary/60 bg-background shadow-xs ring-1 ring-primary/20 p-4 sm:p-4.5 md:flex-1 min-w-0 flex flex-col justify-between transition-colors duration-150 cursor-default"
             >
               <div>
                 {/* Expanded Card Header */}
@@ -203,7 +226,7 @@ const SubDomainBreakdown = ({ subDomain, price }: BreakdownProps) => {
                 </div>
 
                 {/* Test Micro-Cards Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 animate-in fade-in-50 duration-150">
                   {r.tests.map((t) => (
                     <div
                       key={t.name}
