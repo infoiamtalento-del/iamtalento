@@ -347,29 +347,6 @@ const TeamSection = () => (
   </section>
 );
 
-const benefits = [
-  { icon: Zap, title: "Save time", text: "Move from search to shortlist with less manual screening." },
-  { icon: ShieldCheck, title: "Improve quality", text: "Evaluate verified, job-relevant evidence before interviews." },
-  { icon: Users, title: "Work together", text: "Keep recruiters and hiring managers aligned in one place." },
-  { icon: BarChart3, title: "Decide clearly", text: "Compare candidate fit through consistent data and reports." },
-];
-
-const BenefitsSection = () => (
-  <section className="bg-accent/45 py-20 md:py-24">
-    <div className="container">
-      <motion.div {...reveal}><SectionIntro eyebrow="Why Teams Choose IAmTalento" first="A Faster, More" second="Confident Hiring Process." description={<>Replace scattered decisions with a clear, structured workflow.<br className="hidden md:block" /> Every step stays measurable and accountable.</>} align="center" /></motion.div>
-      <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {benefits.map(({ icon: Icon, title, text }, index) => (
-          <motion.div key={title} {...reveal} transition={{ duration: 0.45, delay: index * 0.06 }} className="border-t-2 border-primary pt-5">
-            <span className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-background text-primary shadow-sm"><Icon className="h-5 w-5" /></span>
-            <h3 className="mb-2 text-sm font-bold">{title}</h3><p className="text-xs leading-relaxed text-muted-foreground">{text}</p>
-          </motion.div>
-        ))}
-      </div>
-    </div>
-  </section>
-);
-
 const faqs = [
   { q: "How quickly can we start?", a: "Your team can create an employer account, define a role, and launch its first assessment within minutes." },
   { q: "Can we create our own assessments?", a: "Yes. Build role-specific tests, use ready-made assessments, or let AI create one from your job description." },
