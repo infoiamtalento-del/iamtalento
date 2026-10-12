@@ -1,9 +1,9 @@
 # Roadmap
 
 ## Demo profile — reference dashboard
-- Match reference header, sidebar, cover and candidate overview — in progress
-- Build compact two-column profile sections and working actions — in progress
-- Verify profile layout and interactions — in progress
+- Match reference header, sidebar, cover and candidate overview — done
+- Build compact two-column profile sections and working actions — done; shared demo identity retained, other profile views unchanged
+- Verify profile layout and interactions — done; images loaded at 1280, 1497 and 390 widths, no side scroll or page errors; contact, PDF download, tabs and availability checked; build OK
 
 ## Employer page updates
 - Add six two-word USPs across three sections — done
