@@ -228,9 +228,8 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
                   </div>
                   <div className="min-w-0 flex-1">
                     <b className="block text-sm font-display font-bold text-slate-900 truncate">{currentUser.name}</b>
-                    <span className="inline-flex items-center gap-1 text-[11px] text-slate-500">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                      {currentRole === "candidate" ? "Verified Candidate" : "Employer Partner"}
+                    <span className="text-[11px] text-slate-500">
+                      {currentRole === "candidate" ? "Candidate" : "Employer"}
                     </span>
                   </div>
                 </div>
