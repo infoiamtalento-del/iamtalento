@@ -236,8 +236,26 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
 
                 {/* Navigation Items List */}
                 <div className="py-2.5 space-y-0.5 max-h-[360px] overflow-y-auto">
-                  {navItems.map((item) => {
+                  {menuItems.map((item) => {
                     const Icon = item.icon;
+                    if (item.kind === "action") {
+                      return (
+                        <button
+                          key={item.key}
+                          onClick={() => {
+                            if (item.key === "certificate") onOpenCertificate();
+                            else onSupport();
+                            setIsMenuOpen(false);
+                          }}
+                          className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-left text-slate-700 hover:bg-slate-100/80"
+                        >
+                          <span className="flex items-center gap-2.5">
+                            <Icon className="h-4 w-4 shrink-0" />
+                            <span>{item.label}</span>
+                          </span>
+                        </button>
+                      );
+                    }
                     const isActive = activeView === item.id;
                     return (
                       <button
@@ -257,7 +275,11 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
                           <Icon className="h-4 w-4 shrink-0" />
                           <span>{item.label}</span>
                         </span>
-                        {item.badge != null && item.badge > 0 ? (
+                        {item.pill ? (
+                          <span className="rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-[10px] font-black text-slate-600">
+                            View
+                          </span>
+                        ) : item.badge != null && item.badge > 0 ? (
                           <span
                             className={cn(
                               "px-2 py-0.5 rounded-full text-[10px] font-black",
