@@ -21,7 +21,8 @@ import {
   Sun,
   LogOut,
   Zap,
-  ArrowRightLeft,
+  Headphones,
+  Award,
   CheckCircle2,
 } from "lucide-react";
 import { ProUser } from "@/data/proData";
