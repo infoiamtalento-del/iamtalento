@@ -573,6 +573,8 @@ const TalentoPro: React.FC = () => {
         isDarkMode={isDarkMode}
         onToggleTheme={() => setIsDarkMode(!isDarkMode)}
         onSignOut={() => handleSwitchRole("candidate")}
+        onSupport={() => setAiOpen(true)}
+        onOpenCertificate={() => setDrawerState({ type: "certificate", key: "verified" })}
         unreadCount={unreadCount}
         savedCount={savedCount}
         avatarSrc={getCandidatePhoto(currentUser.name)}
@@ -860,6 +862,8 @@ const TalentoPro: React.FC = () => {
         user={currentUser}
         jobs={jobs}
         applications={apps}
+        open={aiOpen}
+        onOpenChange={setAiOpen}
       />
 
       {/* Toast Notifications */}
