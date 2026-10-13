@@ -19,6 +19,8 @@ interface ProAiAssistantProps {
   user: ProUser;
   jobs: ProJob[];
   applications: ProApplication[];
+  open?: boolean;
+  onOpenChange?: (v: boolean) => void;
 }
 
 interface Message {
@@ -30,8 +32,15 @@ export const ProAiAssistant: React.FC<ProAiAssistantProps> = ({
   user,
   jobs,
   applications,
+  open,
+  onOpenChange,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isOpen = open !== undefined ? open : internalOpen;
+  const setIsOpen = (v: boolean) => {
+    if (open !== undefined) onOpenChange?.(v);
+    else setInternalOpen(v);
+  };
   const [query, setQuery] = useState("");
   const isEmployer = user.role === "employer";
 
