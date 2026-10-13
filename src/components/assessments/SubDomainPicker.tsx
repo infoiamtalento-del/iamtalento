@@ -344,65 +344,60 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                   : "border-slate-200/90 dark:border-border/80 hover:border-blue-400 hover:shadow-md"
               }`}
             >
-              <div className="p-5 sm:p-6">
-                {/* Header Row: Brand Logo, Role Title & Match Rating */}
+              {/* Header Row: Brand Logo, Role Title & Match Rating - Solid Brand Blue */}
+              <div className="bg-[#0d5cb2] p-5 sm:p-6 text-white">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="flex items-start gap-3.5 min-w-0">
-                    <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-xl bg-white border border-slate-200/90 shadow-2xs p-2 sm:p-2.5 flex items-center justify-center shrink-0">
+                    <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-xl bg-white border border-white/20 shadow-sm p-2 sm:p-2.5 flex items-center justify-center shrink-0">
                       <BrandLogo name={brandName} size="lg" />
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h4 className="font-display text-base sm:text-lg font-bold text-slate-900 dark:text-foreground leading-snug">
+                        <h4 className="font-display text-base sm:text-lg font-bold text-white leading-snug">
                           {s.name}
                         </h4>
                         {isSelected && (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 px-2.5 py-0.5 text-[11px] font-bold dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800 shadow-2xs">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-white text-[#0d5cb2] px-2.5 py-0.5 text-[11px] font-bold shadow-2xs">
                             <CheckCircle2 className="h-3.5 w-3.5 stroke-[2.5]" /> Selected Track
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-2 mt-1 text-xs text-slate-500 dark:text-muted-foreground flex-wrap">
-                        <span className="font-medium text-slate-700 dark:text-foreground/90">{domainTitle} Specialisation</span>
-                        <span>·</span>
-                        <span className="flex items-center gap-1 text-amber-600 font-semibold">
-                          <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-500" /> 4.9 Rating
+                      <div className="flex items-center gap-2 mt-1 text-xs text-blue-100 flex-wrap">
+                        <span className="font-medium text-white/95">{domainTitle} Specialisation</span>
+                        <span className="text-blue-200">·</span>
+                        <span className="flex items-center gap-1 text-amber-300 font-semibold">
+                          <Star className="h-3.5 w-3.5 fill-amber-300 text-amber-300" /> 4.9 Rating
                         </span>
-                        <span>·</span>
-                        <span className="text-slate-500">Industry benchmark</span>
+                        <span className="text-blue-200">·</span>
+                        <span className="text-blue-100">Industry benchmark</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Readiness / Tests Badge (From Reference Job Card Match Pill) */}
                   <div className="shrink-0 flex items-center gap-2 ml-auto sm:ml-0">
-                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-bold ${
-                      isSelected
-                        ? "bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800"
-                        : "bg-slate-50 border-slate-200 text-slate-700 dark:bg-muted/40 dark:text-muted-foreground"
-                    }`}>
-                      <div className={`h-5 w-5 rounded-full flex items-center justify-center text-[10px] font-black border-2 ${
-                        isSelected
-                          ? "border-emerald-600 bg-white text-emerald-700"
-                          : "border-blue-600 bg-white text-blue-700"
-                      }`}>
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/30 bg-white/15 backdrop-blur-xs text-xs font-bold text-white">
+                      <div className="h-5 w-5 rounded-full flex items-center justify-center text-[10px] font-black bg-white text-[#0d5cb2]">
                         {isSelected ? "✓" : "6"}
                       </div>
                       <span>{isSelected ? "Selected" : "6 Tests"}</span>
                     </div>
                   </div>
                 </div>
+              </div>
 
+              {/* Card Body: Tools, Price & Actions */}
+              <div className="p-5 sm:p-6 bg-white dark:bg-card">
                 {/* Tools & Skills Pill Cloud */}
                 {tools.length > 0 && (
-                  <div className="flex flex-wrap items-center gap-2 mt-3.5 pt-3 border-t border-slate-100 dark:border-border/50">
+                  <div className="flex flex-wrap items-center gap-2 mb-4">
                     <span className="text-xs font-semibold text-slate-500 dark:text-muted-foreground flex items-center gap-1.5">
-                      <Wrench className="h-3.5 w-3.5 text-blue-600" /> Tools & Skills:
+                      <Wrench className="h-3.5 w-3.5 text-[#0d5cb2]" /> Tools & Skills:
                     </span>
                     {tools.map((t) => (
                       <span
                         key={t}
-                        className="inline-flex items-center rounded-md bg-blue-50/70 border border-blue-200/60 text-blue-800 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800 text-xs px-2.5 py-0.5 font-medium"
+                        className="inline-flex items-center rounded-md bg-blue-50/70 border border-blue-200/60 text-[#0d5cb2] dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800 text-xs px-2.5 py-0.5 font-medium"
                       >
                         {t}
                       </span>
