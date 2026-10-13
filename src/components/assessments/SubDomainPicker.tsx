@@ -301,7 +301,7 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
   return (
     <div className="space-y-4">
       {/* Section Header Banner - Pure Blue and White */}
-      <div className="relative overflow-hidden rounded-2xl border border-blue-100 dark:border-border/60 bg-gradient-to-r from-blue-50/80 via-white to-blue-50/50 dark:from-muted/40 dark:to-muted/20 p-5 sm:p-6 shadow-2xs">
+      <div className="relative overflow-hidden rounded-2xl border border-blue-100 dark:border-border/60 bg-[#f8fafd] dark:bg-card p-5 sm:p-6 shadow-2xs">
         <div className="flex flex-wrap items-center justify-between gap-4 relative z-10">
           <div>
             <div className="flex items-center gap-2">
@@ -486,7 +486,7 @@ export const AssessmentCart = ({ selected, coreNames, onRemove, onCheckout }: Ca
 
   return (
     <aside className="rounded-2xl border border-slate-200/90 bg-white lg:sticky lg:top-24 overflow-hidden shadow-2xs">
-      <div className="flex items-center justify-between bg-gradient-to-r from-[#0d5cb2] via-[#0e63be] to-[#0a4d96] px-5 py-4 text-white">
+      <div className="flex items-center justify-between bg-[#0d5cb2] px-5 py-4 text-white">
         <p className="flex items-center gap-2 font-display text-sm font-bold">
           <ShoppingCart className="h-4 w-4" /> Your assessment cart
         </p>

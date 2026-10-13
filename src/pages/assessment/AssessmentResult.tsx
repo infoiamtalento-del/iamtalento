@@ -75,7 +75,7 @@ const AssessmentResult = () => {
         <title>Your CIR Report — {a.title}</title>
       </Helmet>
       <Layout>
-        <section className="py-12 md:py-16 bg-gradient-to-b from-accent/40 to-background">
+        <section className="py-12 md:py-16 bg-background">
           <div className="container">
             <h1 className="font-display text-3xl md:text-4xl font-bold leading-[1.15] mb-2">
               Your Assessment Report<br />

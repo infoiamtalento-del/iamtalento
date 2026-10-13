@@ -112,7 +112,7 @@ const AssessmentDetail = () => {
       </Helmet>
       <Layout>
         {/* ============ HERO BANNER ============ */}
-        <section className="bg-gradient-to-r from-blue-50/90 via-white to-blue-50/60 pt-28 pb-12 md:pt-36 md:pb-16 border-b border-blue-100">
+        <section className="bg-[#f8fafd] pt-28 pb-12 md:pt-36 md:pb-16 border-b border-blue-100">
           <div className="container">
             <Link
               to="/assessments/explore"
@@ -277,7 +277,7 @@ const AssessmentDetail = () => {
         </section>
 
         {/* ============ PROCTORING ============ */}
-        <section className="border-y border-blue-100 bg-gradient-to-r from-blue-50/80 via-white to-blue-50/60">
+        <section className="border-y border-blue-100 bg-[#f8fafd]">
           <div className="container py-8 md:py-10">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {[

@@ -205,7 +205,7 @@ const AssessmentDiscovery = () => {
       </Helmet>
       <Layout>
         {/* Hero */}
-        <section className="pt-14 pb-10 md:pt-20 md:pb-12 bg-gradient-to-b from-accent/40 to-background">
+        <section className="pt-14 pb-10 md:pt-20 md:pb-12 bg-background">
           <div className="container text-center">
             <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded-full mb-4">
               <Sparkles className="h-3 w-3" /> Skill Assessments

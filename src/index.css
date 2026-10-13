@@ -264,4 +264,61 @@
   --tw-ring-color: #0d5cb2 !important;
 }
 
+/* ======================================================== */
+/* CLEAN, MINIMAL, PROFESSIONAL: ZERO GRADIENTS SITEWIDE    */
+/* ======================================================== */
+
+*,
+*::before,
+*::after {
+  background-image: none !important;
+}
+
+/* Ensure elements that had background gradients resolve to solid, flat, minimal colors */
+.pro-hero,
+[class*="from-\[#0d5cb2\]"],
+[class*="from-blue-600"],
+[class*="from-primary"],
+[class*="to-\[#0a4d96\]"] {
+  background-color: #0d5cb2 !important;
+  background-image: none !important;
+}
+
+[class*="from-yellow-"],
+[class*="from-amber-"] {
+  background-color: #f59e0b !important;
+  background-image: none !important;
+}
+
+[class*="from-emerald-"],
+[class*="from-green-"] {
+  background-color: #10b981 !important;
+  background-image: none !important;
+}
+
+[class*="from-purple-"],
+[class*="from-violet-"] {
+  background-color: #7c3aed !important;
+  background-image: none !important;
+}
+
+[class*="from-blue-50"],
+[class*="from-slate-50"],
+[class*="from-muted"],
+[class*="from-accent"] {
+  background-color: #f8fafd !important;
+  background-image: none !important;
+}
+
+[class*="from-black"] {
+  background-color: rgba(0, 0, 0, 0.45) !important;
+  background-image: none !important;
+}
+
+[class*="from-foreground"] {
+  background-color: rgba(15, 23, 42, 0.55) !important;
+  background-image: none !important;
+}
+
+
 

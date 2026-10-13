@@ -32,7 +32,7 @@ const AssessmentPrepare = () => {
         <title>Prepare for your test — I Am Talento</title>
       </Helmet>
       <Layout>
-        <section className="bg-gradient-to-b from-accent/60 to-background pt-28 pb-10 md:pt-36">
+        <section className="bg-background pt-28 pb-10 md:pt-36">
           <div className="container">
             <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <div className="max-w-2xl">

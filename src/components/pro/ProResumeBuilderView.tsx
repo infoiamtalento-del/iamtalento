@@ -802,7 +802,7 @@ ${resumeData.education.map((ed) => `${ed.degree}, ${ed.school} (${ed.year})`).jo
               {activeTemplate === "modern" && (
                 <div
                   className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 text-white"
-                  style={{ background: `linear-gradient(135deg, ${accentColor}, ${accentColor}cc)` }}
+                  style={{ backgroundColor: accentColor }}
                 >
                   <div className="flex items-center gap-3">
                     <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white font-display text-base font-bold" style={{ color: accentColor }}>

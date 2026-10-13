@@ -83,7 +83,7 @@ const AssessmentPractice = () => {
         </title>
       </Helmet>
       <Layout>
-        <section className="bg-gradient-to-b from-accent/50 to-background pt-28 pb-16 md:pt-36">
+        <section className="bg-background pt-28 pb-16 md:pt-36">
           <div className="container max-w-3xl">
             <Link to={prepareUrl} className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary">
               <ArrowLeft className="h-4 w-4" /> Back to preparation

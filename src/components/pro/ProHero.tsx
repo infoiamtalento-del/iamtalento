@@ -22,7 +22,7 @@ export const ProHero: React.FC<ProHeroProps> = ({ icon, title, subtitle, childre
   <section
     className={cn(
       "pro-hero relative overflow-hidden rounded-3xl p-6 sm:p-8 border border-[#0d5cb2]/30 shadow-md",
-      "bg-gradient-to-r from-[#0d5cb2] via-[#0e63be] to-[#0a4d96] text-white",
+      "bg-[#0d5cb2] text-white",
       className
     )}
   >
