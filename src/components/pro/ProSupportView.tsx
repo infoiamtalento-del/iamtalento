@@ -245,7 +245,7 @@ export const ProSupportView: React.FC<ProSupportViewProps> = ({ onToast }) => {
             </div>
 
             <div className="mt-4 overflow-x-auto">
-              <table className="w-full text-xs min-w-[640px]">
+              <table className="w-full text-xs table-fixed">
                 <thead>
                   <tr className="border-b border-border text-left text-[10px] uppercase tracking-wide text-muted-foreground">
                     <th className="py-2.5 pr-3 font-semibold">Ticket ID</th>
