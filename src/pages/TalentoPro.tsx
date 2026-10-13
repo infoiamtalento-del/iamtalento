@@ -30,6 +30,7 @@ import { ProResumeBuilderView } from "@/components/pro/ProResumeBuilderView";
 import { ProWalletView } from "@/components/pro/ProWalletView";
 import { ProPortfolioView } from "@/components/pro/ProPortfolioView";
 import { ProVerifiedView } from "@/components/pro/ProVerifiedView";
+import { ProSupportView } from "@/components/pro/ProSupportView";
 import { ProDiscoverView } from "@/components/pro/ProDiscoverView";
 import { ProEmployerViews } from "@/components/pro/ProEmployerViews";
 import { ProDrawers } from "@/components/pro/ProDrawers";
@@ -188,6 +189,7 @@ const TalentoPro: React.FC = () => {
     "wallet",
     "port",
     "ver",
+    "support",
   ];
 
   const employerViews: ProView[] = [
@@ -573,7 +575,7 @@ const TalentoPro: React.FC = () => {
         isDarkMode={isDarkMode}
         onToggleTheme={() => setIsDarkMode(!isDarkMode)}
         onSignOut={() => handleSwitchRole("candidate")}
-        onSupport={() => setAiOpen(true)}
+        onSupport={() => setActiveView("support")}
         onOpenCertificate={() => setDrawerState({ type: "certificate", key: "verified" })}
         unreadCount={unreadCount}
         savedCount={savedCount}
@@ -751,6 +753,10 @@ const TalentoPro: React.FC = () => {
                     onOpenDrawer={setDrawerState}
                     onToast={addToast}
                   />
+                )}
+
+                {effectiveView === "support" && (
+                  <ProSupportView onToast={addToast} />
                 )}
               </>
             )}
