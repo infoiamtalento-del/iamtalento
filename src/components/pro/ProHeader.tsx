@@ -39,6 +39,8 @@ interface ProHeaderProps {
   isDarkMode: boolean;
   onToggleTheme: () => void;
   onSignOut: () => void;
+  onSupport: () => void;
+  onOpenCertificate: () => void;
   unreadCount: number;
   savedCount: number;
   avatarSrc?: string;
