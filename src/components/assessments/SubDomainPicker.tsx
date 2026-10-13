@@ -393,53 +393,9 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                   </div>
                 </div>
 
-                {/* Description */}
-                <p className="mt-3 text-xs sm:text-sm text-slate-600 dark:text-muted-foreground leading-relaxed">
-                  {s.text}
-                </p>
-
-                {/* 4-Box Structured Parameter Specs Grid (Reference Image Style) */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-4">
-                  <div className="rounded-lg bg-slate-50/90 dark:bg-muted/30 border border-slate-200/70 dark:border-border/60 p-2.5 text-center">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-muted-foreground block">
-                      Round 1
-                    </span>
-                    <span className="font-semibold text-xs text-slate-800 dark:text-foreground mt-0.5 block truncate">
-                      Knowledge (30m)
-                    </span>
-                  </div>
-
-                  <div className="rounded-lg bg-slate-50/90 dark:bg-muted/30 border border-slate-200/70 dark:border-border/60 p-2.5 text-center">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-muted-foreground block">
-                      Round 2
-                    </span>
-                    <span className="font-semibold text-xs text-slate-800 dark:text-foreground mt-0.5 block truncate">
-                      Technical Tasks (55m)
-                    </span>
-                  </div>
-
-                  <div className="rounded-lg bg-slate-50/90 dark:bg-muted/30 border border-slate-200/70 dark:border-border/60 p-2.5 text-center">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-muted-foreground block">
-                      Round 3
-                    </span>
-                    <span className="font-semibold text-xs text-slate-800 dark:text-foreground mt-0.5 block truncate">
-                      Scenarios (40m)
-                    </span>
-                  </div>
-
-                  <div className="rounded-lg bg-slate-50/90 dark:bg-muted/30 border border-slate-200/70 dark:border-border/60 p-2.5 text-center">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-muted-foreground block">
-                      Integrity
-                    </span>
-                    <span className="font-semibold text-xs text-blue-700 dark:text-blue-400 mt-0.5 flex items-center justify-center gap-1">
-                      <ShieldCheck className="h-3 w-3" /> 30-Layer Proctored
-                    </span>
-                  </div>
-                </div>
-
                 {/* Tools & Skills Pill Cloud */}
                 {tools.length > 0 && (
-                  <div className="flex flex-wrap items-center gap-2 mt-4 pt-3.5 border-t border-slate-100 dark:border-border/50">
+                  <div className="flex flex-wrap items-center gap-2 mt-3.5 pt-3 border-t border-slate-100 dark:border-border/50">
                     <span className="text-xs font-semibold text-slate-500 dark:text-muted-foreground flex items-center gap-1.5">
                       <Wrench className="h-3.5 w-3.5 text-blue-600" /> Tools & Skills:
                     </span>
