@@ -297,9 +297,6 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
                 {/* Footer Controls */}
                 <div className="pt-3 border-t border-slate-100 space-y-1">
                   <button
-
-
-                  <button
                     onClick={() => {
                       onToggleTheme();
                       setIsMenuOpen(false);
