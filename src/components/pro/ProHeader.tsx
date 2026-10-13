@@ -21,7 +21,8 @@ import {
   Sun,
   LogOut,
   Zap,
-  ArrowRightLeft,
+  Headphones,
+  Award,
   CheckCircle2,
 } from "lucide-react";
 import { ProUser } from "@/data/proData";
@@ -38,6 +39,8 @@ interface ProHeaderProps {
   isDarkMode: boolean;
   onToggleTheme: () => void;
   onSignOut: () => void;
+  onSupport: () => void;
+  onOpenCertificate: () => void;
   unreadCount: number;
   savedCount: number;
   avatarSrc?: string;
@@ -52,6 +55,8 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
   isDarkMode,
   onToggleTheme,
   onSignOut,
+  onSupport,
+  onOpenCertificate,
   unreadCount,
   savedCount,
   avatarSrc,
@@ -86,6 +91,26 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
   ];
 
   const navItems = currentRole === "candidate" ? candidateNavItems : employerNavItems;
+
+  // Profile dropdown menu (matches the approved reference list)
+  type MenuEntry =
+    | { kind: "view"; id: ProView; label: string; icon: React.ElementType; badge?: number; pill?: boolean }
+    | { kind: "action"; key: string; label: string; icon: React.ElementType };
+
+  const candidateMenuItems: MenuEntry[] = [
+    { kind: "view", id: "profile", label: "My Profile", icon: Users, pill: true },
+    { kind: "view", id: "dash", label: "Dashboard", icon: SlidersHorizontal },
+    { kind: "view", id: "cert", label: "My Assessments", icon: GraduationCap },
+    { kind: "view", id: "upd", label: "Notifications", icon: Bell, badge: unreadCount },
+    { kind: "view", id: "port", label: "Portfolio", icon: FolderKanban },
+    { kind: "view", id: "resume", label: "AI Resume Builder", icon: Bot },
+    { kind: "action", key: "certificate", label: "Download Certificate", icon: Award },
+    { kind: "view", id: "wallet", label: "Wallet", icon: Wallet },
+    { kind: "action", key: "support", label: "Support", icon: Headphones },
+  ];
+
+  const menuItems: MenuEntry[] = currentRole === "candidate" ? candidateMenuItems : employerNavItems.map((item): MenuEntry => ({ kind: "view", ...item }));
+
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 dark:bg-card/95 backdrop-blur-md border-b border-border/80">
@@ -203,17 +228,34 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
                   </div>
                   <div className="min-w-0 flex-1">
                     <b className="block text-sm font-display font-bold text-slate-900 truncate">{currentUser.name}</b>
-                    <span className="inline-flex items-center gap-1 text-[11px] text-slate-500">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                      {currentRole === "candidate" ? "Verified Candidate" : "Employer Partner"}
+                    <span className="text-[11px] text-slate-500">
+                      {currentRole === "candidate" ? "Candidate" : "Employer"}
                     </span>
                   </div>
                 </div>
 
                 {/* Navigation Items List */}
                 <div className="py-2.5 space-y-0.5 max-h-[360px] overflow-y-auto">
-                  {navItems.map((item) => {
+                  {menuItems.map((item) => {
                     const Icon = item.icon;
+                    if (item.kind === "action") {
+                      return (
+                        <button
+                          key={item.key}
+                          onClick={() => {
+                            if (item.key === "certificate") onOpenCertificate();
+                            else onSupport();
+                            setIsMenuOpen(false);
+                          }}
+                          className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-left text-slate-700 hover:bg-slate-100/80"
+                        >
+                          <span className="flex items-center gap-2.5">
+                            <Icon className="h-4 w-4 shrink-0" />
+                            <span>{item.label}</span>
+                          </span>
+                        </button>
+                      );
+                    }
                     const isActive = activeView === item.id;
                     return (
                       <button
@@ -233,7 +275,11 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
                           <Icon className="h-4 w-4 shrink-0" />
                           <span>{item.label}</span>
                         </span>
-                        {item.badge != null && item.badge > 0 ? (
+                        {item.pill ? (
+                          <span className="rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-[10px] font-black text-slate-600">
+                            View
+                          </span>
+                        ) : item.badge != null && item.badge > 0 ? (
                           <span
                             className={cn(
                               "px-2 py-0.5 rounded-full text-[10px] font-black",
@@ -252,24 +298,13 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
                 <div className="pt-3 border-t border-slate-100 space-y-1">
                   <button
                     onClick={() => {
-                      onSwitchRole(currentRole === "candidate" ? "employer" : "candidate");
-                      setIsMenuOpen(false);
-                    }}
-                    className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 cursor-pointer text-left transition-colors"
-                  >
-                    <ArrowRightLeft className="h-4 w-4" />
-                    <span>Switch to {currentRole === "candidate" ? "Employer (Super30)" : "Candidate (Vignesh)"}</span>
-                  </button>
-
-                  <button
-                    onClick={() => {
                       onToggleTheme();
                       setIsMenuOpen(false);
                     }}
                     className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 cursor-pointer text-left transition-colors"
                   >
                     {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-                    <span>{isDarkMode ? "Light Theme" : "Dark Theme"}</span>
+                    <span>Light / Dark</span>
                   </button>
 
                   <button
