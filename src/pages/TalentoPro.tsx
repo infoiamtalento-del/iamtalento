@@ -211,6 +211,7 @@ const TalentoPro: React.FC = () => {
 
   // Drawer & Comparison States
   const [drawerState, setDrawerState] = useState<ProDrawerState>(null);
+  const [aiOpen, setAiOpen] = useState(false);
   const [compareJobs, setCompareJobs] = useState<number[]>([]);
   const [compareCandidates, setCompareCandidates] = useState<string[]>([]);
 
