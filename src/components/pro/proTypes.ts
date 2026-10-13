@@ -18,7 +18,8 @@ export type ProView =
   | "talent"
   | "notif"
   | "pipe"
-  | "post";
+  | "post"
+  | "support";
 
 export type ProDrawerState =
   | { type: "job"; id: number }

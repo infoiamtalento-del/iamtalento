@@ -1,0 +1,13 @@
+/* Support Center — brand-red accents, scoped to the view */
+.pro-support {
+  --primary: 351 77% 47%;
+  --primary-foreground: 0 0% 100%;
+  --ring: 351 77% 47%;
+  --accent: 351 100% 96.5%;
+  --accent-foreground: 351 77% 47%;
+}
+.pro-support .sp-hero {
+  background-color: hsl(351 77% 47%);
+  box-shadow: 0 14px 34px hsl(351 77% 47% / 0.2);
+}
+.pro-support ::selection { background: hsl(351 77% 47% / 0.2); }
