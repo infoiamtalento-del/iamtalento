@@ -109,7 +109,7 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
     { kind: "action", key: "support", label: "Support", icon: Headphones },
   ];
 
-  const menuItems: MenuEntry[] = currentRole === "candidate" ? candidateMenuItems : employerNavItems.map((item) => ({ kind: "view", ...item }));
+  const menuItems: MenuEntry[] = currentRole === "candidate" ? candidateMenuItems : employerNavItems.map((item): MenuEntry => ({ kind: "view", ...item }));
 
 
   return (
