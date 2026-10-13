@@ -55,6 +55,8 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
   isDarkMode,
   onToggleTheme,
   onSignOut,
+  onSupport,
+  onOpenCertificate,
   unreadCount,
   savedCount,
   avatarSrc,
