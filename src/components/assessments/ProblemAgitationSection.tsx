@@ -10,7 +10,7 @@ const features = [
     title: "Stop Sending 100 Resumes. Start Proving Your Skills.",
     desc: "97% of applications never get a human glance. With a verified assessment score, employers come to you — no cold applications needed.",
     bullets: [
-      { icon: XCircle, text: "Traditional resumes get lost in ATS filters", color: "text-red-500" },
+      { icon: XCircle, text: "Traditional resumes get lost in ATS filters", color: "text-amber-500" },
       { icon: CheckCircle2, text: "Verified scores bypass screening — go straight to shortlist", color: "text-primary" },
       { icon: TrendingUp, text: "3x more interview callbacks for verified candidates", color: "text-primary" },
     ],

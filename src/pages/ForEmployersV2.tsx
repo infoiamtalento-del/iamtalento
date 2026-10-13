@@ -1017,7 +1017,7 @@ const ScoreTrustSection = () => {
                   className="absolute inset-0 rounded-full"
                   style={{
                     background:
-                      "radial-gradient(circle, rgba(198,44,44,0.08) 0%, transparent 70%)",
+                      "radial-gradient(circle, rgba(13,92,178,0.08) 0%, transparent 70%)",
                     transform: "scale(1.3)",
                   }}
                 />
@@ -1028,7 +1028,7 @@ const ScoreTrustSection = () => {
                     backdropFilter: "blur(32px) saturate(200%)",
                     border: "1px solid rgba(255,255,255,1)",
                     boxShadow:
-                      "0 30px 80px rgba(198,44,44,0.12), 0 4px 20px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)",
+                      "0 30px 80px rgba(13,92,178,0.12), 0 4px 20px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)",
                   }}
                 >
                   <svg
@@ -1043,7 +1043,7 @@ const ScoreTrustSection = () => {
                         x2="100%"
                         y2="100%"
                       >
-                        <stop offset="0%" stopColor="#C62C2C" />
+                        <stop offset="0%" stopColor="#0d5cb2" />
                         <stop offset="100%" stopColor="#FF8C01" />
                       </linearGradient>
                       <filter id="employerArcGlow">
@@ -1059,7 +1059,7 @@ const ScoreTrustSection = () => {
                       cy="50"
                       r="42"
                       fill="none"
-                      stroke="#e8a0a0"
+                      stroke="#93c5fd"
                       strokeWidth="0.8"
                       strokeOpacity="0.4"
                       strokeDasharray="4 3"
@@ -1076,7 +1076,7 @@ const ScoreTrustSection = () => {
                       cy="50"
                       r="45"
                       fill="none"
-                      stroke="rgba(198,44,44,0.1)"
+                      stroke="rgba(13,92,178,0.1)"
                       strokeWidth="3.5"
                     />
                     <motion.circle
@@ -1133,7 +1133,7 @@ const ScoreTrustSection = () => {
                     </motion.div>
                     <p
                       className="text-[10px] uppercase tracking-[0.22em] font-semibold"
-                      style={{ color: "#C62C2C" }}
+                      style={{ color: "#0d5cb2" }}
                     >
                       Candidate Score
                     </p>
@@ -1156,9 +1156,9 @@ const ScoreTrustSection = () => {
                 style={{
                   background: "rgba(255,255,255,0.92)",
                   backdropFilter: "blur(24px)",
-                  border: "1px solid rgba(198,44,44,0.12)",
+                  border: "1px solid rgba(13,92,178,0.12)",
                   boxShadow:
-                    "0 12px 40px rgba(198,44,44,0.08), 0 2px 8px rgba(0,0,0,0.05)",
+                    "0 12px 40px rgba(13,92,178,0.08), 0 2px 8px rgba(0,0,0,0.05)",
                 }}
               >
                 <div className="p-4 flex items-center gap-4">
@@ -1191,7 +1191,7 @@ const ScoreTrustSection = () => {
                 <div
                   className="grid grid-cols-3 divide-x divide-border"
                   style={{
-                    borderTop: "1px solid rgba(198,44,44,0.08)",
+                    borderTop: "1px solid rgba(13,92,178,0.08)",
                   }}
                 >
                   {[
@@ -1217,9 +1217,9 @@ const ScoreTrustSection = () => {
               {/* Score breakdown pills */}
               <div className="mt-4 grid grid-cols-2 gap-2 w-full max-w-xs">
                 {[
-                  { label: "React & TS", score: 96, color: "#C62C2C" },
+                  { label: "React & TS", score: 96, color: "#0d5cb2" },
                   { label: "System Design", score: 91, color: "#FF8C01" },
-                  { label: "Problem Solving", score: 93, color: "#C62C2C" },
+                  { label: "Problem Solving", score: 93, color: "#0d5cb2" },
                   { label: "Communication", score: 88, color: "#FF8C01" },
                 ].map(({ label, score, color }) => (
                   <div

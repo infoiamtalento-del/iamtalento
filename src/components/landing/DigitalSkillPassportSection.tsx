@@ -24,7 +24,7 @@ const DigitalSkillPassportSection = () => {
         <div className="text-center max-w-3xl mx-auto mb-12">
           <SectionBadge label="Digital Skill Passport" icon={BadgeCheck} />
           <h2 className="text-3xl md:text-5xl font-bold font-display leading-tight">
-            Your Career, <span className="text-red-500">Officially Stamped.</span>
+            Your Career, <span className="text-[#0d5cb2]">Officially Stamped.</span>
           </h2>
           <p className="mt-4 text-muted-foreground text-base md:text-lg">
             A shareable, verified credential recruiters can trust at a glance.
@@ -40,13 +40,13 @@ const DigitalSkillPassportSection = () => {
           className="max-w-5xl mx-auto"
           style={{ perspective: "1200px" }}
         >
-          <div className="relative grid md:grid-cols-2 rounded-3xl overflow-hidden shadow-[0_30px_80px_-20px_rgba(0,0,0,0.35)] border-2 border-red-900/20 bg-[#7a0d1a]">
+          <div className="relative grid md:grid-cols-2 rounded-3xl overflow-hidden shadow-[0_30px_80px_-20px_rgba(0,0,0,0.35)] border-2 border-blue-900/20 bg-[#072d5b]">
             {/* Center spine */}
             <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-yellow-300/30 -translate-x-1/2 z-10" />
             <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-[2px] bg-black/20 -translate-x-1/2 z-10" />
 
             {/* LEFT PAGE — Cover-style */}
-            <div className="relative p-8 md:p-10 bg-gradient-to-br from-[#8b0f1f] via-[#7a0d1a] to-[#5e0a14] text-yellow-50 overflow-hidden">
+            <div className="relative p-8 md:p-10 bg-gradient-to-br from-[#8b0f1f] via-[#072d5b] to-[#5e0a14] text-yellow-50 overflow-hidden">
               {/* Decorative rings */}
               <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full border border-yellow-200/15" />
               <div className="absolute -top-10 -right-10 w-64 h-64 rounded-full border border-yellow-200/10" />
@@ -99,41 +99,41 @@ const DigitalSkillPassportSection = () => {
                 className="absolute inset-0 opacity-[0.07] pointer-events-none"
                 style={{
                   backgroundImage:
-                    "repeating-linear-gradient(45deg, #7a0d1a 0 1px, transparent 1px 8px), repeating-linear-gradient(-45deg, #7a0d1a 0 1px, transparent 1px 8px)",
+                    "repeating-linear-gradient(45deg, #072d5b 0 1px, transparent 1px 8px), repeating-linear-gradient(-45deg, #072d5b 0 1px, transparent 1px 8px)",
                 }}
               />
 
               {/* Header */}
               <div className="relative flex items-start justify-between">
                 <div>
-                  <div className="text-[9px] tracking-[0.3em] uppercase text-red-900/60 font-semibold">
+                  <div className="text-[9px] tracking-[0.3em] uppercase text-slate-900/60 font-semibold">
                     Holder Profile
                   </div>
-                  <h4 className="font-display font-extrabold text-2xl md:text-3xl text-red-900 leading-tight mt-1">
+                  <h4 className="font-display font-extrabold text-2xl md:text-3xl text-slate-900 leading-tight mt-1">
                     Arjun Verma
                   </h4>
                   <div className="text-xs text-foreground/60 mt-1">
                     Performance Marketing · Bangalore, IN
                   </div>
                 </div>
-                <div className="shrink-0 h-16 w-14 rounded border-2 border-red-900/30 bg-white/60 flex items-center justify-center">
-                  <span className="text-[9px] text-red-900/50 tracking-wider">PHOTO</span>
+                <div className="shrink-0 h-16 w-14 rounded border-2 border-blue-900/30 bg-white/60 flex items-center justify-center">
+                  <span className="text-[9px] text-slate-900/50 tracking-wider">PHOTO</span>
                 </div>
               </div>
 
               {/* Score block */}
               <div className="relative mt-6 grid grid-cols-3 gap-3">
-                <div className="col-span-1 rounded-xl border-2 border-red-900/20 p-3 text-center bg-white/50">
-                  <div className="text-[9px] tracking-widest uppercase text-red-900/60 font-bold">
+                <div className="col-span-1 rounded-xl border-2 border-blue-900/20 p-3 text-center bg-white/50">
+                  <div className="text-[9px] tracking-widest uppercase text-slate-900/60 font-bold">
                     Score
                   </div>
-                  <div className="font-display font-extrabold text-4xl text-red-600 leading-none mt-1">
+                  <div className="font-display font-extrabold text-4xl text-[#0d5cb2] leading-none mt-1">
                     78
                   </div>
                   <div className="text-[10px] text-foreground/60 mt-1">/ 100</div>
                 </div>
-                <div className="col-span-2 rounded-xl border-2 border-red-900/20 p-3 bg-white/50">
-                  <div className="text-[9px] tracking-widest uppercase text-red-900/60 font-bold mb-2">
+                <div className="col-span-2 rounded-xl border-2 border-blue-900/20 p-3 bg-white/50">
+                  <div className="text-[9px] tracking-widest uppercase text-slate-900/60 font-bold mb-2">
                     Industry Benchmark
                   </div>
                   <div className="space-y-2">
@@ -141,11 +141,11 @@ const DigitalSkillPassportSection = () => {
                       <div key={s.label}>
                         <div className="flex justify-between text-[10px] font-semibold text-foreground/80">
                           <span>{s.label}</span>
-                          <span className="text-red-600">{s.score}</span>
+                          <span className="text-[#0d5cb2]">{s.score}</span>
                         </div>
-                        <div className="h-1 rounded-full bg-red-900/10 overflow-hidden">
+                        <div className="h-1 rounded-full bg-blue-900/10 overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-red-600 to-yellow-500"
+                            className="h-full bg-gradient-to-r from-[#0d5cb2] to-yellow-500"
                             style={{ width: `${s.score}%` }}
                           />
                         </div>
@@ -164,7 +164,7 @@ const DigitalSkillPassportSection = () => {
                   ["Authority", "I Am Talento"],
                 ].map(([k, v]) => (
                   <div key={k}>
-                    <div className="text-[8px] tracking-[0.25em] uppercase text-red-900/50 font-bold">
+                    <div className="text-[8px] tracking-[0.25em] uppercase text-slate-900/50 font-bold">
                       {k}
                     </div>
                     <div className="font-mono font-semibold text-foreground/85">{v}</div>
@@ -176,7 +176,7 @@ const DigitalSkillPassportSection = () => {
               <div className="relative mt-6 h-32">
                 {stamps.map((s, i) => {
                   const colorMap: Record<string, string> = {
-                    red: "border-red-600 text-red-600",
+                    red: "border-[#0d5cb2] text-[#0d5cb2]",
                     blue: "border-blue-700 text-blue-700",
                     green: "border-green-700 text-green-700",
                   };
@@ -202,16 +202,16 @@ const DigitalSkillPassportSection = () => {
               </div>
 
               {/* Signature line */}
-              <div className="relative mt-4 pt-3 border-t border-red-900/20 flex items-end justify-between">
+              <div className="relative mt-4 pt-3 border-t border-blue-900/20 flex items-end justify-between">
                 <div>
-                  <div className="font-display italic text-lg text-red-900/80 leading-none">
+                  <div className="font-display italic text-lg text-slate-900/80 leading-none">
                     A. Verma
                   </div>
-                  <div className="text-[9px] tracking-widest uppercase text-red-900/50 font-bold mt-1">
+                  <div className="text-[9px] tracking-widest uppercase text-slate-900/50 font-bold mt-1">
                     Holder Signature
                   </div>
                 </div>
-                <div className="flex items-center gap-1 text-[10px] text-red-900/70 font-semibold">
+                <div className="flex items-center gap-1 text-[10px] text-slate-900/70 font-semibold">
                   <ShieldCheck className="h-3.5 w-3.5" />
                   Verified
                 </div>
@@ -219,7 +219,7 @@ const DigitalSkillPassportSection = () => {
             </div>
 
             {/* Corner ribbon */}
-            <div className="absolute top-4 left-4 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-yellow-400 text-red-900 text-[10px] font-extrabold uppercase tracking-wider shadow">
+            <div className="absolute top-4 left-4 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-yellow-400 text-slate-900 text-[10px] font-extrabold uppercase tracking-wider shadow">
               <Plane className="h-3 w-3" />
               Career Ready
             </div>
@@ -229,13 +229,13 @@ const DigitalSkillPassportSection = () => {
         {/* CTA */}
         <div className="mt-12 text-center">
           <p className="text-sm text-muted-foreground mb-4 inline-flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-red-500" />
+            <Sparkles className="h-4 w-4 text-[#0d5cb2]" />
             Shareable with recruiters · LinkedIn ready · Verified credential
           </p>
           <div>
             <Button
               size="lg"
-              className="bg-red-500 text-white hover:bg-red-600 font-bold h-12 px-8 rounded-xl shadow-xl"
+              className="bg-[#0d5cb2] text-white hover:bg-[#0a4d96] font-bold h-12 px-8 rounded-xl shadow-xl"
             >
               Claim Your Passport
             </Button>

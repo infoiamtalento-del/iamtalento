@@ -129,9 +129,9 @@ const CareerIntelligencePackageHome = ({ beforeCta }: { beforeCta?: ReactNode } 
   const active = items[activeIdx];
   const ActiveIcon = active.icon;
   const isYellow = activeIdx % 2 === 1;
-  const accentBg = isYellow ? "bg-yellow-400" : "bg-red-500";
-  const accentText = isYellow ? "text-red-900" : "text-white";
-  const accentBar = isYellow ? "bg-yellow-400" : "bg-red-500";
+  const accentBg = isYellow ? "bg-yellow-400" : "bg-[#0d5cb2]";
+  const accentText = isYellow ? "text-slate-900" : "text-white";
+  const accentBar = isYellow ? "bg-yellow-400" : "bg-[#0d5cb2]";
 
   return (
     <section className="py-16 md:py-24 bg-muted/30">
@@ -172,8 +172,8 @@ const CareerIntelligencePackageHome = ({ beforeCta }: { beforeCta?: ReactNode } 
                 const Icon = item.icon;
                 const isActive = idx === activeIdx;
                 const itemYellow = idx % 2 === 1;
-                const itemAccentBg = itemYellow ? "bg-yellow-400" : "bg-red-500";
-                const itemAccentText = itemYellow ? "text-red-900" : "text-white";
+                const itemAccentBg = itemYellow ? "bg-yellow-400" : "bg-[#0d5cb2]";
+                const itemAccentText = itemYellow ? "text-slate-900" : "text-white";
 
                 return (
                   <li key={item.title}>
@@ -276,7 +276,7 @@ const CareerIntelligencePackageHome = ({ beforeCta }: { beforeCta?: ReactNode } 
                   className="absolute inset-0 flex items-center justify-center"
                   aria-label="Play video"
                 >
-                  <span className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-red-500 text-white flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
+                  <span className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-[#0d5cb2] text-white flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
                     <Play className="h-7 w-7 fill-current ml-0.5" />
                   </span>
                 </button>

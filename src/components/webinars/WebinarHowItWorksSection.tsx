@@ -54,7 +54,7 @@ const WebinarHowItWorksSection = () => {
           <SectionBadge label="How It Works" icon={Zap} />
           <h2 className="text-3xl md:text-5xl font-bold font-display mb-3 leading-[1.05]">
             From Registration to<br />
-            <span className="text-[#ef4444]">Real Skill in 8 Steps</span>
+            <span className="text-primary">Real Skill in 8 Steps</span>
           </h2>
           <p className="text-muted-foreground max-w-md">
             From zero to offer-ready — a complete system built to prove your value.
@@ -135,7 +135,7 @@ const WebinarHowItWorksSection = () => {
               key={i}
               onClick={() => setActive(i)}
               aria-label={`Go to step ${i + 1}`}
-              className={`h-1.5 rounded-full transition-all ${i === active ? "w-6 bg-[#ef4444]" : "w-1.5 bg-[#ef4444]/30"}`}
+              className={`h-1.5 rounded-full transition-all ${i === active ? "w-6 bg-primary" : "w-1.5 bg-primary/30"}`}
             />
           ))}
         </div>

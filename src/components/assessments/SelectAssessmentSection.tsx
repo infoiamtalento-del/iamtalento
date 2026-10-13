@@ -8,11 +8,11 @@ const domains = ["All", "Programming", "Data Science", "Design", "Marketing", "F
 
 const assessments = [
   { name: "Python Developer Assessment", domain: "Programming", duration: "60 min", attempts: "12,340+", rating: "4.8", difficulty: "Intermediate", diffColor: "bg-yellow-100 text-yellow-700", icon: Code2, iconBg: "bg-gray-100" },
-  { name: "Data Analytics Proficiency", domain: "Data Science", duration: "75 min", attempts: "8,920+", rating: "4.7", difficulty: "Advanced", diffColor: "bg-red-50 text-red-600", icon: BarChart3, iconBg: "bg-gray-100" },
+  { name: "Data Analytics Proficiency", domain: "Data Science", duration: "75 min", attempts: "8,920+", rating: "4.7", difficulty: "Advanced", diffColor: "bg-blue-50 text-blue-700", icon: BarChart3, iconBg: "bg-gray-100" },
   { name: "UI/UX Design Evaluation", domain: "Design", duration: "45 min", attempts: "6,450+", rating: "4.9", difficulty: "Beginner", diffColor: "bg-green-50 text-green-600", icon: Palette, iconBg: "bg-gray-100" },
   { name: "Digital Marketing Specialist", domain: "Marketing", duration: "50 min", attempts: "9,780+", rating: "4.6", difficulty: "Intermediate", diffColor: "bg-yellow-100 text-yellow-700", icon: Megaphone, iconBg: "bg-gray-100" },
-  { name: "SQL & Database Management", domain: "Programming", duration: "55 min", attempts: "7,230+", rating: "4.8", difficulty: "Advanced", diffColor: "bg-red-50 text-red-600", icon: Database, iconBg: "bg-gray-100" },
-  { name: "Machine Learning Fundamentals", domain: "Data Science", duration: "90 min", attempts: "5,100+", rating: "4.7", difficulty: "Advanced", diffColor: "bg-red-50 text-red-600", icon: Brain, iconBg: "bg-gray-100" },
+  { name: "SQL & Database Management", domain: "Programming", duration: "55 min", attempts: "7,230+", rating: "4.8", difficulty: "Advanced", diffColor: "bg-blue-50 text-blue-700", icon: Database, iconBg: "bg-gray-100" },
+  { name: "Machine Learning Fundamentals", domain: "Data Science", duration: "90 min", attempts: "5,100+", rating: "4.7", difficulty: "Advanced", diffColor: "bg-blue-50 text-blue-700", icon: Brain, iconBg: "bg-gray-100" },
 ];
 
 const SelectAssessmentSection = () => {

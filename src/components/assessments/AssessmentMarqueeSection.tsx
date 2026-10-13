@@ -42,7 +42,7 @@ const assessments = [
 const difficultyColor: Record<string, string> = {
   Beginner: "text-emerald-600 bg-emerald-50 border-emerald-200",
   Intermediate: "text-amber-600 bg-amber-50 border-amber-200",
-  Advanced: "text-red-600 bg-red-50 border-red-200",
+  Advanced: "text-[#0d5cb2] bg-blue-50 border-blue-200",
   Expert: "text-purple-600 bg-purple-50 border-purple-200",
 };
 

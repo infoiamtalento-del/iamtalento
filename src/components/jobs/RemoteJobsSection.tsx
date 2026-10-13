@@ -8,7 +8,7 @@ const remoteCompanies = [
   { name: "InVision", positions: "28 open positions", logo: "https://cdn.simpleicons.org/invision/FF3366", tint: "from-pink-500/15 to-pink-500/5" },
   { name: "Automattic", positions: "24 open positions", logo: "https://cdn.simpleicons.org/automattic/3499CD", tint: "from-blue-500/15 to-blue-500/5" },
   { name: "Canva", positions: "18 open positions", logo: "https://cdn.simpleicons.org/canva/00C4CC", tint: "from-cyan-500/15 to-cyan-500/5" },
-  { name: "Doist", positions: "15 open positions", logo: "https://cdn.simpleicons.org/todoist/E44332", tint: "from-red-500/15 to-red-500/5" },
+  { name: "Doist", positions: "15 open positions", logo: "https://cdn.simpleicons.org/todoist/E44332", tint: "from-blue-500/15 to-blue-500/5" },
 ];
 
 const RemoteJobsSection = () => {

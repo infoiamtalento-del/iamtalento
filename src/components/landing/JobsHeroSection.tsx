@@ -148,7 +148,7 @@ const JobsHeroSection = () => {
           <span className="hidden sm:inline text-muted-foreground/40">|</span>
           <Link
             to="/assessments"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-red-600 hover:text-red-700 hover:underline"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/90 hover:underline"
           >
             <FileBarChart className="h-4 w-4" />
             Get Your Career Intelligence Report
