@@ -245,7 +245,7 @@ export const ProSupportView: React.FC<ProSupportViewProps> = ({ onToast }) => {
             </div>
 
             <div className="mt-4 overflow-x-auto">
-              <table className="w-full text-xs min-w-[640px]">
+              <table className="w-full text-xs table-fixed">
                 <thead>
                   <tr className="border-b border-border text-left text-[10px] uppercase tracking-wide text-muted-foreground">
                     <th className="py-2.5 pr-3 font-semibold">Ticket ID</th>
@@ -260,10 +260,10 @@ export const ProSupportView: React.FC<ProSupportViewProps> = ({ onToast }) => {
                 <tbody>
                   {tickets.map((t) => (
                     <tr key={t.id} className="border-b border-border/60 last:border-0 hover:bg-secondary/40 transition-colors">
-                      <td className="py-3 pr-3 font-semibold text-foreground whitespace-nowrap">{t.id}</td>
-                      <td className="py-3 pr-3 text-foreground min-w-[140px]">{t.subject}</td>
-                      <td className="py-3 pr-3 text-muted-foreground whitespace-nowrap">{t.category}</td>
-                      <td className="py-3 pr-3 text-muted-foreground whitespace-nowrap">{t.created}</td>
+                      <td className="py-3 pr-3 font-semibold text-foreground">{t.id}</td>
+                      <td className="py-3 pr-3 text-foreground">{t.subject}</td>
+                      <td className="py-3 pr-3 text-muted-foreground">{t.category}</td>
+                      <td className="py-3 pr-3 text-muted-foreground">{t.created}</td>
                       <td className="py-3 pr-3">
                         <span className={cn("inline-flex whitespace-nowrap rounded-full border px-2.5 py-0.5 text-[10px] font-semibold", STATUS_STYLES[t.status])}>{t.status}</span>
                       </td>
