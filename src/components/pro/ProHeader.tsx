@@ -92,6 +92,26 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
 
   const navItems = currentRole === "candidate" ? candidateNavItems : employerNavItems;
 
+  // Profile dropdown menu (matches the approved reference list)
+  type MenuEntry =
+    | { kind: "view"; id: ProView; label: string; icon: React.ElementType; badge?: number; pill?: boolean }
+    | { kind: "action"; key: string; label: string; icon: React.ElementType };
+
+  const candidateMenuItems: MenuEntry[] = [
+    { kind: "view", id: "profile", label: "My Profile", icon: Users, pill: true },
+    { kind: "view", id: "dash", label: "Dashboard", icon: SlidersHorizontal },
+    { kind: "view", id: "cert", label: "My Assessments", icon: GraduationCap },
+    { kind: "view", id: "upd", label: "Notifications", icon: Bell, badge: unreadCount },
+    { kind: "view", id: "port", label: "Portfolio", icon: FolderKanban },
+    { kind: "view", id: "resume", label: "AI Resume Builder", icon: Bot },
+    { kind: "action", key: "certificate", label: "Download Certificate", icon: Award },
+    { kind: "view", id: "wallet", label: "Wallet", icon: Wallet },
+    { kind: "action", key: "support", label: "Support", icon: Headphones },
+  ];
+
+  const menuItems: MenuEntry[] = currentRole === "candidate" ? candidateMenuItems : employerNavItems.map((item) => ({ kind: "view", ...item }));
+
+
   return (
     <header className="sticky top-0 z-40 bg-white/95 dark:bg-card/95 backdrop-blur-md border-b border-border/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
