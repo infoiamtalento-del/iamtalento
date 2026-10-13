@@ -1,4 +1,4 @@
-.pro-job-detail { --primary:var(--job-brand); --primary-foreground:0 0% 100%; --ring:var(--job-brand); --foreground:var(--job-ink); --muted-foreground:var(--job-muted); --border:var(--job-border); --input:var(--job-border); --accent:var(--job-tint); --accent-foreground:var(--job-brand); color:hsl(var(--job-ink)); max-width:1100px; margin:auto; font-size:12px; line-height:1.65; }
+.pro-job-detail { --primary:var(--job-brand); --primary-foreground:0 0% 100%; --ring:var(--job-brand); --foreground:var(--job-ink); --muted-foreground:var(--job-muted); --border:var(--job-border); --input:var(--job-border); --accent:var(--job-tint); --accent-foreground:var(--job-brand); color:hsl(var(--job-ink)); width:100%; font-size:12px; line-height:1.65; }
 .jd-toolbar { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:20px; }
 .jd-breadcrumb { color:hsl(var(--job-muted)); font-size:11px; }
 .jd-buttons { display:flex; gap:8px; }
