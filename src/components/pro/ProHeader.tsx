@@ -316,7 +316,7 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
                     className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 cursor-pointer text-left transition-colors"
                   >
                     {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-                    <span>{isDarkMode ? "Light Theme" : "Dark Theme"}</span>
+                    <span>Light / Dark</span>
                   </button>
 
                   <button
