@@ -298,14 +298,15 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
                 <div className="pt-3 border-t border-slate-100 space-y-1">
                   <button
                     onClick={() => {
-                      onSwitchRole(currentRole === "candidate" ? "employer" : "candidate");
+                      onToggleTheme();
                       setIsMenuOpen(false);
                     }}
                     className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 cursor-pointer text-left transition-colors"
                   >
-                    <ArrowRightLeft className="h-4 w-4" />
-                    <span>Switch to {currentRole === "candidate" ? "Employer (Super30)" : "Candidate (Vignesh)"}</span>
+                    {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                    <span>Light / Dark</span>
                   </button>
+
 
                   <button
                     onClick={() => {
