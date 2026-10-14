@@ -123,8 +123,9 @@ const TalentoPro: React.FC = () => {
   const currentRole: "candidate" | "employer" = currentUser.role || "candidate";
 
   const [activeView, setActiveView] = useState<ProView>(() =>
-    currentRole === "employer" ? "dash" : "jobs"
+    currentRole === "employer" ? "cp" : "jobs"
   );
+  const [editingCp, setEditingCp] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
   // Storage Synced Jobs & Applications
@@ -216,7 +217,7 @@ const TalentoPro: React.FC = () => {
 
   const effectiveView: ProView = useMemo(() => {
     if (currentRole === "employer") {
-      return employerViews.includes(activeView) ? activeView : "dash";
+      return employerViews.includes(activeView) ? activeView : "cp";
     }
     return candidateViews.includes(activeView) ? activeView : "jobs";
   }, [currentRole, activeView]);
