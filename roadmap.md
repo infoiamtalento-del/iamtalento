@@ -1,8 +1,8 @@
 # Roadmap
 
 ## Candidate header — main site options
-- Replace candidate quick links with Browse Jobs, Assessments, Learning, Pricing, Events and Products, sharing dropdown content with the main site — in progress
-- Preserve logo, account dropdown and employer navigation; verify links and dropdowns across screen widths — pending
+- Replace candidate quick links with Browse Jobs, Assessments, Learning, Pricing, Events and Products, sharing dropdown content with the main site — done
+- Preserve logo, account dropdown and employer navigation; verify links and dropdowns across screen widths — done; Pricing, Events, both Products groups, Browse Jobs and account menu checked at 1496, 890 and 390 widths without overflow or runtime errors
 
 ## Demo profile — complete sections and availability
 - Remove left rail and quote, center the profile, and move availability before Contact Candidate — implemented
