@@ -1,10 +1,10 @@
 .demo-dashboard {
   --dp-page: 220 20% 98%; --dp-ink: 229 36% 16%; --dp-muted: 222 17% 48%;
-  --dp-red: 12 100% 54%; --dp-blue: 212 100% 50%; --dp-violet: 257 92% 63%; --dp-green: 156 70% 42%;
+  --dp-red: 211.3 86.4% 37.5%; --dp-blue: 211.3 86.4% 37.5%; --dp-violet: 257 92% 63%; --dp-green: 156 70% 42%;
   --dp-col: 940px;
   --dp-premium: 18 25% 13%; --dp-gold: 37 95% 62%;
   --dp-shadow: 0 4px 24px hsl(var(--dp-ink) / .025);
-  --primary: var(--dp-red); --foreground: var(--dp-ink); --muted-foreground: var(--dp-muted);
+  --primary: 211.3 86.4% 37.5%; --primary-foreground: 0 0% 100%; --foreground: var(--dp-ink); --muted-foreground: var(--dp-muted); --ring: 211.3 86.4% 37.5%;
   background: hsl(var(--dp-page)); color: hsl(var(--dp-ink)); min-height: 100vh; font-size: 12px; letter-spacing: 0;
 }
 .demo-dashboard h1,.demo-dashboard h2,.demo-dashboard h3 { color: hsl(var(--dp-ink)); letter-spacing: 0; }
