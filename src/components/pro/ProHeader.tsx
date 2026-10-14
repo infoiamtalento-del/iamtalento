@@ -87,7 +87,7 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 dark:bg-card/95 backdrop-blur-md border-b border-border/80">
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 min-h-16 flex flex-wrap items-center justify-between gap-x-4 gap-y-0 py-3 2xl:flex-nowrap 2xl:py-0">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 min-h-16 flex flex-wrap items-center justify-between gap-x-4 gap-y-0 py-3 xl:flex-nowrap xl:py-0">
         {/* Brand Logo & Tag */}
         <div className="flex items-center gap-3">
           <Link to="/" className="flex items-center gap-2 group">
@@ -155,7 +155,7 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
                   currentUser.name.charAt(0).toUpperCase()
                 )}
               </div>
-              <span className="text-xs font-bold text-slate-800 max-w-[100px] sm:max-w-[140px] truncate">
+              <span className="hidden sm:inline text-xs font-bold text-slate-800 max-w-[100px] sm:max-w-[140px] truncate">
                 {currentUser.name}
               </span>
               <ChevronDown className={cn("h-3.5 w-3.5 text-slate-400 transition-transform", isMenuOpen && "rotate-180")} />

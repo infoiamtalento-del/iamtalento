@@ -10,7 +10,7 @@ interface Props { jobsActive: boolean; onBrowseJobs: () => void; }
 
 export function ProSiteNavigation({ jobsActive, onBrowseJobs }: Props) {
   const [open, setOpen] = useState<DropdownId | null>(null);
-  return <nav aria-label="Candidate main navigation" className="order-3 flex w-full min-w-0 items-center gap-1 overflow-x-auto border-t border-border py-2 2xl:order-none 2xl:w-auto 2xl:border-0 2xl:py-0">
+  return <nav aria-label="Candidate main navigation" className="order-3 flex w-full min-w-0 items-center gap-1 overflow-x-auto border-t border-border py-2 xl:order-none xl:w-auto xl:border-0 xl:py-0">
     {navLinks.map(link => {
       const id = link.dropdownId;
       const classes = "h-9 shrink-0 px-3 text-xs font-medium text-muted-foreground hover:bg-primary/5 hover:text-primary";
