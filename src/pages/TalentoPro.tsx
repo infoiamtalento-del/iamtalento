@@ -36,7 +36,6 @@ import { ProEmployerViews } from "@/components/pro/ProEmployerViews";
 import { ProEmployerProfileView } from "@/components/pro/ProEmployerProfileView";
 import { ProDrawers } from "@/components/pro/ProDrawers";
 import { ProAiAssistant } from "@/components/pro/ProAiAssistant";
-import { ProEmployerSidebar } from "@/components/pro/ProEmployerSidebar";
 import { ProEmployerAccountView } from "@/components/pro/ProEmployerAccountView";
 
 interface ToastMessage {
@@ -598,8 +597,7 @@ const TalentoPro: React.FC = () => {
       />
 
       {/* Main Content View Switcher */}
-      <main className={cn("flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8", currentRole === "employer" && "flex gap-7")}>
-        {currentRole === "employer" && <ProEmployerSidebar activeView={effectiveView} onNavigate={(view) => { setDrawerState(null); setActiveView(view); }} onLogout={() => handleSwitchRole("candidate")} unreadCount={unreadCount} />}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8">
         <div className="min-w-0 flex-1">
         {selectedJob ? <ProJobDetail key={selectedJob.id} job={selectedJob} user={currentUser} jobs={jobs} applications={apps} onBack={() => setDrawerState(null)} onOpenJob={(id) => { setDrawerState({ type: "job", id }); window.scrollTo({ top: 0 }); }} onApply={handleApplyJob} onSave={handleSaveJob} /> : (
         <AnimatePresence mode="wait">
