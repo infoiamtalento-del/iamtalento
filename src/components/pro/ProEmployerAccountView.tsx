@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { ProUser } from "@/data/proData";
+import { formatINR, type ProUser } from "@/data/proData";
 import type { ProView } from "./proTypes";
 import { employerMenuItems } from "./employerMenu";
 
-interface Props { view: ProView; user: ProUser; onNavigate: (view: ProView) => void }
+interface Props { view: ProView; user: ProUser; onNavigate: (view: ProView) => void; onOpenReceipt: (id: string) => void }
 
-export function ProEmployerAccountView({ view, user, onNavigate }: Props) {
+export function ProEmployerAccountView({ view, user, onNavigate, onOpenReceipt }: Props) {
   const entry = employerMenuItems.find(item => item.id === view);
   if (!entry) return null;
   const Icon = entry.icon;
@@ -32,6 +32,13 @@ export function ProEmployerAccountView({ view, user, onNavigate }: Props) {
       {view === "interviews" && <div className="space-y-4"><h2 className="font-display text-lg font-semibold">Interview Scheduling</h2><p className="text-sm text-muted-foreground">Select an applicant to schedule an interview. Automated AI interviews are not enabled yet.</p><Button onClick={() => onNavigate("pipe")}>View Job Applications<ArrowRight /></Button></div>}
       {view === "advertise" && <div className="space-y-4"><h2 className="font-display text-lg font-semibold">Promote Your Company</h2><p className="text-sm text-muted-foreground">No advertising campaigns yet. Contact support for advertising enquiries.</p><Button onClick={() => onNavigate("support")}>Contact Support<ArrowRight /></Button></div>}
       {view === "subscription" && <div className="space-y-4"><h2 className="font-display text-lg font-semibold">Employer Plans</h2><p className="text-sm text-muted-foreground">No active subscription is connected to this demo account.</p><Button asChild><Link to="/pricing?tab=employers">Explore Pricing<ArrowRight /></Link></Button></div>}
+      {view === "payment-history" && <div className="divide-y divide-border">
+        {(user.wal?.hist || []).length === 0 && <p className="text-sm text-muted-foreground">No payments recorded yet.</p>}
+        {(user.wal?.hist || []).map(tx => <div key={tx.id} className="flex flex-wrap items-center justify-between gap-4 py-5">
+          <div className="min-w-0"><p className="font-semibold text-sm text-foreground">{tx.desc}</p><p className="mt-1 text-xs text-muted-foreground">{new Date(tx.at).toLocaleDateString("en-GB")} · {tx.via} · {tx.id}</p></div>
+          <div className="flex items-center gap-4"><span className="text-sm font-semibold text-foreground">{formatINR(tx.amt)}</span><Button variant="outline" size="sm" onClick={() => onOpenReceipt(tx.id)}>View Receipt</Button></div>
+        </div>)}
+      </div>}
     </section>
   );
 }

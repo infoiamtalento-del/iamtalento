@@ -776,9 +776,8 @@ const TalentoPro: React.FC = () => {
             {/* EMPLOYER VIEWS */}
             {currentRole === "employer" && (
               <>
-                {["account", "employer-assessments", "interviews", "advertise", "subscription", "settings"].includes(effectiveView) && <ProEmployerAccountView view={effectiveView} user={currentUser} onNavigate={setActiveView} />}
+                {["account", "employer-assessments", "interviews", "advertise", "subscription", "settings", "payment-history"].includes(effectiveView) && <ProEmployerAccountView view={effectiveView} user={currentUser} onNavigate={setActiveView} onOpenReceipt={(txId) => setDrawerState({ type: "receipt", txId })} />}
                 {effectiveView === "support" && <ProSupportView onToast={addToast} />}
-                {effectiveView === "payment-history" && <ProWalletView user={currentUser} onUpdateWallet={handleUpdateWallet} onOpenDrawer={setDrawerState} onToast={addToast} />}
                 {effectiveView === "dash" && (
                   <ProDashboardView
                     user={currentUser}
