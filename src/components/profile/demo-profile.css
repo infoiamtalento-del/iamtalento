@@ -1,6 +1,6 @@
 .demo-dashboard {
   --dp-page: 220 20% 98%; --dp-ink: 229 36% 16%; --dp-muted: 222 17% 48%;
-  --dp-red: 211.3 86.4% 37.5%; --dp-blue: 211.3 86.4% 37.5%; --dp-violet: 257 92% 63%; --dp-green: 156 70% 42%;
+  --dp-red: 211.3 86.4% 37.5%; --dp-blue: 211.3 86.4% 37.5%; --dp-violet: 211.3 86.4% 37.5%; --dp-green: 156 70% 42%;
   --dp-col: 940px;
   --dp-premium: 18 25% 13%; --dp-gold: 37 95% 62%;
   --dp-shadow: 0 4px 24px hsl(var(--dp-ink) / .025);
