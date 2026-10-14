@@ -36,7 +36,6 @@ import { ProEmployerViews } from "@/components/pro/ProEmployerViews";
 import { ProEmployerProfileView } from "@/components/pro/ProEmployerProfileView";
 import { ProDrawers } from "@/components/pro/ProDrawers";
 import { ProAiAssistant } from "@/components/pro/ProAiAssistant";
-import { ProEmployerSidebar } from "@/components/pro/ProEmployerSidebar";
 import { ProEmployerAccountView } from "@/components/pro/ProEmployerAccountView";
 
 interface ToastMessage {
