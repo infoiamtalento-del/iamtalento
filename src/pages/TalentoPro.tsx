@@ -33,6 +33,7 @@ import { ProVerifiedView } from "@/components/pro/ProVerifiedView";
 import { ProSupportView } from "@/components/pro/ProSupportView";
 import { ProDiscoverView } from "@/components/pro/ProDiscoverView";
 import { ProEmployerViews } from "@/components/pro/ProEmployerViews";
+import { ProEmployerProfileView } from "@/components/pro/ProEmployerProfileView";
 import { ProDrawers } from "@/components/pro/ProDrawers";
 import { ProAiAssistant } from "@/components/pro/ProAiAssistant";
 import { ProEmployerSidebar } from "@/components/pro/ProEmployerSidebar";
@@ -123,8 +124,9 @@ const TalentoPro: React.FC = () => {
   const currentRole: "candidate" | "employer" = currentUser.role || "candidate";
 
   const [activeView, setActiveView] = useState<ProView>(() =>
-    currentRole === "employer" ? "dash" : "jobs"
+    currentRole === "employer" ? "cp" : "jobs"
   );
+  const [editingCp, setEditingCp] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
   // Storage Synced Jobs & Applications
@@ -216,7 +218,7 @@ const TalentoPro: React.FC = () => {
 
   const effectiveView: ProView = useMemo(() => {
     if (currentRole === "employer") {
-      return employerViews.includes(activeView) ? activeView : "dash";
+      return employerViews.includes(activeView) ? activeView : "cp";
     }
     return candidateViews.includes(activeView) ? activeView : "jobs";
   }, [currentRole, activeView]);
@@ -294,7 +296,8 @@ const TalentoPro: React.FC = () => {
   const handleSwitchRole = (role: "candidate" | "employer") => {
     const email = role === "employer" ? "demo.employer@talento.app" : "demo.candidate@talento.app";
     setSessionEmail(email);
-    setActiveView(role === "employer" ? "dash" : "jobs");
+    setActiveView(role === "employer" ? "cp" : "jobs");
+    setEditingCp(false);
     setDrawerState(null);
     addToast(`Switched account to ${role === "employer" ? "Super30 (Employer)" : "Vignesh (Candidate)"}`);
   };
@@ -791,10 +794,20 @@ const TalentoPro: React.FC = () => {
                   />
                 )}
 
+                {effectiveView === "cp" && !editingCp && (
+                  <ProEmployerProfileView
+                    user={currentUser}
+                    jobs={jobs}
+                    onEdit={() => setEditingCp(true)}
+                    onToast={addToast}
+                    onOpenJob={(id) => setDrawerState({ type: "job", id })}
+                  />
+                )}
+
                 {(effectiveView === "pipe" ||
                   effectiveView === "post" ||
                   effectiveView === "talent" ||
-                  effectiveView === "cp") && (
+                  (effectiveView === "cp" && editingCp)) && (
                   <ProEmployerViews
                     view={effectiveView}
                     user={currentUser}
@@ -802,6 +815,7 @@ const TalentoPro: React.FC = () => {
                     applications={apps}
                     onSaveCompanyProfile={(cp) => {
                       handleUpdateUser({ ...currentUser, cp });
+                      setEditingCp(false);
                     }}
                     onPublishJob={handlePublishJob}
                     onUpdateApplicantStage={handleUpdateApplicantStage}
