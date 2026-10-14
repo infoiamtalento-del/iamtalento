@@ -30,6 +30,7 @@ import { ProView } from "./proTypes";
 import { cn } from "@/lib/utils";
 import siteLogo from "@/assets/I-am-Talento-2.png.asset.json";
 import { employerMenuItems } from "./employerMenu";
+import { ProSiteNavigation } from "./ProSiteNavigation";
 
 interface ProHeaderProps {
   currentUser: ProUser;
@@ -64,35 +65,6 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const candidateNavItems: { id: ProView; label: string; icon: React.ElementType; badge?: number }[] = [
-    { id: "profile", label: "My Profile", icon: Users },
-    { id: "jobs", label: "Find Jobs", icon: Search },
-    { id: "port", label: "Portfolio", icon: FolderKanban },
-    { id: "upd", label: "Notifications", icon: Bell, badge: unreadCount },
-    { id: "dash", label: "Dashboard", icon: SlidersHorizontal },
-    { id: "disc", label: "Discover", icon: Compass },
-    { id: "saved", label: "Saved Roles", icon: Star, badge: savedCount },
-    { id: "applied", label: "Applications", icon: FileText },
-    { id: "cert", label: "Certifications", icon: GraduationCap },
-    { id: "resume", label: "AI Resume Builder", icon: Bot },
-    { id: "ver", label: "Verified Profile", icon: ShieldCheck },
-    { id: "wallet", label: "Wallet", icon: Wallet },
-  ];
-
-  const employerNavItems: { id: ProView; label: string; icon: React.ElementType; badge?: number }[] = [
-    { id: "cp", label: "Company Profile", icon: Building2 },
-    { id: "talent", label: "Find Talent", icon: Users },
-    { id: "port", label: "Portfolio", icon: FolderKanban },
-    { id: "notif", label: "Notifications", icon: Bell, badge: unreadCount },
-    { id: "dash", label: "Analytics", icon: SlidersHorizontal },
-    { id: "pipe", label: "Pipeline", icon: Briefcase },
-    { id: "post", label: "Post Job", icon: Plus },
-    { id: "ver", label: "Verified Company", icon: ShieldCheck },
-    { id: "wallet", label: "Wallet", icon: Wallet },
-  ];
-
-  const navItems = currentRole === "candidate" ? candidateNavItems : employerNavItems;
-
   // Profile dropdown menu (matches the approved reference list)
   type MenuEntry =
     | { kind: "view"; id: ProView; label: string; icon: React.ElementType; badge?: number; pill?: boolean }
@@ -115,7 +87,7 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 dark:bg-card/95 backdrop-blur-md border-b border-border/80">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 min-h-16 flex flex-wrap items-center justify-between gap-x-4 gap-y-0 py-3 2xl:flex-nowrap 2xl:py-0">
         {/* Brand Logo & Tag */}
         <div className="flex items-center gap-3">
           <Link to="/" className="flex items-center gap-2 group">
@@ -152,36 +124,10 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
           </div>
         </div>
 
-        {/* Desktop Quick Nav */}
-        <nav className={cn("hidden items-center gap-1", currentRole === "candidate" && "lg:flex")}>
-          {navItems.slice(0, 5).map((item) => {
-            const Icon = item.icon;
-            const isActive = activeView === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => setActiveView(item.id)}
-                className={cn(
-                  "relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer",
-                  isActive
-                    ? "bg-primary/10 text-primary font-bold"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/80"
-                )}
-              >
-                <Icon className="h-3.5 w-3.5" />
-                <span>{item.label}</span>
-                {item.badge != null && item.badge > 0 ? (
-                  <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-primary text-white">
-                    {item.badge}
-                  </span>
-                ) : null}
-              </button>
-            );
-          })}
-        </nav>
+        {currentRole === "candidate" && <ProSiteNavigation jobsActive={activeView === "jobs"} onBrowseJobs={() => setActiveView("jobs")} />}
 
         {/* Right Controls: Notification Bell & Profile Dropdown */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="ml-auto flex items-center gap-2 sm:gap-3">
           <button
             type="button"
             onClick={() => setActiveView(currentRole === "candidate" ? "upd" : "notif")}
