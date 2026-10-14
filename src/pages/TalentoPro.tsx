@@ -792,10 +792,20 @@ const TalentoPro: React.FC = () => {
                   />
                 )}
 
+                {effectiveView === "cp" && !editingCp && (
+                  <ProEmployerProfileView
+                    user={currentUser}
+                    jobs={jobs}
+                    onEdit={() => setEditingCp(true)}
+                    onToast={addToast}
+                    onOpenJob={(id) => setDrawerState({ type: "job", id })}
+                  />
+                )}
+
                 {(effectiveView === "pipe" ||
                   effectiveView === "post" ||
                   effectiveView === "talent" ||
-                  effectiveView === "cp") && (
+                  (effectiveView === "cp" && editingCp)) && (
                   <ProEmployerViews
                     view={effectiveView}
                     user={currentUser}
