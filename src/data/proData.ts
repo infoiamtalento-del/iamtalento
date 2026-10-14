@@ -256,41 +256,7 @@ export const DEFAULT_USERS: Record<string, ProUser> = {
   },
 };
 
-export const DEFAULT_APPS: ProApplication[] = [
-  {
-    id: 1001,
-    jid: 1,
-    who: "demo.candidate@talento.app",
-    name: "Vignesh",
-    exp: 3,
-    sk: ["React", "TypeScript", "SQL"],
-    ce: ["Meta Certified Frontend Developer"],
-    as: { React: 88, SQL: 82 },
-    st: "Shortlisted",
-    at: Date.now() - 86400000 * 1.5,
-    cn: "Very excited to bring my experience building design systems at scale to Zoho.",
-    upd: [
-      { msg: "Application received. 24-hour review SLA activated.", at: Date.now() - 86400000 * 1.4, auto: true },
-      { msg: "Your profile has been shortlisted by the engineering lead. Technical interview round is scheduled.", at: Date.now() - 86400000 * 0.8 },
-    ],
-  },
-  {
-    id: 1002,
-    jid: 3,
-    who: "demo.candidate@talento.app",
-    name: "Vignesh",
-    exp: 3,
-    sk: ["React", "TypeScript", "SQL"],
-    ce: ["AWS Certified Cloud Practitioner"],
-    as: { React: 88 },
-    st: "Applied",
-    at: Date.now() - 3600000 * 14,
-    cn: "Looking forward to contributing to Razorpay's high-frequency payments frontend.",
-    upd: [
-      { msg: "Application received. Employer notified of 24h SLA response window.", at: Date.now() - 3600000 * 14, auto: true },
-    ],
-  },
-];
+export const DEFAULT_APPS: ProApplication[] = [];
 
 export const POPULAR_CERTS = [
   ["Google Data Analytics", "Coursera"],

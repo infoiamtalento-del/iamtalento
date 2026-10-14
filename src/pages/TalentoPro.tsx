@@ -174,7 +174,9 @@ const TalentoPro: React.FC = () => {
       const val = localStorage.getItem("tq_apps");
       if (!val) return DEFAULT_APPS;
       const parsed = JSON.parse(val);
-      if (Array.isArray(parsed)) return parsed;
+      if (Array.isArray(parsed)) {
+        return parsed.filter((a) => a && a.id !== 1001 && a.id !== 1002);
+      }
     } catch {}
     return DEFAULT_APPS;
   });

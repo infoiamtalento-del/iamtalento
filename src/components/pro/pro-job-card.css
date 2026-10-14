@@ -1,7 +1,5 @@
 .pro-job-card-container { container-type:inline-size; min-width:0; }
 .pro-job-card { --primary:var(--job-action); --foreground:var(--job-ink); --accent:var(--job-tint); --accent-foreground:var(--job-action); --input:var(--job-border); position:relative; overflow:hidden; height:100%; border:1px solid hsl(var(--job-border)); border-radius:20px; padding:20px 18px 14px; background:hsl(var(--job-surface)); box-shadow:var(--job-shadow); color:hsl(var(--job-ink)); letter-spacing:0; }
-.pro-job-card:before { content:""; position:absolute; inset:0; background:hsl(var(--job-tint)); clip-path:polygon(0 0,12% 0,0 10%); pointer-events:none; }
-.pro-job-card:after { content:""; position:absolute; bottom:-60px; right:-55px; width:180px; height:140px; border-radius:50%; background:hsl(var(--job-tint) / .65); pointer-events:none; }
 .pj-header,.pj-details,.pj-skills,.pj-actions { position:relative; z-index:1; }
 .pj-header { display:grid; grid-template-columns:64px minmax(0,1fr) 60px; gap:12px; align-items:start; }
 .pj-logo { width:64px; height:64px; padding:10px; display:grid; place-items:center; background:hsl(var(--card)); border:1px solid hsl(var(--job-border) / .5); border-radius:16px; box-shadow:var(--job-shadow); }
