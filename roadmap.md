@@ -1,5 +1,9 @@
 # Roadmap
 
+## Employer account menu
+- Add the requested employer side menu and matching profile dropdown — done
+- Connect existing destinations and verify every menu option and layout — done; all 13 labels checked, receipts and demo logout verified, no desktop or phone overflow or runtime errors. AI interviews, advertising and subscriptions show honest inactive states rather than live services.
+
 ## Pro job description page
 - Add the reference-style full job page and connect all job-card clicks — done
 - Verify opening details, saving, applying, similar jobs, and returning to results — done; desktop and phone checked, no overflow or page errors, build OK

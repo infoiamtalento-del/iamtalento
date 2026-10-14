@@ -19,6 +19,13 @@ export type ProView =
   | "notif"
   | "pipe"
   | "post"
+  | "account"
+  | "employer-assessments"
+  | "interviews"
+  | "advertise"
+  | "subscription"
+  | "payment-history"
+  | "settings"
   | "support";
 
 export type ProDrawerState =
