@@ -49,7 +49,7 @@ export function ProEmployerProfileView({ user, jobs, onEdit, onToast, onOpenJob 
   const site = cp.site || "";
   const benefits: string[] = cp.ben || [];
 
-  const openJobs = jobs.filter((j) => j.status !== "closed");
+  const openJobs = jobs;
   const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]?.toUpperCase()).join("") || "CO";
 
   const stats = [
@@ -76,7 +76,6 @@ export function ProEmployerProfileView({ user, jobs, onEdit, onToast, onOpenJob 
           {/* Identity */}
           <div className="flex flex-col sm:flex-row gap-6 sm:gap-8">
             <Avatar className="h-32 w-32 shrink-0 border-4 border-card shadow-md rounded-3xl">
-              <AvatarImage src={cp.logo} alt={name} className="object-cover" />
               <AvatarFallback className="text-3xl font-bold bg-primary text-primary-foreground rounded-3xl">{initials}</AvatarFallback>
             </Avatar>
 
@@ -146,8 +145,8 @@ export function ProEmployerProfileView({ user, jobs, onEdit, onToast, onOpenJob 
         <div className="divide-y divide-border/60">
           {openJobs.slice(0, 5).map((job) => (
             <button
-              key={job.jid}
-              onClick={() => onOpenJob?.(job.jid)}
+              key={job.id}
+              onClick={() => onOpenJob?.(job.id)}
               className="w-full flex flex-wrap items-center justify-between gap-3 py-4 text-left group cursor-pointer"
             >
               <div className="flex items-center gap-3 min-w-0">
@@ -155,12 +154,12 @@ export function ProEmployerProfileView({ user, jobs, onEdit, onToast, onOpenJob 
                   <Briefcase className="h-4.5 w-4.5" />
                 </span>
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate">{job.title}</p>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">{job.loc} · {job.type} · {job.exp}</p>
+                  <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate">{job.t}</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{job.l} · {job.ty} · {job.e}+ yrs</p>
                 </div>
               </div>
               <span className="flex items-center gap-3 shrink-0">
-                <span className="text-xs font-semibold text-foreground">{formatINR(job.salMin)}–{formatINR(job.salMax)}</span>
+                <span className="text-xs font-semibold text-foreground">₹{job.a}–{job.b} LPA</span>
                 <ArrowRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
               </span>
             </button>
