@@ -20,7 +20,6 @@ import {
 import { getCandidatePhoto } from "@/data/portalAssets";
 import { ProView, ProDrawerState } from "@/components/pro/proTypes";
 import Navbar from "@/components/layout/Navbar";
-import { ProSubNav } from "@/components/pro/ProSubNav";
 import { ProJobsView } from "@/components/pro/ProJobsView";
 import { ProJobDetail } from "@/components/pro/ProJobDetail";
 import { ProProfileView } from "@/components/pro/ProProfileView";
@@ -604,24 +603,8 @@ const TalentoPro: React.FC = () => {
         onSignOut={() => handleSwitchRole("candidate")}
       />
 
-      {/* Pro Sub-Navigation Bar */}
-      <div className="pt-16 sm:pt-[70px]">
-        <ProSubNav
-          currentUser={currentUser}
-          currentRole={currentRole}
-          activeView={effectiveView}
-          setActiveView={(view) => {
-            setDrawerState(null);
-            setActiveView(view);
-          }}
-          onSwitchRole={handleSwitchRole}
-          unreadCount={unreadCount}
-          savedCount={savedCount}
-        />
-      </div>
-
       {/* Main Content View Switcher */}
-      <main className={cn("flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8", currentRole === "employer" && "flex gap-7")}>
+      <main className={cn("flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 pt-24 pb-8", currentRole === "employer" && "flex gap-7")}>
         {currentRole === "employer" && <ProEmployerSidebar activeView={effectiveView} onNavigate={(view) => { setDrawerState(null); setActiveView(view); }} onLogout={() => handleSwitchRole("candidate")} unreadCount={unreadCount} />}
         <div className="min-w-0 flex-1">
         {selectedJob ? <ProJobDetail key={selectedJob.id} job={selectedJob} user={currentUser} jobs={jobs} applications={apps} onBack={() => setDrawerState(null)} onOpenJob={(id) => { setDrawerState({ type: "job", id }); window.scrollTo({ top: 0 }); }} onApply={handleApplyJob} onSave={handleSaveJob} /> : (
