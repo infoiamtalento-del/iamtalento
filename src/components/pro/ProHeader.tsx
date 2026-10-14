@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { ChevronRight } from "lucide-react";
+import { ProductMenu, siteNavLinks, dropdownItemsMap, type DropdownId } from "@/components/layout/HeaderMenuContent";
 import {
   Briefcase,
   Search,
