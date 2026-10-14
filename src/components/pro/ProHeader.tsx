@@ -1,29 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { ChevronRight } from "lucide-react";
+import { ProductMenu, siteNavLinks, dropdownItemsMap, type DropdownId } from "@/components/layout/HeaderMenuContent";
 import {
-  Briefcase,
-  Search,
-  Building2,
   Users,
-  Compass,
   Bell,
-  Star,
-  FileText,
   GraduationCap,
   Bot,
-  ShieldCheck,
   Wallet,
   FolderKanban,
-  Plus,
   SlidersHorizontal,
   ChevronDown,
   Moon,
   Sun,
   LogOut,
-  Zap,
   Headphones,
   Award,
-  CheckCircle2,
 } from "lucide-react";
 import { ProUser } from "@/data/proData";
 import { ProView } from "./proTypes";
@@ -63,35 +55,19 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
   avatarSrc,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<DropdownId | null>(null);
+  const navRef = useRef<HTMLElement | null>(null);
 
-  const candidateNavItems: { id: ProView; label: string; icon: React.ElementType; badge?: number }[] = [
-    { id: "profile", label: "My Profile", icon: Users },
-    { id: "jobs", label: "Find Jobs", icon: Search },
-    { id: "port", label: "Portfolio", icon: FolderKanban },
-    { id: "upd", label: "Notifications", icon: Bell, badge: unreadCount },
-    { id: "dash", label: "Dashboard", icon: SlidersHorizontal },
-    { id: "disc", label: "Discover", icon: Compass },
-    { id: "saved", label: "Saved Roles", icon: Star, badge: savedCount },
-    { id: "applied", label: "Applications", icon: FileText },
-    { id: "cert", label: "Certifications", icon: GraduationCap },
-    { id: "resume", label: "AI Resume Builder", icon: Bot },
-    { id: "ver", label: "Verified Profile", icon: ShieldCheck },
-    { id: "wallet", label: "Wallet", icon: Wallet },
-  ];
-
-  const employerNavItems: { id: ProView; label: string; icon: React.ElementType; badge?: number }[] = [
-    { id: "cp", label: "Company Profile", icon: Building2 },
-    { id: "talent", label: "Find Talent", icon: Users },
-    { id: "port", label: "Portfolio", icon: FolderKanban },
-    { id: "notif", label: "Notifications", icon: Bell, badge: unreadCount },
-    { id: "dash", label: "Analytics", icon: SlidersHorizontal },
-    { id: "pipe", label: "Pipeline", icon: Briefcase },
-    { id: "post", label: "Post Job", icon: Plus },
-    { id: "ver", label: "Verified Company", icon: ShieldCheck },
-    { id: "wallet", label: "Wallet", icon: Wallet },
-  ];
-
-  const navItems = currentRole === "candidate" ? candidateNavItems : employerNavItems;
+  useEffect(() => {
+    if (!openDropdown) return;
+    const handler = (e: MouseEvent) => {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        setOpenDropdown(null);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [openDropdown]);
 
   // Profile dropdown menu (matches the approved reference list)
   type MenuEntry =
@@ -152,32 +128,62 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
           </div>
         </div>
 
-        {/* Desktop Quick Nav */}
-        <nav className={cn("hidden items-center gap-1", currentRole === "candidate" && "lg:flex")}>
-          {navItems.slice(0, 5).map((item) => {
-            const Icon = item.icon;
-            const isActive = activeView === item.id;
-            return (
+        {/* Main Site Navigation */}
+        <nav ref={navRef} className="hidden items-center gap-0.5 lg:flex" aria-label="Site">
+          {siteNavLinks.map((link) =>
+            link.dropdownId ? (
+              <div key={link.href} className="relative">
+                <button
+                  type="button"
+                  aria-expanded={openDropdown === link.dropdownId}
+                  onClick={() => setOpenDropdown(openDropdown === link.dropdownId ? null : link.dropdownId ?? null)}
+                  className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-secondary/80 transition-all cursor-pointer"
+                >
+                  {link.label}
+                  <ChevronDown className={cn("h-3 w-3 transition-transform", openDropdown === link.dropdownId && "rotate-180")} />
+                </button>
+                {openDropdown === link.dropdownId && (
+                  <div className={cn("absolute top-full mt-1 rounded-lg border bg-popover text-popover-foreground shadow-lg z-50 py-1 animate-fade-in", link.dropdownId === "products" ? "right-0 w-[640px] max-w-[calc(100vw-2rem)]" : "left-0 w-44")}>
+                    {link.dropdownId === "products" ? <ProductMenu /> : (
+                      dropdownItemsMap[link.dropdownId].map((item) => (
+                        <Link
+                          key={item.href}
+                          to={item.href}
+                          onClick={() => setOpenDropdown(null)}
+                          className="flex items-center gap-2 px-3.5 py-2.5 text-sm hover:bg-accent hover:text-accent-foreground transition-colors group"
+                        >
+                          <ChevronRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-accent-foreground transition-colors" />
+                          {item.label}
+                        </Link>
+                      ))
+                    )}
+                  </div>
+                )}
+              </div>
+            ) : link.href === "/jobs" && currentRole === "candidate" ? (
               <button
-                key={item.id}
-                onClick={() => setActiveView(item.id)}
+                key={link.href}
+                type="button"
+                onClick={() => setActiveView("jobs")}
                 className={cn(
-                  "relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer",
-                  isActive
+                  "px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer",
+                  activeView === "jobs"
                     ? "bg-primary/10 text-primary font-bold"
                     : "text-muted-foreground hover:text-foreground hover:bg-secondary/80"
                 )}
               >
-                <Icon className="h-3.5 w-3.5" />
-                <span>{item.label}</span>
-                {item.badge != null && item.badge > 0 ? (
-                  <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-primary text-white">
-                    {item.badge}
-                  </span>
-                ) : null}
+                {link.label}
               </button>
-            );
-          })}
+            ) : (
+              <Link
+                key={link.href}
+                to={link.href}
+                className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-secondary/80 transition-all"
+              >
+                {link.label}
+              </Link>
+            )
+          )}
         </nav>
 
         {/* Right Controls: Notification Bell & Profile Dropdown */}
