@@ -29,6 +29,7 @@ import { ProUser } from "@/data/proData";
 import { ProView } from "./proTypes";
 import { cn } from "@/lib/utils";
 import siteLogo from "@/assets/I-am-Talento-2.png.asset.json";
+import { employerMenuItems } from "./employerMenu";
 
 interface ProHeaderProps {
   currentUser: ProUser;
@@ -109,7 +110,7 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
     { kind: "action", key: "support", label: "Support", icon: Headphones },
   ];
 
-  const menuItems: MenuEntry[] = currentRole === "candidate" ? candidateMenuItems : employerNavItems.map((item): MenuEntry => ({ kind: "view", ...item }));
+  const menuItems: MenuEntry[] = currentRole === "candidate" ? candidateMenuItems : employerMenuItems.map((item): MenuEntry => ({ kind: "view", ...item, badge: item.id === "notif" ? unreadCount : undefined }));
 
 
   return (
@@ -152,7 +153,7 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
         </div>
 
         {/* Desktop Quick Nav */}
-        <nav className="hidden lg:flex items-center gap-1">
+        <nav className={cn("hidden items-center gap-1", currentRole === "candidate" && "lg:flex")}>
           {navItems.slice(0, 5).map((item) => {
             const Icon = item.icon;
             const isActive = activeView === item.id;
@@ -197,6 +198,8 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
           <div className="relative">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="Account menu"
+              aria-expanded={isMenuOpen}
               className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-full border border-slate-200/90 hover:border-slate-300 bg-white transition-all shadow-2xs cursor-pointer"
             >
               <div className="h-7 w-7 rounded-full bg-[#0d5cb2] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs overflow-hidden">
@@ -296,7 +299,7 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
 
                 {/* Footer Controls */}
                 <div className="pt-3 border-t border-slate-100 space-y-1">
-                  <button
+                  {currentRole === "candidate" && <button
                     onClick={() => {
                       onToggleTheme();
                       setIsMenuOpen(false);
@@ -305,7 +308,7 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
                   >
                     {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
                     <span>Light / Dark</span>
-                  </button>
+                  </button>}
 
                   <button
                     onClick={() => {
@@ -315,7 +318,7 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
                     className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-900 hover:bg-slate-100/80 cursor-pointer text-left transition-colors"
                   >
                     <LogOut className="h-4 w-4" />
-                    <span>Sign Out</span>
+                    <span>{currentRole === "employer" ? "Logout" : "Sign Out"}</span>
                   </button>
                 </div>
               </div>

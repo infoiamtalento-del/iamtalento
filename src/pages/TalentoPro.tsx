@@ -35,6 +35,8 @@ import { ProDiscoverView } from "@/components/pro/ProDiscoverView";
 import { ProEmployerViews } from "@/components/pro/ProEmployerViews";
 import { ProDrawers } from "@/components/pro/ProDrawers";
 import { ProAiAssistant } from "@/components/pro/ProAiAssistant";
+import { ProEmployerSidebar } from "@/components/pro/ProEmployerSidebar";
+import { ProEmployerAccountView } from "@/components/pro/ProEmployerAccountView";
 
 interface ToastMessage {
   id: number;
@@ -202,6 +204,14 @@ const TalentoPro: React.FC = () => {
     "wallet",
     "port",
     "ver",
+    "account",
+    "employer-assessments",
+    "interviews",
+    "advertise",
+    "subscription",
+    "payment-history",
+    "settings",
+    "support",
   ];
 
   const effectiveView: ProView = useMemo(() => {
@@ -583,7 +593,9 @@ const TalentoPro: React.FC = () => {
       />
 
       {/* Main Content View Switcher */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8">
+      <main className={cn("flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8", currentRole === "employer" && "flex gap-7")}>
+        {currentRole === "employer" && <ProEmployerSidebar activeView={effectiveView} onNavigate={(view) => { setDrawerState(null); setActiveView(view); }} onLogout={() => handleSwitchRole("candidate")} unreadCount={unreadCount} />}
+        <div className="min-w-0 flex-1">
         {selectedJob ? <ProJobDetail key={selectedJob.id} job={selectedJob} user={currentUser} jobs={jobs} applications={apps} onBack={() => setDrawerState(null)} onOpenJob={(id) => { setDrawerState({ type: "job", id }); window.scrollTo({ top: 0 }); }} onApply={handleApplyJob} onSave={handleSaveJob} /> : (
         <AnimatePresence mode="wait">
           <motion.div
@@ -764,6 +776,9 @@ const TalentoPro: React.FC = () => {
             {/* EMPLOYER VIEWS */}
             {currentRole === "employer" && (
               <>
+                {["account", "employer-assessments", "interviews", "advertise", "subscription", "settings"].includes(effectiveView) && <ProEmployerAccountView view={effectiveView} user={currentUser} onNavigate={setActiveView} />}
+                {effectiveView === "support" && <ProSupportView onToast={addToast} />}
+                {effectiveView === "payment-history" && <ProWalletView user={currentUser} onUpdateWallet={handleUpdateWallet} onOpenDrawer={setDrawerState} onToast={addToast} />}
                 {effectiveView === "dash" && (
                   <ProDashboardView
                     user={currentUser}
@@ -843,6 +858,7 @@ const TalentoPro: React.FC = () => {
           </motion.div>
         </AnimatePresence>
         )}
+        </div>
       </main>
 
       {/* Global Drawers & Modals */}
