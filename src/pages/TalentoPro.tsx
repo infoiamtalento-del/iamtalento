@@ -770,6 +770,7 @@ const TalentoPro: React.FC = () => {
                     jobs={jobs}
                     onOpenDrawer={setDrawerState}
                     onToast={addToast}
+                    onUpdateUser={handleUpdateUser}
                   />
                 )}
 
