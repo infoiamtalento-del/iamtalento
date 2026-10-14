@@ -296,7 +296,8 @@ const TalentoPro: React.FC = () => {
   const handleSwitchRole = (role: "candidate" | "employer") => {
     const email = role === "employer" ? "demo.employer@talento.app" : "demo.candidate@talento.app";
     setSessionEmail(email);
-    setActiveView(role === "employer" ? "dash" : "jobs");
+    setActiveView(role === "employer" ? "cp" : "jobs");
+    setEditingCp(false);
     setDrawerState(null);
     addToast(`Switched account to ${role === "employer" ? "Super30 (Employer)" : "Vignesh (Candidate)"}`);
   };
