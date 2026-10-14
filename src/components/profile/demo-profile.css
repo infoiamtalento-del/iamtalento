@@ -75,7 +75,7 @@
 .dp-badges i { padding:5px; border-radius:50%; }
 .dp-tone-red { color:hsl(var(--dp-red)); background:hsl(var(--dp-red) / .07); }
 .dp-tone-blue { color:hsl(var(--dp-blue)); background:hsl(var(--dp-blue) / .07); }
-.dp-tone-green { color:hsl(var(--dp-green)); background:hsl(var(--dp-green) / .07); }
+.dp-tone-green { color:hsl(var(--dp-blue)); background:hsl(var(--dp-blue) / .07); }
 .dp-tone-violet { color:hsl(var(--dp-violet)); background:hsl(var(--dp-violet) / .07); }
 .dp-quote { position:absolute; right:32px; top:28px; width:175px; }
 .dp-quote>svg { color:hsl(var(--dp-muted) / .7); fill:hsl(var(--dp-muted) / .7); }
