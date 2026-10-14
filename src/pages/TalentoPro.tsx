@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
+import { useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, AlertCircle, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -18,7 +19,8 @@ import {
 
 import { getCandidatePhoto } from "@/data/portalAssets";
 import { ProView, ProDrawerState } from "@/components/pro/proTypes";
-import { ProHeader } from "@/components/pro/ProHeader";
+import Navbar from "@/components/layout/Navbar";
+import { ProSubNav } from "@/components/pro/ProSubNav";
 import { ProJobsView } from "@/components/pro/ProJobsView";
 import { ProJobDetail } from "@/components/pro/ProJobDetail";
 import { ProProfileView } from "@/components/pro/ProProfileView";
@@ -123,9 +125,20 @@ const TalentoPro: React.FC = () => {
 
   const currentRole: "candidate" | "employer" = currentUser.role || "candidate";
 
-  const [activeView, setActiveView] = useState<ProView>(() =>
-    currentRole === "employer" ? "cp" : "jobs"
-  );
+  const [searchParams] = useSearchParams();
+  const [activeView, setActiveView] = useState<ProView>(() => {
+    const fromParam = searchParams.get("view") as ProView | null;
+    if (fromParam) return fromParam;
+    return currentRole === "employer" ? "cp" : "jobs";
+  });
+
+  useEffect(() => {
+    const fromParam = searchParams.get("view") as ProView | null;
+    if (fromParam) {
+      setActiveView(fromParam);
+    }
+  }, [searchParams]);
+
   const [editingCp, setEditingCp] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
@@ -580,22 +593,32 @@ const TalentoPro: React.FC = () => {
         />
       </Helmet>
 
-      {/* Global Pro Header */}
-      <ProHeader
-        currentUser={currentUser}
-        currentRole={currentRole}
-        activeView={effectiveView}
-        setActiveView={(view) => { setDrawerState(null); setActiveView(view); }}
-        onSwitchRole={handleSwitchRole}
-        isDarkMode={isDarkMode}
-        onToggleTheme={() => setIsDarkMode(!isDarkMode)}
+      {/* Site Main Menu Nav */}
+      <Navbar
+        userProfile={{
+          name: currentUser.name,
+          email: currentUser.email,
+          avatarSrc: getCandidatePhoto(currentUser.name),
+          role: currentRole,
+        }}
         onSignOut={() => handleSwitchRole("candidate")}
-        onSupport={() => setActiveView("support")}
-        onOpenCertificate={() => setDrawerState({ type: "certificate", key: "verified" })}
-        unreadCount={unreadCount}
-        savedCount={savedCount}
-        avatarSrc={getCandidatePhoto(currentUser.name)}
       />
+
+      {/* Pro Sub-Navigation Bar */}
+      <div className="pt-16 sm:pt-[70px]">
+        <ProSubNav
+          currentUser={currentUser}
+          currentRole={currentRole}
+          activeView={effectiveView}
+          setActiveView={(view) => {
+            setDrawerState(null);
+            setActiveView(view);
+          }}
+          onSwitchRole={handleSwitchRole}
+          unreadCount={unreadCount}
+          savedCount={savedCount}
+        />
+      </div>
 
       {/* Main Content View Switcher */}
       <main className={cn("flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8", currentRole === "employer" && "flex gap-7")}>

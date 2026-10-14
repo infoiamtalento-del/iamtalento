@@ -116,7 +116,17 @@ const dropdownItemsMap: Record<DropdownId, { label: string; href: string }[]> = 
   products: [],
 };
 
-const Navbar = () => {
+export interface NavbarProps {
+  userProfile?: {
+    name?: string;
+    email?: string;
+    avatarSrc?: string;
+    role?: string;
+  } | null;
+  onSignOut?: () => void;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<DropdownId | null>(null);
@@ -173,19 +183,43 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handler);
   }, [openDropdown, profileMenuOpen]);
 
+  const isProPage = location.pathname === "/talento-pro" || location.pathname === "/pro";
+
+  // Effective user profile
+  const effectiveProfile =
+    userProfile ??
+    (user
+      ? {
+          name: user.user_metadata?.full_name || user.email?.split("@")[0] || "User",
+          email: user.email || "",
+          avatarSrc: user.user_metadata?.avatar_url as string | undefined,
+          role: "candidate",
+        }
+      : isProPage
+      ? {
+          name: "Vignesh",
+          email: "demo.candidate@talento.app",
+          avatarSrc: undefined,
+          role: "candidate",
+        }
+      : null);
+
+  const isAuthenticated = Boolean(effectiveProfile);
+  const displayName = effectiveProfile?.name || "User";
+  const displayEmail = effectiveProfile?.email || "";
+  const avatarSrc = effectiveProfile?.avatarSrc;
+  const initials = (displayName.charAt(0) || "U").toUpperCase();
+
   const handleSignOut = async () => {
+    if (onSignOut) {
+      onSignOut();
+    }
     await supabase.auth.signOut();
     setUser(null);
     setProfileMenuOpen(false);
     toast.success("Signed out successfully");
     navigate("/");
   };
-
-  const displayName =
-    user?.user_metadata?.full_name ||
-    user?.email?.split("@")[0] ||
-    "User";
-  const initials = (displayName.charAt(0) || "U").toUpperCase();
 
   return (
     <header
@@ -249,7 +283,7 @@ const Navbar = () => {
             )
           )}
           <div className="flex items-center gap-2 ml-4 pl-4 border-l border-border">
-            {!user ? (
+            {!isAuthenticated ? (
               <Link to="/auth">
                 <Button size="sm" variant="outline" className="border-border hover:bg-accent font-semibold px-3.5">
                   Login
@@ -263,13 +297,15 @@ const Navbar = () => {
               </Button>
             </Link>
 
-            {user && (
+            {isAuthenticated && (
               <div className="flex items-center gap-2">
-                <Link to="/talento-pro">
-                  <Button size="sm" variant="ghost" className="text-xs font-bold text-primary bg-primary/10 hover:bg-primary/15 gap-1.5 h-8 px-2.5 rounded-lg">
-                    <Sparkles className="h-3.5 w-3.5" /> Pro
-                  </Button>
-                </Link>
+                {!isProPage && (
+                  <Link to="/talento-pro">
+                    <Button size="sm" variant="ghost" className="text-xs font-bold text-primary bg-primary/10 hover:bg-primary/15 gap-1.5 h-8 px-2.5 rounded-lg">
+                      <Sparkles className="h-3.5 w-3.5" /> Pro
+                    </Button>
+                  </Link>
+                )}
 
                 <div className="relative" ref={profileRef}>
                   <button
@@ -280,7 +316,11 @@ const Navbar = () => {
                     className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-full border border-border hover:border-primary/40 bg-card transition-all cursor-pointer shadow-2xs"
                   >
                     <div className="h-7 w-7 rounded-full bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center shrink-0 overflow-hidden">
-                      {initials}
+                      {avatarSrc ? (
+                        <img src={avatarSrc} alt={displayName} className="h-full w-full object-cover" />
+                      ) : (
+                        initials
+                      )}
                     </div>
                     <span className="text-xs font-bold text-foreground max-w-[110px] truncate">
                       {displayName}
@@ -291,12 +331,16 @@ const Navbar = () => {
                   {profileMenuOpen && (
                     <div className="absolute right-0 top-full mt-2 w-64 rounded-2xl border border-border bg-popover text-popover-foreground shadow-xl z-50 p-3 animate-in fade-in slide-in-from-top-2 duration-150">
                       <div className="flex items-center gap-2.5 pb-2.5 border-b border-border/80 px-1">
-                        <div className="h-9 w-9 rounded-full bg-primary text-primary-foreground font-bold text-sm flex items-center justify-center shrink-0">
-                          {initials}
+                        <div className="h-9 w-9 rounded-full bg-primary text-primary-foreground font-bold text-sm flex items-center justify-center shrink-0 overflow-hidden">
+                          {avatarSrc ? (
+                            <img src={avatarSrc} alt={displayName} className="h-full w-full object-cover" />
+                          ) : (
+                            initials
+                          )}
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="text-sm font-bold truncate text-foreground">{displayName}</div>
-                          <div className="text-[11px] text-muted-foreground truncate">{user.email}</div>
+                          <div className="text-[11px] text-muted-foreground truncate">{displayEmail}</div>
                         </div>
                       </div>
 
@@ -353,10 +397,14 @@ const Navbar = () => {
 
         {/* Mobile toggle & profile */}
         <div className="lg:hidden flex items-center gap-2">
-          {user ? (
+          {isAuthenticated ? (
             <Link to="/profile" className="flex items-center" aria-label="My Profile">
-              <div className="h-7 w-7 rounded-full bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center border border-border shadow-xs">
-                {initials}
+              <div className="h-7 w-7 rounded-full bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center border border-border shadow-xs overflow-hidden">
+                {avatarSrc ? (
+                  <img src={avatarSrc} alt={displayName} className="h-full w-full object-cover" />
+                ) : (
+                  initials
+                )}
               </div>
             </Link>
           ) : (
@@ -426,7 +474,7 @@ const Navbar = () => {
               )
             )}
             <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-border">
-              {!user ? (
+              {!isAuthenticated ? (
                 <Link to="/auth" onClick={() => setMobileOpen(false)}>
                   <Button variant="outline" className="w-full font-semibold">
                     Login
@@ -438,15 +486,19 @@ const Navbar = () => {
                   For Employers
                 </Button>
               </Link>
-              {user && (
+              {isAuthenticated && (
                 <div className="space-y-1.5 pt-2 border-t border-border">
                   <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-accent/50">
-                    <div className="h-8 w-8 rounded-full bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center shrink-0">
-                      {initials}
+                    <div className="h-8 w-8 rounded-full bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center shrink-0 overflow-hidden">
+                      {avatarSrc ? (
+                        <img src={avatarSrc} alt={displayName} className="h-full w-full object-cover" />
+                      ) : (
+                        initials
+                      )}
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="text-sm font-bold text-foreground truncate">{displayName}</div>
-                      <div className="text-[11px] text-muted-foreground truncate">{user.email}</div>
+                      <div className="text-[11px] text-muted-foreground truncate">{displayEmail}</div>
                     </div>
                   </div>
                   <Link
