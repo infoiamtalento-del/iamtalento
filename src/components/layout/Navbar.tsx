@@ -249,19 +249,21 @@ const Navbar = () => {
             )
           )}
           <div className="flex items-center gap-2 ml-4 pl-4 border-l border-border">
-            <Link to="/for-employers">
-              <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 border-0">
-                For Employers
-              </Button>
-            </Link>
-
             {!user ? (
               <Link to="/auth">
                 <Button size="sm" variant="outline" className="border-border hover:bg-accent font-semibold px-3.5">
                   Login
                 </Button>
               </Link>
-            ) : (
+            ) : null}
+
+            <Link to="/for-employers">
+              <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 border-0">
+                For Employers
+              </Button>
+            </Link>
+
+            {user && (
               <div className="flex items-center gap-2">
                 <Link to="/talento-pro">
                   <Button size="sm" variant="ghost" className="text-xs font-bold text-primary bg-primary/10 hover:bg-primary/15 gap-1.5 h-8 px-2.5 rounded-lg">
@@ -424,18 +426,19 @@ const Navbar = () => {
               )
             )}
             <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-border">
-              <Link to="/for-employers" onClick={() => setMobileOpen(false)}>
-                <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 border-0">
-                  For Employers
-                </Button>
-              </Link>
               {!user ? (
                 <Link to="/auth" onClick={() => setMobileOpen(false)}>
                   <Button variant="outline" className="w-full font-semibold">
                     Login
                   </Button>
                 </Link>
-              ) : (
+              ) : null}
+              <Link to="/for-employers" onClick={() => setMobileOpen(false)}>
+                <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 border-0">
+                  For Employers
+                </Button>
+              </Link>
+              {user && (
                 <div className="space-y-1.5 pt-2 border-t border-border">
                   <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-accent/50">
                     <div className="h-8 w-8 rounded-full bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center shrink-0">
