@@ -1,5 +1,10 @@
 # Roadmap
 
+## Demo profile — complete sections and availability
+- Remove left rail and quote, center the profile, and move availability before Contact Candidate — implemented
+- Add all eleven requested tabs and matching full-profile sections using shared demo content — implemented
+- Verify every tab, availability choices and desktop/phone layout — pending
+
 ## Employer account menu
 - Add the requested employer side menu and matching profile dropdown — done
 - Connect existing destinations and verify every menu option and layout — done; all 13 labels checked, receipts and demo logout verified, no desktop or phone overflow or runtime errors. AI interviews, advertising and subscriptions show honest inactive states rather than live services.

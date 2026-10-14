@@ -147,6 +147,9 @@ export const demoProfileDetails = {
   experiences: demoExperiences, educations: demoEducations, skills: demoSkills,
   projects: demoProjects, achievements: demoAchievements, certifications: demoCertifications,
   tools: demoTools, primaryLinks: demoPrimaryLinks,
+  languages: ["English", "Hindi", "Kannada"],
+  hobbies: ["Photography", "Hiking", "Reading", "Chess"],
+  interests: ["Open-source software", "Artificial intelligence", "Cloud architecture", "Mentoring", "Product design"],
 };
 
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
