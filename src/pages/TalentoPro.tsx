@@ -33,6 +33,7 @@ import { ProVerifiedView } from "@/components/pro/ProVerifiedView";
 import { ProSupportView } from "@/components/pro/ProSupportView";
 import { ProDiscoverView } from "@/components/pro/ProDiscoverView";
 import { ProEmployerViews } from "@/components/pro/ProEmployerViews";
+import { ProEmployerProfileView } from "@/components/pro/ProEmployerProfileView";
 import { ProDrawers } from "@/components/pro/ProDrawers";
 import { ProAiAssistant } from "@/components/pro/ProAiAssistant";
 import { ProEmployerSidebar } from "@/components/pro/ProEmployerSidebar";
@@ -813,6 +814,7 @@ const TalentoPro: React.FC = () => {
                     applications={apps}
                     onSaveCompanyProfile={(cp) => {
                       handleUpdateUser({ ...currentUser, cp });
+                      setEditingCp(false);
                     }}
                     onPublishJob={handlePublishJob}
                     onUpdateApplicantStage={handleUpdateApplicantStage}
