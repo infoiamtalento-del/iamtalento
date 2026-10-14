@@ -17,4 +17,4 @@
 - Keep the reference-style demo profile dashboard separate from the reusable profile body, while sourcing candidate identity and sections from the shared demo data, so other profile views do not change unexpectedly.
 - Keep demo profile section navigation mapped to explicit section IDs and source section content from the shared demo candidate model, so every tab reaches its full-profile section without changing other profile layouts.
 
-- Keep the Products dropdown groups shared between desktop and mobile navigation so both menus show identical offerings.
+- Keep public and candidate Pro main navigation labels, destinations and dropdown content in HeaderMenuContent, with Browse Jobs opening the in-shell jobs view for candidates, so menus stay consistent across desktop and mobile.
