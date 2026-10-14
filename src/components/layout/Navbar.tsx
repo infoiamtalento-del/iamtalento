@@ -124,9 +124,10 @@ export interface NavbarProps {
     role?: string;
   } | null;
   onSignOut?: () => void;
+  accountMenu?: (onSignOut: () => void) => React.ReactNode;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut }) => {
+const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<DropdownId | null>(null);
@@ -297,7 +298,7 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut }) => {
               </Button>
             </Link>
 
-            {isAuthenticated && (
+            {isAuthenticated && (accountMenu ? accountMenu(handleSignOut) : (
               <div className="flex items-center gap-2">
                 {!isProPage && (
                   <Link to="/talento-pro">
@@ -391,13 +392,13 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut }) => {
                   )}
                 </div>
               </div>
-            )}
+            ))}
           </div>
         </div>
 
         {/* Mobile toggle & profile */}
         <div className="lg:hidden flex items-center gap-2">
-          {isAuthenticated ? (
+          {isAuthenticated && accountMenu ? accountMenu(handleSignOut) : isAuthenticated ? (
             <Link to="/profile" className="flex items-center" aria-label="My Profile">
               <div className="h-7 w-7 rounded-full bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center border border-border shadow-xs overflow-hidden">
                 {avatarSrc ? (
@@ -486,7 +487,7 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut }) => {
                   For Employers
                 </Button>
               </Link>
-              {isAuthenticated && (
+              {isAuthenticated && !accountMenu && (
                 <div className="space-y-1.5 pt-2 border-t border-border">
                   <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-accent/50">
                     <div className="h-8 w-8 rounded-full bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center shrink-0 overflow-hidden">

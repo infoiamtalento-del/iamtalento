@@ -20,6 +20,7 @@ import {
 import { getCandidatePhoto } from "@/data/portalAssets";
 import { ProView, ProDrawerState } from "@/components/pro/proTypes";
 import Navbar from "@/components/layout/Navbar";
+import { ProCandidateAccountMenu } from "@/components/pro/ProCandidateAccountMenu";
 import { ProJobsView } from "@/components/pro/ProJobsView";
 import { ProJobDetail } from "@/components/pro/ProJobDetail";
 import { ProProfileView } from "@/components/pro/ProProfileView";
@@ -570,15 +571,7 @@ const TalentoPro: React.FC = () => {
 
   return (
     <div
-      className="min-h-screen bg-[#f8fafd] text-slate-900 flex flex-col font-sans selection:bg-blue-500/20 selection:text-blue-700"
-      style={{
-        "--primary": "211.3 86.4% 37.5%",
-        "--primary-foreground": "0 0% 100%",
-        "--ring": "211.3 86.4% 37.5%",
-        "--primary-glow": "211.3 86.4% 37.5%",
-        "--accent": "211 40% 96%",
-        "--accent-foreground": "211.3 86.4% 37.5%",
-      } as React.CSSProperties}
+      className="min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-primary/20 selection:text-primary"
     >
       <Helmet>
         <title>
@@ -600,7 +593,20 @@ const TalentoPro: React.FC = () => {
           avatarSrc: getCandidatePhoto(currentUser.name),
           role: currentRole,
         }}
-        onSignOut={() => handleSwitchRole("candidate")}
+        onSignOut={() => localStorage.removeItem("tq_sess")}
+        accountMenu={currentRole === "candidate" ? (onSignOut) => (
+          <ProCandidateAccountMenu
+            name={currentUser.name}
+            avatarSrc={getCandidatePhoto(currentUser.name)}
+            activeView={effectiveView}
+            unreadCount={unreadCount}
+            isDarkMode={isDarkMode}
+            onNavigate={(view) => { setDrawerState(null); setActiveView(view); window.scrollTo({ top: 0 }); }}
+            onCertificate={() => setDrawerState({ type: "certificate", key: "overall" })}
+            onToggleTheme={() => setIsDarkMode((value) => !value)}
+            onSignOut={onSignOut}
+          />
+        ) : undefined}
       />
 
       {/* Main Content View Switcher */}
@@ -745,7 +751,7 @@ const TalentoPro: React.FC = () => {
                       addToast("Certification removed.");
                     }}
                     onOpenDrawer={setDrawerState}
-                    onNavigateToQuiz={() => setActiveView("profile")}
+                    onNavigateToQuiz={() => { window.location.href = "/assessments/explore"; }}
                   />
                 )}
 
@@ -764,6 +770,7 @@ const TalentoPro: React.FC = () => {
                     jobs={jobs}
                     onOpenDrawer={setDrawerState}
                     onToast={addToast}
+                    onUpdateUser={handleUpdateUser}
                   />
                 )}
 
