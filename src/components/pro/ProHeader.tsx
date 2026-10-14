@@ -79,35 +79,6 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
     return () => document.removeEventListener("mousedown", handler);
   }, [openDropdown]);
 
-  const candidateNavItems: { id: ProView; label: string; icon: React.ElementType; badge?: number }[] = [
-    { id: "profile", label: "My Profile", icon: Users },
-    { id: "jobs", label: "Find Jobs", icon: Search },
-    { id: "port", label: "Portfolio", icon: FolderKanban },
-    { id: "upd", label: "Notifications", icon: Bell, badge: unreadCount },
-    { id: "dash", label: "Dashboard", icon: SlidersHorizontal },
-    { id: "disc", label: "Discover", icon: Compass },
-    { id: "saved", label: "Saved Roles", icon: Star, badge: savedCount },
-    { id: "applied", label: "Applications", icon: FileText },
-    { id: "cert", label: "Certifications", icon: GraduationCap },
-    { id: "resume", label: "AI Resume Builder", icon: Bot },
-    { id: "ver", label: "Verified Profile", icon: ShieldCheck },
-    { id: "wallet", label: "Wallet", icon: Wallet },
-  ];
-
-  const employerNavItems: { id: ProView; label: string; icon: React.ElementType; badge?: number }[] = [
-    { id: "cp", label: "Company Profile", icon: Building2 },
-    { id: "talent", label: "Find Talent", icon: Users },
-    { id: "port", label: "Portfolio", icon: FolderKanban },
-    { id: "notif", label: "Notifications", icon: Bell, badge: unreadCount },
-    { id: "dash", label: "Analytics", icon: SlidersHorizontal },
-    { id: "pipe", label: "Pipeline", icon: Briefcase },
-    { id: "post", label: "Post Job", icon: Plus },
-    { id: "ver", label: "Verified Company", icon: ShieldCheck },
-    { id: "wallet", label: "Wallet", icon: Wallet },
-  ];
-
-  const navItems = currentRole === "candidate" ? candidateNavItems : employerNavItems;
-
   // Profile dropdown menu (matches the approved reference list)
   type MenuEntry =
     | { kind: "view"; id: ProView; label: string; icon: React.ElementType; badge?: number; pill?: boolean }
