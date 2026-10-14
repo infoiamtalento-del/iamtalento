@@ -3,29 +3,19 @@ import { Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import { ProductMenu, siteNavLinks, dropdownItemsMap, type DropdownId } from "@/components/layout/HeaderMenuContent";
 import {
-  Briefcase,
-  Search,
-  Building2,
   Users,
-  Compass,
   Bell,
-  Star,
-  FileText,
   GraduationCap,
   Bot,
-  ShieldCheck,
   Wallet,
   FolderKanban,
-  Plus,
   SlidersHorizontal,
   ChevronDown,
   Moon,
   Sun,
   LogOut,
-  Zap,
   Headphones,
   Award,
-  CheckCircle2,
 } from "lucide-react";
 import { ProUser } from "@/data/proData";
 import { ProView } from "./proTypes";
