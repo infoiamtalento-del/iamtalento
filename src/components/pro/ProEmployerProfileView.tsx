@@ -1,12 +1,12 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   MapPin, Globe, Users, CheckCircle2, ArrowRight, Share2,
   Building2, Briefcase, Pencil, Sparkles, Target, HeartHandshake,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { formatINR, type ProJob, type ProUser } from "@/data/proData";
+import type { ProJob, ProUser } from "@/data/proData";
 
 interface Props {
   user: ProUser;
