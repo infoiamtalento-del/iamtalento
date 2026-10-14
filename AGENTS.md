@@ -18,3 +18,4 @@
 - Keep demo profile section navigation mapped to explicit section IDs and source section content from the shared demo candidate model, so every tab reaches its full-profile section without changing other profile layouts.
 
 - Keep the Products dropdown groups shared between desktop and mobile navigation so both menus show identical offerings.
+- Render the candidate Pro account menu through the shared Navbar slot on desktop and mobile, with actions owned by the Pro shell, so existing feature pages remain connected without altering employer or public menus.

@@ -1,5 +1,9 @@
 # Roadmap
 
+## Employee account — restore reference features
+- Restore all screenshot menu options and connect the existing inner pages and actions — implemented
+- Verify menu navigation, certificate, theme and sign-out in the preview — pending
+
 ## Demo profile — complete sections and availability
 - Remove left rail and quote, center the profile, and move availability before Contact Candidate — implemented
 - Add all eleven requested tabs and matching full-profile sections using shared demo content — implemented
