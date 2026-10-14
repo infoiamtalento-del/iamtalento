@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Menu, X } from "lucide-react";
+import { ArrowRight, Menu, X, Sparkles, User } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 import siteLogo from "@/assets/I-am-Talento-2.png.asset.json";
 import { navLinks } from "./data";
@@ -8,6 +10,21 @@ import { navLinks } from "./data";
 const Header = () => {
   const [stuck, setStuck] = useState(false);
   const [open, setOpen] = useState(false);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setStuck(window.scrollY > 120);
@@ -38,7 +55,11 @@ const Header = () => {
             <span>EN</span>
           </div>
           <div>
-            <Link to="/auth">Login</Link>
+            {!user ? (
+              <Link to="/auth">Login</Link>
+            ) : (
+              <Link to="/profile">My Profile</Link>
+            )}
             <Link to="/for-employers">For Employers</Link>
           </div>
         </div>
@@ -59,9 +80,15 @@ const Header = () => {
           </nav>
 
           <div className="h2-header-cta">
-            <Link to="/auth" className="h2-btn-sm">
-              Get Started
-            </Link>
+            {!user ? (
+              <Link to="/auth" className="h2-btn-sm">
+                Login / Get Started
+              </Link>
+            ) : (
+              <Link to="/talento-pro" className="h2-btn-sm flex items-center gap-1.5">
+                <Sparkles size={14} /> Talento Pro
+              </Link>
+            )}
             <button
               type="button"
               className="h2-menu-btn"

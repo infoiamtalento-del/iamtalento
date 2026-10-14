@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Menu, X, ChevronDown, ChevronRight, ArrowRight, BadgeCheck, BellRing, Bot, Building2, CalendarClock, FileText, Library, Palette, ShieldCheck, Sparkles, UserRound, Users, Video, Wand2, type LucideIcon } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Menu, X, ChevronDown, ChevronRight, ArrowRight, BadgeCheck, BellRing, Bot, Building2, CalendarClock, FileText, Library, Palette, ShieldCheck, Sparkles, UserRound, Users, Video, Wand2, User, LogOut, Briefcase, Bookmark, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 import siteLogo from "@/assets/I-am-Talento-2.png.asset.json";
 
 const eventsDropdownItems = [
@@ -118,8 +121,12 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<DropdownId | null>(null);
   const [mobileOpenDropdown, setMobileOpenDropdown] = useState<DropdownId | null>(null);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const dropdownRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const profileRef = useRef<HTMLDivElement | null>(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -128,9 +135,26 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
     setMobileOpen(false);
     setOpenDropdown(null);
     setMobileOpenDropdown(null);
+    setProfileMenuOpen(false);
   }, [location]);
 
   useEffect(() => {
@@ -141,10 +165,27 @@ const Navbar = () => {
           setOpenDropdown(null);
         }
       }
+      if (profileMenuOpen && profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setProfileMenuOpen(false);
+      }
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
-  }, [openDropdown]);
+  }, [openDropdown, profileMenuOpen]);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setProfileMenuOpen(false);
+    toast.success("Signed out successfully");
+    navigate("/");
+  };
+
+  const displayName =
+    user?.user_metadata?.full_name ||
+    user?.email?.split("@")[0] ||
+    "User";
+  const initials = (displayName.charAt(0) || "U").toUpperCase();
 
   return (
     <header
@@ -213,11 +254,116 @@ const Navbar = () => {
                 For Employers
               </Button>
             </Link>
+
+            {!user ? (
+              <Link to="/auth">
+                <Button size="sm" variant="outline" className="border-border hover:bg-accent font-semibold px-3.5">
+                  Login
+                </Button>
+              </Link>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Link to="/talento-pro">
+                  <Button size="sm" variant="ghost" className="text-xs font-bold text-primary bg-primary/10 hover:bg-primary/15 gap-1.5 h-8 px-2.5 rounded-lg">
+                    <Sparkles className="h-3.5 w-3.5" /> Pro
+                  </Button>
+                </Link>
+
+                <div className="relative" ref={profileRef}>
+                  <button
+                    type="button"
+                    onClick={() => setProfileMenuOpen(!profileMenuOpen)}
+                    aria-label="User account menu"
+                    aria-expanded={profileMenuOpen}
+                    className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-full border border-border hover:border-primary/40 bg-card transition-all cursor-pointer shadow-2xs"
+                  >
+                    <div className="h-7 w-7 rounded-full bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center shrink-0 overflow-hidden">
+                      {initials}
+                    </div>
+                    <span className="text-xs font-bold text-foreground max-w-[110px] truncate">
+                      {displayName}
+                    </span>
+                    <ChevronDown className={cn("h-3.5 w-3.5 text-muted-foreground transition-transform", profileMenuOpen && "rotate-180")} />
+                  </button>
+
+                  {profileMenuOpen && (
+                    <div className="absolute right-0 top-full mt-2 w-64 rounded-2xl border border-border bg-popover text-popover-foreground shadow-xl z-50 p-3 animate-in fade-in slide-in-from-top-2 duration-150">
+                      <div className="flex items-center gap-2.5 pb-2.5 border-b border-border/80 px-1">
+                        <div className="h-9 w-9 rounded-full bg-primary text-primary-foreground font-bold text-sm flex items-center justify-center shrink-0">
+                          {initials}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-sm font-bold truncate text-foreground">{displayName}</div>
+                          <div className="text-[11px] text-muted-foreground truncate">{user.email}</div>
+                        </div>
+                      </div>
+
+                      <div className="py-2 space-y-0.5">
+                        <Link
+                          to="/talento-pro"
+                          onClick={() => setProfileMenuOpen(false)}
+                          className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent transition-colors"
+                        >
+                          <span className="flex items-center gap-2">
+                            <Sparkles className="h-4 w-4 text-primary" /> Talento Pro
+                          </span>
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary/10 text-primary">PRO</span>
+                        </Link>
+                        <Link
+                          to="/profile"
+                          onClick={() => setProfileMenuOpen(false)}
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent transition-colors"
+                        >
+                          <User className="h-4 w-4 text-muted-foreground" /> My Profile
+                        </Link>
+                        <Link
+                          to="/talento-pro?view=applied"
+                          onClick={() => setProfileMenuOpen(false)}
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent transition-colors"
+                        >
+                          <Briefcase className="h-4 w-4 text-muted-foreground" /> Applications
+                        </Link>
+                        <Link
+                          to="/talento-pro?view=saved"
+                          onClick={() => setProfileMenuOpen(false)}
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent transition-colors"
+                        >
+                          <Bookmark className="h-4 w-4 text-muted-foreground" /> Saved Jobs
+                        </Link>
+                      </div>
+
+                      <div className="pt-2 border-t border-border/80">
+                        <button
+                          type="button"
+                          onClick={handleSignOut}
+                          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-destructive hover:bg-destructive/10 transition-colors text-left cursor-pointer"
+                        >
+                          <LogOut className="h-4 w-4" /> Sign Out
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Mobile toggle */}
+        {/* Mobile toggle & profile */}
         <div className="lg:hidden flex items-center gap-2">
+          {user ? (
+            <Link to="/profile" className="flex items-center" aria-label="My Profile">
+              <div className="h-7 w-7 rounded-full bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center border border-border shadow-xs">
+                {initials}
+              </div>
+            </Link>
+          ) : (
+            <Link to="/auth">
+              <Button size="sm" variant="outline" className="text-xs h-7 px-2.5 font-semibold">
+                Login
+              </Button>
+            </Link>
+          )}
           <Button variant="ghost" size="icon"
             className="p-2 rounded-lg hover:bg-accent transition-colors"
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -278,7 +424,53 @@ const Navbar = () => {
               )
             )}
             <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-border">
-              <Link to="/for-employers"><Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 border-0">For Employers</Button></Link>
+              <Link to="/for-employers" onClick={() => setMobileOpen(false)}>
+                <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 border-0">
+                  For Employers
+                </Button>
+              </Link>
+              {!user ? (
+                <Link to="/auth" onClick={() => setMobileOpen(false)}>
+                  <Button variant="outline" className="w-full font-semibold">
+                    Login
+                  </Button>
+                </Link>
+              ) : (
+                <div className="space-y-1.5 pt-2 border-t border-border">
+                  <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-accent/50">
+                    <div className="h-8 w-8 rounded-full bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center shrink-0">
+                      {initials}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm font-bold text-foreground truncate">{displayName}</div>
+                      <div className="text-[11px] text-muted-foreground truncate">{user.email}</div>
+                    </div>
+                  </div>
+                  <Link
+                    to="/talento-pro"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold text-primary bg-primary/10"
+                  >
+                    <span className="flex items-center gap-2">
+                      <Sparkles className="h-4 w-4" /> Talento Pro
+                    </span>
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary text-primary-foreground">PRO</span>
+                  </Link>
+                  <Link
+                    to="/profile"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-foreground hover:bg-accent"
+                  >
+                    <User className="h-4 w-4 text-muted-foreground" /> My Profile
+                  </Link>
+                  <button
+                    onClick={handleSignOut}
+                    className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-destructive hover:bg-destructive/10 text-left cursor-pointer"
+                  >
+                    <LogOut className="h-4 w-4" /> Sign Out
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
