@@ -5,8 +5,6 @@ import {
   ArrowRight,
   Clock,
   ShieldCheck,
-  Fingerprint,
-  BadgeCheck,
   ListChecks,
   Lock,
   Check,
@@ -277,29 +275,7 @@ const AssessmentDetail = () => {
           </div>
         </section>
 
-        {/* ============ PROCTORING ============ */}
-        <section className="border-y border-blue-100 bg-[#f8fafd]">
-          <div className="container py-8 md:py-10">
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {[
-                { icon: ShieldCheck, title: "Proctored session", text: "Camera, mic and screen monitoring" },
-                { icon: Fingerprint, title: "ID verified", text: "Confirmed before you begin" },
-                { icon: BadgeCheck, title: "Verified result", text: "Employer-shareable CIR report" },
-                { icon: Clock, title: "Same-day report", text: "Delivered right after the test" },
-              ].map((item) => (
-                <div key={item.title} className="flex items-start gap-3.5 rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-2xs backdrop-blur-xs">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 border border-blue-100/80 text-blue-700">
-                    <item.icon className="h-4 w-4" />
-                  </span>
-                  <div>
-                    <span className="block text-sm font-bold text-slate-900">{item.title}</span>
-                    <span className="block text-xs text-slate-500 mt-0.5">{item.text}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+
 
         {/* ============ PAYMENT ============ */}
         <section id="payment" className="py-12 md:py-16 scroll-mt-24 pb-28 md:pb-32 bg-slate-50/30">
