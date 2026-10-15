@@ -275,7 +275,7 @@ const Home2 = () => {
             <div className="h2-window">
               <div className="h2-window-bar">
                 <div className="flex items-center gap-2">
-                  <img src={siteLogo.url} alt="IAmTalento" className="h-6 w-auto" />
+                  <img src={siteLogo.url} alt="TalentCIR" className="h-6 w-auto" />
                   <small>Assessment Simulator</small>
                 </div>
                 <div className="h2-timer">
@@ -565,7 +565,7 @@ const Home2 = () => {
           <div className="h2-footer-grid">
             <div className="h2-footer-brand">
               <Link to="/home-2">
-                <img src={siteLogo.url} alt="IAmTalento" />
+                <img src={siteLogo.url} alt="TalentCIR" />
               </Link>
               <p>
                 India's skills-first career platform. Verified readiness scores, proctored talent assessments, and direct hiring pipelines.

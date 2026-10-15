@@ -230,8 +230,8 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
       )}
     >
       <nav className="container flex items-center" aria-label="Main navigation">
-        <Link to="/" className="flex items-center gap-2 group mr-auto" aria-label="IAmTalento Home">
-          <img src={siteLogo.url} alt="I Am Talento" className="h-10 w-auto object-contain" />
+        <Link to="/" className="flex items-center gap-2 group mr-auto" aria-label="TalentCIR Home">
+          <img src={siteLogo.url} alt="TalentCIR" className="h-10 w-auto object-contain" />
         </Link>
 
         {/* Desktop */}

@@ -86,7 +86,7 @@ export default function DemoProfile() {
   return <div className="demo-dashboard">
     <Helmet><title>Arjun Mehta — Demo Profile | Talento</title><meta name="description" content="Explore Arjun Mehta’s demo Talento profile, verified skills, work experience, projects and certifications." /></Helmet>
     <header className="dp-header">
-      <Link to="/" aria-label="Talento home" className="dp-logo"><img src={siteLogo.url} alt="Talento" /></Link>
+      <Link to="/" aria-label="TalentCIR home" className="dp-logo"><img src={siteLogo.url} alt="TalentCIR" /></Link>
       <nav aria-label="Main navigation" className="dp-topnav">{[...[navigation[1]], { label: "Talento Pro", href: "/pro" }, ...navigation.slice(2, 4), { label: "Pricing", href: "/pricing" }, ...navigation.slice(4)].map(n => <Link key={n.label} to={n.href}>{n.label}</Link>)}</nav>
       <div className="dp-header-actions">
         <Button asChild variant="ghost" size="icon" aria-label="Search jobs" title="Search jobs"><Link to="/jobs"><Search /></Link></Button>
