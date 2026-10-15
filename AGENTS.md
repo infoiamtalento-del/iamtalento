@@ -22,3 +22,4 @@
 - Render both Pro account menus through the shared Navbar slot, sourcing employer options from employerMenu, to retain full-width profiles and consistent navigation across screen sizes.
 - Keep dummy profile entry separate from real authentication and reuse the existing demo users and shell state so quick login never grants access to private accounts.
 - Keep employer posting, pipeline, notifications and account presentation in employer-only views sharing shell job/application handlers, so reference redesigns cannot change employee pages or duplicate hiring state.
+- Keep employer sample records and simulated service state separate from real authentication and transactions; seed once without overwriting edits, and share shell applications across demo pages so cross-page workflows stay consistent.

@@ -489,7 +489,9 @@ export const ProDrawers: React.FC<ProDrawersProps> = ({
             </h3>
             <div className="flex items-center gap-2">
               <Input
-                type="date"
+                type="datetime-local"
+                aria-label="Interview date and time"
+                min={new Date().toISOString().slice(0, 16)}
                 value={interviewDate}
                 onChange={(e) => setInterviewDate(e.target.value)}
                 className="text-xs h-9 bg-background"
@@ -497,9 +499,11 @@ export const ProDrawers: React.FC<ProDrawersProps> = ({
               <Button
                 size="sm"
                 onClick={() => {
-                  if (interviewDate) {
+                  if (interviewDate && new Date(interviewDate).getTime() > Date.now()) {
                     onScheduleInterview(app.id, interviewDate);
                     onToast(`Interview scheduled for ${interviewDate}`);
+                  } else {
+                    onToast("Choose a future interview date and time.");
                   }
                 }}
                 className="rounded-xl text-xs h-9 shrink-0"

@@ -1,5 +1,10 @@
 # Roadmap
 
+## Employer — realistic interactive demo
+- Seed connected jobs, applicants, interviews and account activity without overwriting existing changes — in progress
+- Make assessment, AI interview, advertising, subscription, payment and settings demo workflows interactive — in progress
+- Add clearly labelled simulated activity and verify cross-page updates and reload — in progress
+
 ## Employer pages — supplied dashboard references
 - Redesign Job Posting with grouped fields and a live listing preview — done
 - Redesign Job Applications with summary counts, filters and candidate board/list — done
