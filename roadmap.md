@@ -1,5 +1,10 @@
 # Roadmap
 
+## Employee and Employer demo login
+- Add blue account-type choices and quick entry to existing dummy profiles — implemented
+- Match employer account dropdown to the employee design and connect all existing employer views — implemented
+- Verify both demo entries, employer menu destinations, reload and logout — pending
+
 ## Employee account — restore reference features
 - Restore all screenshot menu options and connect the existing inner pages and actions — implemented
 - Verify menu navigation, certificate, theme and sign-out in the preview — done; all eleven options checked, eight existing pages opened, certificate displayed, theme toggled and sign-out returned home at 1496, 890 and 390 widths without overflow or page errors; portfolio project saved and read back after reload; tests passed and build OK
