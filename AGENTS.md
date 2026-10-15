@@ -19,3 +19,5 @@
 
 - Keep the Products dropdown groups shared between desktop and mobile navigation so both menus show identical offerings.
 - Render the candidate Pro account menu through the shared Navbar slot on desktop and mobile, with actions owned by the Pro shell, so existing feature pages remain connected without altering employer or public menus.
+- Render both Pro account menus through the shared Navbar slot, sourcing employer options from employerMenu, to retain full-width profiles and consistent navigation across screen sizes.
+- Keep dummy profile entry separate from real authentication and reuse the existing demo users and shell state so quick login never grants access to private accounts.

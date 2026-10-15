@@ -11,6 +11,9 @@ import {
   CheckCircle2, ShieldCheck, Award, Target, Sparkles, Building2, UserCircle,
 } from "lucide-react";
 import { toast } from "sonner";
+import { DEFAULT_USERS } from "@/data/proData";
+import { getCandidatePhoto } from "@/data/portalAssets";
+import siteLogo from "@/assets/I-am-Talento-2.png.asset.json";
 
 type AuthMode = "login" | "signup";
 type UserRole = "employee" | "employer";
@@ -37,6 +40,13 @@ const Auth = () => {
   const [acceptTerms, setAcceptTerms] = useState(false);
   // Employer-specific
   const [companyName, setCompanyName] = useState("");
+
+  const openDemoProfile = () => {
+    const demoEmail = role === "employer" ? "demo.employer@talento.app" : "demo.candidate@talento.app";
+    localStorage.setItem("tq_sess", JSON.stringify(demoEmail));
+    navigate(`/talento-pro?view=${role === "employer" ? "cp" : "profile"}`);
+  };
+  const demoUser = DEFAULT_USERS[role === "employer" ? "demo.employer@talento.app" : "demo.candidate@talento.app"];
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -143,12 +153,7 @@ const Auth = () => {
           <div className="relative z-10">
             <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
               <Link to="/" className="flex items-center gap-2 mb-20">
-                <div className="h-10 w-10 rounded-lg bg-primary-foreground/15 flex items-center justify-center">
-                  <Zap className="h-5 w-5 text-primary-foreground" />
-                </div>
-                <span className="text-xl font-bold font-display text-primary-foreground tracking-tight">
-                  IAm<span className="text-primary-foreground/70">Talento</span>
-                </span>
+                <span className="rounded-md bg-background px-3 py-2"><img src={siteLogo.url} alt="I Am Talento" className="h-10 w-auto" /></span>
               </Link>
             </motion.div>
             <motion.h2 className="text-4xl font-bold font-display text-primary-foreground leading-tight mb-4"
@@ -182,12 +187,7 @@ const Auth = () => {
             {/* Mobile logo */}
             <div className="lg:hidden flex items-center gap-2 mb-8">
               <Link to="/" className="flex items-center gap-2">
-                <div className="h-9 w-9 rounded-lg bg-primary flex items-center justify-center">
-                  <Zap className="h-5 w-5 text-primary-foreground" />
-                </div>
-                <span className="text-xl font-bold font-display tracking-tight">
-                  IAm<span className="text-primary">Talento</span>
-                </span>
+                <img src={siteLogo.url} alt="I Am Talento" className="h-10 w-auto" />
               </Link>
             </div>
 
@@ -202,6 +202,12 @@ const Auth = () => {
                 </button>
               ))}
             </div>
+
+            {mode === "login" && <div className="mb-6 grid grid-cols-2 gap-3" aria-label="Account type">
+              {(["employee", "employer"] as const).map((value) => <Button key={value} variant="outline" aria-pressed={role === value} onClick={() => setRole(value)} className={role === value ? "border-primary bg-primary/10 text-primary hover:bg-primary/15" : "text-muted-foreground"}>
+                {value === "employee" ? <UserCircle /> : <Building2 />}{value === "employee" ? "Employee" : "Employer"}
+              </Button>)}
+            </div>}
 
             <AnimatePresence mode="wait">
               {mode === "login" ? (
@@ -245,6 +251,16 @@ const Auth = () => {
                     Don't have an account?{" "}
                     <button type="button" onClick={() => setMode("signup")} className="text-primary font-semibold hover:underline">Sign Up</button>
                   </p>
+                  <div className="border-t border-border pt-5">
+                    <p className="mb-3 text-xs font-semibold uppercase text-muted-foreground">Demo account</p>
+                    <Button type="button" variant="outline" onClick={openDemoProfile} className="h-auto w-full justify-start gap-3 whitespace-normal border-primary/30 bg-primary/5 p-4 text-left hover:bg-primary/10">
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary text-primary-foreground">
+                        {role === "employee" ? <img src={getCandidatePhoto(demoUser.name)} alt={demoUser.name} className="h-full w-full object-cover" /> : <Building2 className="h-5 w-5" />}
+                      </span>
+                      <span className="min-w-0 flex-1"><span className="block text-sm font-semibold text-primary">Quick login as {demoUser.name}</span><span className="mt-1 block text-xs text-muted-foreground">{role === "employer" ? "Employer company profile" : "Employee profile"}</span></span>
+                      <ArrowRight className="text-primary" />
+                    </Button>
+                  </div>
                 </motion.form>
               ) : (
                 <motion.form key="signup" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}

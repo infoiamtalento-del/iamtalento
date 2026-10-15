@@ -21,6 +21,7 @@ import { getCandidatePhoto } from "@/data/portalAssets";
 import { ProView, ProDrawerState } from "@/components/pro/proTypes";
 import Navbar from "@/components/layout/Navbar";
 import { ProCandidateAccountMenu } from "@/components/pro/ProCandidateAccountMenu";
+import { ProEmployerAccountMenu } from "@/components/pro/ProEmployerAccountMenu";
 import { ProJobsView } from "@/components/pro/ProJobsView";
 import { ProJobDetail } from "@/components/pro/ProJobDetail";
 import { ProProfileView } from "@/components/pro/ProProfileView";
@@ -38,7 +39,6 @@ import { ProEmployerViews } from "@/components/pro/ProEmployerViews";
 import { ProEmployerProfileView } from "@/components/pro/ProEmployerProfileView";
 import { ProDrawers } from "@/components/pro/ProDrawers";
 import { ProAiAssistant } from "@/components/pro/ProAiAssistant";
-import { ProEmployerSidebar } from "@/components/pro/ProEmployerSidebar";
 import { ProEmployerAccountView } from "@/components/pro/ProEmployerAccountView";
 
 interface ToastMessage {
@@ -606,12 +606,19 @@ const TalentoPro: React.FC = () => {
             onToggleTheme={() => setIsDarkMode((value) => !value)}
             onSignOut={onSignOut}
           />
-        ) : undefined}
+        ) : (onSignOut) => (
+          <ProEmployerAccountMenu
+            name={currentUser.name}
+            activeView={effectiveView}
+            unreadCount={unreadCount}
+            onNavigate={(view) => { setDrawerState(null); setEditingCp(false); setActiveView(view); window.scrollTo({ top: 0 }); }}
+            onSignOut={onSignOut}
+          />
+        )}
       />
 
       {/* Main Content View Switcher */}
-      <main className={cn("flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 pt-24 pb-8", currentRole === "employer" && "flex gap-7")}>
-        {currentRole === "employer" && <ProEmployerSidebar activeView={effectiveView} onNavigate={(view) => { setDrawerState(null); setActiveView(view); }} onLogout={() => handleSwitchRole("candidate")} unreadCount={unreadCount} />}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 pt-24 pb-8">
         <div className="min-w-0 flex-1">
         {selectedJob ? <ProJobDetail key={selectedJob.id} job={selectedJob} user={currentUser} jobs={jobs} applications={apps} onBack={() => setDrawerState(null)} onOpenJob={(id) => { setDrawerState({ type: "job", id }); window.scrollTo({ top: 0 }); }} onApply={handleApplyJob} onSave={handleSaveJob} /> : (
         <AnimatePresence mode="wait">
