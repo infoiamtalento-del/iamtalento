@@ -195,22 +195,23 @@ const AssessmentDetail = () => {
                   <div className="h-px flex-1 bg-slate-200" />
                 </div>
 
-                <div className="rounded-2xl border border-slate-200/90 bg-white p-5 md:p-6 shadow-2xs border-l-4 border-l-[#0d5cb2]">
-                  <div className="flex flex-wrap items-center gap-2 mb-2">
-                    <span className="rounded-full bg-[#0d5cb2] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white shadow-2xs">
-                      Domain test
-                    </span>
-                    <span className="text-xs text-slate-500 font-medium">
-                      {a.duration} · {a.questionCount} questions · {a.type}
-                    </span>
+                <div className="rounded-xl border border-slate-200/90 bg-white p-4 shadow-2xs flex flex-wrap items-center justify-between gap-3 border-l-4 border-l-[#0d5cb2]">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                      <span className="rounded-full bg-[#0d5cb2] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+                        Domain Assessment
+                      </span>
+                      <span className="text-xs text-slate-500 font-medium">
+                        {a.duration} · {a.questionCount} questions · {a.type}
+                      </span>
+                    </div>
+                    <h3 className="font-display text-base sm:text-lg font-bold text-slate-900">{a.title}</h3>
                   </div>
-                  <h3 className="font-display text-xl font-bold mb-1.5 text-slate-900">{a.title}</h3>
-                  <p className="text-sm leading-relaxed text-slate-600">{a.description}</p>
-                  <div className="flex flex-wrap items-center gap-1.5 mt-4">
-                    {a.skills.map((skill) => (
+                  <div className="flex flex-wrap items-center gap-1.5 shrink-0">
+                    {a.skills.slice(0, 4).map((skill) => (
                       <span
                         key={skill}
-                        className="rounded-full bg-blue-50 border border-blue-200/60 px-2.5 py-1 text-[11px] font-semibold text-blue-800"
+                        className="rounded-full bg-blue-50 border border-blue-200/60 px-2.5 py-0.5 text-[11px] font-semibold text-blue-800"
                       >
                         {skill}
                       </span>

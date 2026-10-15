@@ -18,6 +18,11 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   ROUNDS,
   subDomainPrice,
   testPrice,
@@ -121,7 +126,7 @@ const SubDomainBreakdown = ({ subDomain, price }: BreakdownProps) => {
   return (
     <div
       onMouseLeave={handleMouseLeave}
-      className="border-t border-border bg-slate-50/60 dark:bg-muted/15 px-4 py-3.5 sm:px-5 sm:py-4"
+      className="bg-slate-50/70 rounded-2xl p-3 sm:p-4 border border-slate-200/60"
     >
       {/* Sleek Minimal Header */}
       <div className="flex items-center justify-between gap-3 mb-3">
@@ -296,40 +301,37 @@ interface PickerProps {
 }
 
 export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: PickerProps) => {
-  const [open, setOpen] = useState<string | null>(options.find((o) => selected.includes(o.id))?.id ?? null);
+  const [modalSubDomain, setModalSubDomain] = useState<SubDomain | null>(null);
 
   return (
-    <div className="space-y-4">
-      {/* Section Header Banner - Pure Blue and White */}
-      <div className="relative overflow-hidden rounded-2xl border border-blue-100 dark:border-border/60 bg-[#f8fafd] dark:bg-card p-5 sm:p-6 shadow-2xs">
-        <div className="flex flex-wrap items-center justify-between gap-4 relative z-10">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600/10 text-blue-600 dark:text-blue-400">
-                <Sparkles className="h-4 w-4" />
-              </span>
-              <h3 className="font-display text-lg sm:text-xl font-bold text-slate-900 dark:text-foreground">
-                Choose your {domainTitle} Specialisation
-              </h3>
-            </div>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-muted-foreground mt-1 max-w-xl leading-relaxed">
-              3 rounds · 6 comprehensive skill tests · Proctored with verified Career Intelligence Report.
-            </p>
-          </div>
+    <div className="space-y-3.5">
+      {/* Sleek Bento Header */}
+      <div className="flex flex-wrap items-center justify-between gap-3 px-0.5">
+        <div>
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-600 text-white font-bold px-3.5 py-1.5 text-xs shadow-xs">
-              <CheckCircle2 className="h-3.5 w-3.5" />
-              <span>{selected.length} Track{selected.length === 1 ? "" : "s"} Selected</span>
+            <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-[#0d5cb2]/10 text-[#0d5cb2]">
+              <Sparkles className="h-3.5 w-3.5" />
             </span>
+            <h3 className="font-display text-base sm:text-lg font-bold text-slate-900">
+              Choose your {domainTitle} Specialisation
+            </h3>
           </div>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Tap to select specialisations · 3 rounds & 6 skill tests each · CIR report included
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 border border-blue-200/80 text-[#0d5cb2] font-bold px-3 py-1 text-xs">
+            <CheckCircle2 className="h-3.5 w-3.5" />
+            <span>{selected.length} Track{selected.length === 1 ? "" : "s"} Selected</span>
+          </span>
         </div>
       </div>
 
-      {/* Differentiated Sub-Domain Cards matching the Reference Card Architecture */}
-      <div className="space-y-4">
+      {/* Compact Bento Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
         {options.map((s) => {
           const isSelected = selected.includes(s.id);
-          const isOpen = open === s.id;
           const price = subDomainPrice(s);
           const brandInfo = SUB_DOMAIN_BRANDS[s.id];
           const brandName = brandInfo?.brand ?? s.name;
@@ -338,132 +340,192 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
           return (
             <div
               key={s.id}
-              className={`rounded-2xl border transition-all duration-200 overflow-hidden bg-white dark:bg-background ${
+              onClick={() => onToggle(s.id)}
+              className={`group relative rounded-2xl border transition-all duration-200 cursor-pointer overflow-hidden p-4 flex flex-col justify-between select-none ${
                 isSelected
-                  ? "border-2 border-blue-600 shadow-md ring-4 ring-blue-500/10"
-                  : "border-slate-200/90 dark:border-border/80 hover:border-blue-400 hover:shadow-md"
+                  ? "border-2 border-[#0d5cb2] bg-blue-50/25 shadow-sm ring-2 ring-[#0d5cb2]/10"
+                  : "border-slate-200/90 bg-white hover:border-[#0d5cb2]/60 hover:shadow-sm"
               }`}
             >
-              {/* Header Row: Brand Logo, Role Title & Match Rating - Solid Brand Blue */}
-              <div className="bg-[#0d5cb2] p-5 sm:p-6 text-white">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div className="flex items-start gap-3.5 min-w-0">
-                    <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-xl bg-white border border-white/20 shadow-sm p-2 sm:p-2.5 flex items-center justify-center shrink-0">
-                      <BrandLogo name={brandName} size="lg" />
+              <div>
+                {/* Header: Logo, Title & Select Checkmark */}
+                <div className="flex items-start justify-between gap-2.5">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="h-10 w-10 rounded-xl bg-slate-50 border border-slate-200/80 p-1 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                      <BrandLogo name={brandName} size="md" />
                     </div>
                     <div className="min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <h4 className="font-display text-base sm:text-lg font-bold text-white leading-snug">
-                          {s.name}
-                        </h4>
-                        {isSelected && (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-white text-[#0d5cb2] px-2.5 py-0.5 text-[11px] font-bold shadow-2xs">
-                            <CheckCircle2 className="h-3.5 w-3.5 stroke-[2.5]" /> Selected Track
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2 mt-1 text-xs text-blue-100 flex-wrap">
-                        <span className="font-medium text-white/95">{domainTitle} Specialisation</span>
-                        <span className="text-blue-200">·</span>
-                        <span className="flex items-center gap-1 text-amber-300 font-semibold">
-                          <Star className="h-3.5 w-3.5 fill-amber-300 text-amber-300" /> 4.9 Rating
+                      <h4 className="font-display text-sm sm:text-[15px] font-bold text-slate-900 group-hover:text-[#0d5cb2] transition-colors leading-snug truncate">
+                        {s.name}
+                      </h4>
+                      <div className="flex items-center gap-1.5 mt-0.5 text-[11px] text-slate-500 font-medium">
+                        <span>3 rounds</span>
+                        <span className="text-slate-300">·</span>
+                        <span>6 tests</span>
+                        <span className="text-slate-300">·</span>
+                        <span className="flex items-center gap-0.5 text-amber-500 font-semibold">
+                          <Star className="h-3 w-3 fill-amber-400 text-amber-400" /> 4.9
                         </span>
-                        <span className="text-blue-200">·</span>
-                        <span className="text-blue-100">Industry benchmark</span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Readiness / Tests Badge (From Reference Job Card Match Pill) */}
-                  <div className="shrink-0 flex items-center gap-2 ml-auto sm:ml-0">
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/30 bg-white/15 backdrop-blur-xs text-xs font-bold text-white">
-                      <div className="h-5 w-5 rounded-full flex items-center justify-center text-[10px] font-black bg-white text-[#0d5cb2]">
-                        {isSelected ? "✓" : "6"}
-                      </div>
-                      <span>{isSelected ? "Selected" : "6 Tests"}</span>
-                    </div>
+                  <div
+                    className={`h-6 w-6 rounded-full flex items-center justify-center shrink-0 transition-colors ${
+                      isSelected
+                        ? "bg-[#0d5cb2] text-white shadow-2xs"
+                        : "border border-slate-300 text-transparent group-hover:border-[#0d5cb2]"
+                    }`}
+                  >
+                    <Check className={`h-3.5 w-3.5 stroke-[2.5] ${isSelected ? "text-white" : "text-slate-300 group-hover:text-[#0d5cb2]"}`} />
                   </div>
+                </div>
+
+                {/* Key Tools Micro-tags */}
+                <div className="flex flex-wrap items-center gap-1.5 my-3">
+                  {tools.slice(0, 3).map((t) => (
+                    <span
+                      key={t}
+                      className="inline-flex items-center rounded-md bg-slate-100 text-slate-600 border border-slate-200/60 text-[11px] px-2 py-0.5 font-medium truncate max-w-[125px]"
+                    >
+                      {t}
+                    </span>
+                  ))}
                 </div>
               </div>
 
-              {/* Card Body: Tools, Price & Actions */}
-              <div className="p-5 sm:p-6 bg-white dark:bg-card">
-                {/* Tools & Skills Pill Cloud */}
-                {tools.length > 0 && (
-                  <div className="flex flex-wrap items-center gap-2 mb-4">
-                    <span className="text-xs font-semibold text-slate-500 dark:text-muted-foreground flex items-center gap-1.5">
-                      <Wrench className="h-3.5 w-3.5 text-[#0d5cb2]" /> Tools & Skills:
-                    </span>
-                    {tools.map((t) => (
-                      <span
-                        key={t}
-                        className="inline-flex items-center rounded-md bg-blue-50/70 border border-blue-200/60 text-[#0d5cb2] dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800 text-xs px-2.5 py-0.5 font-medium"
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                )}
+              {/* Bottom: Price + Actions */}
+              <div className="pt-2.5 border-t border-slate-100 flex items-center justify-between gap-2 mt-1">
+                <div className="flex items-baseline gap-1">
+                  <span className="font-display text-base font-extrabold text-slate-900">
+                    {formatINR(price)}
+                  </span>
+                  <span className="text-[11px] text-slate-400">/ track</span>
+                </div>
 
-                {/* Footer: Price + Actions in Reference Screenshot Styling */}
-                <div className="mt-5 pt-4 border-t border-slate-200/80 dark:border-border/70 flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <div className="flex items-baseline gap-1.5">
-                      <span className="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-foreground">
-                        {formatINR(price)}
-                      </span>
-                      <span className="text-xs text-slate-500 font-medium">
-                        · All 3 rounds included
-                      </span>
-                    </div>
-                    <span className="text-[11px] text-slate-400 block">
-                      6 tests + verified Career Intelligence Report
-                    </span>
-                  </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setModalSubDomain(s);
+                    }}
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-slate-600 hover:text-[#0d5cb2] px-2 py-1 rounded-md hover:bg-blue-50 transition-colors cursor-pointer"
+                  >
+                    <FileText className="h-3.5 w-3.5" />
+                    <span>Syllabus</span>
+                  </button>
 
-                  <div className="flex items-center gap-2.5 ml-auto">
-                    <button
-                      type="button"
-                      onClick={() => setOpen(isOpen ? null : s.id)}
-                      className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-lg border transition-all cursor-pointer ${
-                        isOpen
-                          ? "bg-blue-50 border-blue-300 text-blue-700 shadow-2xs"
-                          : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300"
-                      }`}
-                    >
-                      <span>{isOpen ? "Hide syllabus" : "View syllabus breakdown"}</span>
-                      <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
-                    </button>
-
-                    <Button
-                      size="sm"
-                      variant={isSelected ? "outline" : "default"}
-                      className={`gap-1.5 font-bold px-4 py-2 h-9 rounded-lg cursor-pointer transition-all shadow-sm ${
-                        isSelected
-                          ? "border-emerald-600 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 hover:text-emerald-900"
-                          : "bg-[#0d5cb2] hover:bg-[#0a4d96] text-white"
-                      }`}
-                      onClick={() => onToggle(s.id)}
-                    >
-                      {isSelected ? (
-                        <>
-                          <CheckCircle2 className="h-4 w-4 stroke-[2.5] text-emerald-600" /> Added to Journey
-                        </>
-                      ) : (
-                        <>
-                          Select Track <ArrowRight className="h-4 w-4" />
-                        </>
-                      )}
-                    </Button>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onToggle(s.id);
+                    }}
+                    className={`inline-flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors shadow-2xs cursor-pointer ${
+                      isSelected
+                        ? "bg-[#0d5cb2] text-white hover:bg-[#0a4d96]"
+                        : "bg-slate-100 hover:bg-[#0d5cb2] text-slate-700 hover:text-white border border-slate-200/80 hover:border-[#0d5cb2]"
+                    }`}
+                  >
+                    {isSelected ? (
+                      <>
+                        <Check className="h-3 w-3 stroke-[3]" /> Added
+                      </>
+                    ) : (
+                      <>
+                        Select <ArrowRight className="h-3 w-3" />
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
-
-              {isOpen && <SubDomainBreakdown subDomain={s} price={price} />}
             </div>
           );
         })}
       </div>
+
+      {/* Syllabus Modal Dialog */}
+      <Dialog open={modalSubDomain !== null} onOpenChange={(open) => !open && setModalSubDomain(null)}>
+        <DialogContent className="max-w-3xl max-h-[85vh] overflow-hidden flex flex-col p-0 rounded-2xl bg-white border border-slate-200 shadow-xl">
+          {modalSubDomain && (
+            <>
+              <div className="bg-[#0d5cb2] text-white p-5 sm:p-6 shrink-0">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3.5">
+                    <div className="h-12 w-12 rounded-xl bg-white p-2 flex items-center justify-center shrink-0 shadow-sm">
+                      <BrandLogo
+                        name={SUB_DOMAIN_BRANDS[modalSubDomain.id]?.brand ?? modalSubDomain.name}
+                        size="lg"
+                      />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-blue-200">
+                          Track Syllabus & Tests
+                        </span>
+                        <span className="text-[11px] bg-white/20 border border-white/20 px-2 py-0.5 rounded-full font-semibold">
+                          3 Rounds · 6 Tests
+                        </span>
+                      </div>
+                      <DialogTitle className="font-display text-xl font-bold text-white mt-0.5">
+                        {modalSubDomain.name}
+                      </DialogTitle>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0 hidden sm:block">
+                    <div className="font-display text-xl font-extrabold text-white">
+                      {formatINR(subDomainPrice(modalSubDomain))}
+                    </div>
+                    <span className="text-[11px] text-blue-100">Full Track Pass</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-5 sm:p-6 overflow-y-auto flex-1">
+                <SubDomainBreakdown subDomain={modalSubDomain} price={subDomainPrice(modalSubDomain)} />
+              </div>
+
+              <div className="p-4 sm:p-5 border-t border-slate-200 bg-slate-50 flex items-center justify-between shrink-0">
+                <div className="text-xs text-slate-500">
+                  <span className="font-bold text-slate-900 text-sm">
+                    {formatINR(subDomainPrice(modalSubDomain))}
+                  </span>{" "}
+                  · Includes 3 rounds, 6 tests + verified Career Intelligence Report
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setModalSubDomain(null)}
+                    className="border-slate-200 text-slate-700 cursor-pointer"
+                  >
+                    Close
+                  </Button>
+                  <Button
+                    size="sm"
+                    className={`cursor-pointer ${
+                      selected.includes(modalSubDomain.id)
+                        ? "bg-slate-200 hover:bg-slate-300 text-slate-800"
+                        : "bg-[#0d5cb2] hover:bg-[#0a4d96] text-white"
+                    }`}
+                    onClick={() => {
+                      onToggle(modalSubDomain.id);
+                      setModalSubDomain(null);
+                    }}
+                  >
+                    {selected.includes(modalSubDomain.id) ? (
+                      <>Remove from Cart</>
+                    ) : (
+                      <>Add to Cart ({formatINR(subDomainPrice(modalSubDomain))})</>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

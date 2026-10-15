@@ -58,8 +58,8 @@ export const roundsBasePrice = ROUNDS.reduce(
   0
 );
 
-export const subDomainPrice = (s: SubDomain) => Math.round((roundsBasePrice * s.multiplier) / 10) * 10;
-export const testPrice = (t: RoundTest, s: SubDomain) => Math.round(t.price * s.multiplier);
+export const subDomainPrice = (_s: SubDomain) => 1999;
+export const testPrice = (_t: RoundTest, _s: SubDomain) => 333;
 
 const MARKETING: SubDomain[] = [
   { id: "seo", name: "SEO", multiplier: 1, text: "Technical, on-page and off-page search optimisation.", topics: ["Keyword research", "Technical SEO", "Link building", "Search Console"] },
