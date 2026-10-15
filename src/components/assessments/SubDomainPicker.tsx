@@ -68,226 +68,143 @@ interface BreakdownProps {
   price: number;
 }
 
-const SubDomainBreakdown = ({ subDomain, price }: BreakdownProps) => {
+const SubDomainBreakdown = ({ subDomain }: BreakdownProps) => {
   const [activeRound, setActiveRound] = useState<number>(0);
-  const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const handleMouseEnter = (idx: number) => {
-    if (activeRound === idx) return;
-    if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
-    hoverTimerRef.current = setTimeout(() => {
-      setActiveRound(idx);
-    }, 75);
-  };
-
-  const handleMouseLeave = () => {
-    if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
-    };
-  }, []);
 
   const roundMeta = [
     {
       id: 1,
       title: "Knowledge & Concepts",
-      shortTitle: "Knowledge",
+      tabLabel: "Round 1 · Knowledge",
       icon: BookOpen,
       duration: "30 min",
       items: "25 Questions",
       badge: "Core Foundations",
       tagline: "Validates core frameworks, essential terminology, and rapid diagnostic reasoning.",
+      tests: ROUNDS[0].tests,
     },
     {
       id: 2,
       title: "Applied Technical Tasks",
-      shortTitle: "Technical",
+      tabLabel: "Round 2 · Technical",
       icon: Laptop,
       duration: "55 min",
       items: "7 Practical Tasks",
       badge: "Execution & Tooling",
       tagline: "Tests hands-on tool manipulation, problem briefs, and applied execution under timed constraints.",
+      tests: ROUNDS[1].tests,
     },
     {
       id: 3,
       title: "Workplace & Scenarios",
-      shortTitle: "Experience",
+      tabLabel: "Round 3 · Experience",
       icon: Briefcase,
       duration: "40 min",
       items: "12 Scenarios",
       badge: "Strategic Judgement",
       tagline: "Evaluates trade-off handling, situational ethics, and high-impact workplace decision making.",
+      tests: ROUNDS[2].tests,
     },
   ];
 
+  const cur = roundMeta[activeRound];
+
   return (
-    <div
-      onMouseLeave={handleMouseLeave}
-      className="bg-slate-50/70 rounded-2xl p-3 sm:p-4 border border-slate-200/60"
-    >
-      {/* Sleek Minimal Header */}
-      <div className="flex items-center justify-between gap-3 mb-3">
-        <div className="flex items-center gap-1.5 text-xs text-foreground font-semibold">
-          <span>Syllabus Breakdown</span>
-          <span className="text-muted-foreground font-normal">· Hover any round to inspect tests</span>
-        </div>
-        <span className="text-[11px] font-medium text-muted-foreground">
-          6 tests · 3 rounds · ~125 min total
-        </span>
-      </div>
-
-      {/* The Expanding Hover Bento Deck */}
-      <div className="flex flex-col md:flex-row gap-3 items-stretch">
-        {ROUNDS.map((r, idx) => {
-          const isExpanded = activeRound === idx;
-          const meta = roundMeta[idx] || roundMeta[0];
+    <div className="space-y-4">
+      {/* 3-Tab Segmented Selector */}
+      <div className="grid grid-cols-3 gap-1.5 p-1 bg-slate-100 rounded-xl border border-slate-200/70">
+        {roundMeta.map((meta, idx) => {
+          const isSelected = activeRound === idx;
           const Icon = meta.icon;
-
-          return !isExpanded ? (
-            /* Collapsed State View */
-            <div
-              key={r.id}
-              onMouseEnter={() => handleMouseEnter(idx)}
-              onClick={() => {
-                if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
-                setActiveRound(idx);
-              }}
-              className="rounded-2xl border border-slate-200/80 bg-white/90 hover:bg-white hover:border-blue-400 p-3.5 sm:p-4 md:w-44 lg:w-48 md:shrink-0 flex flex-col justify-between transition-colors duration-150 cursor-pointer group select-none shadow-2xs"
+          return (
+            <button
+              key={meta.id}
+              type="button"
+              onClick={() => setActiveRound(idx)}
+              className={`flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer select-none ${
+                isSelected
+                  ? "bg-white text-[#0d5cb2] shadow-xs border border-slate-200/90"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-white/50"
+              }`}
             >
-              <div>
-                {/* Top Header */}
-                <div className="flex items-center justify-between gap-1.5 pb-2.5 mb-2.5 border-b border-slate-100">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-100 shrink-0">
-                      <Icon className="h-4 w-4" />
-                    </span>
-                    <div className="min-w-0">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block leading-none">
-                        Round 0{r.id}
-                      </span>
-                      <h6 className="font-display text-xs sm:text-sm font-bold text-slate-900 mt-0.5 leading-tight truncate">
-                        {meta.shortTitle}
-                      </h6>
-                    </div>
-                  </div>
-                  <span className="text-[11px] font-medium text-slate-500 shrink-0 whitespace-nowrap">
-                    {meta.duration}
-                  </span>
-                </div>
-
-                {/* Compact Test List Preview */}
-                <div className="space-y-1.5 py-1">
-                  {r.tests.map((t) => (
-                    <div key={t.name} className="flex items-center justify-between text-[11px] text-slate-500">
-                      <span className="truncate pr-1 group-hover:text-slate-900 transition-colors">• {t.name}</span>
-                      <span className="shrink-0 text-[10px] font-medium text-slate-400">{t.minutes}m</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Bottom CTA */}
-              <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-blue-600">
-                <span className="whitespace-nowrap">Hover to expand</span>
-                <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform shrink-0" />
-              </div>
-            </div>
-          ) : (
-            /* Expanded State View */
-            <div
-              key={r.id}
-              className="rounded-2xl border border-[#0d5cb2] bg-white shadow-xs ring-1 ring-[#0d5cb2]/20 p-4 sm:p-4.5 md:flex-1 min-w-0 flex flex-col justify-between transition-colors duration-150 cursor-default"
-            >
-              <div>
-                {/* Expanded Card Header */}
-                <div className="flex items-center justify-between gap-2 pb-2.5 mb-2.5 border-b border-slate-100">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0d5cb2] text-white shadow-xs shrink-0">
-                      <Icon className="h-4 w-4" />
-                    </span>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#0d5cb2] whitespace-nowrap">
-                          Round 0{r.id}
-                        </span>
-                        <span className="rounded-full bg-[#0d5cb2]/10 border border-[#0d5cb2]/20 px-2 py-0.5 text-[10px] font-semibold text-[#0d5cb2] whitespace-nowrap">
-                          {meta.badge}
-                        </span>
-                      </div>
-                      <h6 className="font-display text-sm sm:text-base font-bold text-slate-900 leading-tight mt-0.5 truncate">
-                        {meta.title}
-                      </h6>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-1.5 sm:gap-2 text-xs text-slate-500 font-medium shrink-0">
-                    <span className="inline-flex items-center gap-1 bg-slate-100 px-2 py-0.5 rounded-md whitespace-nowrap">
-                      <Clock className="h-3 w-3 text-blue-600 shrink-0" /> {meta.duration}
-                    </span>
-                    <span className="inline-flex items-center gap-1 bg-slate-100 px-2 py-0.5 rounded-md hidden sm:inline-flex whitespace-nowrap">
-                      <FileText className="h-3 w-3 text-blue-600 shrink-0" /> {meta.items}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Test Micro-Cards Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 animate-in fade-in-50 duration-150">
-                  {r.tests.map((t) => (
-                    <div
-                      key={t.name}
-                      className="rounded-xl border border-slate-200/80 bg-slate-50/50 p-3 hover:bg-slate-50 transition-colors flex flex-col justify-between"
-                    >
-                      <div>
-                        {/* Header: Tag, Name & Price */}
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="min-w-0 flex-1">
-                            <span className="inline-block rounded bg-blue-50 border border-blue-200/60 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-blue-700 mb-1">
-                              {t.kind}
-                            </span>
-                            <h6 className="font-semibold text-xs sm:text-sm text-slate-900 leading-snug">
-                              {t.name}
-                            </h6>
-                          </div>
-                          <span className="shrink-0 text-xs font-bold text-slate-900 bg-white px-2 py-0.5 rounded-md border border-slate-200 shadow-2xs">
-                            {formatINR(testPrice(t, subDomain))}
-                          </span>
-                        </div>
-                        <p className="text-[11px] text-slate-500 mt-1.5 line-clamp-2 leading-relaxed">
-                          {t.text}
-                        </p>
-                      </div>
-
-                      {/* Footer: Clean 2-column metrics */}
-                      <div className="mt-3 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px] font-medium text-slate-500">
-                        <span className="inline-flex items-center gap-1.5 shrink-0 whitespace-nowrap">
-                          <Clock className="h-3 w-3 text-blue-600 shrink-0" />
-                          <span>{t.minutes} min</span>
-                        </span>
-                        <span className="inline-flex items-center gap-1.5 shrink-0 whitespace-nowrap">
-                          <FileText className="h-3 w-3 text-blue-600 shrink-0" />
-                          <span>{t.questions} {t.kind === "Technical" ? "tasks" : "questions"}</span>
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Expanded Footer Tip */}
-              <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-                <span className="flex items-center gap-1.5 whitespace-nowrap">
-                  <Sparkles className="h-3 w-3 text-blue-600 shrink-0" /> Hover other rounds to switch
-                </span>
-                <span className="font-semibold text-slate-900 whitespace-nowrap">
-                  Included with {subDomain.name} Pass
-                </span>
-              </div>
-            </div>
+              <Icon className={`h-3.5 w-3.5 shrink-0 ${isSelected ? "text-[#0d5cb2]" : "text-slate-400"}`} />
+              <span className="truncate">{meta.tabLabel}</span>
+            </button>
           );
         })}
+      </div>
+
+      {/* Active Round Info Bar */}
+      <div className="bg-slate-50/80 rounded-xl p-3.5 border border-slate-200/80 flex flex-wrap items-center justify-between gap-2.5">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="rounded bg-[#0d5cb2]/10 border border-[#0d5cb2]/20 text-[#0d5cb2] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+              {cur.badge}
+            </span>
+            <span className="text-xs font-bold text-slate-900 truncate">
+              {cur.title}
+            </span>
+          </div>
+          <p className="text-[11px] text-slate-500 mt-1 leading-normal">
+            {cur.tagline}
+          </p>
+        </div>
+        <div className="flex items-center gap-2 shrink-0 text-xs font-semibold text-slate-600">
+          <span className="inline-flex items-center gap-1 bg-white border border-slate-200/80 px-2.5 py-1 rounded-md shadow-2xs">
+            <Clock className="h-3.5 w-3.5 text-[#0d5cb2]" /> {cur.duration}
+          </span>
+          <span className="inline-flex items-center gap-1 bg-white border border-slate-200/80 px-2.5 py-1 rounded-md shadow-2xs">
+            <FileText className="h-3.5 w-3.5 text-[#0d5cb2]" /> {cur.items}
+          </span>
+        </div>
+      </div>
+
+      {/* 2 Full-Width Test Cards - Spacious, Clean Alignment, Zero Collisions */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-0.5">
+        {cur.tests.map((t, testIdx) => (
+          <div
+            key={t.name}
+            className="rounded-xl border border-slate-200/90 bg-white p-4 shadow-2xs flex flex-col justify-between"
+          >
+            <div>
+              <div className="flex items-start justify-between gap-2 mb-1.5">
+                <span className="inline-block rounded bg-blue-50 border border-blue-200/60 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#0d5cb2]">
+                  {t.kind}
+                </span>
+                <span className="text-[11px] font-semibold text-slate-400 bg-slate-50 border border-slate-200/60 px-2 py-0.5 rounded-md">
+                  Test {testIdx + 1} of 2
+                </span>
+              </div>
+              <h6 className="font-display text-sm font-bold text-slate-900 leading-snug">
+                {t.name}
+              </h6>
+              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                {t.text}
+              </p>
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-medium text-slate-500">
+              <span className="inline-flex items-center gap-1.5">
+                <Clock className="h-3.5 w-3.5 text-[#0d5cb2]" />
+                <span>{t.minutes} mins</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <FileText className="h-3.5 w-3.5 text-[#0d5cb2]" />
+                <span>{t.questions} {t.kind === "Technical" ? "practical tasks" : "questions"}</span>
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Track Footnote */}
+      <div className="pt-1 flex items-center justify-between text-xs text-slate-500">
+        <span className="flex items-center gap-1 text-[11px]">
+          <Sparkles className="h-3 w-3 text-[#0d5cb2]" /> Switch tabs above to inspect other rounds
+        </span>
+        <span className="font-medium text-[11px] text-slate-600">
+          Included with {subDomain.name} Specialisation Pass
+        </span>
       </div>
     </div>
   );
@@ -447,10 +364,10 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
 
       {/* Syllabus Modal Dialog */}
       <Dialog open={modalSubDomain !== null} onOpenChange={(open) => !open && setModalSubDomain(null)}>
-        <DialogContent className="max-w-3xl max-h-[85vh] overflow-hidden flex flex-col p-0 rounded-2xl bg-white border border-slate-200 shadow-xl">
+        <DialogContent className="max-w-2xl sm:max-w-3xl overflow-hidden flex flex-col p-0 rounded-2xl bg-white border border-slate-200 shadow-2xl [&>button]:text-white [&>button]:top-5 [&>button]:right-5 [&>button]:opacity-90 [&>button:hover]:opacity-100">
           {modalSubDomain && (
             <>
-              <div className="bg-[#0d5cb2] text-white p-5 sm:p-6 shrink-0">
+              <div className="bg-[#0d5cb2] text-white p-5 sm:p-6 pr-14 sm:pr-16 shrink-0">
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3.5">
                     <div className="h-12 w-12 rounded-xl bg-white p-2 flex items-center justify-center shrink-0 shadow-sm">
@@ -482,7 +399,7 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                 </div>
               </div>
 
-              <div className="p-5 sm:p-6 overflow-y-auto flex-1">
+              <div className="p-5 sm:p-6">
                 <SubDomainBreakdown subDomain={modalSubDomain} price={subDomainPrice(modalSubDomain)} />
               </div>
 
