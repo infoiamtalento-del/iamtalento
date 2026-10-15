@@ -1,5 +1,6 @@
 export interface ProJob {
   id: number;
+  description?: string;
   t: string; // title
   c: string; // company
   l: string; // location

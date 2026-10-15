@@ -1,0 +1,35 @@
+.employer-workspace { color: hsl(var(--job-ink)); letter-spacing: 0; }
+.employer-workspace h1,.employer-workspace h2,.employer-workspace h3 { color: hsl(var(--job-ink)); letter-spacing: 0; }
+.employer-workspace .workspace-header { display:flex; align-items:center; justify-content:space-between; gap:24px; margin-bottom:28px; }
+.employer-workspace .workspace-heading { font-size:28px; line-height:1.25; font-weight:700; margin-top:8px; }
+.employer-workspace .workspace-description { font-size:13px; line-height:1.7; color:hsl(var(--job-muted)); margin-top:6px; max-width:650px; }
+.employer-workspace .workspace-eyebrow { display:inline-flex; align-items:center; gap:7px; color:hsl(var(--primary)); background:hsl(var(--job-tint)); border-radius:20px; padding:5px 10px; font-size:11px; font-weight:600; }
+.employer-workspace .workspace-panel { border:1px solid hsl(var(--job-border)); background:hsl(var(--card)); border-radius:8px; padding:22px; }
+.employer-workspace .workspace-section-title { display:flex; gap:12px; align-items:center; margin-bottom:18px; }
+.employer-workspace .workspace-icon { display:flex; align-items:center; justify-content:center; flex-shrink:0; width:40px; height:40px; background:hsl(var(--job-tint)); color:hsl(var(--primary)); border-radius:8px; }
+.employer-workspace .workspace-section-title h2 { font-size:15px; font-weight:700; }
+.employer-workspace .workspace-section-title p { font-size:11px; color:hsl(var(--job-muted)); margin-top:3px; }
+.employer-workspace .workspace-field { display:grid; gap:7px; font-size:11px; font-weight:600; }
+.employer-workspace input:not([type=checkbox]):not([type=range]),.employer-workspace select,.employer-workspace textarea { border-color:hsl(var(--job-border)); border-radius:6px; font-size:12px; background:hsl(var(--card)); color:hsl(var(--job-ink)); width:100%; }
+.employer-workspace select { height:40px; padding:0 10px; }
+.employer-workspace .workspace-divider { margin:22px 0; border-top:1px solid hsl(var(--job-border)); }
+.employer-workspace .workspace-chip { display:inline-flex; gap:6px; align-items:center; border-radius:18px; padding:5px 10px; font-size:11px; font-weight:600; background:hsl(var(--job-tint)); color:hsl(var(--primary)); }
+.employer-workspace .workspace-stats { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:14px; margin-bottom:20px; }
+.employer-workspace .workspace-stat { display:flex; align-items:center; gap:12px; border:1px solid hsl(var(--job-border)); border-radius:8px; padding:18px 14px; background:hsl(var(--job-surface)); text-align:left; min-width:0; height:92px; }
+.employer-workspace .workspace-stat span { font-size:10px; color:hsl(var(--job-muted)); white-space:normal; }
+.employer-workspace .workspace-stat strong { display:block; font-size:25px; color:hsl(var(--job-ink)); line-height:1.2; margin-top:4px; }
+.employer-workspace .workspace-board { display:grid; grid-template-columns:repeat(5,minmax(220px,1fr)); gap:14px; overflow-x:auto; padding-bottom:16px; }
+.employer-workspace .workspace-column { padding:12px; border:1px solid hsl(var(--job-border)); border-radius:8px; background:hsl(var(--job-tint)/.6); min-height:330px; }
+.employer-workspace .workspace-candidate { display:block; width:100%; height:auto; min-height:138px; padding:14px 12px; border:1px solid hsl(var(--job-border)); background:hsl(var(--card)); border-radius:6px; text-align:left; white-space:normal; margin-top:10px; }
+.employer-workspace .workspace-candidate:hover { border-color:hsl(var(--primary)); background:hsl(var(--card)); }
+.employer-workspace .workspace-candidate img { width:34px; height:34px; object-fit:cover; border-radius:50%; flex-shrink:0; }
+.employer-workspace .workspace-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:245px; text-align:center; gap:12px; }
+.employer-workspace .workspace-empty .workspace-icon { width:64px; height:64px; border-radius:50%; }
+.employer-workspace .workspace-empty p { font-size:12px; color:hsl(var(--job-muted)); }
+.employer-workspace .workspace-health { background:hsl(var(--job-tint)/.4); }
+.employer-workspace .workspace-health progress { appearance:none; width:100%; height:8px; border-radius:10px; overflow:hidden; background:hsl(var(--job-border)); }
+.employer-workspace .workspace-health progress::-webkit-progress-bar { background:hsl(var(--job-border)); }
+.employer-workspace .workspace-health progress::-webkit-progress-value { background:hsl(var(--primary)); }
+.employer-workspace .workspace-health progress::-moz-progress-bar { background:hsl(var(--primary)); }
+@media(max-width:1100px) { .employer-workspace .workspace-stats { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+@media(max-width:640px) { .employer-workspace .workspace-header { align-items:flex-start; flex-direction:column; gap:16px; } .employer-workspace .workspace-heading { font-size:24px; } .employer-workspace .workspace-panel { padding:18px; } .employer-workspace .workspace-stats { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; } .employer-workspace .workspace-stat { padding:12px; gap:8px; } .employer-workspace .workspace-stat .workspace-icon { width:30px; height:30px; } }

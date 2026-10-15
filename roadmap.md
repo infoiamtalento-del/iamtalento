@@ -1,5 +1,12 @@
 # Roadmap
 
+## Employer pages — supplied dashboard references
+- Redesign Job Posting with grouped fields and a live listing preview — in progress
+- Redesign Job Applications with summary counts, filters and candidate board/list — in progress
+- Redesign Notifications with SLA health, applicants, interviews and quick actions — in progress
+- Refresh My Account in the same style (fourth reference was not attached) — in progress
+- Verify employer actions and desktop/phone layouts without changing employee pages — pending
+
 ## Employee and Employer demo login
 - Add blue account-type choices and quick entry to existing dummy profiles — implemented
 - Match employer account dropdown to the employee design and connect all existing employer views — implemented
