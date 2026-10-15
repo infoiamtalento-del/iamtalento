@@ -119,7 +119,7 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
         {/* Brand Logo & Tag */}
         <div className="flex items-center gap-3">
           <Link to="/" className="flex items-center gap-2 group">
-            <img src={siteLogo.url} alt="TalentCIR" className="h-8 w-auto object-contain" />
+            <img src={siteLogo.url} alt="I Am Talento" className="h-8 w-auto object-contain" />
             <span className="text-[10px] font-black tracking-wider uppercase px-1.5 py-0.5 rounded bg-primary text-white">
               PRO
             </span>

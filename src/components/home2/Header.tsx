@@ -67,8 +67,8 @@ const Header = () => {
 
       <header className="h2-header" data-stuck={stuck}>
         <div className="h2-shell h2-header-inner">
-          <Link to="/" className="h2-logo" aria-label="TalentCIR home">
-            <img src={siteLogo.url} alt="TalentCIR" />
+          <Link to="/" className="h2-logo" aria-label="IAmTalento home">
+            <img src={siteLogo.url} alt="IAmTalento" />
           </Link>
 
           <nav className="h2-nav" aria-label="Primary">

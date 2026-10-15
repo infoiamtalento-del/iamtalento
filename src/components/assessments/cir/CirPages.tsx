@@ -63,7 +63,7 @@ const PageShell = ({ n, section, children }: { n: number; section: string; child
     className="relative flex shrink-0 flex-col overflow-hidden bg-white text-slate-900"
   >
     <header className="flex items-center justify-between px-10 pb-3 pt-7">
-      <img src={siteLogo.url} alt="TalentCIR" className="h-8 w-auto object-contain" />
+      <img src={siteLogo.url} alt="I Am Talento" className="h-8 w-auto object-contain" />
       <div className="flex items-center gap-3 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-slate-500">
         <span>{section}</span>
         <span className="h-3 w-px bg-slate-300" />
@@ -383,7 +383,7 @@ const CoverPage = () => (
       <CoverArt />
       <div className="relative flex items-center justify-between px-10 pt-9">
         <span className="rounded-xl bg-white px-4 py-2.5">
-          <img src={siteLogo.url} alt="TalentCIR" className="h-8 w-auto object-contain" />
+          <img src={siteLogo.url} alt="I Am Talento" className="h-8 w-auto object-contain" />
         </span>
         <span className="rounded-full border border-white/60 px-3.5 py-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-white">
           Sample report
