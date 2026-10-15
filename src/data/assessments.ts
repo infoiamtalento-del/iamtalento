@@ -102,7 +102,7 @@ const genericQuestions = (skills: string[], label: string): Question[] =>
 export const ASSESSMENTS: Assessment[] = [
   {
     id: "digital-marketing-fundamentals",
-    title: "Digital Marketing Fundamentals",
+    title: "Digital Marketing Assessments",
     industry: "Marketing",
     domain: "Digital Marketing",
     experienceLevels: ["Beginner", "0–1 Years", "1–3 Years"],
@@ -418,4 +418,6 @@ export const ASSESSMENTS: Assessment[] = [
   },
 ];
 
-export const getAssessment = (id?: string) => ASSESSMENTS.find((a) => a.id === id);
+export const getAssessment = (id?: string) =>
+  ASSESSMENTS.find((a) => a.id === id) ||
+  (id === "digital-marketing-assessments" ? ASSESSMENTS.find((a) => a.id === "digital-marketing-fundamentals") : undefined);

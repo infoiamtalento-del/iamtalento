@@ -13,7 +13,7 @@ export const CIR_CANDIDATE = {
   reportId: "CIR-DM-2026-048213",
   issued: "10 October 2026",
   validUntil: "10 October 2027",
-  assessment: "Digital Marketing Fundamentals",
+  assessment: "Digital Marketing Assessments",
   verifyUrl: "iamtalento.com/verify/CIR-DM-2026-048213",
 };
 
