@@ -1,5 +1,12 @@
 # Roadmap
 
+## Employer pages — supplied dashboard references
+- Redesign Job Posting with grouped fields and a live listing preview — done
+- Redesign Job Applications with summary counts, filters and candidate board/list — done
+- Redesign Notifications with SLA health, applicants, interviews and quick actions — done
+- Refresh My Account in the same style (fourth reference was not attached) — done
+- Verify employer actions and desktop/phone layouts without changing employee pages — done; employer quick login, preview, draft/reload, publish, description readback, employee application, employer candidate review and shortlisting, filtering and notification navigation checked; all four pages inspected at 1280, 890 and 390 widths without overflow; build OK.
+
 ## Employee and Employer demo login
 - Add blue account-type choices and quick entry to existing dummy profiles — implemented
 - Match employer account dropdown to the employee design and connect all existing employer views — implemented

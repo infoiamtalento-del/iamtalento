@@ -40,6 +40,10 @@ import { ProEmployerProfileView } from "@/components/pro/ProEmployerProfileView"
 import { ProDrawers } from "@/components/pro/ProDrawers";
 import { ProAiAssistant } from "@/components/pro/ProAiAssistant";
 import { ProEmployerAccountView } from "@/components/pro/ProEmployerAccountView";
+import { ProEmployerJobPosting } from "@/components/pro/ProEmployerJobPosting";
+import { ProEmployerPipeline } from "@/components/pro/ProEmployerPipeline";
+import { ProEmployerNotifications } from "@/components/pro/ProEmployerNotifications";
+import { ProEmployerMyAccount } from "@/components/pro/ProEmployerMyAccount";
 
 interface ToastMessage {
   id: number;
@@ -504,6 +508,7 @@ const TalentoPro: React.FC = () => {
     const newJob: ProJob = {
       id: Date.now(),
       t: jobData.t || "Software Engineer",
+      description: jobData.description,
       c: jobData.c || "Super30",
       l: jobData.l || "Bengaluru",
       m: jobData.m || "Hybrid",
@@ -801,7 +806,10 @@ const TalentoPro: React.FC = () => {
             {/* EMPLOYER VIEWS */}
             {currentRole === "employer" && (
               <>
-                {["account", "employer-assessments", "interviews", "advertise", "subscription", "settings", "payment-history"].includes(effectiveView) && <ProEmployerAccountView view={effectiveView} user={currentUser} onNavigate={setActiveView} onOpenReceipt={(txId) => setDrawerState({ type: "receipt", txId })} />}
+                {effectiveView === "account" && <ProEmployerMyAccount user={currentUser} jobs={jobs} applications={apps} onNavigate={setActiveView} />}
+                {["employer-assessments", "interviews", "advertise", "subscription", "settings", "payment-history"].includes(effectiveView) && <ProEmployerAccountView view={effectiveView} user={currentUser} onNavigate={setActiveView} onOpenReceipt={(txId) => setDrawerState({ type: "receipt", txId })} />}
+                {effectiveView === "post" && <ProEmployerJobPosting user={currentUser} onPublishJob={handlePublishJob} onToast={addToast} />}
+                {effectiveView === "pipe" && <ProEmployerPipeline user={currentUser} jobs={jobs} applications={apps} onOpenDrawer={setDrawerState} onBulkUpdateStage={handleBulkUpdateStage} onBulkSendReview={handleBulkSendReview} />}
                 {effectiveView === "support" && <ProSupportView onToast={addToast} />}
                 {effectiveView === "dash" && (
                   <ProDashboardView
@@ -826,9 +834,7 @@ const TalentoPro: React.FC = () => {
                   />
                 )}
 
-                {(effectiveView === "pipe" ||
-                  effectiveView === "post" ||
-                  effectiveView === "talent" ||
+                {(effectiveView === "talent" ||
                   (effectiveView === "cp" && editingCp)) && (
                   <ProEmployerViews
                     view={effectiveView}
@@ -849,11 +855,12 @@ const TalentoPro: React.FC = () => {
                 )}
 
                 {effectiveView === "notif" && (
-                  <ProNotificationsView
+                  <ProEmployerNotifications
                     user={currentUser}
                     jobs={jobs}
                     applications={apps}
                     onOpenDrawer={setDrawerState}
+                    onNavigate={setActiveView}
                     onMarkSeen={() => {
                       handleUpdateUser({ ...currentUser, seen: Date.now() });
                     }}
