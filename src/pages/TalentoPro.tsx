@@ -39,7 +39,6 @@ import { ProEmployerViews } from "@/components/pro/ProEmployerViews";
 import { ProEmployerProfileView } from "@/components/pro/ProEmployerProfileView";
 import { ProDrawers } from "@/components/pro/ProDrawers";
 import { ProAiAssistant } from "@/components/pro/ProAiAssistant";
-import { ProEmployerAccountView } from "@/components/pro/ProEmployerAccountView";
 import { ProEmployerJobPosting } from "@/components/pro/ProEmployerJobPosting";
 import { ProEmployerPipeline } from "@/components/pro/ProEmployerPipeline";
 import { ProEmployerNotifications } from "@/components/pro/ProEmployerNotifications";
@@ -65,7 +64,8 @@ const loadStorage = <T,>(key: string, defaultVal: T): T => {
 
 const saveStorage = <T,>(key: string, val: T): void => {
   try {
-    localStorage.setItem("tq_" + key, JSON.stringify(val));
+    const serialized = JSON.stringify(val);
+    if (localStorage.getItem("tq_" + key) !== serialized) localStorage.setItem("tq_" + key, serialized);
   } catch (e) {
     console.error("Storage error:", e);
   }
