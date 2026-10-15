@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Headphones,
   FileText,
@@ -14,11 +14,13 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import "./pro-support.css";
 
 interface ProSupportViewProps {
   onToast: (msg: string) => void;
+  demoAccount?: string;
 }
 
 interface SupportTicket {
@@ -59,13 +61,15 @@ const QUICK_LINKS = [
   { key: "contact", icon: Headphones, title: "Contact support", desc: "Chat or email our team for personal assistance.", target: "help" },
 ] as const;
 
-export const ProSupportView: React.FC<ProSupportViewProps> = ({ onToast }) => {
+export const ProSupportView: React.FC<ProSupportViewProps> = ({ onToast, demoAccount }) => {
   const [category, setCategory] = useState("");
   const [priority, setPriority] = useState("Medium");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [file, setFile] = useState<File | null>(null);
-  const [tickets, setTickets] = useState<SupportTicket[]>(INITIAL_TICKETS);
+  const [tickets, setTickets] = useState<SupportTicket[]>(() => { if (!demoAccount) return INITIAL_TICKETS; try { const stored = localStorage.getItem(`tq_support_${demoAccount}`); return stored ? JSON.parse(stored) : INITIAL_TICKETS; } catch { return INITIAL_TICKETS; } });
+  const [selectedTicket, setSelectedTicket] = useState<string | null>(null);
+  useEffect(() => { if (demoAccount) localStorage.setItem(`tq_support_${demoAccount}`, JSON.stringify(tickets)); }, [demoAccount, tickets]);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [touched, setTouched] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -96,7 +100,7 @@ export const ProSupportView: React.FC<ProSupportViewProps> = ({ onToast }) => {
     setMessage("");
     setFile(null);
     setTouched(false);
-    onToast(`Ticket ${nextId} submitted. We'll reply within 24 hours.`);
+    onToast(demoAccount ? `Demo ticket ${nextId} saved. No support request sent.` : `Ticket ${nextId} submitted. We'll reply within 24 hours.`);
     setTimeout(() => sectionRefs.tickets.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 150);
   };
 
@@ -106,6 +110,7 @@ export const ProSupportView: React.FC<ProSupportViewProps> = ({ onToast }) => {
 
   return (
     <div className="pro-support space-y-5">
+      {demoAccount && <Dialog open={selectedTicket !== null} onOpenChange={open => { if (!open) setSelectedTicket(null); }}><DialogContent><DialogHeader><DialogTitle>{tickets.find(t => t.id === selectedTicket)?.subject}</DialogTitle></DialogHeader><p className="text-sm text-muted-foreground">{tickets.find(t => t.id === selectedTicket)?.lastReply}</p><Button onClick={() => { setTickets(previous => previous.map(t => t.id === selectedTicket ? { ...t, status: "Resolved", lastReply: "Sample support reply: your request has been reviewed and resolved." } : t)); onToast("Simulated support reply received."); }}>Simulate support resolution</Button><p className="text-xs text-muted-foreground">Demo conversation only. No support request sent.</p></DialogContent></Dialog>}
       {/* ── Hero ── */}
       <section className="sp-hero relative overflow-hidden rounded-3xl bg-primary px-7 py-8 md:px-9">
         <span className="absolute -top-16 -right-10 w-56 h-56 rounded-full bg-primary-foreground/10" />
@@ -269,9 +274,9 @@ export const ProSupportView: React.FC<ProSupportViewProps> = ({ onToast }) => {
                       </td>
                       <td className="py-3 pr-3 text-muted-foreground max-w-[180px] truncate">{t.lastReply}</td>
                       <td className="py-3 text-right">
-                        <button className="inline-flex items-center gap-1 text-primary font-semibold hover:underline cursor-pointer whitespace-nowrap">
+                        <Button variant="ghost" size="sm" onClick={() => { if (demoAccount) setSelectedTicket(t.id); }} className="inline-flex items-center gap-1 text-primary font-semibold hover:underline cursor-pointer whitespace-nowrap">
                           View details <ArrowRight className="w-3 h-3" />
-                        </button>
+                        </Button>
                       </td>
                     </tr>
                   ))}

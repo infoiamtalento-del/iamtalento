@@ -1,5 +1,10 @@
 # Roadmap
 
+## Employer — realistic interactive demo
+- Seed connected jobs, applicants, interviews and account activity without overwriting existing changes — done
+- Make assessment, AI interview, advertising, subscription, payment and settings demo workflows interactive — done; support tickets have persistent sample conversations and simulated resolutions
+- Add clearly labelled simulated activity and verify cross-page updates and reload — done; employer login, simulated arrival, 20-second automatic arrival, stage change, saved notes, scheduled interview readback, assessment result, AI screening, campaign engagement/pause, plan activation/receipt download, saved settings, draft/reload, publish/description readback, Employee application and Employer pipeline readback, support resolution/reload checked; 1280/890/390 layouts without overflow, no browser errors, build OK
+
 ## Employer pages — supplied dashboard references
 - Redesign Job Posting with grouped fields and a live listing preview — done
 - Redesign Job Applications with summary counts, filters and candidate board/list — done
@@ -10,7 +15,7 @@
 ## Employee and Employer demo login
 - Add blue account-type choices and quick entry to existing dummy profiles — implemented
 - Match employer account dropdown to the employee design and connect all existing employer views — implemented
-- Verify both demo entries, employer menu destinations, reload and logout — done; Employee and Employer profiles opened at 1496, 890 and 390 widths, all twelve employer destinations opened, reload retained Employer, logout cleared demo selection and returned home, no page errors; login blue verified as #0d5cb2 and build OK. Existing AI interviews, advertising and subscriptions remain inactive demo pages.
+- Verify both demo entries, employer menu destinations, reload and logout — done; Employee and Employer profiles opened at 1496, 890 and 390 widths, all twelve employer destinations opened, reload retained Employer, logout cleared demo selection and returned home, no page errors; login blue verified as #0d5cb2 and build OK. AI interviews, advertising and subscriptions now have explicitly simulated interactive workflows; no live services or charges.
 
 ## Employee account — restore reference features
 - Restore all screenshot menu options and connect the existing inner pages and actions — implemented
@@ -23,7 +28,7 @@
 
 ## Employer account menu
 - Add the requested employer side menu and matching profile dropdown — done
-- Connect existing destinations and verify every menu option and layout — done; all 13 labels checked, receipts and demo logout verified, no desktop or phone overflow or runtime errors. AI interviews, advertising and subscriptions show honest inactive states rather than live services.
+- Connect existing destinations and verify every menu option and layout — done; all 13 labels checked, receipts and demo logout verified, no desktop or phone overflow or runtime errors. AI interviews, advertising and subscriptions now show explicitly simulated workflows rather than live services.
 
 ## Pro job description page
 - Add the reference-style full job page and connect all job-card clicks — done

@@ -39,11 +39,14 @@ import { ProEmployerViews } from "@/components/pro/ProEmployerViews";
 import { ProEmployerProfileView } from "@/components/pro/ProEmployerProfileView";
 import { ProDrawers } from "@/components/pro/ProDrawers";
 import { ProAiAssistant } from "@/components/pro/ProAiAssistant";
-import { ProEmployerAccountView } from "@/components/pro/ProEmployerAccountView";
 import { ProEmployerJobPosting } from "@/components/pro/ProEmployerJobPosting";
 import { ProEmployerPipeline } from "@/components/pro/ProEmployerPipeline";
 import { ProEmployerNotifications } from "@/components/pro/ProEmployerNotifications";
 import { ProEmployerMyAccount } from "@/components/pro/ProEmployerMyAccount";
+import { ProEmployerDemoServices } from "@/components/pro/ProEmployerDemoServices";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { DEMO_EMPLOYER_JOBS, DEMO_EMPLOYER_APPS, INITIAL_EMPLOYER_DEMO, createDemoApplication, type EmployerDemoState } from "@/data/employerDemo";
 
 interface ToastMessage {
   id: number;
@@ -61,7 +64,8 @@ const loadStorage = <T,>(key: string, defaultVal: T): T => {
 
 const saveStorage = <T,>(key: string, val: T): void => {
   try {
-    localStorage.setItem("tq_" + key, JSON.stringify(val));
+    const serialized = JSON.stringify(val);
+    if (localStorage.getItem("tq_" + key) !== serialized) localStorage.setItem("tq_" + key, serialized);
   } catch (e) {
     console.error("Storage error:", e);
   }
@@ -198,6 +202,29 @@ const TalentoPro: React.FC = () => {
     return DEFAULT_APPS;
   });
 
+  const [employerDemo, setEmployerDemo] = useState<EmployerDemoState>(() => loadStorage("employer_demo", INITIAL_EMPLOYER_DEMO));
+  const [simulateLive, setSimulateLive] = useState(false);
+  useEffect(() => { saveStorage("employer_demo", employerDemo); }, [employerDemo]);
+  useEffect(() => {
+    if (currentRole !== "employer" || sessionEmail !== "demo.employer@talento.app" || loadStorage("employer_seed_v1", false)) return;
+    setJobs(previous => [...previous, ...DEMO_EMPLOYER_JOBS.filter(job => !previous.some(j => j.id === job.id))]);
+    setApps(previous => [...previous, ...DEMO_EMPLOYER_APPS.filter(app => !previous.some(a => a.id === app.id))]);
+    saveStorage("employer_seed_v1", true);
+  }, [currentRole, sessionEmail]);
+  useEffect(() => {
+    const sync = (event: StorageEvent) => {
+      if (!event.newValue) return;
+      try {
+        if (event.key === "tq_jobs") setJobs(JSON.parse(event.newValue));
+        if (event.key === "tq_apps") setApps(JSON.parse(event.newValue));
+        if (event.key === "tq_users") setUsers(normalizeUsers(JSON.parse(event.newValue)));
+        if (event.key === "tq_employer_demo") setEmployerDemo(JSON.parse(event.newValue));
+      } catch { /* Ignore unrelated or malformed browser storage. */ }
+    };
+    window.addEventListener("storage", sync);
+    return () => window.removeEventListener("storage", sync);
+  }, []);
+
   // Effective view validation so invalid/mismatched view never renders blank
   const candidateViews: ProView[] = [
     "jobs",
@@ -258,6 +285,21 @@ const TalentoPro: React.FC = () => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
     }, 4000);
   }, []);
+
+  const simulateApplication = useCallback(() => {
+    const ownedJobs = jobs.filter(job => job.by === sessionEmail);
+    if (!ownedJobs.length) { addToast("Publish a job before simulating an application."); return; }
+    const job = ownedJobs[0];
+    const available = CANDIDATES_SEED.findIndex((candidate) => !apps.some(a => a.jid === job.id && a.name === candidate.n));
+    if (available < 0) { addToast("Every sample candidate has applied to this job. Publish another job to continue."); return; }
+    setApps(previous => [createDemoApplication(available, job.id, Date.now()), ...previous]);
+    addToast(`Simulated new application from ${CANDIDATES_SEED[available].n}.`);
+  }, [jobs, apps, sessionEmail, addToast]);
+  useEffect(() => {
+    if (!simulateLive || currentRole !== "employer") return;
+    const interval = setInterval(simulateApplication, 20000);
+    return () => clearInterval(interval);
+  }, [simulateLive, currentRole, simulateApplication]);
 
   // Save to storage on updates
   useEffect(() => {
@@ -513,9 +555,9 @@ const TalentoPro: React.FC = () => {
       l: jobData.l || "Bengaluru",
       m: jobData.m || "Hybrid",
       ty: jobData.ty || "Full-time",
-      e: jobData.e || 2,
-      a: jobData.a || 15,
-      b: jobData.b || 25,
+      e: jobData.e ?? 2,
+      a: jobData.a ?? 15,
+      b: jobData.b ?? 25,
       sk: jobData.sk || ["React", "TypeScript"],
       at: Date.now(),
       by: sessionEmail,
@@ -624,6 +666,7 @@ const TalentoPro: React.FC = () => {
 
       {/* Main Content View Switcher */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 pt-24 pb-8">
+        {currentRole === "employer" && <div className="mb-6 flex flex-wrap items-center gap-4 border-b border-border pb-4"><div className="mr-auto"><p className="text-sm font-semibold text-primary">Demo workspace · Sample data</p><p className="mt-1 text-xs text-muted-foreground">Simulated activity only. No real messages, AI sessions or charges.</p></div><label className="flex items-center gap-2 text-xs"><Switch aria-label="Simulate live activity" checked={simulateLive} onCheckedChange={setSimulateLive} />Simulate live activity</label><Button size="sm" variant="outline" onClick={simulateApplication}>Simulate new application</Button></div>}
         <div className="min-w-0 flex-1">
         {selectedJob ? <ProJobDetail key={selectedJob.id} job={selectedJob} user={currentUser} jobs={jobs} applications={apps} onBack={() => setDrawerState(null)} onOpenJob={(id) => { setDrawerState({ type: "job", id }); window.scrollTo({ top: 0 }); }} onApply={handleApplyJob} onSave={handleSaveJob} /> : (
         <AnimatePresence mode="wait">
@@ -807,10 +850,10 @@ const TalentoPro: React.FC = () => {
             {currentRole === "employer" && (
               <>
                 {effectiveView === "account" && <ProEmployerMyAccount user={currentUser} jobs={jobs} applications={apps} onNavigate={setActiveView} />}
-                {["employer-assessments", "interviews", "advertise", "subscription", "settings", "payment-history"].includes(effectiveView) && <ProEmployerAccountView view={effectiveView} user={currentUser} onNavigate={setActiveView} onOpenReceipt={(txId) => setDrawerState({ type: "receipt", txId })} />}
+                {["employer-assessments", "interviews", "advertise", "subscription", "settings", "payment-history"].includes(effectiveView) && <ProEmployerDemoServices view={effectiveView} user={currentUser} jobs={jobs} applications={apps} state={employerDemo} onChange={(next) => { setEmployerDemo(next); setApps(previous => previous.map(app => { const result = next.assessments.find(r => r.candidate === app.name && r.status === "Completed" && r.score !== undefined); return result ? { ...app, as: { ...app.as, [result.name]: result.score ?? 0 } } : app; })); }} onNavigate={setActiveView} onOpenDrawer={setDrawerState} onToast={addToast} onSamplePayment={(description) => { handleUpdateWallet(currentUser.wal?.bal || 0, { id: `DEMO-${Date.now()}`, at: Date.now(), type: "debit", amt: 0, desc: description, via: "Simulation", st: "Demo only" }); addToast("Demo plan activated; sample receipt added. No charge."); }} />}
                 {effectiveView === "post" && <ProEmployerJobPosting user={currentUser} onPublishJob={handlePublishJob} onToast={addToast} />}
                 {effectiveView === "pipe" && <ProEmployerPipeline user={currentUser} jobs={jobs} applications={apps} onOpenDrawer={setDrawerState} onBulkUpdateStage={handleBulkUpdateStage} onBulkSendReview={handleBulkSendReview} />}
-                {effectiveView === "support" && <ProSupportView onToast={addToast} />}
+                {effectiveView === "support" && <ProSupportView onToast={addToast} demoAccount={currentUser.email} />}
                 {effectiveView === "dash" && (
                   <ProDashboardView
                     user={currentUser}
@@ -904,7 +947,8 @@ const TalentoPro: React.FC = () => {
       </main>
 
       {/* Global Drawers & Modals */}
-      <ProDrawers
+      {drawerState && <ProDrawers
+        key={JSON.stringify(drawerState)}
         drawerState={drawerState?.type === "job" ? null : drawerState}
         user={currentUser}
         jobs={jobs}
@@ -919,7 +963,7 @@ const TalentoPro: React.FC = () => {
         onScheduleInterview={handleScheduleInterview}
         onSaveRecruiterNote={handleSaveRecruiterNote}
         onToast={addToast}
-      />
+      />}
 
       {/* Floating AI Assistant Copilot */}
       <ProAiAssistant
