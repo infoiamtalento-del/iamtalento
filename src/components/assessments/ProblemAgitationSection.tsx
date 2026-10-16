@@ -44,7 +44,7 @@ const features = [
 ];
 
 const ProblemAgitationSection = () => (
-  <section className="bg-white py-16 md:py-20">
+  <section className="bg-[#FBF4EB] py-16 md:py-20">
     <div className="max-w-[1160px] mx-auto px-6">
       {/* Section header */}
       <motion.div

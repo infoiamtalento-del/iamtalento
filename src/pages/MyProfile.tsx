@@ -154,7 +154,7 @@ const MyProfile = () => {
           {/* ===== PROFILE HEADER (Cover + Avatar + Info) ===== */}
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl border bg-card overflow-hidden mb-6">
             {/* Cover header */}
-            <div className="h-32 sm:h-40 bg-[#0d5cb2]/10 relative" />
+            <div className="h-32 sm:h-40 bg-[#002C66]/10 relative" />
 
             <div className="px-6 pb-6 -mt-14 sm:-mt-16 relative">
               <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">

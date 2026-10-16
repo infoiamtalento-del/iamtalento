@@ -47,14 +47,15 @@ import ComplianceSection from "@/components/landing/ComplianceSection";
 
 const Assessments = () => (
   <div
+    className="bg-[#FBF4EB] min-h-screen"
     style={
       {
-        "--primary": "211.3 86.4% 37.5%",
+        "--primary": "214.1 100% 20%",
         "--primary-foreground": "0 0% 100%",
-        "--ring": "211.3 86.4% 37.5%",
-        "--primary-glow": "211.3 86.4% 37.5%",
-        "--accent": "211 40% 96%",
-        "--accent-foreground": "211.3 86.4% 37.5%",
+        "--ring": "214.1 100% 20%",
+        "--primary-glow": "214.1 100% 20%",
+        "--accent": "214 40% 95%",
+        "--accent-foreground": "214.1 100% 20%",
       } as React.CSSProperties
     }
   >

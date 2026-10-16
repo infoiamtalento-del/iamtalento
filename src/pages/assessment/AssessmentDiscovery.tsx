@@ -187,14 +187,15 @@ const AssessmentDiscovery = () => {
 
   return (
     <div
+      className="bg-[#FBF4EB] min-h-screen"
       style={
         {
-          "--primary": "211.3 86.4% 37.5%",
+          "--primary": "214.1 100% 20%",
           "--primary-foreground": "0 0% 100%",
-          "--ring": "211.3 86.4% 37.5%",
-          "--primary-glow": "211.3 86.4% 37.5%",
-          "--accent": "211 40% 96%",
-          "--accent-foreground": "211.3 86.4% 37.5%",
+          "--ring": "214.1 100% 20%",
+          "--primary-glow": "214.1 100% 20%",
+          "--accent": "214 40% 95%",
+          "--accent-foreground": "214.1 100% 20%",
         } as React.CSSProperties
       }
     >
@@ -207,7 +208,7 @@ const AssessmentDiscovery = () => {
       </Helmet>
       <Layout>
         {/* Hero */}
-        <section className="pt-14 pb-10 md:pt-20 md:pb-12 bg-background">
+        <section className="pt-14 pb-10 md:pt-20 md:pb-12 bg-[#FBF4EB]">
           <div className="container text-center">
             <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded-full mb-4">
               <Sparkles className="h-3 w-3" /> Skill Assessments
@@ -224,9 +225,9 @@ const AssessmentDiscovery = () => {
         </section>
 
         {/* Filters */}
-        <section className="pb-8 -mt-1">
+        <section className="pb-8 -mt-1 bg-[#FBF4EB]">
           <div className="container">
-            <div className="rounded-xl border border-border bg-background shadow-[0_10px_30px_hsl(var(--foreground)/0.08)]">
+            <div className="rounded-xl border border-border bg-white shadow-[0_10px_30px_hsl(var(--foreground)/0.08)]">
               <form
                 className="grid lg:grid-cols-[1.35fr_1fr_1fr_auto] lg:items-center"
                 onSubmit={(event) => { event.preventDefault(); runSearch(); }}
@@ -287,7 +288,7 @@ const AssessmentDiscovery = () => {
                 </label>
 
                 <div className="border-t border-border p-3 lg:border-l lg:border-t-0">
-                  <Button asChild className="h-14 w-full gap-2 px-7 font-bold lg:w-auto">
+                  <Button asChild className="h-14 w-full gap-2 px-7 font-bold lg:w-auto bg-[#002C66] hover:bg-[#00204d] text-white">
                     <Link to="/assessments/digital-marketing-fundamentals">
                       <Search className="h-4 w-4" /> Search Assessments
                     </Link>
@@ -296,43 +297,64 @@ const AssessmentDiscovery = () => {
               </form>
 
               <div className="border-t border-border px-5 py-3">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowAdvanced((current) => !current)}
-                  className="h-8 gap-2 px-0 text-primary hover:bg-transparent hover:text-primary/80"
-                  aria-expanded={showAdvanced}
-                >
-                  <SlidersHorizontal className="h-4 w-4" /> Advanced Filters
-                  <ChevronDown className={`h-4 w-4 transition-transform ${showAdvanced ? "rotate-180" : ""}`} />
-                </Button>
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowAdvanced((current) => !current)}
+                    className="h-8 gap-2 px-0 text-primary hover:bg-transparent hover:text-primary/80 shrink-0"
+                    aria-expanded={showAdvanced}
+                  >
+                    <SlidersHorizontal className="h-4 w-4" /> Advanced Filters
+                    <ChevronDown className={`h-4 w-4 transition-transform ${showAdvanced ? "rotate-180" : ""}`} />
+                  </Button>
+
+                  {activeChips.length > 0 && (
+                    <div className="flex flex-wrap items-center gap-2">
+                      {activeChips.map((c) => (
+                        <span
+                          key={c.label}
+                          className="flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full bg-primary/10 text-primary"
+                        >
+                          {c.label}
+                          <button onClick={c.clear} aria-label={`Remove ${c.label}`}>
+                            <X className="h-3.5 w-3.5" />
+                          </button>
+                        </span>
+                      ))}
+                      <button onClick={resetAll} className="text-xs font-semibold text-muted-foreground hover:text-primary underline ml-1">
+                        Clear all
+                      </button>
+                    </div>
+                  )}
+                </div>
 
                 {showAdvanced && (
-                  <div className="grid gap-4 border-t border-border pt-4 sm:grid-cols-2 lg:grid-cols-4">
+                  <div className="mt-3 grid gap-4 border-t border-border pt-4 sm:grid-cols-2 lg:grid-cols-4">
                     <label className="space-y-2">
                       <span className="flex items-center gap-2 text-xs font-semibold text-foreground"><Layers3 className="h-4 w-4 text-primary" /> Domain</span>
-                      <select value={domain ?? ""} onChange={(e) => setDomain(e.target.value || null)} className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-muted-foreground outline-none focus:border-primary/50">
+                      <select value={domain ?? ""} onChange={(e) => setDomain(e.target.value || null)} className="h-10 w-full rounded-md border border-input bg-white px-3 text-sm text-muted-foreground outline-none focus:border-primary/50">
                         <option value="">All domains</option>
                         {availableDomains.map((item) => <option key={item} value={item}>{item}</option>)}
                       </select>
                     </label>
                     <label className="space-y-2">
                       <span className="flex items-center gap-2 text-xs font-semibold text-foreground"><FileQuestion className="h-4 w-4 text-primary" /> Test type</span>
-                      <select value={testType ?? ""} onChange={(e) => setTestType(e.target.value || null)} className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-muted-foreground outline-none focus:border-primary/50">
+                      <select value={testType ?? ""} onChange={(e) => setTestType(e.target.value || null)} className="h-10 w-full rounded-md border border-input bg-white px-3 text-sm text-muted-foreground outline-none focus:border-primary/50">
                         <option value="">All test types</option>
                         {Object.keys(typeStyles).map((item) => <option key={item} value={item}>{item}</option>)}
                       </select>
                     </label>
                     <label className="space-y-2">
                       <span className="flex items-center gap-2 text-xs font-semibold text-foreground"><Gauge className="h-4 w-4 text-primary" /> Difficulty</span>
-                      <select value={difficulty ?? ""} onChange={(e) => setDifficulty(e.target.value || null)} className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-muted-foreground outline-none focus:border-primary/50">
+                      <select value={difficulty ?? ""} onChange={(e) => setDifficulty(e.target.value || null)} className="h-10 w-full rounded-md border border-input bg-white px-3 text-sm text-muted-foreground outline-none focus:border-primary/50">
                         <option value="">All difficulty levels</option>
                         {['Beginner', 'Intermediate', 'Advanced'].map((item) => <option key={item} value={item}>{item}</option>)}
                       </select>
                     </label>
                     <label className="flex h-[66px] cursor-pointer items-end">
-                      <span className="flex h-10 w-full items-center gap-3 rounded-md border border-input px-3 text-sm font-medium text-foreground">
+                      <span className="flex h-10 w-full items-center gap-3 rounded-md border border-input bg-white px-3 text-sm font-medium text-foreground">
                         <input type="checkbox" checked={proctoredOnly} onChange={(e) => setProctoredOnly(e.target.checked)} className="h-4 w-4 accent-primary" />
                         <Shield className="h-4 w-4 text-primary" /> Proctored only
                       </span>
@@ -340,25 +362,6 @@ const AssessmentDiscovery = () => {
                   </div>
                 )}
               </div>
-
-              {activeChips.length > 0 && (
-                <div className="flex flex-wrap items-center gap-2 border-t border-border px-5 py-3">
-                  {activeChips.map((c) => (
-                    <span
-                      key={c.label}
-                      className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full bg-primary/10 text-primary"
-                    >
-                      {c.label}
-                      <button onClick={c.clear} aria-label={`Remove ${c.label}`}>
-                        <X className="h-3.5 w-3.5" />
-                      </button>
-                    </span>
-                  ))}
-                  <button onClick={resetAll} className="text-xs font-semibold text-muted-foreground hover:text-primary underline">
-                    Clear all
-                  </button>
-                </div>
-              )}
             </div>
           </div>
         </section>

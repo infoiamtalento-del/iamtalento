@@ -225,7 +225,7 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 border-b border-border bg-background shadow-sm transition-all duration-300",
+        "fixed top-0 left-0 right-0 z-50 border-b border-border bg-card shadow-sm transition-all duration-300",
         scrolled ? "py-3" : "py-4"
       )}
     >

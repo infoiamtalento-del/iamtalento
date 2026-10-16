@@ -24,7 +24,7 @@ const DigitalSkillPassportSection = () => {
         <div className="text-center max-w-3xl mx-auto mb-12">
           <SectionBadge label="Digital Skill Passport" icon={BadgeCheck} />
           <h2 className="text-3xl md:text-5xl font-bold font-display leading-tight">
-            Your Career, <span className="text-[#0d5cb2]">Officially Stamped.</span>
+            Your Career, <span className="text-[#002C66]">Officially Stamped.</span>
           </h2>
           <p className="mt-4 text-muted-foreground text-base md:text-lg">
             A shareable, verified credential recruiters can trust at a glance.
@@ -127,7 +127,7 @@ const DigitalSkillPassportSection = () => {
                   <div className="text-[9px] tracking-widest uppercase text-slate-900/60 font-bold">
                     Score
                   </div>
-                  <div className="font-display font-extrabold text-4xl text-[#0d5cb2] leading-none mt-1">
+                  <div className="font-display font-extrabold text-4xl text-[#002C66] leading-none mt-1">
                     78
                   </div>
                   <div className="text-[10px] text-foreground/60 mt-1">/ 100</div>
@@ -141,11 +141,11 @@ const DigitalSkillPassportSection = () => {
                       <div key={s.label}>
                         <div className="flex justify-between text-[10px] font-semibold text-foreground/80">
                           <span>{s.label}</span>
-                          <span className="text-[#0d5cb2]">{s.score}</span>
+                          <span className="text-[#002C66]">{s.score}</span>
                         </div>
                         <div className="h-1 rounded-full bg-blue-900/10 overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-[#0d5cb2] to-yellow-500"
+                            className="h-full bg-gradient-to-r from-[#002C66] to-yellow-500"
                             style={{ width: `${s.score}%` }}
                           />
                         </div>
@@ -176,7 +176,7 @@ const DigitalSkillPassportSection = () => {
               <div className="relative mt-6 h-32">
                 {stamps.map((s, i) => {
                   const colorMap: Record<string, string> = {
-                    red: "border-[#0d5cb2] text-[#0d5cb2]",
+                    red: "border-[#002C66] text-[#002C66]",
                     blue: "border-blue-700 text-blue-700",
                     green: "border-green-700 text-green-700",
                   };
@@ -229,13 +229,13 @@ const DigitalSkillPassportSection = () => {
         {/* CTA */}
         <div className="mt-12 text-center">
           <p className="text-sm text-muted-foreground mb-4 inline-flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-[#0d5cb2]" />
+            <Sparkles className="h-4 w-4 text-[#002C66]" />
             Shareable with recruiters · LinkedIn ready · Verified credential
           </p>
           <div>
             <Button
               size="lg"
-              className="bg-[#0d5cb2] text-white hover:bg-[#0a4d96] font-bold h-12 px-8 rounded-xl shadow-xl"
+              className="bg-[#002C66] text-white hover:bg-[#00204d] font-bold h-12 px-8 rounded-xl shadow-xl"
             >
               Claim Your Passport
             </Button>

@@ -54,7 +54,7 @@ export const ProPortfolioView: React.FC<ProPortfolioViewProps> = ({
       <div className="space-y-6">
         {/* Company Header Banner */}
         <div className="bg-card border border-border/80 rounded-2xl overflow-hidden shadow-sm">
-          <div className="h-32 bg-[#0d5cb2]/10 border-b border-border/60 relative" />
+          <div className="h-32 bg-[#002C66]/10 border-b border-border/60 relative" />
           <div className="px-6 pb-6 pt-0 relative">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-12">
               <div className="flex items-end gap-4">
@@ -259,7 +259,7 @@ const CandidatePortfolio: React.FC<{
   return (
     <div className="space-y-5">
       {/* Hero */}
-      <section className="relative overflow-hidden rounded-3xl border border-[#0d5cb2]/30 bg-[#0d5cb2] p-6 sm:p-8 shadow-md text-white">
+      <section className="relative overflow-hidden rounded-3xl border border-[#002C66]/30 bg-[#002C66] p-6 sm:p-8 shadow-md text-white">
         <div className="relative z-10 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 items-center gap-4 sm:gap-5">
             <span className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white/20 text-white border border-white/30 font-display text-3xl font-extrabold sm:h-24 sm:w-24 sm:text-4xl shadow-2xs backdrop-blur-xs">

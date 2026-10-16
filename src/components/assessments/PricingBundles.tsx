@@ -85,7 +85,7 @@ const included = [
 ];
 
 const PricingBundles = () => (
-  <section className="bg-white py-16 md:py-20">
+  <section className="bg-[#FBF4EB] py-16 md:py-20">
     <div className="max-w-[1160px] mx-auto px-6">
       <motion.div
         initial={{ opacity: 0, y: 16 }}

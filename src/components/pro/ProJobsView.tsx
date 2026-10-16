@@ -288,7 +288,7 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
       {/* ======================================================== */}
       {/* HERO / SEARCH BANNER - EXACT REPLICA OF REFERENCE       */}
       {/* ======================================================== */}
-      <section className="relative overflow-hidden rounded-3xl border border-[#0d5cb2]/30 bg-[#0d5cb2] p-6 sm:p-8 shadow-md text-white">
+      <section className="relative overflow-hidden rounded-3xl border border-[#002C66]/30 bg-[#002C66] p-6 sm:p-8 shadow-md text-white">
         <div className="max-w-4xl space-y-4">
           {/* Greeting */}
           <div>
@@ -307,7 +307,7 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
           {/* Search Inputs Row with Experience Division */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.3fr_180px_180px_auto] gap-3 pt-1">
             <div className="relative">
-              <Briefcase className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#0d5cb2]" />
+              <Briefcase className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#002C66]" />
               <input
                 ref={smartRef}
                 type="text"
@@ -320,7 +320,7 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
 
             {/* Experience Division */}
             <div className="relative">
-              <GraduationCap className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#0d5cb2]" />
+              <GraduationCap className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#002C66]" />
               <select
                 value={F.lvl[0] || ""}
                 onChange={(e) => patch({ lvl: e.target.value ? [e.target.value] : [] })}
@@ -337,7 +337,7 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
 
             {/* City Division */}
             <div className="relative">
-              <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#0d5cb2]" />
+              <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#002C66]" />
               <select
                 value={F.loc}
                 onChange={(e) => patch({ loc: e.target.value })}
@@ -393,11 +393,11 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold transition-all cursor-pointer shadow-xs",
                 F.m.includes("Remote")
-                  ? "bg-white text-[#0d5cb2] ring-2 ring-white font-bold"
+                  ? "bg-white text-[#002C66] ring-2 ring-white font-bold"
                   : "bg-white/95 text-slate-800 hover:bg-white"
               )}
             >
-              <Home className="h-3.5 w-3.5 text-[#0d5cb2]" />
+              <Home className="h-3.5 w-3.5 text-[#002C66]" />
               <span>Remote</span>
             </button>
 
@@ -421,11 +421,11 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold transition-all cursor-pointer shadow-xs",
                 F.p === 7
-                  ? "bg-white text-[#0d5cb2] ring-2 ring-white font-bold"
+                  ? "bg-white text-[#002C66] ring-2 ring-white font-bold"
                   : "bg-white/95 text-slate-800 hover:bg-white"
               )}
             >
-              <Calendar className="h-3.5 w-3.5 text-[#0d5cb2]" />
+              <Calendar className="h-3.5 w-3.5 text-[#002C66]" />
               <span>Last 7 days</span>
             </button>
 
@@ -455,12 +455,12 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
           {/* Header */}
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
             <span className="flex items-center gap-2 font-display text-sm font-bold text-slate-900">
-              <SlidersHorizontal className="h-4 w-4 text-[#0d5cb2]" />
+              <SlidersHorizontal className="h-4 w-4 text-[#002C66]" />
               Filters
             </span>
             <button
               onClick={resetAll}
-              className="text-xs font-semibold text-[#0d5cb2] hover:underline cursor-pointer"
+              className="text-xs font-semibold text-[#002C66] hover:underline cursor-pointer"
             >
               Clear all
             </button>
@@ -482,7 +482,7 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
                         type="checkbox"
                         checked={checked}
                         onChange={() => toggleIn("cities", city)}
-                        className="h-3.5 w-3.5 rounded border-slate-300 text-[#0d5cb2] focus:ring-[#0d5cb2] cursor-pointer"
+                        className="h-3.5 w-3.5 rounded border-slate-300 text-[#002C66] focus:ring-[#002C66] cursor-pointer"
                       />
                       <span>{city}</span>
                     </span>

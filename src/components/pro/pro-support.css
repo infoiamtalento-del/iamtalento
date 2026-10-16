@@ -1,13 +1,13 @@
-/* Support Center — Pro brand-blue accents, scoped to the view (matches all other Pro pages) */
+/* Support Center — Pro brand-navy accents, scoped to the view (matches all other Pro pages) */
 .pro-support {
-  --primary: 211.3 86.4% 37.5%;
+  --primary: 214.1 100% 20%;
   --primary-foreground: 0 0% 100%;
-  --ring: 211.3 86.4% 37.5%;
-  --accent: 211 40% 96%;
-  --accent-foreground: 211.3 86.4% 37.5%;
+  --ring: 214.1 100% 20%;
+  --accent: 214 40% 95%;
+  --accent-foreground: 214.1 100% 20%;
 }
 .pro-support .sp-hero {
-  background-color: hsl(211.3 86.4% 37.5%);
-  box-shadow: 0 14px 34px hsl(211.3 86.4% 37.5% / 0.2);
+  background-color: hsl(214.1 100% 20%);
+  box-shadow: 0 14px 34px hsl(214.1 100% 20% / 0.2);
 }
-.pro-support ::selection { background: hsl(211.3 86.4% 37.5% / 0.2); }
+.pro-support ::selection { background: hsl(214.1 100% 20% / 0.2); }

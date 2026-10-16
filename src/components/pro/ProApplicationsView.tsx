@@ -51,7 +51,7 @@ export const ProApplicationsView: React.FC<ProApplicationsViewProps> = ({
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl border border-[#0d5cb2]/30 bg-[#0d5cb2] p-6 sm:p-8 shadow-md text-white">
+      <div className="relative overflow-hidden rounded-3xl border border-[#002C66]/30 bg-[#002C66] p-6 sm:p-8 shadow-md text-white">
         <div className="relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-white border border-white/20 text-xs font-semibold mb-2 backdrop-blur-xs">
             <Clock className="w-3.5 h-3.5 text-blue-200" /> 24-Hour SLA Guarantee
@@ -69,12 +69,12 @@ export const ProApplicationsView: React.FC<ProApplicationsViewProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs">
           <span className="text-xs font-medium text-slate-500 block">Total Applications</span>
-          <div className="text-2xl font-extrabold text-[#0d5cb2] mt-1 font-display">{myApps.length}</div>
+          <div className="text-2xl font-extrabold text-[#002C66] mt-1 font-display">{myApps.length}</div>
           <span className="text-[11px] text-slate-400 mt-0.5 block">Sent across all companies</span>
         </div>
         <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs">
           <span className="text-xs font-medium text-slate-500 block">In Progress</span>
-          <div className="text-2xl font-extrabold text-[#0d5cb2] mt-1 font-display">{inProgress.length}</div>
+          <div className="text-2xl font-extrabold text-[#002C66] mt-1 font-display">{inProgress.length}</div>
           <span className="text-[11px] text-slate-400 mt-0.5 block">Actively moving forward</span>
         </div>
         <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs">
@@ -93,7 +93,7 @@ export const ProApplicationsView: React.FC<ProApplicationsViewProps> = ({
             className={cn(
               "px-4 py-2 rounded-xl text-xs font-semibold transition-all border cursor-pointer",
               activeStatus === status
-                ? "bg-[#0d5cb2] text-white border-[#0d5cb2] shadow-xs shadow-[#0d5cb2]/20 font-bold"
+                ? "bg-[#002C66] text-white border-[#002C66] shadow-xs shadow-[#002C66]/20 font-bold"
                 : "bg-white text-slate-700 border-slate-200/90 hover:bg-slate-50 hover:border-slate-300"
             )}
           >

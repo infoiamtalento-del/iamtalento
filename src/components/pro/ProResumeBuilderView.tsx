@@ -72,7 +72,7 @@ export const ProResumeBuilderView: React.FC<ProResumeBuilderViewProps> = ({
   const [expLevel, setExpLevel] = useState(levelFromYears(user.exp));
   const [activeTab, setActiveTab] = useState<TabKey>("basic");
   const [activeTemplate, setActiveTemplate] = useState<TemplateKey>("modern");
-  const [accentColor, setAccentColor] = useState("#0d5cb2");
+  const [accentColor, setAccentColor] = useState("#002C66");
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [showCerts, setShowCerts] = useState(true);
   const [showLanguages, setShowLanguages] = useState(true);
@@ -718,7 +718,7 @@ ${resumeData.education.map((ed) => `${ed.degree}, ${ed.school} (${ed.year})`).jo
                     <span className="text-xs font-medium text-foreground">Accent color</span>
                     <div className="flex items-center gap-2">
                       {[
-                        { color: "#0d5cb2", label: "Talento Blue" },
+                        { color: "#002C66", label: "Talento Blue" },
                         { color: "#0284c7", label: "Sky Blue" },
                         { color: "#16a34a", label: "Forest Green" },
                         { color: "#7c3aed", label: "Purple" },

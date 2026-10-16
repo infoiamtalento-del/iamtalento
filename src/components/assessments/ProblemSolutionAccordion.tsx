@@ -69,7 +69,7 @@ const ctaFeatures = [
 
 const ProblemSolutionAccordion = () => {
   return (
-    <section className="bg-white py-24 md:py-32">
+    <section className="bg-[#FBF4EB] py-24 md:py-32">
       <div className="max-w-[1200px] mx-auto px-4 md:px-6">
         {/* Header */}
         <motion.div

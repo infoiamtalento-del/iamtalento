@@ -129,9 +129,9 @@ const CareerIntelligencePackageHome = ({ beforeCta }: { beforeCta?: ReactNode } 
   const active = items[activeIdx];
   const ActiveIcon = active.icon;
   const isYellow = activeIdx % 2 === 1;
-  const accentBg = isYellow ? "bg-yellow-400" : "bg-[#0d5cb2]";
+  const accentBg = isYellow ? "bg-yellow-400" : "bg-[#002C66]";
   const accentText = isYellow ? "text-slate-900" : "text-white";
-  const accentBar = isYellow ? "bg-yellow-400" : "bg-[#0d5cb2]";
+  const accentBar = isYellow ? "bg-yellow-400" : "bg-[#002C66]";
 
   return (
     <section className="py-16 md:py-24 bg-muted/30">
@@ -172,7 +172,7 @@ const CareerIntelligencePackageHome = ({ beforeCta }: { beforeCta?: ReactNode } 
                 const Icon = item.icon;
                 const isActive = idx === activeIdx;
                 const itemYellow = idx % 2 === 1;
-                const itemAccentBg = itemYellow ? "bg-yellow-400" : "bg-[#0d5cb2]";
+                const itemAccentBg = itemYellow ? "bg-yellow-400" : "bg-[#002C66]";
                 const itemAccentText = itemYellow ? "text-slate-900" : "text-white";
 
                 return (
@@ -276,7 +276,7 @@ const CareerIntelligencePackageHome = ({ beforeCta }: { beforeCta?: ReactNode } 
                   className="absolute inset-0 flex items-center justify-center"
                   aria-label="Play video"
                 >
-                  <span className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-[#0d5cb2] text-white flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
+                  <span className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-[#002C66] text-white flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
                     <Play className="h-7 w-7 fill-current ml-0.5" />
                   </span>
                 </button>

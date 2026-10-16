@@ -78,13 +78,13 @@ function AssessmentCard() {
         background: "rgba(255,255,255,0.92)",
         backdropFilter: "blur(40px) saturate(180%)",
         border: "1px solid rgba(255,255,255,0.95)",
-        boxShadow: "0 24px 80px rgba(13,92,178,0.10), 0 4px 20px rgba(0,0,0,0.06)",
+        boxShadow: "0 24px 80px rgba(0,44,102,0.10), 0 4px 20px rgba(0,0,0,0.06)",
       }}
     >
       {/* Header bar */}
       <div
         className="px-5 py-3.5 flex items-center justify-between"
-        style={{ background: "#0d5cb2" }}
+        style={{ background: "#002C66" }}
       >
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-white/50" />
@@ -97,10 +97,10 @@ function AssessmentCard() {
       </div>
 
       {/* Timer bar */}
-      <div className="h-1" style={{ background: "rgba(13,92,178,0.08)" }}>
+      <div className="h-1" style={{ background: "rgba(0,44,102,0.08)" }}>
         <motion.div
           className="h-full"
-          style={{ background: timerPct > 50 ? "#0d5cb2" : timerPct > 20 ? "#f59e0b" : "#ef4444" }}
+          style={{ background: timerPct > 50 ? "#002C66" : timerPct > 20 ? "#f59e0b" : "#ef4444" }}
           animate={{ width: `${timerPct}%` }}
           transition={{ duration: 0.5 }}
         />
@@ -114,11 +114,11 @@ function AssessmentCard() {
               key={i}
               className="h-1.5 flex-1 rounded-full transition-all duration-300"
               style={{
-                background: i < qIndex ? "#0d5cb2" : i === qIndex ? "#93c5fd" : "rgba(13,92,178,0.1)",
+                background: i < qIndex ? "#002C66" : i === qIndex ? "#93c5fd" : "rgba(0,44,102,0.1)",
               }}
             />
           ))}
-          <span className="text-[10px] font-semibold ml-1" style={{ color: "#0d5cb2" }}>
+          <span className="text-[10px] font-semibold ml-1" style={{ color: "#002C66" }}>
             {qIndex + 1}/{mcqQuestions.length}
           </span>
         </div>
@@ -127,7 +127,7 @@ function AssessmentCard() {
         <div className="flex items-center gap-2 mb-3">
           <span
             className="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
-            style={{ background: "rgba(13,92,178,0.08)", color: "#0d5cb2", border: "1px solid rgba(13,92,178,0.15)" }}
+            style={{ background: "rgba(0,44,102,0.08)", color: "#002C66", border: "1px solid rgba(0,44,102,0.15)" }}
           >
             {q.topic}
           </span>
@@ -166,7 +166,7 @@ function AssessmentCard() {
               if (isCorrect) { bg = "rgba(5,150,105,0.07)"; border = "#059669"; textColor = "#065f46"; }
               else if (isSelected && !isCorrect) { bg = "rgba(239,68,68,0.07)"; border = "#ef4444"; textColor = "#991b1b"; }
             } else if (isSelected) {
-              bg = "rgba(13,92,178,0.08)"; border = "#0d5cb2";
+              bg = "rgba(0,44,102,0.08)"; border = "#002C66";
             }
             return (
               <motion.button
@@ -185,7 +185,7 @@ function AssessmentCard() {
                   ) : (
                     <div
                       className="w-3.5 h-3.5 rounded-full border-[1.5px]"
-                      style={{ borderColor: isSelected ? "#0d5cb2" : "#93c5fd", background: isSelected ? "#0d5cb2" : "transparent" }}
+                      style={{ borderColor: isSelected ? "#002C66" : "#93c5fd", background: isSelected ? "#002C66" : "transparent" }}
                     />
                   )}
                 </div>
@@ -199,7 +199,7 @@ function AssessmentCard() {
         <div className="mt-4 flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             <span className="text-[10px]" style={{ color: "#9ca3af" }}>Score:</span>
-            <span className="text-[11px] font-bold" style={{ color: "#0d5cb2" }}>{score}/{mcqQuestions.length}</span>
+            <span className="text-[11px] font-bold" style={{ color: "#002C66" }}>{score}/{mcqQuestions.length}</span>
           </div>
           {answered && qIndex < mcqQuestions.length - 1 && (
             <motion.button
@@ -207,7 +207,7 @@ function AssessmentCard() {
               animate={{ opacity: 1, x: 0 }}
               onClick={handleNext}
               className="flex items-center gap-1 text-[11px] font-semibold px-3 py-1.5 rounded-lg"
-              style={{ background: "#0d5cb2", color: "#ffffff" }}
+              style={{ background: "#002C66", color: "#ffffff" }}
             >
               Next <ChevronRight size={12} />
             </motion.button>
@@ -241,8 +241,8 @@ function ArjunProfileCard() {
       style={{
         background: "rgba(255,255,255,0.92)",
         backdropFilter: "blur(24px)",
-        border: "1px solid rgba(13,92,178,0.12)",
-        boxShadow: "0 12px 40px rgba(13,92,178,0.08), 0 2px 8px rgba(0,0,0,0.05)",
+        border: "1px solid rgba(0,44,102,0.12)",
+        boxShadow: "0 12px 40px rgba(0,44,102,0.08), 0 2px 8px rgba(0,0,0,0.05)",
       }}
     >
       <div className="p-5 flex items-center gap-5">
@@ -252,7 +252,7 @@ function ArjunProfileCard() {
             src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=128&h=128&fit=crop&crop=faces&auto=format"
             alt="Arjun Reddy"
             className="w-20 h-20 rounded-2xl object-cover"
-            style={{ border: "2.5px solid #0d5cb2", boxShadow: "0 6px 20px rgba(13,92,178,0.2)" }}
+            style={{ border: "2.5px solid #002C66", boxShadow: "0 6px 20px rgba(0,44,102,0.2)" }}
           />
           {/* Online dot */}
           <div
@@ -278,17 +278,17 @@ function ArjunProfileCard() {
 
           {/* Score bar */}
           <div className="flex items-center gap-2.5 mt-3">
-            <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: "rgba(13,92,178,0.1)" }}>
+            <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: "rgba(0,44,102,0.1)" }}>
               <motion.div
                 className="h-full rounded-full"
-                style={{ background: "#0d5cb2" }}
+                style={{ background: "#002C66" }}
                 initial={{ width: 0 }}
                 whileInView={{ width: "82%" }}
                 viewport={{ once: true }}
                 transition={{ delay: 1.4, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
               />
             </div>
-            <span className="text-sm font-bold shrink-0" style={{ color: "#0d5cb2" }}>82/100</span>
+            <span className="text-sm font-bold shrink-0" style={{ color: "#002C66" }}>82/100</span>
           </div>
         </div>
       </div>
@@ -296,7 +296,7 @@ function ArjunProfileCard() {
       {/* Footer stats row */}
       <div
         className="grid grid-cols-3 divide-x divide-blue-50"
-        style={{ borderTop: "1px solid rgba(13,92,178,0.08)" }}
+        style={{ borderTop: "1px solid rgba(0,44,102,0.08)" }}
       >
         {[
           { label: "Rank", value: "Top 12%" },
@@ -326,7 +326,7 @@ function ScoreOrb() {
       >
         <div
           className="absolute inset-0 rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(13,92,178,0.10) 0%, transparent 70%)", transform: "scale(1.35)" }}
+          style={{ background: "radial-gradient(circle, rgba(0,44,102,0.10) 0%, transparent 70%)", transform: "scale(1.35)" }}
         />
         <div
           className="relative w-64 h-64 rounded-full flex items-center justify-center"
@@ -334,13 +334,13 @@ function ScoreOrb() {
             background: "rgba(255,255,255,0.92)",
             backdropFilter: "blur(32px) saturate(200%)",
             border: "1px solid rgba(255,255,255,1)",
-            boxShadow: "0 30px 80px rgba(13,92,178,0.12), 0 4px 20px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)",
+            boxShadow: "0 30px 80px rgba(0,44,102,0.12), 0 4px 20px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)",
           }}
         >
           <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
             <defs>
               <linearGradient id="arcGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#0d5cb2" />
+                <stop offset="0%" stopColor="#002C66" />
                 <stop offset="100%" stopColor="#FF8C01" />
               </linearGradient>
               <filter id="arcGlow">
@@ -355,7 +355,7 @@ function ScoreOrb() {
               style={{ transformOrigin: "50px 50px" }}
               transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
             />
-            <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(13,92,178,0.1)" strokeWidth="3.5" />
+            <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(0,44,102,0.1)" strokeWidth="3.5" />
             <motion.circle
               cx="50" cy="50" r="45" fill="none" stroke="url(#arcGrad)"
               strokeWidth="3.8" strokeLinecap="round"
@@ -379,7 +379,7 @@ function ScoreOrb() {
               <span className="text-[80px] font-bold tracking-tight leading-none" style={{ color: "#0f0f1a", fontFamily: "'Space Grotesk',sans-serif" }}>82</span>
               <span className="text-2xl font-light mb-3 ml-1" style={{ color: "#9ca3af" }}>/100</span>
             </motion.div>
-            <p className="text-[10px] uppercase tracking-[0.22em] font-semibold" style={{ color: "#0d5cb2" }}>Industry Ready</p>
+            <p className="text-[10px] uppercase tracking-[0.22em] font-semibold" style={{ color: "#002C66" }}>Industry Ready</p>
           </div>
           <AnimatePresence>
             {done && (
@@ -388,7 +388,7 @@ function ScoreOrb() {
                 initial={{ scale: 1, opacity: 0.5 }}
                 animate={{ scale: 1.25, opacity: 0 }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
-                style={{ border: "2px solid rgba(13,92,178,0.3)" }}
+                style={{ border: "2px solid rgba(0,44,102,0.3)" }}
               />
             )}
           </AnimatePresence>
@@ -401,9 +401,9 @@ function ScoreOrb() {
       {/* Score breakdown pills */}
       <div className="mt-6 grid grid-cols-2 gap-2 w-full max-w-xs">
         {[
-          { label: "Technical", score: 88, color: "#0d5cb2" },
+          { label: "Technical", score: 88, color: "#002C66" },
           { label: "Domain", score: 76, color: "#FF8C01" },
-          { label: "Problem Solving", score: 92, color: "#0d5cb2" },
+          { label: "Problem Solving", score: 92, color: "#002C66" },
           { label: "Communication", score: 71, color: "#FF8C01" },
         ].map(({ label, score, color }) => (
           <div
@@ -415,7 +415,7 @@ function ScoreOrb() {
               <span className="text-[9px] font-medium" style={{ color: "#6b7280" }}>{label}</span>
               <span className="text-[10px] font-bold" style={{ color }}>{score}</span>
             </div>
-            <div className="h-1 rounded-full" style={{ background: "rgba(13,92,178,0.1)" }}>
+            <div className="h-1 rounded-full" style={{ background: "rgba(0,44,102,0.1)" }}>
               <div className="h-full rounded-full" style={{ width: `${score}%`, background: color }} />
             </div>
           </div>

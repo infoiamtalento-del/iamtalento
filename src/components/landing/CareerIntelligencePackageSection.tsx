@@ -126,7 +126,7 @@ const CareerIntelligencePackageSection = ({ beforeCta }: { beforeCta?: ReactNode
               {items.map((item, idx) => {
                 const Icon = item.icon;
                 const itemYellow = idx % 2 === 1;
-                const itemAccentBg = itemYellow ? "bg-yellow-400" : "bg-[#0d5cb2]";
+                const itemAccentBg = itemYellow ? "bg-yellow-400" : "bg-[#002C66]";
                 const itemAccentText = itemYellow ? "text-slate-900" : "text-white";
 
                 return (

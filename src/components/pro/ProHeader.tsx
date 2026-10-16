@@ -190,7 +190,7 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
           >
             <Bell className="h-5 w-5" />
             {unreadCount > 0 && (
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-[#0d5cb2] ring-2 ring-white" />
+              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-[#002C66] ring-2 ring-white" />
             )}
           </button>
 
@@ -202,7 +202,7 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
               aria-expanded={isMenuOpen}
               className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-full border border-slate-200/90 hover:border-slate-300 bg-white transition-all shadow-2xs cursor-pointer"
             >
-              <div className="h-7 w-7 rounded-full bg-[#0d5cb2] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs overflow-hidden">
+              <div className="h-7 w-7 rounded-full bg-[#002C66] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs overflow-hidden">
                 {avatarSrc ? (
                   <img src={avatarSrc} alt={currentUser.name} className="h-full w-full object-cover" />
                 ) : (
@@ -270,7 +270,7 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
                         className={cn(
                           "w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-left",
                           isActive
-                            ? "bg-[#0d5cb2] text-white shadow-sm"
+                            ? "bg-[#002C66] text-white shadow-sm"
                             : "text-slate-700 hover:bg-slate-100/80"
                         )}
                       >
@@ -286,7 +286,7 @@ export const ProHeader: React.FC<ProHeaderProps> = ({
                           <span
                             className={cn(
                               "px-2 py-0.5 rounded-full text-[10px] font-black",
-                              isActive ? "bg-white text-[#0d5cb2]" : "bg-[#0d5cb2]/10 text-[#0d5cb2]"
+                              isActive ? "bg-white text-[#002C66]" : "bg-[#002C66]/10 text-[#002C66]"
                             )}
                           >
                             {item.badge}

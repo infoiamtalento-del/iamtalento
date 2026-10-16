@@ -66,7 +66,7 @@ const AssessmentIntegritySection = ({ align = "center" }: { align?: Align }) => 
   const centered = align === "center";
 
   return (
-    <section ref={ref} className="py-16 md:py-20 relative overflow-hidden bg-white">
+    <section ref={ref} className="py-16 md:py-20 relative overflow-hidden bg-[#FBF4EB]">
       <div className="container">
         <div className={cn(centered ? "text-center max-w-2xl mx-auto mb-14" : "text-left max-w-3xl mb-10", "transition-all duration-700", isVisible ? "opacity-100" : "opacity-0 translate-y-8")}>
           <SectionBadge label="30-Layer Proctoring" icon={Shield} />

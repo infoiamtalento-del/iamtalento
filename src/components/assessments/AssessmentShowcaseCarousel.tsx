@@ -65,8 +65,8 @@ const slides = [
     icon: Award,
     score: 95,
     label: "Readiness Index",
-    color: "from-blue-600 to-[#0d5cb2]",
-    orbColor: "bg-[#0d5cb2]",
+    color: "from-blue-600 to-[#002C66]",
+    orbColor: "bg-[#002C66]",
     tags: ["Verified Badge", "Top 5%", "Priority Listing"],
   },
 ];

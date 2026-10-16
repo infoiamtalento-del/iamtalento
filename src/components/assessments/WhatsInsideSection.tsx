@@ -191,7 +191,7 @@ const WhatsInsideSection = () => {
   const isCorrectAnswer = selectedOption === current.correctIndex;
 
   return (
-    <section style={{ background: "#F8FAFC" }} className="py-16 md:py-20">
+    <section className="bg-[#FBF4EB] py-16 md:py-20">
       <div className="max-w-[1160px] mx-auto px-6">
         {/* Header */}
         <motion.div
