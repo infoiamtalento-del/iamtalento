@@ -332,20 +332,41 @@ const AssessmentDetail = () => {
               </form>
 
               <div className="border-t border-border px-5 py-3">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowAdvanced((current) => !current)}
-                  className="h-8 gap-2 px-0 text-[#002C66] hover:bg-transparent hover:text-[#002C66]/80"
-                  aria-expanded={showAdvanced}
-                >
-                  <SlidersHorizontal className="h-4 w-4" /> Advanced Filters
-                  <ChevronDown className={`h-4 w-4 transition-transform ${showAdvanced ? "rotate-180" : ""}`} />
-                </Button>
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowAdvanced((current) => !current)}
+                    className="h-8 gap-2 px-0 text-[#002C66] hover:bg-transparent hover:text-[#002C66]/80 shrink-0"
+                    aria-expanded={showAdvanced}
+                  >
+                    <SlidersHorizontal className="h-4 w-4" /> Advanced Filters
+                    <ChevronDown className={`h-4 w-4 transition-transform ${showAdvanced ? "rotate-180" : ""}`} />
+                  </Button>
+
+                  {activeChips.length > 0 && (
+                    <div className="flex flex-wrap items-center gap-2">
+                      {activeChips.map((c) => (
+                        <span
+                          key={c.label}
+                          className="flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full bg-[#002C66]/10 text-[#002C66]"
+                        >
+                          {c.label}
+                          <button type="button" onClick={c.clear} aria-label={`Remove ${c.label}`} className="cursor-pointer">
+                            <X className="h-3.5 w-3.5" />
+                          </button>
+                        </span>
+                      ))}
+                      <button type="button" onClick={resetAll} className="text-xs font-semibold text-muted-foreground hover:text-[#002C66] underline cursor-pointer ml-1">
+                        Clear all
+                      </button>
+                    </div>
+                  )}
+                </div>
 
                 {showAdvanced && (
-                  <div className="grid gap-4 border-t border-border pt-4 sm:grid-cols-2 lg:grid-cols-4">
+                  <div className="mt-3 grid gap-4 border-t border-border pt-4 sm:grid-cols-2 lg:grid-cols-4">
                     <label className="space-y-2">
                       <span className="flex items-center gap-2 text-xs font-semibold text-foreground"><Layers3 className="h-4 w-4 text-[#002C66]" /> Domain</span>
                       <select value={domain ?? ""} onChange={(e) => setDomain(e.target.value || null)} className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground outline-none focus:border-[#002C66]/50">
@@ -376,25 +397,6 @@ const AssessmentDetail = () => {
                   </div>
                 )}
               </div>
-
-              {activeChips.length > 0 && (
-                <div className="flex flex-wrap items-center gap-2 border-t border-border px-5 py-3">
-                  {activeChips.map((c) => (
-                    <span
-                      key={c.label}
-                      className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full bg-[#002C66]/10 text-[#002C66]"
-                    >
-                      {c.label}
-                      <button type="button" onClick={c.clear} aria-label={`Remove ${c.label}`}>
-                        <X className="h-3.5 w-3.5" />
-                      </button>
-                    </span>
-                  ))}
-                  <button type="button" onClick={resetAll} className="text-xs font-semibold text-muted-foreground hover:text-[#002C66] underline">
-                    Clear all
-                  </button>
-                </div>
-              )}
             </div>
           </div>
         </section>
