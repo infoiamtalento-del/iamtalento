@@ -107,7 +107,7 @@ const allUSPs = [
 ];
 
 const USPSection = () => (
-  <section className="bg-accent/45 py-20 md:py-28">
+  <section className="py-20 md:py-28">
     <div className="container">
       <motion.div {...reveal} className="mx-auto max-w-2xl text-center">
         <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-primary">Why IAmTalento</p>
@@ -120,7 +120,7 @@ const USPSection = () => (
           <br className="hidden md:block" /> Each one is included at no extra cost.
         </p>
       </motion.div>
-      <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mx-auto mt-12 grid max-w-5xl gap-5 text-center sm:grid-cols-2 lg:grid-cols-3">
         {allUSPs.map(({ icon: Icon, title, text }, index) => (
           <motion.div
             key={title}
@@ -128,7 +128,7 @@ const USPSection = () => (
             transition={{ duration: 0.55, delay: index * 0.07 }}
             className="rounded-lg border border-primary/20 bg-card p-6 shadow-sm transition hover:border-primary/50 hover:shadow-md"
           >
-            <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-primary-foreground"><Icon className="h-5 w-5" /></span>
+            <span className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-primary-foreground"><Icon className="h-5 w-5" /></span>
             <h3 className="mb-2 font-display text-lg font-bold">{title}</h3>
             <p className="text-sm leading-relaxed text-muted-foreground">{text}</p>
           </motion.div>
