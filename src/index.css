@@ -271,60 +271,65 @@
 }
 
 /* ======================================================== */
-/* CLEAN, MINIMAL, PROFESSIONAL: ZERO GRADIENTS SITEWIDE    */
+/* YELLOW GRADED BORDERS & BUTTONS + CLEAN BRAND SURFACES   */
 /* ======================================================== */
 
-*,
-*::before,
-*::after {
-  background-image: none !important;
-}
-
-/* Ensure elements that had background gradients resolve to solid, flat, minimal colors */
-.pro-hero,
-[class*="from-\[#0d5cb2\]"],
-[class*="from-blue-600"],
-[class*="from-primary"],
-[class*="to-\[#0a4d96\]"] {
+.pro-hero {
   background-color: #0d5cb2 !important;
   background-image: none !important;
 }
 
 [class*="from-yellow-"],
 [class*="from-amber-"] {
-  background-color: #f59e0b !important;
-  background-image: none !important;
+  background-image: linear-gradient(135deg, #fde047 0%, #fbbf24 50%, #f59e0b 100%) !important;
 }
 
-[class*="from-emerald-"],
-[class*="from-green-"] {
-  background-color: #10b981 !important;
-  background-image: none !important;
+.yellow-graded-border {
+  border: 1.5px solid transparent !important;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(135deg, #fde047 0%, #fbbf24 50%, #f59e0b 100%) border-box !important;
 }
 
-[class*="from-purple-"],
-[class*="from-violet-"] {
-  background-color: #7c3aed !important;
-  background-image: none !important;
+.yellow-graded-border:hover {
+  border: 1.5px solid transparent !important;
+  background:
+    linear-gradient(180deg, #fffef7 0%, #ffffff 100%) padding-box,
+    linear-gradient(135deg, #facc15 0%, #f59e0b 50%, #d97706 100%) border-box !important;
 }
 
-[class*="from-blue-50"],
-[class*="from-slate-50"],
-[class*="from-muted"],
-[class*="from-accent"] {
-  background-color: #f8fafd !important;
-  background-image: none !important;
+.yellow-graded-border-selected {
+  border: 2px solid transparent !important;
+  background:
+    linear-gradient(180deg, #fffbeb 0%, #ffffff 55%) padding-box,
+    linear-gradient(135deg, #facc15 0%, #f59e0b 45%, #0d5cb2 100%) border-box !important;
 }
 
-[class*="from-black"] {
-  background-color: rgba(0, 0, 0, 0.45) !important;
-  background-image: none !important;
+.yellow-graded-section {
+  border: 2px solid transparent !important;
+  background:
+    linear-gradient(180deg, #fffdf5 0%, #ffffff 100%) padding-box,
+    linear-gradient(135deg, #fde047 0%, #fbbf24 50%, #f59e0b 100%) border-box !important;
 }
 
-[class*="from-foreground"] {
-  background-color: rgba(15, 23, 42, 0.55) !important;
-  background-image: none !important;
+.yellow-graded-btn {
+  background-image: linear-gradient(135deg, #fde047 0%, #fbbf24 50%, #f59e0b 100%) !important;
+  color: #0f172a !important;
+  border: 1px solid #f59e0b !important;
+  box-shadow: 0 4px 14px -3px rgba(245, 158, 11, 0.45);
 }
+
+.yellow-graded-btn:hover {
+  background-image: linear-gradient(135deg, #facc15 0%, #f59e0b 55%, #d97706 100%) !important;
+  box-shadow: 0 6px 18px -3px rgba(245, 158, 11, 0.6);
+}
+
+.yellow-graded-badge {
+  background-image: linear-gradient(135deg, #fef08a 0%, #fde047 50%, #fbbf24 100%) !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(245, 158, 11, 0.5) !important;
+}
+
 
 
 
