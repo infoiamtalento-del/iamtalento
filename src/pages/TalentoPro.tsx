@@ -665,7 +665,7 @@ const TalentoPro: React.FC = () => {
       />
 
       {/* Main Content View Switcher */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 pt-24 pb-8">
+      <main className="flex-1 container w-full pt-24 pb-8">
         {currentRole === "employer" && <div className="mb-6 flex flex-wrap items-center gap-4 border-b border-border pb-4"><div className="mr-auto"><p className="text-sm font-semibold text-primary">Demo workspace · Sample data</p><p className="mt-1 text-xs text-muted-foreground">Simulated activity only. No real messages, AI sessions or charges.</p></div><label className="flex items-center gap-2 text-xs"><Switch aria-label="Simulate live activity" checked={simulateLive} onCheckedChange={setSimulateLive} />Simulate live activity</label><Button size="sm" variant="outline" onClick={simulateApplication}>Simulate new application</Button></div>}
         <div className="min-w-0 flex-1">
         {selectedJob ? <ProJobDetail key={selectedJob.id} job={selectedJob} user={currentUser} jobs={jobs} applications={apps} onBack={() => setDrawerState(null)} onOpenJob={(id) => { setDrawerState({ type: "job", id }); window.scrollTo({ top: 0 }); }} onApply={handleApplyJob} onSave={handleSaveJob} /> : (

@@ -7,6 +7,15 @@
   --primary: 211.3 86.4% 37.5%; --primary-foreground: 0 0% 100%; --foreground: var(--dp-ink); --muted-foreground: var(--dp-muted); --ring: 211.3 86.4% 37.5%;
   background: hsl(var(--dp-page)); color: hsl(var(--dp-ink)); min-height: 100vh; font-size: 12px; letter-spacing: 0;
 }
+.demo-dashboard.dp-embedded {
+  --dp-col: 100%;
+  background: transparent;
+  min-height: 0;
+}
+.demo-dashboard.dp-embedded .dp-main {
+  padding: 0 0 40px;
+  max-width: 100%;
+}
 .demo-dashboard h1,.demo-dashboard h2,.demo-dashboard h3 { color: hsl(var(--dp-ink)); letter-spacing: 0; }
 .dp-header { height: 64px; position: fixed; inset: 0 0 auto; z-index: 50; background: hsl(var(--background)); border-bottom: 1px solid hsl(var(--border) / .6); display:flex; align-items:center; gap:36px; padding:0 32px; }
 .dp-logo img { height:34px; width:auto; max-width:145px; object-fit:contain; }

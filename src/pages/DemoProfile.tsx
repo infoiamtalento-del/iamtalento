@@ -84,8 +84,8 @@ export function DemoProfileDashboardContent({ embedded = false }: { embedded?: b
   const view = (tab: string, text: string) => <Button variant="link" className="dp-text-action" onClick={() => scrollTo(tab)}>{text}<ArrowRight /></Button>;
 
   return (
-    <div className={cn("demo-dashboard", embedded && "min-h-0 bg-transparent")}>
-      <main className={cn("dp-main", embedded && "!pt-0 !px-0")}>
+    <div className={cn("demo-dashboard", embedded && "dp-embedded")}>
+      <main className="dp-main">
         <section id="overview" className="dp-overview">
           <div className="dp-cover"><img src={cover} width={1920} height={512} alt="Modern office overlooking the city at sunset" /><Button asChild variant="ghost" className="dp-back"><Link to="/jobs"><ArrowLeft />Back to Search</Link></Button>
           </div>
