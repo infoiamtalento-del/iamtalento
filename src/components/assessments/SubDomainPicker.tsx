@@ -381,18 +381,18 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                   ))}
                 </div>
 
-                {/* 2. Rounds ── Tests on the left + View Syllabus Button next to it */}
-                <div className="mt-3.5 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-slate-50 border border-slate-200/80 px-3 py-2">
-                  <div className="flex items-center gap-1.5 text-xs font-bold">
-                    <span className="inline-flex items-center gap-1 rounded-lg bg-[#0d5cb2] text-white px-2 py-1 shadow-2xs">
-                      <Layers className="h-3.5 w-3.5 shrink-0" />
+                {/* 2. Plain Rounds ── Tests on the left + View Syllabus next to it */}
+                <div className="mt-3.5 flex flex-wrap items-center justify-between gap-2 py-1">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-slate-600">
+                    <span className="inline-flex items-center gap-1.5">
+                      <Layers className="h-3.5 w-3.5 text-[#0d5cb2] shrink-0" />
                       <span>{stats.rounds} Rounds</span>
                     </span>
-                    <span className="text-slate-300 font-extrabold select-none" aria-hidden="true">
+                    <span className="text-slate-300 select-none" aria-hidden="true">
                       ──
                     </span>
-                    <span className="inline-flex items-center gap-1 rounded-lg bg-white border border-blue-200 text-[#0d5cb2] px-2 py-1 shadow-2xs">
-                      <ClipboardCheck className="h-3.5 w-3.5 shrink-0" />
+                    <span className="inline-flex items-center gap-1.5">
+                      <ClipboardCheck className="h-3.5 w-3.5 text-[#0d5cb2] shrink-0" />
                       <span>{stats.tests} Tests</span>
                     </span>
                   </div>
@@ -403,7 +403,7 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                       e.stopPropagation();
                       setModalSubDomain(s);
                     }}
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0d5cb2] bg-white hover:bg-blue-50 border border-blue-200/90 px-2.5 py-1 rounded-lg shadow-2xs transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0d5cb2] hover:underline transition-colors cursor-pointer"
                   >
                     <BookOpen className="h-3.5 w-3.5" />
                     <span>View Syllabus</span>
