@@ -20,6 +20,7 @@ import {
   FileQuestion,
   Gauge,
   Shield,
+  Pencil,
   X,
 } from "lucide-react";
 import Layout from "@/components/layout/Layout";
@@ -34,7 +35,7 @@ import AssessmentVideoCard from "@/components/assessments/AssessmentVideoCard";
 import { MandatoryCoreTestsSection } from "@/components/assessments/MandatoryCoreTests";
 import { AssessmentStickyBar } from "@/components/assessments/AssessmentStickyBar";
 import BrandLogo from "@/components/ui/BrandLogo";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 
 const paymentMethods = [
@@ -57,6 +58,7 @@ const AssessmentDetail = () => {
   const navigate = useNavigate();
   const a = getAssessment(assessmentId);
   const [method, setMethod] = useState("UPI");
+  const whatInputRef = useRef<HTMLInputElement>(null);
 
   // Search bar state pre-populated with current assessment (e.g. Digital Marketing)
   const [query, setQuery] = useState<string>(a?.domain ?? "Digital Marketing");
@@ -148,7 +150,8 @@ const AssessmentDetail = () => {
     if (match && match.id !== a.id) {
       navigate(`/assessments/${match.id}`);
     } else {
-      document.getElementById("journey")?.scrollIntoView({ behavior: "smooth" });
+      whatInputRef.current?.focus();
+      whatInputRef.current?.select();
     }
   };
 
@@ -249,6 +252,16 @@ const AssessmentDetail = () => {
         {/* ============ ASSESSMENT SEARCH & FILTER BAR ============ */}
         <section className="pt-8 pb-4">
           <div className="container">
+            <div className="mb-3 flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-[#0d5cb2]" />
+              <h2 className="font-display text-sm sm:text-base font-semibold text-slate-600">
+                Results showing for{" "}
+                <span className="font-extrabold text-[#0d5cb2]">
+                  {query.trim() || a.domain}
+                </span>
+              </h2>
+            </div>
+
             <div className="rounded-xl border border-border bg-background shadow-[0_10px_30px_hsl(var(--foreground)/0.08)]">
               <form
                 className="grid lg:grid-cols-[1.35fr_1fr_1fr_auto] lg:items-center"
@@ -261,6 +274,7 @@ const AssessmentDetail = () => {
                   <span className="min-w-0 flex-1">
                     <span className="block text-xs font-semibold text-foreground">What</span>
                     <input
+                      ref={whatInputRef}
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
                       placeholder="Skills, roles or assessments"
@@ -310,8 +324,8 @@ const AssessmentDetail = () => {
                 </label>
 
                 <div className="border-t border-border p-3 lg:border-l lg:border-t-0">
-                  <Button type="submit" className="h-14 w-full gap-2 px-7 font-bold lg:w-auto">
-                    <Search className="h-4 w-4" /> Search Assessments
+                  <Button type="submit" className="h-14 w-full gap-2 px-7 font-bold lg:w-auto cursor-pointer">
+                    <Pencil className="h-4 w-4" /> Edit
                   </Button>
                 </div>
               </form>
