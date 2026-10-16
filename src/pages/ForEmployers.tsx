@@ -32,6 +32,7 @@ import { demoProfile } from "@/components/profile/DemoProfileBody";
 import recruiterImage from "@/assets/employer-recruiter.jpg";
 import challengeImage from "@/assets/employer-challenge.jpg";
 import teamImage from "@/assets/employer-team.jpg";
+import campusImage from "@/assets/employer-campus-hiring.jpg";
 import candidateAnanya from "@/assets/learner-ananya.jpg";
 import candidatePriya from "@/assets/learner-priya.jpg";
 import candidateRahul from "@/assets/learner-rahul.jpg";
@@ -180,6 +181,10 @@ const Hero = () => (
           </div>
         </div>
       </motion.div>
+      <motion.div {...reveal} className="mx-auto mt-8 grid max-w-4xl grid-cols-2 gap-3 sm:gap-5">
+        <img src={recruiterImage} alt="Recruiter connecting with talent in a bright workplace" className="aspect-[4/3] w-full rounded-lg object-cover shadow-md sm:aspect-[16/9]" width={1408} height={1056} loading="lazy" />
+        <img src={teamImage} alt="Hiring team sharing ideas and reviewing candidates" className="aspect-[4/3] w-full rounded-lg object-cover shadow-md sm:aspect-[16/9]" width={1408} height={1056} loading="lazy" />
+      </motion.div>
     </div>
   </section>
 );
@@ -238,6 +243,9 @@ const HowItWorks = () => (
   <section id="how-it-works" className="bg-accent/45 py-20 md:py-28">
     <div className="container">
       <motion.div {...reveal}><SectionIntro align="center" eyebrow="How We Work" first="Your Next Great Hire." second="Four Clear Steps." description={<>Build your company presence and connect with the right talent.<br className="hidden md:block" /> Move from a new role to a confident shortlist.</>} /></motion.div>
+      <motion.div {...reveal} className="mx-auto mt-10 max-w-5xl overflow-hidden rounded-lg">
+        <img src={campusImage} alt="Recruiters meeting a graduate at an Indian campus hiring event" className="aspect-[16/9] w-full object-cover md:aspect-[21/9]" width={1536} height={1024} loading="lazy" />
+      </motion.div>
       <ol className="mx-auto mt-12 grid max-w-5xl gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {steps.map(({ icon: Icon, title, text }, index) => (
           <motion.li {...reveal} key={title} className="relative rounded-lg bg-card p-6 text-center shadow-sm">
