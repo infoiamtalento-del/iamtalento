@@ -30,6 +30,7 @@ interface Props {
 
 export function ProJobCard({ job: j, percent, applied, saved, comparing, rating, onOpen, onApply, onSave, onCompare }: Props) {
   const [logoFailed, setLogoFailed] = useState(false);
+  const [reapply, setReapply] = useState(false);
   const details = [
     { icon: Briefcase, value: j.e === 0 ? "0 - 1 Yrs" : `${j.e} - ${j.e + (j.e >= 5 ? 4 : 3)} Yrs`, label: "Experience" },
     { icon: Coins, value: `${j.a} - ${j.b} Lacs PA`, label: "Expected Salary" },
@@ -50,10 +51,10 @@ export function ProJobCard({ job: j, percent, applied, saved, comparing, rating,
     <div className="pj-details">{details.map(({ icon: Icon, value, label }) => <div className="pj-detail" key={label}><span className="pj-detail-icon"><Icon /></span><div><strong>{value}</strong><small>{label}</small></div></div>)}</div>
     <div className="pj-skills"><h4><BadgeCheck />Skills</h4><div className="pj-skill-list">{j.sk.slice(0, 8).map(s => { const Icon = skillIcon(s); return <span className="pj-skill" key={s}><Icon /><span>{s}</span></span>; })}{j.sk.length > 8 && <span className="pj-skill"><Users /><span>+{j.sk.length - 8} more</span></span>}</div></div>
     <div className="pj-actions">
-      {applied ? (
-        <Button disabled><Check /><span>Applied</span></Button>
+      {applied && !reapply ? (
+        <Button onClick={() => setReapply(true)}><Check /><span>Applied</span></Button>
       ) : (
-        <Button onClick={onApply}><Send /><span>Apply Now</span><ArrowRight /></Button>
+        <Button onClick={() => { setReapply(false); onApply(); }}><Send /><span>Apply Now</span><ArrowRight /></Button>
       )}
       <Button variant="outline" aria-pressed={saved} onClick={onSave}>{saved ? <BookmarkCheck /> : <Bookmark />}<span>{saved ? "Saved" : "Save for Later"}</span></Button>
       <Button variant="outline" aria-pressed={comparing} onClick={onCompare}><ArrowRightLeft /><span>Compare</span></Button>
