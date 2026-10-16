@@ -188,11 +188,11 @@ const SubDomainBreakdown = ({ subDomain }: BreakdownProps) => {
               onClick={() => setActiveRound(idx)}
               className={`flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer select-none ${
                 isSelected
-                  ? "bg-white text-[#0d5cb2] shadow-xs border border-slate-200/90"
+                  ? "bg-white text-[#002C66] shadow-xs border border-slate-200/90"
                   : "text-slate-600 hover:text-slate-900 hover:bg-white/50"
               }`}
             >
-              <Icon className={`h-3.5 w-3.5 shrink-0 ${isSelected ? "text-[#0d5cb2]" : "text-slate-400"}`} />
+              <Icon className={`h-3.5 w-3.5 shrink-0 ${isSelected ? "text-[#002C66]" : "text-slate-400"}`} />
               <span className="truncate">{meta.tabLabel}</span>
             </button>
           );
@@ -203,7 +203,7 @@ const SubDomainBreakdown = ({ subDomain }: BreakdownProps) => {
       <div className="bg-slate-50/80 rounded-xl p-3.5 border border-slate-200/80 flex flex-wrap items-center justify-between gap-2.5">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <span className="rounded bg-[#0d5cb2]/10 border border-[#0d5cb2]/20 text-[#0d5cb2] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+            <span className="rounded bg-[#002C66]/10 border border-[#002C66]/20 text-[#002C66] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
               {cur.badge}
             </span>
             <span className="text-xs font-bold text-slate-900 truncate">
@@ -216,10 +216,10 @@ const SubDomainBreakdown = ({ subDomain }: BreakdownProps) => {
         </div>
         <div className="flex items-center gap-2 shrink-0 text-xs font-semibold text-slate-600">
           <span className="inline-flex items-center gap-1 bg-white border border-slate-200/80 px-2.5 py-1 rounded-md shadow-2xs">
-            <Clock className="h-3.5 w-3.5 text-[#0d5cb2]" /> {cur.duration}
+            <Clock className="h-3.5 w-3.5 text-[#002C66]" /> {cur.duration}
           </span>
           <span className="inline-flex items-center gap-1 bg-white border border-slate-200/80 px-2.5 py-1 rounded-md shadow-2xs">
-            <FileText className="h-3.5 w-3.5 text-[#0d5cb2]" /> {cur.items}
+            <FileText className="h-3.5 w-3.5 text-[#002C66]" /> {cur.items}
           </span>
         </div>
       </div>
@@ -233,7 +233,7 @@ const SubDomainBreakdown = ({ subDomain }: BreakdownProps) => {
           >
             <div>
               <div className="flex items-start justify-between gap-2 mb-1.5">
-                <span className="inline-block rounded bg-blue-50 border border-blue-200/60 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#0d5cb2]">
+                <span className="inline-block rounded bg-[#002C66]/10 border border-[#002C66]/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#002C66]">
                   {t.kind}
                 </span>
                 <span className="text-[11px] font-semibold text-slate-400 bg-slate-50 border border-slate-200/60 px-2 py-0.5 rounded-md">
@@ -250,11 +250,11 @@ const SubDomainBreakdown = ({ subDomain }: BreakdownProps) => {
 
             <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-medium text-slate-500">
               <span className="inline-flex items-center gap-1.5">
-                <Clock className="h-3.5 w-3.5 text-[#0d5cb2]" />
+                <Clock className="h-3.5 w-3.5 text-[#002C66]" />
                 <span>{t.minutes} mins</span>
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <FileText className="h-3.5 w-3.5 text-[#0d5cb2]" />
+                <FileText className="h-3.5 w-3.5 text-[#002C66]" />
                 <span>{t.questions} {t.kind === "Technical" ? "practical tasks" : "questions"}</span>
               </span>
             </div>
@@ -265,7 +265,7 @@ const SubDomainBreakdown = ({ subDomain }: BreakdownProps) => {
       {/* Track Footnote */}
       <div className="pt-1 flex items-center justify-between text-xs text-slate-500">
         <span className="flex items-center gap-1 text-[11px]">
-          <Sparkles className="h-3 w-3 text-[#0d5cb2]" /> Switch tabs above to inspect other rounds
+          <Sparkles className="h-3 w-3 text-[#002C66]" /> Switch tabs above to inspect other rounds
         </span>
         <span className="font-medium text-[11px] text-slate-600">
           Included with {subDomain.name} Specialisation Pass
@@ -296,7 +296,7 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
       <div className="flex flex-wrap items-center justify-between gap-3 px-0.5">
         <div>
           <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#0d5cb2]/10 text-[#0d5cb2]">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#002C66]/10 text-[#002C66]">
               <Sparkles className="h-4 w-4" />
             </span>
             <h3 className="font-display text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight">
@@ -308,7 +308,7 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#0d5cb2]/10 border border-[#0d5cb2]/25 text-[#0d5cb2] font-bold px-3.5 py-1.5 text-xs">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#002C66]/10 border border-[#002C66]/25 text-[#002C66] font-bold px-3.5 py-1.5 text-xs">
             <CheckCircle2 className="h-4 w-4" />
             <span>{selected.length} Track{selected.length === 1 ? "" : "s"} Selected</span>
           </span>
@@ -331,20 +331,20 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
               onClick={() => onToggle(s.id)}
               className={`group relative rounded-2xl border transition-all duration-200 cursor-pointer overflow-hidden p-5 flex flex-col justify-between select-none ${
                 isSelected
-                  ? "border-2 border-[#0d5cb2] bg-gradient-to-b from-blue-50/35 via-white to-white shadow-md ring-4 ring-[#0d5cb2]/10"
-                  : "border-slate-200/90 bg-white hover:border-[#0d5cb2]/60 hover:shadow-lg"
+                  ? "border-2 border-[#002C66] bg-gradient-to-b from-[#002C66]/[0.04] via-white to-white shadow-md ring-4 ring-[#002C66]/10"
+                  : "border-slate-200/90 bg-white hover:border-[#002C66]/60 hover:shadow-lg"
               }`}
             >
               <div>
                 {/* 1. Primary Focal Point: Brand Icon + Track Title + Selection Check */}
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-start gap-3.5 min-w-0">
-                    <div className="h-12 w-12 rounded-2xl bg-slate-50 border border-slate-200/90 p-2 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 group-hover:border-blue-200 transition-all">
+                    <div className="h-12 w-12 rounded-2xl bg-slate-50 border border-slate-200/90 p-2 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 group-hover:border-[#002C66]/30 transition-all">
                       <BrandLogo name={brandName} size="md" />
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h4 className="font-display text-lg sm:text-[19px] font-extrabold text-slate-900 group-hover:text-[#0d5cb2] transition-colors leading-tight tracking-tight">
+                        <h4 className="font-display text-lg sm:text-[19px] font-extrabold text-slate-900 group-hover:text-[#002C66] transition-colors leading-tight tracking-tight">
                           {s.name}
                         </h4>
                         <span className="inline-flex items-center gap-1 rounded-md bg-amber-50 border border-amber-200/80 px-1.5 py-0.5 text-[11px] text-amber-700 font-bold shrink-0">
@@ -360,11 +360,11 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                   <div
                     className={`h-7 w-7 rounded-full flex items-center justify-center shrink-0 transition-all ${
                       isSelected
-                        ? "bg-[#0d5cb2] text-white shadow-sm scale-105"
-                        : "border-2 border-slate-200 text-transparent group-hover:border-[#0d5cb2]/60"
+                        ? "bg-[#002C66] text-white shadow-sm scale-105"
+                        : "border-2 border-slate-200 text-transparent group-hover:border-[#002C66]/60"
                     }`}
                   >
-                    <Check className={`h-4 w-4 stroke-[2.75] ${isSelected ? "text-white" : "text-slate-300 group-hover:text-[#0d5cb2]"}`} />
+                    <Check className={`h-4 w-4 stroke-[2.75] ${isSelected ? "text-white" : "text-slate-300 group-hover:text-[#002C66]"}`} />
                   </div>
                 </div>
 
@@ -372,14 +372,14 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                 <div className="mt-3.5 flex flex-wrap items-center justify-between gap-2 py-1">
                   <div className="flex items-center gap-2 text-xs font-semibold text-slate-600">
                     <span className="inline-flex items-center gap-1.5">
-                      <Layers className="h-3.5 w-3.5 text-[#0d5cb2] shrink-0" />
+                      <Layers className="h-3.5 w-3.5 text-[#002C66] shrink-0" />
                       <span>{stats.rounds} Rounds</span>
                     </span>
                     <span className="text-slate-300 select-none" aria-hidden="true">
                       ──
                     </span>
                     <span className="inline-flex items-center gap-1.5">
-                      <ClipboardCheck className="h-3.5 w-3.5 text-[#0d5cb2] shrink-0" />
+                      <ClipboardCheck className="h-3.5 w-3.5 text-[#002C66] shrink-0" />
                       <span>{stats.tests} Tests</span>
                     </span>
                   </div>
@@ -390,7 +390,7 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                       e.stopPropagation();
                       setModalSubDomain(s);
                     }}
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0d5cb2] hover:underline transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#002C66] hover:underline transition-colors cursor-pointer"
                   >
                     <BookOpen className="h-3.5 w-3.5" />
                     <span>View Syllabus</span>
@@ -399,9 +399,9 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
 
                 {/* 3. Below that: Test Curator & HR Curator (No profile inline, just View button) */}
                 <div className="mt-2.5 grid grid-cols-2 gap-2">
-                  <div className="flex items-center justify-between gap-2 rounded-xl bg-blue-50/45 border border-blue-200/70 px-3 py-2">
+                  <div className="flex items-center justify-between gap-2 rounded-xl bg-[#002C66]/5 border border-[#002C66]/20 px-3 py-2">
                     <span className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-800 truncate">
-                      <UserCheck className="h-3.5 w-3.5 text-[#0d5cb2] shrink-0" />
+                      <UserCheck className="h-3.5 w-3.5 text-[#002C66] shrink-0" />
                       <span className="truncate">Test Curator</span>
                     </span>
                     <button
@@ -410,7 +410,7 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                         e.stopPropagation();
                         setModalCurator({ role: "Test Curator", expert: testCurator, subDomainName: s.name });
                       }}
-                      className="shrink-0 rounded-md bg-white hover:bg-[#0d5cb2] text-[#0d5cb2] hover:text-white border border-blue-200 px-2.5 py-0.5 text-[11px] font-bold transition-colors cursor-pointer shadow-2xs"
+                      className="shrink-0 rounded-md bg-white hover:bg-[#002C66] text-[#002C66] hover:text-white border border-[#002C66]/25 px-2.5 py-0.5 text-[11px] font-bold transition-colors cursor-pointer shadow-2xs"
                     >
                       View
                     </button>
@@ -452,8 +452,8 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                   }}
                   className={`inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold px-4 py-2 rounded-xl transition-all shadow-xs cursor-pointer ${
                     isSelected
-                      ? "bg-[#0d5cb2] text-white hover:bg-[#0a4d96] shadow-[#0d5cb2]/20"
-                      : "bg-[#0d5cb2] text-white hover:bg-[#0a4d96] shadow-[#0d5cb2]/15"
+                      ? "bg-[#002C66] text-white hover:bg-[#00204d] shadow-[#002C66]/20"
+                      : "bg-[#002C66] text-white hover:bg-[#00204d] shadow-[#002C66]/15"
                   }`}
                 >
                   {isSelected ? (
@@ -481,7 +481,7 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                 className={`p-5 pr-12 ${
                   modalCurator.role === "HR Curator"
                     ? "bg-amber-400 text-slate-950"
-                    : "bg-[#0d5cb2] text-white"
+                    : "bg-[#002C66] text-white"
                 }`}
               >
                 <span className="text-[11px] font-extrabold uppercase tracking-wider opacity-90 block">
@@ -506,7 +506,7 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                     <p className="text-xs font-semibold text-slate-600 mt-0.5">
                       {modalCurator.expert.title} · {modalCurator.expert.company}
                     </p>
-                    <span className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-blue-50 border border-blue-200 px-2.5 py-0.5 text-[11px] font-bold text-[#0d5cb2]">
+                    <span className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-[#002C66]/10 border border-[#002C66]/20 px-2.5 py-0.5 text-[11px] font-bold text-[#002C66]">
                       <Briefcase className="h-3 w-3" /> {modalCurator.expert.experience}
                     </span>
                     <div className="mt-2 flex items-center gap-1.5 flex-wrap">
@@ -551,7 +551,7 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
             const { testCurator, hrCurator } = getCuratorsForSubDomain(modalSubDomain.id, 0);
             return (
               <>
-                <div className="bg-[#0d5cb2] text-white p-5 sm:p-6 pr-14 sm:pr-16 shrink-0">
+                <div className="bg-[#002C66] text-white p-5 sm:p-6 pr-14 sm:pr-16 shrink-0">
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3.5">
                       <div className="h-12 w-12 rounded-xl bg-white p-2 flex items-center justify-center shrink-0 shadow-sm">
@@ -562,7 +562,7 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-[11px] font-bold uppercase tracking-wider text-blue-200">
+                          <span className="text-[11px] font-bold uppercase tracking-wider text-white/80">
                             Track Syllabus & Tests
                           </span>
                           <span className="text-[11px] bg-white/20 border border-white/20 px-2.5 py-0.5 rounded-full font-semibold">
@@ -578,7 +578,7 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                       <div className="font-display text-xl font-extrabold text-white">
                         {formatINR(subDomainPrice(modalSubDomain))}
                       </div>
-                      <span className="text-[11px] text-blue-100">Full Track Pass</span>
+                      <span className="text-[11px] text-white/80">Full Track Pass</span>
                     </div>
                   </div>
                 </div>
@@ -588,14 +588,14 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
 
                   {/* Curators summary in modal */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-100">
-                    <div className="flex items-center gap-3 rounded-xl bg-blue-50/50 border border-blue-200/80 p-3">
+                    <div className="flex items-center gap-3 rounded-xl bg-[#002C66]/5 border border-[#002C66]/20 p-3">
                       <img
                         src={testCurator.photo}
                         alt={testCurator.name}
                         className="h-12 w-12 rounded-xl object-cover border-2 border-white shadow-xs shrink-0"
                       />
                       <div className="min-w-0 flex-1">
-                        <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#0d5cb2] block">
+                        <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#002C66] block">
                           Test Curator · {testCurator.experience}
                         </span>
                         <p className="text-sm font-bold text-slate-900 truncate">{testCurator.name}</p>
@@ -647,7 +647,7 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                       className={`cursor-pointer ${
                         selected.includes(modalSubDomain.id)
                           ? "bg-slate-200 hover:bg-slate-300 text-slate-800"
-                          : "bg-[#0d5cb2] hover:bg-[#0a4d96] text-white"
+                          : "bg-[#002C66] hover:bg-[#00204d] text-white"
                       }`}
                       onClick={() => {
                         onToggle(modalSubDomain.id);
@@ -684,7 +684,7 @@ export const AssessmentCart = ({ selected, coreNames, onRemove, onCheckout }: Ca
 
   return (
     <aside className="rounded-2xl border border-slate-200/90 bg-white lg:sticky lg:top-24 overflow-hidden shadow-2xs">
-      <div className="flex items-center justify-between bg-[#0d5cb2] px-5 py-4 text-white">
+      <div className="flex items-center justify-between bg-[#002C66] px-5 py-4 text-white">
         <p className="flex items-center gap-2 font-display text-sm font-bold">
           <ShoppingCart className="h-4 w-4" /> Your assessment cart
         </p>
@@ -753,7 +753,7 @@ export const AssessmentCart = ({ selected, coreNames, onRemove, onCheckout }: Ca
           </div>
           <div className="flex justify-between border-t border-slate-200/80 pt-3 font-display text-lg font-bold">
             <dt className="text-slate-900">Total</dt>
-            <dd className="text-[#0d5cb2] font-extrabold">{formatINR(total)}</dd>
+            <dd className="text-[#002C66] font-extrabold">{formatINR(total)}</dd>
           </div>
         </dl>
         {selected.length > 0 && (
@@ -763,7 +763,7 @@ export const AssessmentCart = ({ selected, coreNames, onRemove, onCheckout }: Ca
         )}
 
         <Button
-          className="mt-5 w-full gap-2 font-bold cursor-pointer bg-[#0d5cb2] hover:bg-[#0a4d96] text-white shadow-md shadow-[#0d5cb2]/25"
+          className="mt-5 w-full gap-2 font-bold cursor-pointer bg-[#002C66] hover:bg-[#00204d] text-white shadow-md shadow-[#002C66]/25"
           disabled={selected.length === 0}
           onClick={onCheckout}
         >

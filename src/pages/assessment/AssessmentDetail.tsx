@@ -47,7 +47,7 @@ const paymentMethods = [
 /* ---- shared, compact section heading ---- */
 const SectionHeading = ({ title, desc }: { title: string; desc: string }) => (
   <div className="max-w-2xl mb-8">
-    <span className="mb-3 block h-1 w-10 rounded-full bg-[#0d5cb2]" />
+    <span className="mb-3 block h-1 w-10 rounded-full bg-[#002C66]" />
     <h2 className="font-display text-2xl md:text-3xl font-bold leading-tight mb-2 text-slate-900">{title}</h2>
     <p className="text-slate-600 text-sm md:text-base leading-relaxed">{desc}</p>
   </div>
@@ -172,12 +172,12 @@ const AssessmentDetail = () => {
       className="bg-[#FBF4EB] min-h-screen"
       style={
         {
-          "--primary": "211.3 86.4% 37.5%",
+          "--primary": "214.1 100% 20%",
           "--primary-foreground": "0 0% 100%",
-          "--ring": "211.3 86.4% 37.5%",
-          "--primary-glow": "211.3 86.4% 37.5%",
-          "--accent": "211 40% 96%",
-          "--accent-foreground": "211.3 86.4% 37.5%",
+          "--ring": "214.1 100% 20%",
+          "--primary-glow": "214.1 100% 20%",
+          "--accent": "214 40% 95%",
+          "--accent-foreground": "214.1 100% 20%",
         } as React.CSSProperties
       }
     >
@@ -199,7 +199,7 @@ const AssessmentDetail = () => {
             <div className="grid lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-8 lg:gap-12 items-center">
               <div>
                 <div className="flex flex-wrap items-center gap-2 mb-4">
-                  <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200/80">
+                  <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-[#002C66]/10 text-[#002C66] border border-[#002C66]/20">
                     {a.domain}
                   </span>
                   <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white text-slate-700 border border-slate-200/80">
@@ -214,7 +214,7 @@ const AssessmentDetail = () => {
 
                 <div className="flex flex-wrap gap-x-6 gap-y-2 mt-5 text-sm text-slate-600 font-medium">
                   <span className="flex items-center gap-1.5">
-                    <Clock className="h-4 w-4 text-[#0d5cb2]" /> {a.duration}
+                    <Clock className="h-4 w-4 text-[#002C66]" /> {a.duration}
                   </span>
                   <span>{a.questionCount} questions</span>
                   <span>{a.type} assessment</span>
@@ -224,7 +224,7 @@ const AssessmentDetail = () => {
                 <div className="flex flex-wrap items-center gap-3 mt-7">
                   <Button
                     size="lg"
-                    className="gap-2 font-bold cursor-pointer bg-[#0d5cb2] text-white hover:bg-[#0a4d96] shadow-md shadow-[#0d5cb2]/25"
+                    className="gap-2 font-bold cursor-pointer bg-[#002C66] text-white hover:bg-[#00204d] shadow-md shadow-[#002C66]/25"
                     onClick={goToPayment}
                   >
                     <span>Start Assessment</span>
@@ -254,10 +254,10 @@ const AssessmentDetail = () => {
         <section className="pt-8 pb-4 bg-[#FBF4EB]">
           <div className="container">
             <div className="mb-3 flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-[#0d5cb2]" />
+              <span className="h-2 w-2 rounded-full bg-[#002C66]" />
               <h2 className="font-display text-sm sm:text-base font-semibold text-slate-600">
                 Results showing for{" "}
-                <span className="font-extrabold text-[#0d5cb2]">
+                <span className="font-extrabold text-[#002C66]">
                   {query.trim() || a.domain}
                 </span>
               </h2>
@@ -269,7 +269,7 @@ const AssessmentDetail = () => {
                 onSubmit={handleSearchSubmit}
               >
                 <label className="flex min-w-0 items-center gap-3 px-5 py-4 lg:py-5">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#002C66]/10 text-[#002C66]">
                     <Search className="h-5 w-5" />
                   </span>
                   <span className="min-w-0 flex-1">
@@ -285,7 +285,7 @@ const AssessmentDetail = () => {
                 </label>
 
                 <label className="flex min-w-0 items-center gap-3 border-t border-border px-5 py-4 lg:border-l lg:border-t-0 lg:py-5">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#002C66]/10 text-[#002C66]">
                     <Building2 className="h-5 w-5" />
                   </span>
                   <span className="min-w-0 flex-1">
@@ -305,7 +305,7 @@ const AssessmentDetail = () => {
                 </label>
 
                 <label className="flex min-w-0 items-center gap-3 border-t border-border px-5 py-4 lg:border-l lg:border-t-0 lg:py-5">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#002C66]/10 text-[#002C66]">
                     <BriefcaseBusiness className="h-5 w-5" />
                   </span>
                   <span className="min-w-0 flex-1">
@@ -325,7 +325,7 @@ const AssessmentDetail = () => {
                 </label>
 
                 <div className="border-t border-border p-3 lg:border-l lg:border-t-0">
-                  <Button type="submit" className="h-14 w-full gap-2 px-7 font-bold lg:w-auto cursor-pointer">
+                  <Button type="submit" className="h-14 w-full gap-2 px-7 font-bold lg:w-auto cursor-pointer bg-[#002C66] hover:bg-[#00204d] text-white">
                     <Pencil className="h-4 w-4" /> Edit
                   </Button>
                 </div>
@@ -337,7 +337,7 @@ const AssessmentDetail = () => {
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowAdvanced((current) => !current)}
-                  className="h-8 gap-2 px-0 text-primary hover:bg-transparent hover:text-primary/80"
+                  className="h-8 gap-2 px-0 text-[#002C66] hover:bg-transparent hover:text-[#002C66]/80"
                   aria-expanded={showAdvanced}
                 >
                   <SlidersHorizontal className="h-4 w-4" /> Advanced Filters
@@ -347,30 +347,30 @@ const AssessmentDetail = () => {
                 {showAdvanced && (
                   <div className="grid gap-4 border-t border-border pt-4 sm:grid-cols-2 lg:grid-cols-4">
                     <label className="space-y-2">
-                      <span className="flex items-center gap-2 text-xs font-semibold text-foreground"><Layers3 className="h-4 w-4 text-primary" /> Domain</span>
-                      <select value={domain ?? ""} onChange={(e) => setDomain(e.target.value || null)} className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground outline-none focus:border-primary/50">
+                      <span className="flex items-center gap-2 text-xs font-semibold text-foreground"><Layers3 className="h-4 w-4 text-[#002C66]" /> Domain</span>
+                      <select value={domain ?? ""} onChange={(e) => setDomain(e.target.value || null)} className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground outline-none focus:border-[#002C66]/50">
                         <option value="">All domains</option>
                         {availableDomains.map((item) => <option key={item} value={item}>{item}</option>)}
                       </select>
                     </label>
                     <label className="space-y-2">
-                      <span className="flex items-center gap-2 text-xs font-semibold text-foreground"><FileQuestion className="h-4 w-4 text-primary" /> Test type</span>
-                      <select value={testType ?? ""} onChange={(e) => setTestType(e.target.value || null)} className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground outline-none focus:border-primary/50">
+                      <span className="flex items-center gap-2 text-xs font-semibold text-foreground"><FileQuestion className="h-4 w-4 text-[#002C66]" /> Test type</span>
+                      <select value={testType ?? ""} onChange={(e) => setTestType(e.target.value || null)} className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground outline-none focus:border-[#002C66]/50">
                         <option value="">All test types</option>
                         {["Knowledge", "Practical", "Functional"].map((item) => <option key={item} value={item}>{item}</option>)}
                       </select>
                     </label>
                     <label className="space-y-2">
-                      <span className="flex items-center gap-2 text-xs font-semibold text-foreground"><Gauge className="h-4 w-4 text-primary" /> Difficulty</span>
-                      <select value={difficulty ?? ""} onChange={(e) => setDifficulty(e.target.value || null)} className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground outline-none focus:border-primary/50">
+                      <span className="flex items-center gap-2 text-xs font-semibold text-foreground"><Gauge className="h-4 w-4 text-[#002C66]" /> Difficulty</span>
+                      <select value={difficulty ?? ""} onChange={(e) => setDifficulty(e.target.value || null)} className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground outline-none focus:border-[#002C66]/50">
                         <option value="">All difficulty levels</option>
                         {["Beginner", "Intermediate", "Advanced"].map((item) => <option key={item} value={item}>{item}</option>)}
                       </select>
                     </label>
                     <label className="flex h-[66px] cursor-pointer items-end">
                       <span className="flex h-10 w-full items-center gap-3 rounded-md border border-input px-3 text-sm font-medium text-foreground">
-                        <input type="checkbox" checked={proctoredOnly} onChange={(e) => setProctoredOnly(e.target.checked)} className="h-4 w-4 accent-primary" />
-                        <Shield className="h-4 w-4 text-primary" /> Proctored only
+                        <input type="checkbox" checked={proctoredOnly} onChange={(e) => setProctoredOnly(e.target.checked)} className="h-4 w-4 accent-[#002C66]" />
+                        <Shield className="h-4 w-4 text-[#002C66]" /> Proctored only
                       </span>
                     </label>
                   </div>
@@ -382,7 +382,7 @@ const AssessmentDetail = () => {
                   {activeChips.map((c) => (
                     <span
                       key={c.label}
-                      className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full bg-primary/10 text-primary"
+                      className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full bg-[#002C66]/10 text-[#002C66]"
                     >
                       {c.label}
                       <button type="button" onClick={c.clear} aria-label={`Remove ${c.label}`}>
@@ -390,7 +390,7 @@ const AssessmentDetail = () => {
                       </button>
                     </span>
                   ))}
-                  <button type="button" onClick={resetAll} className="text-xs font-semibold text-muted-foreground hover:text-primary underline">
+                  <button type="button" onClick={resetAll} className="text-xs font-semibold text-muted-foreground hover:text-[#002C66] underline">
                     Clear all
                   </button>
                 </div>
@@ -413,19 +413,19 @@ const AssessmentDetail = () => {
 
                 <div className="flex items-center gap-3" aria-hidden="true">
                   <div className="h-px flex-1 bg-amber-200/70" />
-                  <span className="rounded-full bg-blue-50 border border-blue-200/80 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
+                  <span className="rounded-full bg-[#002C66]/10 border border-[#002C66]/20 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[#002C66]">
                     Then
                   </span>
                   <div className="h-px flex-1 bg-amber-200/70" />
                 </div>
 
-                <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-2xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-l-4 border-l-[#0d5cb2]">
+                <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-2xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-l-4 border-l-[#002C66]">
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2 mb-2">
-                      <span className="rounded-full bg-[#0d5cb2] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+                      <span className="rounded-full bg-[#002C66] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
                         Domain Assessment
                       </span>
-                      <span className="inline-flex items-center gap-1 rounded-md bg-blue-50 border border-blue-200/70 px-2 py-0.5 text-[11px] font-bold text-[#0d5cb2]">
+                      <span className="inline-flex items-center gap-1 rounded-md bg-[#002C66]/10 border border-[#002C66]/20 px-2 py-0.5 text-[11px] font-bold text-[#002C66]">
                         3 Rounds ── 6 Tests
                       </span>
                       <span className="text-xs text-slate-500 font-medium">
@@ -438,7 +438,7 @@ const AssessmentDetail = () => {
                     {a.skills.slice(0, 4).map((skill) => (
                       <span
                         key={skill}
-                        className="rounded-full bg-blue-50 border border-blue-200/60 px-2.5 py-1 text-[11px] font-semibold text-blue-800"
+                        className="rounded-full bg-[#002C66]/10 border border-[#002C66]/20 px-2.5 py-1 text-[11px] font-semibold text-[#002C66]"
                       >
                         {skill}
                       </span>
@@ -495,7 +495,7 @@ const AssessmentDetail = () => {
                     <p className="mt-0.5 flex items-center gap-2 text-sm text-slate-500">
                       <BrandLogo name={c.company} size="xs" /> <span className="truncate">{c.title} · {c.company}</span>
                     </p>
-                    <p className="text-xs text-[#0d5cb2] font-semibold mt-1">{c.experience}</p>
+                    <p className="text-xs text-[#002C66] font-semibold mt-1">{c.experience}</p>
                   </div>
                 </div>
               ))}
@@ -518,7 +518,7 @@ const AssessmentDetail = () => {
               <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-2xs">
                 <div className="flex items-center justify-between mb-5">
                   <h3 className="font-display font-bold text-slate-900">Order summary</h3>
-                  <span className="rounded-full bg-blue-50 border border-blue-200/80 px-3 py-1 text-xs font-semibold text-blue-700">
+                  <span className="rounded-full bg-[#002C66]/10 border border-[#002C66]/20 px-3 py-1 text-xs font-semibold text-[#002C66]">
                     {selectedSubs.length} sub-domain{selectedSubs.length === 1 ? "" : "s"} + 4 core tests
                   </span>
                 </div>
@@ -555,7 +555,7 @@ const AssessmentDetail = () => {
                 </ul>
                 <div className="flex justify-between items-baseline pt-5 mt-3 border-t border-slate-200 font-display text-lg font-bold text-slate-900">
                   <span>Total</span>
-                  <span className="text-2xl text-[#0d5cb2] font-extrabold">{formatINR(cart.total)}</span>
+                  <span className="text-2xl text-[#002C66] font-extrabold">{formatINR(cart.total)}</span>
                 </div>
               </div>
 
@@ -568,13 +568,13 @@ const AssessmentDetail = () => {
                       onClick={() => setMethod(m.name)}
                       className={`flex items-center gap-3.5 rounded-xl border px-4 py-3.5 text-left text-sm font-medium transition-all cursor-pointer ${
                         method === m.name
-                          ? "border-[#0d5cb2] bg-[#0d5cb2]/5 text-[#0d5cb2] shadow-xs ring-1 ring-[#0d5cb2]/30"
+                          ? "border-[#002C66] bg-[#002C66]/5 text-[#002C66] shadow-xs ring-1 ring-[#002C66]/30"
                           : "border-slate-200 hover:border-slate-300 bg-white"
                       }`}
                     >
                       <span
                         className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors ${
-                          method === m.name ? "bg-[#0d5cb2] text-white" : "bg-slate-100 text-slate-600"
+                          method === m.name ? "bg-[#002C66] text-white" : "bg-slate-100 text-slate-600"
                         }`}
                       >
                         <m.icon className="h-4 w-4" />
@@ -583,12 +583,12 @@ const AssessmentDetail = () => {
                         <span className="block font-semibold text-slate-900">{m.name}</span>
                         <span className="block text-[11px] font-normal text-slate-500">{m.note}</span>
                       </span>
-                      {method === m.name && <Check className="h-4 w-4 shrink-0 text-[#0d5cb2] stroke-[2.5]" />}
+                      {method === m.name && <Check className="h-4 w-4 shrink-0 text-[#002C66] stroke-[2.5]" />}
                     </button>
                   ))}
                 </div>
                 <Button
-                  className="w-full gap-2 font-bold cursor-pointer bg-[#0d5cb2] hover:bg-[#0a4d96] text-white shadow-md shadow-[#0d5cb2]/25"
+                  className="w-full gap-2 font-bold cursor-pointer bg-[#002C66] hover:bg-[#00204d] text-white shadow-md shadow-[#002C66]/25"
                   size="lg"
                   onClick={start}
                   disabled={selectedSubs.length === 0}

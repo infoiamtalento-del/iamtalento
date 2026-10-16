@@ -6,9 +6,9 @@ import {
   type AssessmentExpert,
 } from "@/data/assessmentExperts";
 
-/* ---- Section 1: Question Authors & Technical Leads (Blue / Slate) ---- */
+/* ---- Section 1: Question Authors & Technical Leads (Navy / Slate) ---- */
 const PractitionerCard = ({ e }: { e: AssessmentExpert }) => (
-  <article className="flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/90 bg-white p-5 transition-all hover:-translate-y-0.5 hover:border-[#0d5cb2] hover:shadow-md shadow-2xs">
+  <article className="flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/90 bg-white p-5 transition-all hover:-translate-y-0.5 hover:border-[#002C66] hover:shadow-md shadow-2xs">
     <div>
       {/* Profile Header */}
       <div className="flex items-start gap-3.5">
@@ -28,7 +28,7 @@ const PractitionerCard = ({ e }: { e: AssessmentExpert }) => (
               </h4>
               <p className="mt-0.5 text-xs text-slate-500 truncate">{e.title}</p>
             </div>
-            <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 border border-blue-200/60 px-2 py-0.5 text-[10px] font-bold text-blue-700 shrink-0">
+            <span className="inline-flex items-center gap-1 rounded-full bg-[#002C66]/10 border border-[#002C66]/20 px-2 py-0.5 text-[10px] font-bold text-[#002C66] shrink-0">
               <Briefcase className="h-3 w-3" /> {e.experience}
             </span>
           </div>
@@ -48,8 +48,8 @@ const PractitionerCard = ({ e }: { e: AssessmentExpert }) => (
 
       {/* Question Authoring Contribution Tag */}
       {e.tests && (
-        <div className="mt-3 rounded-lg bg-blue-50/70 border border-blue-200/60 px-2.5 py-1.5 text-[11px] text-blue-900 font-medium flex items-center gap-1.5">
-          <Sparkles className="h-3 w-3 text-[#0d5cb2] shrink-0" />
+        <div className="mt-3 rounded-lg bg-[#002C66]/5 border border-[#002C66]/20 px-2.5 py-1.5 text-[11px] text-[#002C66] font-medium flex items-center gap-1.5">
+          <Sparkles className="h-3 w-3 text-[#002C66] shrink-0" />
           <span className="truncate">{e.tests}</span>
         </div>
       )}
@@ -151,7 +151,7 @@ const MarketingExperts = () => (
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 border border-blue-200/80 px-2.5 py-0.5 text-[11px] font-bold text-[#0d5cb2]">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#002C66]/10 border border-[#002C66]/20 px-2.5 py-0.5 text-[11px] font-bold text-[#002C66]">
               <Sparkles className="h-3 w-3" /> Question Authors & Practitioners
             </span>
           </div>

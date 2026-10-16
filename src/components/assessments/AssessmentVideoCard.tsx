@@ -29,8 +29,8 @@ const AssessmentVideoCard = () => {
           <span className="absolute left-4 top-4 rounded-full bg-white/90 backdrop-blur-md border border-slate-200/60 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-slate-900 shadow-xs">
             Preview
           </span>
-          <span className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-blue-600 shadow-2xl transition-transform duration-200 group-hover:scale-110">
-            <Play className="ml-1 h-6 w-6 fill-blue-600 text-blue-600" />
+          <span className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#002C66] shadow-2xl transition-transform duration-200 group-hover:scale-110">
+            <Play className="ml-1 h-6 w-6 fill-[#002C66] text-[#002C66]" />
           </span>
           <span className="absolute inset-x-0 bottom-0 flex items-center justify-between p-4 text-white">
             <span className="font-display text-sm md:text-base font-bold text-white drop-shadow-xs">How the assessment works</span>
