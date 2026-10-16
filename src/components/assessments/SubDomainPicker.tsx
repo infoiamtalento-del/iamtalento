@@ -331,7 +331,7 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
               onClick={() => onToggle(s.id)}
               className={`group relative rounded-2xl border transition-all duration-200 cursor-pointer overflow-hidden p-5 flex flex-col justify-between select-none ${
                 isSelected
-                  ? "border-2 border-[#002C66] bg-gradient-to-b from-[#002C66]/[0.04] via-white to-white shadow-md ring-4 ring-[#002C66]/10"
+                  ? "border-2 border-[#002C66] bg-white shadow-md ring-4 ring-[#002C66]/10"
                   : "border-slate-200/90 bg-white hover:border-[#002C66]/60 hover:shadow-lg"
               }`}
             >

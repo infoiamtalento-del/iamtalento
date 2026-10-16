@@ -133,11 +133,6 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Inter', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     letter-spacing: -0.022em;
-    color: hsl(214 72% 14%);
-  }
-
-  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
-    color: hsl(0 0% 95%);
   }
 
   /* Custom thin scrollbar sitewide */
@@ -193,7 +188,7 @@
   letter-spacing: 0;
 }
 
-/* Talento Pro hero: headings must stay white on the navy banner (beats the global h1-h6 color rule) */
+/* Talento Pro hero: headings must stay white on the navy banner */
 .pro-hero,
 .pro-hero h1,
 .pro-hero h2,
@@ -223,8 +218,8 @@ main {
   background-color: #FBF4EB !important;
 }
 
-main > section:not(.bg-primary):not(.bg-foreground):not([class*="bg-slate-9"]):not([class*="bg-\[#002C66\]"]):not(.pro-hero),
-main > div > section:not(.bg-primary):not(.bg-foreground):not([class*="bg-slate-9"]):not([class*="bg-\[#002C66\]"]):not(.pro-hero) {
+main > section:not(.bg-primary):not(.bg-foreground):not(.pro-hero),
+main > div > section:not(.bg-primary):not(.bg-foreground):not(.pro-hero) {
   background-color: #FBF4EB !important;
 }
 
@@ -236,8 +231,7 @@ main > div > section:not(.bg-primary):not(.bg-foreground):not([class*="bg-slate-
 [class*="text-rose-7"],
 [class*="text-blue-6"],
 [class*="text-blue-7"],
-[class*="text-blue-8"],
-[class*="text-\[#002C66\]"] {
+[class*="text-blue-8"] {
   color: #002C66 !important;
 }
 
@@ -252,17 +246,14 @@ main > div > section:not(.bg-primary):not(.bg-foreground):not([class*="bg-slate-
 [class*="bg-rose-6"],
 [class*="bg-rose-7"],
 [class*="bg-blue-6"],
-[class*="bg-blue-7"],
-[class*="bg-\[#002C66\]"] {
+[class*="bg-blue-7"] {
   background-color: #002C66 !important;
 }
 
 [class*="hover:bg-red-"]:hover,
 [class*="hover:bg-rose-"]:hover,
 [class*="hover:bg-blue-6"]:hover,
-[class*="hover:bg-blue-7"]:hover,
-[class*="hover:bg-\[#00204d\]"]:hover,
-[class*="hover:bg-\[#00204d\]"]:hover {
+[class*="hover:bg-blue-7"]:hover {
   background-color: #00204d !important;
 }
 
@@ -286,8 +277,7 @@ main > div > section:not(.bg-primary):not(.bg-foreground):not([class*="bg-slate-
 [class*="border-rose-5"],
 [class*="border-rose-6"],
 [class*="border-blue-5"],
-[class*="border-blue-6"],
-[class*="border-\[#002C66\]"] {
+[class*="border-blue-6"] {
   border-color: #002C66 !important;
 }
 
@@ -302,8 +292,7 @@ main > div > section:not(.bg-primary):not(.bg-foreground):not([class*="bg-slate-
 }
 
 [class*="ring-red-"],
-[class*="ring-blue-"],
-[class*="ring-\[#002C66\]"] {
+[class*="ring-blue-"] {
   --tw-ring-color: #002C66 !important;
 }
 
@@ -319,12 +308,8 @@ main > div > section:not(.bg-primary):not(.bg-foreground):not([class*="bg-slate-
 
 /* Ensure elements that had background gradients resolve to solid, flat, minimal colors */
 .pro-hero,
-[class*="from-\[#002C66\]"],
-[class*="from-\[#002C66\]"],
 [class*="from-blue-600"],
-[class*="from-primary"],
-[class*="to-\[#00204d\]"],
-[class*="to-\[#00204d\]"] {
+[class*="from-primary"] {
   background-color: #002C66 !important;
   background-image: none !important;
 }
@@ -364,6 +349,3 @@ main > div > section:not(.bg-primary):not(.bg-foreground):not([class*="bg-slate-
   background-color: rgba(15, 23, 42, 0.55) !important;
   background-image: none !important;
 }
-
-
-

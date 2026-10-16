@@ -54,7 +54,7 @@ const SectionHeading = ({ title, desc }: { title: string; desc: string }) => (
 );
 
 const AssessmentDetail = () => {
-  const { assessmentId } = useParams();
+  const { assessmentId = "digital-marketing-fundamentals" } = useParams();
   const navigate = useNavigate();
   const a = getAssessment(assessmentId);
   const [method, setMethod] = useState("UPI");
