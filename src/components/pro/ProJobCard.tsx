@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Atom, Hexagon, Database, GitBranch, BadgeCheck, Award, BarChart3, Bookmark, BookmarkCheck, Briefcase, Building2, CalendarDays, Clock, Code, Coins, FileText, MapPin, Megaphone, Palette, ArrowRightLeft, Search, Send, Sparkles, Star, Users, ArrowRight } from "lucide-react";
+import { Atom, Hexagon, Database, GitBranch, BadgeCheck, Award, BarChart3, Bookmark, BookmarkCheck, Briefcase, Building2, CalendarDays, Check, Clock, Code, Coins, FileText, MapPin, Megaphone, Palette, ArrowRightLeft, Search, Send, Sparkles, Star, Users, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProJob, timeAgo } from "@/data/proData";
 import { getCompanyLogo } from "@/data/portalAssets";
@@ -49,12 +49,14 @@ export function ProJobCard({ job: j, percent, applied, saved, comparing, rating,
     </div>
     <div className="pj-details">{details.map(({ icon: Icon, value, label }) => <div className="pj-detail" key={label}><span className="pj-detail-icon"><Icon /></span><div><strong>{value}</strong><small>{label}</small></div></div>)}</div>
     <div className="pj-skills"><h4><BadgeCheck />Skills</h4><div className="pj-skill-list">{j.sk.slice(0, 8).map(s => { const Icon = skillIcon(s); return <span className="pj-skill" key={s}><Icon /><span>{s}</span></span>; })}{j.sk.length > 8 && <span className="pj-skill"><Users /><span>+{j.sk.length - 8} more</span></span>}</div></div>
-    {!applied && (
-      <div className="pj-actions">
+    <div className="pj-actions">
+      {applied ? (
+        <Button disabled><Check /><span>Applied</span></Button>
+      ) : (
         <Button onClick={onApply}><Send /><span>Apply Now</span><ArrowRight /></Button>
-        <Button variant="outline" aria-pressed={saved} onClick={onSave}>{saved ? <BookmarkCheck /> : <Bookmark />}<span>{saved ? "Saved" : "Save for Later"}</span></Button>
-        <Button variant="outline" aria-pressed={comparing} onClick={onCompare}><ArrowRightLeft /><span>Compare</span></Button>
-      </div>
-    )}
+      )}
+      <Button variant="outline" aria-pressed={saved} onClick={onSave}>{saved ? <BookmarkCheck /> : <Bookmark />}<span>{saved ? "Saved" : "Save for Later"}</span></Button>
+      <Button variant="outline" aria-pressed={comparing} onClick={onCompare}><ArrowRightLeft /><span>Compare</span></Button>
+    </div>
   </article></div>;
 }
