@@ -1,19 +1,21 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import {
   ArrowRight,
+  Award,
   BookOpen,
   Briefcase,
   Check,
   CheckCircle2,
-  ChevronDown,
+  ClipboardCheck,
   Clock,
   FileText,
   Laptop,
+  Layers,
   ShieldCheck,
   ShoppingCart,
   Sparkles,
   Star,
-  Wrench,
+  UserCheck,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,10 +27,39 @@ import {
 import {
   ROUNDS,
   subDomainPrice,
-  testPrice,
   type SubDomain,
 } from "@/data/subDomains";
+import {
+  DIGITAL_MARKETING_EXPERTS,
+  HR_DIGITAL_MARKETING_EXPERTS,
+  type AssessmentExpert,
+} from "@/data/assessmentExperts";
 import BrandLogo from "@/components/ui/BrandLogo";
+
+/** Map sub-domains to their most relevant Test Curator and HR Curator */
+const SUB_DOMAIN_CURATOR_INDEX: Record<string, { testIdx: number; hrIdx: number }> = {
+  seo: { testIdx: 1, hrIdx: 0 },
+  "google-ads": { testIdx: 0, hrIdx: 1 },
+  "meta-ads": { testIdx: 3, hrIdx: 3 },
+  analytics: { testIdx: 5, hrIdx: 4 },
+  content: { testIdx: 4, hrIdx: 2 },
+  email: { testIdx: 4, hrIdx: 5 },
+  smm: { testIdx: 2, hrIdx: 3 },
+  cro: { testIdx: 5, hrIdx: 0 },
+};
+
+const getCuratorsForSubDomain = (subId: string, fallbackIndex: number): {
+  testCurator: AssessmentExpert;
+  hrCurator: AssessmentExpert;
+} => {
+  const mapped = SUB_DOMAIN_CURATOR_INDEX[subId];
+  const testIdx = mapped ? mapped.testIdx : fallbackIndex % DIGITAL_MARKETING_EXPERTS.length;
+  const hrIdx = mapped ? mapped.hrIdx : fallbackIndex % HR_DIGITAL_MARKETING_EXPERTS.length;
+  return {
+    testCurator: DIGITAL_MARKETING_EXPERTS[testIdx],
+    hrCurator: HR_DIGITAL_MARKETING_EXPERTS[hrIdx],
+  };
+};
 
 /** Brand mark and tools shown for each sub-domain. Unknown names fall back to a monogram. */
 export const SUB_DOMAIN_BRANDS: Record<string, { brand: string; tools: string[] }> = {
@@ -246,13 +277,14 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
       </div>
 
       {/* Compact Bento Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-        {options.map((s) => {
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {options.map((s, idx) => {
           const isSelected = selected.includes(s.id);
           const price = subDomainPrice(s);
           const brandInfo = SUB_DOMAIN_BRANDS[s.id];
           const brandName = brandInfo?.brand ?? s.name;
           const tools = brandInfo?.tools ?? s.topics ?? [];
+          const { testCurator, hrCurator } = getCuratorsForSubDomain(s.id, idx);
 
           return (
             <div
@@ -260,28 +292,39 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
               onClick={() => onToggle(s.id)}
               className={`group relative rounded-2xl border transition-all duration-200 cursor-pointer overflow-hidden p-4 flex flex-col justify-between select-none ${
                 isSelected
-                  ? "border-2 border-[#0d5cb2] bg-blue-50/25 shadow-sm ring-2 ring-[#0d5cb2]/10"
-                  : "border-slate-200/90 bg-white hover:border-[#0d5cb2]/60 hover:shadow-sm"
+                  ? "border-2 border-[#0d5cb2] bg-blue-50/20 shadow-sm ring-2 ring-[#0d5cb2]/10"
+                  : "border-slate-200/90 bg-white hover:border-[#0d5cb2]/60 hover:shadow-md"
               }`}
             >
               <div>
                 {/* Header: Logo, Title & Select Checkmark */}
                 <div className="flex items-start justify-between gap-2.5">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="h-10 w-10 rounded-xl bg-slate-50 border border-slate-200/80 p-1 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                    <div className="h-11 w-11 rounded-xl bg-slate-50 border border-slate-200/80 p-1.5 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                       <BrandLogo name={brandName} size="md" />
                     </div>
                     <div className="min-w-0">
-                      <h4 className="font-display text-sm sm:text-[15px] font-bold text-slate-900 group-hover:text-[#0d5cb2] transition-colors leading-snug truncate">
-                        {s.name}
-                      </h4>
-                      <div className="flex items-center gap-1.5 mt-0.5 text-[11px] text-slate-500 font-medium">
-                        <span>3 rounds</span>
-                        <span className="text-slate-300">·</span>
-                        <span>6 tests</span>
-                        <span className="text-slate-300">·</span>
-                        <span className="flex items-center gap-0.5 text-amber-500 font-semibold">
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-display text-sm sm:text-[15px] font-bold text-slate-900 group-hover:text-[#0d5cb2] transition-colors leading-snug truncate">
+                          {s.name}
+                        </h4>
+                        <span className="inline-flex items-center gap-0.5 text-[11px] text-amber-500 font-bold shrink-0">
                           <Star className="h-3 w-3 fill-amber-400 text-amber-400" /> 4.9
+                        </span>
+                      </div>
+
+                      {/* 3 rounds --- 6 tests with icons */}
+                      <div className="flex items-center gap-1.5 mt-1 text-[11px] font-semibold text-slate-600">
+                        <span className="inline-flex items-center gap-1 rounded-md bg-blue-50/80 border border-blue-200/60 px-1.5 py-0.5 text-[#0d5cb2]">
+                          <Layers className="h-3 w-3 shrink-0" />
+                          <span>3 rounds</span>
+                        </span>
+                        <span className="text-slate-300 font-bold tracking-tighter select-none" aria-hidden="true">
+                          ──
+                        </span>
+                        <span className="inline-flex items-center gap-1 rounded-md bg-slate-100 border border-slate-200/80 px-1.5 py-0.5 text-slate-700">
+                          <ClipboardCheck className="h-3 w-3 text-[#0d5cb2] shrink-0" />
+                          <span>6 tests</span>
                         </span>
                       </div>
                     </div>
@@ -299,20 +342,81 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                 </div>
 
                 {/* Key Tools Micro-tags */}
-                <div className="flex flex-wrap items-center gap-1.5 my-3">
+                <div className="flex flex-wrap items-center gap-1.5 mt-3">
                   {tools.slice(0, 3).map((t) => (
                     <span
                       key={t}
-                      className="inline-flex items-center rounded-md bg-slate-100 text-slate-600 border border-slate-200/60 text-[11px] px-2 py-0.5 font-medium truncate max-w-[125px]"
+                      className="inline-flex items-center rounded-md bg-slate-100 text-slate-600 border border-slate-200/60 text-[11px] px-2 py-0.5 font-medium truncate max-w-[130px]"
                     >
                       {t}
                     </span>
                   ))}
                 </div>
+
+                {/* Test Curator & HR Curator Profiles */}
+                <div className="mt-3 pt-3 border-t border-slate-100 grid grid-cols-1 gap-2">
+                  {/* Test Curator */}
+                  <div className="flex items-center justify-between gap-2 rounded-xl bg-slate-50/90 border border-slate-200/70 px-2.5 py-1.5">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <img
+                        src={testCurator.photo}
+                        alt={testCurator.name}
+                        loading="lazy"
+                        className="h-8 w-8 rounded-full object-cover border border-slate-200 shrink-0"
+                      />
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className="inline-flex items-center gap-0.5 text-[9px] font-extrabold uppercase tracking-wider text-[#0d5cb2]">
+                            <UserCheck className="h-2.5 w-2.5" /> Test Curator
+                          </span>
+                          <span className="text-[10px] text-slate-400">· {testCurator.experience}</span>
+                        </div>
+                        <p className="text-xs font-bold text-slate-900 truncate leading-tight">
+                          {testCurator.name}
+                        </p>
+                        <p className="text-[10px] text-slate-500 truncate leading-tight">
+                          {testCurator.title} · {testCurator.company}
+                        </p>
+                      </div>
+                    </div>
+                    <span className="shrink-0">
+                      <BrandLogo name={testCurator.company} size="xs" />
+                    </span>
+                  </div>
+
+                  {/* HR Curator */}
+                  <div className="flex items-center justify-between gap-2 rounded-xl bg-amber-50/50 border border-amber-200/70 px-2.5 py-1.5">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <img
+                        src={hrCurator.photo}
+                        alt={hrCurator.name}
+                        loading="lazy"
+                        className="h-8 w-8 rounded-full object-cover border border-amber-300 shrink-0"
+                      />
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className="inline-flex items-center gap-0.5 text-[9px] font-extrabold uppercase tracking-wider text-amber-800">
+                            <Award className="h-2.5 w-2.5 text-amber-600" /> HR Curator
+                          </span>
+                          <span className="text-[10px] text-amber-700/80">· {hrCurator.experience}</span>
+                        </div>
+                        <p className="text-xs font-bold text-slate-900 truncate leading-tight">
+                          {hrCurator.name}
+                        </p>
+                        <p className="text-[10px] text-slate-500 truncate leading-tight">
+                          {hrCurator.title} · {hrCurator.company}
+                        </p>
+                      </div>
+                    </div>
+                    <span className="shrink-0">
+                      <BrandLogo name={hrCurator.company} size="xs" />
+                    </span>
+                  </div>
+                </div>
               </div>
 
-              {/* Bottom: Price + Actions */}
-              <div className="pt-2.5 border-t border-slate-100 flex items-center justify-between gap-2 mt-1">
+              {/* Bottom: Price + View Syllabus + Select/Added */}
+              <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2 mt-3">
                 <div className="flex items-baseline gap-1">
                   <span className="font-display text-base font-extrabold text-slate-900">
                     {formatINR(price)}
@@ -320,17 +424,17 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                   <span className="text-[11px] text-slate-400">/ track</span>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
                   <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       setModalSubDomain(s);
                     }}
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-slate-600 hover:text-[#0d5cb2] px-2 py-1 rounded-md hover:bg-blue-50 transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0d5cb2] bg-blue-50/70 hover:bg-blue-100/80 border border-blue-200/70 px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer"
                   >
-                    <FileText className="h-3.5 w-3.5" />
-                    <span>Syllabus</span>
+                    <BookOpen className="h-3.5 w-3.5" />
+                    <span>View Syllabus</span>
                   </button>
 
                   <button
@@ -399,8 +503,52 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                 </div>
               </div>
 
-              <div className="p-5 sm:p-6">
+              <div className="p-5 sm:p-6 space-y-4 max-h-[70vh] overflow-y-auto">
                 <SubDomainBreakdown subDomain={modalSubDomain} price={subDomainPrice(modalSubDomain)} />
+
+                {/* Curators summary in modal */}
+                {(() => {
+                  const { testCurator, hrCurator } = getCuratorsForSubDomain(modalSubDomain.id, 0);
+                  return (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-100">
+                      <div className="flex items-center gap-3 rounded-xl bg-slate-50 border border-slate-200/80 p-3">
+                        <img
+                          src={testCurator.photo}
+                          alt={testCurator.name}
+                          className="h-10 w-10 rounded-full object-cover border border-slate-200 shrink-0"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#0d5cb2] block">
+                            Test Curator · {testCurator.experience}
+                          </span>
+                          <p className="text-xs font-bold text-slate-900 truncate">{testCurator.name}</p>
+                          <p className="text-[11px] text-slate-500 truncate">
+                            {testCurator.title} · {testCurator.company}
+                          </p>
+                        </div>
+                        <BrandLogo name={testCurator.company} size="xs" />
+                      </div>
+
+                      <div className="flex items-center gap-3 rounded-xl bg-amber-50/60 border border-amber-200/80 p-3">
+                        <img
+                          src={hrCurator.photo}
+                          alt={hrCurator.name}
+                          className="h-10 w-10 rounded-full object-cover border border-amber-300 shrink-0"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-800 block">
+                            HR Curator · {hrCurator.experience}
+                          </span>
+                          <p className="text-xs font-bold text-slate-900 truncate">{hrCurator.name}</p>
+                          <p className="text-[11px] text-slate-500 truncate">
+                            {hrCurator.title} · {hrCurator.company}
+                          </p>
+                        </div>
+                        <BrandLogo name={hrCurator.company} size="xs" />
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
 
               <div className="p-4 sm:p-5 border-t border-slate-200 bg-slate-50 flex items-center justify-between shrink-0">

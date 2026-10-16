@@ -38,7 +38,7 @@ export const AssessmentStickyBar = ({ selected, total, onCheckout }: Props) => {
                   {selected.length} Sub-domain{selected.length === 1 ? "" : "s"} Added
                 </span>
                 <span className="text-[10px] font-semibold text-[#0d5cb2] px-1.5 py-0.5 rounded bg-[#0d5cb2]/10 border border-[#0d5cb2]/20">
-                  + 3 Core Tests
+                  + 4 Core Tests
                 </span>
               </div>
               <div className="flex items-center gap-1 mt-1 overflow-hidden">
