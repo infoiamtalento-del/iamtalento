@@ -19,6 +19,8 @@ import p4 from "@/assets/speaker-rohan.jpg";
 import v1 from "@/assets/mock-interview-1.jpg";
 import v2 from "@/assets/mock-interview-2.jpg";
 import v3 from "@/assets/mock-interview-3.jpg";
+import assessmentImage from "@/assets/employer-skill-assessment.jpg";
+import teamImage from "@/assets/employer-team.jpg";
 
 const reveal = {
   initial: { opacity: 0, y: 24 },
@@ -122,6 +124,9 @@ export const PlatformSection = () => (
   <section className="py-20 md:py-28">
     <div className="container">
       <CenterIntro eyebrow="One Platform" first="Everything It Takes," second="In One Platform." description={<>Assess, proctor, brand, and interview without juggling separate tools.<br className="hidden md:block" /> Six capabilities, one connected workflow.</>} />
+      <motion.div {...reveal} className="mx-auto mb-8 max-w-5xl overflow-hidden rounded-lg">
+        <img src={assessmentImage} alt="Indian professionals completing skills assessments with a coordinator" className="aspect-[16/9] w-full object-cover md:aspect-[21/9]" width={1536} height={1024} loading="lazy" />
+      </motion.div>
       <div className="mx-auto grid max-w-5xl gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
         {platformPoints.map(({ icon: Icon, title, text }, i) => (
           <motion.div {...reveal} transition={{ duration: 0.5, delay: i * 0.06 }} key={title} className="group bg-card p-8 text-center transition-colors hover:bg-accent/40">
@@ -220,6 +225,9 @@ export const TeamsSection = () => (
   <section className="py-20 md:py-28">
     <div className="container">
       <CenterIntro eyebrow="Built for Every Team" first="One Platform for Every" second="Team That Hires." description={<>From recruiters to engineering leads, everyone works from the same evidence.<br className="hidden md:block" /> No more scattered spreadsheets.</>} />
+      <motion.div {...reveal} className="mx-auto mb-8 max-w-5xl overflow-hidden rounded-lg">
+        <img src={teamImage} alt="Hiring colleagues collaborating in a modern office" className="aspect-[16/9] w-full object-cover md:aspect-[21/9]" width={1408} height={1056} loading="lazy" />
+      </motion.div>
       <div className="mx-auto grid max-w-5xl gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {teams.map(({ icon: Icon, title, text }) => (
           <motion.div {...reveal} key={title} className="rounded-lg border border-border bg-card p-6 text-center transition hover:-translate-y-1 hover:border-primary/40 hover:shadow-md">
