@@ -27,6 +27,7 @@ import {
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { AIInterviewerSection, PlatformSection, ConversationSection, PeopleInsightsSection, TeamsSection, IntegrationsSection, TestimonialsSection, DemoFormSection, TrustStats } from "@/components/employers/EmployerShowcaseSections";
 import { demoProfile } from "@/components/profile/DemoProfileBody";
 import recruiterImage from "@/assets/employer-recruiter.jpg";
 import challengeImage from "@/assets/employer-challenge.jpg";
@@ -106,7 +107,7 @@ const allUSPs = [
 ];
 
 const USPSection = () => (
-  <section className="bg-accent/45 py-20 md:py-28">
+  <section className="py-20 md:py-28">
     <div className="container">
       <motion.div {...reveal} className="mx-auto max-w-2xl text-center">
         <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-primary">Why IAmTalento</p>
@@ -119,7 +120,7 @@ const USPSection = () => (
           <br className="hidden md:block" /> Each one is included at no extra cost.
         </p>
       </motion.div>
-      <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mx-auto mt-12 grid max-w-5xl gap-5 text-center sm:grid-cols-2 lg:grid-cols-3">
         {allUSPs.map(({ icon: Icon, title, text }, index) => (
           <motion.div
             key={title}
@@ -127,7 +128,7 @@ const USPSection = () => (
             transition={{ duration: 0.55, delay: index * 0.07 }}
             className="rounded-lg border border-primary/20 bg-card p-6 shadow-sm transition hover:border-primary/50 hover:shadow-md"
           >
-            <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-primary-foreground"><Icon className="h-5 w-5" /></span>
+            <span className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-primary-foreground"><Icon className="h-5 w-5" /></span>
             <h3 className="mb-2 font-display text-lg font-bold">{title}</h3>
             <p className="text-sm leading-relaxed text-muted-foreground">{text}</p>
           </motion.div>
@@ -138,65 +139,47 @@ const USPSection = () => (
 );
 
 const Hero = () => (
-  <section className="relative overflow-hidden bg-background pb-16 pt-32 md:pb-20 md:pt-40">
-    <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-accent/60 to-transparent" />
+  <section className="relative overflow-hidden bg-background pb-16 pt-32 md:pb-24 md:pt-40">
+    <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-accent/60 to-transparent" />
     <div className="container relative">
-      <div className="grid items-center gap-14 lg:grid-cols-[0.88fr_1.12fr]">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-          <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-primary">AI-Powered Hiring Platform</p>
-          <h1 className="mb-6 font-display text-4xl font-bold leading-[1.03] sm:text-5xl lg:text-6xl">
-            Stop Guessing.<br />
-            Start Hiring<br />
-            <span className="text-primary">With Proof.</span>
-          </h1>
-          <p className="mb-8 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
-            Find, verify, rank, and track job-ready candidates with AI — while your recruiters stay firmly in control.
-          </p>
-          <div className="mb-8 flex flex-wrap gap-3">
-            <Button asChild size="lg" className="h-12 gap-2 px-7">
-              <Link to="/contact">Book a Demo <ArrowRight className="h-4 w-4" /></Link>
-            </Button>
-            <Button asChild size="lg" variant="ghost" className="h-12 gap-2 px-4">
-              <a href="#how-it-works"><CirclePlay className="h-5 w-5 text-primary" /> See How It Works</a>
-            </Button>
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="mx-auto max-w-3xl text-center">
+        <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-primary">AI-Powered Hiring Platform</p>
+        <h1 className="mb-6 font-display text-4xl font-bold leading-[1.05] sm:text-5xl lg:text-6xl">
+          Stop Guessing. Start Hiring<br />
+          <span className="text-primary">With Proof.</span>
+        </h1>
+        <p className="mx-auto mb-8 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
+          Find, verify, rank, and track job-ready candidates with AI — while your recruiters stay firmly in control.
+        </p>
+        <div className="mb-8 flex flex-wrap justify-center gap-3">
+          <Button asChild size="lg" className="h-12 gap-2 px-7"><Link to="/contact">Book a Demo <ArrowRight className="h-4 w-4" /></Link></Button>
+          <Button asChild size="lg" variant="outline" className="h-12 gap-2 px-6"><a href="#how-it-works"><CirclePlay className="h-5 w-5 text-primary" /> See How It Works</a></Button>
+        </div>
+        <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-xs font-medium text-muted-foreground">
+          <span className="flex items-center gap-2"><Zap className="h-4 w-4 text-primary" /> Faster hiring</span>
+          <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-primary" /> Verified talent</span>
+          <span className="flex items-center gap-2"><Users className="h-4 w-4 text-primary" /> Recruiter in control</span>
+        </div>
+      </motion.div>
+      <motion.div initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: 0.7 }} className="relative mx-auto mt-14 max-w-4xl">
+        <div className="overflow-hidden rounded-lg border border-border bg-card shadow-xl">
+          <div className="flex items-center justify-between border-b border-border bg-secondary/40 px-5 py-3">
+            <div className="flex items-center gap-2 text-xs font-semibold"><Sparkles className="h-4 w-4 text-primary" /> Talent Search</div>
+            <span className="text-[10px] text-muted-foreground">248 candidates</span>
           </div>
-          <div className="flex flex-wrap gap-x-6 gap-y-3 text-xs font-medium text-muted-foreground">
-            <span className="flex items-center gap-2"><Zap className="h-4 w-4 text-primary" /> Faster hiring</span>
-            <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-primary" /> Verified talent</span>
-            <span className="flex items-center gap-2"><Users className="h-4 w-4 text-primary" /> Recruiter in control</span>
-          </div>
-        </motion.div>
-
-        <motion.div initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: 0.7 }} className="relative">
-          <div className="overflow-hidden rounded-lg border border-border bg-card shadow-xl">
-            <div className="flex items-center justify-between border-b border-border bg-secondary/40 px-5 py-3">
-              <div className="flex items-center gap-2 text-xs font-semibold"><Sparkles className="h-4 w-4 text-primary" /> Talent Search</div>
-              <span className="text-[10px] text-muted-foreground">248 candidates</span>
+          <div className="grid md:grid-cols-[140px_1fr]">
+            <div className="hidden border-r border-border bg-secondary/30 p-4 md:block">
+              {['Candidates', 'Jobs', 'Shortlist', 'Analytics'].map((item, index) => (
+                <div key={item} className={cn("mb-2 rounded-md px-2 py-2 text-[11px]", index === 0 ? "bg-primary/10 font-semibold text-primary" : "text-muted-foreground")}>{item}</div>
+              ))}
             </div>
-            <div className="grid md:grid-cols-[120px_1fr]">
-              <div className="hidden border-r border-border bg-secondary/30 p-4 md:block">
-                {['Candidates', 'Jobs', 'Shortlist', 'Analytics'].map((item, index) => (
-                  <div key={item} className={cn("mb-2 rounded-md px-2 py-2 text-[10px]", index === 0 ? "bg-primary/10 font-semibold text-primary" : "text-muted-foreground")}>{item}</div>
-                ))}
-              </div>
-              <div className="p-5">
-                <div className="mb-4 flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-2.5 text-xs text-muted-foreground">
-                  <Search className="h-4 w-4" /> Senior Product Manager in Bengaluru
-                </div>
-                <CandidateList compact />
-              </div>
+            <div className="p-5">
+              <div className="mb-4 flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-2.5 text-xs text-muted-foreground"><Search className="h-4 w-4" /> Senior Product Manager in Bengaluru</div>
+              <CandidateList />
             </div>
           </div>
-          <div className="absolute -bottom-8 right-4 hidden w-52 rounded-lg border border-border bg-card p-4 shadow-xl sm:block lg:-right-7">
-            <div className="flex items-center gap-3">
-              <img src={candidateAnanya} alt="Ananya Rao" className="h-12 w-12 rounded-full object-cover" width={48} height={48} />
-              <div><p className="text-sm font-bold">Ananya Rao</p><p className="text-[10px] text-muted-foreground">Product leader</p></div>
-            </div>
-            <div className="my-3 rounded-md bg-success/10 py-2 text-center text-xs font-bold text-success">96% Match</div>
-            <Button size="sm" className="w-full">Shortlist</Button>
-          </div>
-        </motion.div>
-      </div>
+        </div>
+      </motion.div>
     </div>
   </section>
 );
@@ -211,7 +194,7 @@ const LogoStrip = () => (
   <section className="border-y border-border/60 bg-background py-10">
     <div className="container">
       <p className="mb-8 text-center text-[10px] font-bold uppercase tracking-[0.22em] text-muted-foreground">Trusted by growing businesses</p>
-      <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-7 md:justify-between">
+      <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-7">
         {logos.map((logo) => <img key={logo.name} src={logo.src} alt={logo.name} className="h-6 w-24 object-contain grayscale opacity-55 transition hover:grayscale-0 hover:opacity-100" loading="lazy" />)}
       </div>
     </div>
@@ -226,26 +209,19 @@ const problems = [
 
 const ProblemSection = () => (
   <section className="py-20 md:py-28">
-    <div className="container grid items-center gap-14 lg:grid-cols-2">
-      <motion.div {...reveal}>
-        <SectionIntro eyebrow="The Problem" first="Great People Are" second="Hard to Find." description={<>Recruiting teams waste time on mismatched profiles and incomplete information.<br className="hidden md:block" /> Slow processes turn strong candidates into missed opportunities.</>} />
-        <div className="mt-8 grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
-          {problems.map(({ icon: Icon, title, text }) => (
-            <div key={title} className="flex gap-4 rounded-lg border border-transparent p-3 transition-colors hover:border-border hover:bg-secondary/30">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent text-primary"><Icon className="h-5 w-5" /></span>
-              <div><h3 className="mb-1 text-sm font-bold">{title}</h3><p className="text-xs leading-relaxed text-muted-foreground">{text}</p></div>
-            </div>
-          ))}
-        </div>
-      </motion.div>
-      <motion.div {...reveal} className="relative">
-        <img src={challengeImage} alt="Recruiter reviewing candidate applications" className="aspect-[4/3] w-full rounded-lg object-cover" loading="lazy" width={1408} height={1056} />
-        <div className="absolute left-5 top-5 rounded-lg border border-border bg-card/95 p-4 shadow-lg backdrop-blur">
-          <p className="text-lg font-bold">1,200+</p><p className="text-[10px] text-muted-foreground">profiles waiting to be reviewed</p>
-        </div>
-        <div className="absolute bottom-5 right-5 flex items-center gap-3 rounded-lg border border-border bg-card/95 p-4 shadow-lg backdrop-blur">
-          <FileCheck2 className="h-5 w-5 text-primary" /><div><p className="text-xs font-bold">Unverified claims</p><p className="text-[10px] text-muted-foreground">No supporting evidence</p></div>
-        </div>
+    <div className="container">
+      <motion.div {...reveal}><SectionIntro align="center" eyebrow="The Problem" first="Great People Are" second="Hard to Find." description={<>Recruiting teams waste time on mismatched profiles and incomplete information.<br className="hidden md:block" /> Slow processes turn strong candidates into missed opportunities.</>} /></motion.div>
+      <div className="mx-auto mt-12 grid max-w-5xl gap-5 md:grid-cols-3">
+        {problems.map(({ icon: Icon, title, text }) => (
+          <motion.div {...reveal} key={title} className="rounded-lg border border-border bg-card p-6 text-center">
+            <span className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-accent text-primary"><Icon className="h-5 w-5" /></span>
+            <h3 className="mb-2 font-display text-base font-bold">{title}</h3><p className="text-sm leading-relaxed text-muted-foreground">{text}</p>
+          </motion.div>
+        ))}
+      </div>
+      <motion.div {...reveal} className="relative mx-auto mt-10 max-w-5xl">
+        <img src={challengeImage} alt="Recruiter reviewing candidate applications" className="aspect-[21/9] w-full rounded-lg object-cover" loading="lazy" width={1408} height={1056} />
+        <div className="absolute bottom-5 left-1/2 flex -translate-x-1/2 items-center gap-3 whitespace-nowrap rounded-lg border border-border bg-card/95 px-5 py-3 shadow-lg backdrop-blur"><FileCheck2 className="h-5 w-5 text-primary" /><p className="text-xs font-bold">1,200+ unverified profiles waiting for review</p></div>
       </motion.div>
     </div>
   </section>
@@ -260,18 +236,18 @@ const steps = [
 
 const HowItWorks = () => (
   <section id="how-it-works" className="bg-accent/45 py-20 md:py-28">
-    <div className="container grid items-center gap-14 lg:grid-cols-2">
-      <motion.div {...reveal} className="relative order-2 lg:order-1">
-        <img src={recruiterImage} alt="Recruiter using IAmTalento" className="aspect-[4/3] w-full rounded-lg object-cover" loading="lazy" width={1408} height={1056} />
-        <div className="absolute bottom-5 left-5 right-5 flex items-center gap-3 rounded-lg border border-border bg-card/95 p-4 shadow-lg backdrop-blur"><ShieldCheck className="h-6 w-6 text-primary" /><div><p className="text-sm font-bold">Your team. Your decisions.</p><p className="text-xs text-muted-foreground">One connected hiring journey.</p></div></div>
-      </motion.div>
-      <motion.div {...reveal} className="order-1 lg:order-2">
-        <SectionIntro eyebrow="How We Work" first="Your Next Great Hire." second="Four Clear Steps." description={<>Build your company presence and connect with the right talent.<br className="hidden md:block" /> Move from a new role to a confident shortlist.</>} />
-        <ol className="mt-8 space-y-5">
-          {steps.map(({ icon: Icon, title, text }, index) => <li key={title} className="flex gap-4"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">0{index + 1}</span><div><h3 className="mb-1 flex items-center gap-2 font-display text-base font-bold"><Icon className="h-4 w-4 text-primary" />{title}</h3><p className="text-sm leading-relaxed text-muted-foreground">{text}</p></div></li>)}
-        </ol>
-        <Button asChild size="lg" className="mt-8 gap-2"><Link to="/employer-profile">Create Company Profile <ArrowRight className="h-4 w-4" /></Link></Button>
-      </motion.div>
+    <div className="container">
+      <motion.div {...reveal}><SectionIntro align="center" eyebrow="How We Work" first="Your Next Great Hire." second="Four Clear Steps." description={<>Build your company presence and connect with the right talent.<br className="hidden md:block" /> Move from a new role to a confident shortlist.</>} /></motion.div>
+      <ol className="mx-auto mt-12 grid max-w-5xl gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {steps.map(({ icon: Icon, title, text }, index) => (
+          <motion.li {...reveal} key={title} className="relative rounded-lg bg-card p-6 text-center shadow-sm">
+            <span className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">0{index + 1}</span>
+            <h3 className="mb-2 flex items-center justify-center gap-2 font-display text-base font-bold"><Icon className="h-4 w-4 text-primary" />{title}</h3>
+            <p className="text-sm leading-relaxed text-muted-foreground">{text}</p>
+          </motion.li>
+        ))}
+      </ol>
+      <div className="mt-10 text-center"><Button asChild size="lg" className="gap-2"><Link to="/employer-profile">Create Company Profile <ArrowRight className="h-4 w-4" /></Link></Button></div>
     </div>
   </section>
 );
@@ -307,27 +283,9 @@ const CandidatePreview = () => (
 
 const SearchSection = () => (
   <section className="py-20 md:py-28">
-    <div className="container grid items-center gap-14 lg:grid-cols-[0.82fr_1.18fr]">
-      <motion.div {...reveal}>
-        <SectionIntro eyebrow="AI Talent Search" first="Meet Your Next Hire." second="Beyond a Resume." description={<>Discover experience, skills, and the person behind the profile.<br className="hidden md:block" /> See the full picture before you connect.</>} />
-      </motion.div>
-      <motion.div {...reveal}><CandidatePreview /></motion.div>
-    </div>
-  </section>
-);
-
-const TeamSection = () => (
-  <section className="py-20 md:py-28">
-    <div className="container grid items-center gap-14 lg:grid-cols-[0.85fr_1.15fr]">
-      <motion.div {...reveal}>
-        <SectionIntro eyebrow="Your Team, in Control" first="A Powerful Platform" second="For Modern Hiring." description={<>Give recruiters and hiring managers one shared view of every candidate.<br className="hidden md:block" /> Collaborate, track progress, and decide with confidence.</>} />
-        <Button asChild variant="outline" className="mt-8 gap-2"><Link to="/features">Explore Features <ArrowRight className="h-4 w-4" /></Link></Button>
-      </motion.div>
-      <motion.div {...reveal} className="relative">
-        <img src={teamImage} alt="Hiring team collaborating" className="aspect-[4/3] w-full rounded-lg object-cover" loading="lazy" width={1408} height={1056} />
-        <div className="absolute right-5 top-5 flex items-center gap-2 rounded-lg border border-border bg-card/95 px-4 py-3 text-xs font-semibold shadow-lg"><CheckCircle2 className="h-4 w-4 text-primary" /> Shortlist approved</div>
-        <div className="absolute bottom-5 left-5 flex gap-5 rounded-lg border border-border bg-card/95 px-4 py-3 text-xs font-semibold shadow-lg"><span className="flex items-center gap-2"><Users className="h-4 w-4 text-primary" /> Share</span><span className="flex items-center gap-2"><LineChart className="h-4 w-4 text-primary" /> Track</span></div>
-      </motion.div>
+    <div className="container">
+      <motion.div {...reveal}><SectionIntro align="center" eyebrow="AI Talent Search" first="Meet Your Next Hire." second="Beyond a Resume." description={<>Discover experience, skills, and the person behind the profile.<br className="hidden md:block" /> See the full picture before you connect.</>} /></motion.div>
+      <motion.div {...reveal} className="mx-auto mt-12 max-w-3xl"><CandidatePreview /></motion.div>
     </div>
   </section>
 );
@@ -343,9 +301,9 @@ const FAQSection = () => {
   const [open, setOpen] = useState<number | null>(0);
   return (
     <section className="py-20 md:py-24">
-      <div className="container grid gap-12 lg:grid-cols-[0.72fr_1.28fr]">
-        <motion.div {...reveal}><SectionIntro eyebrow="Questions" first="Everything You Need" second="Before You Begin." description={<>Clear answers for teams considering skills-first hiring.<br className="hidden md:block" /> Need more detail? Our team is ready to help.</>} /></motion.div>
-        <div className="space-y-3">
+      <div className="container">
+        <motion.div {...reveal} className="mb-10"><SectionIntro align="center" eyebrow="Questions" first="Everything You Need" second="Before You Begin." description={<>Clear answers for teams considering skills-first hiring.<br className="hidden md:block" /> Need more detail? Our team is ready to help.</>} /></motion.div>
+        <div className="mx-auto max-w-3xl space-y-3">
           {faqs.map((item, index) => (
             <div key={item.q} className="overflow-hidden rounded-lg border border-border bg-card">
               <Button variant="ghost" onClick={() => setOpen(open === index ? null : index)} className="h-auto w-full justify-between rounded-none px-5 py-4 text-left">
@@ -364,9 +322,9 @@ const FinalCTA = () => (
   <section className="pb-20">
     <div className="container">
       <motion.div {...reveal} className="relative overflow-hidden rounded-lg bg-primary px-6 py-10 sm:px-10 md:py-12">
-        <div className="relative z-10 grid items-center gap-8 md:grid-cols-[1fr_auto]">
+        <div className="relative z-10 flex flex-col items-center gap-6 text-center">
           <div><h2 className="font-display text-3xl font-bold leading-tight text-primary-foreground md:text-4xl">Ready to Hire Better?</h2><p className="mt-2 text-sm text-primary-foreground/80 md:text-base">See how IAmTalento helps your team find the right people, faster.</p></div>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap justify-center gap-3">
             <Button asChild size="lg" variant="secondary"><Link to="/pricing?tab=employers">Explore Pricing <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
             <Button asChild size="lg" variant="outline" className="border-primary-foreground/50 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"><Link to="/employer-profile">Create Company Profile</Link></Button>
           </div>
@@ -389,12 +347,20 @@ const ForEmployers = () => (
     <Layout>
       <Hero />
       <LogoStrip />
+      <TrustStats />
+      <AIInterviewerSection />
+      <PlatformSection />
       <USPSection />
+      <ConversationSection />
       <ProblemSection />
       <HowItWorks />
+      <PeopleInsightsSection />
       <SearchSection />
-      <TeamSection />
+      <TeamsSection />
+      <IntegrationsSection />
+      <TestimonialsSection />
       <FAQSection />
+      <DemoFormSection />
       <FinalCTA />
     </Layout>
   </>
