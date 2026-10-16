@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Search,
@@ -178,9 +178,10 @@ const AssessmentDiscovery = () => {
     setQuery("");
   };
 
+  const navigate = useNavigate();
   const runSearch = () => {
     setSearched(true);
-    document.getElementById("assessment-results")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    navigate("/assessments/digital-marketing-fundamentals");
   };
 
   return (
@@ -285,8 +286,10 @@ const AssessmentDiscovery = () => {
                 </label>
 
                 <div className="border-t border-border p-3 lg:border-l lg:border-t-0">
-                  <Button type="submit" className="h-14 w-full gap-2 px-7 font-bold lg:w-auto">
-                    <Search className="h-4 w-4" /> Search Assessments
+                  <Button asChild className="h-14 w-full gap-2 px-7 font-bold lg:w-auto">
+                    <Link to="/assessments/digital-marketing-fundamentals">
+                      <Search className="h-4 w-4" /> Search Assessments
+                    </Link>
                   </Button>
                 </div>
               </form>

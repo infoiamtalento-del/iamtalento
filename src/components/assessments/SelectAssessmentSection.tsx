@@ -74,8 +74,10 @@ const SelectAssessmentSection = () => {
                 </div>
               </div>
             ))}
-            <Button className="h-12 px-8 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold gap-2">
-              <Search className="h-4 w-4" /> Search Assessments
+            <Button asChild className="h-12 px-8 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold gap-2">
+              <Link to="/assessments/digital-marketing-fundamentals">
+                <Search className="h-4 w-4" /> Search Assessments
+              </Link>
             </Button>
           </div>
         </motion.div>
