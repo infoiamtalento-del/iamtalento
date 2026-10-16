@@ -453,7 +453,7 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                   className={`inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold px-4 py-2 rounded-xl transition-all shadow-xs cursor-pointer ${
                     isSelected
                       ? "bg-[#0d5cb2] text-white hover:bg-[#0a4d96] shadow-[#0d5cb2]/20"
-                      : "bg-slate-900 hover:bg-[#0d5cb2] text-white"
+                      : "bg-[#0d5cb2] text-white hover:bg-[#0a4d96] shadow-[#0d5cb2]/15"
                   }`}
                 >
                   {isSelected ? (
