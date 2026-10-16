@@ -1119,7 +1119,7 @@ const ScoreTrustSection = () => {
                         className="text-5xl sm:text-6xl md:text-[80px] font-bold tracking-tight leading-none"
                         style={{
                           color: "#0f0f1a",
-                          fontFamily: "'Space Grotesk',sans-serif",
+                          fontFamily: "'Inter', 'Plus Jakarta Sans', sans-serif",
                         }}
                       >
                         94

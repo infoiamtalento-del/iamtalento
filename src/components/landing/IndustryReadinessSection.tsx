@@ -376,7 +376,7 @@ function ScoreOrb() {
               transition={{ delay: 0.9, type: "spring", stiffness: 220 }}
               className="flex items-end justify-center leading-none"
             >
-              <span className="text-[80px] font-bold tracking-tight leading-none" style={{ color: "#0f0f1a", fontFamily: "'Space Grotesk',sans-serif" }}>82</span>
+              <span className="text-[80px] font-bold tracking-tight leading-none" style={{ color: "#002C66", fontFamily: "'Inter', 'Plus Jakarta Sans', sans-serif" }}>82</span>
               <span className="text-2xl font-light mb-3 ml-1" style={{ color: "#9ca3af" }}>/100</span>
             </motion.div>
             <p className="text-[10px] uppercase tracking-[0.22em] font-semibold" style={{ color: "#002C66" }}>Industry Ready</p>

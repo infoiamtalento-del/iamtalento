@@ -130,7 +130,7 @@ const LiveLeaderboardSection = () => {
               <div
                 key={h}
                 className="text-left text-[11px] font-semibold uppercase tracking-wider px-5 py-3.5 text-muted-foreground"
-                style={{ fontFamily: "'Space Grotesk', monospace" }}
+                style={{ fontFamily: "'Inter', 'Plus Jakarta Sans', sans-serif", fontVariantNumeric: "tabular-nums" }}
               >
                 {h}
               </div>
