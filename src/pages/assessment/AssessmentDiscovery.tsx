@@ -362,65 +362,6 @@ const AssessmentDiscovery = () => {
           </div>
         </section>
 
-        {/* Results */}
-        <section id="assessment-results" className="scroll-mt-24 pb-20">
-          <div className="container">
-            {searched && (
-              <div className="mb-10 rounded-2xl border border-primary/20 bg-accent/40 p-5 md:p-6">
-                <div className="flex flex-wrap items-end justify-between gap-2 mb-4">
-                  <div>
-                    <p className="text-[11px] font-bold uppercase tracking-widest text-primary mb-1">Included in every assessment</p>
-                    <h2 className="font-display text-xl md:text-2xl font-bold">Mandatory Core Tests</h2>
-                  </div>
-                  <p className="text-sm text-muted-foreground">Pick your domain test below and click View.</p>
-                </div>
-                <div className="grid gap-3 sm:grid-cols-3">
-                  {MANDATORY_TESTS.map((t) => (
-                    <label key={t.name} className="flex items-start gap-3 rounded-xl border border-border bg-background p-4 cursor-not-allowed">
-                      <input type="checkbox" checked disabled readOnly className="mt-1 h-4 w-4 accent-[hsl(var(--primary))]" />
-                      <span>
-                        <span className="block font-semibold text-sm">{t.name}</span>
-                        <span className="block text-xs text-muted-foreground">{t.text}</span>
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            )}
-            {filtered.length === 0 ? (
-              <div className="text-center py-16 rounded-xl border border-dashed border-border">
-                <h3 className="font-display text-xl font-bold mb-2">No assessments found</h3>
-                <p className="text-muted-foreground text-sm mb-5">Try changing your filters.</p>
-                <Button onClick={resetAll} variant="outline">Reset filters</Button>
-              </div>
-            ) : (
-              <>
-                <div className="flex items-end justify-between mb-5">
-                  <h2 className="font-display text-2xl md:text-3xl font-bold">Assessments For You</h2>
-                  <span className="text-sm text-muted-foreground">{filtered.length} available</span>
-                </div>
-
-                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-12">
-                  {recommended.map((a, i) => (
-                    <AssessmentCard key={a.id} a={a} index={i} />
-                  ))}
-                </div>
-
-                {rest.length > 0 && (
-                  <>
-                    <h2 className="font-display text-2xl md:text-3xl font-bold mb-5">All Available Tests</h2>
-                    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                      {rest.map((a, i) => (
-                        <AssessmentCard key={a.id} a={a} index={i} />
-                      ))}
-                    </div>
-                  </>
-                )}
-              </>
-            )}
-          </div>
-        </section>
-
         {/* 30-Layer Proctoring Breakdown */}
         <AssessmentIntegritySection />
 
