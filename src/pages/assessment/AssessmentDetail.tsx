@@ -236,7 +236,7 @@ const AssessmentDetail = () => {
                     <span>View Curriculum</span>
                   </Button>
                   <span className="text-sm text-slate-600 ml-1">
-                    <span className="font-extrabold text-slate-900">{formatINR(cart.total)}</span> · 4 tests + CIR report
+                    <span className="font-extrabold text-slate-900">{formatINR(cart.total)}</span> · 5 tests + CIR report
                   </span>
                 </div>
               </div>
@@ -389,7 +389,7 @@ const AssessmentDetail = () => {
           <div className="container">
             <SectionHeading
               title="What you'll take"
-              desc={`Three core career tests come first, then one focused ${a.domain} test.`}
+              desc={`Four core career tests come first, then one focused ${a.domain} test.`}
             />
 
             <div className="grid lg:grid-cols-[minmax(0,1fr)_340px] gap-6 items-start">
@@ -493,7 +493,7 @@ const AssessmentDetail = () => {
           <div className="container">
             <SectionHeading
               title="Complete payment and start"
-              desc="One payment covers all three core tests, your domain test and your verified report."
+              desc="One payment covers all four core tests, your domain test and your verified report."
             />
 
             <div className="grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] gap-6 items-start">
@@ -501,7 +501,7 @@ const AssessmentDetail = () => {
                 <div className="flex items-center justify-between mb-5">
                   <h3 className="font-display font-bold text-slate-900">Order summary</h3>
                   <span className="rounded-full bg-blue-50 border border-blue-200/80 px-3 py-1 text-xs font-semibold text-blue-700">
-                    {selectedSubs.length} sub-domain{selectedSubs.length === 1 ? "" : "s"} + 3 core tests
+                    {selectedSubs.length} sub-domain{selectedSubs.length === 1 ? "" : "s"} + 4 core tests
                   </span>
                 </div>
                 <ul className="divide-y divide-slate-100 text-sm">

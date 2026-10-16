@@ -30,6 +30,7 @@ export const MANDATORY_TESTS = [
   { name: "Communication Skills", text: "Written and verbal clarity, workplace tone." },
   { name: "Psychometrics", text: "Personality, aptitude and work-style profile." },
   { name: "Vocational", text: "Career interests and role-fit indicators." },
+  { name: "Generic HR Round Test", text: "Behavioural situational judgment, workplace ethics and culture alignment." },
 ];
 
 const typeStyles: Record<string, string> = {

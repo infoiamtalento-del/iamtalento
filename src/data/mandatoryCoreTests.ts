@@ -1,4 +1,4 @@
-import { MessageSquareText, BrainCircuit, Compass, type LucideIcon } from "lucide-react";
+import { MessageSquareText, BrainCircuit, Compass, Users, type LucideIcon } from "lucide-react";
 
 export interface CoreTestPart {
   num: string;
@@ -109,5 +109,34 @@ export const MANDATORY_CORE_TESTS: MandatoryCoreTest[] = [
       },
     ],
     skills: ["Role Motivation", "Pace Alignment", "Growth Velocity", "Cultural Resonance"],
+  },
+  {
+    id: "hr-round",
+    name: "Generic HR Round Test",
+    summary: "Behavioural situational judgment, workplace ethics, culture alignment, and interview readiness.",
+    questions: 12,
+    duration: "10 min",
+    format: "Behavioural & Situational HR",
+    icon: Users,
+    badge: "HR Readiness",
+    parts: [
+      {
+        num: "01",
+        title: "Behavioural & Situational HR Evaluation",
+        kind: "Behavioural",
+        text: "Structured scenario responses on teamwork, conflict resolution, ownership under pressure, and adaptability.",
+        questions: 6,
+        minutes: 5,
+      },
+      {
+        num: "02",
+        title: "Professional Ethics, Culture & Career Clarity",
+        kind: "Situational",
+        text: "Workplace integrity, stakeholder expectations, role commitment, and long-term career goal alignment.",
+        questions: 6,
+        minutes: 5,
+      },
+    ],
+    skills: ["Situational Judgment", "Workplace Ethics", "Conflict Resolution", "Career Clarity"],
   },
 ];
