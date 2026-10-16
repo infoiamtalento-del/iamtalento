@@ -284,6 +284,11 @@ interface PickerProps {
 
 export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: PickerProps) => {
   const [modalSubDomain, setModalSubDomain] = useState<SubDomain | null>(null);
+  const [modalCurator, setModalCurator] = useState<{
+    role: "Test Curator" | "HR Curator";
+    expert: AssessmentExpert;
+    subDomainName: string;
+  } | null>(null);
 
   return (
     <div className="space-y-4">
@@ -364,29 +369,9 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                   </div>
                 </div>
 
-                {/* 2. High-Contrast Rounds ── Tests Architecture Bar */}
-                <div className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-slate-50 border border-slate-200/80 px-3 py-2">
-                  <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#0d5cb2] text-white px-2.5 py-1 text-xs font-bold shadow-2xs">
-                      <Layers className="h-3.5 w-3.5 shrink-0" />
-                      <span>{stats.rounds} Rounds</span>
-                    </span>
-                    <span className="text-slate-300 font-extrabold select-none" aria-hidden="true">
-                      ──
-                    </span>
-                    <span className="inline-flex items-center gap-1.5 rounded-lg bg-white border border-blue-200 text-[#0d5cb2] px-2.5 py-1 text-xs font-bold shadow-2xs">
-                      <ClipboardCheck className="h-3.5 w-3.5 shrink-0" />
-                      <span>{stats.tests} Tests</span>
-                    </span>
-                  </div>
-                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-500">
-                    <Clock className="h-3 w-3 text-[#0d5cb2]" /> {stats.duration}
-                  </span>
-                </div>
-
-                {/* 3. Tools & Skills Pills (Compact Tertiary Hierarchy) */}
+                {/* Tools & Skills Pills */}
                 <div className="flex flex-wrap items-center gap-1.5 mt-3">
-                  {tools.slice(0, 4).map((t) => (
+                  {tools.slice(0, 3).map((t) => (
                     <span
                       key={t}
                       className="inline-flex items-center rounded-md bg-slate-100/90 text-slate-600 border border-slate-200/60 text-[11px] px-2.5 py-0.5 font-semibold truncate max-w-[140px]"
@@ -396,124 +381,180 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                   ))}
                 </div>
 
-                {/* 4. Prominent Test Curator & HR Curator Profile Cards */}
-                <div className="mt-4 pt-3.5 border-t border-slate-100 space-y-2.5">
-                  {/* Test Curator */}
-                  <div className="flex items-center justify-between gap-3 rounded-xl bg-blue-50/45 border border-blue-200/70 p-2.5 transition-colors group-hover:bg-blue-50/70">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <img
-                        src={testCurator.photo}
-                        alt={testCurator.name}
-                        loading="lazy"
-                        className="h-11 w-11 sm:h-12 sm:w-12 rounded-xl object-cover border-2 border-white shadow-xs shrink-0 ring-1 ring-blue-200"
-                      />
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="inline-flex items-center gap-1 rounded bg-[#0d5cb2] text-white px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider">
-                            <UserCheck className="h-2.5 w-2.5" /> Test Curator
-                          </span>
-                          <span className="text-[11px] font-semibold text-[#0d5cb2]">
-                            {testCurator.experience}
-                          </span>
-                        </div>
-                        <p className="text-sm font-bold text-slate-900 truncate leading-snug mt-0.5">
-                          {testCurator.name}
-                        </p>
-                        <p className="text-xs text-slate-600 truncate leading-tight font-medium">
-                          {testCurator.title} · <span className="text-slate-900 font-semibold">{testCurator.company}</span>
-                        </p>
-                      </div>
-                    </div>
-                    <div className="h-8 w-8 rounded-lg bg-white border border-slate-200/80 flex items-center justify-center shrink-0 shadow-2xs">
-                      <BrandLogo name={testCurator.company} size="xs" />
-                    </div>
-                  </div>
-
-                  {/* HR Curator */}
-                  <div className="flex items-center justify-between gap-3 rounded-xl bg-amber-50/60 border border-amber-200/80 p-2.5 transition-colors group-hover:bg-amber-50/90">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <img
-                        src={hrCurator.photo}
-                        alt={hrCurator.name}
-                        loading="lazy"
-                        className="h-11 w-11 sm:h-12 sm:w-12 rounded-xl object-cover border-2 border-white shadow-xs shrink-0 ring-1 ring-amber-300"
-                      />
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="inline-flex items-center gap-1 rounded bg-amber-400 text-slate-950 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider">
-                            <Award className="h-2.5 w-2.5" /> HR Curator
-                          </span>
-                          <span className="text-[11px] font-semibold text-amber-900">
-                            {hrCurator.experience}
-                          </span>
-                        </div>
-                        <p className="text-sm font-bold text-slate-900 truncate leading-snug mt-0.5">
-                          {hrCurator.name}
-                        </p>
-                        <p className="text-xs text-slate-600 truncate leading-tight font-medium">
-                          {hrCurator.title} · <span className="text-slate-900 font-semibold">{hrCurator.company}</span>
-                        </p>
-                      </div>
-                    </div>
-                    <div className="h-8 w-8 rounded-lg bg-white border border-amber-200/80 flex items-center justify-center shrink-0 shadow-2xs">
-                      <BrandLogo name={hrCurator.company} size="xs" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* 5. Footer Bar: High-Contrast Price + View Syllabus + Primary CTA */}
-              <div className="pt-3.5 border-t border-slate-100 flex items-center justify-between gap-2 mt-4">
-                <div>
-                  <div className="flex items-baseline gap-1">
-                    <span className="font-display text-xl font-extrabold text-slate-900 tracking-tight">
-                      {formatINR(price)}
+                {/* 2. Rounds ── Tests on the left + View Syllabus Button next to it */}
+                <div className="mt-3.5 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-slate-50 border border-slate-200/80 px-3 py-2">
+                  <div className="flex items-center gap-1.5 text-xs font-bold">
+                    <span className="inline-flex items-center gap-1 rounded-lg bg-[#0d5cb2] text-white px-2 py-1 shadow-2xs">
+                      <Layers className="h-3.5 w-3.5 shrink-0" />
+                      <span>{stats.rounds} Rounds</span>
                     </span>
-                    <span className="text-xs font-medium text-slate-400">/ track</span>
+                    <span className="text-slate-300 font-extrabold select-none" aria-hidden="true">
+                      ──
+                    </span>
+                    <span className="inline-flex items-center gap-1 rounded-lg bg-white border border-blue-200 text-[#0d5cb2] px-2 py-1 shadow-2xs">
+                      <ClipboardCheck className="h-3.5 w-3.5 shrink-0" />
+                      <span>{stats.tests} Tests</span>
+                    </span>
                   </div>
-                </div>
 
-                <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       setModalSubDomain(s);
                     }}
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0d5cb2] bg-blue-50/80 hover:bg-blue-100 border border-blue-200/90 px-3 py-2 rounded-xl transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0d5cb2] bg-white hover:bg-blue-50 border border-blue-200/90 px-2.5 py-1 rounded-lg shadow-2xs transition-colors cursor-pointer"
                   >
                     <BookOpen className="h-3.5 w-3.5" />
                     <span>View Syllabus</span>
                   </button>
-
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onToggle(s.id);
-                    }}
-                    className={`inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold px-3.5 py-2 rounded-xl transition-all shadow-xs cursor-pointer ${
-                      isSelected
-                        ? "bg-[#0d5cb2] text-white hover:bg-[#0a4d96] shadow-[#0d5cb2]/20"
-                        : "bg-slate-900 hover:bg-[#0d5cb2] text-white"
-                    }`}
-                  >
-                    {isSelected ? (
-                      <>
-                        <Check className="h-3.5 w-3.5 stroke-[3]" /> Added
-                      </>
-                    ) : (
-                      <>
-                        Select <ArrowRight className="h-3.5 w-3.5" />
-                      </>
-                    )}
-                  </button>
                 </div>
+
+                {/* 3. Below that: Test Curator & HR Curator (No profile inline, just View button) */}
+                <div className="mt-2.5 grid grid-cols-2 gap-2">
+                  <div className="flex items-center justify-between gap-2 rounded-xl bg-blue-50/45 border border-blue-200/70 px-3 py-2">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-800 truncate">
+                      <UserCheck className="h-3.5 w-3.5 text-[#0d5cb2] shrink-0" />
+                      <span className="truncate">Test Curator</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setModalCurator({ role: "Test Curator", expert: testCurator, subDomainName: s.name });
+                      }}
+                      className="shrink-0 rounded-md bg-white hover:bg-[#0d5cb2] text-[#0d5cb2] hover:text-white border border-blue-200 px-2.5 py-0.5 text-[11px] font-bold transition-colors cursor-pointer shadow-2xs"
+                    >
+                      View
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-2 rounded-xl bg-amber-50/60 border border-amber-200/80 px-3 py-2">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-800 truncate">
+                      <Award className="h-3.5 w-3.5 text-amber-600 shrink-0" />
+                      <span className="truncate">HR Curator</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setModalCurator({ role: "HR Curator", expert: hrCurator, subDomainName: s.name });
+                      }}
+                      className="shrink-0 rounded-md bg-white hover:bg-amber-500 text-amber-900 hover:text-white border border-amber-300 px-2.5 py-0.5 text-[11px] font-bold transition-colors cursor-pointer shadow-2xs"
+                    >
+                      View
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* 4. Below that: Price + Add to Cart */}
+              <div className="pt-3.5 border-t border-slate-100 flex items-center justify-between gap-2 mt-3.5">
+                <div className="flex items-baseline gap-1">
+                  <span className="font-display text-xl font-extrabold text-slate-900 tracking-tight">
+                    {formatINR(price)}
+                  </span>
+                  <span className="text-xs font-medium text-slate-400">/ track</span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onToggle(s.id);
+                  }}
+                  className={`inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold px-4 py-2 rounded-xl transition-all shadow-xs cursor-pointer ${
+                    isSelected
+                      ? "bg-[#0d5cb2] text-white hover:bg-[#0a4d96] shadow-[#0d5cb2]/20"
+                      : "bg-slate-900 hover:bg-[#0d5cb2] text-white"
+                  }`}
+                >
+                  {isSelected ? (
+                    <>
+                      <Check className="h-3.5 w-3.5 stroke-[3]" /> Added
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingCart className="h-3.5 w-3.5" /> Add to Cart
+                    </>
+                  )}
+                </button>
               </div>
             </div>
           );
         })}
       </div>
+
+      {/* Curator Profile Modal Dialog (opened via View button on Test Curator / HR Curator) */}
+      <Dialog open={modalCurator !== null} onOpenChange={(open) => !open && setModalCurator(null)}>
+        <DialogContent className="max-w-md overflow-hidden flex flex-col p-0 rounded-2xl bg-white border border-slate-200 shadow-2xl">
+          {modalCurator && (
+            <>
+              <div
+                className={`p-5 pr-12 ${
+                  modalCurator.role === "HR Curator"
+                    ? "bg-amber-400 text-slate-950"
+                    : "bg-[#0d5cb2] text-white"
+                }`}
+              >
+                <span className="text-[11px] font-extrabold uppercase tracking-wider opacity-90 block">
+                  {modalCurator.role} · {modalCurator.subDomainName}
+                </span>
+                <DialogTitle className="font-display text-lg font-bold mt-0.5">
+                  {modalCurator.expert.name}
+                </DialogTitle>
+              </div>
+
+              <div className="p-5 space-y-4">
+                <div className="flex items-start gap-4">
+                  <img
+                    src={modalCurator.expert.photo}
+                    alt={modalCurator.expert.name}
+                    className="h-20 w-20 rounded-2xl object-cover border border-slate-200 shadow-xs shrink-0"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="font-display text-base font-bold text-slate-900">
+                      {modalCurator.expert.name}
+                    </p>
+                    <p className="text-xs font-semibold text-slate-600 mt-0.5">
+                      {modalCurator.expert.title} · {modalCurator.expert.company}
+                    </p>
+                    <span className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-blue-50 border border-blue-200 px-2.5 py-0.5 text-[11px] font-bold text-[#0d5cb2]">
+                      <Briefcase className="h-3 w-3" /> {modalCurator.expert.experience}
+                    </span>
+                    <div className="mt-2 flex items-center gap-1.5 flex-wrap">
+                      {modalCurator.expert.history.map((h) => (
+                        <span key={h.company} title={`${h.role} · ${h.company} (${h.years})`} className="inline-flex">
+                          <BrandLogo name={h.company} variant="badge" />
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-xs leading-relaxed text-slate-600">{modalCurator.expert.bio}</p>
+
+                {modalCurator.expert.tests && (
+                  <div className="rounded-xl bg-slate-50 border border-slate-200/80 p-3 text-xs font-medium text-slate-800">
+                    {modalCurator.expert.tests}
+                  </div>
+                )}
+
+                <div className="flex flex-wrap gap-1.5 pt-2 border-t border-slate-100">
+                  {modalCurator.expert.specialisation.map((sp) => (
+                    <span
+                      key={sp}
+                      className="rounded-md bg-slate-100 border border-slate-200/70 px-2.5 py-0.5 text-[11px] font-semibold text-slate-700"
+                    >
+                      {sp}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Syllabus Modal Dialog */}
       <Dialog open={modalSubDomain !== null} onOpenChange={(open) => !open && setModalSubDomain(null)}>
