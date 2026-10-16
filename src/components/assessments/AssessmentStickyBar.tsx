@@ -22,7 +22,7 @@ export const AssessmentStickyBar = ({ selected, total, onCheckout }: Props) => {
         transition={{ type: "spring", stiffness: 350, damping: 25 }}
         className="fixed bottom-5 sm:bottom-6 left-1/2 z-40 w-[94%] max-w-2xl"
       >
-        <div className="yellow-graded-section flex items-center justify-between gap-3 sm:gap-4 rounded-2xl p-3.5 sm:px-5 sm:py-3.5 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.18)] backdrop-blur-md">
+        <div className="flex items-center justify-between gap-3 sm:gap-4 rounded-2xl border border-slate-200/90 bg-white/95 p-3.5 sm:px-5 sm:py-3.5 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.18)] backdrop-blur-md">
           {/* Left: Cart badge & Selected Sub-domains */}
           <div className="flex items-center gap-3 min-w-0">
             <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#0d5cb2] text-white shadow-sm">
@@ -35,7 +35,7 @@ export const AssessmentStickyBar = ({ selected, total, onCheckout }: Props) => {
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 flex-wrap">
                 <span className="font-display text-sm font-bold leading-tight text-slate-900 truncate">
-                  {selected.length} Track{selected.length === 1 ? "" : "s"} Added
+                  {selected.length} Sub-domain{selected.length === 1 ? "" : "s"} Added
                 </span>
                 <span className="text-[10px] font-semibold text-[#0d5cb2] px-1.5 py-0.5 rounded bg-[#0d5cb2]/10 border border-[#0d5cb2]/20">
                   + 3 Core Tests
@@ -76,7 +76,7 @@ export const AssessmentStickyBar = ({ selected, total, onCheckout }: Props) => {
               className="gap-1.5 font-bold shadow-md shadow-[#0d5cb2]/25 px-3.5 sm:px-4 text-xs sm:text-sm h-9 sm:h-10 bg-[#0d5cb2] hover:bg-[#0a4d96] text-white cursor-pointer"
               onClick={onCheckout}
             >
-              <span>Pay &amp; Start</span>
+              <span>Pay & Start</span>
               <ArrowRight className="h-4 w-4" />
             </Button>
           </div>
