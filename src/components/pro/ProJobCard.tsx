@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Atom, Hexagon, Database, GitBranch, BadgeCheck, Award, BarChart3, Bookmark, BookmarkCheck, Briefcase, Building2, CalendarDays, Clock, Code, Coins, FileText, MapPin, Megaphone, Palette, ArrowRightLeft, Search, Send, Sparkles, Star, Users, ArrowRight } from "lucide-react";
+import { Atom, Hexagon, Database, GitBranch, BadgeCheck, Award, BarChart3, Bookmark, BookmarkCheck, Briefcase, Building2, CalendarDays, Check, Clock, Code, Coins, FileText, MapPin, Megaphone, Palette, ArrowRightLeft, Search, Send, Sparkles, Star, Users, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProJob, timeAgo } from "@/data/proData";
 import { getCompanyLogo } from "@/data/portalAssets";
