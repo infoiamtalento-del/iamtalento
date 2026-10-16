@@ -28,7 +28,7 @@ import { ASSESSMENTS, DOMAINS, EXPERIENCE_LEVELS, INDUSTRIES, getAssessment } fr
 import { MANDATORY_TESTS } from "@/pages/assessment/AssessmentDiscovery";
 import { getSubDomains, subDomainPrice } from "@/data/subDomains";
 import { savePaidOrder } from "@/data/practiceQuestions";
-import { SubDomainPicker, AssessmentCart, cartTotals, formatINR } from "@/components/assessments/SubDomainPicker";
+import { SubDomainPicker, AssessmentCart, cartTotals, formatINR, getSubDomainStats } from "@/components/assessments/SubDomainPicker";
 import MarketingExperts from "@/components/assessments/MarketingExperts";
 import AssessmentVideoCard from "@/components/assessments/AssessmentVideoCard";
 import { MandatoryCoreTestsSection } from "@/components/assessments/MandatoryCoreTests";
@@ -404,11 +404,14 @@ const AssessmentDetail = () => {
                   <div className="h-px flex-1 bg-slate-200" />
                 </div>
 
-                <div className="rounded-xl border border-slate-200/90 bg-white p-4 shadow-2xs flex flex-wrap items-center justify-between gap-3 border-l-4 border-l-[#0d5cb2]">
+                <div className="rounded-xl border border-slate-200/90 bg-white p-4.5 shadow-2xs flex flex-wrap items-center justify-between gap-3 border-l-4 border-l-[#0d5cb2]">
                   <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                    <div className="flex flex-wrap items-center gap-2 mb-1.5">
                       <span className="rounded-full bg-[#0d5cb2] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
                         Domain Assessment
+                      </span>
+                      <span className="inline-flex items-center gap-1 rounded-md bg-blue-50 border border-blue-200/70 px-2 py-0.5 text-[11px] font-bold text-[#0d5cb2]">
+                        3 Rounds ── 6 Tests
                       </span>
                       <span className="text-xs text-slate-500 font-medium">
                         {a.duration} · {a.questionCount} questions · {a.type}
@@ -513,14 +516,17 @@ const AssessmentDetail = () => {
                       </span>
                     </li>
                   ))}
-                  {selectedSubs.map((s) => (
-                    <li key={s.id} className="flex justify-between items-center gap-4 py-3">
-                      <span className="text-slate-800 font-medium">
-                        {s.name} <span className="text-xs text-slate-500 font-normal">(3 rounds · 6 tests)</span>
-                      </span>
-                      <span className="font-bold text-slate-900 shrink-0">{formatINR(subDomainPrice(s))}</span>
-                    </li>
-                  ))}
+                  {selectedSubs.map((s) => {
+                    const st = getSubDomainStats(s.id);
+                    return (
+                      <li key={s.id} className="flex justify-between items-center gap-4 py-3">
+                        <span className="text-slate-800 font-medium">
+                          {s.name} <span className="text-xs text-slate-500 font-normal">({st.rounds} rounds · {st.tests} tests)</span>
+                        </span>
+                        <span className="font-bold text-slate-900 shrink-0">{formatINR(subDomainPrice(s))}</span>
+                      </li>
+                    );
+                  })}
                   <li key="cir-report" className="flex justify-between items-center gap-4 py-3">
                     <span className="text-slate-800 font-medium">Career Intelligence Report</span>
                     <span className="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/70 text-[10px] font-semibold shrink-0">
