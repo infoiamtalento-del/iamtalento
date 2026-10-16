@@ -169,6 +169,7 @@ const AssessmentDetail = () => {
 
   return (
     <div
+      className="bg-[#FBF4EB] min-h-screen"
       style={
         {
           "--primary": "211.3 86.4% 37.5%",
@@ -186,7 +187,7 @@ const AssessmentDetail = () => {
       </Helmet>
       <Layout>
         {/* ============ HERO BANNER ============ */}
-        <section className="bg-[#f8fafd] pt-28 pb-12 md:pt-36 md:pb-16 border-b border-blue-100">
+        <section className="bg-[#FBF4EB] pt-28 pb-12 md:pt-36 md:pb-16 border-b border-amber-200/50">
           <div className="container">
             <Link
               to="/assessments/explore"
@@ -201,7 +202,7 @@ const AssessmentDetail = () => {
                   <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200/80">
                     {a.domain}
                   </span>
-                  <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200/80">
+                  <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white text-slate-700 border border-slate-200/80">
                     {a.difficulty}
                   </span>
                   <span className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2.5 py-1 rounded-full">
@@ -232,7 +233,7 @@ const AssessmentDetail = () => {
                   <Button
                     variant="outline"
                     size="lg"
-                    className="gap-2 font-semibold cursor-pointer bg-white/80 border-slate-300 text-slate-700 hover:bg-white hover:text-slate-900 shadow-2xs"
+                    className="gap-2 font-semibold cursor-pointer bg-white border-slate-300 text-slate-700 hover:bg-white hover:text-slate-900 shadow-2xs"
                     onClick={goToJourney}
                   >
                     <ListChecks className="h-4 w-4 text-slate-500" />
@@ -250,7 +251,7 @@ const AssessmentDetail = () => {
         </section>
 
         {/* ============ ASSESSMENT SEARCH & FILTER BAR ============ */}
-        <section className="pt-8 pb-4">
+        <section className="pt-8 pb-4 bg-[#FBF4EB]">
           <div className="container">
             <div className="mb-3 flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-[#0d5cb2]" />
@@ -262,7 +263,7 @@ const AssessmentDetail = () => {
               </h2>
             </div>
 
-            <div className="rounded-xl border border-border bg-background shadow-[0_10px_30px_hsl(var(--foreground)/0.08)]">
+            <div className="rounded-xl border border-border bg-white shadow-[0_10px_30px_hsl(var(--foreground)/0.08)]">
               <form
                 className="grid lg:grid-cols-[1.35fr_1fr_1fr_auto] lg:items-center"
                 onSubmit={handleSearchSubmit}
@@ -399,7 +400,7 @@ const AssessmentDetail = () => {
         </section>
 
         {/* ============ TEST JOURNEY ============ */}
-        <section id="journey" className="py-12 md:py-16 scroll-mt-24">
+        <section id="journey" className="py-12 md:py-16 scroll-mt-24 bg-[#FBF4EB]">
           <div className="container">
             <SectionHeading
               title="What you'll take"
@@ -411,11 +412,11 @@ const AssessmentDetail = () => {
                 <MandatoryCoreTestsSection />
 
                 <div className="flex items-center gap-3" aria-hidden="true">
-                  <div className="h-px flex-1 bg-slate-200" />
+                  <div className="h-px flex-1 bg-amber-200/70" />
                   <span className="rounded-full bg-blue-50 border border-blue-200/80 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
                     Then
                   </span>
-                  <div className="h-px flex-1 bg-slate-200" />
+                  <div className="h-px flex-1 bg-amber-200/70" />
                 </div>
 
                 <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-2xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-l-4 border-l-[#0d5cb2]">
@@ -465,7 +466,7 @@ const AssessmentDetail = () => {
 
 
         {/* ============ CREATORS ============ */}
-        <section className="py-12 md:py-16 border-t border-slate-200/80 bg-slate-50/40">
+        <section className="py-12 md:py-16 border-t border-amber-200/50 bg-[#FBF4EB]">
           <div className="container">
             <SectionHeading
               title="Built by practising experts"
@@ -506,7 +507,7 @@ const AssessmentDetail = () => {
 
 
         {/* ============ PAYMENT ============ */}
-        <section id="payment" className="py-12 md:py-16 scroll-mt-24 pb-28 md:pb-32 bg-slate-50/30">
+        <section id="payment" className="py-12 md:py-16 scroll-mt-24 pb-28 md:pb-32 border-t border-amber-200/50 bg-[#FBF4EB]">
           <div className="container">
             <SectionHeading
               title="Complete payment and start"
