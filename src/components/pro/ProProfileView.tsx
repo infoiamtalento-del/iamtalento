@@ -1,6 +1,6 @@
 import React from "react";
 import { ProUser } from "@/data/proData";
-import { DemoProfileBody } from "@/components/profile/DemoProfileBody";
+import { DemoProfileDashboardContent } from "@/pages/DemoProfile";
 
 interface ProProfileViewProps {
   user: ProUser;
@@ -10,11 +10,11 @@ interface ProProfileViewProps {
 }
 
 /**
- * "My Profile" inside Talento Pro: the exact /demo-profile page content, rendered beneath
- * the Pro header (no site navbar or footer, so the Pro navbar stays on top).
+ * Employee "My Profile" inside Talento Pro (/talento-pro?view=profile):
+ * renders the exact /demo-profile dashboard layout beneath the Pro header.
  */
-export const ProProfileView: React.FC<ProProfileViewProps> = ({ onToast }) => (
-  <DemoProfileBody onToast={onToast} />
+export const ProProfileView: React.FC<ProProfileViewProps> = () => (
+  <DemoProfileDashboardContent embedded />
 );
 
 export default ProProfileView;
