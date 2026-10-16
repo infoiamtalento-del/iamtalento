@@ -322,7 +322,6 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
           const price = subDomainPrice(s);
           const brandInfo = SUB_DOMAIN_BRANDS[s.id];
           const brandName = brandInfo?.brand ?? s.name;
-          const tools = brandInfo?.tools ?? s.topics ?? [];
           const { testCurator, hrCurator } = getCuratorsForSubDomain(s.id, idx);
           const stats = getSubDomainStats(s.id);
 
@@ -367,18 +366,6 @@ export const SubDomainPicker = ({ domainTitle, options, selected, onToggle }: Pi
                   >
                     <Check className={`h-4 w-4 stroke-[2.75] ${isSelected ? "text-white" : "text-slate-300 group-hover:text-[#0d5cb2]"}`} />
                   </div>
-                </div>
-
-                {/* Tools & Skills Pills */}
-                <div className="flex flex-wrap items-center gap-1.5 mt-3">
-                  {tools.slice(0, 3).map((t) => (
-                    <span
-                      key={t}
-                      className="inline-flex items-center rounded-md bg-slate-100/90 text-slate-600 border border-slate-200/60 text-[11px] px-2.5 py-0.5 font-semibold truncate max-w-[140px]"
-                    >
-                      {t}
-                    </span>
-                  ))}
                 </div>
 
                 {/* 2. Plain Rounds ── Tests on the left + View Syllabus next to it */}
