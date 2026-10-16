@@ -186,30 +186,30 @@ const AssessmentDetail = () => {
                 <MandatoryCoreTestsSection />
 
                 <div className="flex items-center gap-3" aria-hidden="true">
-                  <div className="h-px flex-1 bg-amber-300/80" />
-                  <span className="yellow-graded-badge rounded-full px-4 py-1 text-xs font-extrabold uppercase tracking-wider shadow-2xs">
-                    Step 2 · Choose Domain Courses &amp; Fee Structure
+                  <div className="h-px flex-1 bg-slate-200" />
+                  <span className="rounded-full bg-blue-50 border border-blue-200/80 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[#0d5cb2]">
+                    Then
                   </span>
-                  <div className="h-px flex-1 bg-amber-300/80" />
+                  <div className="h-px flex-1 bg-slate-200" />
                 </div>
 
-                <div className="yellow-graded-border rounded-2xl p-4 sm:p-5 shadow-xs flex flex-wrap items-center justify-between gap-3">
+                <div className="yellow-graded-border rounded-2xl p-4 sm:p-5 shadow-2xs flex flex-wrap items-center justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2 mb-1">
-                      <span className="yellow-graded-btn rounded-full px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider">
-                        Domain Assessment Track
+                      <span className="rounded-full bg-[#0d5cb2] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+                        Domain Assessment
                       </span>
-                      <span className="text-xs text-slate-600 font-semibold">
+                      <span className="text-xs text-slate-500 font-medium">
                         {a.duration} · {a.questionCount} questions · {a.type}
                       </span>
                     </div>
-                    <h3 className="font-display text-base sm:text-lg font-extrabold text-slate-900">{a.title}</h3>
+                    <h3 className="font-display text-base sm:text-lg font-bold text-slate-900">{a.title}</h3>
                   </div>
                   <div className="flex flex-wrap items-center gap-1.5 shrink-0">
                     {a.skills.slice(0, 4).map((skill) => (
                       <span
                         key={skill}
-                        className="rounded-full bg-amber-50 border border-amber-300/80 px-2.5 py-0.5 text-[11px] font-bold text-amber-950"
+                        className="rounded-full bg-slate-100 border border-slate-200/80 px-2.5 py-0.5 text-[11px] font-semibold text-slate-700"
                       >
                         {skill}
                       </span>
@@ -286,85 +286,85 @@ const AssessmentDetail = () => {
             />
 
             <div className="grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] gap-6 items-start">
-              <div className="yellow-graded-section rounded-2xl p-6 shadow-md">
+              <div className="yellow-graded-section rounded-2xl p-6 shadow-2xs">
                 <div className="flex items-center justify-between mb-5">
-                  <h3 className="font-display font-extrabold text-slate-900">Order &amp; Fee Summary</h3>
-                  <span className="yellow-graded-badge rounded-full px-3 py-1 text-xs font-extrabold">
+                  <h3 className="font-display font-bold text-slate-900">Order summary</h3>
+                  <span className="rounded-full bg-blue-50 border border-blue-200/80 px-3 py-1 text-xs font-semibold text-[#0d5cb2]">
                     {selectedSubs.length} course{selectedSubs.length === 1 ? "" : "s"} + 3 core tests
                   </span>
                 </div>
-                <ul className="divide-y divide-amber-200/70 text-sm">
+                <ul className="divide-y divide-slate-100 text-sm">
                   {MANDATORY_TESTS.map((m) => (
                     <li key={m.name} className="flex justify-between items-center gap-4 py-3">
-                      <span className="text-slate-800 font-semibold">{m.name}</span>
-                      <span className="text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200/70 text-[10px] font-bold shrink-0">
-                        FREE · Included
+                      <span className="text-slate-800 font-medium">{m.name}</span>
+                      <span className="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/70 text-[10px] font-semibold shrink-0">
+                        Included
                       </span>
                     </li>
                   ))}
                   {selectedSubs.map((s) => (
                     <li key={s.id} className="flex justify-between items-center gap-4 py-3">
-                      <span className="text-slate-900 font-bold">
-                        {s.name} <span className="text-xs text-slate-500 font-medium">(3 rounds · 6 tests · ₹333/test)</span>
+                      <span className="text-slate-800 font-medium">
+                        {s.name} <span className="text-xs text-slate-500 font-normal">(3 rounds · 6 tests)</span>
                       </span>
-                      <span className="font-extrabold text-slate-900 shrink-0">{formatINR(subDomainPrice(s))}</span>
+                      <span className="font-bold text-slate-900 shrink-0">{formatINR(subDomainPrice(s))}</span>
                     </li>
                   ))}
                   <li key="cir-report" className="flex justify-between items-center gap-4 py-3">
-                    <span className="text-slate-800 font-semibold">Career Intelligence Report (CIR)</span>
-                    <span className="text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200/70 text-[10px] font-bold shrink-0">
+                    <span className="text-slate-800 font-medium">Career Intelligence Report</span>
+                    <span className="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/70 text-[10px] font-semibold shrink-0">
                       Included
                     </span>
                   </li>
                   <li key="gst" className="flex justify-between items-center gap-4 py-3">
-                    <span className="text-slate-600 font-medium">GST (18%)</span>
-                    <span className="text-slate-700 font-semibold shrink-0">{formatINR(cart.gst)}</span>
+                    <span className="text-slate-500">GST (18%)</span>
+                    <span className="text-slate-500 font-medium shrink-0">{formatINR(cart.gst)}</span>
                   </li>
                 </ul>
-                <div className="flex justify-between items-baseline pt-5 mt-3 border-t border-amber-300 font-display text-lg font-extrabold text-slate-900">
-                  <span>Total Payable</span>
+                <div className="flex justify-between items-baseline pt-5 mt-3 border-t border-slate-200 font-display text-lg font-bold text-slate-900">
+                  <span>Total</span>
                   <span className="text-2xl text-[#0d5cb2] font-extrabold">{formatINR(cart.total)}</span>
                 </div>
               </div>
 
-              <div className="yellow-graded-section rounded-2xl p-6 shadow-md">
-                <h3 className="font-display font-extrabold text-slate-900 mb-5">Pay with</h3>
+              <div className="yellow-graded-section rounded-2xl p-6 shadow-2xs">
+                <h3 className="font-display font-bold text-slate-900 mb-5">Pay with</h3>
                 <div className="grid gap-3 mb-6">
                   {paymentMethods.map((m) => (
                     <button
                       key={m.name}
                       onClick={() => setMethod(m.name)}
-                      className={`flex items-center gap-3.5 rounded-xl px-4 py-3.5 text-left text-sm font-medium transition-all cursor-pointer ${
+                      className={`flex items-center gap-3.5 rounded-xl border px-4 py-3.5 text-left text-sm font-medium transition-all cursor-pointer ${
                         method === m.name
-                          ? "yellow-graded-border-selected shadow-xs ring-2 ring-amber-400/40"
-                          : "yellow-graded-border hover:shadow-xs"
+                          ? "border-[#0d5cb2] bg-[#0d5cb2]/5 text-[#0d5cb2] shadow-xs ring-1 ring-[#0d5cb2]/30"
+                          : "border-slate-200 hover:border-slate-300 bg-white"
                       }`}
                     >
                       <span
                         className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors ${
-                          method === m.name ? "yellow-graded-btn text-slate-950" : "bg-amber-100/80 text-amber-900"
+                          method === m.name ? "bg-[#0d5cb2] text-white" : "bg-slate-100 text-slate-600"
                         }`}
                       >
                         <m.icon className="h-4 w-4" />
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="block font-bold text-slate-900">{m.name}</span>
-                        <span className="block text-[11px] font-normal text-slate-600">{m.note}</span>
+                        <span className="block font-semibold text-slate-900">{m.name}</span>
+                        <span className="block text-[11px] font-normal text-slate-500">{m.note}</span>
                       </span>
-                      {method === m.name && <Check className="h-4 w-4 shrink-0 text-amber-700 stroke-[3]" />}
+                      {method === m.name && <Check className="h-4 w-4 shrink-0 text-[#0d5cb2] stroke-[2.5]" />}
                     </button>
                   ))}
                 </div>
-                <button
-                  type="button"
-                  className="yellow-graded-btn w-full py-3.5 px-5 rounded-xl inline-flex items-center justify-center gap-2 font-display text-sm sm:text-base font-extrabold cursor-pointer transition-all disabled:opacity-50 disabled:pointer-events-none"
+                <Button
+                  className="w-full gap-2 font-bold cursor-pointer bg-[#0d5cb2] hover:bg-[#0a4d96] text-white shadow-md shadow-[#0d5cb2]/25"
+                  size="lg"
                   onClick={start}
                   disabled={selectedSubs.length === 0}
                 >
-                  <Lock className="h-4 w-4" /> Pay {formatINR(cart.total)} &amp; Start Assessment <ArrowRight className="h-4 w-4" />
-                </button>
-                <p className="text-xs text-slate-600 text-center mt-3 font-medium">
-                  Secure checkout · You'll run a quick device check next.
+                  <Lock className="h-4 w-4" /> Pay {formatINR(cart.total)} &amp; Start <ArrowRight className="h-4 w-4" />
+                </Button>
+                <p className="text-xs text-slate-500 text-center mt-3">
+                  Secure checkout. You'll run a quick device check next.
                 </p>
               </div>
             </div>

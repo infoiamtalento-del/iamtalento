@@ -106,7 +106,7 @@ const BrandLogo = ({ name, size = "sm", variant = "square", label = false, class
   if (variant === "badge") {
     return (
       <span
-        className={`inline-flex shrink-0 items-center justify-center rounded-lg border border-amber-200/90 bg-white px-2.5 h-8 min-w-[34px] shadow-2xs transition-all hover:border-amber-400 hover:shadow-xs ${className}`}
+        className={`inline-flex shrink-0 items-center justify-center rounded-lg border border-slate-200/90 bg-white px-2.5 h-8 min-w-[34px] shadow-2xs transition-all hover:border-slate-300 ${className}`}
         title={name}
       >
         {src ? (
