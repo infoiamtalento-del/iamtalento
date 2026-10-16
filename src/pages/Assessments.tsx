@@ -72,7 +72,8 @@ const Assessments = () => (
       <CareerIntelligencePackageSection />
       <CredibilityTrustSection />
       <AssessmentExpertsSection />
-      <HowItWorksSection />
+      {/* Moved to /assessments/explore */}
+      {/* <HowItWorksSection /> */}
       
       <PlatformFeaturesSection />
       <SuccessStoriesCarousel />

@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { ASSESSMENTS, DOMAINS, EXPERIENCE_LEVELS, INDUSTRIES, Assessment } from "@/data/assessments";
 import AssessmentIntegritySection from "@/components/landing/AssessmentIntegritySection";
 import ProctoringSection from "@/components/assessments/ProctoringSection";
+import HowItWorksSection from "@/components/assessments/HowItWorksSection";
 
 export const MANDATORY_TESTS = [
   { name: "Communication Skills", text: "Written and verbal clarity, workplace tone." },
@@ -365,6 +366,9 @@ const AssessmentDiscovery = () => {
             </div>
           </div>
         </section>
+
+        {/* How It Works — Expand & Collapse on Hover */}
+        <HowItWorksSection />
 
         {/* 30-Layer Proctoring Breakdown */}
         <AssessmentIntegritySection />
