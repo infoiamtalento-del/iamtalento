@@ -11,10 +11,20 @@ import {
   Smartphone,
   CreditCard,
   Landmark,
+  Search,
+  Building2,
+  BriefcaseBusiness,
+  ChevronDown,
+  SlidersHorizontal,
+  Layers3,
+  FileQuestion,
+  Gauge,
+  Shield,
+  X,
 } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
-import { ASSESSMENTS, getAssessment } from "@/data/assessments";
+import { ASSESSMENTS, DOMAINS, EXPERIENCE_LEVELS, INDUSTRIES, getAssessment } from "@/data/assessments";
 import { MANDATORY_TESTS } from "@/pages/assessment/AssessmentDiscovery";
 import { getSubDomains, subDomainPrice } from "@/data/subDomains";
 import { savePaidOrder } from "@/data/practiceQuestions";
@@ -24,7 +34,7 @@ import AssessmentVideoCard from "@/components/assessments/AssessmentVideoCard";
 import { MandatoryCoreTestsSection } from "@/components/assessments/MandatoryCoreTests";
 import { AssessmentStickyBar } from "@/components/assessments/AssessmentStickyBar";
 import BrandLogo from "@/components/ui/BrandLogo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
 const paymentMethods = [
@@ -48,11 +58,36 @@ const AssessmentDetail = () => {
   const a = getAssessment(assessmentId);
   const [method, setMethod] = useState("UPI");
 
+  // Search bar state pre-populated with current assessment (e.g. Digital Marketing)
+  const [query, setQuery] = useState<string>(a?.domain ?? "Digital Marketing");
+  const [industry, setIndustry] = useState<string | null>(a?.industry ?? "Marketing");
+  const [domain, setDomain] = useState<string | null>(a?.domain ?? "Digital Marketing");
+  const [experience, setExperience] = useState<string | null>(a?.experienceLevels?.[1] ?? a?.experienceLevels?.[0] ?? "1–3 yrs");
+  const [testType, setTestType] = useState<string | null>(a?.type ?? null);
+  const [difficulty, setDifficulty] = useState<string | null>(a?.difficulty ?? null);
+  const [proctoredOnly, setProctoredOnly] = useState<boolean>(a?.proctored ?? true);
+  const [showAdvanced, setShowAdvanced] = useState<boolean>(false);
+
   const subDomainOptions = getSubDomains(a?.industry ?? "");
   const [selectedIds, setSelectedIds] = useState<string[]>(() => {
     const own = subDomainOptions.find((s) => s.name.toLowerCase() === a?.domain.toLowerCase());
     return [(own ?? subDomainOptions[0]).id];
   });
+
+  useEffect(() => {
+    if (!a) return;
+    setQuery(a.domain);
+    setIndustry(a.industry);
+    setDomain(a.domain);
+    setExperience(a.experienceLevels?.[1] ?? a.experienceLevels?.[0] ?? null);
+    setTestType(a.type);
+    setDifficulty(a.difficulty);
+    setProctoredOnly(a.proctored);
+    const nextSubs = getSubDomains(a.industry);
+    const own = nextSubs.find((s) => s.name.toLowerCase() === a.domain.toLowerCase());
+    setSelectedIds([(own ?? nextSubs[0]).id]);
+  }, [a?.id]);
+
   const selectedSubs = subDomainOptions.filter((s) => selectedIds.includes(s.id));
   const cart = cartTotals(selectedSubs);
   const toggleSub = (id: string) =>
@@ -78,6 +113,44 @@ const AssessmentDetail = () => {
         .map((x) => [x.creator.name, x.creator])
     ).values()
   ).slice(0, 6);
+
+  const domains = industry ? DOMAINS[industry] ?? [] : [];
+  const availableDomains = industry ? domains : Array.from(new Set(Object.values(DOMAINS).flat()));
+
+  const activeChips = [
+    industry && { label: `Industry: ${industry}`, clear: () => { setIndustry(null); setDomain(null); } },
+    domain && { label: `Domain: ${domain}`, clear: () => setDomain(null) },
+    experience && { label: `Experience: ${experience}`, clear: () => setExperience(null) },
+    testType && { label: `Type: ${testType}`, clear: () => setTestType(null) },
+    difficulty && { label: `Level: ${difficulty}`, clear: () => setDifficulty(null) },
+    proctoredOnly && { label: "Proctored only", clear: () => setProctoredOnly(false) },
+  ].filter(Boolean) as { label: string; clear: () => void }[];
+
+  const resetAll = () => {
+    setIndustry(null);
+    setDomain(null);
+    setExperience(null);
+    setTestType(null);
+    setDifficulty(null);
+    setProctoredOnly(false);
+    setQuery("");
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = query.trim().toLowerCase();
+    const match = ASSESSMENTS.find((item) => {
+      if (domain && item.domain.toLowerCase() === domain.toLowerCase()) return true;
+      if (q && (`${item.title} ${item.domain} ${item.skills.join(" ")}`.toLowerCase().includes(q))) return true;
+      if (industry && !domain && !q && item.industry === industry) return true;
+      return false;
+    });
+    if (match && match.id !== a.id) {
+      navigate(`/assessments/${match.id}`);
+    } else {
+      document.getElementById("journey")?.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   const start = () => {
     savePaidOrder(a.id, {
@@ -169,6 +242,144 @@ const AssessmentDetail = () => {
               </div>
 
               <AssessmentVideoCard />
+            </div>
+          </div>
+        </section>
+
+        {/* ============ ASSESSMENT SEARCH & FILTER BAR ============ */}
+        <section className="pt-8 pb-4">
+          <div className="container">
+            <div className="rounded-xl border border-border bg-background shadow-[0_10px_30px_hsl(var(--foreground)/0.08)]">
+              <form
+                className="grid lg:grid-cols-[1.35fr_1fr_1fr_auto] lg:items-center"
+                onSubmit={handleSearchSubmit}
+              >
+                <label className="flex min-w-0 items-center gap-3 px-5 py-4 lg:py-5">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Search className="h-5 w-5" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-xs font-semibold text-foreground">What</span>
+                    <input
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      placeholder="Skills, roles or assessments"
+                      className="mt-1 w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
+                    />
+                  </span>
+                </label>
+
+                <label className="flex min-w-0 items-center gap-3 border-t border-border px-5 py-4 lg:border-l lg:border-t-0 lg:py-5">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Building2 className="h-5 w-5" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-xs font-semibold text-foreground">Industry</span>
+                    <span className="relative mt-1 block">
+                      <select
+                        value={industry ?? ""}
+                        onChange={(e) => { setIndustry(e.target.value || null); setDomain(null); }}
+                        className="w-full appearance-none bg-transparent pr-6 text-sm text-foreground outline-none"
+                      >
+                        <option value="">All industries</option>
+                        {INDUSTRIES.map((item) => <option key={item} value={item}>{item}</option>)}
+                      </select>
+                      <ChevronDown className="pointer-events-none absolute right-0 top-0.5 h-4 w-4 text-muted-foreground" />
+                    </span>
+                  </span>
+                </label>
+
+                <label className="flex min-w-0 items-center gap-3 border-t border-border px-5 py-4 lg:border-l lg:border-t-0 lg:py-5">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <BriefcaseBusiness className="h-5 w-5" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-xs font-semibold text-foreground">Experience</span>
+                    <span className="relative mt-1 block">
+                      <select
+                        value={experience ?? ""}
+                        onChange={(e) => setExperience(e.target.value || null)}
+                        className="w-full appearance-none bg-transparent pr-6 text-sm text-foreground outline-none"
+                      >
+                        <option value="">All experience levels</option>
+                        {EXPERIENCE_LEVELS.map((item) => <option key={item} value={item}>{item}</option>)}
+                      </select>
+                      <ChevronDown className="pointer-events-none absolute right-0 top-0.5 h-4 w-4 text-muted-foreground" />
+                    </span>
+                  </span>
+                </label>
+
+                <div className="border-t border-border p-3 lg:border-l lg:border-t-0">
+                  <Button type="submit" className="h-14 w-full gap-2 px-7 font-bold lg:w-auto">
+                    <Search className="h-4 w-4" /> Search Assessments
+                  </Button>
+                </div>
+              </form>
+
+              <div className="border-t border-border px-5 py-3">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowAdvanced((current) => !current)}
+                  className="h-8 gap-2 px-0 text-primary hover:bg-transparent hover:text-primary/80"
+                  aria-expanded={showAdvanced}
+                >
+                  <SlidersHorizontal className="h-4 w-4" /> Advanced Filters
+                  <ChevronDown className={`h-4 w-4 transition-transform ${showAdvanced ? "rotate-180" : ""}`} />
+                </Button>
+
+                {showAdvanced && (
+                  <div className="grid gap-4 border-t border-border pt-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <label className="space-y-2">
+                      <span className="flex items-center gap-2 text-xs font-semibold text-foreground"><Layers3 className="h-4 w-4 text-primary" /> Domain</span>
+                      <select value={domain ?? ""} onChange={(e) => setDomain(e.target.value || null)} className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground outline-none focus:border-primary/50">
+                        <option value="">All domains</option>
+                        {availableDomains.map((item) => <option key={item} value={item}>{item}</option>)}
+                      </select>
+                    </label>
+                    <label className="space-y-2">
+                      <span className="flex items-center gap-2 text-xs font-semibold text-foreground"><FileQuestion className="h-4 w-4 text-primary" /> Test type</span>
+                      <select value={testType ?? ""} onChange={(e) => setTestType(e.target.value || null)} className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground outline-none focus:border-primary/50">
+                        <option value="">All test types</option>
+                        {["Knowledge", "Practical", "Functional"].map((item) => <option key={item} value={item}>{item}</option>)}
+                      </select>
+                    </label>
+                    <label className="space-y-2">
+                      <span className="flex items-center gap-2 text-xs font-semibold text-foreground"><Gauge className="h-4 w-4 text-primary" /> Difficulty</span>
+                      <select value={difficulty ?? ""} onChange={(e) => setDifficulty(e.target.value || null)} className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground outline-none focus:border-primary/50">
+                        <option value="">All difficulty levels</option>
+                        {["Beginner", "Intermediate", "Advanced"].map((item) => <option key={item} value={item}>{item}</option>)}
+                      </select>
+                    </label>
+                    <label className="flex h-[66px] cursor-pointer items-end">
+                      <span className="flex h-10 w-full items-center gap-3 rounded-md border border-input px-3 text-sm font-medium text-foreground">
+                        <input type="checkbox" checked={proctoredOnly} onChange={(e) => setProctoredOnly(e.target.checked)} className="h-4 w-4 accent-primary" />
+                        <Shield className="h-4 w-4 text-primary" /> Proctored only
+                      </span>
+                    </label>
+                  </div>
+                )}
+              </div>
+
+              {activeChips.length > 0 && (
+                <div className="flex flex-wrap items-center gap-2 border-t border-border px-5 py-3">
+                  {activeChips.map((c) => (
+                    <span
+                      key={c.label}
+                      className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full bg-primary/10 text-primary"
+                    >
+                      {c.label}
+                      <button type="button" onClick={c.clear} aria-label={`Remove ${c.label}`}>
+                        <X className="h-3.5 w-3.5" />
+                      </button>
+                    </span>
+                  ))}
+                  <button type="button" onClick={resetAll} className="text-xs font-semibold text-muted-foreground hover:text-primary underline">
+                    Clear all
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </section>
