@@ -29,9 +29,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { AIInterviewerSection, PlatformSection, ConversationSection, PeopleInsightsSection, TeamsSection, IntegrationsSection, TestimonialsSection, DemoFormSection, TrustStats } from "@/components/employers/EmployerShowcaseSections";
 import { demoProfile } from "@/components/profile/DemoProfileBody";
-import recruiterImage from "@/assets/employer-recruiter.jpg";
 import challengeImage from "@/assets/employer-challenge.jpg";
-import teamImage from "@/assets/employer-team.jpg";
 import campusImage from "@/assets/employer-campus-hiring.jpg";
 import candidateAnanya from "@/assets/learner-ananya.jpg";
 import candidatePriya from "@/assets/learner-priya.jpg";
@@ -183,10 +181,6 @@ const Hero = () => (
           </div>
         </motion.div>
       </div>
-      <motion.div {...reveal} className="mx-auto mt-14 grid max-w-4xl grid-cols-2 gap-3 sm:gap-5">
-        <img src={recruiterImage} alt="Recruiter connecting with talent in a bright workplace" className="aspect-[4/3] w-full rounded-lg object-cover shadow-md sm:aspect-[16/9]" width={1408} height={1056} loading="lazy" />
-        <img src={teamImage} alt="Hiring team sharing ideas and reviewing candidates" className="aspect-[4/3] w-full rounded-lg object-cover shadow-md sm:aspect-[16/9]" width={1408} height={1056} loading="lazy" />
-      </motion.div>
     </div>
   </section>
 );
