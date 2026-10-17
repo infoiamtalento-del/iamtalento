@@ -276,14 +276,11 @@ const Jobs = () => {
         {/* AI Tools to Get You Hired */}
         <ResumeToolkitSection />
 
-        {/* Events & Meetups */}
-        <JobsEventsSection />
-
         {/* Get Job Alerts email banner */}
         <JobAlertsBanner />
 
-
-
+        {/* Events & Meetups */}
+        <JobsEventsSection />
       </Layout>
     </>
   );
