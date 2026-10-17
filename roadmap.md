@@ -109,3 +109,6 @@
 - Replace the six-card grid with a photo-led editorial layout and six open numbered rows — done
 - Verify all benefits remain visible and the section fits desktop and phone — done; all six benefits and photo checked at 1497 and 390 widths, no mobile overflow or runtime errors, build OK
 
+## Employer "One Platform" section
+- Remove the wide photo above the six capability cards — done; heading and copy now lead straight into the cards, verified in the preview with build OK
+
