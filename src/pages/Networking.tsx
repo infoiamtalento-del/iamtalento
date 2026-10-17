@@ -249,9 +249,35 @@ const Networking = () => {
 
         <section className="py-16 md:py-20 bg-muted/20">
           <div className="container max-w-6xl">
-            <Heading label="Learn from people" first="Meet People Building" second="What Is Next" description="Hear from founders and leaders with practical experience." tail="Learn directly from the source." />
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10">
-              {hosts.map((host, i) => <article key={host.name} className="text-center"><img src={hostPhotos[i]} alt={host.name} loading="lazy" width={400} height={400} className="w-28 h-28 md:w-36 md:h-36 rounded-full object-cover mx-auto mb-5" /><h3 className="font-display font-semibold mb-1">{host.name}</h3><p className="text-xs text-muted-foreground mb-3">{host.role}</p><p className="text-xs text-primary">{host.topic}</p></article>)}
+            <div className="flex justify-center mb-4">
+              <span className="inline-flex items-center gap-2 rounded-full bg-card border border-border px-4 py-1.5 text-sm font-semibold shadow-sm">
+                <Sparkles className="h-4 w-4 text-primary" />Learn from people
+              </span>
+            </div>
+            <h2 className="font-display font-bold text-3xl md:text-4xl leading-[1.15] text-center mb-4">Meet People Building<br /><span className="text-primary">What Is Next</span></h2>
+            <p className="text-base md:text-lg text-muted-foreground text-center max-w-xl mx-auto mb-8">Hear from founders and leaders with practical experience.<br className="hidden md:block" />Learn directly from the source.</p>
+            <div className="flex flex-wrap justify-center gap-2 mb-10">
+              {hostCategories.map(category => (
+                <button key={category} type="button" onClick={() => setHostFilter(category)} aria-pressed={hostFilter === category} className={`rounded-full px-5 py-2 text-sm font-semibold transition-colors ${hostFilter === category ? 'bg-primary text-primary-foreground' : 'bg-card border border-border text-foreground hover:border-primary/50'}`}>{category}</button>
+              ))}
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 place-items-center">
+              {hosts.filter(host => hostFilter === 'All' || host.category === hostFilter).map(host => (
+                <article key={host.name} className="w-full text-center">
+                  <div className="relative rounded-2xl overflow-hidden aspect-[4/5] mb-5 border border-border/60">
+                    <img src={host.img} alt={host.name} loading="lazy" width={480} height={600} className="w-full h-full object-cover" />
+                    <div className="absolute left-3 bottom-3 flex items-center gap-2 rounded-lg bg-background/95 px-3 py-2 shadow-md text-left">
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-accent"><Mic className="h-4 w-4 text-primary" /></span>
+                      <span className="leading-tight">
+                        <span className="block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Session</span>
+                        <span className="block text-xs font-semibold">{host.topic}</span>
+                      </span>
+                    </div>
+                  </div>
+                  <h3 className="font-display font-semibold mb-1">{host.name}</h3>
+                  <p className="text-xs text-muted-foreground">{host.role}</p>
+                </article>
+              ))}
             </div>
           </div>
         </section>
