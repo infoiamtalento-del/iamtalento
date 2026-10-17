@@ -10,7 +10,6 @@ import {
   ChevronDown,
   CirclePlay,
   LineChart,
-  Building2,
   Search,
   ShieldCheck,
   Sparkles,
