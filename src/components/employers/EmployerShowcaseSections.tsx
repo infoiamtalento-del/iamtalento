@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useMotionValue, useTransform, type MotionValue } from "framer-motion";
 import {
-  ArrowRight, BarChart3, Bot, Building2, CalendarClock, Cable, CheckCircle2, CirclePlay, Code2, Fingerprint,
-  GraduationCap, Library, Lock, Megaphone, MessageSquare, Mic, Palette, Quote, Send, ShieldCheck, Sparkles,
+  ArrowRight, BarChart3, Building2, CalendarClock, Cable, CheckCircle2, CirclePlay, Code2, Fingerprint,
+  GraduationCap, Library, Lock, Megaphone, MessageSquare, Mic, Palette, Quote, ShieldCheck, Sparkles,
   Star, UserCog, Users, Wand2, Briefcase, Globe2, Server, Type, Video, Volume2, MoreVertical, Play, Pause, FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
