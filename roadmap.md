@@ -131,5 +131,9 @@
 
 ## Employer page — remove candidate spotlight and talent intelligence sections
 - Remove the "Meet Your Next Hire. Beyond a Resume." candidate-spotlight section and the dark "See the People Behind Your Organisation." skills-overview section — done; both components, their data and now-unused imports removed
-- Verify the rest of the page — pending
+- Verify the rest of the page — done; both sections gone and "Everything It Takes", "All-in-One AI Hiring", "One Platform for Every", integrations, stories, FAQ and demo form still present at 1497 and 390 widths, no overflow or page errors, build OK
+
+## Employer hiring steps — five steps
+- Replace the four steps with Post Jobs, Talent Hunt, Qualified Pool, Shortlist and Hire and Support — done; heading now reads "Five Clear Steps" and the row fits five cards
+- Verify the row at laptop and phone — done; all five titles present, old steps gone, five equal cards at 1497 and no overflow or page errors at 390
 
