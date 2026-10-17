@@ -255,7 +255,7 @@ const Networking = () => {
               </span>
             </div>
             <h2 className="font-display font-bold text-3xl md:text-4xl leading-[1.15] text-center mb-4">Meet People Building<br /><span className="text-primary">What Is Next</span></h2>
-            <p className="text-base md:text-lg text-muted-foreground text-center max-w-xl mx-auto mb-8">Hear from founders and leaders with practical experience.<br className="hidden md:block" />Learn directly from the source.</p>
+            <p className="text-base md:text-lg text-muted-foreground text-center max-w-xl mx-auto mb-8">Hear from founders and leaders with practical experience.{' '}<br className="hidden md:block" />Learn directly from the source.</p>
             <div className="flex flex-wrap justify-center gap-2 mb-10">
               {hostCategories.map(category => (
                 <button key={category} type="button" onClick={() => setHostFilter(category)} aria-pressed={hostFilter === category} className={`rounded-full px-5 py-2 text-sm font-semibold transition-colors ${hostFilter === category ? 'bg-primary text-primary-foreground' : 'bg-card border border-border text-foreground hover:border-primary/50'}`}>{category}</button>
