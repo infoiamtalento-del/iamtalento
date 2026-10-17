@@ -204,22 +204,23 @@ const LogoStrip = () => (
 );
 
 const steps = [
-  { icon: Building2, title: "Create Profile", text: "Create your company profile and introduce your team, culture, and hiring needs." },
   { icon: BriefcaseBusiness, title: "Post Jobs", text: "Publish a role with the skills, experience, and expectations that matter." },
   { icon: Search, title: "Talent Hunt", text: "Browse general profiles directly or explore selected candidates with verified profiles." },
-  { icon: UserCheck, title: "Shortlist Together", text: "Compare evidence, review with your team, and move the right candidates to interviews." },
+  { icon: Users, title: "Qualified Pool", text: "Screening, assessments and AI interviews leave you with a ranked pool of job-ready candidates." },
+  { icon: UserCheck, title: "Shortlist", text: "Compare evidence, review with your team, and move the right candidates to interviews." },
+  { icon: Sparkles, title: "Hire and Support", text: "Make the offer, then keep new hires growing with onboarding and upskilling." },
 ];
 
 const HowItWorks = () => (
   <section id="how-it-works" className="bg-accent/45 py-20 md:py-28">
     <div className="container">
-      <motion.div {...reveal}><SectionIntro align="center" eyebrow="How We Work" first="Your Next Great Hire." second="Four Clear Steps." description={<>Build your company presence and connect with the right talent.<br className="hidden md:block" /> Move from a new role to a confident shortlist.</>} /></motion.div>
+      <motion.div {...reveal}><SectionIntro align="center" eyebrow="How We Work" first="Your Next Great Hire." second="Five Clear Steps." description={<>Post a role, reach the right people, and move with evidence.<br className="hidden md:block" /> From a new opening to a hire your team keeps supporting.</>} /></motion.div>
       <motion.div {...reveal} className="mx-auto mt-10 max-w-5xl overflow-hidden rounded-lg">
         <img src={campusImage} alt="Recruiters meeting a graduate at an Indian campus hiring event" className="aspect-[16/9] w-full object-cover md:aspect-[21/9]" width={1536} height={1024} loading="lazy" />
       </motion.div>
-      <ol className="mx-auto mt-12 grid max-w-5xl gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <ol className="mx-auto mt-12 grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {steps.map(({ icon: Icon, title, text }, index) => (
-          <motion.li {...reveal} key={title} className="relative rounded-lg bg-card p-6 text-center shadow-sm">
+          <motion.li {...reveal} key={title} className="relative rounded-lg bg-card p-5 text-center shadow-sm">
             <span className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">0{index + 1}</span>
             <h3 className="mb-2 flex items-center justify-center gap-2 font-display text-base font-bold"><Icon className="h-4 w-4 text-primary" />{title}</h3>
             <p className="text-sm leading-relaxed text-muted-foreground">{text}</p>
