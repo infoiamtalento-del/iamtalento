@@ -89,7 +89,7 @@ const CandidateList = ({ compact = false }: { compact?: boolean }) => (
           <p className="truncate text-sm font-semibold">{candidate.name}</p>
           <p className="truncate text-xs text-muted-foreground">{candidate.role}</p>
         </div>
-        <span className={cn("rounded-full bg-success/10 px-2.5 py-1 font-bold text-success", compact ? "text-[10px]" : "text-xs")}>
+        <span className={cn("whitespace-nowrap rounded-full bg-success/10 font-bold text-success", compact ? "px-2 py-1 text-[10px]" : "px-2 py-1 text-[10px] sm:px-2.5 sm:text-xs")}>
           {candidate.match}% match
         </span>
       </motion.div>
