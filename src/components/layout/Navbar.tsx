@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
-import siteLogo from "@/assets/I-am-Talento-2.png.asset.json";
+import siteLogo from "@/assets/talentcir-logo.png.asset.json";
 
 const eventsDropdownItems = [
   { label: "Hackathons", href: "/hackathons" },

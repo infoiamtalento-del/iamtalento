@@ -18,7 +18,7 @@ import {
   Youtube,
 } from "lucide-react";
 
-import siteLogo from "@/assets/I-am-Talento-2.png.asset.json";
+import siteLogo from "@/assets/talentcir-logo.png.asset.json";
 import Header from "@/components/home2/Header";
 import SkillWheel from "@/components/home2/SkillWheel";
 import {
