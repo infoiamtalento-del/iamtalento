@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useMotionValue, useTransform, type MotionValue } from "framer-motion";
 import {
-  ArrowRight, BarChart3, Bot, Building2, CalendarClock, Cable, CheckCircle2, CirclePlay, Code2, Fingerprint,
-  GraduationCap, Library, Lock, Megaphone, MessageSquare, Mic, Palette, Quote, Send, ShieldCheck, Sparkles,
+  ArrowRight, BarChart3, Building2, CalendarClock, Cable, CheckCircle2, CirclePlay, Code2, Fingerprint,
+  GraduationCap, Library, Lock, Megaphone, MessageSquare, Mic, Palette, Quote, ShieldCheck, Sparkles,
   Star, UserCog, Users, Wand2, Briefcase, Globe2, Server, Type, Video, Volume2, MoreVertical, Play, Pause, FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -372,43 +372,6 @@ export const AIEvaluateSection = () => {
   );
 };
 
-/* ---------- Conversational hiring (chat demo) ---------- */
-const prompts = [
-  { q: "Find React developers in Bengaluru with 3+ years", a: "Found 42 verified profiles. Top 5 score above 88% on React & TypeScript assessments." },
-  { q: "Invite the top 5 to an AI interview tomorrow", a: "Done — 5 interview invites scheduled for tomorrow, 10:00–16:00 IST." },
-  { q: "Compare the two strongest candidates", a: "Aarav leads on system design (92%); Diya leads on communication (95%). Both pass integrity checks." },
-];
-export const ConversationSection = () => {
-  const [active, setActive] = useState(0);
-  return (
-    <section className="bg-accent/45 py-20 md:py-28">
-      <div className="container">
-        <CenterIntro eyebrow="Hiring Copilot" first="Hiring at the Speed" second="Of Conversation." description={<>Just ask in plain language and the copilot searches, schedules, and compares.<br className="hidden md:block" /> Your recruiters stay in control.</>} />
-        <div className="mx-auto max-w-3xl">
-          <div className="mb-5 flex flex-wrap justify-center gap-2">
-            {prompts.map((p, i) => (
-              <Button key={p.q} size="sm" variant={active === i ? "default" : "outline"} onClick={() => setActive(i)} className="h-auto whitespace-normal py-2 text-xs">{p.q}</Button>
-            ))}
-          </div>
-          <div className="overflow-hidden rounded-lg border border-border bg-card shadow-xl">
-            <div className="flex items-center gap-2 border-b border-border px-5 py-3 text-xs font-semibold"><Sparkles className="h-4 w-4 text-primary" /> IAmTalento Copilot</div>
-            <motion.div key={active} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4 p-6">
-              <div className="ml-auto max-w-[80%] rounded-lg rounded-br-none bg-primary px-4 py-3 text-sm text-primary-foreground">{prompts[active].q}</div>
-              <div className="flex max-w-[85%] gap-3">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-primary"><Bot className="h-4 w-4" /></span>
-                <div className="rounded-lg rounded-tl-none bg-secondary px-4 py-3 text-sm">{prompts[active].a}</div>
-              </div>
-            </motion.div>
-            <div className="flex items-center gap-2 border-t border-border p-3">
-              <Input readOnly value="Ask anything about your candidates…" className="text-muted-foreground" />
-              <Button size="icon" aria-label="Send" onClick={() => setActive((active + 1) % prompts.length)}><Send className="h-4 w-4" /></Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
 
 /* ---------- People insights (dark dashboard) ---------- */
 const people = [

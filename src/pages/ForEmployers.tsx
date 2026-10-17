@@ -10,8 +10,6 @@ import {
   CheckCircle2,
   ChevronDown,
   CirclePlay,
-  Clock3,
-  FileCheck2,
   GraduationCap,
   LineChart,
   MapPin,
@@ -27,9 +25,8 @@ import {
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { AIInterviewerSection, PlatformSection, ConversationSection, PeopleInsightsSection, TeamsSection, IntegrationsSection, TestimonialsSection, DemoFormSection, TrustStats, AIEvaluateSection } from "@/components/employers/EmployerShowcaseSections";
+import { AIInterviewerSection, PlatformSection, PeopleInsightsSection, TeamsSection, IntegrationsSection, TestimonialsSection, DemoFormSection, TrustStats, AIEvaluateSection } from "@/components/employers/EmployerShowcaseSections";
 import { demoProfile } from "@/components/profile/DemoProfileBody";
-import challengeImage from "@/assets/employer-challenge.jpg";
 import campusImage from "@/assets/employer-campus-hiring.jpg";
 import recruiterImage from "@/assets/employer-recruiter.jpg";
 import candidateAnanya from "@/assets/learner-ananya.jpg";
@@ -211,32 +208,6 @@ const LogoStrip = () => (
   </section>
 );
 
-const problems = [
-  { icon: Users, title: "Too many irrelevant profiles", text: "Recruiters lose hours filtering candidates who never matched the role." },
-  { icon: FileCheck2, title: "Unverified information", text: "Skills and experience look convincing, but arrive without evidence." },
-  { icon: Clock3, title: "Slow manual processes", text: "Scattered reviews and follow-ups delay every confident decision." },
-];
-
-const ProblemSection = () => (
-  <section className="py-20 md:py-28">
-    <div className="container">
-      <motion.div {...reveal}><SectionIntro align="center" eyebrow="The Problem" first="Great People Are" second="Hard to Find." description={<>Recruiting teams waste time on mismatched profiles and incomplete information.<br className="hidden md:block" /> Slow processes turn strong candidates into missed opportunities.</>} /></motion.div>
-      <div className="mx-auto mt-12 grid max-w-5xl gap-5 md:grid-cols-3">
-        {problems.map(({ icon: Icon, title, text }) => (
-          <motion.div {...reveal} key={title} className="rounded-lg border border-border bg-card p-6 text-center">
-            <span className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-accent text-primary"><Icon className="h-5 w-5" /></span>
-            <h3 className="mb-2 font-display text-base font-bold">{title}</h3><p className="text-sm leading-relaxed text-muted-foreground">{text}</p>
-          </motion.div>
-        ))}
-      </div>
-      <motion.div {...reveal} className="relative mx-auto mt-10 max-w-5xl">
-        <img src={challengeImage} alt="Recruiter reviewing candidate applications" className="aspect-[21/9] w-full rounded-lg object-cover" loading="lazy" width={1408} height={1056} />
-        <div className="absolute bottom-5 left-1/2 flex -translate-x-1/2 items-center gap-3 whitespace-nowrap rounded-lg border border-border bg-card/95 px-5 py-3 shadow-lg backdrop-blur"><FileCheck2 className="h-5 w-5 text-primary" /><p className="text-xs font-bold">1,200+ unverified profiles waiting for review</p></div>
-      </motion.div>
-    </div>
-  </section>
-);
-
 const steps = [
   { icon: Building2, title: "Create Profile", text: "Create your company profile and introduce your team, culture, and hiring needs." },
   { icon: BriefcaseBusiness, title: "Post Jobs", text: "Publish a role with the skills, experience, and expectations that matter." },
@@ -364,8 +335,6 @@ const ForEmployers = () => (
       <AIInterviewerSection />
       <PlatformSection />
       <USPSection />
-      <ConversationSection />
-      <ProblemSection />
       <HowItWorks />
       <PeopleInsightsSection />
       <AIEvaluateSection />
