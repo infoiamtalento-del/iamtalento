@@ -103,5 +103,5 @@
 
 ## Employer banner layout
 - Move the Talent Search panel to the right and the headline, copy, buttons and trust labels to the left — done; verified at 1497 and 390 widths, no overlap, phone titles wrap instead of truncating, build OK
-- Remove the two workplace photos under the banner — in progress
+- Remove the two workplace photos under the banner — done; hero now ends at the Talent Search panel, verified at 1497 and 390 with build OK
 
