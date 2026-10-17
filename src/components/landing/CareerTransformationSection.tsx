@@ -139,7 +139,7 @@ const CareerTransformationSection = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {profiles.map((p, i) => (
             <ProfileCard key={p.name} p={p} i={i} onPlay={() => setActive(p)} />
           ))}
