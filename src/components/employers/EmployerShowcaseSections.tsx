@@ -47,14 +47,14 @@ const CompanyMark = ({ name, className }: { name: string; className?: string }) 
 
 
 export const CenterIntro = ({ eyebrow, first, second, description, invert = false }: {
-  eyebrow: string; first: string; second: string; description: React.ReactNode; invert?: boolean;
+  eyebrow: string; first: string; second: string; description?: React.ReactNode; invert?: boolean;
 }) => (
   <motion.div {...reveal} className="mx-auto mb-12 max-w-2xl text-center">
     <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-primary">{eyebrow}</p>
-    <h2 className={cn("mb-5 font-display text-3xl font-bold leading-[1.08] sm:text-4xl lg:text-5xl", invert && "text-background")}>
+    <h2 className={cn("font-display text-3xl font-bold leading-[1.08] sm:text-4xl lg:text-5xl", description && "mb-5", invert && "text-background")}>
       {first}<br /><span className="text-primary">{second}</span>
     </h2>
-    <p className={cn("text-sm leading-relaxed md:text-base", invert ? "text-background/70" : "text-muted-foreground")}>{description}</p>
+    {description && <p className={cn("text-sm leading-relaxed md:text-base", invert ? "text-background/70" : "text-muted-foreground")}>{description}</p>}
   </motion.div>
 );
 
@@ -440,9 +440,7 @@ const planItems = [
 export const PlanVideoSection = () => (
   <section className="py-20 md:py-28">
     <div className="container">
-      <motion.h2 {...reveal} className="mx-auto mb-12 max-w-3xl text-center font-serif text-3xl font-normal leading-tight tracking-normal text-foreground sm:text-4xl lg:text-5xl">
-        All-in-One AI Hiring <span className="text-primary">That Thinks Like You Do.</span>
-      </motion.h2>
+      <CenterIntro eyebrow="One Subscription" first="All-in-One AI Hiring" second="That Thinks Like You Do." />
       <motion.div {...reveal} className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[5fr_7fr] lg:gap-16">
         <div>
           <h3 className="font-serif text-3xl font-normal leading-tight tracking-normal text-foreground sm:text-4xl">What's included in your plan</h3>
