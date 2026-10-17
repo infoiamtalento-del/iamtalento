@@ -19,7 +19,6 @@ import p4 from "@/assets/speaker-rohan.jpg";
 import v1 from "@/assets/mock-interview-1.jpg";
 import v2 from "@/assets/mock-interview-2.jpg";
 import v3 from "@/assets/mock-interview-3.jpg";
-import assessmentImage from "@/assets/employer-skill-assessment.jpg";
 import teamImage from "@/assets/employer-team.jpg";
 
 const reveal = {
