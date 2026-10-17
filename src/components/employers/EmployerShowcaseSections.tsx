@@ -434,6 +434,52 @@ export const TeamsSection = () => (
   </section>
 );
 
+/* ---------- Plan inclusions + product video ---------- */
+const planItems = [
+  { icon: FileText, label: "Resume" },
+  { icon: Briefcase, label: "Job Posting" },
+  { icon: ShieldCheck, label: "Verify Resume" },
+  { icon: Megaphone, label: "Advertise My Job" },
+  { icon: Wand2, label: "Create Own Assessment" },
+  { icon: Palette, label: "Create Assessment with White Label" },
+  { icon: Users, label: "Bulk Hiring" },
+  { icon: GraduationCap, label: "Campus Hiring" },
+  { icon: Sparkles, label: "Create AI Tests" },
+];
+
+export const PlanVideoSection = () => (
+  <section className="py-20 md:py-28">
+    <div className="container">
+      <motion.h2 {...reveal} className="mx-auto mb-12 max-w-3xl text-center font-serif text-3xl font-normal leading-tight tracking-normal text-foreground sm:text-4xl lg:text-5xl">
+        All-in-One AI Hiring <span className="text-primary">That Thinks Like You Do.</span>
+      </motion.h2>
+      <motion.div {...reveal} className="mx-auto grid max-w-6xl overflow-hidden rounded-xl border border-border bg-card shadow-lg lg:grid-cols-2">
+        <div className="flex flex-col p-8 md:p-10">
+          <h3 className="font-serif text-2xl font-normal tracking-normal sm:text-3xl">What's included in your plan</h3>
+          <ul className="mt-6 grid flex-1 gap-3 sm:grid-cols-2 lg:grid-cols-1">
+            {planItems.map(({ icon: Icon, label }) => (
+              <li key={label} className="flex items-center gap-3">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary text-primary"><Icon className="h-4 w-4" /></span>
+                <span className="text-sm font-semibold">{label}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-8">
+            <Button asChild size="lg" className="gap-2"><Link to="/contact">Get Started <ArrowRight className="h-4 w-4" /></Link></Button>
+            <p className="mt-3 -rotate-1 font-display text-sm italic text-muted-foreground">No credit card required <Sparkles className="ml-1 inline h-3.5 w-3.5 text-primary" /></p>
+          </div>
+        </div>
+        <div className="relative flex items-center justify-center bg-accent/60 p-6 md:p-10">
+          <div className="w-full max-w-xl">
+            <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-card px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary shadow-sm"><CirclePlay className="h-3.5 w-3.5" /> Product in 60 Sec</span>
+            <video src="/product-in-60-sec.mp4" controls preload="metadata" playsInline className="aspect-video w-full rounded-lg border border-border bg-background shadow-lg" />
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  </section>
+);
+
 /* ---------- Integrations & security ---------- */
 const integrations = ["Workday", "Greenhouse", "Lever", "Zoho Recruit", "SAP SuccessFactors", "Darwinbox", "Slack", "Teams", "Google Calendar", "Keka", "BambooHR", "Freshteam"];
 const security = [

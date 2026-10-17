@@ -25,7 +25,7 @@ import {
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { AIInterviewerSection, PlatformSection, PeopleInsightsSection, TeamsSection, IntegrationsSection, TestimonialsSection, DemoFormSection, TrustStats, AIEvaluateSection } from "@/components/employers/EmployerShowcaseSections";
+import { AIInterviewerSection, PlatformSection, PeopleInsightsSection, TeamsSection, IntegrationsSection, TestimonialsSection, DemoFormSection, TrustStats, AIEvaluateSection, PlanVideoSection } from "@/components/employers/EmployerShowcaseSections";
 import { demoProfile } from "@/components/profile/DemoProfileBody";
 import campusImage from "@/assets/employer-campus-hiring.jpg";
 import recruiterImage from "@/assets/employer-recruiter.jpg";
@@ -340,6 +340,7 @@ const ForEmployers = () => (
       <AIEvaluateSection />
       <SearchSection />
       <TeamsSection />
+      <PlanVideoSection />
       <IntegrationsSection />
       <TestimonialsSection />
       <FAQSection />
