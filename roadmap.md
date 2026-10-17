@@ -129,3 +129,11 @@
 - Keep the section's content and heading, rebuild the layout like the attached reference: left column with the plan list as icon rows, pill CTA and a handwritten-style note; right column a warm rounded panel holding the product video with floating skill tags — done; plan list, video, "Get Started" and "No credit card required" all unchanged in content
 - Verify laptop and phone layout — done; heading clear of the header, panel full with the video filling it, tags on the panel edges and hidden on phones, poster showing before play, no overlap or clipping at 1497 and 390 widths, build OK
 
+## Employer page — remove candidate spotlight and talent intelligence sections
+- Remove the "Meet Your Next Hire. Beyond a Resume." candidate-spotlight section and the dark "See the People Behind Your Organisation." skills-overview section — done; both components, their data and now-unused imports removed
+- Verify the rest of the page — done; both sections gone and "Everything It Takes", "All-in-One AI Hiring", "One Platform for Every", integrations, stories, FAQ and demo form still present at 1497 and 390 widths, no overflow or page errors, build OK
+
+## Employer hiring steps — five steps
+- Replace the four steps with Post Jobs, Talent Hunt, Qualified Pool, Shortlist and Hire and Support — done; heading now reads "Five Clear Steps" and the row fits five cards
+- Verify the row at laptop and phone — done; all five titles present, old steps gone, five equal cards at 1497 and no overflow or page errors at 390
+

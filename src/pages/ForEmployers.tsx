@@ -7,17 +7,12 @@ import {
   BarChart3,
   BriefcaseBusiness,
   Check,
-  CheckCircle2,
   ChevronDown,
   CirclePlay,
-  GraduationCap,
   LineChart,
-  MapPin,
-  Building2,
   Search,
   ShieldCheck,
   Sparkles,
-  Target,
   UserCheck,
   Users,
   Zap,
@@ -25,8 +20,7 @@ import {
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { AIInterviewerSection, PlatformSection, PeopleInsightsSection, TeamsSection, IntegrationsSection, TestimonialsSection, DemoFormSection, TrustStats, AIEvaluateSection, PlanVideoSection } from "@/components/employers/EmployerShowcaseSections";
-import { demoProfile } from "@/components/profile/DemoProfileBody";
+import { AIInterviewerSection, PlatformSection, TeamsSection, IntegrationsSection, TestimonialsSection, DemoFormSection, TrustStats, AIEvaluateSection, PlanVideoSection } from "@/components/employers/EmployerShowcaseSections";
 import campusImage from "@/assets/employer-campus-hiring.jpg";
 import recruiterImage from "@/assets/employer-recruiter.jpg";
 import candidateAnanya from "@/assets/learner-ananya.jpg";
@@ -209,22 +203,23 @@ const LogoStrip = () => (
 );
 
 const steps = [
-  { icon: Building2, title: "Create Profile", text: "Create your company profile and introduce your team, culture, and hiring needs." },
   { icon: BriefcaseBusiness, title: "Post Jobs", text: "Publish a role with the skills, experience, and expectations that matter." },
   { icon: Search, title: "Talent Hunt", text: "Browse general profiles directly or explore selected candidates with verified profiles." },
-  { icon: UserCheck, title: "Shortlist Together", text: "Compare evidence, review with your team, and move the right candidates to interviews." },
+  { icon: Users, title: "Qualified Pool", text: "Screening, assessments and AI interviews leave you with a ranked pool of job-ready candidates." },
+  { icon: UserCheck, title: "Shortlist", text: "Compare evidence, review with your team, and move the right candidates to interviews." },
+  { icon: Sparkles, title: "Hire and Support", text: "Make the offer, then keep new hires growing with onboarding and upskilling." },
 ];
 
 const HowItWorks = () => (
   <section id="how-it-works" className="bg-accent/45 py-20 md:py-28">
     <div className="container">
-      <motion.div {...reveal}><SectionIntro align="center" eyebrow="How We Work" first="Your Next Great Hire." second="Four Clear Steps." description={<>Build your company presence and connect with the right talent.<br className="hidden md:block" /> Move from a new role to a confident shortlist.</>} /></motion.div>
+      <motion.div {...reveal}><SectionIntro align="center" eyebrow="How We Work" first="Your Next Great Hire." second="Five Clear Steps." description={<>Post a role, reach the right people, and move with evidence.<br className="hidden md:block" /> From a new opening to a hire your team keeps supporting.</>} /></motion.div>
       <motion.div {...reveal} className="mx-auto mt-10 max-w-5xl overflow-hidden rounded-lg">
         <img src={campusImage} alt="Recruiters meeting a graduate at an Indian campus hiring event" className="aspect-[16/9] w-full object-cover md:aspect-[21/9]" width={1536} height={1024} loading="lazy" />
       </motion.div>
-      <ol className="mx-auto mt-12 grid max-w-5xl gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <ol className="mx-auto mt-12 grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {steps.map(({ icon: Icon, title, text }, index) => (
-          <motion.li {...reveal} key={title} className="relative rounded-lg bg-card p-6 text-center shadow-sm">
+          <motion.li {...reveal} key={title} className="relative rounded-lg bg-card p-5 text-center shadow-sm">
             <span className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">0{index + 1}</span>
             <h3 className="mb-2 flex items-center justify-center gap-2 font-display text-base font-bold"><Icon className="h-4 w-4 text-primary" />{title}</h3>
             <p className="text-sm leading-relaxed text-muted-foreground">{text}</p>
@@ -232,44 +227,6 @@ const HowItWorks = () => (
         ))}
       </ol>
       <div className="mt-10 text-center"><Button asChild size="lg" className="gap-2"><Link to="/employer-profile">Create Company Profile <ArrowRight className="h-4 w-4" /></Link></Button></div>
-    </div>
-  </section>
-);
-
-const CandidatePreview = () => (
-  <article aria-label="Arjun Mehta demo candidate profile" className="overflow-hidden rounded-lg border border-border bg-card shadow-xl">
-    <div className="flex items-center justify-between gap-3 border-b border-border bg-accent/60 px-5 py-3">
-      <span className="flex items-center gap-2 text-xs font-bold text-primary"><Sparkles className="h-4 w-4" /> CANDIDATE SPOTLIGHT</span>
-      <span className="text-xs text-muted-foreground">Demo profile</span>
-    </div>
-    <div className="grid sm:grid-cols-[160px_1fr]">
-      <div className="relative bg-secondary/30">
-        <img src={demoProfile.profile_photo_url} alt={demoProfile.full_name} className="h-56 w-full object-cover sm:h-full" />
-        <div className="absolute bottom-3 left-3 right-3 rounded-md bg-card/95 px-3 py-2 backdrop-blur"><p className="font-display text-2xl font-bold">{demoProfile.years_of_experience}+ <span className="text-xs font-medium text-muted-foreground">years</span></p><p className="text-xs text-muted-foreground">Engineering experience</p></div>
-      </div>
-      <div className="min-w-0 p-5 md:p-6">
-        <p className="mb-2 flex items-center gap-1.5 text-xs font-semibold text-success"><CheckCircle2 className="h-4 w-4" /> Complete candidate profile</p>
-        <h3 className="font-display text-3xl font-bold">{demoProfile.full_name}</h3>
-        <p className="mt-1 text-sm font-semibold">{demoProfile.professional_headline}</p>
-        <p className="mt-1 text-xs text-primary">{demoProfile.sub_headline}</p>
-        <p className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground"><MapPin className="h-3.5 w-3.5" />{demoProfile.location}</p>
-        <div className="mt-5 flex flex-wrap gap-2">{demoProfile.tags.map(tag => <span key={tag} className="rounded-md bg-secondary px-2.5 py-1 text-xs font-medium">{tag}</span>)}</div>
-      </div>
-    </div>
-    <div className="border-t border-border p-5 md:p-6">
-      <p className="mb-2 text-xs font-bold uppercase text-muted-foreground">Beyond the resume</p>
-      <p className="text-sm leading-relaxed text-muted-foreground">{demoProfile.about_summary}</p>
-      <div className="my-5 grid grid-cols-3 divide-x divide-border border-y border-border py-4 text-center">{[{ icon: BriefcaseBusiness, label: "Experience" }, { icon: Target, label: "Skills" }, { icon: GraduationCap, label: "Education" }].map(({ icon: Icon, label }) => <div key={label}><Icon className="mx-auto mb-2 h-5 w-5 text-primary" /><span className="text-xs font-semibold">{label}</span></div>)}</div>
-      <Button asChild className="w-full gap-2"><Link to="/demo-profile">View Full Demo Profile <ArrowRight className="h-4 w-4" /></Link></Button>
-    </div>
-  </article>
-);
-
-const SearchSection = () => (
-  <section className="py-20 md:py-28">
-    <div className="container">
-      <motion.div {...reveal}><SectionIntro align="center" eyebrow="AI Talent Search" first="Meet Your Next Hire." second="Beyond a Resume." description={<>Discover experience, skills, and the person behind the profile.<br className="hidden md:block" /> See the full picture before you connect.</>} /></motion.div>
-      <motion.div {...reveal} className="mx-auto mt-12 max-w-3xl"><CandidatePreview /></motion.div>
     </div>
   </section>
 );
@@ -336,9 +293,7 @@ const ForEmployers = () => (
       <PlatformSection />
       <USPSection />
       <HowItWorks />
-      <PeopleInsightsSection />
       <AIEvaluateSection />
-      <SearchSection />
       <TeamsSection />
       <PlanVideoSection />
       <IntegrationsSection />

@@ -12,10 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import interviewer from "@/assets/webinar-speaker-3.jpg";
-import p1 from "@/assets/speaker-arjun.jpg";
-import p2 from "@/assets/speaker-kavya.jpg";
 import p3 from "@/assets/speaker-meera.jpg";
-import p4 from "@/assets/speaker-rohan.jpg";
 import v1 from "@/assets/mock-interview-1.jpg";
 import v2 from "@/assets/mock-interview-2.jpg";
 import v3 from "@/assets/mock-interview-3.jpg";
@@ -397,38 +394,6 @@ export const AIEvaluateSection = () => {
   );
 };
 
-
-/* ---------- People insights (dark dashboard) ---------- */
-const people = [
-  { name: "Arjun Rao", role: "Engineering", img: p1, score: 91 },
-  { name: "Kavya Shah", role: "Design", img: p2, score: 88 },
-  { name: "Meera Iyer", role: "Product", img: p3, score: 94 },
-  { name: "Rohan Das", role: "Data", img: p4, score: 86 },
-];
-export const PeopleInsightsSection = () => (
-  <section className="bg-foreground py-20 md:py-28">
-    <div className="container">
-      <CenterIntro invert eyebrow="Talent Intelligence" first="See the People Behind" second="Your Organisation." description={<>Map skills across teams to spot gaps, upskill, and promote from within.<br className="hidden md:block" /> One live view of your workforce.</>} />
-      <motion.div {...reveal} className="mx-auto max-w-5xl overflow-hidden rounded-lg border border-background/15 bg-card shadow-2xl">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-6 py-4">
-          <p className="font-display font-bold">Skills overview</p>
-          <div className="flex gap-2 text-xs">{["All teams", "Engineering", "Product"].map((t, i) => <span key={t} className={cn("rounded-full px-3 py-1", i === 0 ? "bg-primary text-primary-foreground" : "bg-secondary")}>{t}</span>)}</div>
-        </div>
-        <div className="grid gap-4 p-6 sm:grid-cols-2 lg:grid-cols-4">
-          {people.map(p => (
-            <div key={p.name} className="rounded-lg border border-border p-4 text-center">
-              <img src={p.img} alt={p.name} className="mx-auto h-16 w-16 rounded-full object-cover" loading="lazy" />
-              <p className="mt-3 text-sm font-bold">{p.name}</p>
-              <p className="text-xs text-muted-foreground">{p.role}</p>
-              <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-secondary"><div className="h-full bg-primary" style={{ width: `${p.score}%` }} /></div>
-              <p className="mt-2 text-xs font-semibold text-primary">{p.score}% skill index</p>
-            </div>
-          ))}
-        </div>
-      </motion.div>
-    </div>
-  </section>
-);
 
 /* ---------- Teams ---------- */
 const teams = [
