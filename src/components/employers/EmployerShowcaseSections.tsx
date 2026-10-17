@@ -20,6 +20,8 @@ import v1 from "@/assets/mock-interview-1.jpg";
 import v2 from "@/assets/mock-interview-2.jpg";
 import v3 from "@/assets/mock-interview-3.jpg";
 import teamImage from "@/assets/employer-team.jpg";
+import planPoster from "@/assets/assessment-video-thumb.jpg";
+
 
 const reveal = {
   initial: { opacity: 0, y: 24 },
@@ -508,7 +510,7 @@ export const PlanVideoSection = () => (
           </div>
           <div className="relative">
             <span className="mb-5 inline-flex items-center gap-2 rounded-full bg-card px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary shadow-sm"><CirclePlay className="h-3.5 w-3.5" /> Product in 60 Sec</span>
-            <video src="/product-in-60-sec.mp4" controls preload="metadata" playsInline className="aspect-video w-full rounded-2xl border border-border bg-background shadow-xl" />
+            <video src="/product-in-60-sec.mp4" poster={planPoster} controls preload="metadata" playsInline className="aspect-video w-full rounded-2xl border border-border bg-background shadow-xl" />
           </div>
           <span className="pointer-events-none absolute left-2 top-[34%] hidden items-center gap-1.5 rounded-full border border-border/60 bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground shadow-lg md:flex"><Code2 className="h-3.5 w-3.5 text-primary" /> Python</span>
           <span className="pointer-events-none absolute left-5 top-[62%] hidden items-center gap-1.5 rounded-full border border-border/60 bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground shadow-lg md:flex"><PenTool className="h-3.5 w-3.5 text-primary" /> Design</span>
