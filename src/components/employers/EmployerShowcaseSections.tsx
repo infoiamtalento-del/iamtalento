@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowRight, BarChart3, Bot, Building2, CalendarClock, Cable, CheckCircle2, CirclePlay, Code2, Fingerprint,
   GraduationCap, Library, Lock, Megaphone, MessageSquare, Mic, Palette, Quote, Send, ShieldCheck, Sparkles,
-  Star, UserCog, Users, Wand2, Briefcase, Globe2, Server,
+  Star, UserCog, Users, Wand2, Briefcase, Globe2, Server, Type, Video, Volume2, MoreVertical, Play, Pause, FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -137,6 +137,178 @@ export const PlatformSection = () => (
     </div>
   </section>
 );
+
+/* ---------- AI evaluation: your question -> candidate answer -> AI report ---------- */
+const evalModes = ["Text", "Audio", "Video"] as const;
+type EvalMode = (typeof evalModes)[number];
+
+const waveform = [14, 26, 38, 20, 46, 30, 54, 38, 22, 48, 32, 58, 26, 42, 18, 50, 34, 62, 28, 44, 16, 38, 52, 24, 40, 20, 48, 30, 56, 22];
+
+const reportRows = [
+  { label: "Problem awareness", score: 92 },
+  { label: "Specific examples", score: 86 },
+  { label: "Suggested alternative", score: 78 },
+  { label: "Communication", score: 90 },
+];
+
+const EvalConnector = () => (
+  <div aria-hidden className="hidden items-center lg:flex">
+    <span className="h-1.5 w-full rounded-full bg-primary/15" />
+  </div>
+);
+
+export const AIEvaluateSection = () => {
+  const [mode, setMode] = useState<EvalMode>("Audio");
+  const [playing, setPlaying] = useState(false);
+  const [progress, setProgress] = useState(34);
+
+  useEffect(() => {
+    if (!playing) return;
+    const id = setInterval(() => setProgress(p => Math.min(100, p + 2)), 120);
+    return () => clearInterval(id);
+  }, [playing]);
+
+  useEffect(() => {
+    if (progress >= 100) setPlaying(false);
+  }, [progress]);
+
+  const pickMode = (next: EvalMode) => {
+    setMode(next);
+    setPlaying(false);
+    setProgress(next === "Audio" ? 34 : 0);
+  };
+
+  return (
+    <section className="py-20 md:py-28">
+      <div className="container">
+        <motion.div {...reveal} className="mx-auto max-w-2xl text-center">
+          <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-primary">AI Evaluation</p>
+          <h2 className="mb-5 font-display text-3xl font-bold leading-[1.08] sm:text-4xl lg:text-5xl">
+            AI-Evaluate Candidates<br /><span className="text-primary">Like Your Top Recruiters Would.</span>
+          </h2>
+          <p className="text-sm leading-relaxed text-muted-foreground md:text-base">
+            Enterprise-grade intelligence, form-level simplicity, and the precision of a Swiss watch.<br className="hidden md:block" /> One question in, a scored and evidence-backed report out.
+          </p>
+          <div className="mt-7 flex flex-wrap justify-center gap-3">
+            <Button asChild size="lg" className="gap-2"><Link to="/contact">Try a Demo Test <ArrowRight className="h-4 w-4" /></Link></Button>
+            <Button asChild size="lg" variant="outline"><Link to="/assessments/explore">See Sample Report</Link></Button>
+          </div>
+          <p className="mt-4 -rotate-1 font-display text-sm italic text-muted-foreground">No login required <Sparkles className="ml-1 inline h-3.5 w-3.5 text-primary" /></p>
+        </motion.div>
+
+        <motion.div {...reveal} className="mt-14 grid items-stretch gap-5 lg:grid-cols-[1fr_2.25rem_1fr_2.25rem_1fr]">
+          <div className="relative">
+            <span aria-hidden className="absolute -bottom-3 -left-3 hidden h-full w-full rounded-lg bg-accent lg:block" />
+            <div className="relative flex h-full flex-col rounded-lg border border-primary/15 bg-card p-5 shadow-sm">
+              <p className="mb-4 -rotate-1 font-display text-xs italic text-muted-foreground">Your question, with your rules</p>
+              <div className="flex items-start gap-3">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-secondary font-display text-sm font-bold text-primary">Q</span>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-primary">Question</p>
+                  <p className="mt-1 text-sm font-medium leading-snug">Which is your least favourite software tool at work?</p>
+                </div>
+              </div>
+              <div className="my-5 h-px bg-border" />
+              <div className="flex items-start gap-3">
+                <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-primary">AI Evaluation Criteria</p>
+                  <p className="mt-1 text-sm leading-snug text-muted-foreground">Specific challenges should be mentioned. Extra points for how it can be improved, or for naming a better alternative.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <EvalConnector />
+
+          <div className="relative flex h-full flex-col rounded-lg border border-primary/15 bg-card p-5 shadow-sm">
+            <p className="font-display text-sm font-bold">Candidate Response</p>
+            <div className="mt-4 flex gap-1 rounded-full bg-secondary p-1">
+              {evalModes.map(m => (
+                <button key={m} type="button" onClick={() => pickMode(m)} aria-pressed={mode === m} className={cn("flex flex-1 items-center justify-center gap-1.5 rounded-full px-2 py-1.5 text-xs font-semibold transition-colors", mode === m ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")}>
+                  {m === "Text" ? <Type className="h-3.5 w-3.5" /> : m === "Audio" ? <Mic className="h-3.5 w-3.5" /> : <Video className="h-3.5 w-3.5" />}
+                  {m}
+                </button>
+              ))}
+            </div>
+            <div className="mt-4 flex-1 rounded-md bg-secondary p-4">
+              {mode === "Audio" && (
+                <div className="flex h-full flex-col gap-4 sm:flex-row">
+                  <div className="flex-1">
+                    <div className="flex h-16 items-end gap-[3px]">
+                      {waveform.map((h, i) => (
+                        <span key={i} style={{ height: `${h}%` }} className={cn("w-full rounded-full transition-colors", (i / waveform.length) * 100 <= progress ? "bg-primary" : "bg-border")} />
+                      ))}
+                    </div>
+                    <div className="mt-3 flex items-center gap-2">
+                      <button type="button" onClick={() => setPlaying(p => !p)} aria-label={playing ? "Pause the sample answer" : "Play the sample answer"} className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                        {playing ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
+                      </button>
+                      <span className="relative h-1 flex-1 rounded-full bg-border">
+                        <span className="absolute inset-y-0 left-0 rounded-full bg-primary" style={{ width: `${progress}%` }} />
+                      </span>
+                      <Volume2 className="h-4 w-4 shrink-0 text-muted-foreground" />
+                      <MoreVertical className="h-4 w-4 shrink-0 text-muted-foreground" />
+                    </div>
+                  </div>
+                  <div className="sm:w-40 sm:border-l sm:border-border sm:pl-4">
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-primary">Transcript</p>
+                    <p className="mt-2 text-sm leading-relaxed">&ldquo;Salesforce slows our reporting down. I&rsquo;d rather have HubSpot, or a small custom dashboard.&rdquo;</p>
+                    <p className="mt-2 text-[11px] text-muted-foreground">0:42 &middot; spoken answer</p>
+                  </div>
+                </div>
+              )}
+              {mode === "Text" && (
+                <div className="flex h-full flex-col">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-primary">Transcript</p>
+                  <p className="mt-2 text-sm leading-relaxed">&ldquo;Salesforce slows our reporting down &mdash; the export breaks on large datasets. I&rsquo;d rather have HubSpot, or a small custom dashboard built for our reporting.&rdquo;</p>
+                  <p className="mt-auto pt-3 text-[11px] text-muted-foreground">184 words &middot; typed answer</p>
+                </div>
+              )}
+              {mode === "Video" && (
+                <div className="relative h-full min-h-40 overflow-hidden rounded-md">
+                  <img src={v1} alt="Candidate recording a video answer" className="h-full w-full object-cover" loading="lazy" />
+                  <span className="absolute inset-0 flex items-center justify-center bg-foreground/20">
+                    <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-primary-foreground"><Play className="h-4 w-4" /></span>
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <EvalConnector />
+
+          <div className="relative flex h-full flex-col rounded-lg border border-primary/15 bg-card p-5 shadow-sm">
+            <div className="flex items-center gap-3">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary"><FileText className="h-4 w-4" /></span>
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-primary">AI Report</p>
+                <p className="text-sm font-semibold">Scored the moment they finish</p>
+              </div>
+            </div>
+            <div className="my-4 h-px bg-border" />
+            <div className="space-y-3">
+              {reportRows.map(r => (
+                <div key={r.label}>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-medium">{r.label}</span>
+                    <span className="font-bold text-primary">{r.score}</span>
+                  </div>
+                  <span className="mt-1.5 block h-1.5 w-full rounded-full bg-secondary"><span className="block h-full rounded-full bg-primary" style={{ width: `${r.score}%` }} /></span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-5 flex items-center justify-between rounded-md bg-secondary px-3 py-2.5">
+              <span className="text-xs font-semibold">Overall fit</span>
+              <span className="font-display text-lg font-bold text-primary">87</span>
+            </div>
+            <p className="mt-3 text-xs leading-relaxed text-muted-foreground">Strong problem awareness and specifics. Probe deeper on trade-offs before the interview round.</p>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
 
 /* ---------- Conversational hiring (chat demo) ---------- */
 const prompts = [
