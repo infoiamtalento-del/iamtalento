@@ -29,21 +29,22 @@ const reveal = {
 };
 
 /* ---------- Company marks used under testimonials ---------- */
-const companyMarks: Record<string, string> = {
-  Razorpay: "/company-logos/razorpay.svg",
-  Infosys: "/company-logos/infosys.svg",
-  Flipkart: "/company-logos/flipkart.svg",
-  Zoho: "/company-logos/zoho.svg",
+const companyMarks: Record<string, { src: string; size: string }> = {
+  Razorpay: { src: "/company-logos/razorpay.svg", size: "h-8" },
+  Infosys: { src: "/company-logos/infosys.svg", size: "h-5" },
+  Flipkart: { src: "/company-logos/flipkart.svg", size: "h-8" },
+  Zoho: { src: "/company-logos/zoho.svg", size: "h-7" },
 };
 
 const CompanyMark = ({ name, className }: { name: string; className?: string }) => (
   <img
-    src={companyMarks[name]}
+    src={companyMarks[name].src}
     alt={`${name} logo`}
     loading="lazy"
-    className={cn("w-auto opacity-90 grayscale", className)}
+    className={cn("w-auto opacity-90 grayscale", companyMarks[name].size, className)}
   />
 );
+
 
 
 export const CenterIntro = ({ eyebrow, first, second, description, invert = false }: {
@@ -88,7 +89,7 @@ export const TrustStats = () => (
           <span className="ml-4 flex gap-0.5 text-primary">{Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-4 w-4 fill-current" />)}</span>
         </figcaption>
         <div className="mt-6 border-t border-border/60 pt-6">
-          <CompanyMark name="Razorpay" className="mx-auto h-8" />
+          <CompanyMark name="Razorpay" className="mx-auto" />
         </div>
 
       </motion.figure>
@@ -547,7 +548,7 @@ export const TestimonialsSection = () => (
               <p className="mt-4 text-sm font-bold">{s.name}</p>
               <p className="text-xs text-muted-foreground">{s.role}</p>
               <div className="mt-5 border-t border-border/60 pt-4">
-                <CompanyMark name={s.company} className="mx-auto h-7" />
+                <CompanyMark name={s.company} className="mx-auto" />
               </div>
             </div>
 
