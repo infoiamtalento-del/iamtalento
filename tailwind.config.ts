@@ -17,6 +17,8 @@ export default {
         sans: ["Inter", "-apple-system", "BlinkMacSystemFont", "system-ui", "sans-serif"],
         display: ["Inter", "Plus Jakarta Sans", "-apple-system", "BlinkMacSystemFont", "system-ui", "sans-serif"],
         secondary: ["Plus Jakarta Sans", "Inter", "system-ui", "sans-serif"],
+        hand: ["Caveat", "Segoe Script", "cursive"],
+
       },
       colors: {
         border: "hsl(var(--border))",
