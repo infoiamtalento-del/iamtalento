@@ -175,7 +175,7 @@ const Hero = () => (
                   <div key={item} className={cn("mb-2 rounded-md px-2 py-2 text-[11px]", index === 0 ? "bg-primary/10 font-semibold text-primary" : "text-muted-foreground")}>{item}</div>
                 ))}
               </div>
-              <div className="p-5">
+              <div className="p-4 sm:p-5">
                 <div className="mb-4 flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-2.5 text-xs text-muted-foreground"><Search className="h-4 w-4" /> Senior Product Manager in Bengaluru</div>
                 <CandidateList />
               </div>
