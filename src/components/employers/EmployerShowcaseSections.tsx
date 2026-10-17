@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useTransform, type MotionValue } from "framer-motion";
 import {
   ArrowRight, BarChart3, Bot, Building2, CalendarClock, Cable, CheckCircle2, CirclePlay, Code2, Fingerprint,
   GraduationCap, Library, Lock, Megaphone, MessageSquare, Mic, Palette, Quote, Send, ShieldCheck, Sparkles,
@@ -76,37 +76,99 @@ export const TrustStats = () => (
 
 /* ---------- AI interviewer (dark) ---------- */
 const interviewPoints = [
+  { icon: Wand2, title: "AI Assessment Builder", text: "Paste a JD and AI generates a role-specific assessment in seconds." },
+  { icon: Library, title: "Pre-built Assessment Library", text: "200+ ready-made assessments across tech, finance, marketing, and more." },
+  { icon: FileText, title: "Custom Questions", text: "Add your own questions, scenarios, and scoring rubrics." },
+  { icon: Palette, title: "Custom Branding", text: "White-label the entire experience with your logo, colors, and domain." },
   { icon: Mic, title: "Natural voice conversations", text: "Adaptive follow-ups based on every answer." },
   { icon: CalendarClock, title: "Available 24/7", text: "Candidates interview whenever suits them." },
   { icon: Fingerprint, title: "Identity & integrity checks", text: "Face match and voice originality analysis." },
   { icon: BarChart3, title: "Instant scored reports", text: "Structured scores your team can compare." },
 ];
-export const AIInterviewerSection = () => (
-  <section className="bg-foreground py-20 md:py-28">
-    <div className="container">
-      <CenterIntro invert eyebrow="AI Interviewer" first="Meet Your Always-On" second="AI Interviewer." description={<>Run first-round interviews at scale without adding recruiter hours.<br className="hidden md:block" /> Every candidate gets a fair, consistent conversation.</>} />
-      <div className="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-[1fr_auto_1fr]">
-        <div className="space-y-6">{interviewPoints.slice(0, 2).map(p => <Point key={p.title} {...p} align="right" />)}</div>
-        <motion.div {...reveal} className="relative mx-auto">
-          <div className="h-64 w-64 overflow-hidden rounded-full border-4 border-primary/60 shadow-2xl md:h-72 md:w-72">
-            <img src={interviewer} alt="AI interviewer avatar" className="h-full w-full object-cover" loading="lazy" />
-          </div>
-          <span className="absolute -bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-lg">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-primary-foreground" /> Interview in progress
-          </span>
-        </motion.div>
-        <div className="space-y-6">{interviewPoints.slice(2).map(p => <Point key={p.title} {...p} />)}</div>
-      </div>
-      <div className="mt-14 text-center">
-        <Button asChild size="lg" className="gap-2"><Link to="/contact"><CirclePlay className="h-4 w-4" /> Try the AI Interviewer</Link></Button>
-      </div>
+
+const InterviewAvatar = ({ size = "md" }: { size?: "sm" | "md" }) => (
+  <div className="relative mx-auto">
+    <div className={cn("overflow-hidden rounded-full border-4 border-primary/60 shadow-2xl", size === "sm" ? "h-52 w-52 lg:h-60 lg:w-60" : "h-64 w-64")}>
+      <img src={interviewer} alt="AI interviewer avatar" className="h-full w-full object-cover" loading="lazy" />
     </div>
-  </section>
+    <span className="absolute -bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-lg">
+      <span className="h-2 w-2 animate-pulse rounded-full bg-primary-foreground" /> Interview in progress
+    </span>
+  </div>
 );
-const Point = ({ icon: Icon, title, text, align }: { icon: typeof Mic; title: string; text: string; align?: "right" }) => (
-  <motion.div {...reveal} className={cn("flex gap-4", align === "right" && "md:flex-row-reverse md:text-right")}>
-    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/20 text-primary"><Icon className="h-5 w-5" /></span>
-    <div><h3 className="font-display text-base font-bold text-background">{title}</h3><p className="mt-1 text-sm text-background/65">{text}</p></div>
+
+const InterviewCta = () => (
+  <Button asChild size="lg" className="gap-2"><Link to="/contact"><CirclePlay className="h-4 w-4" /> Try the AI Interviewer</Link></Button>
+);
+
+/* Point that "blows out" from the avatar as the pinned section scrolls */
+const BurstPoint = ({ point, index, progress, side }: { point: (typeof interviewPoints)[number]; index: number; progress: MotionValue<number>; side: "left" | "right" }) => {
+  const row = index % 4;
+  const start = 0.15 + row * 0.1 + (side === "right" ? 0.04 : 0);
+  const end = start + 0.22;
+  const dir = side === "left" ? 1 : -1;
+  const opacity = useTransform(progress, [start, end], [0, 1]);
+  const scale = useTransform(progress, [start, end], [0.3, 1]);
+  const x = useTransform(progress, [start, end], [dir * 260, 0]);
+  const y = useTransform(progress, [start, end], [(1.5 - row) * 60, 0]);
+  return (
+    <motion.div style={{ opacity, scale, x, y }}>
+      <Point {...point} align={side === "left" ? "right" : undefined} animate={false} />
+    </motion.div>
+  );
+};
+
+export const AIInterviewerSection = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const scrollYProgress = useMotionValue(0);
+  useEffect(() => {
+    const update = () => {
+      const el = ref.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const total = r.height - window.innerHeight;
+      scrollYProgress.set(total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 0);
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => { window.removeEventListener("scroll", update); window.removeEventListener("resize", update); };
+  }, [scrollYProgress]);
+  const glow = useTransform(scrollYProgress, [0.1, 0.6], [0, 1]);
+  const intro = <CenterIntro invert eyebrow="AI Interviewer" first="Meet Your Always-On" second="AI Interviewer." description={<>Run first-round interviews at scale without adding recruiter hours.<br className="hidden md:block" /> Every candidate gets a fair, consistent conversation.</>} />;
+  return (
+    <section className="bg-foreground">
+      {/* Desktop: pinned scroll-stop with burst-out points */}
+      <div ref={ref} className="relative hidden h-[260vh] md:block">
+        <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden py-10">
+          <div className="container [&>div:first-child]:mb-8">
+            {intro}
+            <div className="mx-auto grid max-w-6xl items-center gap-8 md:grid-cols-[1fr_auto_1fr]">
+              <div className="space-y-5">{interviewPoints.slice(0, 4).map((p, i) => <BurstPoint key={p.title} point={p} index={i} progress={scrollYProgress} side="left" />)}</div>
+              <div className="relative">
+                <motion.div aria-hidden style={{ opacity: glow, scale: glow }} className="absolute inset-[-30%] rounded-full bg-primary/25 blur-3xl" />
+                <InterviewAvatar size="sm" />
+              </div>
+              <div className="space-y-5">{interviewPoints.slice(4).map((p, i) => <BurstPoint key={p.title} point={p} index={i} progress={scrollYProgress} side="right" />)}</div>
+            </div>
+            <div className="mt-10 text-center"><InterviewCta /></div>
+          </div>
+        </div>
+      </div>
+      {/* Mobile: simple stacked layout */}
+      <div className="container py-20 md:hidden">
+        {intro}
+        <motion.div {...reveal}><InterviewAvatar /></motion.div>
+        <div className="mt-12 space-y-6">{interviewPoints.map(p => <Point key={p.title} {...p} />)}</div>
+        <div className="mt-12 text-center"><InterviewCta /></div>
+      </div>
+    </section>
+  );
+};
+const Point = ({ icon: Icon, title, text, align, animate = true }: { icon: typeof Mic; title: string; text: string; align?: "right"; animate?: boolean }) => (
+  <motion.div {...(animate ? reveal : {})} className={cn("flex gap-4", align === "right" && "md:flex-row-reverse md:text-right")}>
+    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/20 text-primary"><Icon className="h-5 w-5" /></span>
+    <div><h3 className="font-display text-base font-bold text-background">{title}</h3><p className="mt-1 text-sm leading-snug text-background/65">{text}</p></div>
   </motion.div>
 );
 
