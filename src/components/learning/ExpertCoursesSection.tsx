@@ -10,6 +10,10 @@ import expertImg1 from "@/assets/expert-course-1.jpg";
 import expertImg2 from "@/assets/expert-course-2.jpg";
 import expertImg3 from "@/assets/expert-course-3.jpg";
 import expertImg4 from "@/assets/expert-course-4.jpg";
+import expertImg5 from "@/assets/experts/female-1.jpg";
+import expertImg6 from "@/assets/experts/male-1.jpg";
+import expertImg7 from "@/assets/experts/female-2.jpg";
+import expertImg8 from "@/assets/experts/male-2.jpg";
 
 const categories = ["All", "AI & ML", "Data Science", "Marketing", "Development", "Design", "Finance"];
 
@@ -19,43 +23,78 @@ const expertCourses = [
   { title: "Deep Learning A-Z 2026: Neural Networks & AI Masterclass", instructor: "Kirill Eremenko", image: expertImg3, avatar: "https://randomuser.me/api/portraits/men/32.jpg", rating: 4.6, ratings: "18,240", price: "₹649", originalPrice: "₹2,999", bestseller: true, category: "AI & ML" },
   { title: "Natural Language Processing with Transformers", instructor: "Dr. Priya Menon", image: expertImg2, avatar: "https://randomuser.me/api/portraits/women/68.jpg", rating: 4.8, ratings: "9,120", price: "₹599", originalPrice: "₹2,499", bestseller: false, category: "AI & ML" },
   { title: "Computer Vision & Image Recognition with PyTorch", instructor: "Raj Patel", image: expertImg4, avatar: "https://randomuser.me/api/portraits/men/75.jpg", rating: 4.5, ratings: "12,350", price: "₹579", originalPrice: "₹2,799", bestseller: false, category: "AI & ML" },
+  { title: "Generative AI & LLM Fine-Tuning in Production", instructor: "Ananya Deshmukh", image: expertImg5, avatar: "https://randomuser.me/api/portraits/women/21.jpg", rating: 4.9, ratings: "24,610", price: "₹629", originalPrice: "₹3,199", bestseller: true, category: "AI & ML" },
+  { title: "MLOps & Scalable AI Deployment with Docker & Kubernetes", instructor: "Siddharth Malhotra", image: expertImg6, avatar: "https://randomuser.me/api/portraits/men/41.jpg", rating: 4.7, ratings: "14,890", price: "₹549", originalPrice: "₹2,699", bestseller: false, category: "AI & ML" },
+  { title: "Reinforcement Learning & Autonomous Decision Systems", instructor: "Dr. Aditi Kulkarni", image: expertImg7, avatar: "https://randomuser.me/api/portraits/women/54.jpg", rating: 4.6, ratings: "8,430", price: "₹599", originalPrice: "₹2,899", bestseller: false, category: "AI & ML" },
+  { title: "Prompt Engineering & Enterprise RAG Architectures", instructor: "Varun Krishnan", image: expertImg8, avatar: "https://randomuser.me/api/portraits/men/62.jpg", rating: 4.8, ratings: "41,200", price: "₹499", originalPrice: "₹2,499", bestseller: true, category: "AI & ML" },
 
   // Data Science
   { title: "Ultimate AWS Certified Solutions Architect Associate 2026", instructor: "Stephane Maarek", image: expertImg3, avatar: "https://randomuser.me/api/portraits/men/22.jpg", rating: 4.7, ratings: "2,83,190", price: "₹579", originalPrice: "₹3,469", bestseller: true, category: "Data Science" },
   { title: "Data Science & Machine Learning Bootcamp with R", instructor: "Jose Portilla", image: expertImg1, avatar: "https://randomuser.me/api/portraits/men/46.jpg", rating: 4.6, ratings: "1,45,800", price: "₹499", originalPrice: "₹2,999", bestseller: true, category: "Data Science" },
   { title: "SQL for Data Analytics: Beginner to Advanced", instructor: "Amit Verma", image: expertImg4, avatar: "https://randomuser.me/api/portraits/men/51.jpg", rating: 4.8, ratings: "67,320", price: "₹449", originalPrice: "₹1,999", bestseller: false, category: "Data Science" },
   { title: "Statistics & Probability for Data Science with Python", instructor: "Dr. Kavita Rao", image: expertImg2, avatar: "https://randomuser.me/api/portraits/women/33.jpg", rating: 4.5, ratings: "22,100", price: "₹529", originalPrice: "₹2,499", bestseller: false, category: "Data Science" },
+  { title: "Power BI & Tableau Executive Data Storytelling", instructor: "Nandini Iyer", image: expertImg5, avatar: "https://randomuser.me/api/portraits/women/29.jpg", rating: 4.8, ratings: "53,400", price: "₹529", originalPrice: "₹2,799", bestseller: true, category: "Data Science" },
+  { title: "Apache Spark & Big Data Engineering with Databricks", instructor: "Harshvardhan Singh", image: expertImg6, avatar: "https://randomuser.me/api/portraits/men/33.jpg", rating: 4.7, ratings: "31,250", price: "₹649", originalPrice: "₹3,299", bestseller: false, category: "Data Science" },
+  { title: "Time Series Forecasting & Predictive Analytics", instructor: "Dr. Shalini Nair", image: expertImg7, avatar: "https://randomuser.me/api/portraits/women/47.jpg", rating: 4.6, ratings: "19,800", price: "₹549", originalPrice: "₹2,599", bestseller: false, category: "Data Science" },
+  { title: "Modern Data Stack: Snowflake, dbt & Airflow", instructor: "Pranav Kulkarni", image: expertImg8, avatar: "https://randomuser.me/api/portraits/men/71.jpg", rating: 4.8, ratings: "27,900", price: "₹599", originalPrice: "₹2,999", bestseller: true, category: "Data Science" },
 
   // Marketing
   { title: "Digital Marketing Masterclass: Get Your First 1,000 Customers", instructor: "Rohan Gupta", image: expertImg4, avatar: "https://randomuser.me/api/portraits/men/36.jpg", rating: 4.7, ratings: "2,81,991", price: "₹579", originalPrice: "₹3,469", bestseller: true, category: "Marketing" },
   { title: "SEO 2026: Complete Search Engine Optimization Certification", instructor: "Sneha Kapoor", image: expertImg2, avatar: "https://randomuser.me/api/portraits/women/25.jpg", rating: 4.6, ratings: "54,700", price: "₹499", originalPrice: "₹2,799", bestseller: true, category: "Marketing" },
   { title: "Social Media Marketing: Strategy & Content Creation", instructor: "Ankit Joshi", image: expertImg1, avatar: "https://randomuser.me/api/portraits/men/64.jpg", rating: 4.5, ratings: "38,900", price: "₹449", originalPrice: "₹1,999", bestseller: false, category: "Marketing" },
   { title: "Growth Hacking & Performance Marketing 2026", instructor: "Meghna Shah", image: expertImg3, avatar: "https://randomuser.me/api/portraits/women/52.jpg", rating: 4.4, ratings: "29,450", price: "₹399", originalPrice: "₹1,799", bestseller: false, category: "Marketing" },
+  { title: "Meta & Google Ads Mastery: High-ROAS Paid Acquisition", instructor: "Ritika Bansal", image: expertImg5, avatar: "https://randomuser.me/api/portraits/women/63.jpg", rating: 4.8, ratings: "46,200", price: "₹549", originalPrice: "₹2,699", bestseller: true, category: "Marketing" },
+  { title: "B2B SaaS Demand Generation & Account-Based Marketing", instructor: "Aditya Chawla", image: expertImg6, avatar: "https://randomuser.me/api/portraits/men/53.jpg", rating: 4.7, ratings: "21,300", price: "₹579", originalPrice: "₹2,899", bestseller: false, category: "Marketing" },
+  { title: "GA4, Marketing Attribution & Funnel Analytics", instructor: "Divya Subramanian", image: expertImg7, avatar: "https://randomuser.me/api/portraits/women/39.jpg", rating: 4.6, ratings: "17,450", price: "₹499", originalPrice: "₹2,299", bestseller: false, category: "Marketing" },
+  { title: "Brand Strategy & Copywriting That Converts", instructor: "Kabir Sengupta", image: expertImg8, avatar: "https://randomuser.me/api/portraits/men/81.jpg", rating: 4.8, ratings: "34,100", price: "₹479", originalPrice: "₹2,199", bestseller: true, category: "Marketing" },
 
   // Development
   { title: "100 Days of Code™: The Complete Python Pro Bootcamp", instructor: "Dr. Angela Yu", image: expertImg2, avatar: "https://randomuser.me/api/portraits/women/17.jpg", rating: 4.7, ratings: "4,14,685", price: "₹529", originalPrice: "₹3,199", bestseller: true, category: "Development" },
   { title: "The Complete JavaScript Course 2026: From Zero to Expert!", instructor: "Jonas Schmedtmann", image: expertImg1, avatar: "https://randomuser.me/api/portraits/men/11.jpg", rating: 4.8, ratings: "3,20,540", price: "₹549", originalPrice: "₹3,299", bestseller: true, category: "Development" },
   { title: "React — The Complete Guide 2026 (incl. Next.js & Redux)", instructor: "Maximilian Schwarzmüller", image: expertImg3, avatar: "https://randomuser.me/api/portraits/men/85.jpg", rating: 4.7, ratings: "2,90,100", price: "₹579", originalPrice: "₹3,469", bestseller: true, category: "Development" },
   { title: "Node.js, Express & MongoDB Bootcamp 2026", instructor: "Vikram Sinha", image: expertImg4, avatar: "https://randomuser.me/api/portraits/men/29.jpg", rating: 4.6, ratings: "78,200", price: "₹529", originalPrice: "₹2,999", bestseller: false, category: "Development" },
+  { title: "System Design & Scalable Microservices Architecture", instructor: "Shruti Deshpande", image: expertImg5, avatar: "https://randomuser.me/api/portraits/women/26.jpg", rating: 4.9, ratings: "91,400", price: "₹649", originalPrice: "₹3,499", bestseller: true, category: "Development" },
+  { title: "Go (Golang) for High-Performance Backend Systems", instructor: "Nikhil Tandon", image: expertImg6, avatar: "https://randomuser.me/api/portraits/men/48.jpg", rating: 4.7, ratings: "42,600", price: "₹549", originalPrice: "₹2,799", bestseller: false, category: "Development" },
+  { title: "Full-Stack TypeScript with Next.js 15, Prisma & Tailwind", instructor: "Pallavi Hegde", image: expertImg7, avatar: "https://randomuser.me/api/portraits/women/74.jpg", rating: 4.8, ratings: "63,800", price: "₹579", originalPrice: "₹2,999", bestseller: true, category: "Development" },
+  { title: "DevOps CI/CD Pipelines with GitHub Actions & Terraform", instructor: "Saurabh Chatterjee", image: expertImg8, avatar: "https://randomuser.me/api/portraits/men/67.jpg", rating: 4.6, ratings: "37,500", price: "₹529", originalPrice: "₹2,699", bestseller: false, category: "Development" },
 
   // Design
-  { title: "The Complete Figma UI/UX Design Masterclass", instructor: "Meera Nair", image: expertImg2, avatar: "https://randomuser.me/api/portraits/women/71.jpg", rating: 4.8, ratings: "62,400", price: "₹499", originalPrice: "₹2,499", bestseller: true, category: "Design" },
+  { title: "The Complete Figma UI/UX Design Masterclass", instructor: "Meera Nair", image: expertImg5, avatar: "https://randomuser.me/api/portraits/women/71.jpg", rating: 4.8, ratings: "62,400", price: "₹499", originalPrice: "₹2,499", bestseller: true, category: "Design" },
   { title: "Graphic Design Bootcamp: Photoshop, Illustrator & InDesign", instructor: "Arjun Bhatia", image: expertImg4, avatar: "https://randomuser.me/api/portraits/men/42.jpg", rating: 4.5, ratings: "41,800", price: "₹449", originalPrice: "₹2,299", bestseller: false, category: "Design" },
-  { title: "UX Research & Usability Testing: A Practical Guide", instructor: "Pooja Iyer", image: expertImg1, avatar: "https://randomuser.me/api/portraits/women/89.jpg", rating: 4.6, ratings: "18,900", price: "₹529", originalPrice: "₹2,199", bestseller: false, category: "Design" },
-  { title: "Motion Design & Animation with After Effects", instructor: "Karan Mehta", image: expertImg3, avatar: "https://randomuser.me/api/portraits/men/58.jpg", rating: 4.7, ratings: "24,350", price: "₹579", originalPrice: "₹2,799", bestseller: true, category: "Design" },
+  { title: "UX Research & Usability Testing: A Practical Guide", instructor: "Pooja Iyer", image: expertImg7, avatar: "https://randomuser.me/api/portraits/women/89.jpg", rating: 4.6, ratings: "18,900", price: "₹529", originalPrice: "₹2,199", bestseller: false, category: "Design" },
+  { title: "Motion Design & Animation with After Effects", instructor: "Karan Mehta", image: expertImg6, avatar: "https://randomuser.me/api/portraits/men/58.jpg", rating: 4.7, ratings: "24,350", price: "₹579", originalPrice: "₹2,799", bestseller: true, category: "Design" },
+  { title: "Design Systems at Scale: Tokens, Variables & Governance", instructor: "Tanvi Parekh", image: expertImg2, avatar: "https://randomuser.me/api/portraits/women/31.jpg", rating: 4.9, ratings: "35,200", price: "₹599", originalPrice: "₹2,999", bestseller: true, category: "Design" },
+  { title: "Product Design Portfolio & Case Study Storytelling", instructor: "Devansh Ahuja", image: expertImg1, avatar: "https://randomuser.me/api/portraits/men/24.jpg", rating: 4.7, ratings: "28,400", price: "₹499", originalPrice: "₹2,499", bestseller: false, category: "Design" },
+  { title: "3D Web & Interactive Experiences with Spline & Framer", instructor: "Ishita Sengupta", image: expertImg3, avatar: "https://randomuser.me/api/portraits/women/59.jpg", rating: 4.6, ratings: "15,700", price: "₹549", originalPrice: "₹2,699", bestseller: false, category: "Design" },
+  { title: "Mobile App UI/UX for iOS & Android Design Guidelines", instructor: "Rishi Oberoi", image: expertImg8, avatar: "https://randomuser.me/api/portraits/men/79.jpg", rating: 4.8, ratings: "44,900", price: "₹529", originalPrice: "₹2,599", bestseller: true, category: "Design" },
 
   // Finance
-  { title: "Financial Modeling & Valuation: Complete Beginner to Pro", instructor: "Dr. Sanjay Mohan", image: expertImg1, avatar: "https://randomuser.me/api/portraits/men/93.jpg", rating: 4.7, ratings: "72,600", price: "₹579", originalPrice: "₹3,199", bestseller: true, category: "Finance" },
-  { title: "Stock Market Investing & Trading: Zero to Hero", instructor: "Ritu Sharma", image: expertImg3, avatar: "https://randomuser.me/api/portraits/women/38.jpg", rating: 4.5, ratings: "58,100", price: "₹499", originalPrice: "₹2,499", bestseller: true, category: "Finance" },
+  { title: "Financial Modeling & Valuation: Complete Beginner to Pro", instructor: "Dr. Sanjay Mohan", image: expertImg8, avatar: "https://randomuser.me/api/portraits/men/93.jpg", rating: 4.7, ratings: "72,600", price: "₹579", originalPrice: "₹3,199", bestseller: true, category: "Finance" },
+  { title: "Stock Market Investing & Trading: Zero to Hero", instructor: "Ritu Sharma", image: expertImg7, avatar: "https://randomuser.me/api/portraits/women/38.jpg", rating: 4.5, ratings: "58,100", price: "₹499", originalPrice: "₹2,499", bestseller: true, category: "Finance" },
   { title: "Accounting & Bookkeeping for Small Business 2026", instructor: "Deepak Kulkarni", image: expertImg2, avatar: "https://randomuser.me/api/portraits/men/77.jpg", rating: 4.4, ratings: "33,200", price: "₹399", originalPrice: "₹1,799", bestseller: false, category: "Finance" },
   { title: "Personal Finance & Wealth Management Masterclass", instructor: "Nisha Agarwal", image: expertImg4, avatar: "https://randomuser.me/api/portraits/women/15.jpg", rating: 4.6, ratings: "45,700", price: "₹449", originalPrice: "₹2,299", bestseller: false, category: "Finance" },
+  { title: "Investment Banking & Private Equity Deal Structuring", instructor: "Aarav Rajvanshi", image: expertImg6, avatar: "https://randomuser.me/api/portraits/men/19.jpg", rating: 4.8, ratings: "39,400", price: "₹649", originalPrice: "₹3,499", bestseller: true, category: "Finance" },
+  { title: "Corporate FP&A, Budgeting & Executive Forecasting", instructor: "Swati Venkatesh", image: expertImg5, avatar: "https://randomuser.me/api/portraits/women/42.jpg", rating: 4.7, ratings: "26,800", price: "₹549", originalPrice: "₹2,799", bestseller: false, category: "Finance" },
+  { title: "Algorithmic Trading & Quantitative Finance with Python", instructor: "Gaurav Nanda", image: expertImg1, avatar: "https://randomuser.me/api/portraits/men/56.jpg", rating: 4.8, ratings: "31,500", price: "₹599", originalPrice: "₹2,999", bestseller: true, category: "Finance" },
+  { title: "Venture Capital Valuation & Startup Fundraising", instructor: "Radhika Menon", image: expertImg3, avatar: "https://randomuser.me/api/portraits/women/66.jpg", rating: 4.6, ratings: "19,200", price: "₹529", originalPrice: "₹2,599", bestseller: false, category: "Finance" },
+];
+
+const allFeaturedCourses = [
+  expertCourses[0],  // Dr. Neha Sharma (expertImg1)
+  expertCourses[8],  // Stephane Maarek (expertImg3)
+  expertCourses[16], // Rohan Gupta (expertImg4)
+  expertCourses[24], // Dr. Angela Yu (expertImg2)
+  expertCourses[32], // Meera Nair (expertImg5)
+  expertCourses[44], // Aarav Rajvanshi (expertImg6)
+  expertCourses[41], // Ritu Sharma (expertImg7)
+  expertCourses[40], // Dr. Sanjay Mohan (expertImg8)
 ];
 
 const ExpertCoursesSection = () => {
   const [active, setActive] = useState("All");
-  // "All" shows only top 4 bestsellers (one per category); individual tabs show all 4
+  // "All" shows 8 top expert profiles (two rows of 4); individual tabs show all 8 for that category
   const filtered = active === "All"
-    ? categories.slice(1, 5).map((cat) => expertCourses.find((c) => c.category === cat && c.bestseller)!).filter(Boolean)
+    ? allFeaturedCourses
     : expertCourses.filter((c) => c.category === active);
 
   return (
