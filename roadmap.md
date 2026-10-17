@@ -126,5 +126,6 @@
 - Add a company logo under the name and designation in the quote card and at the bottom of each customer-story card — implemented with Razorpay, Infosys, Flipkart and Zoho from the existing logo library; laptop and phone checked
 
 ## Employer page — "All-in-One AI Hiring That Thinks Like You Do." layout rebuild
-- Keep the section's content and heading, rebuild the layout like the attached reference: left column with the plan list as icon rows, pill CTA and a handwritten-style note; right column a warm rounded panel holding the product video with floating skill tags — pending
-- Verify laptop and phone layout — pending
+- Keep the section's content and heading, rebuild the layout like the attached reference: left column with the plan list as icon rows, pill CTA and a handwritten-style note; right column a warm rounded panel holding the product video with floating skill tags — done; plan list, video, "Get Started" and "No credit card required" all unchanged in content
+- Verify laptop and phone layout — done; heading clear of the header, panel full with the video filling it, tags on the panel edges and hidden on phones, poster showing before play, no overlap or clipping at 1497 and 390 widths, build OK
+
