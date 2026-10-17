@@ -124,9 +124,6 @@ export const PlatformSection = () => (
   <section className="py-20 md:py-28">
     <div className="container">
       <CenterIntro eyebrow="One Platform" first="Everything It Takes," second="In One Platform." description={<>Assess, proctor, brand, and interview without juggling separate tools.<br className="hidden md:block" /> Six capabilities, one connected workflow.</>} />
-      <motion.div {...reveal} className="mx-auto mb-8 max-w-5xl overflow-hidden rounded-lg">
-        <img src={assessmentImage} alt="Indian professionals completing skills assessments with a coordinator" className="aspect-[16/9] w-full object-cover md:aspect-[21/9]" width={1536} height={1024} loading="lazy" />
-      </motion.div>
       <div className="mx-auto grid max-w-5xl gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
         {platformPoints.map(({ icon: Icon, title, text }, i) => (
           <motion.div {...reveal} transition={{ duration: 0.5, delay: i * 0.06 }} key={title} className="group bg-card p-8 text-center transition-colors hover:bg-accent/40">
