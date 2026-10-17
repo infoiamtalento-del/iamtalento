@@ -174,24 +174,24 @@ const Point = ({ icon: Icon, title, text, align, animate = true }: { icon: typeo
 
 /* ---------- One platform: the 6 requested points ---------- */
 const platformPoints = [
-  { icon: Library, title: "Skill Assessment Library", text: "Ready-made, proctored tests for every role" },
-  { icon: ShieldCheck, title: "20 Layers of Cheating Prevention", text: "AI proctoring across the entire test journey" },
-  { icon: Wand2, title: "Custom AI Assessment Creation", text: "Build role-specific tests in minutes" },
-  { icon: Palette, title: "White-Label Branding", text: "Your brand on every assessment touchpoint" },
-  { icon: GraduationCap, title: "Bulk Campus Hiring & Screening", text: "Screen thousands of candidates at once" },
-  { icon: Bot, title: "Create AI Scheduled Interviews", text: "Automated interview rounds, hands-free" },
+  { title: "Skill Assessment Library", text: "Ready-made, proctored tests for every role, with detailed reports that let you shortlist on demonstrated ability instead of resumes." },
+  { title: "20 Layers of Cheating Prevention", text: "AI proctoring across the entire test journey, from identity checks to browser controls, so every score can be trusted." },
+  { title: "Custom AI Assessment Creation", text: "Build role-specific tests in minutes. Paste a job description and get questions mapped to what the role actually demands." },
+  { title: "White-Label Branding", text: "Your brand on every assessment touchpoint, from invites and test screens to the reports your candidates receive." },
+  { title: "Bulk Campus Hiring & Screening", text: "Screen thousands of candidates at once, with ranked shortlists ready for your team the moment the drive ends." },
+  { title: "Create AI Scheduled Interviews", text: "Automated interview rounds, hands-free. Candidates join on their schedule and you review evidence-linked scores." },
 ];
 export const PlatformSection = () => (
   <section className="py-20 md:py-28">
     <div className="container">
       <CenterIntro eyebrow="One Platform" first="Everything It Takes," second="In One Platform." description={<>Assess, proctor, brand, and interview without juggling separate tools.<br className="hidden md:block" /> Six capabilities, one connected workflow.</>} />
-      <div className="mx-auto grid max-w-5xl gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
-        {platformPoints.map(({ icon: Icon, title, text }, i) => (
-          <motion.div {...reveal} transition={{ duration: 0.5, delay: i * 0.06 }} key={title} className="group bg-card p-8 text-center transition-colors hover:bg-accent/40">
-            <span className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground"><Icon className="h-6 w-6" /></span>
-            <p className="mb-2 text-[10px] font-bold tracking-[0.2em] text-muted-foreground">0{i + 1}</p>
-            <h3 className="mb-2 font-display text-lg font-bold">{title}</h3>
-            <p className="text-sm text-muted-foreground">{text}</p>
+      <div className="mx-auto grid max-w-7xl border-l border-t border-border sm:grid-cols-2 lg:grid-cols-3">
+        {platformPoints.map(({ title, text }, i) => (
+          <motion.div {...reveal} transition={{ duration: 0.5, delay: i * 0.06 }} key={title} className={cn("group flex flex-col border-b border-r border-border p-8 transition-colors hover:bg-card md:p-10", i === 0 && "bg-card")}>
+            <p className="text-sm font-semibold tracking-[0.15em] text-primary">0{i + 1}</p>
+            <h3 className="mb-5 mt-10 font-serif text-3xl font-normal leading-tight tracking-normal text-foreground">{title}</h3>
+            <p className="flex-1 text-base leading-relaxed text-muted-foreground">{text}</p>
+            <Link to="/contact" className="mt-8 inline-flex items-center gap-2 text-base font-semibold text-primary">Learn more <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></Link>
           </motion.div>
         ))}
       </div>
