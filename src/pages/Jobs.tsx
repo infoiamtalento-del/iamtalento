@@ -267,17 +267,17 @@ const Jobs = () => {
         {/* Remote Jobs */}
         <RemoteJobsSection />
 
-        {/* Featured Companies */}
+        {/* Featured Companies (1,500,000+ Job Vacancies Listed) */}
         <FeaturedCompanies />
+
+        {/* Success Stories */}
+        <JobsSuccessStoriesSection />
 
         {/* Events & Meetups */}
         <JobsEventsSection />
 
         {/* Get Job Alerts email banner */}
         <JobAlertsBanner />
-
-        {/* Success Stories */}
-        <JobsSuccessStoriesSection />
 
         {/* AI Tools to Get You Hired */}
         <ResumeToolkitSection />
