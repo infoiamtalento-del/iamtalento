@@ -13,7 +13,7 @@ import {
 import { toast } from "sonner";
 import { DEFAULT_USERS } from "@/data/proData";
 import { getCandidatePhoto } from "@/data/portalAssets";
-import siteLogo from "@/assets/I-am-Talento-2.png.asset.json";
+import { siteLogo } from "@/assets/logo";
 
 type AuthMode = "login" | "signup";
 type UserRole = "employee" | "employer";

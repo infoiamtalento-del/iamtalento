@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Zap, Github, Twitter, Linkedin, Mail } from "lucide-react";
-import siteLogo from "@/assets/I-am-Talento-2.png.asset.json";
+import { siteLogo } from "@/assets/logo";
 
 const footerLinks = {
   "For Employers": [

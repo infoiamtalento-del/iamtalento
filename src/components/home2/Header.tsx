@@ -4,7 +4,7 @@ import { ArrowRight, Menu, X, Sparkles, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 
-import siteLogo from "@/assets/I-am-Talento-2.png.asset.json";
+import { siteLogo } from "@/assets/logo";
 import { navLinks } from "./data";
 
 const Header = () => {
