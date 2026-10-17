@@ -203,23 +203,23 @@ const items: CIRItem[] = [
 /* ------------------------------------------------------------------ */
 
 const ModuleVisualPanel = ({ activeIdx }: { activeIdx: number }) => {
-  // 01 — AI-Powered Skill Assessment
+  // 01 — AI-Powered Skill Assessment (2x2 Competency Grid — No Bars)
   if (activeIdx === 0) {
     const competencies = [
-      { name: "Domain Execution & Strategy", level: 92, tag: "Expert" },
-      { name: "Analytical & Data Reasoning", level: 85, tag: "Advanced" },
-      { name: "Real-World Case Solving", level: 88, tag: "Advanced" },
-      { name: "Workplace Communication", level: 79, tag: "Proficient" },
+      { name: "Domain Execution", round: "Round 01 · Functional", level: "92/100", tag: "Expert" },
+      { name: "Analytical Reasoning", round: "Round 02 · Psychometric", level: "85/100", tag: "Advanced" },
+      { name: "Case Problem Solving", round: "Round 03 · Practical", level: "88/100", tag: "Advanced" },
+      { name: "Workplace Communication", round: "Round 04 · HR & Verbal", level: "79/100", tag: "Proficient" },
     ];
     return (
-      <div className="flex h-full flex-col justify-between">
-        <div className="flex items-center justify-between rounded-2xl bg-[#002C66] px-5 py-4 text-white">
+      <div className="flex h-full flex-col justify-between gap-3">
+        <div className="flex items-center justify-between rounded-2xl bg-[#002C66] px-4 py-3 text-white shrink-0">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15">
-              <Brain className="h-5 w-5 text-amber-300" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15">
+              <Brain className="h-4.5 w-4.5 text-amber-300" />
             </div>
             <div>
-              <p className="text-sm font-bold leading-tight">AI Skill Intelligence Engine</p>
+              <p className="text-xs sm:text-sm font-bold leading-tight">AI Skill Intelligence Engine</p>
               <p className="text-[11px] text-white/70">Multi-Round Proctored Evaluation</p>
             </div>
           </div>
@@ -229,34 +229,32 @@ const ModuleVisualPanel = ({ activeIdx }: { activeIdx: number }) => {
           </div>
         </div>
 
-        <div className="my-auto py-4 space-y-3.5">
-          {competencies.map((c, i) => (
-            <div key={c.name} className="space-y-1.5">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-bold text-slate-800">{c.name}</span>
-                <div className="flex items-center gap-2">
-                  <span className="rounded-md bg-[#002C66]/8 px-2 py-0.5 text-[10px] font-bold text-[#002C66]">
-                    {c.tag}
-                  </span>
-                  <span className="text-sm font-extrabold tabular-nums text-slate-900">{c.level}%</span>
-                </div>
+        <div className="grid grid-cols-2 gap-2.5 my-auto">
+          {competencies.map((c) => (
+            <div
+              key={c.name}
+              className="rounded-2xl border border-slate-200/90 bg-[#FBF4EB]/45 p-3.5 flex flex-col justify-between"
+            >
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 truncate">
+                  {c.round}
+                </span>
+                <span className="rounded-full bg-[#002C66]/10 px-2 py-0.5 text-[10px] font-extrabold text-[#002C66] shrink-0">
+                  {c.tag}
+                </span>
               </div>
-              <div className="h-2.5 w-full rounded-full bg-slate-100 overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${c.level}%` }}
-                  transition={{ duration: 0.65, delay: i * 0.08 }}
-                  className={`h-full rounded-full ${
-                    c.level >= 88 ? "bg-emerald-600" : "bg-[#002C66]"
-                  }`}
-                />
+              <div className="flex items-end justify-between gap-2">
+                <p className="text-xs font-bold text-slate-900 leading-snug">{c.name}</p>
+                <span className="text-base font-extrabold font-display text-[#002C66] tabular-nums shrink-0">
+                  {c.level}
+                </span>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="rounded-xl bg-[#FBF4EB] border border-[#002C66]/15 px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
+        <div className="rounded-xl bg-[#FBF4EB] border border-[#002C66]/15 px-4 py-2.5 flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-2">
             <ShieldCheck className="h-4 w-4 text-[#002C66]" />
             <span className="text-xs font-bold text-slate-800">
               Zero human bias · Auto-graded rubric
