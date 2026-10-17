@@ -116,3 +116,8 @@
 - Add the supplied reference section above "Meet Your Next Hire. Beyond a Resume." — done; centred headline, two buttons, "No login required" note, and three connected cards (your question + AI criteria, candidate response with Text/Audio/Video tabs, scored AI report)
 - Verify the flow and layout — done; tabs switch, the sample answer plays and advances, cards stack on phone with no overflow, section confirmed above "Meet Your Next Hire", build OK
 
+
+## Employer page — section removals
+- Remove the "Hiring at the Speed Of Conversation." copilot chat section — done; component, sample prompts and its unused icons removed from the shared showcase file
+- Remove the "Great People Are Hard to Find." problem section — done; its three cards, banner photo and unused imports removed from the employer page
+- Verify the remaining page — done; both sections gone and "Everything It Takes", "Meet Your Next Hire" and "Book a Demo" still present at 1497 and 390 widths, no overflow or page errors, build OK
