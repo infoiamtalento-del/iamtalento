@@ -28,6 +28,24 @@ const reveal = {
   transition: { duration: 0.55 },
 };
 
+/* ---------- Company marks used under testimonials ---------- */
+const companyMarks: Record<string, string> = {
+  Razorpay: "/company-logos/razorpay.svg",
+  Infosys: "/company-logos/infosys.svg",
+  Flipkart: "/company-logos/flipkart.svg",
+  Zoho: "/company-logos/zoho.svg",
+};
+
+const CompanyMark = ({ name, className }: { name: string; className?: string }) => (
+  <img
+    src={companyMarks[name]}
+    alt={`${name} logo`}
+    loading="lazy"
+    className={cn("w-auto opacity-70 grayscale", className)}
+  />
+);
+
+
 export const CenterIntro = ({ eyebrow, first, second, description, invert = false }: {
   eyebrow: string; first: string; second: string; description: React.ReactNode; invert?: boolean;
 }) => (
@@ -69,6 +87,10 @@ export const TrustStats = () => (
           <div className="text-left"><p className="text-sm font-bold">Meera Krishnan</p><p className="text-xs text-muted-foreground">Head of Talent, Fintech scale-up</p></div>
           <span className="ml-4 flex gap-0.5 text-primary">{Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-4 w-4 fill-current" />)}</span>
         </figcaption>
+        <div className="mt-6 border-t border-border/60 pt-6">
+          <CompanyMark name="Razorpay" className="mx-auto h-6" />
+        </div>
+
       </motion.figure>
     </div>
   </section>
@@ -504,10 +526,11 @@ export const IntegrationsSection = () => (
 
 /* ---------- Video testimonials ---------- */
 const stories = [
-  { img: v1, name: "Rahul Verma", role: "TA Lead, IT Services", quote: "Campus drives that took a month now finish in a week." },
-  { img: v2, name: "Priya Nair", role: "HR Director, Retail", quote: "Proctoring reports gave our managers real confidence." },
-  { img: v3, name: "Vikram Singh", role: "CTO, SaaS startup", quote: "The AI interviews feel human and save my engineers hours." },
+  { img: v1, name: "Rahul Verma", role: "TA Lead, IT Services", company: "Infosys", quote: "Campus drives that took a month now finish in a week." },
+  { img: v2, name: "Priya Nair", role: "HR Director, Retail", company: "Flipkart", quote: "Proctoring reports gave our managers real confidence." },
+  { img: v3, name: "Vikram Singh", role: "CTO, SaaS startup", company: "Zoho", quote: "The AI interviews feel human and save my engineers hours." },
 ];
+
 export const TestimonialsSection = () => (
   <section className="py-20 md:py-28">
     <div className="container">
@@ -523,7 +546,11 @@ export const TestimonialsSection = () => (
               <p className="text-sm leading-relaxed">“{s.quote}”</p>
               <p className="mt-4 text-sm font-bold">{s.name}</p>
               <p className="text-xs text-muted-foreground">{s.role}</p>
+              <div className="mt-5 border-t border-border/60 pt-4">
+                <CompanyMark name={s.company} className="mx-auto h-5" />
+              </div>
             </div>
+
           </motion.article>
         ))}
       </div>
