@@ -478,7 +478,7 @@ export const PlanVideoSection = () => (
       <motion.h2 {...reveal} className="mx-auto mb-12 max-w-3xl text-center font-serif text-3xl font-normal leading-tight tracking-normal text-foreground sm:text-4xl lg:text-5xl">
         All-in-One AI Hiring <span className="text-primary">That Thinks Like You Do.</span>
       </motion.h2>
-      <motion.div {...reveal} className="mx-auto grid max-w-6xl items-stretch gap-10 lg:grid-cols-[5fr_7fr] lg:gap-16">
+      <motion.div {...reveal} className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[5fr_7fr] lg:gap-16">
         <div>
           <h3 className="font-serif text-3xl font-normal leading-tight tracking-normal text-foreground sm:text-4xl">What's included in your plan</h3>
           <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">Everything your team needs to post, screen, assess and hire — in one subscription.</p>
@@ -502,7 +502,7 @@ export const PlanVideoSection = () => (
             </p>
           </div>
         </div>
-        <div className="relative flex flex-col justify-center overflow-hidden rounded-[28px] bg-accent p-5 md:p-9">
+        <div className="relative overflow-hidden rounded-[28px] bg-accent p-5 md:p-9">
           <div aria-hidden className="pointer-events-none absolute inset-0">
             <span className="absolute left-[-12%] top-8 h-10 w-2/3 -rotate-6 rounded-full bg-background/50" />
             <span className="absolute right-[-16%] top-1/3 h-12 w-1/2 rotate-6 rounded-full bg-background/40" />
@@ -510,7 +510,7 @@ export const PlanVideoSection = () => (
           </div>
           <div className="relative">
             <span className="mb-5 inline-flex items-center gap-2 rounded-full bg-card px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary shadow-sm"><CirclePlay className="h-3.5 w-3.5" /> Product in 60 Sec</span>
-            <video src="/product-in-60-sec.mp4" poster={planPoster} controls preload="metadata" playsInline className="aspect-video w-full rounded-2xl border border-border bg-background object-cover shadow-xl" />
+            <video src="/product-in-60-sec.mp4" poster={planPoster} controls preload="metadata" playsInline className="aspect-[4/3] w-full rounded-2xl border border-border bg-background object-cover shadow-xl" />
           </div>
           <span className="pointer-events-none absolute left-2 top-[34%] hidden items-center gap-1.5 rounded-full border border-border/60 bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground shadow-lg md:flex"><Code2 className="h-3.5 w-3.5 text-primary" /> Python</span>
           <span className="pointer-events-none absolute left-5 top-[62%] hidden items-center gap-1.5 rounded-full border border-border/60 bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground shadow-lg md:flex"><PenTool className="h-3.5 w-3.5 text-primary" /> Design</span>
