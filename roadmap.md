@@ -137,3 +137,7 @@
 - Replace the four steps with Post Jobs, Talent Hunt, Qualified Pool, Shortlist and Hire and Support — done; heading now reads "Five Clear Steps" and the row fits five cards
 - Verify the row at laptop and phone — done; all five titles present, old steps gone, five equal cards at 1497 and no overflow or page errors at 390
 
+## Employer page — "All-in-One AI Hiring" heading style
+- Restyle the "All-in-One AI Hiring That Thinks Like You Do." heading like the other section headings — done; it now uses the shared centred heading (small uppercase blue label, bold sans-serif, blue second line) instead of the serif one, with the label "One Subscription"
+- Verify it matches — done; identical typography, colour and centred alignment to the "One Platform for Every Team That Hires" heading at 1497 and 390 widths, no overflow or page errors, build OK
+
