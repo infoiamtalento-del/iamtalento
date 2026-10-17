@@ -118,11 +118,12 @@ const faqs = [
 
 /* ── NEW DATA ── */
 const hosts = [
-  { name: "Rohan Mehta", role: "VP Engineering · Stripe", img: "https://i.pravatar.cc/200?img=15", topic: "Scaling Engineering Orgs" },
-  { name: "Priya Nair", role: "Head of Product · Notion", img: "https://i.pravatar.cc/200?img=45", topic: "Product-Led Growth" },
-  { name: "Arjun Kapoor", role: "Founder · Loop AI", img: "https://i.pravatar.cc/200?img=22", topic: "Building AI-First Startups" },
-  { name: "Sneha Reddy", role: "Design Director · Figma", img: "https://i.pravatar.cc/200?img=49", topic: "Design Systems at Scale" },
+  { name: "Rohan Mehta", role: "VP Engineering · Stripe", img: rohanPhoto, category: "Engineering", topic: "Scaling Engineering Orgs" },
+  { name: "Priya Nair", role: "Head of Product · Notion", img: meeraPhoto, category: "Product", topic: "Product-Led Growth" },
+  { name: "Arjun Kapoor", role: "Founder · Loop AI", img: arjunPhoto, category: "AI", topic: "Building AI-First Startups" },
+  { name: "Sneha Reddy", role: "Design Director · Figma", img: kavyaPhoto, category: "Design", topic: "Design Systems at Scale" },
 ];
+const hostCategories = ['All', 'Engineering', 'Product', 'AI', 'Design'];
 
 const perks = [
   { icon: Gift, title: "Curated guest list", desc: "No cold rooms — every attendee is vetted for relevance." },
@@ -166,7 +167,6 @@ const connectionBenefits = [
 const cityPhotos = [bangalore, mumbai, delhi, hyderabad, pune, chennai];
 const localCities = cities.slice(0, 6).map((city, i) => ({ ...city, img: cityPhotos[i] }));
 const eventPhotos = [communityPhoto, panelPhoto, meetupPhoto, industryPhoto, communityPhoto, panelPhoto];
-const hostPhotos = [rohanPhoto, meeraPhoto, arjunPhoto, kavyaPhoto];
 const memberPhotos = [priyaPhoto, rahulPhoto, ananyaPhoto, vikramPhoto, kavyaPhoto, arjunPhoto];
 const galleryPhotos = [communityPhoto, panelPhoto, meetupPhoto, industryPhoto, eventPhoto, communityPhoto, panelPhoto, meetupPhoto, webinarPhoto, podcastPhoto].slice(0, 9);
 const scrollToEvents = () => document.getElementById('networking-events')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
@@ -175,6 +175,7 @@ const Networking = () => {
   const [showAll, setShowAll] = useState(false);
   const [city, setCity] = useState('All');
   const [memberStart, setMemberStart] = useState(0);
+  const [hostFilter, setHostFilter] = useState('All');
   const filteredEvents = upcoming.filter(event => city === 'All' || event.city === city);
   const displayedEvents = showAll ? filteredEvents : filteredEvents.slice(0, 3);
   return (
