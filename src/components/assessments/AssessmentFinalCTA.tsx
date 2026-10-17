@@ -9,19 +9,13 @@ const AssessmentFinalCTA = () => (
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="flex flex-col md:flex-row items-center justify-between gap-6 px-8 py-7"
-        style={{
-          borderRadius: 12,
-          border: "1px solid hsl(355 84% 54% / 0.2)",
-          background: "hsl(355 84% 54% / 0.03)",
-        }}
+        className="flex flex-col md:flex-row items-center justify-between gap-6 px-8 py-7 bg-white rounded-xl border border-slate-200/90 shadow-xs"
       >
         <div className="flex items-center gap-4 flex-1">
           <div
-            className="h-12 w-12 flex items-center justify-center shrink-0"
-            style={{ borderRadius: 12, background: "hsl(355 84% 54% / 0.1)" }}
+            className="h-12 w-12 flex items-center justify-center shrink-0 rounded-xl bg-[#002C66]/10"
           >
-            <Award className="h-6 w-6 text-primary" />
+            <Award className="h-6 w-6 text-[#002C66]" />
           </div>
           <div>
             <p className="text-lg font-bold" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: "#0F172A" }}>

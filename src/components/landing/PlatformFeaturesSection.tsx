@@ -297,7 +297,7 @@ const PlatformFeaturesSection = () => {
                   background: isActive ? "hsl(var(--primary))" : "hsl(var(--card))",
                   color: isActive ? "hsl(var(--primary-foreground))" : "hsl(var(--muted-foreground))",
                   border: isActive ? "none" : "1px solid hsl(var(--border))",
-                  boxShadow: isActive ? "0 4px 20px rgba(124,58,237,0.3)" : "none",
+                  boxShadow: isActive ? "0 4px 16px rgba(0, 44, 102, 0.2)" : "none",
                 }}
               >
                 <FIcon className="h-4 w-4" />
@@ -315,45 +315,44 @@ const PlatformFeaturesSection = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.25 }}
-            className="rounded-2xl border border-border/50 shadow-xl overflow-hidden"
-            style={{ background: "hsl(var(--card))" }}
+            className="rounded-2xl border border-slate-200/80 shadow-md overflow-hidden bg-white"
           >
             <div className="grid lg:grid-cols-2 gap-0">
               {/* Left: content */}
               <div className="p-8 lg:p-12 flex flex-col justify-center">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent text-accent-foreground text-xs font-medium mb-6 border border-primary/10 self-start">
-                  <Icon className="h-3.5 w-3.5 text-primary" />
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#002C66]/8 text-[#002C66] text-xs font-medium mb-6 border border-[#002C66]/15 self-start">
+                  <Icon className="h-3.5 w-3.5 text-[#002C66]" />
                   {feature.tag}
                 </div>
-                <h3 className="text-2xl md:text-3xl font-bold font-display mb-4 leading-tight">
+                <h3 className="text-2xl md:text-3xl font-bold font-display mb-4 leading-tight text-slate-900">
                   {feature.headline}
                 </h3>
                 <p className="text-muted-foreground mb-6 leading-relaxed">{feature.description}</p>
                 <div className="space-y-2 mb-6">
                   {feature.details.map(({ icon: DIcon, text }) => (
                     <div key={text} className="flex items-center gap-3">
-                      <div className="h-7 w-7 rounded-lg bg-accent flex items-center justify-center shrink-0">
-                        <DIcon className="h-3.5 w-3.5 text-primary" />
+                      <div className="h-7 w-7 rounded-lg bg-[#002C66]/8 flex items-center justify-center shrink-0">
+                        <DIcon className="h-3.5 w-3.5 text-[#002C66]" />
                       </div>
                       <span className="text-sm text-muted-foreground">{text}</span>
                     </div>
                   ))}
                 </div>
                 <Link to={feature.href} className="self-start">
-                  <Button size="lg" className="bg-[hsl(33,100%,50%)] text-white hover:bg-[hsl(33,100%,45%)] border-0 gap-2 h-11 px-7">
+                  <Button size="lg" className="bg-[#002C66] text-white hover:bg-[#00204d] border-0 gap-2 h-11 px-7">
                     {feature.cta} <ArrowRight className="h-4 w-4" />
                   </Button>
                 </Link>
               </div>
 
               {/* Right: mockup */}
-              <div className={`bg-gradient-to-br ${feature.gradient} border-l border-border/30 p-6 lg:p-8 hidden lg:flex items-center justify-center`}>
-                <div className="w-full rounded-xl border border-border/50 shadow-lg overflow-hidden" style={{ background: "hsl(var(--card))" }}>
-                  <div className="h-8 bg-secondary/50 border-b border-border/30 flex items-center px-3 gap-1.5">
-                    <div className="h-2 w-2 rounded-full bg-destructive/40" />
-                    <div className="h-2 w-2 rounded-full bg-muted-foreground/30" />
-                    <div className="h-2 w-2 rounded-full bg-primary/30" />
-                    <div className="flex-1 h-4 rounded bg-secondary mx-8" />
+              <div className="bg-slate-50/80 border-l border-slate-200/80 p-6 lg:p-8 hidden lg:flex items-center justify-center">
+                <div className="w-full rounded-xl border border-slate-200/80 shadow-sm overflow-hidden bg-white">
+                  <div className="h-8 bg-slate-100/80 border-b border-slate-200/60 flex items-center px-3 gap-1.5">
+                    <div className="h-2 w-2 rounded-full bg-slate-300" />
+                    <div className="h-2 w-2 rounded-full bg-slate-300" />
+                    <div className="h-2 w-2 rounded-full bg-slate-300" />
+                    <div className="flex-1 h-4 rounded bg-white border border-slate-200/60 mx-8" />
                   </div>
                   <div className="p-5">{mockupMap[feature.mockup]}</div>
                 </div>

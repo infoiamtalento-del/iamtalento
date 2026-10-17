@@ -93,16 +93,17 @@ const AssessmentHero = () => {
 
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.8 }} className="flex flex-wrap gap-4 mb-8">
               <Link to="/assessments/explore">
-                <Button size="lg" className="bg-[hsl(33,100%,50%)] text-white hover:bg-[hsl(33,100%,45%)] border-0 gap-2 h-12 px-6">
+                <Button size="lg" className="bg-[#002C66] text-white hover:bg-[#00204d] border-0 gap-2 h-12 px-6">
                   Take Your Assessment <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
               <Button
                 size="lg"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 border-0 gap-2 h-12 px-6"
+                variant="outline"
+                className="bg-white border-slate-300 text-slate-900 hover:bg-slate-50 gap-2 h-12 px-6"
                 onClick={() => setCirOpen(true)}
               >
-                <FileBarChart2 className="h-4 w-4" /> Get Sample CIR Report
+                <FileBarChart2 className="h-4 w-4 text-[#002C66]" /> Get Sample CIR Report
               </Button>
             </motion.div>
 
@@ -114,37 +115,36 @@ const AssessmentHero = () => {
           </div>
 
 
-          {/* Right — Wide red card */}
+          {/* Right — Wide navy card */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.3 }}
             className="relative hidden lg:block"
           >
-            <div className="relative overflow-hidden rounded-2xl bg-primary" style={{ aspectRatio: "16 / 9" }}>
+            <div className="relative overflow-hidden rounded-2xl bg-[#002C66] shadow-lg" style={{ aspectRatio: "16 / 9" }}>
               {/* Right image */}
               <div className="absolute right-0 top-0 bottom-0 w-[45%]">
                 <img src={assessmentHeroPerson} alt="Professional taking assessment" className="w-full h-full object-cover object-top" />
-                <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/40 to-transparent" />
               </div>
 
               {/* Content — minimal */}
               <div className="relative z-10 p-10 max-w-[55%] flex flex-col justify-center h-full">
-                <h3 className="text-2xl font-bold font-display text-primary-foreground leading-snug mb-3">
+                <h3 className="text-2xl font-bold font-display text-white leading-snug mb-3">
                   Prove Your Skills with
                   <br />
                   Industry-Grade Tests
                 </h3>
 
-                <p className="text-primary-foreground/60 text-sm leading-relaxed mb-8 max-w-xs">
+                <p className="text-white/75 text-sm leading-relaxed mb-8 max-w-xs">
                   Work on real-world assessments. Get feedback from AI proctors and build your verified profile.
                 </p>
 
                 <div className="flex items-center gap-3 cursor-pointer group">
-                  <div className="h-10 w-10 rounded-full bg-primary-foreground flex items-center justify-center shrink-0">
-                    <Play className="h-4 w-4 text-primary fill-primary ml-0.5" />
+                  <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center shrink-0">
+                    <Play className="h-4 w-4 text-[#002C66] fill-[#002C66] ml-0.5" />
                   </div>
-                  <span className="text-sm text-primary-foreground/70 font-medium group-hover:text-primary-foreground transition-colors">Watch how it works</span>
+                  <span className="text-sm text-white/85 font-medium group-hover:text-white transition-colors">Watch how it works</span>
                 </div>
               </div>
 

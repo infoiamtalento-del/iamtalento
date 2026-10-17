@@ -57,8 +57,8 @@ const WhoIsItForSection = () => {
               <div className="absolute top-4 right-4 px-2 py-0.5 rounded-full bg-accent text-accent-foreground text-[9px] font-bold">
                 {count} users
               </div>
-              <div className="h-11 w-11 rounded-xl bg-accent flex items-center justify-center mb-4 group-hover:gradient-primary transition-all duration-300">
-                <Icon className="h-5 w-5 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
+              <div className="h-11 w-11 rounded-xl bg-[#002C66]/10 flex items-center justify-center mb-4 group-hover:bg-[#002C66] transition-all duration-300">
+                <Icon className="h-5 w-5 text-[#002C66] group-hover:text-white transition-colors duration-300" />
               </div>
               <h3 className="text-base font-semibold font-display mb-2">{title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
@@ -73,7 +73,7 @@ const WhoIsItForSection = () => {
           viewport={{ once: true }}
         >
           <Link to="/assessments">
-            <Button size="lg" className="bg-[hsl(33,100%,50%)] text-white hover:bg-[hsl(33,100%,45%)] border-0 gap-2 h-12 px-8">
+            <Button size="lg" className="bg-[#002C66] text-white hover:bg-[#00204d] border-0 gap-2 h-12 px-8">
               Find My Assessment
             </Button>
           </Link>

@@ -47,21 +47,19 @@ const VerifiedBadgeSection = () => (
       {/* Hero banner: badge + stats */}
       <motion.div
         initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-        className="rounded-2xl border border-rose-100 bg-rose-50/40 p-6 md:p-8 mb-14"
+        className="rounded-2xl border border-slate-200/80 bg-white/70 p-6 md:p-8 mb-14 shadow-sm"
       >
         <div className="grid grid-cols-1 md:grid-cols-[1.1fr_2fr] gap-6">
-          {/* Left red panel */}
-          <div className="relative overflow-hidden rounded-xl px-8 py-10 text-white"
-            style={{ background: "linear-gradient(135deg, #ED2938 0%, #FF5A3C 100%)" }}>
-            <div className="absolute -left-4 -top-4 w-32 h-32 rounded-full bg-white/10 blur-2xl" />
+          {/* Left navy panel */}
+          <div className="relative overflow-hidden rounded-xl px-8 py-10 bg-[#002C66] text-white">
             <div className="flex items-center gap-5 relative">
-              <div className="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur flex items-center justify-center shrink-0 ring-2 ring-white/20">
+              <div className="w-16 h-16 rounded-2xl bg-white/15 flex items-center justify-center shrink-0 ring-2 ring-white/20">
                 <BadgeCheck className="h-9 w-9 text-white" />
               </div>
               <div>
-                <p className="text-[20px] md:text-[22px] font-bold leading-tight">Pass the Benchmark.</p>
-                <p className="text-[20px] md:text-[22px] font-bold leading-tight">Wear the Badge.</p>
-                <p className="text-[13px] text-white/90 mt-4 leading-relaxed">
+                <p className="text-[20px] md:text-[22px] font-bold leading-tight text-white">Pass the Benchmark.</p>
+                <p className="text-[20px] md:text-[22px] font-bold leading-tight text-white">Wear the Badge.</p>
+                <p className="text-[13px] text-white/85 mt-4 leading-relaxed">
                   Employers prioritize verified talent.<br />Your badge makes sure you're seen first.
                 </p>
               </div>
@@ -73,12 +71,12 @@ const VerifiedBadgeSection = () => (
             {stats.map((s) => {
               const Icon = s.icon;
               return (
-                <div key={s.label} className="flex items-center gap-4 px-6 py-7 rounded-xl bg-white">
-                  <div className="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center shrink-0">
-                    <Icon className="h-5 w-5 text-primary" />
+                <div key={s.label} className="flex items-center gap-4 px-6 py-7 rounded-xl bg-white border border-slate-200/80 shadow-xs">
+                  <div className="w-12 h-12 rounded-full bg-[#002C66]/10 flex items-center justify-center shrink-0">
+                    <Icon className="h-5 w-5 text-[#002C66]" />
                   </div>
                   <div>
-                    <p className="text-3xl font-extrabold text-primary leading-none">{s.value}</p>
+                    <p className="text-3xl font-extrabold text-[#002C66] leading-none">{s.value}</p>
                     <p className="text-[13px] font-bold text-slate-900 mt-2">{s.label}</p>
                     <p className="text-[11px] text-slate-500 leading-tight mt-1">{s.sub}</p>
                   </div>
@@ -89,7 +87,7 @@ const VerifiedBadgeSection = () => (
         </div>
       </motion.div>
 
-      {/* Benefit grid 4x2 */}
+      {/* Benefit grid 4x1 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-14">
         {benefits.map((b, i) => {
           const Icon = b.icon;
@@ -99,12 +97,12 @@ const VerifiedBadgeSection = () => (
               key={b.title}
               initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
               transition={{ delay: i * 0.05 }}
-              className="relative rounded-xl border border-primary/10 bg-cream p-7 hover:border-primary/25 hover:shadow-md transition-all"
+              className="relative rounded-xl border border-slate-200/80 bg-white p-7 hover:border-[#002C66]/30 hover:shadow-md transition-all"
             >
-              <span className="absolute top-4 right-4 text-[11px] font-bold text-primary">{num}</span>
+              <span className="absolute top-4 right-4 text-[11px] font-bold text-[#002C66]">{num}</span>
               <div className="flex items-start gap-4">
-                <div className="w-11 h-11 rounded-full bg-rose-50 flex items-center justify-center shrink-0">
-                  <Icon className="h-5 w-5 text-primary" />
+                <div className="w-11 h-11 rounded-full bg-[#002C66]/10 flex items-center justify-center shrink-0">
+                  <Icon className="h-5 w-5 text-[#002C66]" />
                 </div>
                 <div>
                   <p className="text-[14px] font-bold text-slate-900 leading-tight">{b.title}</p>

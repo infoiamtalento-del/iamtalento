@@ -24,8 +24,7 @@ const AssessmentFAQ = () => (
           className="md:col-span-2 md:sticky md:top-28 md:self-start"
         >
           <span
-            className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-primary px-3 py-1 mb-3"
-            style={{ background: "hsl(355 84% 54% / 0.08)", borderRadius: 100 }}
+            className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-[#002C66] bg-[#002C66]/10 rounded-full px-3 py-1 mb-3"
           >
             <HelpCircle className="h-3 w-3" /> FAQ
           </span>

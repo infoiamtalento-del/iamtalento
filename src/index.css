@@ -239,14 +239,14 @@ main > div > section:not(.bg-primary):not(.bg-foreground):not(.pro-hero) {
   color: #0f172a !important;
 }
 
-[class*="bg-red-5"],
-[class*="bg-red-6"],
-[class*="bg-red-7"],
-[class*="bg-rose-5"],
-[class*="bg-rose-6"],
-[class*="bg-rose-7"],
-[class*="bg-blue-6"],
-[class*="bg-blue-7"] {
+.bg-red-500,
+.bg-red-600,
+.bg-red-700,
+.bg-rose-500,
+.bg-rose-600,
+.bg-rose-700,
+.bg-blue-600,
+.bg-blue-700 {
   background-color: #002C66 !important;
 }
 
@@ -263,12 +263,12 @@ main > div > section:not(.bg-primary):not(.bg-foreground):not(.pro-hero) {
   color: #00204d !important;
 }
 
-[class*="bg-red-50"],
-[class*="bg-red-100"],
-[class*="bg-rose-50"],
-[class*="bg-rose-100"],
-[class*="bg-blue-50"],
-[class*="bg-blue-100"] {
+.bg-red-50,
+.bg-red-100,
+.bg-rose-50,
+.bg-rose-100,
+.bg-blue-50,
+.bg-blue-100 {
   background-color: rgba(0, 44, 102, 0.07) !important;
 }
 
@@ -306,46 +306,8 @@ main > div > section:not(.bg-primary):not(.bg-foreground):not(.pro-hero) {
   background-image: none !important;
 }
 
-/* Ensure elements that had background gradients resolve to solid, flat, minimal colors */
-.pro-hero,
-[class*="from-blue-600"],
-[class*="from-primary"] {
+.pro-hero {
   background-color: #002C66 !important;
   background-image: none !important;
 }
 
-[class*="from-yellow-"],
-[class*="from-amber-"] {
-  background-color: #f59e0b !important;
-  background-image: none !important;
-}
-
-[class*="from-emerald-"],
-[class*="from-green-"] {
-  background-color: #10b981 !important;
-  background-image: none !important;
-}
-
-[class*="from-purple-"],
-[class*="from-violet-"] {
-  background-color: #7c3aed !important;
-  background-image: none !important;
-}
-
-[class*="from-blue-50"],
-[class*="from-slate-50"],
-[class*="from-muted"],
-[class*="from-accent"] {
-  background-color: #FBF4EB !important;
-  background-image: none !important;
-}
-
-[class*="from-black"] {
-  background-color: rgba(0, 0, 0, 0.45) !important;
-  background-image: none !important;
-}
-
-[class*="from-foreground"] {
-  background-color: rgba(15, 23, 42, 0.55) !important;
-  background-image: none !important;
-}

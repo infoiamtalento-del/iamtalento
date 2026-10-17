@@ -26,18 +26,8 @@ const PhoneMockupSection = () => (
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-center py-16 md:py-20 relative overflow-hidden"
-        style={{ background: "hsl(355 84% 54%)", borderRadius: 20 }}
+        className="text-center py-16 md:py-20 relative overflow-hidden bg-[#002C66] rounded-[20px] shadow-md"
       >
-        {/* Subtle dot grid */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px)",
-            backgroundSize: "24px 24px",
-          }}
-        />
-
         <div className="relative z-10 max-w-xl mx-auto px-6">
           <p
             className="text-[56px] md:text-[64px] font-bold text-white mb-3"
@@ -45,7 +35,7 @@ const PhoneMockupSection = () => (
           >
             <AnimatedNumber target={18731} />+
           </p>
-          <p className="text-base text-white/70 mb-8">
+          <p className="text-base text-white/80 mb-8">
             Verified professionals trust I Am Talento to prove their skills to employers
           </p>
 
@@ -55,19 +45,18 @@ const PhoneMockupSection = () => (
               {[1, 2, 3, 4, 5].map((i) => (
                 <div
                   key={i}
-                  className="h-8 w-8 rounded-full bg-white/10 border-2 border-[#0F172A] flex items-center justify-center"
+                  className="h-8 w-8 rounded-full bg-white/15 border-2 border-[#002C66] flex items-center justify-center"
                 >
-                  <Users className="h-3.5 w-3.5 text-white/50" />
+                  <Users className="h-3.5 w-3.5 text-white/80" />
                 </div>
               ))}
             </div>
-            <span className="text-xs text-white/50 font-medium">verified professionals</span>
+            <span className="text-xs text-white/70 font-medium">verified professionals</span>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
             <Button
-              className="bg-primary hover:bg-primary/90 text-white text-sm font-bold h-11 px-6 gap-2"
-              style={{ borderRadius: 8 }}
+              className="bg-white hover:bg-slate-100 text-[#002C66] text-sm font-bold h-11 px-6 gap-2 rounded-lg"
             >
               Start My Assessment <ArrowRight className="h-4 w-4" />
             </Button>

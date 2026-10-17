@@ -55,7 +55,7 @@ const CredibilityTrustSection = ({ align = "center" }: { align?: Align }) => {
               viewport={{ once: true }}
               transition={{ delay: i * 0.03, duration: 0.35 }}
               className={cn(
-                "p-4 sm:p-5 rounded-xl bg-background border border-border/80 hover:border-foreground/20 hover:shadow-xs transition-all duration-200 group flex flex-col",
+                "p-4 sm:p-5 rounded-xl bg-white border border-slate-200/80 hover:border-[#002C66]/30 hover:shadow-xs transition-all duration-200 group flex flex-col",
                 centered ? "text-center items-center" : "text-left items-start"
               )}
             >
