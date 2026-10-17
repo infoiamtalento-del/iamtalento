@@ -112,3 +112,7 @@
 ## Employer "One Platform" section
 - Remove the wide photo above the six capability cards — done; heading and copy now lead straight into the cards, verified in the preview with build OK
 
+## Employer AI evaluation section
+- Add the supplied reference section above "Meet Your Next Hire. Beyond a Resume." — done; centred headline, two buttons, "No login required" note, and three connected cards (your question + AI criteria, candidate response with Text/Audio/Video tabs, scored AI report)
+- Verify the flow and layout — done; tabs switch, the sample answer plays and advances, cards stack on phone with no overflow, section confirmed above "Meet Your Next Hire", build OK
+
