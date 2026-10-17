@@ -7,17 +7,13 @@ import {
   BarChart3,
   BriefcaseBusiness,
   Check,
-  CheckCircle2,
   ChevronDown,
   CirclePlay,
-  GraduationCap,
   LineChart,
-  MapPin,
   Building2,
   Search,
   ShieldCheck,
   Sparkles,
-  Target,
   UserCheck,
   Users,
   Zap,
@@ -25,8 +21,7 @@ import {
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { AIInterviewerSection, PlatformSection, PeopleInsightsSection, TeamsSection, IntegrationsSection, TestimonialsSection, DemoFormSection, TrustStats, AIEvaluateSection, PlanVideoSection } from "@/components/employers/EmployerShowcaseSections";
-import { demoProfile } from "@/components/profile/DemoProfileBody";
+import { AIInterviewerSection, PlatformSection, TeamsSection, IntegrationsSection, TestimonialsSection, DemoFormSection, TrustStats, AIEvaluateSection, PlanVideoSection } from "@/components/employers/EmployerShowcaseSections";
 import campusImage from "@/assets/employer-campus-hiring.jpg";
 import recruiterImage from "@/assets/employer-recruiter.jpg";
 import candidateAnanya from "@/assets/learner-ananya.jpg";
@@ -236,44 +231,6 @@ const HowItWorks = () => (
   </section>
 );
 
-const CandidatePreview = () => (
-  <article aria-label="Arjun Mehta demo candidate profile" className="overflow-hidden rounded-lg border border-border bg-card shadow-xl">
-    <div className="flex items-center justify-between gap-3 border-b border-border bg-accent/60 px-5 py-3">
-      <span className="flex items-center gap-2 text-xs font-bold text-primary"><Sparkles className="h-4 w-4" /> CANDIDATE SPOTLIGHT</span>
-      <span className="text-xs text-muted-foreground">Demo profile</span>
-    </div>
-    <div className="grid sm:grid-cols-[160px_1fr]">
-      <div className="relative bg-secondary/30">
-        <img src={demoProfile.profile_photo_url} alt={demoProfile.full_name} className="h-56 w-full object-cover sm:h-full" />
-        <div className="absolute bottom-3 left-3 right-3 rounded-md bg-card/95 px-3 py-2 backdrop-blur"><p className="font-display text-2xl font-bold">{demoProfile.years_of_experience}+ <span className="text-xs font-medium text-muted-foreground">years</span></p><p className="text-xs text-muted-foreground">Engineering experience</p></div>
-      </div>
-      <div className="min-w-0 p-5 md:p-6">
-        <p className="mb-2 flex items-center gap-1.5 text-xs font-semibold text-success"><CheckCircle2 className="h-4 w-4" /> Complete candidate profile</p>
-        <h3 className="font-display text-3xl font-bold">{demoProfile.full_name}</h3>
-        <p className="mt-1 text-sm font-semibold">{demoProfile.professional_headline}</p>
-        <p className="mt-1 text-xs text-primary">{demoProfile.sub_headline}</p>
-        <p className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground"><MapPin className="h-3.5 w-3.5" />{demoProfile.location}</p>
-        <div className="mt-5 flex flex-wrap gap-2">{demoProfile.tags.map(tag => <span key={tag} className="rounded-md bg-secondary px-2.5 py-1 text-xs font-medium">{tag}</span>)}</div>
-      </div>
-    </div>
-    <div className="border-t border-border p-5 md:p-6">
-      <p className="mb-2 text-xs font-bold uppercase text-muted-foreground">Beyond the resume</p>
-      <p className="text-sm leading-relaxed text-muted-foreground">{demoProfile.about_summary}</p>
-      <div className="my-5 grid grid-cols-3 divide-x divide-border border-y border-border py-4 text-center">{[{ icon: BriefcaseBusiness, label: "Experience" }, { icon: Target, label: "Skills" }, { icon: GraduationCap, label: "Education" }].map(({ icon: Icon, label }) => <div key={label}><Icon className="mx-auto mb-2 h-5 w-5 text-primary" /><span className="text-xs font-semibold">{label}</span></div>)}</div>
-      <Button asChild className="w-full gap-2"><Link to="/demo-profile">View Full Demo Profile <ArrowRight className="h-4 w-4" /></Link></Button>
-    </div>
-  </article>
-);
-
-const SearchSection = () => (
-  <section className="py-20 md:py-28">
-    <div className="container">
-      <motion.div {...reveal}><SectionIntro align="center" eyebrow="AI Talent Search" first="Meet Your Next Hire." second="Beyond a Resume." description={<>Discover experience, skills, and the person behind the profile.<br className="hidden md:block" /> See the full picture before you connect.</>} /></motion.div>
-      <motion.div {...reveal} className="mx-auto mt-12 max-w-3xl"><CandidatePreview /></motion.div>
-    </div>
-  </section>
-);
-
 const faqs = [
   { q: "How quickly can we start?", a: "Your team can create an employer account, define a role, and launch its first assessment within minutes." },
   { q: "Can we create our own assessments?", a: "Yes. Build role-specific tests, use ready-made assessments, or let AI create one from your job description." },
@@ -336,9 +293,7 @@ const ForEmployers = () => (
       <PlatformSection />
       <USPSection />
       <HowItWorks />
-      <PeopleInsightsSection />
       <AIEvaluateSection />
-      <SearchSection />
       <TeamsSection />
       <PlanVideoSection />
       <IntegrationsSection />
