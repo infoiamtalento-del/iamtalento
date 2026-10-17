@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
+import { motion, useMotionValue, useTransform, type MotionValue } from "framer-motion";
 import {
   ArrowRight, BarChart3, Bot, Building2, CalendarClock, Cable, CheckCircle2, CirclePlay, Code2, Fingerprint,
   GraduationCap, Library, Lock, Megaphone, MessageSquare, Mic, Palette, Quote, Send, ShieldCheck, Sparkles,
@@ -120,7 +120,20 @@ const BurstPoint = ({ point, index, progress, side }: { point: (typeof interview
 
 export const AIInterviewerSection = () => {
   const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
+  const scrollYProgress = useMotionValue(0);
+  useEffect(() => {
+    const update = () => {
+      const el = ref.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const total = r.height - window.innerHeight;
+      scrollYProgress.set(total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 0);
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => { window.removeEventListener("scroll", update); window.removeEventListener("resize", update); };
+  }, [scrollYProgress]);
   const glow = useTransform(scrollYProgress, [0.1, 0.6], [0, 1]);
   const intro = <CenterIntro invert eyebrow="AI Interviewer" first="Meet Your Always-On" second="AI Interviewer." description={<>Run first-round interviews at scale without adding recruiter hours.<br className="hidden md:block" /> Every candidate gets a fair, consistent conversation.</>} />;
   return (
