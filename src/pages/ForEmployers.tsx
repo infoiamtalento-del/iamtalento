@@ -87,7 +87,7 @@ const CandidateList = ({ compact = false }: { compact?: boolean }) => (
         <img src={candidate.image} alt="" className="h-10 w-10 rounded-full object-cover" width={40} height={40} />
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold">{candidate.name}</p>
-          <p className="truncate text-xs text-muted-foreground">{candidate.role}</p>
+          <p className="text-xs leading-snug text-muted-foreground sm:truncate">{candidate.role}</p>
         </div>
         <span className={cn("whitespace-nowrap rounded-full bg-success/10 font-bold text-success", compact ? "px-2 py-1 text-[10px]" : "px-2 py-1 text-[10px] sm:px-2.5 sm:text-xs")}>
           {candidate.match}% match
