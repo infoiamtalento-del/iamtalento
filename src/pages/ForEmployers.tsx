@@ -143,51 +143,54 @@ const Hero = () => (
   <section className="relative overflow-hidden bg-background pb-16 pt-32 md:pb-24 md:pt-40">
     <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-accent/60 to-transparent" />
     <div className="container relative">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="mx-auto max-w-3xl text-center">
-        <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-primary">AI-Powered Hiring Platform</p>
-        <h1 className="mb-6 font-display text-4xl font-bold leading-[1.05] sm:text-5xl lg:text-6xl">
-          Stop Guessing. Start Hiring<br />
-          <span className="text-primary">With Proof.</span>
-        </h1>
-        <p className="mx-auto mb-8 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
-          Find, verify, rank, and track job-ready candidates with AI — while your recruiters stay firmly in control.
-        </p>
-        <div className="mb-8 flex flex-wrap justify-center gap-3">
-          <Button asChild size="lg" className="h-12 gap-2 px-7"><Link to="/contact">Book a Demo <ArrowRight className="h-4 w-4" /></Link></Button>
-          <Button asChild size="lg" variant="outline" className="h-12 gap-2 px-6"><a href="#how-it-works"><CirclePlay className="h-5 w-5 text-primary" /> See How It Works</a></Button>
-        </div>
-        <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-xs font-medium text-muted-foreground">
-          <span className="flex items-center gap-2"><Zap className="h-4 w-4 text-primary" /> Faster hiring</span>
-          <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-primary" /> Verified talent</span>
-          <span className="flex items-center gap-2"><Users className="h-4 w-4 text-primary" /> Recruiter in control</span>
-        </div>
-      </motion.div>
-      <motion.div initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: 0.7 }} className="relative mx-auto mt-14 max-w-4xl">
-        <div className="overflow-hidden rounded-lg border border-border bg-card shadow-xl">
-          <div className="flex items-center justify-between border-b border-border bg-secondary/40 px-5 py-3">
-            <div className="flex items-center gap-2 text-xs font-semibold"><Sparkles className="h-4 w-4 text-primary" /> Talent Search</div>
-            <span className="text-[10px] text-muted-foreground">248 candidates</span>
+      <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.08fr)] lg:gap-14">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+          <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-primary">AI-Powered Hiring Platform</p>
+          <h1 className="mb-6 font-display text-4xl font-bold leading-[1.05] sm:text-5xl lg:text-[3rem] xl:text-6xl">
+            Stop Guessing. Start Hiring<br />
+            <span className="text-primary">With Proof.</span>
+          </h1>
+          <p className="mb-8 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
+            Find, verify, rank, and track job-ready candidates with AI — while your recruiters stay firmly in control.
+          </p>
+          <div className="mb-8 flex flex-wrap gap-3">
+            <Button asChild size="lg" className="h-12 gap-2 px-7"><Link to="/contact">Book a Demo <ArrowRight className="h-4 w-4" /></Link></Button>
+            <Button asChild size="lg" variant="outline" className="h-12 gap-2 px-6"><a href="#how-it-works"><CirclePlay className="h-5 w-5 text-primary" /> See How It Works</a></Button>
           </div>
-          <div className="grid md:grid-cols-[140px_1fr]">
-            <div className="hidden border-r border-border bg-secondary/30 p-4 md:block">
-              {['Candidates', 'Jobs', 'Shortlist', 'Analytics'].map((item, index) => (
-                <div key={item} className={cn("mb-2 rounded-md px-2 py-2 text-[11px]", index === 0 ? "bg-primary/10 font-semibold text-primary" : "text-muted-foreground")}>{item}</div>
-              ))}
+          <div className="flex flex-wrap gap-x-6 gap-y-3 text-xs font-medium text-muted-foreground">
+            <span className="flex items-center gap-2"><Zap className="h-4 w-4 text-primary" /> Faster hiring</span>
+            <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-primary" /> Verified talent</span>
+            <span className="flex items-center gap-2"><Users className="h-4 w-4 text-primary" /> Recruiter in control</span>
+          </div>
+        </motion.div>
+        <motion.div initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: 0.7 }} className="relative">
+          <div className="overflow-hidden rounded-lg border border-border bg-card shadow-xl">
+            <div className="flex items-center justify-between border-b border-border bg-secondary/40 px-5 py-3">
+              <div className="flex items-center gap-2 text-xs font-semibold"><Sparkles className="h-4 w-4 text-primary" /> Talent Search</div>
+              <span className="text-[10px] text-muted-foreground">248 candidates</span>
             </div>
-            <div className="p-5">
-              <div className="mb-4 flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-2.5 text-xs text-muted-foreground"><Search className="h-4 w-4" /> Senior Product Manager in Bengaluru</div>
-              <CandidateList />
+            <div className="grid md:grid-cols-[140px_1fr] lg:grid-cols-[112px_1fr]">
+              <div className="hidden border-r border-border bg-secondary/30 p-4 md:block">
+                {['Candidates', 'Jobs', 'Shortlist', 'Analytics'].map((item, index) => (
+                  <div key={item} className={cn("mb-2 rounded-md px-2 py-2 text-[11px]", index === 0 ? "bg-primary/10 font-semibold text-primary" : "text-muted-foreground")}>{item}</div>
+                ))}
+              </div>
+              <div className="p-5">
+                <div className="mb-4 flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-2.5 text-xs text-muted-foreground"><Search className="h-4 w-4" /> Senior Product Manager in Bengaluru</div>
+                <CandidateList />
+              </div>
             </div>
           </div>
-        </div>
-      </motion.div>
-      <motion.div {...reveal} className="mx-auto mt-8 grid max-w-4xl grid-cols-2 gap-3 sm:gap-5">
+        </motion.div>
+      </div>
+      <motion.div {...reveal} className="mx-auto mt-14 grid max-w-4xl grid-cols-2 gap-3 sm:gap-5">
         <img src={recruiterImage} alt="Recruiter connecting with talent in a bright workplace" className="aspect-[4/3] w-full rounded-lg object-cover shadow-md sm:aspect-[16/9]" width={1408} height={1056} loading="lazy" />
         <img src={teamImage} alt="Hiring team sharing ideas and reviewing candidates" className="aspect-[4/3] w-full rounded-lg object-cover shadow-md sm:aspect-[16/9]" width={1408} height={1056} loading="lazy" />
       </motion.div>
     </div>
   </section>
 );
+
 
 const logos = [
   { name: "Google", src: googleLogo }, { name: "Microsoft", src: microsoftLogo },
