@@ -4,7 +4,7 @@ import { motion, useMotionValue, useTransform, type MotionValue } from "framer-m
 import {
   ArrowRight, BarChart3, Building2, CalendarClock, Cable, CheckCircle2, CirclePlay, Code2, Fingerprint,
   GraduationCap, Library, Lock, Megaphone, MessageSquare, Mic, Palette, Quote, ShieldCheck, Sparkles,
-  Star, UserCog, Users, Wand2, Briefcase, Globe2, Server, Type, Video, Volume2, MoreVertical, Play, Pause, FileText,
+  Star, UserCog, Users, Wand2, Briefcase, Globe2, Server, Type, Video, Volume2, MoreVertical, Play, Pause, FileText, PenTool, BadgePercent, Table2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +20,8 @@ import v1 from "@/assets/mock-interview-1.jpg";
 import v2 from "@/assets/mock-interview-2.jpg";
 import v3 from "@/assets/mock-interview-3.jpg";
 import teamImage from "@/assets/employer-team.jpg";
+import planPoster from "@/assets/assessment-video-thumb.jpg";
+
 
 const reveal = {
   initial: { opacity: 0, y: 24 },
@@ -476,29 +478,47 @@ export const PlanVideoSection = () => (
       <motion.h2 {...reveal} className="mx-auto mb-12 max-w-3xl text-center font-serif text-3xl font-normal leading-tight tracking-normal text-foreground sm:text-4xl lg:text-5xl">
         All-in-One AI Hiring <span className="text-primary">That Thinks Like You Do.</span>
       </motion.h2>
-      <motion.div {...reveal} className="mx-auto grid max-w-6xl overflow-hidden rounded-xl border border-border bg-card shadow-lg lg:grid-cols-2">
-        <div className="flex flex-col p-8 md:p-10">
-          <h3 className="font-serif text-2xl font-normal tracking-normal sm:text-3xl">What's included in your plan</h3>
-          <ul className="mt-6 grid flex-1 gap-3 sm:grid-cols-2 lg:grid-cols-1">
+      <motion.div {...reveal} className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[5fr_7fr] lg:gap-16">
+        <div>
+          <h3 className="font-serif text-3xl font-normal leading-tight tracking-normal text-foreground sm:text-4xl">What's included in your plan</h3>
+          <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">Everything your team needs to post, screen, assess and hire — in one subscription.</p>
+          <ul className="mt-8 space-y-4">
             {planItems.map(({ icon: Icon, label }) => (
-              <li key={label} className="flex items-center gap-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary text-primary"><Icon className="h-4 w-4" /></span>
-                <span className="text-sm font-semibold">{label}</span>
+              <li key={label} className="flex items-center gap-4">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-card shadow-sm"><Icon className="h-5 w-5 text-primary" /></span>
+                <span className="text-sm font-semibold md:text-base">{label}</span>
               </li>
             ))}
           </ul>
-          <div className="mt-8">
-            <Button asChild size="lg" className="gap-2"><Link to="/contact">Get Started <ArrowRight className="h-4 w-4" /></Link></Button>
-            <p className="mt-3 -rotate-1 font-display text-sm italic text-muted-foreground">No credit card required <Sparkles className="ml-1 inline h-3.5 w-3.5 text-primary" /></p>
+          <div className="mt-9">
+            <Button asChild size="lg" className="gap-2 rounded-full px-8"><Link to="/contact">Get Started <ArrowRight className="h-4 w-4" /></Link></Button>
+            <p className="mt-4 flex -rotate-1 items-center gap-2 font-hand text-lg text-foreground">
+              No credit card required
+              <span aria-hidden className="flex items-center gap-1">
+                <span className="h-0.5 w-3 rounded-full bg-primary-glow" />
+                <span className="h-0.5 w-2 rounded-full bg-primary-glow" />
+                <span className="h-0.5 w-1.5 rounded-full bg-primary-glow" />
+              </span>
+            </p>
           </div>
         </div>
-        <div className="relative flex items-center justify-center bg-accent/60 p-6 md:p-10">
-          <div className="w-full max-w-xl">
-            <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-card px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary shadow-sm"><CirclePlay className="h-3.5 w-3.5" /> Product in 60 Sec</span>
-            <video src="/product-in-60-sec.mp4" controls preload="metadata" playsInline className="aspect-video w-full rounded-lg border border-border bg-background shadow-lg" />
+        <div className="relative overflow-hidden rounded-[28px] bg-accent p-5 md:p-9">
+          <div aria-hidden className="pointer-events-none absolute inset-0">
+            <span className="absolute left-[-12%] top-8 h-10 w-2/3 -rotate-6 rounded-full bg-background/50" />
+            <span className="absolute right-[-16%] top-1/3 h-12 w-1/2 rotate-6 rounded-full bg-background/40" />
+            <span className="absolute bottom-10 left-[-6%] h-9 w-3/5 -rotate-3 rounded-full bg-background/45" />
           </div>
+          <div className="relative">
+            <span className="mb-5 inline-flex items-center gap-2 rounded-full bg-card px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary shadow-sm"><CirclePlay className="h-3.5 w-3.5" /> Product in 60 Sec</span>
+            <video src="/product-in-60-sec.mp4" poster={planPoster} controls preload="metadata" playsInline className="aspect-[4/3] w-full rounded-2xl border border-border bg-background object-cover shadow-xl" />
+          </div>
+          <span className="pointer-events-none absolute left-2 top-[34%] hidden items-center gap-1.5 rounded-full border border-border/60 bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground shadow-lg md:flex"><Code2 className="h-3.5 w-3.5 text-primary" /> Python</span>
+          <span className="pointer-events-none absolute left-5 top-[62%] hidden items-center gap-1.5 rounded-full border border-border/60 bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground shadow-lg md:flex"><PenTool className="h-3.5 w-3.5 text-primary" /> Design</span>
+          <span className="pointer-events-none absolute right-3 top-[28%] hidden items-center gap-1.5 rounded-full border border-border/60 bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground shadow-lg lg:flex"><BadgePercent className="h-3.5 w-3.5 text-primary" /> Sales</span>
+          <span className="pointer-events-none absolute right-6 top-[58%] hidden items-center gap-1.5 rounded-full border border-border/60 bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground shadow-lg lg:flex"><Table2 className="h-3.5 w-3.5 text-primary" /> Excel</span>
         </div>
       </motion.div>
+
     </div>
   </section>
 );
