@@ -8,7 +8,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { demoProfile as profile, demoProfileDetails as details } from "@/components/profile/DemoProfileBody";
 import { cn } from "@/lib/utils";
 import { ArrowLeft, ArrowRight, Bell, BookOpen, Brain, BriefcaseBusiness, CheckCircle2, ChevronDown, Cloud, Code2, Crown, Download, ExternalLink, FileCheck, FileText, Github, GraduationCap, Heart, Languages, Layers, Linkedin, Mail, MapPin, MoreHorizontal, Palette, Pencil, Phone, Search, Share2, ShieldCheck, Trophy, UserRound, Users, Wrench, type LucideIcon } from "lucide-react";
-import siteLogo from "@/assets/talentcir-logo.png.asset.json";
+import { siteLogo } from "@/assets/logo";
 import cover from "@/assets/profile-office-cover.jpg";
 import cloudProject from "@/assets/profile-cloudsync.jpg";
 import parserProject from "@/assets/profile-resume-parser.jpg";

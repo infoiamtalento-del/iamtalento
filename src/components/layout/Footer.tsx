@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Zap, Github, Twitter, Linkedin, Mail } from "lucide-react";
-import siteLogo from "@/assets/talentcir-logo.png.asset.json";
+import { siteLogo } from "@/assets/logo";
 
 const footerLinks = {
   "For Employers": [

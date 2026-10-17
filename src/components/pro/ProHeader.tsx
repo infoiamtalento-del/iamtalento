@@ -28,7 +28,7 @@ import {
 import { ProUser } from "@/data/proData";
 import { ProView } from "./proTypes";
 import { cn } from "@/lib/utils";
-import siteLogo from "@/assets/talentcir-logo.png.asset.json";
+import { siteLogo } from "@/assets/logo";
 import { employerMenuItems } from "./employerMenu";
 
 interface ProHeaderProps {

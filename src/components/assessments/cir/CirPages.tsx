@@ -27,7 +27,7 @@ import {
   Wifi,
   BrainCircuit,
 } from "lucide-react";
-import siteLogo from "@/assets/talentcir-logo.png.asset.json";
+import { siteLogo } from "@/assets/logo";
 import avatar from "@/assets/demo-avatar.jpg";
 import proctorThumb from "@/assets/assessment-video-thumb.jpg";
 import reviewer from "@/assets/experts/male-1.jpg";
