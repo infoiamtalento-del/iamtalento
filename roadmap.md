@@ -106,6 +106,6 @@
 - Remove the two workplace photos under the banner — done; hero now ends at the Talent Search panel, verified at 1497 and 390 with build OK
 
 ## Employer benefits layout
-- Replace the six-card grid with a photo-led editorial layout and six open numbered rows — implemented
-- Verify all benefits remain visible and the section fits desktop and phone — pending
+- Replace the six-card grid with a photo-led editorial layout and six open numbered rows — done
+- Verify all benefits remain visible and the section fits desktop and phone — done; all six benefits and photo checked at 1497 and 390 widths, no mobile overflow or runtime errors, build OK
 
