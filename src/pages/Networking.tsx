@@ -261,9 +261,9 @@ const Networking = () => {
                 <button key={category} type="button" onClick={() => setHostFilter(category)} aria-pressed={hostFilter === category} className={`rounded-full px-5 py-2 text-sm font-semibold transition-colors ${hostFilter === category ? 'bg-primary text-primary-foreground' : 'bg-card border border-border text-foreground hover:border-primary/50'}`}>{category}</button>
               ))}
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 place-items-center">
+            <div className="flex flex-wrap justify-center gap-6">
               {hosts.filter(host => hostFilter === 'All' || host.category === hostFilter).map(host => (
-                <article key={host.name} className="w-full text-center">
+                <article key={host.name} className="w-[calc(50%-12px)] md:w-[calc(25%-18px)] text-center">
                   <div className="relative rounded-2xl overflow-hidden aspect-[4/5] mb-5 border border-border/60">
                     <img src={host.img} alt={host.name} loading="lazy" width={480} height={600} className="w-full h-full object-cover" />
                     <div className="absolute left-3 bottom-3 flex items-center gap-2 rounded-lg bg-background/95 px-3 py-2 shadow-md text-left">
