@@ -22,7 +22,8 @@ export interface EmployerDemoState {
   aiInterviews: { id: number; name: string; candidate: string; status: string; score?: number }[];
   campaigns: { id: number; name: string; status: string; views: number; clicks: number; at?: number; category?: string }[];
   plan: string;
-  preferences: { email: boolean; interviews: boolean; digest: boolean };
+  preferences: { email: boolean; interviews: boolean; digest: boolean; status?: boolean };
+  security?: { twoStep: boolean; pwAt: number; sessions: { id: number; device: string; at: number }[]; team: number };
 }
 
 export const INITIAL_EMPLOYER_DEMO: EmployerDemoState = {

@@ -9,16 +9,18 @@ import type { ProApplication, ProJob, ProUser } from "@/data/proData";
 import { formatINR } from "@/data/proData";
 import type { EmployerDemoState } from "@/data/employerDemo";
 import { ProEmployerAdvertise } from "./ProEmployerAdvertise";
+import { ProEmployerSettings } from "./ProEmployerSettings";
 import "./employer-workspace.css";
 
-interface Props { view: ProView; user: ProUser; jobs: ProJob[]; applications: ProApplication[]; state: EmployerDemoState; onChange: (state: EmployerDemoState) => void; onNavigate: (view: ProView) => void; onOpenDrawer: (drawer: ProDrawerState) => void; onToast: (message: string) => void; onSamplePayment: (description: string) => void }
-export function ProEmployerDemoServices({ view, user, jobs, applications, state, onChange, onNavigate, onOpenDrawer, onToast, onSamplePayment }: Props) {
+interface Props { view: ProView; user: ProUser; jobs: ProJob[]; applications: ProApplication[]; state: EmployerDemoState; onChange: (state: EmployerDemoState) => void; onNavigate: (view: ProView) => void; onOpenDrawer: (drawer: ProDrawerState) => void; onToast: (message: string) => void; onSamplePayment: (description: string) => void; onUpdateUser?: (user: ProUser) => void }
+export function ProEmployerDemoServices({ view, user, jobs, applications, state, onChange, onNavigate, onOpenDrawer, onToast, onSamplePayment, onUpdateUser }: Props) {
   const [name, setName] = useState("");
   const [appId, setAppId] = useState("");
   const entry = employerMenuItems.find(item => item.id === view);
   if (!entry) return null;
   const Icon = entry.icon;
   if (view === "advertise") return <ProEmployerAdvertise state={state} onChange={onChange} onNavigate={onNavigate} onToast={onToast} />;
+  if (view === "settings") return <ProEmployerSettings user={user} state={state} onChange={onChange} onUpdateUser={onUpdateUser} onToast={onToast} />;
   const apps = applications.filter(a => jobs.some(j => j.id === a.jid && j.by === user.email));
   const create = (event: FormEvent) => {
     event.preventDefault();
