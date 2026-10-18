@@ -20,7 +20,7 @@ export const DEMO_EMPLOYER_APPS: ProApplication[] = CANDIDATES_SEED.map((_, i) =
 export interface EmployerDemoState {
   assessments: { id: number; name: string; candidate: string; score?: number; status: string }[];
   aiInterviews: { id: number; name: string; candidate: string; status: string; score?: number }[];
-  campaigns: { id: number; name: string; status: string; views: number; clicks: number }[];
+  campaigns: { id: number; name: string; status: string; views: number; clicks: number; at?: number; category?: string }[];
   plan: string;
   preferences: { email: boolean; interviews: boolean; digest: boolean };
 }
@@ -28,7 +28,7 @@ export interface EmployerDemoState {
 export const INITIAL_EMPLOYER_DEMO: EmployerDemoState = {
   assessments: [{ id: 1, name: "React & TypeScript", candidate: "Aarav Mehta", score: 88, status: "Completed" }, { id: 2, name: "SQL & Analytics", candidate: "Diya Nair", status: "Invited" }],
   aiInterviews: [{ id: 1, name: "Frontend technical screening", candidate: "Aarav Mehta", status: "Completed", score: 86 }],
-  campaigns: [{ id: 1, name: "Engineering careers at Super30", status: "Active", views: 1240, clicks: 86 }],
+  campaigns: [{ id: 1, name: "Engineering careers at Super30", status: "Active", views: 1240, clicks: 86, at: Date.now() - 86400000 * 14, category: "Employer Brand · Engineering" }],
   plan: "Starter",
   preferences: { email: true, interviews: true, digest: false },
 };

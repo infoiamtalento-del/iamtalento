@@ -55,7 +55,7 @@ const AdvertiseIllustration = () => (
   </div>
 );
 
-export function ProEmployerAdvertise({ state, onChange, onNavigate, onNavigate: _nav, onToast }: Props & { onNavigate: (view: ProView) => void }) {
+export function ProEmployerAdvertise({ state, onChange, onNavigate, onToast }: Props) {
   const [name, setName] = useState("");
   const [showAll, setShowAll] = useState(false);
   const campaigns = state.campaigns;
@@ -88,7 +88,7 @@ export function ProEmployerAdvertise({ state, onChange, onNavigate, onNavigate: 
           <p className="workspace-description">Promote your company and reach the right audience. Create and manage advertising campaigns to attract talent and grow your brand.</p>
         </div>
         <AdvertiseIllustration />
-        <button type="button" onClick={() => _nav("support")} className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 text-left transition hover:border-primary/40">
+        <button type="button" onClick={() => onNavigate("support")} className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 text-left transition hover:border-primary/40">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"><Lightbulb className="h-5 w-5" /></span>
           <span className="min-w-0 flex-1">
             <span className="block text-sm font-bold text-foreground">Get better reach</span>
@@ -184,7 +184,7 @@ export function ProEmployerAdvertise({ state, onChange, onNavigate, onNavigate: 
           <span aria-hidden="true" className="mb-5 flex h-24 w-24 items-center justify-center rounded-2xl bg-primary/5"><Target className="h-12 w-12 text-primary" /></span>
           <h2 className="text-xl font-bold">Create New Campaign</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">Reach the right candidates with targeted advertising and grow your team faster.</p>
-          <Button className="mt-5" onClick={() => _nav("support")}><Plus />Contact Support</Button>
+          <Button className="mt-5" onClick={() => onNavigate("support")}><Plus />Contact Support</Button>
           <div className="mt-5 border-t border-border pt-4">
             <p className="text-xs font-semibold text-muted-foreground">Demo: create a sample campaign</p>
             <form onSubmit={createDemo} className="mt-2 flex gap-2">
