@@ -86,8 +86,8 @@ const build = () => {
       const sweep = (label.length / totalWeight) * available;
       const mid = cursor + sweep / 2;
       const flipped = isFlipped(mid);
-      const arcLen = 2 * Math.PI * R_MID * (sweep / 360) - 14;
-      const natural = label.length * 6.1;
+      const arcLen = 2 * Math.PI * R_MID * (sweep / 360) - 16;
+      const natural = label.length * 6.4;
       segs.push({
         label,
         a1: cursor,
@@ -112,7 +112,7 @@ const SkillsWheel = () => (
     viewBox="0 0 640 640"
     role="img"
     aria-label="Skills wheel: functional skills, AI fluency and behavioural skills around a candidate"
-    className="w-full max-w-[560px] mx-auto block"
+    className="w-full max-w-[600px] mx-auto block"
   >
     <defs>
       <clipPath id="wheel-portrait">
