@@ -5,11 +5,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowRight,
   BarChart3,
-  BriefcaseBusiness,
   Check,
   ChevronDown,
   CirclePlay,
   LineChart,
+  Play,
   Search,
   ShieldCheck,
   Sparkles,
@@ -23,7 +23,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { AIInterviewerSection, PlatformSection, TeamsSection, IntegrationsSection, TestimonialsSection, TrustStats, AIEvaluateSection, PlanVideoSection } from "@/components/employers/EmployerShowcaseSections";
 import EmployerActionBanner from "@/components/employers/EmployerActionBanner";
-import campusImage from "@/assets/employer-campus-hiring.jpg";
+import reasonsThumb from "@/assets/employer-10-reasons-thumb.jpg";
+import reasonsVideo from "@/assets/product-in-60-sec.mp4.asset.json";
 import recruiterImage from "@/assets/employer-recruiter.jpg";
 import candidateAnanya from "@/assets/learner-ananya.jpg";
 import candidatePriya from "@/assets/learner-priya.jpg";
@@ -204,34 +205,33 @@ const LogoStrip = () => (
   </section>
 );
 
-const steps = [
-  { icon: BriefcaseBusiness, title: "Post Jobs", text: "Publish a role with the skills, experience, and expectations that matter." },
-  { icon: Search, title: "Talent Hunt", text: "Browse general profiles directly or explore selected candidates with verified profiles." },
-  { icon: Users, title: "Qualified Pool", text: "Screening, assessments and AI interviews leave you with a ranked pool of job-ready candidates." },
-  { icon: UserCheck, title: "Shortlist", text: "Compare evidence, review with your team, and move the right candidates to interviews." },
-  { icon: Sparkles, title: "Hire and Support", text: "Make the offer, then keep new hires growing with onboarding and upskilling." },
-];
-
-const HowItWorks = () => (
-  <section id="how-it-works" className="bg-accent/45 py-20 md:py-28">
-    <div className="container">
-      <motion.div {...reveal}><SectionIntro align="center" eyebrow="How We Work" first="Your Next Great Hire." second="Five Clear Steps." description={<>Post a role, reach the right people, and move with evidence.<br className="hidden md:block" /> From a new opening to a hire your team keeps supporting.</>} /></motion.div>
-      <motion.div {...reveal} className="mx-auto mt-10 max-w-5xl overflow-hidden rounded-lg">
-        <img src={campusImage} alt="Recruiters meeting a graduate at an Indian campus hiring event" className="aspect-[16/9] w-full object-cover md:aspect-[21/9]" width={1536} height={1024} loading="lazy" />
-      </motion.div>
-      <ol className="mx-auto mt-12 grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        {steps.map(({ icon: Icon, title, text }, index) => (
-          <motion.li {...reveal} key={title} className="relative rounded-lg bg-card p-5 text-center shadow-sm">
-            <span className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">0{index + 1}</span>
-            <h3 className="mb-2 flex items-center justify-center gap-2 font-display text-base font-bold"><Icon className="h-4 w-4 text-primary" />{title}</h3>
-            <p className="text-sm leading-relaxed text-muted-foreground">{text}</p>
-          </motion.li>
-        ))}
-      </ol>
-      <div className="mt-10 text-center"><Button asChild size="lg" className="gap-2"><Link to="/employer-profile">Create Company Profile <ArrowRight className="h-4 w-4" /></Link></Button></div>
-    </div>
-  </section>
-);
+const ReasonsVideo = () => {
+  const [playing, setPlaying] = useState(false);
+  return (
+    <section id="how-it-works" className="bg-accent/45 py-20 md:py-28">
+      <div className="container">
+        <motion.div {...reveal}><SectionIntro align="center" eyebrow="Why Teams Choose Us" first="10 Reasons to Choose" second="TalentCIR." description={<>A short look at what hiring teams value most here.<br className="hidden md:block" /> Every reason is already part of your subscription.</>} /></motion.div>
+        <motion.div {...reveal} className="mx-auto mt-10 max-w-4xl">
+          <div className="relative overflow-hidden rounded-lg border border-border bg-primary shadow-xl">
+            {playing ? (
+              <video src={reasonsVideo.url} poster={reasonsThumb} controls autoPlay className="aspect-video w-full bg-primary object-cover" />
+            ) : (
+              <button type="button" onClick={() => setPlaying(true)} aria-label="Play 10 Reasons to Choose TalentCIR" className="group relative block aspect-video w-full">
+                <img src={reasonsThumb} alt="10 Reasons to Choose TalentCIR" className="h-full w-full object-cover" width={1600} height={900} loading="lazy" />
+                <span className="absolute inset-0 flex items-center justify-center bg-primary/15 transition group-hover:bg-primary/5">
+                  <span className="flex h-16 w-16 items-center justify-center rounded-full bg-background/95 shadow-lg transition group-hover:scale-105">
+                    <Play className="h-6 w-6 translate-x-0.5 text-primary" />
+                  </span>
+                </span>
+              </button>
+            )}
+          </div>
+        </motion.div>
+        <div className="mt-10 text-center"><Button asChild size="lg" className="gap-2"><Link to="/employer-profile">Create Company Profile <ArrowRight className="h-4 w-4" /></Link></Button></div>
+      </div>
+    </section>
+  );
+};
 
 const faqs = [
   { q: "How quickly can we start?", a: "Your team can create an employer account, define a role, and launch its first assessment within minutes." },
@@ -280,7 +280,7 @@ const ForEmployers = () => (
       <USPSection />
       <CareerIntelligencePackageHome heading={{ first: "What You Get Inside", second: "Candidates CIR Report" }} />
       <AIEvaluateSection />
-      <HowItWorks />
+      <ReasonsVideo />
       <EmployerActionBanner />
       <TestimonialsSection />
       <TeamsSection />
