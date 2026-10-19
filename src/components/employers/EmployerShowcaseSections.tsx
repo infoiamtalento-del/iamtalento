@@ -433,10 +433,10 @@ export const PlanVideoSection = () => {
               <span className="font-hand text-lg text-foreground">No credit card required</span>
             </div>
           </div>
-          <div className="flex flex-col items-center justify-center gap-4 bg-accent p-4 md:p-5">
+          <div className="flex flex-col items-center justify-center gap-4 bg-accent p-5 md:p-6">
             <span className="inline-flex shrink-0 items-center gap-2 rounded-full bg-card px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary shadow-sm"><CirclePlay className="h-3.5 w-3.5" /> {item.label}</span>
             <div className="w-full overflow-hidden rounded-[24px] border-4 border-card bg-foreground shadow-2xl">
-              <video key={item.video.url} src={item.video.url} autoPlay muted loop controls playsInline preload="metadata" className="h-[560px] w-full object-cover md:h-[640px]" />
+              <video key={item.video.url} src={item.video.url} autoPlay muted loop controls playsInline preload="metadata" className="h-[520px] w-full object-cover md:h-[600px]" />
             </div>
             <p className="max-w-[420px] text-center text-sm text-muted-foreground">{item.text}</p>
           </div>
