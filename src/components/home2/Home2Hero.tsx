@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import SkillWheel from "./SkillWheel";
 import { heroBenefits, photos } from "./data";
 import "./home2.css";
@@ -19,9 +21,18 @@ const Home2Hero = () => (
           </h1>
           <p className="h2-hero-lede">
             Talent CIR is building India's next-generation talent ecosystem—bringing learning, AI-powered skill
-            assessments, and career opportunities together on one platform.
+            assessments, and Talent Hunt together on one platform.
           </p>
 
+          <div className="h2-hero-actions">
+            <Link to="/assessments/explore" className="h2-btn h2-btn-primary">
+              Take Free Assessment
+              <ArrowRight />
+            </Link>
+            <Link to="/jobs" className="h2-btn h2-btn-ghost">
+              Browse 5,00,000+ Jobs
+            </Link>
+          </div>
 
           <p className="h2-hero-trust">
             Over <span>10,000+ candidates screened</span> and <span>500+ top employers</span> hiring on verified competency.
