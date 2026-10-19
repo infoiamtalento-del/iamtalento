@@ -141,3 +141,7 @@
 - Restyle the "All-in-One AI Hiring That Thinks Like You Do." heading like the other section headings — done; it now uses the shared centred heading (small uppercase blue label, bold sans-serif, blue second line) instead of the serif one, with the label "One Subscription"
 - Verify it matches — done; identical typography, colour and centred alignment to the "One Platform for Every Team That Hires" heading at 1497 and 390 widths, no overflow or page errors, build OK
 
+
+## Home3 — hero replaces search bar
+- Remove the search bar from the Home3 hero and add the "India's Next Big Leap in Hiring Starts Here." copy with Browse Jobs, Assessment and Learning buttons — done; new Home3-only hero component, original homepage hero untouched
+- Verify both pages — done; new headline, sub-line and paragraph present with three working links at 1280 and 390 widths, no overflow, homepage still shows its search bar, build OK

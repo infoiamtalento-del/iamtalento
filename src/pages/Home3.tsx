@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import Layout from "@/components/layout/Layout";
-import JobsHeroSection from "@/components/landing/JobsHeroSection";
+import Home3HeroSection from "@/components/landing/Home3HeroSection";
 
 import IndustryReadinessSection from "@/components/landing/IndustryReadinessSection";
 import TrustAuthoritySection from "@/components/landing/TrustAuthoritySection";
@@ -38,7 +38,7 @@ const Home3 = () => (
       <meta name="twitter:description" content="Measure your Industry Readiness. Benchmark against real professionals. Improve with precision." />
     </Helmet>
     <Layout>
-      <JobsHeroSection />
+      <Home3HeroSection />
       
       <JobsSocialProof />
 
