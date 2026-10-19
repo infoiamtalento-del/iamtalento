@@ -17,7 +17,6 @@ import v1 from "@/assets/mock-interview-1.jpg";
 import v2 from "@/assets/mock-interview-2.jpg";
 import v3 from "@/assets/mock-interview-3.jpg";
 import teamImage from "@/assets/employer-team.jpg";
-import pv_resume from "@/assets/plan-resume.mp4.asset.json";
 import pv_jobpost from "@/assets/plan-jobpost.mp4.asset.json";
 import pv_verify from "@/assets/plan-verify.mp4.asset.json";
 import pv_advertise from "@/assets/plan-advertise.mp4.asset.json";
@@ -393,7 +392,6 @@ export const TeamsSection = () => (
 
 /* ---------- Plan inclusions + product video ---------- */
 const planItems = [
-  { icon: FileText, label: "Resume", text: "Search and unlock verified candidate resumes.", video: pv_resume },
   { icon: Briefcase, label: "Job Posting", text: "Publish roles in minutes to active job seekers.", video: pv_jobpost },
   { icon: ShieldCheck, label: "Verify Resume", text: "Confirm credentials and work history automatically.", video: pv_verify },
   { icon: Megaphone, label: "Advertise My Job", text: "Boost reach with promoted job campaigns.", video: pv_advertise },
@@ -412,7 +410,7 @@ export const PlanVideoSection = () => {
     <div className="container">
       <CenterIntro eyebrow="One Subscription" first="All-in-One AI Hiring" second="That Thinks Like You Do." />
       <motion.div {...reveal} className="mx-auto max-w-6xl overflow-hidden rounded-[28px] border border-border bg-card shadow-xl">
-        <div className="grid items-stretch lg:grid-cols-[7fr_5fr]">
+        <div className="grid items-stretch lg:grid-cols-[7fr_4fr]">
           <div className="p-6 md:p-10">
             <h3 className="font-display text-2xl font-bold text-foreground md:text-3xl">What's included in your plan</h3>
             <p className="mt-2 text-sm text-muted-foreground">Tap any feature to see it in action.</p>
@@ -435,12 +433,12 @@ export const PlanVideoSection = () => {
               <span className="font-hand text-lg text-foreground">No credit card required</span>
             </div>
           </div>
-          <div className="flex flex-col items-center justify-center gap-4 bg-accent p-6 md:p-10">
-            <span className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary shadow-sm"><CirclePlay className="h-3.5 w-3.5" /> {item.label}</span>
-            <div className="w-full max-w-[280px] overflow-hidden rounded-[24px] border-4 border-card bg-foreground shadow-2xl">
-              <video key={item.video.url} src={item.video.url} autoPlay muted loop controls playsInline preload="metadata" className="aspect-[9/16] w-full object-cover" />
+          <div className="flex flex-col items-center justify-center gap-4 bg-accent p-4 md:p-5">
+            <span className="inline-flex shrink-0 items-center gap-2 rounded-full bg-card px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary shadow-sm"><CirclePlay className="h-3.5 w-3.5" /> {item.label}</span>
+            <div className="w-full overflow-hidden rounded-[24px] border-4 border-card bg-foreground shadow-2xl">
+              <video key={item.video.url} src={item.video.url} autoPlay muted loop controls playsInline preload="metadata" className="h-[560px] w-full object-cover md:h-[640px]" />
             </div>
-            <p className="max-w-[280px] text-center text-sm text-muted-foreground">{item.text}</p>
+            <p className="max-w-[420px] text-center text-sm text-muted-foreground">{item.text}</p>
           </div>
         </div>
       </motion.div>
