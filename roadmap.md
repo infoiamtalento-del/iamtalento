@@ -180,3 +180,7 @@
 ## Employer page — closing banner removed
 - Remove the "Ready to Hire Better?" banner — done; FinalCTA component and its render deleted from ForEmployers.tsx, page now ends on the "Build Your Team. Make Your Next Move." banner; verified in browser (text absent, no page errors) and build OK
 - Hero wheel top hidden behind fixed header + score pill covering wedge labels on the shared Home2 hero — hero top padding raised, wheel pull-up reduced, pill repositioned (done 2026-10-19)
+
+## Home page — hero benefit chips reworded
+- Verified Jobs → Browse Jobs / 10L+ Job Openings, Personalized Matches → Skill Assessments / 500+ Assessments, Your Career Edge → AI Learning / 100+ Courses — done; heroBenefits in src/components/home2/data.ts, verified in browser (three chips render the new text, no clipping, no page errors) and build OK
+- Open: the same three labels still read the old wording on the Browse Jobs page (JobsHeroSection.tsx) — only the home page was in scope; awaiting the user's word on whether to update it too
