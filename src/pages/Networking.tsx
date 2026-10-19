@@ -21,6 +21,7 @@ import delhi from "@/assets/networking-delhi.jpg.asset.json";
 import hyderabad from "@/assets/networking-hyderabad.jpg.asset.json";
 import pune from "@/assets/networking-pune.jpg.asset.json";
 import chennai from "@/assets/networking-chennai.jpg.asset.json";
+import NetworkingCalendar from "@/components/networking/NetworkingCalendar";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -225,6 +226,8 @@ const Networking = () => {
             {stats.map(({ icon: Icon, value, label }) => <div key={label} className="flex items-center gap-3 md:gap-4"><Icon className="h-7 w-7 shrink-0 text-primary" /><div><p className="font-display text-xl md:text-3xl font-bold">{value}</p><p className="text-xs text-muted-foreground mt-1">{label}</p></div></div>)}
           </div>
         </section>
+
+        <NetworkingCalendar />
 
         <section className="py-16 md:py-20 bg-accent/30">
           <div className="container">
