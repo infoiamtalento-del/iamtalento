@@ -61,6 +61,7 @@ const AssessmentTest = lazy(() => import("./pages/assessment/AssessmentTest"));
 const AssessmentResult = lazy(() => import("./pages/assessment/AssessmentResult"));
 const TalentoPro = lazy(() => import("./pages/TalentoPro"));
 const Home2 = lazy(() => import("./pages/Home2"));
+const Home3 = lazy(() => import("./pages/Home3"));
 
 const queryClient = new QueryClient();
 
