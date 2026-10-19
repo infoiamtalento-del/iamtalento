@@ -383,8 +383,9 @@
 }
 .h2-hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.32fr) minmax(0, 0.68fr);
-  gap: 48px;
+  /* Wider wheel column so the enlarged circle has room. */
+  grid-template-columns: minmax(0, 1.22fr) minmax(0, 0.78fr);
+  gap: 44px;
   align-items: center;
 }
 .h2-hero-copy {
