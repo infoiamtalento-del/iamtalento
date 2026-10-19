@@ -60,6 +60,9 @@ const segPath = (a1: number, a2: number) => {
 
 const isFlipped = (mid: number) => mid > 90 && mid < 270;
 
+const radiiFor = (count: number, flipped: boolean) =>
+  count === 1 ? [R_SINGLE] : flipped ? [R_L2, R_L1] : [R_L1, R_L2];
+
 const lineArc = (rc: number, a1: number, a2: number, flipped: boolean) => {
   const g = inset(rc);
   const base = flipped ? rc + 5 : rc - 5;
