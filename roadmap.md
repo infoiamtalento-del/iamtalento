@@ -184,3 +184,4 @@
 ## Home page — hero benefit chips reworded
 - Verified Jobs → Browse Jobs / 10L+ Job Openings, Personalized Matches → Skill Assessments / 500+ Assessments, Your Career Edge → AI Learning / 100+ Courses — done; heroBenefits in src/components/home2/data.ts, verified in browser (three chips render the new text, no clipping, no page errors) and build OK
 - Open: the same three labels still read the old wording on the Browse Jobs page (JobsHeroSection.tsx) — only the home page was in scope; awaiting the user's word on whether to update it too
+- Right-side wheel sat high in the two-column hero — `.h2-hero-grid` align-items start→center and `.h2-wheel` negative top margin removed, so the wheel's midline now matches the text column's (both 417.5px at 1280); single-column layout unchanged, build OK
