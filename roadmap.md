@@ -150,3 +150,4 @@
 - Left-align the headline, copy and buttons, and add the circular skills wheel on the right — done; new Home3SkillsWheel component with twelve equal wedges, two-line labels, three category arcs and a portrait that breaks the inner circle; original homepage hero untouched
 - Remove the Learning button and change the eyebrow to "New Era of Hiring" — done
 - Verify laptop and phone — done; all twelve wedges read top-to-bottom in order, no label sits off its wedge, category arcs complete, no phone overflow, build OK
+- Make Browse Jobs double width with Assessment and Learning below it, and remove the Learning / Skill Assessments / Job Hunt strip — in progress
