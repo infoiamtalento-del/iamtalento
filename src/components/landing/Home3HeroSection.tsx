@@ -1,10 +1,8 @@
-import { Briefcase, ClipboardCheck, ArrowRight } from "lucide-react";
+import { Briefcase, ClipboardCheck, GraduationCap, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import Home3SkillsWheel from "./Home3SkillsWheel";
-
-const ecosystemSteps = ["Learning", "Skill Assessments", "Job Hunt"];
 
 const actions = [
   {
@@ -19,6 +17,13 @@ const actions = [
     label: "Assessment",
     sub: "Prove your skills",
     icon: ClipboardCheck,
+    primary: false,
+  },
+  {
+    to: "/learning",
+    label: "Learning",
+    sub: "Get industry ready",
+    icon: GraduationCap,
     primary: false,
   },
 ];
@@ -80,7 +85,7 @@ const Home3HeroSection = () => (
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.24 }}
-          className="flex flex-col sm:flex-row items-stretch sm:flex-wrap justify-start gap-3 md:gap-4"
+          className="grid sm:grid-cols-2 gap-3 md:gap-4"
         >
           {actions.map(({ to, label, sub, icon: Icon, primary }) => (
             <Button
@@ -88,7 +93,7 @@ const Home3HeroSection = () => (
               asChild
               className={
                 primary
-                  ? "h-auto gap-3 rounded-2xl px-6 py-4 bg-primary text-primary-foreground hover:bg-primary/90 justify-between text-left shadow-lg shadow-primary/15"
+                  ? "h-auto gap-3 rounded-2xl px-6 py-4 bg-primary text-primary-foreground hover:bg-primary/90 justify-between text-left shadow-lg shadow-primary/15 sm:col-span-2"
                   : "h-auto gap-3 rounded-2xl px-6 py-4 bg-card border border-border text-foreground hover:border-primary/40 hover:bg-primary/5 justify-between text-left"
               }
             >
@@ -119,25 +124,6 @@ const Home3HeroSection = () => (
                 <ArrowRight className="h-4 w-4 opacity-70" />
               </Link>
             </Button>
-          ))}
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.36 }}
-          className="mt-11 flex flex-wrap items-center justify-start gap-y-3"
-        >
-          {ecosystemSteps.map((step, i) => (
-            <div key={step} className="flex items-center">
-              <span className="inline-flex items-center gap-2 rounded-full bg-card border border-border/60 px-4 py-2 text-xs font-semibold">
-                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                {step}
-              </span>
-              {i < ecosystemSteps.length - 1 && (
-                <span className="mx-3 h-px w-8 sm:w-12 bg-primary/30" />
-              )}
-            </div>
           ))}
         </motion.div>
       </div>
