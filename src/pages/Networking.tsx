@@ -185,7 +185,7 @@ const Networking = () => {
         <meta name="description" content="Curated networking events, meetups, and mixers to grow your career, find collaborators, and meet hiring teams." />
       </Helmet>
       <main className="pt-28">
-        <div className="container max-w-6xl">
+        <div className="container">
           {/* 1. Hero — with photo collage */}
         <section className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center mb-24">
           <div>
@@ -221,13 +221,13 @@ const Networking = () => {
         </div>
 
         <section className="border-y border-border/60 bg-muted/20 py-9 md:py-12">
-          <div className="container max-w-6xl grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="container grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map(({ icon: Icon, value, label }) => <div key={label} className="flex items-center gap-3 md:gap-4"><Icon className="h-7 w-7 shrink-0 text-primary" /><div><p className="font-display text-xl md:text-3xl font-bold">{value}</p><p className="text-xs text-muted-foreground mt-1">{label}</p></div></div>)}
           </div>
         </section>
 
         <section className="py-16 md:py-20 bg-accent/30">
-          <div className="container max-w-6xl">
+          <div className="container">
             <Heading label="Real connections" first="Six Ways to Build" second="Real Connections" description="Make space for people, ideas and opportunities." tail="Build a network that matters." />
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {connectionBenefits.map(({ icon: Icon, title, desc }) => <article key={title} className="flex gap-4 p-6 bg-card rounded-lg border border-border/40"><div className="h-12 w-12 shrink-0 flex items-center justify-center bg-accent text-primary rounded-full"><Icon className="h-6 w-6" /></div><div><h3 className="font-display font-semibold text-base mb-2">{title}</h3><p className="text-sm text-muted-foreground leading-relaxed">{desc}</p></div></article>)}
@@ -236,7 +236,7 @@ const Networking = () => {
         </section>
 
         <section id="networking-events" className="py-16 md:py-20 scroll-mt-24">
-          <div className="container max-w-6xl">
+          <div className="container">
             <Heading label="Upcoming events" first="Find Your Next Room" second="Make It Count" description="Explore gatherings built around your interests and goals." tail="Find your next conversation." />
             {city !== 'All' && <div className="flex items-center justify-center gap-3 mb-6"><span className="text-sm text-muted-foreground">{city}</span><Button variant="ghost" size="sm" onClick={() => setCity('All')}>Show all cities</Button></div>}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -248,7 +248,7 @@ const Networking = () => {
         </section>
 
         <section className="py-16 md:py-20 bg-muted/20">
-          <div className="container max-w-6xl">
+          <div className="container">
             <div className="flex justify-center mb-4">
               <span className="inline-flex items-center gap-2 rounded-full bg-card border border-border px-4 py-1.5 text-sm font-semibold shadow-sm">
                 <Sparkles className="h-4 w-4 text-primary" />Learn from people
@@ -283,7 +283,7 @@ const Networking = () => {
         </section>
 
         <section className="py-16 md:py-20">
-          <div className="container max-w-6xl">
+          <div className="container">
             <Heading label="A growing community" first="Find Your Community" second="In Your City" description="Explore professional communities across India's cities." tail="Connect closer to home." />
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
               {localCities.map(item => <Button key={item.name} aria-label={`Explore events in ${item.name}`} variant="ghost" className="group block h-auto p-0 rounded-lg overflow-hidden border border-border text-left whitespace-normal" onClick={() => { setCity(item.name); setShowAll(true); scrollToEvents(); }}><img src={item.img.url} alt={item.name} loading="lazy" width={600} height={450} className="w-full aspect-[4/3] object-cover motion-safe:group-hover:scale-105 transition-transform duration-500" /><span className="block px-3 py-3 font-semibold text-sm">{item.name}</span></Button>)}
@@ -293,7 +293,7 @@ const Networking = () => {
         </section>
 
         <section className="py-16 md:py-20 bg-accent/20">
-          <div className="container max-w-6xl">
+          <div className="container">
             <Heading label="Community in action" first="Step Inside Our" second="Community Events" description="Shared ideas, new introductions and moments that matter." tail="A glimpse into the room." />
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 auto-rows-[140px] md:auto-rows-[180px]">
               {galleryPhotos.slice(0, 9).map((photo, i) => <div key={i} className={`overflow-hidden rounded-lg ${i === 0 ? 'col-span-2 row-span-2' : ''}`}><img src={photo} alt={`Networking community moment ${i + 1}`} loading="lazy" width={800} height={600} className="w-full h-full object-cover" /></div>)}
@@ -302,7 +302,7 @@ const Networking = () => {
         </section>
 
         <section className="py-16 md:py-20">
-          <div className="container max-w-6xl">
+          <div className="container">
             <Heading label="Get started" first="From Your First RSVP" second="To a Real Connection" description="Find the right room and keep the conversation going." tail="Every step stays simple." />
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {howItWorks.map((step, i) => <div key={step.step} className="text-center relative"><div className="w-12 h-12 bg-accent text-primary rounded-full mx-auto mb-5 flex items-center justify-center font-display font-bold">{step.step}</div>{i < 3 && <div className="hidden lg:block absolute top-6 left-[70%] w-[60%] border-t border-border" />}<h3 className="font-display font-semibold mb-2">{step.title}</h3><p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p></div>)}
@@ -311,7 +311,7 @@ const Networking = () => {
         </section>
 
         <section className="py-16 md:py-20 bg-muted/20">
-          <div className="container max-w-6xl">
+          <div className="container">
             <Heading label="This month's standouts" first="Meet Our Community" second="And Its Connectors" description="Celebrate members who bring people and ideas together." tail="Meet this month's standouts." />
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
               {spotlight.map((_, i) => { const index = (i + memberStart) % spotlight.length; const person = spotlight[index]; return <article key={person.name} className="text-center"><img src={memberPhotos[index]} alt={person.name} loading="lazy" width={200} height={200} className="h-20 w-20 rounded-full object-cover mx-auto mb-4" /><h3 className="font-display text-sm font-semibold">{person.name}</h3><p className="text-xs text-muted-foreground mt-1 mb-2">{person.role}</p><p className="text-xs text-primary">{person.badge}</p></article> })}
@@ -321,7 +321,7 @@ const Networking = () => {
         </section>
 
         <section className="py-16 md:py-20">
-          <div className="container max-w-6xl">
+          <div className="container">
             <Heading label="Real stories" first="Real Conversations" second="Meaningful Outcomes" description="Discover how one conversation opened a new door." tail="Every story starts with people." />
             <div className="grid md:grid-cols-3 gap-6">{stories.map((story, i) => <article key={story.name} className="p-6 rounded-lg border border-border bg-card"><Quote className="h-5 w-5 text-primary mb-4" /><p className="text-sm leading-relaxed text-muted-foreground mb-6">“{story.quote}”</p><div className="flex gap-3 items-center"><img src={memberPhotos[i]} alt={story.name} loading="lazy" width={80} height={80} className="h-10 w-10 rounded-full object-cover" /><div><h3 className="text-sm font-semibold">{story.name}</h3><p className="text-xs text-muted-foreground">{story.role}</p></div></div></article>)}</div>
             <p className="text-xs text-muted-foreground text-center mt-10 mb-5 uppercase">Companies in the room</p><div className="flex justify-center flex-wrap gap-x-8 gap-y-4">{partners.map(partner => <span key={partner} className="font-display font-semibold text-sm text-muted-foreground">{partner}</span>)}</div>
@@ -329,7 +329,7 @@ const Networking = () => {
         </section>
 
         <section className="py-16 md:py-20 bg-muted/20">
-          <div className="container max-w-6xl">
+          <div className="container">
             <Heading label="FAQ" first="What You Need to Know" second="Before You Join" description="Find answers about event access, hosting and community." tail="Join with confidence." />
             <Accordion type="single" collapsible className="max-w-3xl mx-auto">{faqs.map((faq, i) => <AccordionItem value={`faq-${i}`} key={faq.q}><AccordionTrigger className="text-left font-display">{faq.q}</AccordionTrigger><AccordionContent className="text-muted-foreground leading-relaxed">{faq.a}</AccordionContent></AccordionItem>)}</Accordion>
           </div>
@@ -337,7 +337,7 @@ const Networking = () => {
 
         <section className="relative py-16 md:py-20 text-primary-foreground overflow-hidden">
           <img src={communityPhoto} alt="Professionals connecting at a community gathering" loading="lazy" width={1536} height={1024} className="absolute inset-0 w-full h-full object-cover" /><div className="absolute inset-0 bg-foreground/80" />
-          <div className="container max-w-6xl relative"><Heading inverse label="Join our community" first="Bring People Together" second="Host With Us" description="Share your expertise and bring your community together." tail="We help you shape the room." /><div className="flex flex-wrap justify-center gap-3"><Button asChild size="lg" className="gap-2"><Link to="/contact?interest=host-event">Host an Event<ArrowRight className="h-4 w-4" /></Link></Button><Button asChild size="lg" variant="secondary"><Link to="/contact">Learn More</Link></Button></div></div>
+          <div className="container relative"><Heading inverse label="Join our community" first="Bring People Together" second="Host With Us" description="Share your expertise and bring your community together." tail="We help you shape the room." /><div className="flex flex-wrap justify-center gap-3"><Button asChild size="lg" className="gap-2"><Link to="/contact?interest=host-event">Host an Event<ArrowRight className="h-4 w-4" /></Link></Button><Button asChild size="lg" variant="secondary"><Link to="/contact">Learn More</Link></Button></div></div>
         </section>
       </main>
     </Layout>
