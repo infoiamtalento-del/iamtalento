@@ -16,12 +16,12 @@ const Home2Hero = () => (
         <div className="h2-hero-copy">
           <span className="h2-eyebrow">SKILLS-FIRST RECRUITING & READINESS PLATFORM</span>
           <h1>
-            Where Verified Skills
-            <em>Meet India's Top Employers.</em>
+            India's Next Big Leap
+            <em>Learning. Skill Assessments. Job Hunt. All Connected.</em>
           </h1>
           <p className="h2-hero-lede">
-            Skip the resume pile. Take AI-proctored industry assessments, prove your readiness, and get hired faster
-            by leading tech companies.
+            Talent CIR is building India's next-generation talent ecosystem—bringing learning, AI-powered skill
+            assessments, and career opportunities together on one platform.
           </p>
 
           <div className="h2-hero-actions">
