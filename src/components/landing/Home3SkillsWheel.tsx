@@ -112,7 +112,7 @@ const SkillsWheel = () => (
       {SEGMENTS.map((seg, si) => {
         const a1 = si * 30;
         const flipped = isFlipped(a1 + 15);
-        const radii = seg.lines.length === 1 ? [R_SINGLE] : [R_L1, R_L2];
+        const radii = radiiFor(seg.lines.length, flipped);
         return radii.map((rc, li) => (
           <path
             key={`line-${si}-${li}`}
