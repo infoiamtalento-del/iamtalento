@@ -18,6 +18,7 @@ import {
   Zap,
 } from "lucide-react";
 import Layout from "@/components/layout/Layout";
+import CareerIntelligencePackageHome from "@/components/landing/CareerIntelligencePackageHome";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { AIInterviewerSection, PlatformSection, TeamsSection, IntegrationsSection, TestimonialsSection, DemoFormSection, TrustStats, AIEvaluateSection, PlanVideoSection } from "@/components/employers/EmployerShowcaseSections";
@@ -289,6 +290,7 @@ const ForEmployers = () => (
       <Hero />
       <LogoStrip />
       <TrustStats />
+      <CareerIntelligencePackageHome />
       <AIInterviewerSection />
       <PlatformSection />
       <USPSection />
