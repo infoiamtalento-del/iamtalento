@@ -1,6 +1,10 @@
 .employer-workspace { color: hsl(var(--job-ink)); letter-spacing: 0; }
 .employer-workspace .candidate-step { display:flex; align-items:center; gap:10px; font-size:13px; font-weight:600; }
 .employer-workspace .candidate-step span { display:flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; background:hsl(var(--primary)); color:hsl(var(--primary-foreground)); }
+.employer-workspace input[type=radio] { width:14px; height:14px; flex-shrink:0; margin-top:1px; }
+.employer-reference-shell { background:hsl(var(--job-tint)/.45); }
+.employer-reference-shell .employer-workspace button { background-color:hsl(var(--card)); }
+.employer-reference-shell .employer-workspace button.bg-primary { background-color:hsl(var(--primary)); }
 .employer-workspace h1,.employer-workspace h2,.employer-workspace h3 { color: hsl(var(--job-ink)); letter-spacing: 0; }
 .employer-workspace .workspace-header { display:flex; align-items:center; justify-content:space-between; gap:24px; margin-bottom:28px; }
 .employer-workspace .workspace-heading { font-size:28px; line-height:1.25; font-weight:700; margin-top:8px; }

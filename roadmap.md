@@ -1,9 +1,9 @@
 # Roadmap
 
 ## Employer candidate and assessment reference pages
-- Open candidate reviews as full-page, linkable profiles with connected application actions — in progress
-- Match the assessment dashboard reference with search, filters, creation and results — in progress
-- Verify sample workflows, reload and desktop/phone layouts — pending
+- Open candidate reviews as full-page, linkable profiles with connected application actions — done
+- Match the assessment dashboard reference with search, filters, creation and results — done
+- Verify sample workflows, reload and desktop/phone layouts — done; employer demo login, profile opening, stage/notes save and reload, activity readback, return to candidates, assessment creation/result and reload checked; 1280/890/390 widths without overflow or page errors; existing employer tests passed.
 
 ## Employer — realistic interactive demo
 - Seed connected jobs, applicants, interviews and account activity without overwriting existing changes — done

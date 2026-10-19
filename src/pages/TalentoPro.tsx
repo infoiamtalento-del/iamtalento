@@ -641,7 +641,7 @@ const TalentoPro: React.FC = () => {
   const selectedCandidate = candidatePage?.type === "candidate" ? CANDIDATES_SEED.find(c => c.n === candidatePage.name) : undefined;
   return (
     <div
-      className="min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-primary/20 selection:text-primary"
+      className={cn("min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-primary/20 selection:text-primary", currentRole === "employer" && (candidatePage || effectiveView === "employer-assessments") && "employer-reference-shell")}
     >
       <Helmet>
         <title>
