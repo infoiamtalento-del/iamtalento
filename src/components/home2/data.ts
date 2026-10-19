@@ -71,9 +71,9 @@ export const trustStrip = [
 ];
 
 export const heroBenefits = [
-  { icon: ShieldCheck, title: "Verified Jobs", sub: "100% genuine opportunities" },
-  { icon: Target, title: "Personalized Matches", sub: "Jobs that match your skills" },
-  { icon: TrendingUp, title: "Your Career Edge", sub: "Insights to grow faster" },
+  { icon: ShieldCheck, title: "Browse Jobs", sub: "10L+ Job Openings" },
+  { icon: Target, title: "Skill Assessments", sub: "500+ Assessments" },
+  { icon: TrendingUp, title: "AI Learning", sub: "100+ Courses" },
 ];
 
 export interface WheelSector {
