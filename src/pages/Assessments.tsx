@@ -29,6 +29,7 @@ import LiveLeaderboardSection from "@/components/assessments/LiveLeaderboardSect
 // 5. The Reward
 import VerifiedBadgeSection from "@/components/assessments/VerifiedBadgeSection";
 import CareerIntelligencePackageSection from "@/components/landing/CareerIntelligencePackageSection";
+import VideoTestimonialsSection from "@/components/assessments/VideoTestimonialsSection";
 import CredibilityTrustSection from "@/components/assessments/CredibilityTrustSection";
 import AssessmentExpertsSection from "@/components/assessments/AssessmentExpertsSection";
 
@@ -70,6 +71,7 @@ const Assessments = () => (
       <AssessmentSocialProof />
       <VerifiedBadgeSection />
       <CareerIntelligencePackageSection />
+      <VideoTestimonialsSection />
       <CredibilityTrustSection />
       <AssessmentExpertsSection />
       {/* Moved to /assessments/explore */}
