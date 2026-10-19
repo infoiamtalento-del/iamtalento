@@ -393,9 +393,9 @@
 }
 .h2-hero h1 {
   margin-top: 43px;
-  /* Larger headline; wrapping onto two lines is allowed. */
+  /* Headline set bold per request; wrapping onto two lines is allowed. */
   font-size: clamp(22px, 5.5cqw, 48px);
-  font-weight: 400;
+  font-weight: 700;
   letter-spacing: -0.01em;
   line-height: 1.16;
 }
