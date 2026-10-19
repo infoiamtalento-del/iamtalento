@@ -171,8 +171,3 @@
 - Add 4 testimonial videos to "Trusted by Hiring Teams Across India." — done; four 6-second AI-generated talking-head clips (testimonial-1..4.mp4, CDN assets) with the original photos as posters, each card keeps quote, name, role and company logo; added a fourth testimonial (Arjun Mehta, Talent Manager, Consulting, TCS logo — placeholder name/quote for the user to replace)
 - Move the section above "One Platform for Every Team That Hires." — done; TestimonialsSection now renders directly before TeamsSection
 - Verified in browser at 1497px: correct order, all four videos load with posters, build OK
-
-## Employer page — plan + video section
-- Remove "Resume" so the plan list shows 8 points — done; item and its now-unused clip import removed
-- Make the vertical video much bigger, covering nearly the whole right column — done; right column narrowed to 4fr, video now fills the panel (362x600 desktop, 276x520 phone) instead of the old 280px cap, caption spacing eased
-- Verified at 1497/390: 8 buttons in two neat columns, clicking a feature swaps the clip, no page errors, build OK. Clip picture itself not viewable in the sandbox browser (no H.264 codec there); files confirmed h264/aac 720x1280 so they play in normal browsers
