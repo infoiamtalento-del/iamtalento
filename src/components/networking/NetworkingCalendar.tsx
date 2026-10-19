@@ -29,6 +29,7 @@ const NetworkingCalendar = () => {
   return (
     <section className="py-16 md:py-24" aria-labelledby="networking-calendar-heading">
       <div className="container">
+        <div className="overflow-hidden rounded-[28px] border border-border bg-card p-5 shadow-sm sm:p-8 md:p-10 lg:p-12">
         <div className="mb-10 flex flex-col items-center gap-4 text-center md:mb-12">
           <div>
             <p className="mb-3 text-xs font-semibold uppercase text-primary">The networking calendar</p>
@@ -91,6 +92,7 @@ const NetworkingCalendar = () => {
         <div className="mt-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
           <p className="font-display text-lg font-semibold leading-relaxed md:text-2xl"><span className="text-primary">1 Year</span> <span className="mx-1 text-muted-foreground">=</span> 15 New Events <span className="mx-1 text-muted-foreground">×</span> 10 Cities</p>
           <Button asChild variant="link" className="h-auto justify-start px-0"><Link to="/auth">Get Your Priority Pass <ArrowRight className="h-4 w-4" /></Link></Button>
+        </div>
         </div>
       </div>
     </section>
