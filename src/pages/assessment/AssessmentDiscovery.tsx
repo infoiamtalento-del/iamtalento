@@ -26,6 +26,18 @@ import { ASSESSMENTS, DOMAINS, EXPERIENCE_LEVELS, INDUSTRIES, Assessment } from 
 import AssessmentIntegritySection from "@/components/landing/AssessmentIntegritySection";
 import ProctoringSection from "@/components/assessments/ProctoringSection";
 import HowItWorksSection from "@/components/assessments/HowItWorksSection";
+import AssessmentSocialProof from "@/components/assessments/AssessmentSocialProof";
+import VerifiedBadgeSection from "@/components/assessments/VerifiedBadgeSection";
+import CareerIntelligencePackageSection from "@/components/landing/CareerIntelligencePackageSection";
+import VideoTestimonialsSection from "@/components/assessments/VideoTestimonialsSection";
+import CredibilityTrustSection from "@/components/assessments/CredibilityTrustSection";
+import AssessmentExpertsSection from "@/components/assessments/AssessmentExpertsSection";
+import SuccessStoriesCarousel from "@/components/assessments/SuccessStoriesCarousel";
+import WhoIsItForSection from "@/components/landing/WhoIsItForSection";
+import PhoneMockupSection from "@/components/assessments/PhoneMockupSection";
+import AssessmentFAQ from "@/components/assessments/AssessmentFAQ";
+import AssessmentFinalCTA from "@/components/assessments/AssessmentFinalCTA";
+import ComplianceSection from "@/components/landing/ComplianceSection";
 
 export const MANDATORY_TESTS = [
   { name: "Communication Skills", text: "Written and verbal clarity, workplace tone." },
@@ -211,9 +223,6 @@ const AssessmentDiscovery = () => {
         {/* Hero */}
         <section className="pt-14 pb-10 md:pt-20 md:pb-12 bg-[#FBF4EB]">
           <div className="container text-center">
-            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded-full mb-4">
-              <Sparkles className="h-3 w-3" /> Skill Assessments
-            </span>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-display leading-[1.15] mb-4">
               Prove Your Skills.<br />
               <span className="text-primary">Show What You Can Do.</span>
@@ -367,14 +376,34 @@ const AssessmentDiscovery = () => {
           </div>
         </section>
 
-        {/* How It Works — Expand & Collapse on Hover */}
+        {/* Social Proof Metrics */}
+        <AssessmentSocialProof />
+
+        {/* How It Works — Placed above Verified Badge Section */}
         <HowItWorksSection />
 
-        {/* 30-Layer Proctoring Breakdown */}
-        <AssessmentIntegritySection />
+        {/* Verified Badge & Career Intelligence Package */}
+        <VerifiedBadgeSection />
+        <CareerIntelligencePackageSection />
 
-        {/* Why Start Today? Here's Why. */}
+        {/* Video Testimonials */}
+        <VideoTestimonialsSection />
+
+        {/* Credibility, Experts & Integrity */}
+        <CredibilityTrustSection />
+        <AssessmentExpertsSection />
+        <AssessmentIntegritySection />
         <ProctoringSection />
+
+        {/* Success Stories & Audience */}
+        <SuccessStoriesCarousel />
+        <WhoIsItForSection />
+
+        {/* App Mockup, FAQ, Final CTA & Compliance */}
+        <PhoneMockupSection />
+        <AssessmentFAQ />
+        <AssessmentFinalCTA />
+        <ComplianceSection />
       </Layout>
     </div>
   );

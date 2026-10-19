@@ -95,7 +95,7 @@ const features = [
   {
     id: "podcasts",
     icon: Mic,
-    tag: "🎙️ Career Podcasts",
+    tag: "Career Podcasts",
     headline: "Learn from the Voices Shaping Your Industry",
     description: "Insider conversations with hiring leaders, founders, and top performers — straight to your ears.",
     details: [
@@ -111,6 +111,26 @@ const features = [
     href: "/podcast",
     mockup: "podcasts",
     gradient: "from-blue-500/10 via-blue-500/5 to-transparent",
+  },
+  {
+    id: "networking",
+    icon: Users,
+    tag: "Events & Networking",
+    headline: "Connect with Hiring Leaders, Mentors & Peers",
+    description: "Curated city meetups, leadership roundtables, and live career networking across major hubs.",
+    details: [
+      { icon: Users, text: "In-Person City Meetups & Mixer Events" },
+      { icon: Calendar, text: "Weekly Recruiter & Founder Roundtables" },
+      { icon: Briefcase, text: "Direct Referrals from Verified Alumni" },
+      { icon: Award, text: "Exclusive Invite-Only Hiring Lounges" },
+      { icon: Star, text: "1-on-1 Portfolio & Resume Clinics" },
+      { icon: TrendingUp, text: "Expand Your High-Trust Career Network" },
+      { icon: Radio, text: "Live Hybrid Webinars & Workshops" },
+    ],
+    cta: "Explore Networking",
+    href: "/networking",
+    mockup: "networking",
+    gradient: "from-primary/10 via-primary/5 to-transparent",
   },
 ];
 
@@ -203,7 +223,7 @@ const HackathonsMockup = () => (
       { name: "AI Agents Build-Off", prize: "$10K", participants: "2.4K", live: true },
       { name: "FinTech Innovate '26", prize: "$7.5K", participants: "1.8K", live: false },
       { name: "ClimateTech Sprint", prize: "$5K", participants: "1.2K", live: false },
-    ].map((h, i) => (
+    ].map((h) => (
       <div key={h.name} className="p-4 rounded-xl border border-border/50">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
@@ -213,8 +233,8 @@ const HackathonsMockup = () => (
             <p className="text-sm font-semibold">{h.name}</p>
           </div>
           {h.live && (
-            <span className="text-[9px] font-bold text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded-full flex items-center gap-1">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" /> LIVE
+            <span className="text-[9px] font-bold text-[#002C66] bg-[#002C66]/10 px-2 py-0.5 rounded-full flex items-center gap-1">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#002C66] animate-pulse" /> LIVE
             </span>
           )}
         </div>
@@ -248,12 +268,33 @@ const PodcastsMockup = () => (
   </div>
 );
 
+const NetworkingMockup = () => (
+  <div className="space-y-3">
+    {[
+      { title: " Bengaluru Tech & Product Mixer", city: "Bengaluru · Indiranagar", attendees: "180+ Verified" },
+      { title: "AI Founders & Hiring Leaders Table", city: "Mumbai · BKC", attendees: "95+ Verified" },
+      { title: "System Design & Career Clinic", city: "Hyderabad · HITEC City", attendees: "140+ Verified" },
+    ].map((ev) => (
+      <div key={ev.title} className="p-4 rounded-xl border border-border/50 flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-sm font-semibold truncate">{ev.title}</p>
+          <p className="text-[10px] text-muted-foreground truncate">{ev.city}</p>
+        </div>
+        <span className="text-[10px] font-bold text-[#002C66] bg-[#002C66]/10 px-2.5 py-1 rounded-full shrink-0">
+          {ev.attendees}
+        </span>
+      </div>
+    ))}
+  </div>
+);
+
 const mockupMap: Record<string, React.ReactNode> = {
   assessment: <AssessmentMockup />,
   jobs: <JobsMockup />,
   learning: <LearningMockup />,
   hackathons: <HackathonsMockup />,
   podcasts: <PodcastsMockup />,
+  networking: <NetworkingMockup />,
 };
 
 const PlatformFeaturesSection = () => {
@@ -273,7 +314,7 @@ const PlatformFeaturesSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            Three Powerful Engines.<br />
+            Six Powerful Engines.<br />
             <span className="text-primary">One Career Leap.</span>
           </motion.h2>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">

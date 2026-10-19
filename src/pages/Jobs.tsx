@@ -255,8 +255,11 @@ const Jobs = () => {
         {/* Top Categories */}
         <TopCategoriesSection />
 
-        {/* Featured Jobs red banner */}
+        {/* Featured Jobs banner (Handpicked Openings from Top Companies) */}
         <FeaturedJobsBanner />
+
+        {/* Featured Companies (Top Employers Prefer Verified Talent) */}
+        <FeaturedCompanies />
 
         {/* Jobs by Experience Level */}
         <ExperienceLevelsSection />
@@ -266,9 +269,6 @@ const Jobs = () => {
 
         {/* Remote Jobs */}
         <RemoteJobsSection />
-
-        {/* Featured Companies (1,500,000+ Job Vacancies Listed) */}
-        <FeaturedCompanies />
 
         {/* Success Stories */}
         <JobsSuccessStoriesSection />

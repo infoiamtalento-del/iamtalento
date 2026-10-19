@@ -23,7 +23,7 @@ import FreeAccessSection from "@/components/landing/FreeAccessSection";
 import DigitalSkillPassportSection from "@/components/landing/DigitalSkillPassportSection";
 import FreeFeaturesSection from "@/components/landing/FreeFeaturesSection";
 import GetHiredBanner from "@/components/landing/GetHiredBanner";
-// import PlatformFeaturesSection from "@/components/landing/PlatformFeaturesSection";
+import PlatformFeaturesSection from "@/components/landing/PlatformFeaturesSection";
 
 const Index = () => (
   <>
@@ -49,12 +49,7 @@ const Index = () => (
       <CareerIntelligencePackageHome />
       <IndustryReadinessSection />
       <CareerTransformationSection />
-      {/* <DigitalSkillPassportSection /> */}
-      {/* <FreeAccessSection /> */}
-      {/* <CandidateJourneySection /> */}
-      
-      
-      {/* <PlatformFeaturesSection /> */}
+      <PlatformFeaturesSection />
       <HackathonSpotlightSection />
       
       
