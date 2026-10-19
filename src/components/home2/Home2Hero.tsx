@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import SkillWheel from "./SkillWheel";
 import { heroBenefits, photos } from "./data";
 import "./home2.css";
