@@ -381,6 +381,17 @@
   padding-block: 104px 90px;
   overflow: hidden;
 }
+/* Fit the hero to the first screen on wide displays: fill the viewport below
+   the header and centre the content vertically, so the space above the
+   eyebrow grows and no dead band is left at the bottom of the page. */
+@media (min-width: 961px) {
+  .h2-hero {
+    display: flex;
+    align-items: center;
+    min-height: calc(100svh - 88px);
+    padding-block: 56px;
+  }
+}
 .h2-hero-grid {
   display: grid;
   /* Wider wheel column so the enlarged circle has room. */
@@ -408,11 +419,12 @@
 .h2-hero h1 em {
   display: block;
   margin-top: 10px;
-  /* Reduced ~15% from 0.6em, and not bold, per request. */
+  /* Reduced ~15% from 0.6em, and not bold, per request. Colour matches
+     the lede paragraph below it, per request. */
   font-size: 0.51em;
   font-weight: 400;
   font-style: normal;
-  color: hsl(var(--h2-red));
+  color: hsl(var(--h2-ink) / 0.78);
 }
 .h2-hero-lede {
   /* Widened so the larger text balances over two lines instead of
