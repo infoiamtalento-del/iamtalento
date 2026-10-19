@@ -399,6 +399,11 @@
   letter-spacing: -0.01em;
   line-height: 1.16;
 }
+/* Headline second line: same size as the first, brand blue. */
+.h2-hero h1 .h2-hero-accent {
+  display: block;
+  color: hsl(var(--h2-red));
+}
 .h2-hero h1 em {
   display: block;
   margin-top: 10px;

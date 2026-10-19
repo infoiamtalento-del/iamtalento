@@ -16,7 +16,8 @@ const Home2Hero = () => (
         <div className="h2-hero-copy">
           <span className="h2-eyebrow">A NEW ERA OF HIRING TALENTS</span>
           <h1>
-            India's Next Big Leap in Hiring Starts Here.
+            India's Next Big Leap
+            <span className="h2-hero-accent">in Hiring Starts Here.</span>
             <em>Learning. Skill Assessments. Job Hunt. All Connected.</em>
           </h1>
           <p className="h2-hero-lede">
