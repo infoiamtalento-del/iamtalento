@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion, useMotionValue, useTransform, type MotionValue } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   ArrowRight, BarChart3, Building2, CalendarClock, Cable, CheckCircle2, CirclePlay, Code2, Fingerprint,
   GraduationCap, Library, Lock, Megaphone, MessageSquare, Mic, Palette, Quote, ShieldCheck, Sparkles,
@@ -50,11 +50,11 @@ export const CenterIntro = ({ eyebrow, first, second, description, invert = fals
   eyebrow: string; first: string; second: string; description?: React.ReactNode; invert?: boolean;
 }) => (
   <motion.div {...reveal} className="mx-auto mb-12 max-w-2xl text-center">
-    <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-primary">{eyebrow}</p>
-    <h2 className={cn("font-display text-3xl font-bold leading-[1.08] sm:text-4xl lg:text-5xl", description && "mb-5", invert && "text-background")}>
-      {first}<br /><span className="text-primary">{second}</span>
+    <p className={cn("mb-3 text-xs font-bold uppercase tracking-[0.18em]", invert ? "text-primary-foreground/60" : "text-primary")}>{eyebrow}</p>
+    <h2 className={cn("font-display text-3xl font-bold leading-[1.08] sm:text-4xl lg:text-5xl", description && "mb-5", invert && "text-primary-foreground")}>
+      {first}<br /><span className={invert ? "text-primary-foreground" : "text-primary"}>{second}</span>
     </h2>
-    {description && <p className={cn("text-sm leading-relaxed md:text-base", invert ? "text-background/70" : "text-muted-foreground")}>{description}</p>}
+    {description && <p className={cn("text-sm leading-relaxed md:text-base", invert ? "text-primary-foreground/70" : "text-muted-foreground")}>{description}</p>}
   </motion.div>
 );
 
