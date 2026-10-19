@@ -7,8 +7,10 @@ import industryPhoto from "@/assets/event-industry.jpg";
 import eventPhoto from "@/assets/event-networking.jpg";
 import webinarPhoto from "@/assets/event-webinar.jpg";
 import podcastPhoto from "@/assets/event-podcast.jpg";
-import rohanPhoto from "@/assets/speaker-rohan.jpg";
-import meeraPhoto from "@/assets/speaker-meera.jpg";
+import participantRohan from "@/assets/networking-participant-rohan.jpg";
+import participantPriya from "@/assets/networking-participant-priya.jpg";
+import participantArjun from "@/assets/networking-participant-arjun.jpg";
+import participantSneha from "@/assets/networking-participant-sneha.jpg";
 import arjunPhoto from "@/assets/speaker-arjun.jpg";
 import kavyaPhoto from "@/assets/speaker-kavya.jpg";
 import priyaPhoto from "@/assets/learner-priya.jpg";
@@ -119,10 +121,10 @@ const faqs = [
 
 /* ── NEW DATA ── */
 const hosts = [
-  { name: "Rohan Mehta", role: "VP Engineering · Stripe", img: rohanPhoto, category: "Engineering", topic: "Scaling Engineering Orgs" },
-  { name: "Priya Nair", role: "Head of Product · Notion", img: meeraPhoto, category: "Product", topic: "Product-Led Growth" },
-  { name: "Arjun Kapoor", role: "Founder · Loop AI", img: arjunPhoto, category: "AI", topic: "Building AI-First Startups" },
-  { name: "Sneha Reddy", role: "Design Director · Figma", img: kavyaPhoto, category: "Design", topic: "Design Systems at Scale" },
+  { name: "Rohan Mehta", role: "VP Engineering · Stripe", img: participantRohan, category: "Engineering", topic: "Scaling Engineering Orgs" },
+  { name: "Priya Nair", role: "Head of Product · Notion", img: participantPriya, category: "Product", topic: "Product-Led Growth" },
+  { name: "Arjun Kapoor", role: "Founder · Loop AI", img: participantArjun, category: "AI", topic: "Building AI-First Startups" },
+  { name: "Sneha Reddy", role: "Design Director · Figma", img: participantSneha, category: "Design", topic: "Design Systems at Scale" },
 ];
 const hostCategories = ['All', 'Engineering', 'Product', 'AI', 'Design'];
 
@@ -257,7 +259,7 @@ const Networking = () => {
                 <Sparkles className="h-4 w-4 text-primary" />Learn from people
               </span>
             </div>
-            <h2 className="font-display font-bold text-3xl md:text-4xl leading-[1.15] text-center mb-4">Meet People Building<br /><span className="text-primary">What Is Next</span></h2>
+            <h2 className="font-display font-bold text-3xl md:text-4xl leading-[1.15] text-center mb-4">Participants from<br /><span className="text-primary">Top Industries</span></h2>
             <p className="text-base md:text-lg text-muted-foreground text-center max-w-xl mx-auto mb-8">Hear from founders and leaders with practical experience.{' '}<br className="hidden md:block" />Learn directly from the source.</p>
             <div className="flex flex-wrap justify-center gap-2 mb-10">
               {hostCategories.map(category => (

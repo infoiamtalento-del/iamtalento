@@ -1,5 +1,9 @@
 # Roadmap
 
+## Networking participants
+- Rename the section to Participants from Top Industries and replace flat portrait backgrounds with realistic workplaces — done
+- Verify images, category filtering and layout — done; all four workplace portraits load, Engineering filters to one participant and All restores four, desktop/phone screenshots inspected, no page errors, build OK.
+
 ## Networking calendar — spacious redesign
 - Replace the rejected matrix with city navigation, topic filters and spacious event rows — done
 - Verify city/topic browsing, registration destinations and desktop/phone layout — done; Mumbai events, topic empty state and reset verified, registration opens /auth, desktop/phone screenshots inspected, no horizontal page overflow or browser errors, build OK.
