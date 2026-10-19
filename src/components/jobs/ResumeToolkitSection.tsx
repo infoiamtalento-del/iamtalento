@@ -13,7 +13,7 @@ const features = [
     title: "AI Resume Builders",
     description: "Build a professional resume in minutes. Powered by smart AI suggestions.",
     tag: "Built in minutes",
-    bg: "bg-[#EE2737]",
+    bg: "bg-[#002C66]",
     image: resumeAiImg,
   },
   {
@@ -22,7 +22,7 @@ const features = [
     title: "Video Resume Templates",
     description: "Create video resumes that stand out. Make a memorable first impression.",
     tag: "60-sec pitch",
-    bg: "bg-[#FF8A00]",
+    bg: "bg-[#002C66]",
     image: resumeVideoImg,
   },
   {
@@ -31,7 +31,7 @@ const features = [
     title: "ATS Friendly Templates",
     description: "Optimized for ATS screening systems. Get shortlisted with confidence.",
     tag: "Beat the bots",
-    bg: "bg-[#EE2737]",
+    bg: "bg-[#002C66]",
     image: resumeAtsImg,
   },
 ];
@@ -115,7 +115,7 @@ const ResumeToolkitSection = () => {
 
                   <Button
                     size="sm"
-                    className="w-full bg-[#EE2737] text-white border border-[#EE2737] hover:bg-white hover:text-[#EE2737] transition-colors group/btn"
+                    className="w-full bg-[#002C66] text-white border border-[#002C66] hover:bg-[#00204d] hover:text-white transition-colors group/btn"
                   >
                     Try it now
                     <ArrowRight className="h-4 w-4 ml-1 group-hover/btn:translate-x-1 transition-transform" />
