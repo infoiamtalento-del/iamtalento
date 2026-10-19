@@ -12,7 +12,7 @@ const Home2Hero = () => (
     <section className="h2-hero">
       <div className="h2-shell h2-hero-grid">
         <div className="h2-hero-copy">
-          <span className="h2-eyebrow">SKILLS-FIRST RECRUITING & READINESS PLATFORM</span>
+          <span className="h2-eyebrow">NEW ERA OF HIRING TALENTS</span>
           <h1>
             India's Next Big Leap in Hiring Starts Here.
             <em>Learning. Skill Assessments. Job Hunt. All Connected.</em>
