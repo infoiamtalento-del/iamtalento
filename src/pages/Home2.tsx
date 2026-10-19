@@ -31,7 +31,6 @@ import {
   freeFeaturesVisual,
   hackathonHero,
   hackathonPartners,
-  heroBenefits,
   logoWall,
   photos,
   prizes,
