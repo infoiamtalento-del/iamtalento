@@ -102,7 +102,7 @@ const allUSPs = [
 const USPSection = () => (
   <section aria-labelledby="employer-benefits-heading" className="bg-card py-20 md:py-28">
     <div className="container">
-      <motion.div {...reveal} className="mx-auto max-w-2xl text-center">
+      <motion.div {...reveal} className="mx-auto max-w-3xl text-center">
         <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-primary">Why IAmTalento</p>
         <h2 id="employer-benefits-heading" className="mb-5 font-display text-3xl font-bold leading-[1.08] tracking-normal sm:text-4xl lg:text-5xl">
           Everything Your Team Needs<br />
@@ -142,10 +142,10 @@ const Hero = () => (
   <section className="relative overflow-hidden bg-background pb-16 pt-32 md:pb-24 md:pt-40">
     <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-accent/60 to-transparent" />
     <div className="container relative">
-      <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.08fr)] lg:gap-14">
+      <div className="grid items-center gap-12 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.08fr)] xl:gap-14">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-primary">AI-Powered Hiring Platform</p>
-          <h1 className="mb-6 font-display text-4xl font-bold leading-[1.05] sm:text-5xl lg:text-[3rem] xl:text-6xl">
+          <h1 className="mb-6 font-display text-4xl font-bold leading-[1.05] sm:text-5xl">
             Stop Guessing. Start Hiring<br />
             <span className="text-primary">With Proof.</span>
           </h1>
@@ -266,7 +266,7 @@ const FinalCTA = () => (
     <div className="container">
       <motion.div {...reveal} className="relative overflow-hidden rounded-lg bg-primary px-6 py-10 sm:px-10 md:py-12">
         <div className="relative z-10 flex flex-col items-center gap-6 text-center">
-          <div><h2 className="font-display text-3xl font-bold leading-tight text-primary-foreground md:text-4xl">Ready to Hire Better?</h2><p className="mt-2 text-sm text-primary-foreground/80 md:text-base">See how IAmTalento helps your team find the right people, faster.</p></div>
+          <div><h2 className="font-display text-3xl font-bold leading-tight text-primary-foreground md:text-4xl">Ready to Hire<br />Better?</h2><p className="mt-2 text-sm text-primary-foreground/80 md:text-base">See how IAmTalento helps your team<br className="hidden md:block" /> find the right people, faster.</p></div>
           <div className="flex flex-wrap justify-center gap-3">
             <Button asChild size="lg" variant="secondary"><Link to="/pricing?tab=employers">Explore Pricing <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
             <Button asChild size="lg" variant="outline" className="border-primary-foreground/50 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"><Link to="/employer-profile">Create Company Profile</Link></Button>
@@ -291,7 +291,7 @@ const ForEmployers = () => (
       <Hero />
       <LogoStrip />
       <TrustStats />
-      <CareerIntelligencePackageHome />
+      <CareerIntelligencePackageHome heading={{ first: "What You Get Inside", second: "Candidates CIR Report" }} />
       <PlatformSection />
       <AIInterviewerSection />
       <USPSection />

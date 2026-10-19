@@ -672,7 +672,7 @@ const ModuleVisualPanel = ({ activeIdx }: { activeIdx: number }) => {
   );
 };
 
-const CareerIntelligencePackageHome = ({ beforeCta }: { beforeCta?: ReactNode } = {}) => {
+const CareerIntelligencePackageHome = ({ beforeCta, heading }: { beforeCta?: ReactNode; heading?: { first: string; second: string } } = {}) => {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
   const [activeIdx, setActiveIdx] = useState(0);
@@ -697,15 +697,15 @@ const CareerIntelligencePackageHome = ({ beforeCta }: { beforeCta?: ReactNode } 
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4 mb-3 text-slate-900"
           >
-            What You Get Inside Your
+            {heading?.first ?? "What You Get Inside Your"}
             <br />
-            <span className="text-[#002C66]">Career Intelligence Report (CIR)</span>
+            <span className="text-[#002C66]">{heading?.second ?? "Career Intelligence Report (CIR)"}</span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 16 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, delay: 0.18 }}
-            className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto"
+            className="text-muted-foreground text-base md:text-lg max-w-3xl mx-auto"
           >
             Discover your strengths, close critical skill gaps, and benchmark yourself against
             <br className="hidden md:block" />
