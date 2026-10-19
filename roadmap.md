@@ -1,5 +1,9 @@
 # Roadmap
 
+## Networking calendar — spacious redesign
+- Replace the rejected matrix with city navigation, topic filters and spacious event rows — in progress
+- Verify city/topic browsing, registration destinations and desktop/phone layout — pending
+
 ## Employer page — action-first CTAs
 - Replace demo-request CTAs with Post Jobs, Create Company Profile and Get Started, preserving See How It Works — implemented
 - Add two reference-inspired navy action banners with white buttons and supporting items — implemented
