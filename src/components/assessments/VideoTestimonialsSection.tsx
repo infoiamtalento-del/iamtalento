@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Play,
   Pause,
@@ -8,14 +8,13 @@ import {
   BadgeCheck,
   TrendingUp,
   Briefcase,
-  CheckCircle2,
-  Quote,
   Clock,
   Award,
   ArrowUpRight,
   RotateCcw,
 } from "lucide-react";
 import SectionBadge from "@/components/ui/section-badge";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Link } from "react-router-dom";
 
 import thumbRitika from "@/assets/podcast-studio-female.jpg";
@@ -169,21 +168,19 @@ const testimonials: VideoTestimonial[] = [
 ];
 
 const VideoTestimonialsSection = () => {
-  const [activeId, setActiveId] = useState<string>(testimonials[0].id);
+  const [selectedVideo, setSelectedVideo] = useState<VideoTestimonial | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(22);
 
-  const activeVideo = testimonials.find((t) => t.id === activeId) || testimonials[0];
-
-  const handleSelectVideo = (id: string, autoPlay = true) => {
-    setActiveId(id);
+  const handleOpenVideo = (video: VideoTestimonial) => {
+    setSelectedVideo(video);
     setProgress(0);
-    setIsPlaying(autoPlay);
+    setIsPlaying(true);
   };
 
   useEffect(() => {
-    if (!isPlaying) return;
+    if (!isPlaying || !selectedVideo) return;
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
@@ -194,14 +191,19 @@ const VideoTestimonialsSection = () => {
       });
     }, 250);
     return () => clearInterval(interval);
-  }, [isPlaying]);
+  }, [isPlaying, selectedVideo]);
 
-  const captionIndex = Math.min(
-    activeVideo.captions.length - 1,
-    Math.floor((progress / 100) * activeVideo.captions.length)
-  );
+  const captionIndex = selectedVideo
+    ? Math.min(
+        selectedVideo.captions.length - 1,
+        Math.floor((progress / 100) * selectedVideo.captions.length)
+      )
+    : 0;
 
-  const currentSeconds = Math.floor((progress / 100) * activeVideo.durationSec);
+  const currentSeconds = selectedVideo
+    ? Math.floor((progress / 100) * selectedVideo.durationSec)
+    : 0;
+
   const formatTime = (sec: number) => {
     const m = Math.floor(sec / 60);
     const s = sec % 60;
@@ -231,309 +233,238 @@ const VideoTestimonialsSection = () => {
           </p>
         </div>
 
-        {/* ─── Featured Interactive Video Spotlight (Clean 12-Col Layout) ─── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-7 shadow-xs mb-7"
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
-            {/* Left 5 Cols: Uncropped Portrait/Studio Video Frame */}
-            <div className="lg:col-span-5 flex flex-col">
-              <div
-                onClick={() => setIsPlaying((p) => !p)}
-                className="relative w-full aspect-[4/3.6] rounded-2xl overflow-hidden bg-[#FBF4EB] border border-slate-200/80 cursor-pointer group select-none"
-              >
-                <AnimatePresence mode="wait">
-                  <motion.img
-                    key={activeVideo.id}
-                    src={activeVideo.thumbnail}
-                    alt={activeVideo.name}
-                    style={{ objectPosition: activeVideo.objectPosition }}
-                    initial={{ opacity: 0.5, scale: 1.02 }}
-                    animate={{
-                      opacity: 1,
-                      scale: isPlaying ? 1.03 : 1,
-                    }}
-                    transition={{ duration: 0.45 }}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                  />
-                </AnimatePresence>
+        {/* ─── 4-Column Uncropped Video Thumbnail Cards ─── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {testimonials.map((item, i) => (
+            <motion.div
+              key={item.id}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.06 }}
+              onClick={() => handleOpenVideo(item)}
+              className="group rounded-2xl overflow-hidden border border-slate-200/90 bg-white hover:border-[#002C66]/40 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col"
+            >
+              {/* Uncropped Square/Portrait Thumbnail Container */}
+              <div className="relative aspect-[4/3.7] overflow-hidden bg-[#FBF4EB]">
+                <img
+                  src={item.thumbnail}
+                  alt={item.name}
+                  style={{ objectPosition: item.objectPosition }}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
 
-                {/* Subtle Bottom-Right Duration Chip (No Top Overlay Blocking Hair/Forehead) */}
-                <div className="absolute top-3.5 right-3.5 z-10">
-                  <div className="inline-flex items-center gap-1.5 rounded-full bg-[#002C66]/90 px-3 py-1 text-xs font-bold text-white shadow-xs">
-                    <span className="h-1.5 w-1.5 rounded-full bg-white" />
-                    {isPlaying
-                      ? `${formatTime(currentSeconds)} / ${activeVideo.duration}`
-                      : activeVideo.duration}
+                {/* Small Duration Pill Only in Bottom-Right of Image */}
+                <span className="absolute bottom-3 right-3 inline-flex items-center gap-1 rounded-md bg-[#002C66]/90 px-2 py-0.5 text-[11px] font-bold text-white tabular-nums shadow-xs">
+                  {item.duration}
+                </span>
+
+                {/* Center Play Button */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="h-12 w-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 bg-white/95 text-[#002C66] group-hover:bg-[#002C66] group-hover:text-white group-hover:scale-110">
+                    <Play className="h-5 w-5 fill-current ml-0.5" />
                   </div>
                 </div>
+              </div>
 
-                {/* Center Play/Pause Button */}
-                <div className="absolute inset-0 flex items-center justify-center z-10">
-                  <div
-                    className={`flex items-center justify-center rounded-full transition-all duration-300 shadow-xl ${
-                      isPlaying
-                        ? "h-14 w-14 bg-[#002C66]/85 text-white opacity-0 group-hover:opacity-100"
-                        : "h-16 w-16 bg-white/95 text-[#002C66] group-hover:scale-110 group-hover:bg-[#002C66] group-hover:text-white ring-8 ring-white/30"
-                    }`}
-                  >
-                    {isPlaying ? (
-                      <Pause className="h-6 w-6 fill-current" />
-                    ) : (
-                      <Play className="h-6 w-6 fill-current ml-0.5" />
-                    )}
+              {/* Clean Card Body */}
+              <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
+                <div>
+                  {/* Royal Navy & Vanilla Cream Outcome Row */}
+                  <div className="flex items-center justify-between gap-2 mb-2.5">
+                    <span className="inline-flex items-center gap-1 rounded-md bg-[#002C66]/8 px-2 py-0.5 text-[11px] font-bold text-[#002C66]">
+                      IRS {item.irsScore}/100
+                    </span>
+                    <span className="inline-flex items-center gap-1 rounded-md bg-[#FBF4EB] border border-[#002C66]/15 px-2 py-0.5 text-[11px] font-bold text-[#002C66]">
+                      {item.hike}
+                    </span>
                   </div>
-                </div>
 
-                {/* Bottom Compact Player Controls Bar */}
-                <div
-                  onClick={(e) => e.stopPropagation()}
-                  className="absolute bottom-3 left-3 right-3 rounded-xl bg-[#002C66]/95 backdrop-blur-md p-3 text-white z-10 border border-white/15"
-                >
-                  <p className="text-xs font-medium text-white/95 mb-2 line-clamp-1">
-                    {activeVideo.captions[captionIndex]}
+                  <p className="text-sm font-bold font-display text-slate-900 leading-snug line-clamp-2 group-hover:text-[#002C66] transition-colors mb-3">
+                    {item.headline}
                   </p>
+                </div>
 
-                  <div className="flex items-center gap-2.5">
+                <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="text-xs font-bold text-slate-900 truncate flex items-center gap-1">
+                      {item.name}
+                      <BadgeCheck className="h-3.5 w-3.5 text-[#002C66] shrink-0" />
+                    </p>
+                    <p className="text-[11px] text-slate-500 truncate flex items-center gap-1 mt-0.5">
+                      <Briefcase className="h-3 w-3 text-[#002C66] shrink-0" />
+                      {item.role} @ {item.company}
+                    </p>
+                  </div>
+
+                  <span className="text-[11px] font-extrabold inline-flex items-center gap-1 shrink-0 px-2.5 py-1 rounded-lg transition-colors bg-[#FBF4EB] text-[#002C66] group-hover:bg-[#002C66] group-hover:text-white">
+                    Watch <Play className="h-2.5 w-2.5 fill-current ml-0.5" />
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Video Playback Modal */}
+        <Dialog open={selectedVideo !== null} onOpenChange={(open) => !open && setSelectedVideo(null)}>
+          <DialogContent className="max-w-3xl p-0 overflow-hidden rounded-3xl bg-white border border-slate-200">
+            {selectedVideo && (
+              <div>
+                <div className="relative w-full aspect-video bg-[#002C66] overflow-hidden">
+                  <img
+                    src={selectedVideo.thumbnail}
+                    alt={selectedVideo.name}
+                    style={{ objectPosition: selectedVideo.objectPosition }}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30" />
+
+                  {/* Top bar with time indicator */}
+                  <div className="absolute top-4 left-4 z-10">
+                    <div className="inline-flex items-center gap-1.5 rounded-full bg-[#002C66]/90 px-3 py-1 text-xs font-bold text-white shadow-xs">
+                      <span className="h-1.5 w-1.5 rounded-full bg-white" />
+                      {isPlaying
+                        ? `${formatTime(currentSeconds)} / ${selectedVideo.duration}`
+                        : selectedVideo.duration}
+                    </div>
+                  </div>
+
+                  {/* Center Play/Pause button */}
+                  <div className="absolute inset-0 flex items-center justify-center z-10">
                     <button
                       type="button"
                       onClick={() => setIsPlaying((p) => !p)}
-                      className="h-6 w-6 rounded-md bg-white/15 hover:bg-white/25 flex items-center justify-center text-white transition-colors shrink-0"
-                      aria-label={isPlaying ? "Pause video" : "Play video"}
+                      className="h-16 w-16 rounded-full bg-white/95 text-[#002C66] hover:bg-[#002C66] hover:text-white flex items-center justify-center shadow-xl transition-all ring-8 ring-white/30"
                     >
                       {isPlaying ? (
-                        <Pause className="h-3 w-3 fill-current" />
+                        <Pause className="h-7 w-7 fill-current" />
                       ) : (
-                        <Play className="h-3 w-3 fill-current ml-0.5" />
+                        <Play className="h-7 w-7 fill-current ml-0.5" />
                       )}
                     </button>
+                  </div>
 
-                    {/* Progress bar in clean white on royal blue */}
-                    <div
-                      onClick={(e) => {
-                        const rect = e.currentTarget.getBoundingClientRect();
-                        const clickX = e.clientX - rect.left;
-                        const pct = Math.max(
-                          0,
-                          Math.min(100, Math.round((clickX / rect.width) * 100))
-                        );
-                        setProgress(pct);
-                      }}
-                      className="flex-1 h-1.5 rounded-full bg-white/25 overflow-hidden cursor-pointer"
-                    >
+                  {/* Bottom Controls Bar */}
+                  <div className="absolute bottom-3 left-4 right-4 rounded-xl bg-[#002C66]/95 backdrop-blur-md p-3 text-white z-10 border border-white/15">
+                    <p className="text-xs font-medium text-white/95 mb-2 line-clamp-1">
+                      {selectedVideo.captions[captionIndex]}
+                    </p>
+
+                    <div className="flex items-center gap-2.5">
+                      <button
+                        type="button"
+                        onClick={() => setIsPlaying((p) => !p)}
+                        className="h-6 w-6 rounded-md bg-white/15 hover:bg-white/25 flex items-center justify-center text-white transition-colors shrink-0"
+                        aria-label={isPlaying ? "Pause video" : "Play video"}
+                      >
+                        {isPlaying ? (
+                          <Pause className="h-3 w-3 fill-current" />
+                        ) : (
+                          <Play className="h-3 w-3 fill-current ml-0.5" />
+                        )}
+                      </button>
+
                       <div
-                        className="h-full rounded-full bg-white transition-all duration-200"
-                        style={{ width: `${progress}%` }}
-                      />
-                    </div>
+                        onClick={(e) => {
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          const clickX = e.clientX - rect.left;
+                          const pct = Math.max(
+                            0,
+                            Math.min(100, Math.round((clickX / rect.width) * 100))
+                          );
+                          setProgress(pct);
+                        }}
+                        className="flex-1 h-1.5 rounded-full bg-white/25 overflow-hidden cursor-pointer"
+                      >
+                        <div
+                          className="h-full rounded-full bg-white transition-all duration-200"
+                          style={{ width: `${progress}%` }}
+                        />
+                      </div>
 
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setProgress(0);
-                        setIsPlaying(true);
-                      }}
-                      className="h-6 w-6 rounded-md bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/80 hover:text-white transition-colors shrink-0"
-                      aria-label="Replay"
-                    >
-                      <RotateCcw className="h-3 w-3" />
-                    </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setProgress(0);
+                          setIsPlaying(true);
+                        }}
+                        className="h-6 w-6 rounded-md bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/80 hover:text-white transition-colors shrink-0"
+                        aria-label="Replay"
+                      >
+                        <RotateCcw className="h-3 w-3" />
+                      </button>
 
-                    <button
-                      type="button"
-                      onClick={() => setIsMuted((m) => !m)}
-                      className="h-6 w-6 rounded-md bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/80 hover:text-white transition-colors shrink-0"
-                      aria-label={isMuted ? "Unmute" : "Mute"}
-                    >
-                      {isMuted ? (
-                        <VolumeX className="h-3 w-3" />
-                      ) : (
-                        <Volume2 className="h-3 w-3" />
-                      )}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right 7 Cols: Candidate Story & Verified Outcome Breakdown */}
-            <div className="lg:col-span-7 flex flex-col justify-between">
-              <div>
-                {/* Strictly Royal Navy + Cream Pills */}
-                <div className="flex flex-wrap items-center gap-2 mb-4">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#002C66] px-3.5 py-1 text-xs font-bold text-white">
-                    <Award className="h-3.5 w-3.5" /> Verified CIR: {activeVideo.irsScore}/100 ({activeVideo.percentile})
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FBF4EB] border border-[#002C66]/20 px-3 py-1 text-xs font-bold text-[#002C66]">
-                    <TrendingUp className="h-3.5 w-3.5" /> {activeVideo.hike}
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FBF4EB] border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700">
-                    <Clock className="h-3.5 w-3.5 text-[#002C66]" /> {activeVideo.timeToHire}
-                  </span>
-                </div>
-
-                {/* Quote Headline */}
-                <h3 className="text-xl sm:text-2xl font-bold font-display text-slate-900 leading-snug mb-3.5">
-                  {activeVideo.headline}
-                </h3>
-
-                {/* Full Story Quote in Vanilla Cream Box */}
-                <div className="relative rounded-2xl bg-[#FBF4EB] border border-slate-200/80 p-4 sm:p-5 mb-5">
-                  <Quote className="h-4 w-4 text-[#002C66]/40 mb-1.5" />
-                  <p className="text-sm text-slate-700 leading-relaxed">
-                    {activeVideo.quote}
-                  </p>
-                </div>
-
-                {/* 3 Key Verified Outcomes in a 3-Col Strip */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mb-5">
-                  {activeVideo.keyTakeaways.map((point) => (
-                    <div
-                      key={point}
-                      className="rounded-xl border border-slate-200/90 bg-white px-3.5 py-2.5 flex items-start gap-2"
-                    >
-                      <CheckCircle2 className="h-4 w-4 text-[#002C66] shrink-0 mt-0.5" />
-                      <span className="text-xs font-semibold text-slate-800 leading-snug">
-                        {point}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Candidate Profile Footer Card */}
-              <div className="rounded-2xl bg-[#002C66] text-white p-4 flex flex-wrap items-center justify-between gap-4">
-                <div className="flex items-center gap-3.5 min-w-0">
-                  <img
-                    src={activeVideo.thumbnail}
-                    alt={activeVideo.name}
-                    style={{ objectPosition: activeVideo.objectPosition }}
-                    className="h-12 w-12 rounded-xl object-cover border-2 border-white/25 shrink-0"
-                  />
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-1.5">
-                      <p className="text-sm font-bold text-white truncate">{activeVideo.name}</p>
-                      <BadgeCheck className="h-4 w-4 text-white shrink-0" />
-                    </div>
-                    <p className="text-xs text-white/85 truncate">
-                      {activeVideo.role} @ <span className="font-bold text-white">{activeVideo.company}</span>
-                    </p>
-                    <p className="text-[11px] text-white/65 truncate">
-                      Previously: {activeVideo.prevRole} · {activeVideo.city}
-                    </p>
-                  </div>
-                </div>
-
-                <Link
-                  to="/assessments/explore"
-                  className="shrink-0 inline-flex items-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-xs font-extrabold text-[#002C66] hover:bg-[#FBF4EB] transition-colors"
-                >
-                  Take Your Assessment <ArrowUpRight className="h-3.5 w-3.5" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* ─── 4-Column Uncropped Video Thumbnail Cards ─── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {testimonials.map((item, i) => {
-            const isSelected = item.id === activeVideo.id;
-            return (
-              <motion.div
-                key={item.id}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.06 }}
-                onClick={() => handleSelectVideo(item.id, true)}
-                className={`group rounded-2xl overflow-hidden border transition-all duration-300 cursor-pointer flex flex-col bg-white ${
-                  isSelected
-                    ? "border-[#002C66] ring-2 ring-[#002C66]/15 shadow-md -translate-y-0.5"
-                    : "border-slate-200/90 hover:border-[#002C66]/40 hover:shadow-md hover:-translate-y-1"
-                }`}
-              >
-                {/* Uncropped Square/Portrait Thumbnail Container */}
-                <div className="relative aspect-[4/3.7] overflow-hidden bg-[#FBF4EB]">
-                  <img
-                    src={item.thumbnail}
-                    alt={item.name}
-                    style={{ objectPosition: item.objectPosition }}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    loading="lazy"
-                  />
-
-                  {/* Small Duration Pill Only in Bottom-Right of Image */}
-                  <span className="absolute bottom-3 right-3 inline-flex items-center gap-1 rounded-md bg-[#002C66]/90 px-2 py-0.5 text-[11px] font-bold text-white tabular-nums shadow-xs">
-                    {item.duration}
-                  </span>
-
-                  {/* Center Play Button */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div
-                      className={`h-12 w-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
-                        isSelected && isPlaying
-                          ? "bg-[#002C66] text-white scale-105 ring-4 ring-white/50"
-                          : "bg-white/95 text-[#002C66] group-hover:bg-[#002C66] group-hover:text-white group-hover:scale-110"
-                      }`}
-                    >
-                      {isSelected && isPlaying ? (
-                        <Pause className="h-5 w-5 fill-current" />
-                      ) : (
-                        <Play className="h-5 w-5 fill-current ml-0.5" />
-                      )}
+                      <button
+                        type="button"
+                        onClick={() => setIsMuted((m) => !m)}
+                        className="h-6 w-6 rounded-md bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/80 hover:text-white transition-colors shrink-0"
+                        aria-label={isMuted ? "Unmute" : "Mute"}
+                      >
+                        {isMuted ? (
+                          <VolumeX className="h-3 w-3" />
+                        ) : (
+                          <Volume2 className="h-3 w-3" />
+                        )}
+                      </button>
                     </div>
                   </div>
                 </div>
 
-                {/* Clean Card Body (All Badges Below Image so Face/Head is 100% Clear) */}
-                <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
-                  <div>
-                    {/* Royal Navy & Vanilla Cream Outcome Row */}
-                    <div className="flex items-center justify-between gap-2 mb-2.5">
-                      <span className="inline-flex items-center gap-1 rounded-md bg-[#002C66]/8 px-2 py-0.5 text-[11px] font-bold text-[#002C66]">
-                        IRS {item.irsScore}/100
-                      </span>
-                      <span className="inline-flex items-center gap-1 rounded-md bg-[#FBF4EB] border border-[#002C66]/15 px-2 py-0.5 text-[11px] font-bold text-[#002C66]">
-                        {item.hike}
-                      </span>
-                    </div>
-
-                    <p className="text-sm font-bold font-display text-slate-900 leading-snug line-clamp-2 group-hover:text-[#002C66] transition-colors mb-3">
-                      {item.headline}
-                    </p>
-                  </div>
-
-                  <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
-                    <div className="min-w-0">
-                      <p className="text-xs font-bold text-slate-900 truncate flex items-center gap-1">
-                        {item.name}
-                        <BadgeCheck className="h-3.5 w-3.5 text-[#002C66] shrink-0" />
-                      </p>
-                      <p className="text-[11px] text-slate-500 truncate flex items-center gap-1 mt-0.5">
-                        <Briefcase className="h-3 w-3 text-[#002C66] shrink-0" />
-                        {item.role} @ {item.company}
-                      </p>
-                    </div>
-
-                    <span
-                      className={`text-[11px] font-extrabold inline-flex items-center gap-1 shrink-0 px-2.5 py-1 rounded-lg transition-colors ${
-                        isSelected
-                          ? "bg-[#002C66] text-white"
-                          : "bg-[#FBF4EB] text-[#002C66] group-hover:bg-[#002C66] group-hover:text-white"
-                      }`}
-                    >
-                      {isSelected && isPlaying ? "Playing" : "Watch"}
+                {/* Modal Candidate Details Footer */}
+                <div className="p-5 sm:p-6 bg-white">
+                  <div className="flex flex-wrap items-center gap-2 mb-3">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#002C66] px-3.5 py-1 text-xs font-bold text-white">
+                      <Award className="h-3.5 w-3.5" /> Verified CIR: {selectedVideo.irsScore}/100 ({selectedVideo.percentile})
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FBF4EB] border border-[#002C66]/20 px-3 py-1 text-xs font-bold text-[#002C66]">
+                      <TrendingUp className="h-3.5 w-3.5" /> {selectedVideo.hike}
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FBF4EB] border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700">
+                      <Clock className="h-3.5 w-3.5 text-[#002C66]" /> {selectedVideo.timeToHire}
                     </span>
                   </div>
+
+                  <h3 className="text-lg sm:text-xl font-bold font-display text-slate-900 leading-snug mb-2">
+                    {selectedVideo.headline}
+                  </h3>
+
+                  <p className="text-sm text-slate-600 leading-relaxed mb-4">
+                    {selectedVideo.quote}
+                  </p>
+
+                  <div className="rounded-2xl bg-[#002C66] text-white p-4 flex flex-wrap items-center justify-between gap-4">
+                    <div className="flex items-center gap-3.5 min-w-0">
+                      <img
+                        src={selectedVideo.thumbnail}
+                        alt={selectedVideo.name}
+                        style={{ objectPosition: selectedVideo.objectPosition }}
+                        className="h-11 w-11 rounded-xl object-cover border-2 border-white/25 shrink-0"
+                      />
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <p className="text-sm font-bold text-white truncate">{selectedVideo.name}</p>
+                          <BadgeCheck className="h-4 w-4 text-white shrink-0" />
+                        </div>
+                        <p className="text-xs text-white/85 truncate">
+                          {selectedVideo.role} @ <span className="font-bold text-white">{selectedVideo.company}</span>
+                        </p>
+                      </div>
+                    </div>
+
+                    <Link
+                      to="/assessments/explore"
+                      className="shrink-0 inline-flex items-center gap-1.5 rounded-xl bg-white px-4 py-2 text-xs font-extrabold text-[#002C66] hover:bg-[#FBF4EB] transition-colors"
+                    >
+                      Take Your Assessment <ArrowUpRight className="h-3.5 w-3.5" />
+                    </Link>
+                  </div>
                 </div>
-              </motion.div>
-            );
-          })}
-        </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </section>
   );
