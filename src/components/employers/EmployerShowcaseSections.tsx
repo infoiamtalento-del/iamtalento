@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion, useMotionValue, useTransform, type MotionValue } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   ArrowRight, BarChart3, Building2, CalendarClock, Cable, CheckCircle2, CirclePlay, Code2, Fingerprint,
   GraduationCap, Library, Lock, Megaphone, MessageSquare, Mic, Palette, Quote, ShieldCheck, Sparkles,
@@ -50,11 +50,11 @@ export const CenterIntro = ({ eyebrow, first, second, description, invert = fals
   eyebrow: string; first: string; second: string; description?: React.ReactNode; invert?: boolean;
 }) => (
   <motion.div {...reveal} className="mx-auto mb-12 max-w-2xl text-center">
-    <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-primary">{eyebrow}</p>
-    <h2 className={cn("font-display text-3xl font-bold leading-[1.08] sm:text-4xl lg:text-5xl", description && "mb-5", invert && "text-background")}>
-      {first}<br /><span className="text-primary">{second}</span>
+    <p className={cn("mb-3 text-xs font-bold uppercase tracking-[0.18em]", invert ? "text-primary-foreground/60" : "text-primary")}>{eyebrow}</p>
+    <h2 className={cn("font-display text-3xl font-bold leading-[1.08] sm:text-4xl lg:text-5xl", description && "mb-5", invert && "text-primary-foreground")}>
+      {first}<br /><span className={invert ? "text-primary-foreground" : "text-primary"}>{second}</span>
     </h2>
-    {description && <p className={cn("text-sm leading-relaxed md:text-base", invert ? "text-background/70" : "text-muted-foreground")}>{description}</p>}
+    {description && <p className={cn("text-sm leading-relaxed md:text-base", invert ? "text-primary-foreground/70" : "text-muted-foreground")}>{description}</p>}
   </motion.div>
 );
 
@@ -108,89 +108,42 @@ const interviewPoints = [
   { icon: BarChart3, title: "Instant scored reports", text: "Structured scores your team can compare." },
 ];
 
-const InterviewAvatar = ({ size = "md" }: { size?: "sm" | "md" }) => (
+const InterviewAvatar = () => (
   <div className="relative mx-auto">
-    <div className={cn("overflow-hidden rounded-full border-4 border-primary/60 shadow-2xl", size === "sm" ? "h-52 w-52 lg:h-60 lg:w-60" : "h-64 w-64")}>
+    <span aria-hidden className="absolute inset-[-22%] rounded-full bg-primary-foreground/10 blur-3xl" />
+    <div className="relative h-56 w-56 overflow-hidden rounded-full border-4 border-primary-foreground/25 shadow-2xl lg:h-64 lg:w-64">
       <img src={interviewer} alt="AI interviewer avatar" className="h-full w-full object-cover" loading="lazy" />
     </div>
-    <span className="absolute -bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-lg">
-      <span className="h-2 w-2 animate-pulse rounded-full bg-primary-foreground" /> Interview in progress
+    <span className="absolute -bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full bg-primary-foreground px-4 py-2 text-xs font-semibold text-primary shadow-lg">
+      <span className="h-2 w-2 animate-pulse rounded-full bg-primary" /> Interview in progress
     </span>
   </div>
 );
 
 const InterviewCta = () => (
-  <Button asChild size="lg" className="gap-2"><Link to="/contact"><CirclePlay className="h-4 w-4" /> Try the AI Interviewer</Link></Button>
+  <Button asChild size="lg" className="gap-2 bg-primary-foreground text-primary hover:bg-primary-foreground/90">
+    <Link to="/contact"><CirclePlay className="h-4 w-4" /> Try the AI Interviewer</Link>
+  </Button>
 );
 
-/* Point that "blows out" from the avatar as the pinned section scrolls */
-const BurstPoint = ({ point, index, progress, side }: { point: (typeof interviewPoints)[number]; index: number; progress: MotionValue<number>; side: "left" | "right" }) => {
-  const row = index % 4;
-  const start = 0.15 + row * 0.1 + (side === "right" ? 0.04 : 0);
-  const end = start + 0.22;
-  const dir = side === "left" ? 1 : -1;
-  const opacity = useTransform(progress, [start, end], [0, 1]);
-  const scale = useTransform(progress, [start, end], [0.3, 1]);
-  const x = useTransform(progress, [start, end], [dir * 260, 0]);
-  const y = useTransform(progress, [start, end], [(1.5 - row) * 60, 0]);
-  return (
-    <motion.div style={{ opacity, scale, x, y }}>
-      <Point {...point} align={side === "left" ? "right" : undefined} animate={false} />
-    </motion.div>
-  );
-};
+export const AIInterviewerSection = () => (
+  <section className="bg-primary py-20 md:py-28">
+    <div className="container">
+      <CenterIntro invert eyebrow="AI Interviewer" first="Meet Your Always-On" second="AI Interviewer." description={<>Run first-round interviews at scale without adding recruiter hours.<br className="hidden md:block" /> Every candidate gets a fair, consistent conversation.</>} />
+      <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-[1fr_auto_1fr] md:gap-8">
+        <div className="order-2 space-y-5 md:order-none">{interviewPoints.slice(0, 4).map(p => <Point key={p.title} {...p} align="right" />)}</div>
+        <div className="order-1 py-8 md:order-none md:px-2"><InterviewAvatar /></div>
+        <div className="order-3 space-y-5 md:order-none">{interviewPoints.slice(4).map(p => <Point key={p.title} {...p} />)}</div>
+      </div>
+      <div className="mt-12 text-center"><InterviewCta /></div>
+    </div>
+  </section>
+);
 
-export const AIInterviewerSection = () => {
-  const ref = useRef<HTMLDivElement>(null);
-  const scrollYProgress = useMotionValue(0);
-  useEffect(() => {
-    const update = () => {
-      const el = ref.current;
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      const total = r.height - window.innerHeight;
-      scrollYProgress.set(total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 0);
-    };
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    return () => { window.removeEventListener("scroll", update); window.removeEventListener("resize", update); };
-  }, [scrollYProgress]);
-  const glow = useTransform(scrollYProgress, [0.1, 0.6], [0, 1]);
-  const intro = <CenterIntro invert eyebrow="AI Interviewer" first="Meet Your Always-On" second="AI Interviewer." description={<>Run first-round interviews at scale without adding recruiter hours.<br className="hidden md:block" /> Every candidate gets a fair, consistent conversation.</>} />;
-  return (
-    <section className="bg-foreground">
-      {/* Desktop: pinned scroll-stop with burst-out points */}
-      <div ref={ref} className="relative hidden h-[260vh] md:block">
-        <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden py-10">
-          <div className="container [&>div:first-child]:mb-8">
-            {intro}
-            <div className="mx-auto grid max-w-6xl items-center gap-8 md:grid-cols-[1fr_auto_1fr]">
-              <div className="space-y-5">{interviewPoints.slice(0, 4).map((p, i) => <BurstPoint key={p.title} point={p} index={i} progress={scrollYProgress} side="left" />)}</div>
-              <div className="relative">
-                <motion.div aria-hidden style={{ opacity: glow, scale: glow }} className="absolute inset-[-30%] rounded-full bg-primary/25 blur-3xl" />
-                <InterviewAvatar size="sm" />
-              </div>
-              <div className="space-y-5">{interviewPoints.slice(4).map((p, i) => <BurstPoint key={p.title} point={p} index={i} progress={scrollYProgress} side="right" />)}</div>
-            </div>
-            <div className="mt-10 text-center"><InterviewCta /></div>
-          </div>
-        </div>
-      </div>
-      {/* Mobile: simple stacked layout */}
-      <div className="container py-20 md:hidden">
-        {intro}
-        <motion.div {...reveal}><InterviewAvatar /></motion.div>
-        <div className="mt-12 space-y-6">{interviewPoints.map(p => <Point key={p.title} {...p} />)}</div>
-        <div className="mt-12 text-center"><InterviewCta /></div>
-      </div>
-    </section>
-  );
-};
-const Point = ({ icon: Icon, title, text, align, animate = true }: { icon: typeof Mic; title: string; text: string; align?: "right"; animate?: boolean }) => (
-  <motion.div {...(animate ? reveal : {})} className={cn("flex gap-4", align === "right" && "md:flex-row-reverse md:text-right")}>
-    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/20 text-primary"><Icon className="h-5 w-5" /></span>
-    <div><h3 className="font-display text-base font-bold text-background">{title}</h3><p className="mt-1 text-sm leading-snug text-background/65">{text}</p></div>
+const Point = ({ icon: Icon, title, text, align }: { icon: typeof Mic; title: string; text: string; align?: "right" }) => (
+  <motion.div {...reveal} className={cn("flex gap-4", align === "right" && "md:flex-row-reverse md:text-right")}>
+    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary-foreground/20 bg-primary-foreground/10 text-primary-foreground"><Icon className="h-5 w-5" /></span>
+    <div><h3 className="font-display text-base font-bold text-primary-foreground">{title}</h3><p className="mt-1 text-sm leading-snug text-primary-foreground/70">{text}</p></div>
   </motion.div>
 );
 
