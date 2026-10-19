@@ -203,3 +203,6 @@
 
 ## Home page — hero headline set in two-tone two-line format
 - Headline split to "India's Next Big Leap" / "in Hiring Starts Here." with line 1 near-black and line 2 brand blue at the same size (reference image supplied) — done; span.h2-hero-accent added in src/components/home2/Home2Hero.tsx, styled display:block + color hsl(var(--h2-red)) in home2.css; the smaller blue "Learning. Skill Assessments. Job Hunt. All Connected." sub-line unchanged; verified in browser at 1624/1280/890/390 on / and /home2 (each line one box, 43-46px both lines, line 1 rgb(15,23,41), line 2 rgb(0,44,102), nothing clipped in page context, no wheel collision), build OK
+
+## Home page — hero paragraph enlarged 25%
+- Lede "Talent CIR is building India's next-generation talent ecosystem…" raised from 12px to 15px — done; `.h2-hero-lede` font-size 12px→15px in src/components/home2/home2.css, and max-width 560px→620px so the larger text balances over two lines instead of stranding "platform." on a third; verified in browser at 1280/890/390 on / and /home2 (15px everywhere, two balanced lines on desktop, four on phone, no orphan, no clipping or overlap, 48px gap to the buttons kept), build OK
