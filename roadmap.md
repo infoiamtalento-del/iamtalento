@@ -4,7 +4,7 @@
 - Replace the "Your Next Great Hire. Five Clear Steps." section with a titled video ("10 Reasons to Choose TalentCIR.") plus a matching thumbnail, and remove the five process-step boxes — implemented
 - Widen the video so its edges line up with the header logo and the For Employers button — done; at 1881 width the media box runs 274 to 1608 against the logo's left 272 and the button's right 1608
 - Change the thumbnail background to a lighter colour — done; light cream thumbnail with navy/blue title, navy play button, section inspected at 1881 width with no clipping and no page errors
-- Swap the placeholder clip for the rendered 10-reasons video when the render finishes, and confirm playback — pending
+- Swap the placeholder clip for the rendered 10-reasons video when the render finishes, and confirm playback — done; the section now points at the 30-second rendered clip, its address serves correctly from the hosted preview, and the light poster and layout are unchanged with no page errors
 - Place "What You Get Inside Candidates CIR Report" directly above "AI-Evaluate Candidates Like Your Top Recruiters Would." — done; order checked in the browser (CIR report 26, AI-Evaluate 28, Five Clear Steps 29), both sections inspected with no clipping or page errors, build OK.
 
 
