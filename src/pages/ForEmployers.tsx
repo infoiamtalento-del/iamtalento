@@ -304,7 +304,6 @@ const ForEmployers = () => (
       <IntegrationsSection />
       <FAQSection />
       <EmployerActionBanner variant="start" />
-      <FinalCTA />
     </Layout>
   </>
 );
