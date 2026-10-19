@@ -61,6 +61,7 @@ const AssessmentTest = lazy(() => import("./pages/assessment/AssessmentTest"));
 const AssessmentResult = lazy(() => import("./pages/assessment/AssessmentResult"));
 const TalentoPro = lazy(() => import("./pages/TalentoPro"));
 const Home2 = lazy(() => import("./pages/Home2"));
+const Home3 = lazy(() => import("./pages/Home3"));
 
 const queryClient = new QueryClient();
 
@@ -109,6 +110,8 @@ const AnimatedRoutes = () => {
           <Route path="/talento-pro" element={<PageTransition><TalentoPro /></PageTransition>} />
           <Route path="/home-2" element={<PageTransition><Home2 /></PageTransition>} />
           <Route path="/home2" element={<PageTransition><Home2 /></PageTransition>} />
+          <Route path="/home-3" element={<PageTransition><Home3 /></PageTransition>} />
+          <Route path="/home3" element={<PageTransition><Home3 /></PageTransition>} />
           <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
         </Routes>
       </Suspense>
