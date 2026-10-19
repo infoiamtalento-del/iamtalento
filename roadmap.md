@@ -1,5 +1,9 @@
 # Roadmap
 
+## Employer page — move the CIR report section
+- Place "What You Get Inside Candidates CIR Report" directly above "AI-Evaluate Candidates Like Your Top Recruiters Would." — done; order checked in the browser (CIR report 26, AI-Evaluate 28, Five Clear Steps 29), both sections inspected with no clipping or page errors, build OK.
+
+
 ## Networking participants
 - Rename the section to Participants from Top Industries and replace flat portrait backgrounds with realistic workplaces — done
 - Verify images, category filtering and layout — done; all four workplace portraits load, Engineering filters to one participant and All restores four, desktop/phone screenshots inspected, no page errors, build OK.
