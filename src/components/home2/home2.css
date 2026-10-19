@@ -2415,3 +2415,13 @@
     width: 100%;
   }
 }
+
+/* Phones: keep the second sentence readable instead of shrinking it to fit one line. */
+@media (max-width: 640px) {
+  .h2-hero h1 {
+    font-size: clamp(20px, 5.8cqw, 26px);
+  }
+  .h2-hero h1 em {
+    font-size: 0.86em;
+  }
+}
