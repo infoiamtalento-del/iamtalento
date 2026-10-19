@@ -29,12 +29,12 @@ const NetworkingCalendar = () => {
   return (
     <section className="py-16 md:py-24" aria-labelledby="networking-calendar-heading">
       <div className="container">
-        <div className="mb-10 flex flex-col justify-between gap-5 md:mb-12 md:flex-row md:items-end">
+        <div className="mb-10 flex flex-col items-center gap-4 text-center md:mb-12">
           <div>
             <p className="mb-3 text-xs font-semibold uppercase text-primary">The networking calendar</p>
             <h2 id="networking-calendar-heading" className="font-display text-3xl font-bold leading-tight md:text-4xl">Your city. Your people.<br /><span className="text-primary">Your next connection.</span></h2>
           </div>
-          <div className="flex items-center gap-2 pb-1 text-sm text-muted-foreground"><CalendarDays className="h-4 w-4" /> Across 7 cities</div>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground"><CalendarDays className="h-4 w-4" /> Across 7 cities</div>
         </div>
 
         <div className="border-y border-border lg:grid lg:grid-cols-[220px_minmax(0,1fr)]">
