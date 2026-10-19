@@ -18,6 +18,11 @@ import v2 from "@/assets/mock-interview-2.jpg";
 import v3 from "@/assets/mock-interview-3.jpg";
 import teamImage from "@/assets/employer-team.jpg";
 import planPoster from "@/assets/assessment-video-thumb.jpg";
+import w2 from "@/assets/webinar-speaker-2.jpg";
+import tVideo1 from "@/assets/testimonial-1.mp4.asset.json";
+import tVideo2 from "@/assets/testimonial-2.mp4.asset.json";
+import tVideo3 from "@/assets/testimonial-3.mp4.asset.json";
+import tVideo4 from "@/assets/testimonial-4.mp4.asset.json";
 
 
 const reveal = {
@@ -33,6 +38,7 @@ const companyMarks: Record<string, { src: string; size: string }> = {
   Infosys: { src: "/company-logos/infosys.svg", size: "h-5" },
   Flipkart: { src: "/company-logos/flipkart.svg", size: "h-8" },
   Zoho: { src: "/company-logos/zoho.svg", size: "h-7" },
+  TCS: { src: "/company-logos/tcs.svg", size: "h-6" },
 };
 
 const CompanyMark = ({ name, className }: { name: string; className?: string }) => (
