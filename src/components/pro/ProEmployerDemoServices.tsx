@@ -29,7 +29,6 @@ export function ProEmployerDemoServices({ view, user, jobs, applications, state,
     const candidate = apps.find(a => String(a.id) === appId);
     if (!candidate) return;
     const id = Date.now();
-    if (view === "employer-assessments" && candidate) onChange({ ...state, assessments: [{ id, name: name.trim(), candidate: candidate.name, status: "Invited" }, ...state.assessments] });
     if (view === "interviews" && candidate) onChange({ ...state, aiInterviews: [{ id, name: name.trim(), candidate: candidate.name, status: "Ready" }, ...state.aiInterviews] });
     setName(""); onToast("Demo record created. No invitation or payment was sent.");
   };
@@ -38,10 +37,9 @@ export function ProEmployerDemoServices({ view, user, jobs, applications, state,
     const link = document.createElement("a"); link.href = url; link.download = `sample-${id}.txt`; link.click(); URL.revokeObjectURL(url);
   };
   return <div className="employer-workspace space-y-5"><header className="workspace-header"><div><span className="workspace-eyebrow"><Icon size={14} />Employer workspace</span><h1 className="workspace-heading">{entry.label}</h1><p className="workspace-description">{view === "interviews" ? "Technical screening sessions and scheduled candidate interviews." : view === "subscription" ? "Your sample plan and included hiring credits." : view === "payment-history" ? "Sample transactions and downloadable demo receipts." : "Role-specific assessments and candidate results."}</p></div></header>
-    {["employer-assessments", "interviews"].includes(view) && <>
+    {view === "interviews" && <>
       <form className="workspace-panel grid items-end gap-4 sm:grid-cols-3" onSubmit={create}><label className="workspace-field"><span>Session title</span><Input aria-label="Session or campaign title" required placeholder="React technical screening" value={name} onChange={e => setName(e.target.value)} /></label><label className="workspace-field"><span>Candidate</span><select aria-label="Choose candidate" required value={appId} onChange={e => setAppId(e.target.value)}><option value="">Select applicant</option>{apps.map(a => <option key={a.id} value={a.id}>{a.name} · {jobs.find(j => j.id === a.jid)?.t}</option>)}</select></label><Button type="submit"><Plus />{view === "interviews" ? "Create AI interview" : "Invite to assessment"}</Button></form>
       <section className="workspace-panel space-y-4">
-        {view === "employer-assessments" && state.assessments.map(record => <div key={record.id} className="flex flex-wrap items-center gap-4 border-b border-border pb-4"><div className="mr-auto"><h2 className="text-sm font-bold">{record.name}</h2><p className="mt-2 text-xs text-muted-foreground">{record.candidate} · {record.status}{record.score !== undefined ? ` · ${record.score}%` : ""}</p></div>{record.status !== "Completed" && <Button variant="outline" onClick={() => { onChange({ ...state, assessments: state.assessments.map(r => r.id === record.id ? { ...r, status: "Completed", score: 84 } : r) }); onToast("Sample assessment result received: 84%."); }}><CheckCircle2 />Simulate result</Button>}</div>)}
         {view === "interviews" && state.aiInterviews.map(record => <div key={record.id} className="flex flex-wrap items-center gap-4 border-b border-border pb-4"><div className="mr-auto"><h2 className="text-sm font-bold">{record.name}</h2><p className="mt-2 text-xs text-muted-foreground">{record.candidate} · {record.status}{record.score !== undefined ? ` · ${record.score}% · Strong communication, review technical depth` : ""}</p></div>{record.status !== "Completed" && <Button variant="outline" onClick={() => { onChange({ ...state, aiInterviews: state.aiInterviews.map(r => r.id === record.id ? { ...r, status: "Completed", score: 82 } : r) }); onToast("Simulated AI interview completed. Sample report ready."); }}><Play />Run demo interview</Button>}</div>)}
       </section>
     </>}

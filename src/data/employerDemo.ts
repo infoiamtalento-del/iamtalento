@@ -27,7 +27,14 @@ export interface EmployerDemoState {
 }
 
 export const INITIAL_EMPLOYER_DEMO: EmployerDemoState = {
-  assessments: [{ id: 1, name: "React & TypeScript", candidate: "Aarav Mehta", score: 88, status: "Completed" }, { id: 2, name: "SQL & Analytics", candidate: "Diya Nair", status: "Invited" }],
+  assessments: [
+    { id: 1, name: "React & TypeScript", candidate: "Aarav Mehta", score: 88, status: "Completed", type: "Technical", questions: 10, duration: 30, at: Date.now() - 86400000 * 7, description: "React hooks, component design and TypeScript fundamentals." },
+    { id: 2, name: "SQL & Analytics", candidate: "Diya Nair", status: "Invited", type: "Technical", questions: 12, duration: 30, at: Date.now() - 86400000 * 5, description: "SQL joins, data modelling and analytical reasoning." },
+    { id: 3, name: "Aptitude Test", candidate: "Aarav Mehta", status: "Invited", type: "Aptitude", questions: 20, duration: 45, at: Date.now() - 86400000 * 4, description: "Logical and quantitative reasoning." },
+    { id: 4, name: "Communication Assessment", candidate: "Diya Nair", status: "Invited", type: "HR Round", questions: 5, duration: 15, at: Date.now() - 86400000 * 3, description: "Written communication and workplace scenarios." },
+    { id: 5, name: "Cloud Platform Screening", candidate: "", status: "Draft", type: "Technical", questions: 15, duration: 45, at: Date.now() - 86400000 * 2, description: "Cloud architecture, infrastructure automation and incident response." },
+    { id: 6, name: "Teamwork & Collaboration", candidate: "", status: "Draft", type: "HR Round", questions: 8, duration: 20, at: Date.now() - 86400000, description: "Collaboration, ownership and professional judgement." },
+  ],
   aiInterviews: [{ id: 1, name: "Frontend technical screening", candidate: "Aarav Mehta", status: "Completed", score: 86 }],
   campaigns: [{ id: 1, name: "Engineering careers at Super30", status: "Active", views: 1240, clicks: 86, at: Date.now() - 86400000 * 14, category: "Employer Brand · Engineering" }],
   plan: "Starter",
