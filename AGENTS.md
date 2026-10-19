@@ -23,3 +23,6 @@
 - Keep dummy profile entry separate from real authentication and reuse the existing demo users and shell state so quick login never grants access to private accounts.
 - Keep employer posting, pipeline, notifications and account presentation in employer-only views sharing shell job/application handlers, so reference redesigns cannot change employee pages or duplicate hiring state.
 - Keep employer sample records and simulated service state separate from real authentication and transactions; seed once without overwriting edits, and share shell applications across demo pages so cross-page workflows stay consistent.
+
+- Render employer candidate and applicant entry points in one linkable full-page review within the Pro shell, reusing shell application state; this preserves cross-page stages, notes and interviews.
+- Keep the employer assessment dashboard in its own presentation component using shared employer service records; this keeps creation and results consistent without changing candidate assessment journeys.

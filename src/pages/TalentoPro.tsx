@@ -44,6 +44,7 @@ import { ProEmployerPipeline } from "@/components/pro/ProEmployerPipeline";
 import { ProEmployerNotifications } from "@/components/pro/ProEmployerNotifications";
 import { ProEmployerMyAccount } from "@/components/pro/ProEmployerMyAccount";
 import { ProEmployerDemoServices } from "@/components/pro/ProEmployerDemoServices";
+import { ProEmployerCandidateDetail } from "@/components/pro/ProEmployerCandidateDetail";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { DEMO_EMPLOYER_JOBS, DEMO_EMPLOYER_APPS, INITIAL_EMPLOYER_DEMO, createDemoApplication, type EmployerDemoState } from "@/data/employerDemo";
@@ -133,7 +134,7 @@ const TalentoPro: React.FC = () => {
 
   const currentRole: "candidate" | "employer" = currentUser.role || "candidate";
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeView, setActiveView] = useState<ProView>(() => {
     const fromParam = searchParams.get("view") as ProView | null;
     if (fromParam) return fromParam;
@@ -271,6 +272,25 @@ const TalentoPro: React.FC = () => {
 
   // Drawer & Comparison States
   const [drawerState, setDrawerState] = useState<ProDrawerState>(null);
+  useEffect(() => {
+    if (currentRole !== "employer") return;
+    const applicant = searchParams.get("applicant");
+    const candidate = searchParams.get("candidate");
+    if (applicant) setDrawerState({ type: "applicant", id: Number(applicant) });
+    else if (candidate) setDrawerState({ type: "candidate", name: candidate, jobId: Number(searchParams.get("job")) || undefined });
+    else setDrawerState(previous => previous?.type === "applicant" || previous?.type === "candidate" ? null : previous);
+  }, [searchParams, currentRole]);
+  const openDrawer = (drawer: ProDrawerState) => {
+    setDrawerState(drawer);
+    if (currentRole === "employer" && (drawer?.type === "applicant" || drawer?.type === "candidate")) {
+      const params = new URLSearchParams({ view: effectiveView });
+      if (drawer.type === "applicant") params.set("applicant", String(drawer.id));
+      else { params.set("candidate", drawer.name); if (drawer.jobId) params.set("job", String(drawer.jobId)); }
+      setSearchParams(params);
+      window.scrollTo({ top: 0 });
+    }
+  };
+  const closeCandidate = () => { setDrawerState(null); setSearchParams({ view: effectiveView }); window.scrollTo({ top: 0 }); };
   const [aiOpen, setAiOpen] = useState(false);
   const [compareJobs, setCompareJobs] = useState<number[]>([]);
   const [compareCandidates, setCompareCandidates] = useState<string[]>([]);
@@ -616,9 +636,12 @@ const TalentoPro: React.FC = () => {
   const savedCount = (currentUser.saved || []).length;
   const selectedJob = drawerState?.type === "job" ? jobs.find(job => job.id === drawerState.id) : undefined;
 
+  const candidatePage = currentRole === "employer" && (drawerState?.type === "applicant" || drawerState?.type === "candidate") ? drawerState : null;
+  const selectedApplicant = candidatePage?.type === "applicant" ? apps.find(a => a.id === candidatePage.id && jobs.some(j => j.id === a.jid && j.by === sessionEmail)) : undefined;
+  const selectedCandidate = candidatePage?.type === "candidate" ? CANDIDATES_SEED.find(c => c.n === candidatePage.name) : undefined;
   return (
     <div
-      className="min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-primary/20 selection:text-primary"
+      className={cn("min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-primary/20 selection:text-primary", currentRole === "employer" && (candidatePage || effectiveView === "employer-assessments") && "employer-reference-shell")}
     >
       <Helmet>
         <title>
@@ -658,7 +681,7 @@ const TalentoPro: React.FC = () => {
             name={currentUser.name}
             activeView={effectiveView}
             unreadCount={unreadCount}
-            onNavigate={(view) => { setDrawerState(null); setEditingCp(false); setActiveView(view); window.scrollTo({ top: 0 }); }}
+            onNavigate={(view) => { setDrawerState(null); setSearchParams({ view }); setEditingCp(false); setActiveView(view); window.scrollTo({ top: 0 }); }}
             onSignOut={onSignOut}
           />
         )}
@@ -668,7 +691,7 @@ const TalentoPro: React.FC = () => {
       <main className="flex-1 container w-full pt-24 pb-8">
         {currentRole === "employer" && <div className="mb-6 flex flex-wrap items-center gap-4 border-b border-border pb-4"><div className="mr-auto"><p className="text-sm font-semibold text-primary">Demo workspace · Sample data</p><p className="mt-1 text-xs text-muted-foreground">Simulated activity only. No real messages, AI sessions or charges.</p></div><label className="flex items-center gap-2 text-xs"><Switch aria-label="Simulate live activity" checked={simulateLive} onCheckedChange={setSimulateLive} />Simulate live activity</label><Button size="sm" variant="outline" onClick={simulateApplication}>Simulate new application</Button></div>}
         <div className="min-w-0 flex-1">
-        {selectedJob ? <ProJobDetail key={selectedJob.id} job={selectedJob} user={currentUser} jobs={jobs} applications={apps} onBack={() => setDrawerState(null)} onOpenJob={(id) => { setDrawerState({ type: "job", id }); window.scrollTo({ top: 0 }); }} onApply={handleApplyJob} onSave={handleSaveJob} /> : (
+        {candidatePage ? (selectedApplicant || selectedCandidate ? <ProEmployerCandidateDetail key={JSON.stringify(candidatePage)} application={selectedApplicant} candidate={selectedCandidate} job={jobs.find(j => j.id === (selectedApplicant?.jid || (candidatePage.type === "candidate" ? candidatePage.jobId : undefined)))} onBack={closeCandidate} onToast={addToast} onSave={(id, changes, message, interview) => { setApps(previous => previous.map(a => a.id === id ? { ...a, ...changes, st: interview ? "Interview" : changes.st, iv: interview || a.iv, upd: [...(a.upd || []), ...(a.st !== changes.st ? [{ msg: `Candidate status updated to "${changes.st}".`, at: Date.now() }] : []), ...(message.trim() ? [{ msg: message.trim(), at: Date.now() }] : []), ...(interview ? [{ msg: `Interview round scheduled for ${interview}.`, at: Date.now() }] : [])] } : a)); addToast("Application changes saved. Demo updates only; no message sent."); }} /> : <div className="py-12"><p>Candidate not found in this workspace.</p><Button onClick={closeCandidate} variant="outline" className="mt-4">Back to Candidates</Button></div>) : selectedJob ? <ProJobDetail key={selectedJob.id} job={selectedJob} user={currentUser} jobs={jobs} applications={apps} onBack={() => setDrawerState(null)} onOpenJob={(id) => { setDrawerState({ type: "job", id }); window.scrollTo({ top: 0 }); }} onApply={handleApplyJob} onSave={handleSaveJob} /> : (
         <AnimatePresence mode="wait">
           <motion.div
             key={`${currentRole}-${effectiveView}`}
@@ -733,7 +756,7 @@ const TalentoPro: React.FC = () => {
                     jobs={jobs}
                     applications={apps}
                     onNavigate={(v) => setActiveView(v)}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                     onAddSkill={(skill) => {
                       const currentSkills = currentUser.sk || [];
                       if (!currentSkills.includes(skill)) {
@@ -753,7 +776,7 @@ const TalentoPro: React.FC = () => {
                     jobs={jobs}
                     applications={apps}
                     onWithdrawApplication={handleWithdrawApplication}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                   />
                 )}
 
@@ -762,7 +785,7 @@ const TalentoPro: React.FC = () => {
                     user={currentUser}
                     jobs={jobs}
                     applications={apps}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                     onMarkSeen={() => {
                       handleUpdateUser({
                         ...currentUser,
@@ -805,7 +828,7 @@ const TalentoPro: React.FC = () => {
                       handleUpdateUser({ ...currentUser, ce: current.filter((_, i) => i !== index) });
                       addToast("Certification removed.");
                     }}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                     onNavigateToQuiz={() => { window.location.href = "/assessments/explore"; }}
                   />
                 )}
@@ -814,7 +837,7 @@ const TalentoPro: React.FC = () => {
                   <ProWalletView
                     user={currentUser}
                     onUpdateWallet={handleUpdateWallet}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                     onToast={addToast}
                   />
                 )}
@@ -823,7 +846,7 @@ const TalentoPro: React.FC = () => {
                   <ProPortfolioView
                     user={currentUser}
                     jobs={jobs}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                     onToast={addToast}
                     onUpdateUser={handleUpdateUser}
                   />
@@ -835,7 +858,7 @@ const TalentoPro: React.FC = () => {
                     jobs={jobs}
                     onNavigate={(v) => setActiveView(v)}
                     onUpdateUser={handleUpdateUser}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                     onToast={addToast}
                   />
                 )}
@@ -850,9 +873,9 @@ const TalentoPro: React.FC = () => {
             {currentRole === "employer" && (
               <>
                 {effectiveView === "account" && <ProEmployerMyAccount user={currentUser} jobs={jobs} applications={apps} onNavigate={setActiveView} />}
-                {["employer-assessments", "interviews", "advertise", "subscription", "settings", "payment-history"].includes(effectiveView) && <ProEmployerDemoServices view={effectiveView} user={currentUser} jobs={jobs} applications={apps} state={employerDemo} onChange={(next) => { setEmployerDemo(next); setApps(previous => previous.map(app => { const result = next.assessments.find(r => r.candidate === app.name && r.status === "Completed" && r.score !== undefined); return result ? { ...app, as: { ...app.as, [result.name]: result.score ?? 0 } } : app; })); }} onNavigate={setActiveView} onOpenDrawer={setDrawerState} onToast={addToast} onUpdateUser={handleUpdateUser} onSamplePayment={(description) => { handleUpdateWallet(currentUser.wal?.bal || 0, { id: `DEMO-${Date.now()}`, at: Date.now(), type: "debit", amt: 0, desc: description, via: "Simulation", st: "Demo only" }); addToast("Demo plan activated; sample receipt added. No charge."); }} />}
+                {["employer-assessments", "interviews", "advertise", "subscription", "settings", "payment-history"].includes(effectiveView) && <ProEmployerDemoServices view={effectiveView} user={currentUser} jobs={jobs} applications={apps} state={employerDemo} onChange={(next) => { setEmployerDemo(next); setApps(previous => previous.map(app => { const result = next.assessments.find(r => r.candidate === app.name && r.status === "Completed" && r.score !== undefined); return result ? { ...app, as: { ...app.as, [result.name]: result.score ?? 0 } } : app; })); }} onNavigate={setActiveView} onOpenDrawer={openDrawer} onToast={addToast} onUpdateUser={handleUpdateUser} onSamplePayment={(description) => { handleUpdateWallet(currentUser.wal?.bal || 0, { id: `DEMO-${Date.now()}`, at: Date.now(), type: "debit", amt: 0, desc: description, via: "Simulation", st: "Demo only" }); addToast("Demo plan activated; sample receipt added. No charge."); }} />}
                 {effectiveView === "post" && <ProEmployerJobPosting user={currentUser} onPublishJob={handlePublishJob} onToast={addToast} />}
-                {effectiveView === "pipe" && <ProEmployerPipeline user={currentUser} jobs={jobs} applications={apps} onOpenDrawer={setDrawerState} onBulkUpdateStage={handleBulkUpdateStage} onBulkSendReview={handleBulkSendReview} />}
+                {effectiveView === "pipe" && <ProEmployerPipeline user={currentUser} jobs={jobs} applications={apps} onOpenDrawer={openDrawer} onBulkUpdateStage={handleBulkUpdateStage} onBulkSendReview={handleBulkSendReview} />}
                 {effectiveView === "support" && <ProSupportView onToast={addToast} demoAccount={currentUser.email} />}
                 {effectiveView === "dash" && (
                   <ProDashboardView
@@ -860,7 +883,7 @@ const TalentoPro: React.FC = () => {
                     jobs={jobs}
                     applications={apps}
                     onNavigate={(v) => setActiveView(v)}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                     onAddSkill={() => {}}
                     onDuplicateJob={handleDuplicateJob}
                     onCloseJob={handleCloseJob}
@@ -892,7 +915,7 @@ const TalentoPro: React.FC = () => {
                     onUpdateApplicantStage={handleUpdateApplicantStage}
                     onBulkUpdateStage={handleBulkUpdateStage}
                     onBulkSendReview={handleBulkSendReview}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                     onToast={addToast}
                   />
                 )}
@@ -902,7 +925,7 @@ const TalentoPro: React.FC = () => {
                     user={currentUser}
                     jobs={jobs}
                     applications={apps}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                     onNavigate={setActiveView}
                     onMarkSeen={() => {
                       handleUpdateUser({ ...currentUser, seen: Date.now() });
@@ -914,7 +937,7 @@ const TalentoPro: React.FC = () => {
                   <ProWalletView
                     user={currentUser}
                     onUpdateWallet={handleUpdateWallet}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                     onToast={addToast}
                   />
                 )}
@@ -923,7 +946,7 @@ const TalentoPro: React.FC = () => {
                   <ProPortfolioView
                     user={currentUser}
                     jobs={jobs}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                     onToast={addToast}
                   />
                 )}
@@ -934,7 +957,7 @@ const TalentoPro: React.FC = () => {
                     jobs={jobs}
                     onNavigate={(v) => setActiveView(v)}
                     onUpdateUser={handleUpdateUser}
-                    onOpenDrawer={setDrawerState}
+                    onOpenDrawer={openDrawer}
                     onToast={addToast}
                   />
                 )}
@@ -949,7 +972,7 @@ const TalentoPro: React.FC = () => {
       {/* Global Drawers & Modals */}
       {drawerState && <ProDrawers
         key={JSON.stringify(drawerState)}
-        drawerState={drawerState?.type === "job" ? null : drawerState}
+        drawerState={drawerState?.type === "job" || candidatePage ? null : drawerState}
         user={currentUser}
         jobs={jobs}
         applications={apps}
