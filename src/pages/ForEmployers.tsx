@@ -212,15 +212,15 @@ const ReasonsVideo = () => {
       <div className="container">
         <motion.div {...reveal}><SectionIntro align="center" eyebrow="Why Teams Choose Us" first="10 Reasons to Choose" second="TalentCIR." description={<>A short look at what hiring teams value most here.<br className="hidden md:block" /> Every reason is already part of your subscription.</>} /></motion.div>
         <motion.div {...reveal} className="mt-10">
-          <div className="relative overflow-hidden rounded-lg border border-border bg-primary shadow-xl">
+          <div className="relative overflow-hidden rounded-lg border border-border bg-card shadow-xl">
             {playing ? (
-              <video src={reasonsVideo.url} poster={reasonsThumb} controls autoPlay className="aspect-video w-full bg-primary object-cover" />
+              <video src={reasonsVideo.url} poster={reasonsThumb} controls autoPlay className="aspect-video w-full bg-card object-cover" />
             ) : (
               <button type="button" onClick={() => setPlaying(true)} aria-label="Play 10 Reasons to Choose TalentCIR" className="group relative block aspect-video w-full">
                 <img src={reasonsThumb} alt="10 Reasons to Choose TalentCIR" className="h-full w-full object-cover" width={1600} height={900} loading="lazy" />
-                <span className="absolute inset-0 flex items-center justify-center bg-primary/15 transition group-hover:bg-primary/5">
-                  <span className="flex h-16 w-16 items-center justify-center rounded-full bg-background/95 shadow-lg transition group-hover:scale-105">
-                    <Play className="h-6 w-6 translate-x-0.5 text-primary" />
+                <span className="absolute inset-0 flex items-center justify-center bg-primary/5 transition group-hover:bg-transparent">
+                  <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary shadow-lg ring-4 ring-background transition group-hover:scale-105">
+                    <Play className="h-6 w-6 translate-x-0.5 text-primary-foreground" />
                   </span>
                 </span>
               </button>
