@@ -211,7 +211,7 @@ const ReasonsVideo = () => {
     <section id="how-it-works" className="bg-accent/45 py-20 md:py-28">
       <div className="container">
         <motion.div {...reveal}><SectionIntro align="center" eyebrow="Why Teams Choose Us" first="10 Reasons to Choose" second="TalentCIR." description={<>A short look at what hiring teams value most here.<br className="hidden md:block" /> Every reason is already part of your subscription.</>} /></motion.div>
-        <motion.div {...reveal} className="mx-auto mt-10 max-w-4xl">
+        <motion.div {...reveal} className="mt-10">
           <div className="relative overflow-hidden rounded-lg border border-border bg-primary shadow-xl">
             {playing ? (
               <video src={reasonsVideo.url} poster={reasonsThumb} controls autoPlay className="aspect-video w-full bg-primary object-cover" />
