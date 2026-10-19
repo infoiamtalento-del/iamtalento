@@ -209,3 +209,4 @@
 
 ## Home page — hero headline set bold
 - Headline weight raised from 400 to 700 (bold), layout and colours unchanged per request — done; `.h2-hero h1` font-weight in src/components/home2/home2.css; verified in browser at 1280/890/390 on / and /home2 (weight 700 on both lines, each still one line — line 1 431px, line 2 431px at 1280 — black over brand blue kept, sub-line one line on desktop, nothing clipped or overlapping the wheel), build OK
+- Hero fit-to-page: hero fills the first viewport on >=961px with content vertically centred; sub-line "Learning. Skill Assessments. Job Hunt. All Connected." recoloured to the lede ink colour.
