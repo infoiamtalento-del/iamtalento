@@ -18,6 +18,15 @@ import v2 from "@/assets/mock-interview-2.jpg";
 import v3 from "@/assets/mock-interview-3.jpg";
 import teamImage from "@/assets/employer-team.jpg";
 import planPoster from "@/assets/assessment-video-thumb.jpg";
+import pv_resume from "@/assets/plan-resume.mp4.asset.json";
+import pv_jobpost from "@/assets/plan-jobpost.mp4.asset.json";
+import pv_verify from "@/assets/plan-verify.mp4.asset.json";
+import pv_advertise from "@/assets/plan-advertise.mp4.asset.json";
+import pv_assessment from "@/assets/plan-assessment.mp4.asset.json";
+import pv_whitelabel from "@/assets/plan-whitelabel.mp4.asset.json";
+import pv_bulk from "@/assets/plan-bulk.mp4.asset.json";
+import pv_campus from "@/assets/plan-campus.mp4.asset.json";
+import pv_aitests from "@/assets/plan-aitests.mp4.asset.json";
 import w2 from "@/assets/webinar-speaker-2.jpg";
 import tVideo1 from "@/assets/testimonial-1.mp4.asset.json";
 import tVideo2 from "@/assets/testimonial-2.mp4.asset.json";
@@ -385,65 +394,61 @@ export const TeamsSection = () => (
 
 /* ---------- Plan inclusions + product video ---------- */
 const planItems = [
-  { icon: FileText, label: "Resume" },
-  { icon: Briefcase, label: "Job Posting" },
-  { icon: ShieldCheck, label: "Verify Resume" },
-  { icon: Megaphone, label: "Advertise My Job" },
-  { icon: Wand2, label: "Create Own Assessment" },
-  { icon: Palette, label: "Create Assessment with White Label" },
-  { icon: Users, label: "Bulk Hiring" },
-  { icon: GraduationCap, label: "Campus Hiring" },
-  { icon: Sparkles, label: "Create AI Tests" },
+  { icon: FileText, label: "Resume", text: "Search and unlock verified candidate resumes.", video: pv_resume },
+  { icon: Briefcase, label: "Job Posting", text: "Publish roles in minutes to active job seekers.", video: pv_jobpost },
+  { icon: ShieldCheck, label: "Verify Resume", text: "Confirm credentials and work history automatically.", video: pv_verify },
+  { icon: Megaphone, label: "Advertise My Job", text: "Boost reach with promoted job campaigns.", video: pv_advertise },
+  { icon: Wand2, label: "Create Own Assessment", text: "Build tests with your own questions and rubrics.", video: pv_assessment },
+  { icon: Palette, label: "Create Assessment with White Label", text: "Your logo, colours and domain on every test.", video: pv_whitelabel },
+  { icon: Users, label: "Bulk Hiring", text: "Screen and rank thousands of applicants at once.", video: pv_bulk },
+  { icon: GraduationCap, label: "Campus Hiring", text: "Run campus drives end-to-end online.", video: pv_campus },
+  { icon: Sparkles, label: "Create AI Tests", text: "Paste a JD and let AI generate the test.", video: pv_aitests },
 ];
 
-export const PlanVideoSection = () => (
+export const PlanVideoSection = () => {
+  const [active, setActive] = useState(0);
+  const item = planItems[active];
+  return (
   <section className="py-20 md:py-28">
     <div className="container">
       <CenterIntro eyebrow="One Subscription" first="All-in-One AI Hiring" second="That Thinks Like You Do." />
-      <motion.div {...reveal} className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[5fr_7fr] lg:gap-16">
-        <div>
-          <h3 className="font-serif text-3xl font-normal leading-tight tracking-normal text-foreground sm:text-4xl">What's included in your plan</h3>
-          <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">Everything your team needs to post, screen, assess and hire — in one subscription.</p>
-          <ul className="mt-8 space-y-4">
-            {planItems.map(({ icon: Icon, label }) => (
-              <li key={label} className="flex items-center gap-4">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-card shadow-sm"><Icon className="h-5 w-5 text-primary" /></span>
-                <span className="text-sm font-semibold md:text-base">{label}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-9">
-            <Button asChild size="lg" className="gap-2 rounded-full px-8"><Link to="/contact">Get Started <ArrowRight className="h-4 w-4" /></Link></Button>
-            <p className="mt-4 flex -rotate-1 items-center gap-2 font-hand text-lg text-foreground">
-              No credit card required
-              <span aria-hidden className="flex items-center gap-1">
-                <span className="h-0.5 w-3 rounded-full bg-primary-glow" />
-                <span className="h-0.5 w-2 rounded-full bg-primary-glow" />
-                <span className="h-0.5 w-1.5 rounded-full bg-primary-glow" />
-              </span>
-            </p>
+      <motion.div {...reveal} className="mx-auto max-w-6xl overflow-hidden rounded-[28px] border border-border bg-card shadow-xl">
+        <div className="grid items-stretch lg:grid-cols-[7fr_5fr]">
+          <div className="p-6 md:p-10">
+            <h3 className="font-display text-2xl font-bold text-foreground md:text-3xl">What's included in your plan</h3>
+            <p className="mt-2 text-sm text-muted-foreground">Tap any feature to see it in action.</p>
+            <ul className="mt-6 grid gap-2 sm:grid-cols-2">
+              {planItems.map(({ icon: Icon, label }, i) => {
+                const on = i === active;
+                return (
+                  <li key={label}>
+                    <button type="button" onClick={() => setActive(i)} aria-pressed={on}
+                      className={`flex w-full items-center gap-3 rounded-xl border p-3 text-left transition ${on ? "border-primary bg-primary text-primary-foreground shadow-md" : "border-border bg-background hover:border-primary/40 hover:bg-secondary"}`}>
+                      <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${on ? "bg-primary-foreground/15" : "bg-secondary text-primary"}`}><Icon className="h-4 w-4" /></span>
+                      <span className="text-sm font-semibold leading-snug">{label}</span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <Button asChild size="lg" className="gap-2 rounded-full px-8"><Link to="/contact">Get Started <ArrowRight className="h-4 w-4" /></Link></Button>
+              <span className="font-hand text-lg text-foreground">No credit card required</span>
+            </div>
           </div>
-        </div>
-        <div className="relative overflow-hidden rounded-[28px] bg-accent p-5 md:p-9">
-          <div aria-hidden className="pointer-events-none absolute inset-0">
-            <span className="absolute left-[-12%] top-8 h-10 w-2/3 -rotate-6 rounded-full bg-background/50" />
-            <span className="absolute right-[-16%] top-1/3 h-12 w-1/2 rotate-6 rounded-full bg-background/40" />
-            <span className="absolute bottom-10 left-[-6%] h-9 w-3/5 -rotate-3 rounded-full bg-background/45" />
+          <div className="flex flex-col items-center justify-center gap-4 bg-accent p-6 md:p-10">
+            <span className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary shadow-sm"><CirclePlay className="h-3.5 w-3.5" /> {item.label}</span>
+            <div className="w-full max-w-[280px] overflow-hidden rounded-[24px] border-4 border-card bg-foreground shadow-2xl">
+              <video key={item.video.url} src={item.video.url} autoPlay muted loop controls playsInline preload="metadata" className="aspect-[9/16] w-full object-cover" />
+            </div>
+            <p className="max-w-[280px] text-center text-sm text-muted-foreground">{item.text}</p>
           </div>
-          <div className="relative">
-            <span className="mb-5 inline-flex items-center gap-2 rounded-full bg-card px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary shadow-sm"><CirclePlay className="h-3.5 w-3.5" /> Product in 60 Sec</span>
-            <video src="/product-in-60-sec.mp4" poster={planPoster} controls preload="metadata" playsInline className="aspect-[4/3] w-full rounded-2xl border border-border bg-background object-cover shadow-xl" />
-          </div>
-          <span className="pointer-events-none absolute left-2 top-[34%] hidden items-center gap-1.5 rounded-full border border-border/60 bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground shadow-lg md:flex"><Code2 className="h-3.5 w-3.5 text-primary" /> Python</span>
-          <span className="pointer-events-none absolute left-5 top-[62%] hidden items-center gap-1.5 rounded-full border border-border/60 bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground shadow-lg md:flex"><PenTool className="h-3.5 w-3.5 text-primary" /> Design</span>
-          <span className="pointer-events-none absolute right-3 top-[28%] hidden items-center gap-1.5 rounded-full border border-border/60 bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground shadow-lg lg:flex"><BadgePercent className="h-3.5 w-3.5 text-primary" /> Sales</span>
-          <span className="pointer-events-none absolute right-6 top-[58%] hidden items-center gap-1.5 rounded-full border border-border/60 bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground shadow-lg lg:flex"><Table2 className="h-3.5 w-3.5 text-primary" /> Excel</span>
         </div>
       </motion.div>
-
     </div>
   </section>
-);
+  );
+};
 
 /* ---------- Integrations & security ---------- */
 const integrations = ["Workday", "Greenhouse", "Lever", "Zoho Recruit", "SAP SuccessFactors", "Darwinbox", "Slack", "Teams", "Google Calendar", "Keka", "BambooHR", "Freshteam"];
