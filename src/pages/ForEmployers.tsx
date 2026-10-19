@@ -261,22 +261,6 @@ const FAQSection = () => {
   );
 };
 
-const FinalCTA = () => (
-  <section className="pb-20">
-    <div className="container">
-      <motion.div {...reveal} className="relative overflow-hidden rounded-lg bg-primary px-6 py-10 sm:px-10 md:py-12">
-        <div className="relative z-10 flex flex-col items-center gap-6 text-center">
-          <div><h2 className="font-display text-3xl font-bold leading-tight text-primary-foreground md:text-4xl">Ready to Hire<br />Better?</h2><p className="mt-2 text-sm text-primary-foreground/80 md:text-base">See how IAmTalento helps your team<br className="hidden md:block" /> find the right people, faster.</p></div>
-          <div className="flex flex-wrap justify-center gap-3">
-            <Button asChild size="lg" variant="secondary"><Link to="/pricing?tab=employers">Explore Pricing <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
-            <Button asChild size="lg" variant="outline" className="border-primary-foreground/50 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"><Link to="/employer-profile">Create Company Profile</Link></Button>
-          </div>
-        </div>
-      </motion.div>
-    </div>
-  </section>
-);
-
 const ForEmployers = () => (
   <>
     <Helmet>
@@ -304,7 +288,6 @@ const ForEmployers = () => (
       <IntegrationsSection />
       <FAQSection />
       <EmployerActionBanner variant="start" />
-      <FinalCTA />
     </Layout>
   </>
 );
