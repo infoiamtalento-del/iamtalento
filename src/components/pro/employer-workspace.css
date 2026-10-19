@@ -16,7 +16,7 @@
 .employer-workspace .workspace-section-title h2 { font-size:15px; font-weight:700; }
 .employer-workspace .workspace-section-title p { font-size:11px; color:hsl(var(--job-muted)); margin-top:3px; }
 .employer-workspace .workspace-field { display:grid; gap:7px; font-size:11px; font-weight:600; }
-.employer-workspace input:not([type=checkbox]):not([type=range]),.employer-workspace select,.employer-workspace textarea { border-color:hsl(var(--job-border)); border-radius:6px; font-size:12px; background:hsl(var(--card)); color:hsl(var(--job-ink)); width:100%; }
+.employer-workspace input:not([type=checkbox]):not([type=range]):not([type=radio]),.employer-workspace select,.employer-workspace textarea { border-color:hsl(var(--job-border)); border-radius:6px; font-size:12px; background:hsl(var(--card)); color:hsl(var(--job-ink)); width:100%; }
 .employer-workspace select { height:40px; padding:0 10px; }
 .employer-workspace .workspace-divider { margin:22px 0; border-top:1px solid hsl(var(--job-border)); }
 .employer-workspace .workspace-chip { display:inline-flex; gap:6px; align-items:center; border-radius:18px; padding:5px 10px; font-size:11px; font-weight:600; background:hsl(var(--job-tint)); color:hsl(var(--primary)); }
