@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Search, SlidersHorizontal, X, MapPin, Briefcase, ChevronDown, Code2, Building2, FileBarChart, ShieldCheck, Target, TrendingUp } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -20,7 +20,12 @@ const toolFilters = [
   "Kubernetes", "TensorFlow", "Salesforce", "Excel", "Jira", "Sketch", "Power BI", "Spark",
 ];
 
-const JobsHeroSection = () => {
+interface JobsHeroSectionProps {
+  className?: string;
+}
+
+const JobsHeroSection = ({ className = "" }: JobsHeroSectionProps) => {
+  const navigate = useNavigate();
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
   const [selectedTools, setSelectedTools] = useState<string[]>([]);
@@ -30,7 +35,7 @@ const JobsHeroSection = () => {
   };
 
   return (
-    <section className="pt-48 pb-16 md:pt-64 md:pb-24 bg-accent/30 relative overflow-hidden">
+    <section className={cn("pt-32 pb-16 md:pt-44 md:pb-24 bg-accent/30 relative overflow-hidden", className)}>
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-20 left-1/4 w-[400px] h-[400px] rounded-full bg-primary/5 blur-[100px]" />
         <div className="absolute bottom-10 right-1/4 w-80 h-80 rounded-full bg-warning/5 blur-[80px]" />
@@ -125,7 +130,7 @@ const JobsHeroSection = () => {
               />
             </div>
           </div>
-          <Button className="bg-primary text-primary-foreground hover:bg-primary/90 h-14 px-8 rounded-xl gap-2 shrink-0 text-base">
+          <Button onClick={() => navigate("/talento-pro")} className="bg-primary text-primary-foreground hover:bg-primary/90 h-14 px-8 rounded-xl gap-2 shrink-0 text-base">
             <Search className="h-4 w-4" /> Search Jobs
           </Button>
         </motion.div>

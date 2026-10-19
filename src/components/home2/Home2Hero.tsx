@@ -11,8 +11,15 @@ import "./home2.css";
  */
 const Home2Hero = () => (
   <div className="h2-root">
-    <section className="h2-hero">
-      <div className="h2-shell h2-hero-grid">
+    <section
+      className="h2-hero !overflow-visible"
+      style={{
+        paddingTop: "clamp(120px, 12vw, 168px)",
+        paddingBottom: "clamp(60px, 6vw, 96px)",
+        overflow: "visible",
+      }}
+    >
+      <div className="h2-shell h2-hero-grid items-center">
         <div className="h2-hero-copy">
           <span className="h2-eyebrow">A NEW ERA OF HIRING TALENTS</span>
           <h1>
@@ -55,8 +62,10 @@ const Home2Hero = () => (
           </ul>
         </div>
 
-        <div className="h2-hero-wheel-col flex justify-center">
-          <SkillWheel portrait={photos.portraitRahul} portraitAlt="Rahul Sharma, Verified Full-Stack Developer" />
+        <div className="h2-hero-wheel-col flex justify-center overflow-visible">
+          <div className="w-full max-w-[520px] [&_.h2-wheel]:my-0 [&_.h2-wheel]:overflow-visible">
+            <SkillWheel portrait={photos.portraitRahul} portraitAlt="Rahul Sharma, Verified Full-Stack Developer" />
+          </div>
         </div>
       </div>
     </section>
