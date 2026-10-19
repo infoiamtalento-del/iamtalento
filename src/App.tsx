@@ -110,6 +110,8 @@ const AnimatedRoutes = () => {
           <Route path="/talento-pro" element={<PageTransition><TalentoPro /></PageTransition>} />
           <Route path="/home-2" element={<PageTransition><Home2 /></PageTransition>} />
           <Route path="/home2" element={<PageTransition><Home2 /></PageTransition>} />
+          <Route path="/home-3" element={<PageTransition><Home3 /></PageTransition>} />
+          <Route path="/home3" element={<PageTransition><Home3 /></PageTransition>} />
           <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
         </Routes>
       </Suspense>
