@@ -2,6 +2,8 @@
 
 ## Networking — remove Event Highlights
 - Remove the "Event Highlights / From Rooms We Filled" past-events section — done; section deleted from src/pages/Networking.tsx, all photo imports still used elsewhere on the page
+- Verify the page after removal — done; heading order checked in the browser (Participants → Find Your Community → From Your First RSVP), no horizontal overflow or page errors, build OK; city-card photos confirmed loading in the live preview (the sandbox dev server does not serve the CDN asset route)
+
 
 
 ## Networking participants
