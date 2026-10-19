@@ -192,8 +192,11 @@ const SkillsWheel = () => (
         <path
           d={donut(s.a1, s.a2)}
           fill="hsl(var(--primary))"
-          className="[animation:wheel-in_.6s_ease-out_both]"
-          style={{ animationDelay: `${i * 55}ms` }}
+          style={{
+            animation: "wheel-in .6s ease-out both",
+            animationDelay: `${i * 55}ms`,
+            transformOrigin: `${C}px ${C}px`,
+          }}
         />
         <text
           fill="hsl(var(--primary-foreground))"
