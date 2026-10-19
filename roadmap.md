@@ -197,3 +197,6 @@
 
 ## Home page — hero label reworded
 - Eyebrow above the hero headline changed to "NEW ERA OF HIRING TALENTS" (all caps) — done; `.h2-eyebrow` text in src/components/home2/Home2Hero.tsx (the class already uppercases via text-transform), verified in browser on / and /home2 (label renders in full caps, no page errors), build OK
+
+## Home page — hero label reworded again
+- Eyebrow changed from "NEW ERA OF HIRING TALENTS" to "A NEW ERA OF HIRING TALENTS" — done; single `.h2-eyebrow` text in src/components/home2/Home2Hero.tsx (shared by / and /home2); verified in browser at 1280/890/390 on both pages (label 230px wide, starts at the page's 24px padding so nothing clips, all caps intact), build OK
