@@ -414,7 +414,8 @@
 .h2-hero-lede {
   max-width: 560px;
   margin-top: 26px;
-  font-size: 12px;
+  /* 12px enlarged by 25% per request. */
+  font-size: 15px;
   line-height: 1.6;
   color: hsl(var(--h2-ink) / 0.78);
 }
