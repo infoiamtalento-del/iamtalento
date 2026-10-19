@@ -291,8 +291,8 @@ const ForEmployers = () => (
       <LogoStrip />
       <TrustStats />
       <CareerIntelligencePackageHome />
-      <AIInterviewerSection />
       <PlatformSection />
+      <AIInterviewerSection />
       <USPSection />
       <HowItWorks />
       <AIEvaluateSection />
