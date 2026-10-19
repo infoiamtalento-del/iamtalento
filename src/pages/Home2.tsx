@@ -20,7 +20,7 @@ import {
 
 import { siteLogo } from "@/assets/logo";
 import Header from "@/components/home2/Header";
-import SkillWheel from "@/components/home2/SkillWheel";
+import Home2Hero from "@/components/home2/Home2Hero";
 import {
   benefits,
   cirInside,
