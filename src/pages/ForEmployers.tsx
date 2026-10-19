@@ -261,7 +261,6 @@ const FAQSection = () => {
   );
 };
 
-
 const ForEmployers = () => (
   <>
     <Helmet>
