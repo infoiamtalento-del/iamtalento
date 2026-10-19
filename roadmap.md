@@ -1,5 +1,9 @@
 # Roadmap
 
+## Networking — remove Event Highlights
+- Remove the "Event Highlights / From Rooms We Filled" past-events section — done; section deleted from src/pages/Networking.tsx, all photo imports still used elsewhere on the page
+
+
 ## Networking participants
 - Rename the section to Participants from Top Industries and replace flat portrait backgrounds with realistic workplaces — done
 - Verify images, category filtering and layout — done; all four workplace portraits load, Engineering filters to one participant and All restores four, desktop/phone screenshots inspected, no page errors, build OK.
