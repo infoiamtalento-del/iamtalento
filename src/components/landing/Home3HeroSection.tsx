@@ -1,4 +1,4 @@
-import { Briefcase, ClipboardCheck, GraduationCap, ArrowRight } from "lucide-react";
+import { Briefcase, ClipboardCheck, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
@@ -21,13 +21,6 @@ const actions = [
     icon: ClipboardCheck,
     primary: false,
   },
-  {
-    to: "/learning",
-    label: "Learning",
-    sub: "Get industry ready",
-    icon: GraduationCap,
-    primary: false,
-  },
 ];
 
 const Home3HeroSection = () => (
@@ -46,7 +39,7 @@ const Home3HeroSection = () => (
         >
           <span className="h-1.5 w-1.5 rounded-full bg-primary" />
           <span className="text-xs font-semibold tracking-[0.16em] uppercase text-primary">
-            One Platform. Entire Career.
+            New Era of Hiring
           </span>
         </motion.div>
 
