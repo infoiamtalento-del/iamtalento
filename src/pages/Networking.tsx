@@ -299,9 +299,44 @@ const Networking = () => {
 
         <section className="py-16 md:py-20 bg-accent/20">
           <div className="container">
-            <Heading label="Community in action" first="Step Inside Our" second="Community Events" description="Shared ideas, new introductions and moments that matter." tail="A glimpse into the room." />
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 auto-rows-[140px] md:auto-rows-[180px]">
-              {galleryPhotos.slice(0, 9).map((photo, i) => <div key={i} className={`overflow-hidden rounded-lg ${i === 0 ? 'col-span-2 row-span-2' : ''}`}><img src={photo} alt={`Networking community moment ${i + 1}`} loading="lazy" width={800} height={600} className="w-full h-full object-cover" /></div>)}
+            <Heading label="Past events" first="Event Highlights" second="From Rooms We Filled" description="A look back at recent meetups, panels and mixers." tail="See what happened inside." />
+            <article className="grid overflow-hidden rounded-2xl border border-border bg-card lg:grid-cols-[1.4fr_1fr] mb-6">
+              <img src={communityPhoto} alt="Tech Leaders Meetup, Bengaluru" loading="lazy" width={1200} height={800} className="h-64 w-full object-cover sm:h-80 lg:h-full" />
+              <div className="flex flex-col justify-center p-6 md:p-10">
+                <p className="mb-3 text-xs font-semibold uppercase text-primary">Featured recap · Sep 2026</p>
+                <h3 className="font-display text-2xl font-bold md:text-3xl">Tech Leaders Meetup</h3>
+                <p className="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground"><MapPin className="h-4 w-4" />Bengaluru</p>
+                <p className="mt-5 text-sm leading-relaxed text-muted-foreground">An evening of open roundtables on scaling engineering teams, followed by speed introductions between hiring managers and senior engineers.</p>
+                <div className="mt-6 grid grid-cols-3 gap-4 border-y border-border py-5">
+                  {[["320", "Attendees"], ["14", "Speakers"], ["90+", "Intros made"]].map(([v, l]) => <div key={l}><p className="font-display text-2xl font-bold text-primary">{v}</p><p className="text-xs text-muted-foreground">{l}</p></div>)}
+                </div>
+                <ul className="mt-5 space-y-2 text-sm">
+                  {["Panel: Building teams that ship", "Live hiring roundtables", "Founders' after-hours mixer"].map((h) => <li key={h} className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-primary" />{h}</li>)}
+                </ul>
+              </div>
+            </article>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                { img: panelPhoto, name: "Product Leaders Panel", city: "Mumbai", date: "Aug 2026", people: "180", note: "Product-led growth in India" },
+                { img: meetupPhoto, name: "AI Builders Night", city: "Chennai", date: "Jul 2026", people: "240", note: "Live demos from 8 startups" },
+                { img: industryPhoto, name: "HR & Culture Meet", city: "Delhi", date: "Jun 2026", people: "150", note: "Future of hybrid work" },
+                { img: webinarPhoto, name: "Remote Careers Live", city: "Online", date: "May 2026", people: "1,200", note: "Q&A with global recruiters" },
+              ].map((e) => (
+                <article key={e.name} className="group overflow-hidden rounded-xl border border-border bg-card">
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    <img src={e.img} alt={e.name} loading="lazy" width={800} height={600} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <Badge className="absolute left-3 top-3">{e.date}</Badge>
+                  </div>
+                  <div className="p-5">
+                    <h3 className="font-display font-semibold">{e.name}</h3>
+                    <p className="mt-1 text-xs text-muted-foreground">{e.note}</p>
+                    <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
+                      <span className="flex items-center gap-1"><MapPin className="h-3.5 w-3.5" />{e.city}</span>
+                      <span className="flex items-center gap-1"><Users className="h-3.5 w-3.5" />{e.people} attended</span>
+                    </div>
+                  </div>
+                </article>
+              ))}
             </div>
           </div>
         </section>
