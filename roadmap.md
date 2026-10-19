@@ -166,3 +166,8 @@
 - Remove the Learning button and change the eyebrow to "New Era of Hiring" — done
 - Verify laptop and phone — done; all twelve wedges read top-to-bottom in order, no label sits off its wedge, category arcs complete, no phone overflow, build OK
 - Make Browse Jobs double width with Assessment and Learning below it, and remove the Learning / Skill Assessments / Job Hunt strip — done; Browse Jobs spans the full column, Assessment and Learning sit side by side beneath it, all three stack on phones; strip removed
+
+## Employer page — testimonial videos
+- Add 4 testimonial videos to "Trusted by Hiring Teams Across India." — done; four 6-second AI-generated talking-head clips (testimonial-1..4.mp4, CDN assets) with the original photos as posters, each card keeps quote, name, role and company logo; added a fourth testimonial (Arjun Mehta, Talent Manager, Consulting, TCS logo — placeholder name/quote for the user to replace)
+- Move the section above "One Platform for Every Team That Hires." — done; TestimonialsSection now renders directly before TeamsSection
+- Verified in browser at 1497px: correct order, all four videos load with posters, build OK

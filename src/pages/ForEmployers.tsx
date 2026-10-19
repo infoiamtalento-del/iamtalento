@@ -296,10 +296,10 @@ const ForEmployers = () => (
       <USPSection />
       <AIEvaluateSection />
       <HowItWorks />
+      <TestimonialsSection />
       <TeamsSection />
       <PlanVideoSection />
       <IntegrationsSection />
-      <TestimonialsSection />
       <FAQSection />
       <DemoFormSection />
       <FinalCTA />

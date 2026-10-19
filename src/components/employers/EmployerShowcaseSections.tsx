@@ -18,6 +18,11 @@ import v2 from "@/assets/mock-interview-2.jpg";
 import v3 from "@/assets/mock-interview-3.jpg";
 import teamImage from "@/assets/employer-team.jpg";
 import planPoster from "@/assets/assessment-video-thumb.jpg";
+import w2 from "@/assets/webinar-speaker-2.jpg";
+import tVideo1 from "@/assets/testimonial-1.mp4.asset.json";
+import tVideo2 from "@/assets/testimonial-2.mp4.asset.json";
+import tVideo3 from "@/assets/testimonial-3.mp4.asset.json";
+import tVideo4 from "@/assets/testimonial-4.mp4.asset.json";
 
 
 const reveal = {
@@ -33,6 +38,7 @@ const companyMarks: Record<string, { src: string; size: string }> = {
   Infosys: { src: "/company-logos/infosys.svg", size: "h-5" },
   Flipkart: { src: "/company-logos/flipkart.svg", size: "h-8" },
   Zoho: { src: "/company-logos/zoho.svg", size: "h-7" },
+  TCS: { src: "/company-logos/tcs.svg", size: "h-6" },
 };
 
 const CompanyMark = ({ name, className }: { name: string; className?: string }) => (
@@ -463,22 +469,20 @@ export const IntegrationsSection = () => (
 
 /* ---------- Video testimonials ---------- */
 const stories = [
-  { img: v1, name: "Rahul Verma", role: "TA Lead, IT Services", company: "Infosys", quote: "Campus drives that took a month now finish in a week." },
-  { img: v2, name: "Priya Nair", role: "HR Director, Retail", company: "Flipkart", quote: "Proctoring reports gave our managers real confidence." },
-  { img: v3, name: "Vikram Singh", role: "CTO, SaaS startup", company: "Zoho", quote: "The AI interviews feel human and save my engineers hours." },
+  { video: tVideo1, img: v1, name: "Rahul Verma", role: "TA Lead, IT Services", company: "Infosys", quote: "Campus drives that took a month now finish in a week." },
+  { video: tVideo2, img: v2, name: "Priya Nair", role: "HR Director, Retail", company: "Flipkart", quote: "Proctoring reports gave our managers real confidence." },
+  { video: tVideo3, img: v3, name: "Vikram Singh", role: "CTO, SaaS startup", company: "Zoho", quote: "The AI interviews feel human and save my engineers hours." },
+  { video: tVideo4, img: w2, name: "Arjun Mehta", role: "Talent Manager, Consulting", company: "TCS", quote: "We scaled from 200 to 2,000 applicants without adding recruiters." },
 ];
 
 export const TestimonialsSection = () => (
   <section className="py-20 md:py-28">
     <div className="container">
       <CenterIntro eyebrow="Customer Stories" first="Trusted by Hiring Teams" second="Across India." description={<>Hear from leaders who moved to skills-first, evidence-backed hiring.<br className="hidden md:block" /> Real teams, real outcomes.</>} />
-      <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-3">
+      <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2 lg:grid-cols-4">
         {stories.map(s => (
           <motion.article {...reveal} key={s.name} className="overflow-hidden rounded-lg border border-border bg-card">
-            <div className="relative">
-              <img src={s.img} alt={s.name} className="aspect-[4/3] w-full object-cover" loading="lazy" />
-              <span className="absolute inset-0 flex items-center justify-center"><span className="flex h-12 w-12 items-center justify-center rounded-full bg-card/90 text-primary shadow-lg"><CirclePlay className="h-6 w-6" /></span></span>
-            </div>
+            <video src={s.video.url} poster={s.img} controls preload="metadata" playsInline className="aspect-square w-full bg-background object-cover" />
             <div className="p-5 text-center">
               <p className="text-sm leading-relaxed">“{s.quote}”</p>
               <p className="mt-4 text-sm font-bold">{s.name}</p>
