@@ -1,5 +1,10 @@
 # Roadmap
 
+## Employer page — action-first CTAs
+- Replace demo-request CTAs with Post Jobs, Create Company Profile and Get Started, preserving See How It Works — implemented
+- Add two reference-inspired navy action banners with white buttons and supporting items — implemented
+- Verify banner layouts and existing onboarding destinations — done; both banners inspected at 1280 and 390 widths, four supporting items each, no banner clipping or browser errors. Post Jobs opens existing company setup, which sends signed-out users to login. Existing interviewer glow extends beyond the phone viewport; unchanged by this task.
+
 ## Employer page — section order
 - Move "Everything It Takes, In One Platform." above the AI Interviewer band, and "AI-Evaluate Candidates Like Your Top Recruiters Would." above "Your Next Great Hire. Five Clear Steps." — done; order checked in the browser (Everything It Takes 3, AI Interviewer 4, AI-Evaluate 6, Five Clear Steps 7), both moved sections inspected at 1497 width with headings clear of the header and no clipping, no page errors, build OK
 
