@@ -21,7 +21,8 @@ import Layout from "@/components/layout/Layout";
 import CareerIntelligencePackageHome from "@/components/landing/CareerIntelligencePackageHome";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { AIInterviewerSection, PlatformSection, TeamsSection, IntegrationsSection, TestimonialsSection, DemoFormSection, TrustStats, AIEvaluateSection, PlanVideoSection } from "@/components/employers/EmployerShowcaseSections";
+import { AIInterviewerSection, PlatformSection, TeamsSection, IntegrationsSection, TestimonialsSection, TrustStats, AIEvaluateSection, PlanVideoSection } from "@/components/employers/EmployerShowcaseSections";
+import EmployerActionBanner from "@/components/employers/EmployerActionBanner";
 import campusImage from "@/assets/employer-campus-hiring.jpg";
 import recruiterImage from "@/assets/employer-recruiter.jpg";
 import candidateAnanya from "@/assets/learner-ananya.jpg";
@@ -152,7 +153,7 @@ const Hero = () => (
             Find, verify, rank, and track job-ready candidates with AI — while your recruiters stay firmly in control.
           </p>
           <div className="mb-8 flex flex-wrap gap-3">
-            <Button asChild size="lg" className="h-12 gap-2 px-7"><Link to="/contact">Book a Demo <ArrowRight className="h-4 w-4" /></Link></Button>
+            <Button asChild size="lg" className="h-12 gap-2 px-7"><Link to="/employer-profile">Post Jobs <ArrowRight className="h-4 w-4" /></Link></Button>
             <Button asChild size="lg" variant="outline" className="h-12 gap-2 px-6"><a href="#how-it-works"><CirclePlay className="h-5 w-5 text-primary" /> See How It Works</a></Button>
           </div>
           <div className="flex flex-wrap gap-x-6 gap-y-3 text-xs font-medium text-muted-foreground">
@@ -296,12 +297,13 @@ const ForEmployers = () => (
       <USPSection />
       <AIEvaluateSection />
       <HowItWorks />
+      <EmployerActionBanner />
       <TestimonialsSection />
       <TeamsSection />
       <PlanVideoSection />
       <IntegrationsSection />
       <FAQSection />
-      <DemoFormSection />
+      <EmployerActionBanner variant="start" />
       <FinalCTA />
     </Layout>
   </>

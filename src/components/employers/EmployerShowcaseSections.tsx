@@ -7,9 +7,6 @@ import {
   Star, UserCog, Users, Wand2, Briefcase, Globe2, Server, Type, Video, Volume2, MoreVertical, Play, Pause, FileText, PenTool, BadgePercent, Table2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import interviewer from "@/assets/webinar-speaker-3.jpg";
 import p3 from "@/assets/speaker-meera.jpg";
@@ -136,7 +133,7 @@ const InterviewAvatar = () => (
 
 const InterviewCta = () => (
   <Button asChild size="lg" className="gap-2 bg-primary-foreground text-primary hover:bg-primary-foreground/90">
-    <Link to="/contact"><CirclePlay className="h-4 w-4" /> Try the AI Interviewer</Link>
+    <Link to="/employer-profile"><CalendarClock className="h-4 w-4" /> Get Started <ArrowRight className="h-4 w-4" /></Link>
   </Button>
 );
 
@@ -180,11 +177,11 @@ export const PlatformSection = () => (
             <p className="text-sm font-semibold tracking-[0.15em] text-primary">0{i + 1}</p>
             <h3 className="mb-5 mt-10 font-serif text-3xl font-normal leading-tight tracking-normal text-foreground">{title}</h3>
             <p className="flex-1 text-base leading-relaxed text-muted-foreground">{text}</p>
-            <Link to="/contact" className="mt-8 inline-flex items-center gap-2 text-base font-semibold text-primary">Learn more <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></Link>
+            <Button asChild variant="link" className="mt-8 h-auto justify-start gap-2 p-0 text-base"><Link to="/employer-profile">Get Started <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></Link></Button>
           </motion.div>
         ))}
       </div>
-      <div className="mt-10 text-center"><Button asChild size="lg" className="gap-2"><Link to="/contact">Book a Demo <ArrowRight className="h-4 w-4" /></Link></Button></div>
+      <div className="mt-10 text-center"><Button asChild size="lg" className="gap-2"><Link to="/employer-profile">Create Company Profile <ArrowRight className="h-4 w-4" /></Link></Button></div>
     </div>
   </section>
 );
@@ -241,10 +238,9 @@ export const AIEvaluateSection = () => {
             Enterprise-grade intelligence, form-level simplicity, and the precision of a Swiss watch.<br className="hidden md:block" /> One question in, a scored and evidence-backed report out.
           </p>
           <div className="mt-7 flex flex-wrap justify-center gap-3">
-            <Button asChild size="lg" className="gap-2"><Link to="/contact">Try a Demo Test <ArrowRight className="h-4 w-4" /></Link></Button>
+            <Button asChild size="lg" className="gap-2"><Link to="/employer-profile">Get Started <ArrowRight className="h-4 w-4" /></Link></Button>
             <Button asChild size="lg" variant="outline"><Link to="/assessments/explore">See Sample Report</Link></Button>
           </div>
-          <p className="mt-4 -rotate-1 font-display text-sm italic text-muted-foreground">No login required <Sparkles className="ml-1 inline h-3.5 w-3.5 text-primary" /></p>
         </motion.div>
 
         <motion.div {...reveal} className="mt-14 grid items-stretch gap-5 lg:grid-cols-[1fr_2.25rem_1fr_2.25rem_1fr]">
@@ -431,7 +427,7 @@ export const PlanVideoSection = () => {
               })}
             </ul>
             <div className="mt-8 flex flex-wrap items-center gap-4">
-              <Button asChild size="lg" className="gap-2 rounded-full px-8"><Link to="/contact">Get Started <ArrowRight className="h-4 w-4" /></Link></Button>
+              <Button asChild size="lg" className="gap-2 rounded-full px-8"><Link to="/employer-profile">Get Started <ArrowRight className="h-4 w-4" /></Link></Button>
               <span className="font-hand text-lg text-foreground">No credit card required</span>
             </div>
           </div>
@@ -503,27 +499,3 @@ export const TestimonialsSection = () => (
   </section>
 );
 
-/* ---------- Demo request form ---------- */
-export const DemoFormSection = () => {
-  const { toast } = useToast();
-  const [sent, setSent] = useState(false);
-  return (
-    <section className="bg-accent/45 py-20 md:py-28">
-      <div className="container">
-        <CenterIntro eyebrow="Book a Demo" first="See IAmTalento in Action" second="Built for Your Team." description={<>Tell us about your hiring goals and we'll tailor a live walkthrough.<br className="hidden md:block" /> It takes 30 minutes.</>} />
-        <motion.form {...reveal} onSubmit={e => { e.preventDefault(); setSent(true); toast({ title: "Demo requested", description: "Our team will reach out within one business day." }); }}
-          className="mx-auto grid max-w-2xl gap-4 rounded-lg border border-border bg-card p-6 shadow-lg sm:grid-cols-2 md:p-8">
-          <Input required placeholder="Full name" aria-label="Full name" />
-          <Input required type="email" placeholder="Work email" aria-label="Work email" />
-          <Input required placeholder="Company name" aria-label="Company name" />
-          <Input placeholder="Hires per year" aria-label="Hires per year" />
-          <Textarea placeholder="What would you like to see?" aria-label="Message" className="sm:col-span-2" />
-          <Button type="submit" size="lg" className="gap-2 sm:col-span-2" disabled={sent}>
-            {sent ? <><CheckCircle2 className="h-4 w-4" /> Request received</> : <>Request a Demo <MessageSquare className="h-4 w-4" /></>}
-          </Button>
-          <p className="flex items-center justify-center gap-2 text-xs text-muted-foreground sm:col-span-2"><Building2 className="h-3.5 w-3.5" /> No credit card required</p>
-        </motion.form>
-      </div>
-    </section>
-  );
-};
