@@ -206,3 +206,6 @@
 
 ## Home page — hero paragraph enlarged 25%
 - Lede "Talent CIR is building India's next-generation talent ecosystem…" raised from 12px to 15px — done; `.h2-hero-lede` font-size 12px→15px in src/components/home2/home2.css, and max-width 560px→620px so the larger text balances over two lines instead of stranding "platform." on a third; verified in browser at 1280/890/390 on / and /home2 (15px everywhere, two balanced lines on desktop, four on phone, no orphan, no clipping or overlap, 48px gap to the buttons kept), build OK
+
+## Home page — hero headline set bold
+- Headline weight raised from 400 to 700 (bold), layout and colours unchanged per request — done; `.h2-hero h1` font-weight in src/components/home2/home2.css; verified in browser at 1280/890/390 on / and /home2 (weight 700 on both lines, each still one line — line 1 431px, line 2 431px at 1280 — black over brand blue kept, sub-line one line on desktop, nothing clipped or overlapping the wheel), build OK
