@@ -191,3 +191,6 @@
 
 ## Home page — hero CTA buttons removed
 - "Take Free Assessment" and "Browse 5,00,000+ Jobs" removed from the shared Home2 hero — done; the `.h2-hero-actions` block deleted from src/components/home2/Home2Hero.tsx along with the now-unused Link and ArrowRight imports; verified in browser on / and /home2 (no hero buttons, neither label present anywhere on either page, no page errors, no leftover gap — the trust line and three benefit chips follow the paragraph directly), build OK
+
+## Home page — hero headline sizes rebalanced
+- Line 1 "India's Next Big Leap in Hiring Starts Here." enlarged and line 2 set a step smaller — done; `.h2-hero h1` font-size clamp(17px, 4.7cqw, 38px), `.h2-hero h1 em` font-size 0.78em, copy column widened (`.h2-hero-copy` max-width 700→900px, grid 1.32fr/0.68fr, gap 64→48px) so line 1 stays on one line; phone tweak at max-width 640px keeps line 2 readable (20px/0.86em, wraps instead of shrinking to ~13px); verified in browser at 1624/1440/1280/1120/1024/890 (line 1 37-38px, line 2 29px, both one line, no clipping or wheel collision) and 390/320, build OK
