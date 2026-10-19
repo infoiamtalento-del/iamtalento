@@ -1,5 +1,9 @@
 # Roadmap
 
+## Employer page — Career Intelligence
+- Add the shared homepage Career Intelligence section directly before the AI Interviewer section — implemented
+- Verify section order and interactive report previews — pending
+
 ## Employer candidate and assessment reference pages
 - Open candidate reviews as full-page, linkable profiles with connected application actions — done
 - Match the assessment dashboard reference with search, filters, creation and results — done
