@@ -311,3 +311,18 @@ main > div > section:not(.bg-primary):not(.bg-foreground):not(.pro-hero) {
   background-image: none !important;
 }
 
+
+/* ======================================================== */
+/* HOME3 SKILLS WHEEL: SEGMENT ENTRANCE                     */
+/* ======================================================== */
+
+@keyframes wheel-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
