@@ -1,8 +1,5 @@
 # Roadmap
 
-## Employer page — section order
-- Move the "One Platform for Every Team That Hires" section above the AI Interviewer band — done; verified heading order Career Intelligence → One Platform → AI Interviewer → Everything It Takes at 1497, no page errors, build OK
-
 ## Employer page — AI Interviewer section restyle
 - Remove the scroll-stop pin so all eight points show together, and switch the band to brand navy with white text — done; section is one static block (bg-primary), all eight points render at once, avatar badge and CTA inverted to white-on-navy, checked at 1497 and 390 with no page errors, build OK
 

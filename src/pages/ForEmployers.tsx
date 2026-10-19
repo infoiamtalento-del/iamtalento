@@ -291,12 +291,12 @@ const ForEmployers = () => (
       <LogoStrip />
       <TrustStats />
       <CareerIntelligencePackageHome />
-      <TeamsSection />
       <AIInterviewerSection />
       <PlatformSection />
       <USPSection />
       <HowItWorks />
       <AIEvaluateSection />
+      <TeamsSection />
       <PlanVideoSection />
       <IntegrationsSection />
       <TestimonialsSection />
