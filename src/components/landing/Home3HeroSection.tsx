@@ -142,7 +142,7 @@ const Home3HeroSection = () => (
         </motion.div>
       </div>
 
-      <div className="w-full -mx-6 sm:mx-0">
+      <div className="-mx-6 sm:mx-0">
         <Home3SkillsWheel />
       </div>
     </div>
