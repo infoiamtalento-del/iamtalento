@@ -229,7 +229,7 @@ export const AIEvaluateSection = () => {
   return (
     <section className="py-20 md:py-28">
       <div className="container">
-        <motion.div {...reveal} className="mx-auto max-w-2xl text-center">
+        <motion.div {...reveal} className="mx-auto max-w-3xl text-center">
           <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-primary">AI Evaluation</p>
           <h2 className="mb-5 font-display text-3xl font-bold leading-[1.08] sm:text-4xl lg:text-5xl">
             AI-Evaluate Candidates<br /><span className="text-primary">Like Your Top Recruiters Would.</span>
