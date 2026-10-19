@@ -1,5 +1,10 @@
 # Roadmap
 
+## Employer candidate and assessment reference pages
+- Open candidate reviews as full-page, linkable profiles with connected application actions — in progress
+- Match the assessment dashboard reference with search, filters, creation and results — in progress
+- Verify sample workflows, reload and desktop/phone layouts — pending
+
 ## Employer — realistic interactive demo
 - Seed connected jobs, applicants, interviews and account activity without overwriting existing changes — done
 - Make assessment, AI interview, advertising, subscription, payment and settings demo workflows interactive — done; support tickets have persistent sample conversations and simulated resolutions
