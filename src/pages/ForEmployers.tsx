@@ -142,7 +142,7 @@ const Hero = () => (
   <section className="relative overflow-hidden bg-background pb-16 pt-32 md:pb-24 md:pt-40">
     <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-accent/60 to-transparent" />
     <div className="container relative">
-      <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.08fr)] lg:gap-14">
+      <div className="grid items-center gap-12 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.08fr)] xl:gap-14">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-primary">AI-Powered Hiring Platform</p>
           <h1 className="mb-6 font-display text-4xl font-bold leading-[1.05] sm:text-5xl">
