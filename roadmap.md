@@ -1,5 +1,9 @@
 # Roadmap
 
+## Networking calendar — spacious redesign
+- Replace the rejected matrix with city navigation, topic filters and spacious event rows — done
+- Verify city/topic browsing, registration destinations and desktop/phone layout — done; Mumbai events, topic empty state and reset verified, registration opens /auth, desktop/phone screenshots inspected, no horizontal page overflow or browser errors, build OK.
+
 ## Employer page — action-first CTAs
 - Replace demo-request CTAs with Post Jobs, Create Company Profile and Get Started, preserving See How It Works — implemented
 - Add two reference-inspired navy action banners with white buttons and supporting items — implemented

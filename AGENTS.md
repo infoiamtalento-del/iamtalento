@@ -28,3 +28,4 @@
 - Keep the employer assessment dashboard in its own presentation component using shared employer service records; this keeps creation and results consistent without changing candidate assessment journeys.
 - Reuse the homepage Career Intelligence section on the employer marketing page so report content, previews and actions stay consistent.
 - Keep employer action banners in one reusable presentation component and send onboarding CTAs to the existing company-profile flow, so marketing never silently enters a demo account.
+- Keep networking calendar city and topic selection within its dedicated presentation, using existing sample events and registration destinations, so browsing does not change other page filters.
