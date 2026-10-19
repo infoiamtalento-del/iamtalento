@@ -194,3 +194,6 @@
 
 ## Home page — hero headline sizes rebalanced
 - Line 1 "India's Next Big Leap in Hiring Starts Here." enlarged and line 2 set a step smaller — done; `.h2-hero h1` font-size clamp(17px, 4.7cqw, 38px), `.h2-hero h1 em` font-size 0.78em, copy column widened (`.h2-hero-copy` max-width 700→900px, grid 1.32fr/0.68fr, gap 64→48px) so line 1 stays on one line; phone tweak at max-width 640px keeps line 2 readable (20px/0.86em, wraps instead of shrinking to ~13px); verified in browser at 1624/1440/1280/1120/1024/890 (line 1 37-38px, line 2 29px, both one line, no clipping or wheel collision) and 390/320, build OK
+
+## Home page — hero label reworded
+- Eyebrow above the hero headline changed to "NEW ERA OF HIRING TALENTS" (all caps) — done; `.h2-eyebrow` text in src/components/home2/Home2Hero.tsx (the class already uppercases via text-transform), verified in browser on / and /home2 (label renders in full caps, no page errors), build OK
