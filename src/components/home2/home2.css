@@ -392,7 +392,7 @@
   container-type: inline-size;
 }
 .h2-hero h1 {
-  margin-top: 43px;
+  margin-top: 21px;
   /* Headline set bold per request; wrapping onto two lines is allowed. */
   font-size: clamp(22px, 5.5cqw, 48px);
   font-weight: 700;
@@ -407,7 +407,9 @@
 .h2-hero h1 em {
   display: block;
   margin-top: 10px;
-  font-size: 0.6em;
+  /* Reduced ~15% from 0.6em, and not bold, per request. */
+  font-size: 0.51em;
+  font-weight: 400;
   font-style: normal;
   color: hsl(var(--h2-red));
 }
@@ -477,7 +479,7 @@
 }
 .h2-wheel {
   position: relative;
-  width: min(100%, 520px);
+  width: min(100%, 560px);
   aspect-ratio: 1;
   margin: 0 auto;
 }
@@ -2278,7 +2280,8 @@
   }
   .h2-wheel {
     margin: 0 auto;
-    width: min(100%, 460px);
+    /* Larger so the circle fills more of the page, per request. */
+    width: min(100%, 560px);
     scroll-margin-top: 80px;
   }
   .h2-cards {
