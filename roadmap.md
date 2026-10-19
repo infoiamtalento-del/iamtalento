@@ -1,5 +1,8 @@
 # Roadmap
 
+## Employer page — section order
+- Move "Everything It Takes, In One Platform." above the AI Interviewer band, and "AI-Evaluate Candidates Like Your Top Recruiters Would." above "Your Next Great Hire. Five Clear Steps." — done; order checked in the browser (Everything It Takes 3, AI Interviewer 4, AI-Evaluate 6, Five Clear Steps 7), both moved sections inspected at 1497 width with headings clear of the header and no clipping, no page errors, build OK
+
 ## Employer page — AI Interviewer section restyle
 - Remove the scroll-stop pin so all eight points show together, and switch the band to brand navy with white text — done; section is one static block (bg-primary), all eight points render at once, avatar badge and CTA inverted to white-on-navy, checked at 1497 and 390 with no page errors, build OK
 
