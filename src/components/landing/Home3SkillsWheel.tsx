@@ -15,11 +15,10 @@ const GROUPS = [
     name: "Functional Skills",
     opacity: 1,
     items: [
-      "Data Interpretation",
-      "Analytical Thinking",
       "Problem Solving",
-      "Technical Proficiency",
+      "Data Analysis",
       "Critical Thinking",
+      "Technical Skills",
     ],
   },
   {
@@ -30,12 +29,7 @@ const GROUPS = [
   {
     name: "Behavioural Skills",
     opacity: 0.72,
-    items: [
-      "Adaptability",
-      "Growth Mindset",
-      "Collaboration",
-      "Learning Agility",
-    ],
+    items: ["Adaptability", "Collaboration", "Growth Mindset"],
   },
 ];
 
