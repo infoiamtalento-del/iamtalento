@@ -1,6 +1,9 @@
 # Roadmap
 
-## Employer page — move the CIR report section
+## Employer page — 10 reasons video section
+- Replace the "Your Next Great Hire. Five Clear Steps." section with a titled video ("10 Reasons to Choose TalentCIR.") plus a matching thumbnail, and remove the five process-step boxes — implemented
+- Widen the video so its edges line up with the header logo and the For Employers button — pending
+- Swap the placeholder clip for the rendered 10-reasons video when the render finishes, and confirm playback — pending
 - Place "What You Get Inside Candidates CIR Report" directly above "AI-Evaluate Candidates Like Your Top Recruiters Would." — done; order checked in the browser (CIR report 26, AI-Evaluate 28, Five Clear Steps 29), both sections inspected with no clipping or page errors, build OK.
 
 
