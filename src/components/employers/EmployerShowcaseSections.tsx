@@ -17,7 +17,6 @@ import v1 from "@/assets/mock-interview-1.jpg";
 import v2 from "@/assets/mock-interview-2.jpg";
 import v3 from "@/assets/mock-interview-3.jpg";
 import teamImage from "@/assets/employer-team.jpg";
-import planPoster from "@/assets/assessment-video-thumb.jpg";
 import pv_resume from "@/assets/plan-resume.mp4.asset.json";
 import pv_jobpost from "@/assets/plan-jobpost.mp4.asset.json";
 import pv_verify from "@/assets/plan-verify.mp4.asset.json";
