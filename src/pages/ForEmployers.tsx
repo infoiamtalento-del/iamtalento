@@ -294,8 +294,8 @@ const ForEmployers = () => (
       <PlatformSection />
       <AIInterviewerSection />
       <USPSection />
-      <HowItWorks />
       <AIEvaluateSection />
+      <HowItWorks />
       <TeamsSection />
       <PlanVideoSection />
       <IntegrationsSection />
