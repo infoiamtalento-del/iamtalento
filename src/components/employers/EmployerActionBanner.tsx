@@ -30,7 +30,7 @@ const bannerContent = {
 export default function EmployerActionBanner({ variant = "jobs" }: { variant?: keyof typeof bannerContent }) {
   const content = bannerContent[variant];
   return (
-    <section className="py-10 md:py-14" aria-label={content.title}>
+    <section className="py-10 md:py-14" aria-label={content.title.join(" ")}>
       <div className="container">
         <div className="rounded-lg bg-primary p-6 text-primary-foreground shadow-lg sm:p-8 md:p-10">
           <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center md:gap-10">
