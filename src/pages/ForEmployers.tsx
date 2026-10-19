@@ -291,7 +291,7 @@ const ForEmployers = () => (
       <Hero />
       <LogoStrip />
       <TrustStats />
-      <CareerIntelligencePackageHome />
+      <CareerIntelligencePackageHome heading={{ first: "What You Get Inside", second: "Candidates CIR Report" }} />
       <PlatformSection />
       <AIInterviewerSection />
       <USPSection />
