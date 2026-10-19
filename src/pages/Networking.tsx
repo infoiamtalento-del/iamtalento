@@ -17,12 +17,6 @@ import priyaPhoto from "@/assets/learner-priya.jpg";
 import rahulPhoto from "@/assets/learner-rahul.jpg";
 import ananyaPhoto from "@/assets/learner-ananya.jpg";
 import vikramPhoto from "@/assets/learner-vikram.jpg";
-import bangalore from "@/assets/networking-bangalore.jpg.asset.json";
-import mumbai from "@/assets/networking-mumbai.jpg.asset.json";
-import delhi from "@/assets/networking-delhi.jpg.asset.json";
-import hyderabad from "@/assets/networking-hyderabad.jpg.asset.json";
-import pune from "@/assets/networking-pune.jpg.asset.json";
-import chennai from "@/assets/networking-chennai.jpg.asset.json";
 import NetworkingCalendar from "@/components/networking/NetworkingCalendar";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
@@ -167,12 +161,9 @@ const connectionBenefits = [
   { icon: Handshake, title: 'Find mentors', desc: 'Build meaningful relationships with experienced professionals.' },
   { icon: TrendingUp, title: 'Grow together', desc: 'Exchange ideas, support one another and keep moving forward.' },
 ];
-const cityPhotos = [bangalore, mumbai, delhi, hyderabad, pune, chennai];
-const localCities = cities.slice(0, 6).map((city, i) => ({ ...city, img: cityPhotos[i] }));
 const eventPhotos = [communityPhoto, panelPhoto, meetupPhoto, industryPhoto, communityPhoto, panelPhoto];
 const memberPhotos = [priyaPhoto, rahulPhoto, ananyaPhoto, vikramPhoto, kavyaPhoto, arjunPhoto];
 const galleryPhotos = [communityPhoto, panelPhoto, meetupPhoto, industryPhoto, eventPhoto, communityPhoto, panelPhoto, meetupPhoto, webinarPhoto, podcastPhoto].slice(0, 9);
-const scrollToEvents = () => document.getElementById('networking-events')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
 
 const Networking = () => {
   const [showAll, setShowAll] = useState(false);
@@ -287,15 +278,6 @@ const Networking = () => {
           </div>
         </section>
 
-        <section className="py-16 md:py-20">
-          <div className="container">
-            <Heading label="A growing community" first="Find Your Community" second="In Your City" description="Explore professional communities across India's cities." tail="Connect closer to home." />
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-              {localCities.map(item => <Button key={item.name} aria-label={`Explore events in ${item.name}`} variant="ghost" className="group block h-auto p-0 rounded-lg overflow-hidden border border-border text-left whitespace-normal" onClick={() => { setCity(item.name); setShowAll(true); scrollToEvents(); }}><img src={item.img.url} alt={item.name} loading="lazy" width={600} height={450} className="w-full aspect-[4/3] object-cover motion-safe:group-hover:scale-105 transition-transform duration-500" /><span className="block px-3 py-3 font-semibold text-sm">{item.name}</span></Button>)}
-            </div>
-            <div className="flex justify-center gap-3 mt-5"><Button variant="ghost" size="sm" onClick={() => { setCity('Remote'); setShowAll(true); scrollToEvents(); }}><Globe className="h-4 w-4 mr-2" />Explore Remote Events</Button></div>
-          </div>
-        </section>
 
         <section className="py-16 md:py-20 bg-accent/20">
           <div className="container">
