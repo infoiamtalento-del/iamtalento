@@ -188,3 +188,6 @@
 
 ## Home page — hero headline on two lines
 - Headline now reads "India's Next Big Leap in Hiring Starts Here." / "Learning. Skill Assessments. Job Hunt. All Connected." with each sentence on one line at a reduced size — done; Home2Hero.tsx h1 text extended, `.h2-hero h1` font-size changed to clamp(17px, 3.7cqw, 26px) with `.h2-hero-copy` given container-type: inline-size so the type scales with the copy column; verified in browser at 1624/1440/1280/1024/890 (exactly 2 lines, no clipping or header overlap) and on /home2, build OK. On phones (390px) the second sentence wraps to two lines — a single line would need ~13px text.
+
+## Home page — hero CTA buttons removed
+- "Take Free Assessment" and "Browse 5,00,000+ Jobs" removed from the shared Home2 hero — done; the `.h2-hero-actions` block deleted from src/components/home2/Home2Hero.tsx along with the now-unused Link and ArrowRight imports; verified in browser on / and /home2 (no hero buttons, neither label present anywhere on either page, no page errors, no leftover gap — the trust line and three benefit chips follow the paragraph directly), build OK
