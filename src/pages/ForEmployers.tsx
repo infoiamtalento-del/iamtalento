@@ -24,7 +24,7 @@ import { cn } from "@/lib/utils";
 import { AIInterviewerSection, PlatformSection, TeamsSection, IntegrationsSection, TestimonialsSection, TrustStats, AIEvaluateSection, PlanVideoSection } from "@/components/employers/EmployerShowcaseSections";
 import EmployerActionBanner from "@/components/employers/EmployerActionBanner";
 import reasonsThumb from "@/assets/employer-10-reasons-thumb.jpg";
-import reasonsVideo from "@/assets/product-in-60-sec.mp4.asset.json";
+import reasonsVideo from "@/assets/videos/talentcir-10-reasons.mp4.asset.json";
 import recruiterImage from "@/assets/employer-recruiter.jpg";
 import candidateAnanya from "@/assets/learner-ananya.jpg";
 import candidatePriya from "@/assets/learner-priya.jpg";
