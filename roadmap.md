@@ -179,3 +179,4 @@
 
 ## Employer page — closing banner removed
 - Remove the "Ready to Hire Better?" banner — done; FinalCTA component and its render deleted from ForEmployers.tsx, page now ends on the "Build Your Team. Make Your Next Move." banner; verified in browser (text absent, no page errors) and build OK
+- Hero wheel top hidden behind fixed header + score pill covering wedge labels on the shared Home2 hero — hero top padding raised, wheel pull-up reduced, pill repositioned (done 2026-10-19)
