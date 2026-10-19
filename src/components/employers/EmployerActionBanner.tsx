@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 const bannerContent = {
   jobs: {
-    title: "Your Next Great Hire Starts Here.",
+    title: ["Your Next Great Hire", "Starts Here."],
     description: "Build your company presence and connect your next opening with the right talent.",
     action: "Post Jobs",
     items: [
@@ -15,7 +15,7 @@ const bannerContent = {
     ],
   },
   start: {
-    title: "Build Your Team. Make Your Next Move.",
+    title: ["Build Your Team.", "Make Your Next Move."],
     description: "Bring your jobs, assessments and interviews together. Start with your company profile.",
     action: "Create Company Profile",
     items: [
@@ -35,7 +35,7 @@ export default function EmployerActionBanner({ variant = "jobs" }: { variant?: k
         <div className="rounded-lg bg-primary p-6 text-primary-foreground shadow-lg sm:p-8 md:p-10">
           <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center md:gap-10">
             <div className="max-w-2xl">
-              <h2 className="font-display text-3xl font-bold leading-tight tracking-normal text-primary-foreground sm:text-4xl">{content.title}</h2>
+              <h2 className="font-display text-3xl font-bold leading-tight tracking-normal text-primary-foreground sm:text-4xl">{content.title[0]}<br /><span className="text-primary-foreground/80">{content.title[1]}</span></h2>
               <p className="mt-3 max-w-xl text-sm leading-relaxed text-primary-foreground/80 md:text-base">{content.description}</p>
             </div>
             <Button asChild size="lg" className="h-auto min-h-12 max-w-full shrink-0 gap-3 whitespace-normal bg-primary-foreground px-6 py-3 text-primary hover:bg-primary-foreground/90">
