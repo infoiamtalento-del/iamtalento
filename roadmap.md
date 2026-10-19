@@ -145,3 +145,8 @@
 ## Home3 — hero replaces search bar
 - Remove the search bar from the Home3 hero and add the "India's Next Big Leap in Hiring Starts Here." copy with Browse Jobs, Assessment and Learning buttons — done; new Home3-only hero component, original homepage hero untouched
 - Verify both pages — done; new headline, sub-line and paragraph present with three working links at 1280 and 390 widths, no overflow, homepage still shows its search bar, build OK
+
+## Home3 — banner split layout and skills wheel
+- Left-align the headline, copy and buttons, and add the circular skills wheel on the right — done; new Home3SkillsWheel component with twelve equal wedges, two-line labels, three category arcs and a portrait that breaks the inner circle; original homepage hero untouched
+- Remove the Learning button and change the eyebrow to "New Era of Hiring" — done
+- Verify laptop and phone — done; all twelve wedges read top-to-bottom in order, no label sits off its wedge, category arcs complete, no phone overflow, build OK
