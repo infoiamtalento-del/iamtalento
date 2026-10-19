@@ -9,6 +9,7 @@ import { formatINR } from "@/data/proData";
 import type { EmployerDemoState } from "@/data/employerDemo";
 import { ProEmployerAdvertise } from "./ProEmployerAdvertise";
 import { ProEmployerSettings } from "./ProEmployerSettings";
+import { ProEmployerAssessments } from "./ProEmployerAssessments";
 import "./employer-workspace.css";
 
 interface Props { view: ProView; user: ProUser; jobs: ProJob[]; applications: ProApplication[]; state: EmployerDemoState; onChange: (state: EmployerDemoState) => void; onNavigate: (view: ProView) => void; onOpenDrawer: (drawer: ProDrawerState) => void; onToast: (message: string) => void; onSamplePayment: (description: string) => void; onUpdateUser?: (user: ProUser) => void }
@@ -21,6 +22,7 @@ export function ProEmployerDemoServices({ view, user, jobs, applications, state,
   if (view === "advertise") return <ProEmployerAdvertise state={state} onChange={onChange} onNavigate={onNavigate} onToast={onToast} />;
   if (view === "settings") return <ProEmployerSettings user={user} state={state} onChange={onChange} onUpdateUser={onUpdateUser} onToast={onToast} />;
   const apps = applications.filter(a => jobs.some(j => j.id === a.jid && j.by === user.email));
+  if (view === "employer-assessments") return <ProEmployerAssessments state={state} applications={apps} onChange={onChange} onBack={() => onNavigate("account")} onToast={onToast} />;
   const create = (event: FormEvent) => {
     event.preventDefault();
     if (!name.trim()) return;

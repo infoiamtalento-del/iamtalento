@@ -18,7 +18,7 @@ export const DEMO_EMPLOYER_APPS: ProApplication[] = CANDIDATES_SEED.map((_, i) =
 });
 
 export interface EmployerDemoState {
-  assessments: { id: number; name: string; candidate: string; score?: number; status: string }[];
+  assessments: { id: number; name: string; candidate: string; score?: number; status: string; type?: string; questions?: number; duration?: number; at?: number; description?: string }[];
   aiInterviews: { id: number; name: string; candidate: string; status: string; score?: number }[];
   campaigns: { id: number; name: string; status: string; views: number; clicks: number; at?: number; category?: string }[];
   plan: string;
