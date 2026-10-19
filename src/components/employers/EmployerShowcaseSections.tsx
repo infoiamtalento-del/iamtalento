@@ -469,9 +469,10 @@ export const IntegrationsSection = () => (
 
 /* ---------- Video testimonials ---------- */
 const stories = [
-  { img: v1, name: "Rahul Verma", role: "TA Lead, IT Services", company: "Infosys", quote: "Campus drives that took a month now finish in a week." },
-  { img: v2, name: "Priya Nair", role: "HR Director, Retail", company: "Flipkart", quote: "Proctoring reports gave our managers real confidence." },
-  { img: v3, name: "Vikram Singh", role: "CTO, SaaS startup", company: "Zoho", quote: "The AI interviews feel human and save my engineers hours." },
+  { video: tVideo1, img: v1, name: "Rahul Verma", role: "TA Lead, IT Services", company: "Infosys", quote: "Campus drives that took a month now finish in a week." },
+  { video: tVideo2, img: v2, name: "Priya Nair", role: "HR Director, Retail", company: "Flipkart", quote: "Proctoring reports gave our managers real confidence." },
+  { video: tVideo3, img: v3, name: "Vikram Singh", role: "CTO, SaaS startup", company: "Zoho", quote: "The AI interviews feel human and save my engineers hours." },
+  { video: tVideo4, img: w2, name: "Arjun Mehta", role: "Talent Manager, Consulting", company: "TCS", quote: "We scaled from 200 to 2,000 applicants without adding recruiters." },
 ];
 
 export const TestimonialsSection = () => (
