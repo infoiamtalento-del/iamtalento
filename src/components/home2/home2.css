@@ -412,7 +412,9 @@
   color: hsl(var(--h2-red));
 }
 .h2-hero-lede {
-  max-width: 560px;
+  /* Widened so the larger text balances over two lines instead of
+     leaving "platform." alone on a third. */
+  max-width: 620px;
   margin-top: 26px;
   /* 12px enlarged by 25% per request. */
   font-size: 15px;
