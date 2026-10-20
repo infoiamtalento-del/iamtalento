@@ -1,268 +1,198 @@
-import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { BarChart3, TrendingUp, Award, Target, Zap, ArrowRight, BookOpen, LineChart, Shield, Trophy, Flame } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import {
+  BarChart3,
+  Sparkles,
+  Zap,
+  Clock,
+  CheckCircle2,
+  ArrowUpRight,
+  Briefcase,
+  TrendingUp,
+} from "lucide-react";
 import SectionBadge from "@/components/ui/section-badge";
+import growthCard1 from "@/assets/growth-card-1.jpg";
 
-const cards = [
-  {
-    label: "Career Dashboard",
-    bg: "bg-primary",
-    icon: LineChart,
-    subtitle: "Track every metric",
-  },
-  {
-    label: "Success Stories",
-    bg: "bg-[hsl(33,100%,50%)]",
-    icon: TrendingUp,
-    subtitle: "Real learner wins",
-  },
-  {
-    label: "Skill Badges",
-    bg: "bg-primary",
-    icon: Shield,
-    subtitle: "Verified credentials",
-  },
-  {
-    label: "Course Progress",
-    bg: "bg-[hsl(33,100%,50%)]",
-    icon: BookOpen,
-    subtitle: "Complete & conquer",
-  },
-  {
-    label: "Milestones",
-    bg: "bg-primary",
-    icon: Trophy,
-    subtitle: "Unlock achievements",
-  },
-];
+const GrowthTrackerSection = () => (
+  <section className="py-16 md:py-24">
+    <div className="container px-4 md:px-6">
+      <div className="text-center mb-10">
+        <SectionBadge label="Growth Tracker" icon={BarChart3} />
+        <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
+          Watch Yourself<br />
+          <span className="text-primary">Level Up with AI</span>
+        </h2>
+        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+          <span className="block">Track every step toward career readiness.</span>
+          <span className="block">See how AI helps you close skill gaps and get hired faster.</span>
+        </p>
+      </div>
 
-const features = [
-  {
-    icon: Target,
-    title: "Real-Time IRS Score",
-    desc: "Your Industry Readiness Score updates as you complete courses, quizzes, and projects.",
-  },
-  {
-    icon: Zap,
-    title: "Skill-Level Tracking",
-    desc: "See exactly which skills you've unlocked and how you rank against industry benchmarks.",
-  },
-  {
-    icon: Award,
-    title: "Milestone Badges",
-    desc: "Earn verified badges as you hit career milestones — visible to recruiters on your profile.",
-  },
-];
-
-const CardVisual = ({ card, isCenter }: { card: typeof cards[0]; isCenter: boolean }) => {
-  const Icon = card.icon;
-  return (
-    <div className={`w-full h-full ${card.bg} rounded-3xl flex flex-col items-center justify-center relative overflow-hidden`}>
-      {/* Concentric rings */}
-      {[1, 2, 3, 4, 5].map((r) => (
-        <div
-          key={r}
-          className="absolute rounded-full border border-white/[0.08]"
-          style={{
-            width: `${r * 100}px`,
-            height: `${r * 100}px`,
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
-        />
-      ))}
-
-      {/* Floating dots — center card only */}
-      {isCenter && (
-        <>
-          <motion.div className="absolute w-2 h-2 rounded-full bg-white/20" style={{ top: "22%", left: "28%" }} animate={{ y: [-8, 8, -8] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
-          <motion.div className="absolute w-1.5 h-1.5 rounded-full bg-white/15" style={{ top: "35%", right: "22%" }} animate={{ y: [6, -6, 6] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} />
-        </>
-      )}
-
-      {/* Active badge */}
-      {isCenter && (
+      {/* Bento Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl mx-auto">
+        {/* Card 1 — Large feature card (spans 2 cols) */}
         <motion.div
-          className="absolute top-5 right-5"
-          animate={{ scale: [1, 1.1, 1] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          <div className="flex items-center gap-1 bg-white/20 rounded-full px-2.5 py-1">
-            <Flame className="w-3 h-3 text-white" />
-            <span className="text-[10px] font-bold text-white">Active</span>
-          </div>
-        </motion.div>
-      )}
-
-      {/* Icon */}
-      <motion.div
-        animate={isCenter ? { scale: [1, 1.06, 1] } : {}}
-        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-        className="mb-5"
-      >
-        <div className="w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-white/20 flex items-center justify-center">
-          <Icon className="w-10 h-10 md:w-12 md:h-12 text-white" strokeWidth={1.5} />
-        </div>
-      </motion.div>
-
-      {/* Text at bottom */}
-      <h3 className="text-base md:text-lg font-bold font-display text-white text-center">{card.label}</h3>
-      <p className="text-[11px] text-white/60 font-medium mt-0.5">{card.subtitle}</p>
-    </div>
-  );
-};
-
-const GrowthTrackerSection = () => {
-  const [activeIdx, setActiveIdx] = useState(2);
-  const [paused, setPaused] = useState(false);
-
-  useEffect(() => {
-    if (paused) return;
-    const interval = setInterval(() => {
-      setActiveIdx((p) => (p + 1) % cards.length);
-    }, 3500);
-    return () => clearInterval(interval);
-  }, [paused]);
-
-  const handleClick = useCallback((i: number) => {
-    setActiveIdx(i);
-    setPaused(true);
-    setTimeout(() => setPaused(false), 6000);
-  }, []);
-
-  // Position cards so active is always right-of-center, stacking to the left
-  const getCardStyle = (i: number) => {
-    const offset = i - activeIdx;
-    const absOffset = Math.abs(offset);
-    const isCenter = offset === 0;
-
-    // Cards fan from right (active) to left (stacked behind)
-    return {
-      x: offset * 180,
-      rotateY: offset * -8,
-      scale: isCenter ? 1 : 0.92 - absOffset * 0.02,
-      opacity: isCenter ? 1 : Math.max(0.3, 0.85 - absOffset * 0.2),
-      zIndex: 10 - absOffset,
-    };
-  };
-
-  return (
-    <section className="py-16 md:py-28 overflow-hidden">
-      <div className="container px-4 md:px-6">
-        {/* Header */}
-        <div className="text-center mb-12 md:mb-16">
-          <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <SectionBadge label="Growth Tracker" icon={BarChart3} />
-          </motion.div>
-          <motion.h2
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-4 mb-3"
-          >
-            Watch Yourself<br />
-            <span className="text-primary">Level Up</span>
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.15 }}
-            className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mb-8"
-          >
-            <span className="block">Track every step toward career readiness.</span>
-            <span className="block">See your progress clearly.</span>
-          </motion.p>
-          <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
-            <Link to="/assessments/explore">
-              <Button className="rounded-full px-8 gap-2 h-11 text-sm font-semibold bg-[hsl(33,100%,50%)] hover:bg-[hsl(33,100%,45%)] text-white border-0">
-                Start Tracking <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-          </motion.div>
-        </div>
-
-        {/* Card Fan */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.25 }}
-          className="relative flex items-center justify-center mb-12"
-          style={{ height: "clamp(380px, 50vw, 520px)", perspective: "1600px" }}
+          transition={{ duration: 0.5 }}
+          className="md:col-span-2 relative rounded-2xl bg-primary overflow-hidden group"
         >
-          {cards.map((card, i) => {
-            const offset = i - activeIdx;
-            const absOffset = Math.abs(offset);
-            const isCenter = offset === 0;
-            const style = getCardStyle(i);
+          <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary to-primary/80" />
+          <div className="relative z-10 flex flex-col md:flex-row">
+            {/* Text content */}
+            <div className="p-6 md:p-8 flex-1">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 text-xs font-semibold text-white mb-4">
+                <Sparkles className="h-3 w-3" /> AI Career Copilot
+              </div>
+              <h3 className="text-xl md:text-2xl font-bold font-display mb-2 leading-tight max-w-md text-white">
+                Real-Time IRS Readiness Score
+              </h3>
+              <p className="text-white/70 text-sm max-w-sm mb-6">
+                AI tracks every quiz, code submission, and project to calculate your live Industry Readiness Score and guide what to learn next.
+              </p>
+              <div className="flex items-center gap-3">
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center"
+                >
+                  <TrendingUp className="h-4 w-4 text-white" />
+                </motion.div>
+                <div>
+                  <span className="text-xs font-bold text-white block">88 / 100 Live IRS Score</span>
+                  <span className="text-[11px] text-white/60">Auto-updated after every module</span>
+                </div>
+              </div>
+            </div>
 
-            return (
-              <motion.div
-                key={i}
-                onClick={() => handleClick(i)}
-                className="absolute cursor-pointer select-none"
-                animate={{
-                  x: style.x,
-                  rotateY: style.rotateY,
-                  scale: style.scale,
-                  opacity: style.opacity,
-                }}
-                transition={{ type: "spring", stiffness: 220, damping: 26 }}
-                style={{
-                  zIndex: style.zIndex,
-                  transformStyle: "preserve-3d",
-                  width: "clamp(260px, 30vw, 380px)",
-                  height: "clamp(340px, 42vw, 480px)",
-                }}
-              >
-                <CardVisual card={card} isCenter={isCenter} />
-              </motion.div>
-            );
-          })}
+            {/* Visual thumbnail */}
+            <div className="relative w-full md:w-[45%] min-h-[180px] md:min-h-0">
+              <img
+                src={growthCard1}
+                alt="AI Growth Tracker Dashboard"
+                className="absolute inset-0 w-full h-full object-cover md:rounded-r-2xl"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/60 to-transparent md:rounded-r-2xl" />
+            </div>
+          </div>
         </motion.div>
 
-        {/* Dot indicators */}
-        <div className="flex items-center justify-center gap-2 mb-16">
-          {cards.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => handleClick(i)}
-              className={`rounded-full transition-all duration-300 ${
-                i === activeIdx
-                  ? "w-8 h-2 bg-primary"
-                  : "w-2 h-2 bg-muted-foreground/25 hover:bg-muted-foreground/40"
-              }`}
-            />
-          ))}
-        </div>
+        {/* Card 2 — AI Skill Gap Diagnosis */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="rounded-2xl border bg-card p-6 flex flex-col justify-between group hover:border-primary/30 transition-colors"
+        >
+          <div>
+            <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+              <Zap className="h-5 w-5 text-primary" />
+            </div>
+            <h3 className="font-bold font-display mb-1.5">AI Skill Gap Diagnosis</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              AI spots weak topics from your quiz mistakes and auto-assigns 15-minute practice drills.
+            </p>
+          </div>
+          <motion.div
+            whileHover={{ x: 4 }}
+            className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-primary cursor-pointer"
+          >
+            Adaptive study path <ArrowUpRight className="h-3 w-3" />
+          </motion.div>
+        </motion.div>
 
-        {/* Features Row */}
-        <div className="grid md:grid-cols-3 gap-10 max-w-4xl mx-auto">
-          {features.map((f, i) => (
-            <motion.div
-              key={f.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 + i * 0.1 }}
-              className="text-center"
-            >
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10 mb-4">
-                <f.icon className="h-5 w-5 text-primary" />
-              </div>
-              <h3 className="text-sm md:text-base font-bold font-display mb-2">{f.title}</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">{f.desc}</p>
-            </motion.div>
-          ))}
-        </div>
+        {/* Card 3 — 24/7 AI Code Mentor */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.15 }}
+          className="rounded-2xl border bg-card p-5 space-y-3 group hover:border-primary/30 transition-colors"
+        >
+          <div className="flex items-center justify-between">
+            <h4 className="text-sm font-bold font-display">24/7 AI Code Mentor</h4>
+            <span className="text-[10px] bg-accent text-primary px-2 py-0.5 rounded-full font-semibold">
+              Instant Review
+            </span>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            AI reviews your project code line-by-line for bugs, security, and clean architecture.
+          </p>
+          <div className="flex items-center gap-4 text-[10px] text-muted-foreground">
+            <div className="flex items-center gap-1">
+              <Clock className="h-3 w-3" /> Feedback: &lt; 3s
+            </div>
+            <div className="flex items-center gap-1">
+              <CheckCircle2 className="h-3 w-3 text-primary" /> Quality: 94/100
+            </div>
+          </div>
+          {/* Mini progress bar */}
+          <div className="pt-1">
+            <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                whileInView={{ width: "94%" }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.2, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                className="h-full rounded-full bg-primary"
+              />
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Card 4 — AI Speed Stat */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="rounded-2xl border bg-card p-6 flex flex-col items-center justify-center text-center group hover:border-primary/30 transition-colors"
+        >
+          <motion.span
+            initial={{ scale: 0.5, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3, type: "spring", stiffness: 200 }}
+            className="text-4xl md:text-5xl font-bold font-display text-primary mb-1"
+          >
+            3.4x
+          </motion.span>
+          <p className="text-xs text-muted-foreground font-medium">
+            faster skill mastery with<br />AI-personalized study paths
+          </p>
+        </motion.div>
+
+        {/* Card 5 — AI Role & Interview Prep */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.25 }}
+          className="rounded-2xl border bg-card p-6 group hover:border-primary/30 transition-colors"
+        >
+          <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+            <Briefcase className="h-5 w-5 text-primary" />
+          </div>
+          <h3 className="font-bold font-display mb-1.5">AI Role &amp; Interview Prep</h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            AI matches your verified skills to live job openings and coaches you with mock interviews.
+          </p>
+          <div className="flex gap-1.5 mt-4">
+            {[1, 2, 3].map((n) => (
+              <motion.div
+                key={n}
+                initial={{ width: 0 }}
+                whileInView={{ width: `${20 + n * 15}%` }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.3 + n * 0.1 }}
+                className="h-1.5 rounded-full bg-primary/20"
+              />
+            ))}
+          </div>
+        </motion.div>
       </div>
-    </section>
-  );
-};
+    </div>
+  </section>
+);
 
 export default GrowthTrackerSection;

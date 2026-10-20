@@ -19,7 +19,7 @@ const Home2Hero = () => (
         overflow: "visible",
       }}
     >
-      <div className="h2-shell h2-hero-grid items-center">
+      <div className="container h2-hero-grid items-center">
         <div className="h2-hero-copy">
           <span className="h2-eyebrow">A NEW ERA OF HIRING TALENTS</span>
           <h1>
@@ -62,7 +62,7 @@ const Home2Hero = () => (
           </ul>
         </div>
 
-        <div className="h2-hero-wheel-col flex justify-center overflow-visible">
+        <div className="h2-hero-wheel-col flex justify-center lg:justify-end overflow-visible">
           <div className="w-full max-w-[520px] [&_.h2-wheel]:my-0 [&_.h2-wheel]:overflow-visible">
             <SkillWheel portrait={photos.portraitRahul} portraitAlt="Rahul Sharma, Verified Full-Stack Developer" />
           </div>

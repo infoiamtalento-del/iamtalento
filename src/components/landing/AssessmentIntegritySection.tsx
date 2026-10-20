@@ -131,8 +131,8 @@ const AssessmentIntegritySection = ({ align = "center" }: { align?: Align }) => 
                   style={{ background: "#f8fafc", borderColor: "#e2e8f0" }}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: "hsl(355 84% 54% / 0.15)" }}>
-                      <Icon className="h-5 w-5 text-primary" />
+                    <div className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0 bg-white border border-slate-200/90 shadow-xs group-hover:border-[#002C66]/30 transition-colors">
+                      <Icon className="h-5 w-5 text-[#002C66]" />
                     </div>
                     <span className="text-sm font-semibold leading-tight text-foreground">{label}</span>
                   </div>

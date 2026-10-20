@@ -226,10 +226,11 @@ const VideoTestimonialsSection = () => {
             <br />
             <span className="text-[#002C66]">Turned Scores Into Offers</span>
           </motion.h2>
-          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-            Real candidates share how their Career Intelligence Report (CIR) and Verified Badge
-            <br className="hidden md:block" />
-            helped them bypass resume filters and negotiate higher compensation.
+          <p
+            className="text-muted-foreground text-base md:text-lg max-w-xl mx-auto text-center"
+            style={{ textWrap: "balance" }}
+          >
+            Real candidates share how their Career Intelligence Report (CIR) and Verified Badge helped them bypass resume filters and negotiate higher compensation.
           </p>
         </div>
 
