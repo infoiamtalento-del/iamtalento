@@ -394,9 +394,8 @@ const planItems = [
   { icon: ShieldCheck, label: "Verify Resume", text: "Confirm credentials and work history automatically.", video: pv_verify },
   { icon: Megaphone, label: "Advertise My Job", text: "Boost reach with promoted job campaigns.", video: pv_advertise },
   { icon: Wand2, label: "Create Own Assessment", text: "Build tests with your own questions and rubrics.", video: pv_assessment },
-  { icon: Palette, label: "Create Assessment with White Label", text: "Your logo, colours and domain on every test.", video: pv_whitelabel },
-  { icon: Users, label: "Bulk Hiring", text: "Screen and rank thousands of applicants at once.", video: pv_bulk },
-  { icon: GraduationCap, label: "Campus Hiring", text: "Run campus drives end-to-end online.", video: pv_campus },
+  { icon: Palette, label: "White Label", text: "Your logo, colours and domain on every test.", video: pv_whitelabel },
+  { icon: GraduationCap, label: "Bulk Hiring / Campus Hiring", text: "Screen thousands of applicants and run campus drives online.", video: pv_bulk },
   { icon: Sparkles, label: "Create AI Tests", text: "Paste a JD and let AI generate the test.", video: pv_aitests },
 ];
 
