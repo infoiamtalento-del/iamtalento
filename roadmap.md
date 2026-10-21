@@ -1,5 +1,8 @@
 # Roadmap
 
+## Employer page — AI Interviewer section
+- Rename the heading to "Meet Linda, Your AI Interviewer." and reduce the introduction to one headline line and one description line — done; verified at 1881 width the headline and description each sit on a single line, all eight points, the centre portrait, the status pill and the Get Started button render unchanged, and the build is OK.
+
 ## Employer page — 10 reasons video section
 - Replace the "Your Next Great Hire. Five Clear Steps." section with a titled video ("10 Reasons to Choose TalentCIR.") plus a matching thumbnail, and remove the five process-step boxes — implemented
 - Widen the video so its edges line up with the header logo and the For Employers button — done; at 1881 width the media box runs 274 to 1608 against the logo's left 272 and the button's right 1608
