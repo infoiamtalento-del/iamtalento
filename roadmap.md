@@ -1,10 +1,10 @@
 # Roadmap
 
 ## Employer page — plan video flush and aligned
-- Remove the space on all four sides of the plan section video and set it to a 4:5 shape so the left and right columns look aligned — in progress
+- Remove the space on all four sides of the plan section video and set it to a 4:5 shape so the left and right columns look aligned — done; the video now measures 479x599 (ratio 0.800) with zero gap on all four sides and both columns at 599px, verified in the browser with no page errors.
 
 ## Employer page — more testimonials
-- Add four more testimonial cards below the existing four in "Trusted by Hiring Teams Across India." — in progress
+- Add four more testimonial cards below the existing four in "Trusted by Hiring Teams Across India." — done; the section now shows eight cards in two rows of four, all names, roles and company logos render and every logo loads, verified in the browser with no page errors.
 
 ## Employer page — AI Interviewer section
 - Rename the heading to "Meet Linda, Your AI Interviewer." and reduce the introduction to one headline line and one description line — done; verified at 1881 width the headline and description each sit on a single line, all eight points, the centre portrait, the status pill and the Get Started button render unchanged, and the build is OK.
