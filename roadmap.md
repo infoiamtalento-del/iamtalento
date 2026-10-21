@@ -2,6 +2,8 @@
 
 ## Employer page — AI Interviewer section
 - Rename the heading to "Meet Linda, Your AI Interviewer." and reduce the introduction to one headline line and one description line — done; verified at 1881 width the headline and description each sit on a single line, all eight points, the centre portrait, the status pill and the Get Started button render unchanged, and the build is OK.
+- Make the four left-side captions one line each — done; all eight captions now sit on a single line at 1881 width with the columns aligned row by row, no clipping, no page errors. On a 390px phone the narrow column still wraps most of them to two lines.
+
 
 ## Employer page — 10 reasons video section
 - Replace the "Your Next Great Hire. Five Clear Steps." section with a titled video ("10 Reasons to Choose TalentCIR.") plus a matching thumbnail, and remove the five process-step boxes — implemented
