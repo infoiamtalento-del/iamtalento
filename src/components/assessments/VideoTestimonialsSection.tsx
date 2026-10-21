@@ -7,7 +7,6 @@ import {
   VolumeX,
   BadgeCheck,
   TrendingUp,
-  Briefcase,
   Clock,
   Award,
   ArrowUpRight,
@@ -27,7 +26,7 @@ type VideoTestimonial = {
   name: string;
   role: string;
   prevRole: string;
-  company: string;
+  company: "Swiggy" | "Razorpay" | "Flipkart" | "Deloitte";
   city: string;
   irsScore: number;
   percentile: string;
@@ -38,10 +37,100 @@ type VideoTestimonial = {
   thumbnail: string;
   objectPosition: string;
   category: string;
-  headline: string;
   quote: string;
   captions: string[];
   keyTakeaways: string[];
+};
+
+const CompanyLogo = ({ company }: { company: VideoTestimonial["company"] }) => {
+  switch (company) {
+    case "Swiggy":
+      return (
+        <svg viewBox="0 0 120 30" className="h-4 w-auto" aria-label="Swiggy">
+          <path
+            d="M14 3C9.6 3 6 6.5 6 10.9c0 5.4 8 15.1 8 15.1s8-9.7 8-15.1C22 6.5 18.4 3 14 3zm0 10.5c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"
+            fill="#FC8019"
+          />
+          <text
+            x="27"
+            y="20.5"
+            fill="#FC8019"
+            fontSize="17"
+            fontWeight="800"
+            fontFamily="Inter, system-ui, sans-serif"
+            letterSpacing="-0.02em"
+          >
+            SWIGGY
+          </text>
+        </svg>
+      );
+
+    case "Razorpay":
+      return (
+        <svg viewBox="0 0 138 30" className="h-4 w-auto" aria-label="Razorpay">
+          <path d="M13 4L6 25h6.5l7-21H13z" fill="#3395FF" />
+          <path d="M19.5 10L14 25h6.5l5.5-15h-6.5z" fill="#072654" />
+          <text
+            x="30"
+            y="20.5"
+            fill="#072654"
+            fontSize="17"
+            fontWeight="800"
+            fontFamily="Inter, system-ui, sans-serif"
+            letterSpacing="-0.02em"
+          >
+            Razorpay
+          </text>
+        </svg>
+      );
+
+    case "Flipkart":
+      return (
+        <svg viewBox="0 0 128 30" className="h-4 w-auto" aria-label="Flipkart">
+          <rect x="4" y="5" width="20" height="20" rx="4" fill="#2874F0" />
+          <path
+            d="M10 11h9l-1.2 7.5H11L10 11z"
+            fill="#FFE500"
+          />
+          <path
+            d="M11.5 11V9.5a2.5 2.5 0 0 1 5 0V11"
+            fill="none"
+            stroke="#ffffff"
+            strokeWidth="1.5"
+          />
+          <text
+            x="30"
+            y="20.5"
+            fill="#2874F0"
+            fontSize="17"
+            fontWeight="800"
+            fontStyle="italic"
+            fontFamily="Inter, system-ui, sans-serif"
+            letterSpacing="-0.02em"
+          >
+            Flipkart
+          </text>
+        </svg>
+      );
+
+    case "Deloitte":
+      return (
+        <svg viewBox="0 0 118 30" className="h-4 w-auto" aria-label="Deloitte">
+          <text
+            x="4"
+            y="21"
+            fill="#0F172A"
+            fontSize="19"
+            fontWeight="800"
+            fontFamily="Inter, system-ui, sans-serif"
+            letterSpacing="-0.03em"
+          >
+            Deloitte
+          </text>
+          <circle cx="83" cy="18.5" r="3.2" fill="#86BC25" />
+        </svg>
+      );
+  }
 };
 
 const testimonials: VideoTestimonial[] = [
@@ -61,13 +150,12 @@ const testimonials: VideoTestimonial[] = [
     thumbnail: thumbRitika,
     objectPosition: "center 12%",
     category: "Product & Growth",
-    headline: "“My 94/100 CIR report bypassed two screening rounds at Swiggy.”",
     quote:
       "I was applying to senior growth roles for months with zero callbacks. Once I attached my Verified CIR link, three hiring managers messaged me directly within a week — and I negotiated a 68% hike using the salary benchmark report.",
     captions: [
-      "“Before Talento, my resume looked like every other marketer's...”",
-      "“The 5-round proctored assessment tested real campaign scenarios and ROI modeling.”",
-      "“When I scored 94/100 (Top 6%), Swiggy's hiring lead skipped the assignment round entirely.”",
+      "Before Talento, my resume looked like every other marketer's...",
+      "The 5-round proctored assessment tested real campaign scenarios and ROI modeling.",
+      "When I scored 94/100 (Top 6%), Swiggy's hiring lead skipped the assignment round entirely.",
     ],
     keyTakeaways: [
       "Skipped take-home case study round",
@@ -91,13 +179,12 @@ const testimonials: VideoTestimonial[] = [
     thumbnail: thumbAarav,
     objectPosition: "center 10%",
     category: "Tech & Engineering",
-    headline: "“From a Tier-3 college to Razorpay SDE-2 — proof beat pedigree.”",
     quote:
       "Coming from a non-IIT background, resume filters always screened me out. My Verified Badge put me at the top of Razorpay's shortlist because my system design and API scores were already AI-proctored and verified.",
     captions: [
-      "“Resume filters used to reject me in seconds because of my college tier.”",
-      "“Talento's CIR report gave me an objective 92/100 score in Backend & System Design.”",
-      "“Recruiters trusted the 30-layer proctored badge immediately — I got 4 interview calls.”",
+      "Resume filters used to reject me in seconds because of my college tier.",
+      "Talento's CIR report gave me an objective 92/100 score in Backend & System Design.",
+      "Recruiters trusted the 30-layer proctored badge immediately — I got 4 interview calls.",
     ],
     keyTakeaways: [
       "Overcame Tier-3 college resume bias",
@@ -121,13 +208,12 @@ const testimonials: VideoTestimonial[] = [
     thumbnail: thumbAnanya,
     objectPosition: "center 8%",
     category: "Data & AI",
-    headline: "“The skill-gap diagnostic told me the exact 2 topics to fix before interviewing.”",
     quote:
       "My first diagnostic showed I was strong in SQL and Python but below benchmark in ML deployment. I used the 30-day roadmap to close that gap, unlocked my Verified Badge, and cracked Flipkart on my first attempt.",
     captions: [
-      "“I wanted to pivot from BI reporting into core Data Science.”",
-      "“The CIR gap analysis pinpointed my exact weak spots in feature engineering.”",
-      "“Two weeks after earning my Verified Badge, I signed my Flipkart offer letter.”",
+      "I wanted to pivot from BI reporting into core Data Science.",
+      "The CIR gap analysis pinpointed my exact weak spots in feature engineering.",
+      "Two weeks after earning my Verified Badge, I signed my Flipkart offer letter.",
     ],
     keyTakeaways: [
       "Pivoted from BI Analyst to Data Scientist",
@@ -151,13 +237,12 @@ const testimonials: VideoTestimonial[] = [
     thumbnail: thumbVikram,
     objectPosition: "center 8%",
     category: "Strategy & Ops",
-    headline: "“The 4 core rounds + domain test validated my analytical leadership.”",
     quote:
       "Consulting firms care deeply about structured problem solving and communication. Having verified 90+ scores across Analytical Reasoning, Workplace Communication, and Product Strategy made my application stand out immediately.",
     captions: [
-      "“The 4 mandatory core rounds proved my executive communication and logic.”",
-      "“My interviewer actually pulled up my CIR radar chart during the final round!”",
-      "“Closed a 58% salary increase and moved into strategy consulting.”",
+      "The 4 mandatory core rounds proved my executive communication and logic.",
+      "My interviewer actually pulled up my CIR radar chart during the final round!",
+      "Closed a 58% salary increase and moved into strategy consulting.",
     ],
     keyTakeaways: [
       "93/100 in Analytical & Problem Solving",
@@ -269,33 +354,33 @@ const VideoTestimonialsSection = () => {
                 </div>
               </div>
 
-              {/* Clean Card Body */}
-              <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
-                <div>
-                  {/* Royal Navy & Vanilla Cream Outcome Row */}
-                  <div className="flex items-center justify-between gap-2 mb-2.5">
-                    <span className="inline-flex items-center gap-1 rounded-md bg-[#002C66]/8 px-2 py-0.5 text-[11px] font-bold text-[#002C66]">
+              {/* Clean Minimal Card Body — Logo in Corner */}
+              <div className="p-4 flex-1 flex flex-col justify-between">
+                {/* Top Row: Scores on Left, Minimal Company Logo in Corner */}
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <span className="inline-flex items-center rounded-md bg-[#002C66]/8 px-2 py-0.5 text-[10.5px] font-bold text-[#002C66] shrink-0">
                       IRS {item.irsScore}/100
                     </span>
-                    <span className="inline-flex items-center gap-1 rounded-md bg-[#FBF4EB] border border-[#002C66]/15 px-2 py-0.5 text-[11px] font-bold text-[#002C66]">
+                    <span className="inline-flex items-center rounded-md bg-[#FBF4EB] border border-[#002C66]/15 px-2 py-0.5 text-[10.5px] font-bold text-[#002C66] truncate">
                       {item.hike}
                     </span>
                   </div>
 
-                  <p className="text-sm font-bold font-display text-slate-900 leading-snug line-clamp-2 group-hover:text-[#002C66] transition-colors mb-3">
-                    {item.headline}
-                  </p>
+                  <div className="shrink-0">
+                    <CompanyLogo company={item.company} />
+                  </div>
                 </div>
 
+                {/* Bottom Row: Candidate Info + Watch Button */}
                 <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
                   <div className="min-w-0">
                     <p className="text-xs font-bold text-slate-900 truncate flex items-center gap-1">
                       {item.name}
                       <BadgeCheck className="h-3.5 w-3.5 text-[#002C66] shrink-0" />
                     </p>
-                    <p className="text-[11px] text-slate-500 truncate flex items-center gap-1 mt-0.5">
-                      <Briefcase className="h-3 w-3 text-[#002C66] shrink-0" />
-                      {item.role} @ {item.company}
+                    <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                      {item.role}
                     </p>
                   </div>
 
@@ -415,21 +500,20 @@ const VideoTestimonialsSection = () => {
 
                 {/* Modal Candidate Details Footer */}
                 <div className="p-5 sm:p-6 bg-white">
-                  <div className="flex flex-wrap items-center gap-2 mb-3">
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#002C66] px-3.5 py-1 text-xs font-bold text-white">
-                      <Award className="h-3.5 w-3.5" /> Verified CIR: {selectedVideo.irsScore}/100 ({selectedVideo.percentile})
-                    </span>
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FBF4EB] border border-[#002C66]/20 px-3 py-1 text-xs font-bold text-[#002C66]">
-                      <TrendingUp className="h-3.5 w-3.5" /> {selectedVideo.hike}
-                    </span>
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FBF4EB] border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700">
-                      <Clock className="h-3.5 w-3.5 text-[#002C66]" /> {selectedVideo.timeToHire}
-                    </span>
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-[#002C66] px-3.5 py-1 text-xs font-bold text-white">
+                        <Award className="h-3.5 w-3.5" /> Verified CIR: {selectedVideo.irsScore}/100 ({selectedVideo.percentile})
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FBF4EB] border border-[#002C66]/20 px-3 py-1 text-xs font-bold text-[#002C66]">
+                        <TrendingUp className="h-3.5 w-3.5" /> {selectedVideo.hike}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FBF4EB] border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700">
+                        <Clock className="h-3.5 w-3.5 text-[#002C66]" /> {selectedVideo.timeToHire}
+                      </span>
+                    </div>
+                    <CompanyLogo company={selectedVideo.company} />
                   </div>
-
-                  <h3 className="text-lg sm:text-xl font-bold font-display text-slate-900 leading-snug mb-2">
-                    {selectedVideo.headline}
-                  </h3>
 
                   <p className="text-sm text-slate-600 leading-relaxed mb-4">
                     {selectedVideo.quote}

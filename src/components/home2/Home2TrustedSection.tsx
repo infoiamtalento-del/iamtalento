@@ -1,6 +1,4 @@
 import "@fontsource-variable/source-serif-4/index.css";
-import { ArrowRight } from "lucide-react";
-import portraitRahul from "@/assets/learner-rahul.jpg";
 
 const SERIF_FONT = '"Source Serif 4 Variable", "Source Serif 4", Georgia, "Times New Roman", serif';
 const GREEN_ACCENT = "#1E563F";
@@ -484,108 +482,6 @@ const Home2TrustedSection = () => {
               <p className="mt-1.5 text-[13.5px] leading-[1.55] text-[#6B7280]">
                 A truly global footprint
               </p>
-            </div>
-          </div>
-        </div>
-
-        {/* ── Bottom 2-Column Quote + Gartner Recognition Row ── */}
-        <div className="grid grid-cols-1 md:grid-cols-[0.92fr_1.08fr]">
-          {/* Left Column: Executive Quote */}
-          <div className="pt-10 pb-4 md:pr-14">
-            {/* Opening Quote Mark */}
-            <div
-              style={{ color: GREEN_ACCENT, fontFamily: SERIF_FONT }}
-              className="text-[54px] font-bold leading-[0.65] select-none"
-            >
-              “
-            </div>
-
-            <blockquote
-              style={{ fontFamily: SERIF_FONT }}
-              className="mt-6 text-[19px] md:text-[21px] leading-[1.46] text-[#1E293B] max-w-[460px]"
-            >
-              We have a wide range of processes across both tech and customer-facing roles, making training programs a significant investment for us. TalentCIR helps us ensure their effectiveness.”
-            </blockquote>
-
-            <div
-              className="mt-6 h-[2px] w-[42px]"
-              style={{ backgroundColor: GREEN_ACCENT }}
-            />
-
-            <div className="mt-6 flex items-center gap-4">
-              <img
-                src={portraitRahul}
-                alt="Akhil Sikri"
-                className="w-[74px] h-[74px] rounded-full object-cover object-top shrink-0 border border-black/5"
-              />
-              <div>
-                <div className="text-[13.5px] font-bold text-[#111827]">
-                  Akhil Sikri
-                </div>
-                <div className="text-[13px] text-[#6B7280] leading-[1.5] mt-0.5">
-                  CEO
-                </div>
-                <div className="text-[13px] text-[#6B7280] leading-[1.5]">
-                  Zolostays
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column: Gartner Recognition */}
-          <div
-            className="pt-10 pb-16 md:pb-6 md:pl-16 border-t md:border-t-0 md:border-l relative flex flex-col justify-between"
-            style={{ borderColor: HAIRLINE }}
-          >
-            <div className="max-w-[400px]">
-              <span
-                style={{ color: GREEN_ACCENT, letterSpacing: "0.12em" }}
-                className="block text-[11px] font-bold uppercase"
-              >
-                RECOGNIZED BY GARTNER®
-              </span>
-
-              <p
-                style={{ fontFamily: SERIF_FONT }}
-                className="mt-5 text-[18.5px] md:text-[19.5px] leading-[1.52] text-[#1E293B]"
-              >
-                TalentCIR Recognized in the{" "}
-                <span style={{ color: GREEN_ACCENT }}>2024 Gartner®</span>{" "}
-                Market Guide for Developer Skills Assessment and Interview Platforms.
-              </p>
-
-              <a
-                href="#gartner-announcement"
-                onClick={(e) => e.preventDefault()}
-                style={{ color: GREEN_ACCENT }}
-                className="mt-7 inline-flex items-center gap-2 text-[13.5px] font-bold hover:opacity-80 transition-opacity"
-              >
-                Read the announcement
-                <ArrowRight className="w-4 h-4" />
-              </a>
-            </div>
-
-            {/* Gartner Wordmark with Halftone Dot Pattern */}
-            <div className="mt-8 md:mt-0 md:self-end relative w-[260px] h-[82px] flex items-center justify-center">
-              <div
-                aria-hidden="true"
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  backgroundImage:
-                    "radial-gradient(rgba(17, 24, 39, 0.14) 1.3px, transparent 1.3px)",
-                  backgroundSize: "11px 11px",
-                  WebkitMaskImage:
-                    "radial-gradient(ellipse at 55% 55%, #000 38%, transparent 74%)",
-                  maskImage:
-                    "radial-gradient(ellipse at 55% 55%, #000 38%, transparent 74%)",
-                }}
-              />
-              <span
-                className="relative z-10 text-[34px] font-extrabold tracking-[-0.04em] text-[#1D252C] select-none"
-                style={{ fontFamily: '"Inter", sans-serif' }}
-              >
-                Gartner<span style={{ color: "#1D252C" }}>.</span>
-              </span>
             </div>
           </div>
         </div>

@@ -33,11 +33,11 @@ const Home2Hero = () => (
           </p>
 
           <div className="h2-hero-actions">
-            <Link to="/assessments/explore" className="h2-btn h2-btn-primary">
+            <Link to="/assessments/explore" className="h2-btn h2-btn-primary rounded-md">
               Take Free Assessment
               <ArrowRight />
             </Link>
-            <Link to="/jobs" className="h2-btn h2-btn-ghost">
+            <Link to="/jobs" className="h2-btn h2-btn-ghost rounded-md">
               Browse 5,00,000+ Jobs
             </Link>
           </div>

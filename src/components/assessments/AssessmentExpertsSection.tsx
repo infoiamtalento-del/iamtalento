@@ -342,7 +342,7 @@ const AssessmentExpertsSection = () => {
                   <div className="flex items-center gap-1.5 mb-1.5">
                     <Building2 className="w-3.5 h-3.5 text-muted-foreground" />
                     <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
-                      Previously
+                      Past Companies
                     </span>
                   </div>
                   <div className="flex flex-wrap gap-1.5">

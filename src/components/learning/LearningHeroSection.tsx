@@ -36,7 +36,6 @@ const popularTracks = [
   "Full-Stack React",
   "Data Analytics",
   "Performance Marketing",
-  "System Design",
 ];
 
 const languages = ["English", "हिन्दी", "தமிழ்", "తెలుగు"];

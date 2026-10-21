@@ -33,7 +33,7 @@ const LearningCTASection = () => (
               </Button>
             </Link>
             <Link to="/learning#courses">
-              <Button size="lg" variant="outline" className="border-white/40 text-white hover:bg-white/10 gap-2">
+              <Button size="lg" variant="outline" className="bg-white/10 border-white/40 text-white hover:bg-white/20 hover:text-white gap-2 font-semibold">
                 Explore All Courses
               </Button>
             </Link>

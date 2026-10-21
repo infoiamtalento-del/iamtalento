@@ -97,13 +97,13 @@ const AssessmentIntegritySection = ({ align = "center" }: { align?: Align }) => 
                   "px-5 py-2.5 rounded-full text-sm font-semibold font-display transition-all duration-300 border cursor-pointer",
                   activeTab === i
                     ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20"
-                    : "text-muted-foreground hover:text-foreground border-border hover:border-foreground/20"
+                    : "bg-white text-muted-foreground hover:text-foreground border-border hover:border-foreground/20"
                 )}
               >
                 {group.phase}
                 <span className={cn(
                   "ml-2 text-xs px-1.5 py-0.5 rounded-full",
-                  activeTab === i ? "bg-white/20" : "bg-white/10"
+                  activeTab === i ? "bg-white/20" : "bg-slate-100 text-slate-600"
                 )}>
                   {group.items.length}
                 </span>
@@ -127,8 +127,8 @@ const AssessmentIntegritySection = ({ align = "center" }: { align?: Align }) => 
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: i * 0.04, duration: 0.25 }}
-                  className="relative px-4 py-4 rounded-xl border hover:shadow-lg transition-all duration-300 group cursor-default"
-                  style={{ background: "#f8fafc", borderColor: "#e2e8f0" }}
+                  className="relative px-4 py-4 rounded-xl border bg-white hover:shadow-lg transition-all duration-300 group cursor-default"
+                  style={{ backgroundColor: "#ffffff", borderColor: "#e2e8f0" }}
                 >
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0 bg-white border border-slate-200/90 shadow-xs group-hover:border-[#002C66]/30 transition-colors">
@@ -137,7 +137,7 @@ const AssessmentIntegritySection = ({ align = "center" }: { align?: Align }) => 
                     <span className="text-sm font-semibold leading-tight text-foreground">{label}</span>
                   </div>
                   {/* Hover tooltip */}
-                  <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 px-3 py-2 rounded-lg bg-white text-slate-800 text-xs leading-relaxed text-center opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 pointer-events-none z-20 shadow-xl">
+                  <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 px-3 py-2 rounded-lg bg-white text-slate-800 text-xs leading-relaxed text-center opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 pointer-events-none z-20 shadow-xl border border-slate-200">
                     {desc}
                     <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-l-[6px] border-r-[6px] border-t-[6px] border-l-transparent border-r-transparent border-t-white" />
                   </div>

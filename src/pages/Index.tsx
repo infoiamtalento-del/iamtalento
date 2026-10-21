@@ -19,7 +19,7 @@ import FeaturedCompanies from "@/components/jobs/FeaturedCompanies";
 import WebinarHowItWorksSection from "@/components/webinars/WebinarHowItWorksSection";
 import JobsSocialProof from "@/components/jobs/JobsSocialProof";
 import CareerIntelligencePackageHome from "@/components/landing/CareerIntelligencePackageHome";
-import CareerTransformationSection from "@/components/landing/CareerTransformationSection";
+import VideoTestimonialsSection from "@/components/assessments/VideoTestimonialsSection";
 import FreeAccessSection from "@/components/landing/FreeAccessSection";
 import DigitalSkillPassportSection from "@/components/landing/DigitalSkillPassportSection";
 import FreeFeaturesSection from "@/components/landing/FreeFeaturesSection";
@@ -49,7 +49,7 @@ const Index = () => (
       <FeaturedCompanies />
       <CareerIntelligencePackageHome />
       <IndustryReadinessSection />
-      <CareerTransformationSection />
+      <VideoTestimonialsSection />
       <PlatformFeaturesSection />
       <HackathonSpotlightSection />
       

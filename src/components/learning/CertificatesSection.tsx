@@ -1,12 +1,15 @@
 import { motion } from "framer-motion";
-import { ShieldCheck, Link2, ClipboardList, Award, QrCode } from "lucide-react";
+import { ShieldCheck, Link2, ClipboardList, Award, QrCode, CheckCircle2, Sparkles } from "lucide-react";
 import SectionBadge from "@/components/ui/section-badge";
+import learnerPriya from "@/assets/learner-priya.jpg";
 
 const diffs = [
   { icon: ShieldCheck, title: "AI-verified, tamper-proof", desc: "Blockchain-backed verification that can't be faked" },
   { icon: Link2, title: "Shareable link + LinkedIn ready", desc: "One-click share to your professional network" },
   { icon: ClipboardList, title: "Auto-added to job profile", desc: "Automatically reflected in your recruiter-facing profile" },
 ];
+
+const verifiedSkills = ["SQL & Data Modeling", "Python Analytics", "BI Dashboards", "Statistical Inference"];
 
 const CertificatesSection = () => (
   <section className="py-16 md:py-24 bg-muted/30">
@@ -36,59 +39,159 @@ const CertificatesSection = () => (
             ))}
           </div>
         </motion.div>
+
         {/* Certificate mockup */}
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="flex justify-center">
-          <div className="relative w-full max-w-2xl rounded-2xl bg-card shadow-xl overflow-hidden border border-border">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          className="flex justify-center"
+        >
+          <div className="relative w-full max-w-2xl rounded-2xl bg-white shadow-[0_20px_50px_rgba(0,44,102,0.12)] overflow-hidden border border-slate-200/90">
             {/* Corner ribbon accents */}
-            <div className="absolute top-0 left-0 w-20 h-20 overflow-hidden">
-              <div className="absolute -top-2 -left-2 w-28 h-7 bg-primary rotate-[-45deg] origin-center translate-y-5" />
+            <div className="absolute top-0 left-0 w-24 h-24 overflow-hidden pointer-events-none z-10">
+              <div className="absolute -top-2 -left-2 w-32 h-7 bg-primary rotate-[-45deg] origin-center translate-y-5 shadow-xs" />
             </div>
-            <div className="absolute top-0 right-0 w-20 h-20 overflow-hidden">
-              <div className="absolute -top-2 -right-2 w-28 h-7 bg-primary rotate-[45deg] origin-center translate-y-5" />
+            <div className="absolute top-0 right-0 w-24 h-24 overflow-hidden pointer-events-none z-10">
+              <div className="absolute -top-2 -right-2 w-32 h-7 bg-primary rotate-[45deg] origin-center translate-y-5 shadow-xs" />
             </div>
-            <div className="absolute bottom-0 left-0 w-20 h-20 overflow-hidden">
-              <div className="absolute -bottom-2 -left-2 w-28 h-7 bg-primary rotate-[45deg] origin-center -translate-y-5" />
+            <div className="absolute bottom-0 left-0 w-24 h-24 overflow-hidden pointer-events-none z-10">
+              <div className="absolute -bottom-2 -left-2 w-32 h-7 bg-primary rotate-[45deg] origin-center -translate-y-5 shadow-xs" />
             </div>
-            <div className="absolute bottom-0 right-0 w-20 h-20 overflow-hidden">
-              <div className="absolute -bottom-2 -right-2 w-28 h-7 bg-primary rotate-[-45deg] origin-center -translate-y-5" />
+            <div className="absolute bottom-0 right-0 w-24 h-24 overflow-hidden pointer-events-none z-10">
+              <div className="absolute -bottom-2 -right-2 w-32 h-7 bg-primary rotate-[-45deg] origin-center -translate-y-5 shadow-xs" />
             </div>
 
-            {/* Inner frame — landscape */}
-            <div className="m-4 rounded-xl border border-primary/20 px-10 py-8 relative bg-card flex gap-8 items-center">
-              {/* Left: seal + title */}
-              <div className="flex flex-col items-center text-center flex-1">
-                <div className="mx-auto mb-3 w-14 h-14 rounded-full bg-gradient-to-br from-[hsl(43,96%,56%)] to-[hsl(33,100%,50%)] flex items-center justify-center shadow-lg">
-                  <Award className="h-7 w-7 text-white" />
+            {/* Inner ornamental double-frame */}
+            <div className="m-4 sm:m-5 rounded-xl border-2 border-primary/20 p-1.5 bg-white">
+              <div className="rounded-lg border border-amber-500/25 px-6 py-7 sm:px-9 sm:py-9 bg-white flex flex-col justify-between min-h-[400px] md:min-h-[430px]">
+                {/* Top Header Bar: Issuer Identity + QR Verification */}
+                <div className="flex items-start justify-between gap-4 border-b border-slate-100 pb-5">
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 shadow-xs border border-amber-400/40"
+                      style={{ backgroundColor: "#002C66" }}
+                    >
+                      <Award className="h-6 w-6 text-amber-400" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[11px] font-extrabold uppercase tracking-[0.2em] text-primary">
+                          I Am Talento
+                        </span>
+                        <span className="inline-flex items-center gap-0.5 rounded-full bg-amber-50 border border-amber-300/80 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-800">
+                          <Sparkles className="h-2.5 w-2.5 text-amber-600" /> Official
+                        </span>
+                      </div>
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400 mt-0.5">
+                        Certificate of Completion
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* QR + Credential ID */}
+                  <div className="flex items-center gap-2.5 bg-slate-50 border border-slate-200/80 rounded-xl px-3 py-2">
+                    <div className="text-right hidden sm:block">
+                      <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                        Credential ID
+                      </p>
+                      <p className="text-[11px] font-mono font-bold text-slate-700">
+                        IAT-2026-DA-4821
+                      </p>
+                    </div>
+                    <div className="h-10 w-10 rounded-lg bg-white flex items-center justify-center border border-slate-200 shrink-0 shadow-2xs">
+                      <QrCode className="h-6 w-6 text-slate-800" />
+                    </div>
+                  </div>
                 </div>
-                <p className="text-[10px] text-primary font-bold uppercase tracking-[0.2em] mb-1">Certificate of Completion</p>
-                <div className="w-12 h-px bg-primary/30 mx-auto mb-3" />
-                <h3 className="text-xl md:text-2xl font-bold font-display mb-1 text-foreground leading-tight">Data Analytics Masterclass</h3>
-                <p className="text-xs text-muted-foreground mb-0.5">Proudly Awarded to</p>
-                <p className="text-lg font-bold font-display text-foreground">Priya Raghavan</p>
-              </div>
 
-              {/* Right: details + badge */}
-              <div className="flex flex-col items-center justify-between flex-1 gap-4">
-                {/* QR */}
-                <div className="self-end h-10 w-10 rounded-lg bg-muted/60 flex items-center justify-center border border-border">
-                  <QrCode className="h-6 w-6 text-muted-foreground" />
+                {/* Middle: Recipient Profile Photo + Course Title + Skills */}
+                <div className="py-6 flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
+                  {/* Recipient Avatar with Verified Ring */}
+                  <div className="relative shrink-0">
+                    <div className="w-20 h-20 md:w-24 md:h-24 rounded-full p-1 border-2 border-primary/25 bg-slate-50 shadow-md">
+                      <img
+                        src={learnerPriya}
+                        alt="Priya Raghavan"
+                        className="w-full h-full rounded-full object-cover object-top"
+                      />
+                    </div>
+                    <div
+                      className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center border-2 border-white shadow-sm"
+                      style={{ backgroundColor: "#002C66" }}
+                      title="Identity & Proctoring Verified"
+                    >
+                      <CheckCircle2 className="h-4 w-4 text-white" />
+                    </div>
+                  </div>
+
+                  {/* Recipient & Course Info */}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">
+                      Proudly Awarded To
+                    </p>
+                    <h3 className="text-2xl md:text-[26px] font-extrabold font-display text-slate-900 tracking-tight mt-0.5">
+                      Priya Raghavan
+                    </h3>
+                    <p className="text-xs text-slate-500 mt-1">
+                      for successfully mastering the industry-benchmarked curriculum in
+                    </p>
+                    <div className="mt-2 inline-block">
+                      <h4 className="text-lg md:text-xl font-bold font-display text-primary leading-snug">
+                        Data Analytics Masterclass
+                      </h4>
+                      <div className="h-0.5 w-2/3 bg-amber-400 rounded-full mt-1 mx-auto sm:mx-0" />
+                    </div>
+
+                    {/* Verified Skill Pills */}
+                    <div className="mt-4 flex flex-wrap justify-center sm:justify-start gap-1.5">
+                      {verifiedSkills.map((skill) => (
+                        <span
+                          key={skill}
+                          className="inline-flex items-center gap-1 rounded-md bg-slate-100 border border-slate-200/80 px-2.5 py-1 text-[10.5px] font-semibold text-slate-700"
+                        >
+                          <CheckCircle2 className="h-3 w-3 text-primary shrink-0" />
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-5 text-sm text-muted-foreground">
-                  <span className="flex items-center gap-1.5">
-                    <ShieldCheck className="h-4 w-4 text-primary" />
-                    Score: <span className="font-semibold text-foreground">92%</span>
-                  </span>
-                  <span className="w-1 h-1 rounded-full bg-muted-foreground" />
-                  <span>Feb 2026</span>
-                </div>
+                {/* Bottom Footer: Score, Issue Date & Blockchain Verification Badge */}
+                <div className="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-4">
+                  <div className="flex items-center gap-5">
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                        Assessment Score
+                      </p>
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        <ShieldCheck className="h-4 w-4 text-primary" />
+                        <span className="text-sm font-extrabold text-slate-900">92%</span>
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+                          Top 5%
+                        </span>
+                      </div>
+                    </div>
 
-                <div className="h-px w-full bg-border" />
+                    <div className="h-7 w-px bg-slate-200" />
 
-                <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-2">
-                  <ShieldCheck className="h-4 w-4 text-primary" />
-                  <span className="text-xs font-bold text-primary">Verified by I Am Talento</span>
-                  <span className="text-[10px] text-muted-foreground font-medium">· ID: IAT-2026-DA-4821</span>
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                        Issued On
+                      </p>
+                      <p className="text-xs font-bold text-slate-800 mt-0.5">
+                        Feb 2026
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="inline-flex items-center gap-2 bg-primary/8 border border-primary/20 rounded-full px-4 py-2">
+                    <ShieldCheck className="h-4 w-4 text-primary shrink-0" />
+                    <span className="text-xs font-bold text-primary">
+                      Verified by I Am Talento
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
