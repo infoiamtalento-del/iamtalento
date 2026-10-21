@@ -109,10 +109,10 @@ export const TrustStats = () => (
 
 /* ---------- AI interviewer (dark) ---------- */
 const interviewPoints = [
-  { icon: Wand2, title: "AI Assessment Builder", text: "Paste a JD and AI generates a role-specific assessment in seconds." },
-  { icon: Library, title: "Pre-built Assessment Library", text: "200+ ready-made assessments across tech, finance, marketing, and more." },
-  { icon: FileText, title: "Custom Questions", text: "Add your own questions, scenarios, and scoring rubrics." },
-  { icon: Palette, title: "Custom Branding", text: "White-label the entire experience with your logo, colors, and domain." },
+  { icon: Wand2, title: "AI Assessment Builder", text: "Paste a JD, get a role-specific assessment." },
+  { icon: Library, title: "Pre-built Assessment Library", text: "200+ ready-made assessments for every role." },
+  { icon: FileText, title: "Custom Questions", text: "Add your own questions and scoring rubrics." },
+  { icon: Palette, title: "Custom Branding", text: "White-label it with your logo and domain." },
   { icon: Mic, title: "Natural voice conversations", text: "Adaptive follow-ups based on every answer." },
   { icon: CalendarClock, title: "Available 24/7", text: "Candidates interview whenever suits them." },
   { icon: Fingerprint, title: "Identity & integrity checks", text: "Face match and voice originality analysis." },
