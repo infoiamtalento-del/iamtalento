@@ -437,12 +437,12 @@ export const PlanVideoSection = () => {
               <span className="font-hand text-lg text-foreground">No credit card required</span>
             </div>
           </div>
-          <div className="flex flex-col items-center justify-center gap-4 bg-accent p-6 md:p-10">
-            <span className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary shadow-sm"><CirclePlay className="h-3.5 w-3.5" /> {item.label}</span>
-            <div className="w-full overflow-hidden rounded-[24px] border-4 border-card bg-foreground shadow-2xl">
-              <video key={item.video.url} src={item.video.url} autoPlay muted loop controls playsInline preload="metadata" className="aspect-[9/16] w-full object-cover" />
+          <div className="relative overflow-hidden bg-accent">
+            <div className="w-full overflow-hidden bg-foreground">
+              <video key={item.video.url} src={item.video.url} autoPlay muted loop controls playsInline preload="metadata" className="aspect-[4/5] w-full object-cover" />
             </div>
-            <p className="w-full text-center text-sm text-muted-foreground">{item.text}</p>
+            <span className="absolute left-1/2 top-4 inline-flex -translate-x-1/2 items-center gap-2 rounded-full bg-card px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary shadow-sm"><CirclePlay className="h-3.5 w-3.5" /> {item.label}</span>
+            <p className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/85 via-foreground/45 to-transparent px-6 pb-14 pt-12 text-center text-sm text-primary-foreground">{item.text}</p>
           </div>
         </div>
       </motion.div>
