@@ -1,5 +1,8 @@
 # Roadmap
 
+## Employer page — plan video flush and aligned
+- Remove the space on all four sides of the plan section video and set it to a 4:5 shape so the left and right columns look aligned — in progress
+
 ## Employer page — more testimonials
 - Add four more testimonial cards below the existing four in "Trusted by Hiring Teams Across India." — in progress
 
