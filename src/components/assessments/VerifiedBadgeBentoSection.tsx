@@ -198,7 +198,7 @@ const VerifiedBadgeBentoSection = () => (
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
         >
-          Your verified score surfaces your profile to 200+ hiring companies — no cold applications needed.
+          Your verified score surfaces your profile to 200+ hiring companies, no cold applications needed.
         </motion.p>
       </div>
 

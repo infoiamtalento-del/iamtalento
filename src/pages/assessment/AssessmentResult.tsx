@@ -72,7 +72,7 @@ const AssessmentResult = () => {
   return (
     <>
       <Helmet>
-        <title>Your CIR Report — {a.title}</title>
+        <title>Your CIR Report | {a.title}</title>
       </Helmet>
       <Layout>
         <section className="py-12 md:py-16 bg-background">
@@ -150,7 +150,7 @@ const AssessmentResult = () => {
                     <TrendingUp className="h-4 w-4 text-primary" /> Strengths
                   </p>
                   <ul className="space-y-1.5 text-sm text-muted-foreground">
-                    {strengths.map((s) => <li key={s.skill}>{s.skill} — {s.pct}%</li>)}
+                    {strengths.map((s) => <li key={s.skill}>{s.skill}, {s.pct}%</li>)}
                   </ul>
                 </div>
                 <div className="rounded-2xl border border-border bg-background p-6">
@@ -158,7 +158,7 @@ const AssessmentResult = () => {
                     <AlertCircle className="h-4 w-4 text-primary" /> Improvement areas
                   </p>
                   <ul className="space-y-1.5 text-sm text-muted-foreground">
-                    {improvements.map((s) => <li key={s.skill}>{s.skill} — {s.pct}%</li>)}
+                    {improvements.map((s) => <li key={s.skill}>{s.skill}, {s.pct}%</li>)}
                   </ul>
                 </div>
               </div>

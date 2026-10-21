@@ -308,7 +308,7 @@ export const AIEvaluateSection = () => {
               {mode === "Text" && (
                 <div className="flex h-full flex-col">
                   <p className="text-[11px] font-bold uppercase tracking-wider text-primary">Transcript</p>
-                  <p className="mt-2 text-sm leading-relaxed">&ldquo;Salesforce slows our reporting down &mdash; the export breaks on large datasets. I&rsquo;d rather have HubSpot, or a small custom dashboard built for our reporting.&rdquo;</p>
+                  <p className="mt-2 text-sm leading-relaxed">&ldquo;Salesforce slows our reporting down ,  the export breaks on large datasets. I&rsquo;d rather have HubSpot, or a small custom dashboard built for our reporting.&rdquo;</p>
                   <p className="mt-auto pt-3 text-[11px] text-muted-foreground">184 words &middot; typed answer</p>
                 </div>
               )}

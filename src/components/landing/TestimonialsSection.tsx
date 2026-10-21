@@ -35,7 +35,7 @@ const testimonials = [
   {
     name: "Michael Torres",
     role: "CTO, Enterprise SaaS Company",
-    quote: "We replaced 3 separate tools with Talento — resume screening, skill testing, and video interviews. The AI-proctored assessments with code playback analysis eliminated cheating entirely.",
+    quote: "We replaced 3 separate tools with Talento, resume screening, skill testing, and video interviews. The AI-proctored assessments with code playback analysis eliminated cheating entirely.",
     rating: 5,
     metric: "3 tools replaced with 1",
   },

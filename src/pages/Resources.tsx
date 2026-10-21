@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 const Resources = () => (
   <>
     <Helmet>
-      <title>Resources — I Am Talento</title>
+      <title>Resources | I Am Talento</title>
       <meta name="description" content="Guides, whitepapers, and industry insights to advance your career." />
     </Helmet>
     <Layout>

@@ -77,7 +77,7 @@ const Home3HeroSection = () => (
           style={{ textWrap: "balance" }}
         >
           Talent CIR is building India&apos;s next-generation talent
-          ecosystem—bringing learning, AI-powered skill assessments, and career
+          ecosystem, bringing learning, AI-powered skill assessments, and career
           opportunities together on one platform
         </motion.p>
 

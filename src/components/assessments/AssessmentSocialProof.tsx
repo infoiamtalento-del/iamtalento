@@ -5,6 +5,7 @@ import {
   Target, Award, TrendingUp, Rocket, Lock,
   CheckCircle2, Clock, FileText, Crosshair, ArrowRight, ChevronLeft, ChevronRight,
 } from "lucide-react";
+import SectionBadge from "@/components/ui/section-badge";
 
 // Animated counter
 const AnimatedStat = ({ value, symbol }: { value: string; symbol: string }) => {
@@ -43,14 +44,12 @@ const AssessmentSocialProof = () => {
       {/* Header */}
       <div className="container px-4 md:px-6 pb-12 md:pb-16 text-center">
         <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest px-3 py-1 mb-4 rounded-full text-[#002C66] bg-[#002C66]/10">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#002C66]" /> Live Results
-          </span>
+          <SectionBadge label="Live Results" icon={TrendingUp} />
           <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4 text-slate-900">
             Verified People. Real Skills.<br />
             <span className="text-primary">Life-Changing Outcomes.</span>
           </h2>
-          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
             See how Talento verified professionals are getting hired faster
             <br className="hidden md:block" />
             and building better careers.

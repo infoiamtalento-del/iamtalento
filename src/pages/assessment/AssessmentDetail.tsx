@@ -182,7 +182,7 @@ const AssessmentDetail = () => {
       }
     >
       <Helmet>
-        <title>{a.title} — I Am Talento</title>
+        <title>{a.title} | I Am Talento</title>
         <meta name="description" content={a.description} />
       </Helmet>
       <Layout>
@@ -428,7 +428,7 @@ const AssessmentDetail = () => {
                         Domain Assessment
                       </span>
                       <span className="inline-flex items-center gap-1 rounded-md bg-[#002C66]/10 border border-[#002C66]/20 px-2 py-0.5 text-[11px] font-bold text-[#002C66]">
-                        3 Rounds ── 6 Tests
+                        3 Rounds · 6 Tests
                       </span>
                       <span className="text-xs text-slate-500 font-medium">
                         {a.duration} · {a.questionCount} questions · {a.type}

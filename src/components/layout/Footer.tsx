@@ -41,7 +41,7 @@ const Footer = () => (
             <img src={siteLogo.url} alt="I Am Talento" className="h-12 w-auto object-contain" />
           </Link>
           <p className="text-muted-foreground text-sm max-w-xs mb-6 leading-relaxed">
-            AI-powered Industry Readiness platform that connects verified talent with employers — through secure assessments, domain-expert questions, and trusted scores.
+            AI-powered Industry Readiness platform that connects verified talent with employers, through secure assessments, domain-expert questions, and trusted scores.
           </p>
           <div className="flex gap-3">
             {[Twitter, Linkedin, Github, Mail].map((Icon, i) => (

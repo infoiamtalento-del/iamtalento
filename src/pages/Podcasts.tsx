@@ -63,7 +63,7 @@ const topics = [
   { label: "Career Change", icon: RefreshCw, track: 2 },
 ];
 const stories = [
-  { quote: "Used the exact salary script from one session — got ₹3 LPA more than the initial offer.", name: "Aditya S.", role: "SDE · Pune", image: maleHost },
+  { quote: "Used the exact salary script from one session, got ₹3 LPA more than the initial offer.", name: "Aditya S.", role: "SDE · Pune", image: maleHost },
   { quote: "Rewrote my resume after the ATS episode. Got 4 interview calls the next week.", name: "Sneha R.", role: "Marketing Manager · Mumbai", image: femaleHost },
   { quote: "As a fresher, the 30-day action plan from the guest actually worked.", name: "Karan M.", role: "Graduate · Delhi", image: ep3 },
 ];

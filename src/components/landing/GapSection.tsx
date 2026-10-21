@@ -16,7 +16,7 @@ const pairs = [
 },
 {
   num: "02",
-  problem: { icon: TrendingDown, title: "Skills don't match market expectations", desc: "What you know and what employers actually need are often misaligned — and no one tells you until it's too late." },
+  problem: { icon: TrendingDown, title: "Skills don't match market expectations", desc: "What you know and what employers actually need are often misaligned, and no one tells you until it's too late." },
   solution: { icon: UserCheck, title: "Compared with professionals at your experience level", desc: "See how your skill profile stacks up against real peers with similar backgrounds and years of experience." }
 },
 {
@@ -26,8 +26,8 @@ const pairs = [
 },
 {
   num: "04",
-  problem: { icon: XCircle, title: "Applying blindly without performance proof", desc: "Resumes and cover letters don't prove capability. Hiring teams can't see your actual skill level — so they guess." },
-  solution: { icon: BarChart3, title: "Know if you're Above, At, or Below Market — clearly", desc: "Get a verified performance profile that tells you and employers exactly where you rank in the market." }
+  problem: { icon: XCircle, title: "Applying blindly without performance proof", desc: "Resumes and cover letters don't prove capability. Hiring teams can't see your actual skill level, so they guess." },
+  solution: { icon: BarChart3, title: "Know if you're Above, At, or Below Market, clearly", desc: "Get a verified performance profile that tells you and employers exactly where you rank in the market." }
 }];
 
 
@@ -59,7 +59,7 @@ const GapSection = () => {
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}>
 
-            Most professionals don't lack talent. They lack clarity on what's holding them back — and a system to fix it.
+            Most professionals don't lack talent. They lack clarity on what's holding them back, and a system to fix it.
           </motion.p>
         </div>
 

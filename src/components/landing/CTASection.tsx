@@ -21,7 +21,7 @@ const CTASection = () => {
             </h2>
             <p className="text-primary-foreground/70 text-base md:text-lg mb-2">Measure. Improve. Advance.</p>
             <p className="text-primary-foreground/60 max-w-xl mx-auto mb-8 text-sm md:text-base leading-relaxed">
-              Whether you're proving your worth or hiring verified talent —
+              Whether you're proving your worth or hiring verified talent,
               <br className="hidden md:block" />
               IAmTalento is where trust meets technology.
             </p>

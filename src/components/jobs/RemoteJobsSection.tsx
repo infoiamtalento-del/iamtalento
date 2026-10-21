@@ -66,7 +66,7 @@ const RemoteJobsSection = () => {
             <span className="text-primary">Global Companies</span>
           </h2>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-            Flexible, work-from-anywhere roles at trusted employers —
+            Flexible, work-from-anywhere roles at trusted employers,
             <br className="hidden md:block" />
             all verified and open to talent across India.
           </p>

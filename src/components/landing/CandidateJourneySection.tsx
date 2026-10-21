@@ -10,7 +10,7 @@ import SectionBadge from "@/components/ui/section-badge";
 const steps = [
   {
     num: "01", icon: User, title: "Build Your Profile",
-    desc: "Tell us who you are in 2 minutes — role, experience, and goals.",
+    desc: "Tell us who you are in 2 minutes, role, experience, and goals.",
     detail: "AI parses your resume, LinkedIn, and portfolio into a structured, verified skill profile.",
   },
   {
@@ -20,7 +20,7 @@ const steps = [
   },
   {
     num: "03", icon: ListChecks, title: "Select Your Test",
-    desc: "Role-specific. AI-curated. Precise — built for your exact target job.",
+    desc: "Role-specific. AI-curated. Precise, built for your exact target job.",
     detail: "200+ domain-specific, role-based assessments curated by senior industry professionals.",
   },
   {
@@ -31,16 +31,16 @@ const steps = [
   {
     num: "05", icon: FileText, title: "Craft Your AI Resume",
     desc: "Premium templates engineered to pass ATS and actually get callbacks.",
-    detail: "Built from your verified skills — not generic templates.",
+    detail: "Built from your verified skills, not generic templates.",
   },
   {
     num: "06", icon: ShieldCheck, title: "Take the Proctored Test",
-    desc: "Fair. Secure. Employer-trusted — your real skill, on the record.",
+    desc: "Fair. Secure. Employer-trusted, your real skill, on the record.",
     detail: "20+ anti-cheating features: webcam proctoring, AI behavior analysis, tab detection.",
   },
   {
     num: "07", icon: BarChart3, title: "Get Your ScoreCard",
-    desc: "One score that speaks louder than your CV — benchmarked against peers.",
+    desc: "One score that speaks louder than your CV, benchmarked against peers.",
     detail: "AI-powered score with peer benchmarking, strength mapping, and a personalized growth roadmap.",
   },
   {
@@ -69,7 +69,7 @@ const CandidateJourneySection: React.FC = () => {
             <span className="text-primary">Getting Hired</span>
           </motion.h2>
           <p className="text-base md:text-lg text-muted-foreground">
-            From zero to offer-ready — a complete system built to prove your value.
+            From zero to offer-ready, a complete system built to prove your value.
           </p>
         </div>
 

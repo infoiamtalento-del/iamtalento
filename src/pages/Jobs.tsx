@@ -17,7 +17,7 @@ const Jobs = () => {
   return (
     <>
       <Helmet>
-        <title>Jobs — I Am Talento</title>
+        <title>Jobs | I Am Talento</title>
         <meta name="description" content="Find your dream job. AI-powered job matching based on your verified skill profile." />
       </Helmet>
       <Layout>

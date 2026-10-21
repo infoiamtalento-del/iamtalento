@@ -28,7 +28,7 @@ const ComplianceSection = () => {
             Your Data.<br /><span className="text-primary">Our Responsibility.</span>
           </motion.h2>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-            Enterprise-grade protection, ethical AI, and full regulatory compliance —
+            Enterprise-grade protection, ethical AI, and full regulatory compliance,
             <br className="hidden md:block" />
             because trust isn't optional.
           </p>

@@ -110,7 +110,7 @@ const EducationSection = ({ educations, onChange }: Props) => {
                   <div className="min-w-0">
                     <p className="text-sm font-semibold truncate">{edu.degree || "Degree"} {edu.field_of_study && `in ${edu.field_of_study}`}</p>
                     <p className="text-xs text-muted-foreground truncate">{edu.institution_name || "Institution"}</p>
-                    <p className="text-[11px] text-muted-foreground/60 mt-0.5">{edu.start_year || "?"} — {edu.end_year || "?"}{edu.grade && ` · ${edu.grade}`}</p>
+                    <p className="text-[11px] text-muted-foreground/60 mt-0.5">{edu.start_year || "?"}, {edu.end_year || "?"}{edu.grade && ` · ${edu.grade}`}</p>
                   </div>
                 </div>
               </button>

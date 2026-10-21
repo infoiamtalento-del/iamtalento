@@ -57,7 +57,7 @@ const HowItWorks = () => {
             Five Steps. One <span className="text-primary">Verified</span> You.
           </motion.h2>
           <p className="text-muted-foreground text-lg leading-relaxed">
-            From resume to Industry Readiness Score — in minutes, not months.
+            From resume to Industry Readiness Score, in minutes, not months.
           </p>
         </div>
 

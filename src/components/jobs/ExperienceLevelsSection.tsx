@@ -22,7 +22,7 @@ const ExperienceLevelsSection = () => {
             <span className="text-primary">Experience Level</span>
           </h2>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-            From freshers to senior executives — thousands of roles
+            From freshers to senior executives, thousands of roles
             <br className="hidden md:block" />
             matched to exactly where you are in your career.
           </p>

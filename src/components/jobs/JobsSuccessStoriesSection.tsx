@@ -48,11 +48,11 @@ const stories: Story[] = [
   { initials: "PR", name: "Priya R.", city: "Mumbai", role: "Product Mgmt", company: "Swiggy", score: 91, quote: "The assessment helped me discover my strengths and land my dream role.", photo: learnerPriya },
   { initials: "NK", name: "Nikhil K.", city: "Chennai", role: "Python / ML", company: "Flipkart", score: 94, quote: "Verified profile got me shortlisted faster and the process was smooth.", photo: male1 },
   { initials: "SA", name: "Sneha A.", city: "Hyderabad", role: "UI / UX", company: "Google", score: 87, quote: "The insights were spot on. It changed my career direction.", photo: female1 },
-  { initials: "RS", name: "Rahul S.", city: "Delhi", role: "Data Science", company: "Microsoft", score: 92, quote: "Got matched with roles that actually fit my skills — not just keywords.", photo: learnerRahul },
+  { initials: "RS", name: "Rahul S.", city: "Delhi", role: "Data Science", company: "Microsoft", score: 92, quote: "Got matched with roles that actually fit my skills, not just keywords.", photo: learnerRahul },
   { initials: "AM", name: "Ananya M.", city: "Bengaluru", role: "Frontend Dev", company: "Amazon", score: 89, quote: "Cleared three rounds in a week. Talento's verified badge made the difference.", photo: learnerAnanya },
   { initials: "AV", name: "Arjun V.", city: "Pune", role: "Cloud / DevOps", company: "Infosys", score: 90, quote: "Recruiters reached out to me first. I never had to chase a single application.", photo: speakerArjun },
   { initials: "MJ", name: "Meera J.", city: "Kolkata", role: "Marketing", company: "Zomato", score: 88, quote: "Detailed report showed me exactly where to focus and improve.", photo: speakerMeera },
-  { initials: "KD", name: "Karan D.", city: "Ahmedabad", role: "DevOps", company: "Atlassian", score: 92, quote: "Cleared interviews faster — the prep roadmap was a game changer.", photo: male2 },
+  { initials: "KD", name: "Karan D.", city: "Ahmedabad", role: "DevOps", company: "Atlassian", score: 92, quote: "Cleared interviews faster, the prep roadmap was a game changer.", photo: male2 },
   { initials: "RT", name: "Riya T.", city: "Gurgaon", role: "Frontend / React", company: "Adobe", score: 95, quote: "Talento turned my skills into a story recruiters actually noticed.", photo: female2 },
   // Page 2
   { initials: "VP", name: "Vikram P.", city: "Noida", role: "Cloud / AWS", company: "Infosys", score: 90, quote: "The structured feedback helped me close every skill gap I had.", photo: learnerVikram },
@@ -60,20 +60,20 @@ const stories: Story[] = [
   { initials: "AN", name: "Aditya N.", city: "Indore", role: "Android Dev", company: "Paytm", score: 92, quote: "Got 3 offers in a month after sharing my verified score.", photo: male3 },
   { initials: "TG", name: "Tanvi G.", city: "Surat", role: "Business Analyst", company: "Deloitte", score: 88, quote: "The clarity I got from the report was honestly priceless.", photo: female4 },
   { initials: "RM", name: "Rohan M.", city: "Chandigarh", role: "QA Automation", company: "Wipro", score: 89, quote: "Recruiters trusted my profile because the score was independent.", photo: speakerRohan },
-  { initials: "PK", name: "Pooja K.", city: "Lucknow", role: "HR Analytics", company: "Accenture", score: 87, quote: "Made my career pivot smooth and credible — highly recommend.", photo: female5 },
+  { initials: "PK", name: "Pooja K.", city: "Lucknow", role: "HR Analytics", company: "Accenture", score: 87, quote: "Made my career pivot smooth and credible, highly recommend.", photo: female5 },
   { initials: "SF", name: "Sahil F.", city: "Bhopal", role: "iOS Dev", company: "Swiggy", score: 93, quote: "Landed my first remote role thanks to the verified badge.", photo: male4 },
   { initials: "NL", name: "Neha L.", city: "Coimbatore", role: "Product Design", company: "Razorpay", score: 91, quote: "The assessment is the most honest mirror of your skills.", photo: female6 },
   { initials: "DC", name: "Devansh C.", city: "Nagpur", role: "Full Stack", company: "Zoho", score: 94, quote: "Loved how the report mapped directly to actual job roles.", photo: male5 },
   // Page 3
   { initials: "SR", name: "Sanya R.", city: "Mumbai", role: "Growth Marketing", company: "CRED", score: 92, quote: "My verified score opened doors I didn't even know existed.", photo: webSpeaker2 },
   { initials: "HV", name: "Harsh V.", city: "Bengaluru", role: "ML Engineer", company: "Meta", score: 96, quote: "The depth of the assessment pushed me to actually level up.", photo: male6 },
-  { initials: "DS", name: "Divya S.", city: "Chennai", role: "Data Analyst", company: "PhonePe", score: 89, quote: "Clear, fair, and actionable — exactly what I needed.", photo: webSpeaker4 },
-  { initials: "MT", name: "Manish T.", city: "Hyderabad", role: "Backend / Go", company: "Uber", score: 91, quote: "Recruiters stopped asking for proof — the badge spoke for itself.", photo: webSpeaker1 },
+  { initials: "DS", name: "Divya S.", city: "Chennai", role: "Data Analyst", company: "PhonePe", score: 89, quote: "Clear, fair, and actionable, exactly what I needed.", photo: webSpeaker4 },
+  { initials: "MT", name: "Manish T.", city: "Hyderabad", role: "Backend / Go", company: "Uber", score: 91, quote: "Recruiters stopped asking for proof, the badge spoke for itself.", photo: webSpeaker1 },
   { initials: "KI", name: "Kavya I.", city: "Pune", role: "UX Research", company: "Atlassian", score: 90, quote: "Felt seen for my real skills, not just my resume.", photo: speakerKavya },
   { initials: "YO", name: "Yash O.", city: "Delhi", role: "Cybersecurity", company: "PwC", score: 93, quote: "Made the switch into security thanks to the role mapping.", photo: webSpeaker3 },
   { initials: "TN", name: "Tara N.", city: "Kochi", role: "Mobile Dev", company: "Razorpay", score: 88, quote: "Quick, rigorous, and genuinely helpful for my growth.", photo: webSpeaker6 },
   { initials: "AB", name: "Aman B.", city: "Patna", role: "SDET", company: "Microsoft", score: 92, quote: "The benchmark report gave me real confidence in interviews.", photo: webSpeaker5 },
-  { initials: "LP", name: "Lavanya P.", city: "Mysore", role: "Product Ops", company: "Freshworks", score: 89, quote: "The career roadmap was the best part — totally personal.", photo: podHost1 },
+  { initials: "LP", name: "Lavanya P.", city: "Mysore", role: "Product Ops", company: "Freshworks", score: 89, quote: "The career roadmap was the best part, totally personal.", photo: podHost1 },
 ];
 
 const PAGE_SIZE = 9;
@@ -106,7 +106,7 @@ const JobsSuccessStoriesSection = () => {
             transition={{ delay: 0.1 }}
             className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto"
           >
-            Real people, real assessments, real offers —
+            Real people, real assessments, real offers,
             <br className="hidden md:block" />
             careers accelerated through verified skills.
           </motion.p>

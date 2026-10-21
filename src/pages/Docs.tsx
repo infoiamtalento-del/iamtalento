@@ -23,7 +23,7 @@ const Docs = () => {
   return (
     <>
       <Helmet>
-        <title>Documentation — I Am Talento</title>
+        <title>Documentation | I Am Talento</title>
         <meta name="description" content="Learn how to use I Am Talento for AI screening, custom assessments, and intelligent hiring." />
       </Helmet>
       <Layout>
@@ -59,7 +59,7 @@ const Docs = () => {
                 <div className="prose prose-sm max-w-none text-muted-foreground space-y-4">
                   <p>Welcome to the <strong>{active}</strong> documentation. This guide covers everything you need to get started.</p>
                   <h2 className="text-lg font-semibold text-foreground font-display mt-8 mb-3">Overview</h2>
-                  <p>I Am Talento's talent intelligence platform provides AI-powered screening, custom assessments, and intelligent matching — all designed to help you hire better, faster, and fairer.</p>
+                  <p>I Am Talento's talent intelligence platform provides AI-powered screening, custom assessments, and intelligent matching, all designed to help you hire better, faster, and fairer.</p>
                   <div className="bg-secondary/50 rounded-xl p-4 border border-border/50">
                     <code className="text-xs text-foreground whitespace-pre">
 {`// Example: Initialize Talento SDK

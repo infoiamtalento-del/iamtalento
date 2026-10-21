@@ -10,9 +10,9 @@ const audiences = [
   { icon: GraduationCap, title: "Fresh Graduates", desc: "Get scored before your first job. Stand out from thousands with verified proof.", count: "80K+" },
   { icon: Briefcase, title: "Mid-Level Professionals", desc: "5-10 years in? Find out if you're ahead, behind, or right where you should be.", count: "35K+" },
   { icon: Repeat2, title: "Career Switchers", desc: "Prove your transferable skills. Close the credibility gap before your first interview.", count: "20K+" },
-  { icon: LineChart, title: "Managers", desc: "Leadership, strategy, execution — validate the skills that define senior impact.", count: "15K+" },
+  { icon: LineChart, title: "Managers", desc: "Leadership, strategy, execution, validate the skills that define senior impact.", count: "15K+" },
   { icon: Rocket, title: "Founders", desc: "Know your gaps. Build a team that complements them. Lead with self-awareness.", count: "8K+" },
-  { icon: Laptop, title: "Developers", desc: "Validate your coding ability with real-world challenges — not textbook theory.", count: "50K+" },
+  { icon: Laptop, title: "Developers", desc: "Validate your coding ability with real-world challenges, not textbook theory.", count: "50K+" },
 ];
 
 const WhoIsItForSection = () => {
@@ -37,7 +37,7 @@ const WhoIsItForSection = () => {
             viewport={{ once: true }}
             transition={{ delay: 0.15 }}
           >
-            Whether you're writing your first line of code or leading a 200-person team —
+            Whether you're writing your first line of code or leading a 200-person team,
             <br className="hidden md:block" />
             there's an assessment for you.
           </motion.p>

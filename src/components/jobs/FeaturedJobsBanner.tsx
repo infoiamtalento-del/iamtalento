@@ -25,7 +25,7 @@ const FeaturedJobsBanner = () => {
                 Top Companies
               </h2>
               <p className="text-white/85 text-sm md:text-base mt-2">
-                Featured roles from leading employers —
+                Featured roles from leading employers,
                 <br className="hidden md:block" />
                 refreshed daily for verified talent.
               </p>

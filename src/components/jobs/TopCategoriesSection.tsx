@@ -24,7 +24,7 @@ const TopCategoriesSection = () => {
             <span className="text-primary">Categories</span>
           </h2>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-            From tech and finance to design and operations —
+            From tech and finance to design and operations,
             <br className="hidden md:block" />
             find roles that match your interests and skills.
           </p>

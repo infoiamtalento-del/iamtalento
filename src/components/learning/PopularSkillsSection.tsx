@@ -229,7 +229,7 @@ const PopularSkillsSection = () => {
             <span className="text-primary">Your Career</span>
           </h2>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-            Train in the practical skills employers value across fast-growing roles and modern workplaces —<br className="hidden md:block" />start with what matters most.
+            Train in the practical skills employers value across fast-growing roles and modern workplaces,<br className="hidden md:block" />start with what matters most.
           </p>
         </div>
 

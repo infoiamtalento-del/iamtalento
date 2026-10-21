@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 const AssessmentFinalCTA = () => (
   <section className="bg-white py-12 md:py-16">
-    <div className="max-w-[1160px] mx-auto px-6">
+    <div className="container">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}

@@ -121,7 +121,7 @@ const VerifiedGetsYou = () => (
             <div className="h-6 w-6 rounded-full bg-destructive/10 flex items-center justify-center"><X className="h-3 w-3 text-destructive" /></div>
             Before verification
           </h3>
-          {["Profile sits unranked in search", "Recruiters skip past you", "3 profile views per week on average", "0 recruiter messages", "You apply — and wait"].map(t => (
+          {["Profile sits unranked in search", "Recruiters skip past you", "3 profile views per week on average", "0 recruiter messages", "You apply, and wait"].map(t => (
             <div key={t} className="flex items-center gap-3 py-3 text-sm text-muted-foreground border-b border-border/60 last:border-0">
               <X className="h-4 w-4 text-destructive/60 shrink-0" /> {t}
             </div>
@@ -158,7 +158,7 @@ const comparisonFeatures = [
   { feature: "Career roadmap", values: [false, false, false, true, true] },
   { feature: "Domain certification", values: [false, false, false, false, true] },
   { feature: "Priority search rank", values: [false, false, false, true, true] },
-  { feature: "Re-test pricing", values: ["—", "₹999", "—", "—", "—"] },
+  { feature: "Re-test pricing", values: ["-", "₹999", "-", "-", "-"] },
 ];
 const colHeaders = ["Free", "Test", "1 Course", "2–3 Courses", "Bundle"];
 
@@ -187,7 +187,7 @@ const ComparisonTable = () => (
                 {row.values.map((v, j) => (
                   <td key={j} className="p-4 text-center">
                     {v === true ? <CheckCircle2 className="h-4 w-4 text-primary mx-auto" /> :
-                     v === false ? <span className="text-muted-foreground/30">—</span> :
+                     v === false ? <span className="text-muted-foreground/30">-</span> :
                      <span className="text-xs font-semibold text-foreground">{v}</span>}
                   </td>
                 ))}
@@ -203,7 +203,7 @@ const ComparisonTable = () => (
 /* ─── How the Test Works ─── */
 const howSteps = [
   { step: 1, title: "Pick your skill", desc: "Choose from 200+ assessments across tech, management, communication and design domains.", icon: Layers },
-  { step: 2, title: "Take the AI-proctored test", desc: "Real-world scenario questions. Face detection, tab monitoring, audio analysis — no room to cheat.", icon: Shield },
+  { step: 2, title: "Take the AI-proctored test", desc: "Real-world scenario questions. Face detection, tab monitoring, audio analysis, no room to cheat.", icon: Shield },
   { step: 3, title: "Get your score instantly", desc: "Full report within 24 hours: overall score, peer percentile rank, skill-by-skill breakdown, and a 30/60/90-day improvement plan.", icon: Award },
   { step: 4, title: "Your badge goes live", desc: "Verified badge appears on your profile. 200+ companies are actively browsing verified candidates.", icon: Sparkles },
 ];
@@ -276,11 +276,11 @@ const Testimonials = () => (
 /* ─── FAQ ─── */
 const faqs = [
   { q: "How long does a test take?", a: "Most assessments take between 25 and 60 minutes depending on the skill and level. You'll see the exact duration before you begin." },
-  { q: "What if I fail the test?", a: "Your score is only visible to employers if you choose to show it. You can retake any test at ₹999 — there's no waiting period." },
+  { q: "What if I fail the test?", a: "Your score is only visible to employers if you choose to show it. You can retake any test at ₹999, there's no waiting period." },
   { q: "How long is the verified badge valid for?", a: "All test results and badges are valid for 1 year from the date of your test. You can renew at the standard price after expiry." },
   { q: "Can employers see my score without my permission?", a: "No. Your verified badge is visible on your profile, but the full score report is only shared when you explicitly apply to a role or enable profile discovery." },
-  { q: "What's the difference between a test and a course?", a: "A test verifies what you already know — it's a 1-hour assessment. A course teaches you the skill first, then assesses you at the end. Both result in a verified badge." },
-  { q: "Is the domain bundle worth it?", a: "If you're serious about one domain — say, full-stack development or product management — the bundle gives you every course plus a domain expert certification badge that puts you at the top of recruiter searches." },
+  { q: "What's the difference between a test and a course?", a: "A test verifies what you already know, it's a 1-hour assessment. A course teaches you the skill first, then assesses you at the end. Both result in a verified badge." },
+  { q: "Is the domain bundle worth it?", a: "If you're serious about one domain, say, full-stack development or product management, the bundle gives you every course plus a domain expert certification badge that puts you at the top of recruiter searches." },
   { q: "Are courses live or recorded?", a: "Courses are self-paced and available on demand. Each course is authored by a senior practitioner currently working in that domain." },
 ];
 
@@ -319,11 +319,11 @@ const BottomCTA = () => (
             Your Skills Deserve<br /><span className="text-primary-foreground/80">A Line on Your Resume</span>
           </h2>
           <p className="text-sm md:text-base text-primary-foreground/70 mb-8">
-            Get verified in one focused session and give employers a clearer reason to notice you —<br className="hidden md:block" />your next opportunity can start here.
+            Get verified in one focused session and give employers a clearer reason to notice you,<br className="hidden md:block" />your next opportunity can start here.
           </p>
           <div className="flex flex-wrap justify-center gap-3 mb-8">
             <Link to="/auth"><Button size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 gap-2 font-bold rounded-full h-12 px-8 shadow-lg">Start with the free plan <ArrowRight className="h-4 w-4" /></Button></Link>
-            <Link to="/assessments/explore"><Button size="lg" variant="outline" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 font-bold rounded-full h-12 px-8">Take your first test — ₹1,999</Button></Link>
+            <Link to="/assessments/explore"><Button size="lg" variant="outline" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 font-bold rounded-full h-12 px-8">Take your first test, ₹1,999</Button></Link>
           </div>
           <div className="flex flex-wrap justify-center gap-4">
             {["18,731+ verified", "AI-proctored", "200+ companies hiring", "1 year valid"].map(s => (

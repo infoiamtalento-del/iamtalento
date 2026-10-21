@@ -433,10 +433,9 @@
   /* Widened so the larger text balances over two lines instead of
      leaving "platform." alone on a third. */
   max-width: 620px;
-  margin-top: 26px;
-  /* 12px enlarged by 25% per request. */
-  font-size: 15px;
-  line-height: 1.6;
+  margin-top: 24px;
+  font-size: clamp(16px, 1.15vw, 18px);
+  line-height: 1.625;
   color: hsl(var(--h2-ink) / 0.78);
 }
 .h2-hero-actions {

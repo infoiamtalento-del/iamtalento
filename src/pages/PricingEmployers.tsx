@@ -34,7 +34,7 @@ const plans = [
   {
     name: "Subscription (CPVPV)", price: "₹2,499", period: "/month per verified profile", popular: true,
     tagline: "Hire at scale. Pay for what you use.",
-    features: ["Cost-per-verified-profile-view model", "Unlimited profile browsing", "Advanced search: score, domain, location", "Saved candidate shortlists & notes", "Monthly billing — cancel anytime", "Best for teams hiring 5+ roles/month"],
+    features: ["Cost-per-verified-profile-view model", "Unlimited profile browsing", "Advanced search: score, domain, location", "Saved candidate shortlists & notes", "Monthly billing, cancel anytime", "Best for teams hiring 5+ roles/month"],
     cta: "Start subscription", icon: Target,
   },
   {
@@ -59,7 +59,7 @@ const PlansSection = () => (
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
           Start Hiring Free. Upgrade Only<br /><span className="text-primary">When You Need More</span>
         </h2>
-        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">From free job posts to verified profiles and premium reach, choose what fits your team —<br className="hidden md:block" />scale only when hiring demands it.</p>
+        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">From free job posts to verified profiles and premium reach, choose what fits your team,<br className="hidden md:block" />scale only when hiring demands it.</p>
       </motion.div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {plans.map((p, i) => {
@@ -113,7 +113,7 @@ const WhyTalento = () => (
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
           The Difference Between Posting Jobs<br /><span className="text-primary">And Finding the Right Person</span>
         </h2>
-        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">Move beyond crowded job boards and compare a verified, skills-first hiring experience —<br className="hidden md:block" />see the difference before you choose.</p>
+        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">Move beyond crowded job boards and compare a verified, skills-first hiring experience,<br className="hidden md:block" />see the difference before you choose.</p>
       </motion.div>
       <div className="grid md:grid-cols-2 gap-6">
         <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="rounded-2xl border border-border bg-card p-7">
@@ -132,7 +132,7 @@ const WhyTalento = () => (
             <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center"><CheckCircle2 className="h-3 w-3 text-primary" /></div>
             Talento
           </h3>
-          {["Every verified candidate has a score you can trust", "Filter by skill score, domain, experience", "AI-proctored — tamper-proof, employer-trusted", "Custom challenges in real conditions", "Average time to qualified shortlist: 48 hours", "74% reduction in unqualified interviews"].map(t => (
+          {["Every verified candidate has a score you can trust", "Filter by skill score, domain, experience", "AI-proctored, tamper-proof, employer-trusted", "Custom challenges in real conditions", "Average time to qualified shortlist: 48 hours", "74% reduction in unqualified interviews"].map(t => (
             <div key={t} className="flex items-center gap-3 py-3 text-sm text-foreground font-medium border-b border-border/60 last:border-0">
               <CheckCircle2 className="h-4 w-4 text-primary shrink-0" /> {t}
             </div>
@@ -159,7 +159,7 @@ const HowHiringWorks = () => (
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
           From Posting Your Role to a Shortlist<br /><span className="text-primary">In Just 48 Hours</span>
         </h2>
-        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">Post your role, meet matched candidates, review verified evidence, and move confidently —<br className="hidden md:block" />from opening to shortlist.</p>
+        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">Post your role, meet matched candidates, review verified evidence, and move confidently,<br className="hidden md:block" />from opening to shortlist.</p>
       </motion.div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {howSteps.map((s, i) => {
@@ -186,15 +186,15 @@ const compFeatures = [
   { feature: "Company profile", values: ["✓", "✓", "✓", "✓", "✓", "✓"] },
   { feature: "Free job postings", values: ["2", "5+", "2", "2", "2", "Unlimited"] },
   { feature: "Browse unverified profiles", values: ["✓", "✓", "✓", "✓", "✓", "✓"] },
-  { feature: "Verified profile access", values: ["—", "—", "₹2,999/view", "₹2,499/mo", "—", "✓"] },
-  { feature: "Score + skill report", values: ["—", "—", "✓", "✓", "✓", "✓"] },
-  { feature: "Custom test creation", values: ["—", "—", "—", "—", "✓", "✓"] },
-  { feature: "White-label bulk tests", values: ["—", "—", "—", "—", "₹250/test", "✓"] },
-  { feature: "AI-ranked shortlist", values: ["—", "—", "—", "—", "✓", "✓"] },
-  { feature: "Featured job placement", values: ["—", "—", "—", "—", "—", "✓"] },
-  { feature: "Bulk course access", values: ["—", "—", "—", "—", "—", "✓"] },
-  { feature: "Account manager", values: ["—", "—", "—", "—", "—", "✓"] },
-  { feature: "Analytics dashboard", values: ["—", "—", "—", "✓", "✓", "✓"] },
+  { feature: "Verified profile access", values: ["-", "-", "₹2,999/view", "₹2,499/mo", "-", "✓"] },
+  { feature: "Score + skill report", values: ["-", "-", "✓", "✓", "✓", "✓"] },
+  { feature: "Custom test creation", values: ["-", "-", "-", "-", "✓", "✓"] },
+  { feature: "White-label bulk tests", values: ["-", "-", "-", "-", "₹250/test", "✓"] },
+  { feature: "AI-ranked shortlist", values: ["-", "-", "-", "-", "✓", "✓"] },
+  { feature: "Featured job placement", values: ["-", "-", "-", "-", "-", "✓"] },
+  { feature: "Bulk course access", values: ["-", "-", "-", "-", "-", "✓"] },
+  { feature: "Account manager", values: ["-", "-", "-", "-", "-", "✓"] },
+  { feature: "Analytics dashboard", values: ["-", "-", "-", "✓", "✓", "✓"] },
 ];
 const empColHeaders = ["Free", "Jobs ₹2,999", "Profile Access", "Subscription", "Custom Tests", "Premium"];
 
@@ -206,7 +206,7 @@ const EmployerComparisonTable = () => (
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
           Compare Every Hiring Plan Clearly<br /><span className="text-primary">At a Glance</span>
         </h2>
-        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">Review posting limits, verified profile access, assessments, and support in one clear view —<br className="hidden md:block" />choose the right fit for your team.</p>
+        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">Review posting limits, verified profile access, assessments, and support in one clear view,<br className="hidden md:block" />choose the right fit for your team.</p>
       </motion.div>
       <div className="overflow-x-auto rounded-2xl border border-border bg-card shadow-sm">
         <table className="w-full text-sm">
@@ -223,7 +223,7 @@ const EmployerComparisonTable = () => (
                 {row.values.map((v, j) => (
                   <td key={j} className="p-4 text-center">
                     {v === "✓" ? <CheckCircle2 className="h-4 w-4 text-primary mx-auto" /> :
-                     v === "—" ? <span className="text-muted-foreground/30">—</span> :
+                     v === "-" ? <span className="text-muted-foreground/30">-</span> :
                      <span className="text-xs font-semibold text-foreground">{v}</span>}
                   </td>
                 ))}
@@ -250,7 +250,7 @@ const ROICalculator = () => {
             See What a Bad Hire Can Really<br /><span className="text-primary">Cost Your Team</span>
           </h2>
           <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">
-            The average cost-per-hire in India is ₹85,000, while one bad hire can drain months of productivity —<br className="hidden md:block" />calculate what stronger screening could save.
+            The average cost-per-hire in India is ₹85,000, while one bad hire can drain months of productivity,<br className="hidden md:block" />calculate what stronger screening could save.
           </p>
         </motion.div>
         <div className="grid sm:grid-cols-3 gap-5 mb-10">
@@ -284,9 +284,9 @@ const ROICalculator = () => {
 
 /* ─── Case Studies ─── */
 const caseStudies = [
-  { quote: "We used to spend 3 weeks screening for every frontend role. With Talento custom challenges, we got 840 submissions, an AI-ranked shortlist of 12, and made 3 offers in 48 hours.", name: "Priya R., Talent Lead", company: "Zepto", result: "Reduced time-to-shortlist by 78%" },
-  { quote: "The verified profile access is the most honest signal we've found. The score report tells us more in 2 minutes than a CV ever did. We've cut our interview-to-offer ratio from 8:1 to 3:1.", name: "Aarav K., VP Engineering", company: "Razorpay", result: "3x improvement in interview-to-offer ratio" },
-  { quote: "We run quarterly hiring challenges on Talento. It's become part of our employer brand. Top candidates seek us out because they know we hire on merit.", name: "Meera S., Head of Talent", company: "Atlassian India", result: "2,300 registrations per challenge on average" },
+  { quote: "We used to spend 3 weeks screening for every frontend role. With Talento custom challenges, we got 840 submissions, an AI-ranked shortlist of 12, and made 3 offers in 48 hours.", name: "Priya R. Talent Lead", company: "Zepto", result: "Reduced time-to-shortlist by 78%" },
+  { quote: "The verified profile access is the most honest signal we've found. The score report tells us more in 2 minutes than a CV ever did. We've cut our interview-to-offer ratio from 8:1 to 3:1.", name: "Aarav K. VP Engineering", company: "Razorpay", result: "3x improvement in interview-to-offer ratio" },
+  { quote: "We run quarterly hiring challenges on Talento. It's become part of our employer brand. Top candidates seek us out because they know we hire on merit.", name: "Meera S. Head of Talent", company: "Atlassian India", result: "2,300 registrations per challenge on average" },
 ];
 
 const CaseStudies = () => (
@@ -297,7 +297,7 @@ const CaseStudies = () => (
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
           See Why Leading Companies Choose<br /><span className="text-primary">Skills-First Hiring</span>
         </h2>
-        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">See how skills-first teams shortened screening and made stronger hiring decisions —<br className="hidden md:block" />with verified evidence at every step.</p>
+        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">See how skills-first teams shortened screening and made stronger hiring decisions,<br className="hidden md:block" />with verified evidence at every step.</p>
       </motion.div>
       <div className="grid md:grid-cols-3 gap-5">
         {caseStudies.map((c, i) => (
@@ -322,12 +322,12 @@ const CaseStudies = () => (
 /* ─── FAQ ─── */
 const faqs = [
   { q: "Is it really free to post a job?", a: "Yes. You can post up to 2 jobs and browse unverified profiles at no cost. You only pay when you want to access verified profiles or create custom assessments." },
-  { q: "What's the difference between verified and unverified profiles?", a: "Unverified profiles are browsable at ₹99 each — they have standard resume information. Verified profiles include a full AI-proctored score report, skill breakdown, peer rank, and integrity certificate." },
+  { q: "What's the difference between verified and unverified profiles?", a: "Unverified profiles are browsable at ₹99 each, they have standard resume information. Verified profiles include a full AI-proctored score report, skill breakdown, peer rank, and integrity certificate." },
   { q: "Can we build tests specific to our tech stack?", a: "Yes. The custom test builder (₹400/test) lets you specify the skills, difficulty level, and passing threshold. You can also run white-label bulk tests at ₹250/test." },
   { q: "How does the subscription model work?", a: "The CPVPV subscription is ₹2,499 per verified profile per month. Unlimited browsing access, billed monthly with no lock-in." },
   { q: "What's included in the premium job posting?", a: "Premium listings at ₹1,00,000/month include featured placement, weekly email to 50,000+ candidates, dedicated account manager, bulk course access, and analytics dashboard." },
   { q: "How quickly do we get a shortlist after a custom challenge?", a: "AI-ranked shortlists are delivered within 48 hours. Top 10% performers are automatically flagged and fast-tracked." },
-  { q: "Do candidates know they're being proctored?", a: "Yes — full transparency. Candidates consent before they begin. This increases submission quality." },
+  { q: "Do candidates know they're being proctored?", a: "Yes, full transparency. Candidates consent before they begin. This increases submission quality." },
   { q: "Can we trial the platform before committing?", a: "Yes. Create your free profile and post up to 2 jobs at no cost. Explore with unverified profiles at ₹99 before upgrading." },
 ];
 
@@ -339,7 +339,7 @@ const FAQSection = () => (
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display leading-[1.15] text-foreground mt-4 mb-3">
           What Hiring Teams Want to Know<br /><span className="text-primary">Before Getting Started</span>
         </h2>
-        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">Get clear answers about job posts, verified profiles, custom tests, and subscriptions —<br className="hidden md:block" />before your team gets started.</p>
+        <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">Get clear answers about job posts, verified profiles, custom tests, and subscriptions,<br className="hidden md:block" />before your team gets started.</p>
       </motion.div>
       <Accordion type="single" collapsible className="space-y-3">
         {faqs.map((f, i) => (
@@ -366,7 +366,7 @@ const BottomCTA = () => (
             Your Next Great Hire Is Already<br /><span className="text-primary-foreground/80">Verified on Talento</span>
           </h2>
           <p className="text-sm md:text-base text-primary-foreground/70 mb-8">
-            Discover skilled professionals by verified score, domain expertise, and experience level —<br className="hidden md:block" />start building a stronger shortlist today.
+            Discover skilled professionals by verified score, domain expertise, and experience level,<br className="hidden md:block" />start building a stronger shortlist today.
           </p>
           <div className="flex flex-wrap justify-center gap-3 mb-8">
             <Link to="/contact"><Button size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 gap-2 font-bold rounded-full h-12 px-8 shadow-lg">Post a job free <ArrowRight className="h-4 w-4" /></Button></Link>

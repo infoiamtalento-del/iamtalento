@@ -45,7 +45,7 @@ const panels = [
     statusColor: "#16A34A",
     statusBg: "#F0FDF4",
     insight:
-      "Exceptional standing — you outperformed 92% of your peer cohort in both technical and behavioural assessments.",
+      "Exceptional standing, you outperformed 92% of your peer cohort in both technical and behavioural assessments.",
     rank: 8,
     avgPercentile: 92,
   },
@@ -60,7 +60,7 @@ const panels = [
     statusColor: "#16A34A",
     statusBg: "#F0FDF4",
     insight:
-      "React, API design and system thinking are your strongest clusters — they appear in 78% of senior roles you're eligible for.",
+      "React, API design and system thinking are your strongest clusters, they appear in 78% of senior roles you're eligible for.",
     rank: 12,
     avgPercentile: 88,
   },
@@ -75,7 +75,7 @@ const panels = [
     statusColor: "#DC2626",
     statusBg: "#FEF2F2",
     insight:
-      "DevOps, cloud infrastructure and testing are your weakest areas — addressing these could unlock 35% more senior role matches.",
+      "DevOps, cloud infrastructure and testing are your weakest areas, addressing these could unlock 35% more senior role matches.",
     rank: 58,
     avgPercentile: 42,
   },
@@ -457,7 +457,7 @@ const ResultsReportSection = () => {
             <span className="text-primary">Career Report.</span>
           </h2>
           <p className="text-[14px] text-muted-foreground max-w-md mx-auto">
-            Delivered within 24 hours — score breakdown, peer benchmarks, and a
+            Delivered within 24 hours, score breakdown, peer benchmarks, and a
             30/60/90-day improvement plan.
           </p>
         </div>
@@ -488,7 +488,7 @@ const ResultsReportSection = () => {
                     color: "hsl(var(--primary))",
                   }}
                 >
-                  Avg. percentile — {current.avgPercentile}%
+                  Avg. percentile, {current.avgPercentile}%
                 </motion.span>
               </AnimatePresence>
               <AnimatePresence mode="wait">

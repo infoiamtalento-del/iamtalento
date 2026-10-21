@@ -104,8 +104,8 @@ const demoProjects: ProfileProject[] = [
 ];
 
 const demoAchievements: ProfileAchievement[] = [
-  { title: "Speaker — ReactConf India 2024", description: "\"Scaling React to 1M Users\"", icon: Trophy },
-  { title: "1st Place — HackBangalore 2022", description: "Built FinKids – A finance app for teens", icon: Star },
+  { title: "Speaker, ReactConf India 2024", description: "\"Scaling React to 1M Users\"", icon: Trophy },
+  { title: "1st Place · HackBangalore 2022", description: "Built FinKids – A finance app for teens", icon: Star },
   { title: "Employee of the Quarter Q3 2023", description: "Awarded for outstanding contributions", icon: Star },
   { title: "React Core Contributor", description: "Merged 5+ PRs in react-icons repo", icon: Award },
 ];

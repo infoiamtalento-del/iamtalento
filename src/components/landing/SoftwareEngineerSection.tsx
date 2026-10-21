@@ -7,7 +7,7 @@ const features = [
   { icon: Terminal, title: "Live Coding Challenges", desc: "Real-world coding problems in your preferred language with time tracking." },
   { icon: Code2, title: "Code Playback & Review", desc: "Full session replay so employers see how you think, not just what you submit." },
   { icon: BarChart3, title: "Score Overlay", desc: "Real-time scoring against 50K+ engineers in similar roles and experience." },
-  { icon: Brain, title: "Problem-Solving Analysis", desc: "AI evaluates your approach, not just correctness — patterns, efficiency, edge cases." },
+  { icon: Brain, title: "Problem-Solving Analysis", desc: "AI evaluates your approach, not just correctness, patterns, efficiency, edge cases." },
   { icon: Gauge, title: "Confidence Meter", desc: "Behavioral analysis provides a confidence signal alongside technical scores." },
   { icon: Bug, title: "Debugging Proficiency", desc: "Targeted debugging challenges that test real production debugging skills." },
 ];
@@ -61,7 +61,7 @@ const SoftwareEngineerSection = () => {
               <div className="h-2 w-2 rounded-full bg-destructive/40" />
               <div className="h-2 w-2 rounded-full bg-warning/40" />
               <div className="h-2 w-2 rounded-full bg-success/40" />
-              <span className="text-[10px] text-background/30 ml-3 font-mono">solution.ts — Assessment</span>
+              <span className="text-[10px] text-background/30 ml-3 font-mono">solution.ts, Assessment</span>
             </div>
             <div className="p-4 font-mono text-xs text-background/50 leading-6">
               <span className="text-primary/70">function</span> <span className="text-background/80">findOptimalPath</span>(graph: Graph): Path {"{"}<br />

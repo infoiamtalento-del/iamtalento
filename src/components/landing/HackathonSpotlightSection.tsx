@@ -106,7 +106,7 @@ const HackathonSpotlightSection = () => {
     <section className="py-16 md:py-24">
       <div className="container px-4 md:px-6">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-10 text-center flex flex-col items-center">
-          <SectionBadge label="Season 4 — Now Open" icon={Trophy} />
+          <SectionBadge label="Season 4: Now Open" icon={Trophy} />
           <h2 className="mt-4 text-3xl md:text-4xl font-bold font-display text-foreground leading-[1.15]">
             Compete. Build.
             <br />

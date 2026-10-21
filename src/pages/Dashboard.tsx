@@ -58,7 +58,7 @@ const Dashboard = () => {
   return (
     <>
       <Helmet>
-        <title>Dashboard — I Am Talento</title>
+        <title>Dashboard | I Am Talento</title>
         <meta name="description" content="Manage candidates, screenings, assessments, and hiring analytics from the Talento dashboard." />
       </Helmet>
       <div className="flex h-screen bg-background">

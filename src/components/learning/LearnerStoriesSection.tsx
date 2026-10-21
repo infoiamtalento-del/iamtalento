@@ -32,7 +32,7 @@ const stories = [
     prevRole: "Marketing Intern",
     currentRole: "Digital Marketing Lead at Swiggy",
     course: "Digital Marketing with AI Tools",
-    quote: "This course didn't just teach theory — I built actual campaigns and landed my dream role within a month.",
+    quote: "This course didn't just teach theory, I built actual campaigns and landed my dream role within a month.",
     rating: 4,
   },
   {

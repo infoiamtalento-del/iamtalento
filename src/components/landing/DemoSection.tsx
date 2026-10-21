@@ -13,7 +13,7 @@ const DemoSection = () => {
         <div className="text-center max-w-2xl mx-auto mb-16">
           <SectionBadge label="See It In Action" icon={Play} />
           <h2 className="text-3xl md:text-4xl font-bold font-display mb-4">AI Screening, Visualized</h2>
-          <p className="text-muted-foreground text-lg">Watch how Talento processes a candidate in real time — from resume upload to match score.</p>
+          <p className="text-muted-foreground text-lg">Watch how Talento processes a candidate in real time, from resume upload to match score.</p>
         </div>
 
         <div className={cn("max-w-4xl mx-auto transition-all duration-700", isVisible ? "opacity-100" : "opacity-0 translate-y-8")}>

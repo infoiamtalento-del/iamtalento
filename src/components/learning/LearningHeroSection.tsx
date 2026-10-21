@@ -57,15 +57,15 @@ const LearningHeroSection = () => {
           >
             <SectionBadge label="AI-Powered Learning Studio" icon={BookOpen} />
 
-            <h1 className="text-4xl sm:text-5xl lg:text-[3.6rem] font-extrabold font-display tracking-tight text-slate-950 mb-5 leading-[1.08]">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-display tracking-tight text-slate-950 mb-5 leading-[1.15]">
               Learn Skills That{" "}
-              <span className="text-[#002C66] underline decoration-[#002C66]/20 decoration-4 underline-offset-8">
+              <span className="text-[#002C66]">
                 Get You Hired.
               </span>
             </h1>
 
             <p className="text-base md:text-lg text-slate-600 mb-7 max-w-2xl leading-relaxed">
-              Master in-demand workflows through hands-on industry projects, regional language tracks, and 1-on-1 AI mentorship—engineered to directly boost your verified IRS readiness score.
+              Master in-demand workflows through hands-on industry projects, regional language tracks, and 1-on-1 AI mentorship, engineered to directly boost your verified IRS readiness score.
             </p>
 
             {/* Elevated Search & Command Bar */}

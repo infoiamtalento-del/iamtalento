@@ -112,7 +112,7 @@ const LearnInLanguageSection = () => {
           >
             Showing courses available in{" "}
             <span className="font-semibold text-primary">{current.name}</span>{" "}
-            — {current.courses}+ courses available
+, {current.courses}+ courses available
           </motion.p>
         </AnimatePresence>
       </div>

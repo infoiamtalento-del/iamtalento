@@ -87,7 +87,7 @@ const items: CIRItem[] = [
       "Analytical & Data: Top 18%",
       "Communication Clarity: Top 15%",
     ],
-    highlight: "“I know my competition — and how to outperform them.”",
+    highlight: "“I know my competition, and how to outperform them.”",
     metricValue: "Top 12%",
     metricLabel: "National Cohort Rank",
     subStats: [
@@ -101,7 +101,7 @@ const items: CIRItem[] = [
     title: "Salary Potential Report",
     shortTag: "Market Value",
     description:
-      "Know your real market compensation today — and what you unlock after closing skill gaps.",
+      "Know your real market compensation today, and what you unlock after closing skill gaps.",
     bullets: [
       "Current Band: ₹8–10.5 LPA",
       "Upskilled Band: ₹14–18.5 LPA",
@@ -187,7 +187,7 @@ const items: CIRItem[] = [
       "One-click LinkedIn & CV embed",
       "Direct fast-track to employers",
     ],
-    highlight: "Go beyond a static PDF — share verified proof of work.",
+    highlight: "Go beyond a static PDF, share verified proof of work.",
     metricValue: "Verified",
     metricLabel: "Tamper-Proof ID",
     subStats: [

@@ -165,7 +165,7 @@ const HackathonSocialProof = () => (
           Top Companies.<br /><span className="text-primary">Real Challenges.</span>
         </h2>
         <p className="text-muted-foreground max-w-lg text-sm md:text-base">
-          From global MNCs to India's fastest-growing startups — the biggest names run their hackathons here.
+          From global MNCs to India's fastest-growing startups, the biggest names run their hackathons here.
         </p>
       </motion.div>
 

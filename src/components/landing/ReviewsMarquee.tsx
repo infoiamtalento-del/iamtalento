@@ -30,7 +30,7 @@ const reviews = [
   {
     name: "Michael Torres",
     role: "CTO, Enterprise SaaS",
-    quote: "We replaced 3 separate tools with Talento — resume screening, skill testing, and video interviews. All in one platform.",
+    quote: "We replaced 3 separate tools with Talento, resume screening, skill testing, and video interviews. All in one platform.",
     rating: 5,
   },
   {
@@ -85,7 +85,7 @@ const ReviewsMarquee = () => (
           Trusted by Employers<br /><span className="text-primary">& Candidates</span>
         </h2>
         <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-          Real stories from professionals who proved their worth with verified skills —
+          Real stories from professionals who proved their worth with verified skills,
           <br className="hidden md:block" />
           and employers who finally found talent they can trust.
         </p>

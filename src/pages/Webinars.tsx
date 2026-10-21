@@ -56,23 +56,23 @@ const webinars = [
 ];
 
 const howItWorks = [
-  { step: "01", label: "STEP 1", title: "Build Your Profile", desc: "Tell us who you are in 2 minutes — role, experience, and goals.", icon: User, theme: "red", rotate: -7 },
+  { step: "01", label: "STEP 1", title: "Build Your Profile", desc: "Tell us who you are in 2 minutes, role, experience, and goals.", icon: User, theme: "red", rotate: -7 },
   { step: "02", label: "STEP 2", title: "Pick Your Domain", desc: "Choose your field and experience level for a fully tailored path.", icon: Layers, theme: "yellow", rotate: 5 },
-  { step: "03", label: "STEP 3", title: "Select Your Test", desc: "Role-specific. AI-curated. Precise — built for your exact target job.", icon: ListChecks, theme: "red", rotate: -4 },
+  { step: "03", label: "STEP 3", title: "Select Your Test", desc: "Role-specific. AI-curated. Precise, built for your exact target job.", icon: ListChecks, theme: "red", rotate: -4 },
   { step: "04", label: "STEP 4", title: "Practice Like It's Real", desc: "Mock interviews and AI practice tests that mirror real hiring pressure.", icon: MessageSquare, theme: "yellow", rotate: 6 },
   { step: "05", label: "STEP 5", title: "Craft Your AI Resume", desc: "Premium templates engineered to pass ATS and actually get callbacks.", icon: FileText, theme: "red", rotate: -5 },
-  { step: "06", label: "STEP 6", title: "Take the Proctored Test", desc: "Fair. Secure. Employer-trusted — your real skill, on the record.", icon: ShieldCheck, theme: "yellow", rotate: 4 },
-  { step: "07", label: "STEP 7", title: "Get Your ScoreCard", desc: "One score that speaks louder than your CV — benchmarked against peers.", icon: BarChart3, theme: "red", rotate: -6 },
+  { step: "06", label: "STEP 6", title: "Take the Proctored Test", desc: "Fair. Secure. Employer-trusted, your real skill, on the record.", icon: ShieldCheck, theme: "yellow", rotate: 4 },
+  { step: "07", label: "STEP 7", title: "Get Your ScoreCard", desc: "One score that speaks louder than your CV, benchmarked against peers.", icon: BarChart3, theme: "red", rotate: -6 },
   { step: "08", label: "STEP 8", title: "Apply to 100+ Jobs", desc: "Let employers come to you. Verified. Ranked. Ready to hire.", icon: Send, theme: "yellow", rotate: 7 },
 ] as const;
 
 const differentiators = [
   { icon: Target, title: "Industry-Benchmarked Content", desc: "Every topic is chosen based on real skill gaps identified across 10,000+ candidates." },
   { icon: Zap, title: "Live Skill Challenges", desc: "Mid-session exercises test your understanding. Your score gets recorded on your profile." },
-  { icon: CheckCircle, title: "Verified Expert Speakers", desc: "No influencers, no theory-only coaches — only practitioners with proven track records.", highlight: true },
+  { icon: CheckCircle, title: "Verified Expert Speakers", desc: "No influencers, no theory-only coaches, only practitioners with proven track records.", highlight: true },
   { icon: FileText, title: "Post-Webinar Action Kit", desc: "Templates, frameworks, checklists, and a 30-day implementation roadmap." },
-  { icon: Award, title: "Recognized Certificates", desc: "Visible on your profile — employers can verify them in one click." },
-  { icon: Users, title: "Small Cohorts", desc: "Sessions capped at 300 to ensure real interaction — not just watching." },
+  { icon: Award, title: "Recognized Certificates", desc: "Visible on your profile, employers can verify them in one click." },
+  { icon: Users, title: "Small Cohorts", desc: "Sessions capped at 300 to ensure real interaction, not just watching." },
 ];
 
 const webinarIndustryTabs = [
@@ -177,7 +177,7 @@ const WebinarHero = () => (
           <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
             className="text-lg text-muted-foreground max-w-lg mb-8 leading-relaxed"
           >
-            Deep-dive webinars on skills, hiring, and career growth — taught by verified industry experts.
+            Deep-dive webinars on skills, hiring, and career growth, taught by verified industry experts.
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="flex flex-wrap gap-3 mb-10">
             <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 h-12 px-6 rounded-xl">
@@ -393,7 +393,7 @@ const HowItWorksSection = () => {
                 From Registration to<br /><span className="text-primary">Real Skill in 8 Steps</span>
               </h2>
               <p className="mt-4 max-w-md text-muted-foreground">
-                From zero to offer-ready — a complete system built to prove your value.
+                From zero to offer-ready, a complete system built to prove your value.
               </p>
 
               <div className="mt-8 grid max-w-xl grid-cols-2 gap-x-5 gap-y-4">
@@ -802,7 +802,7 @@ const CountdownStrip = () => {
           </span>
           <AnimatePresence mode="wait">
             <motion.span key={activeIdx} initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -10, opacity: 0 }} transition={{ duration: 0.3 }} className="truncate">
-              <span className="hidden md:inline opacity-80 mr-1.5">{current.industry} —</span>
+              <span className="hidden md:inline opacity-80 mr-1.5">{current.industry} ·</span>
               {current.title}
             </motion.span>
           </AnimatePresence>
@@ -841,8 +841,8 @@ const CountdownStrip = () => {
 const Webinars = () => (
   <>
     <Helmet>
-      <title>Webinars — Learn From the Best | I Am Talento</title>
-      <meta name="description" content="Deep-dive webinars on skills, hiring, and career growth — taught by verified industry experts. Register free and get certified." />
+      <title>Webinars | Learn From the Best | I Am Talento</title>
+      <meta name="description" content="Deep-dive webinars on skills, hiring, and career growth, taught by verified industry experts. Register free and get certified." />
     </Helmet>
     <Layout>
       <WebinarHero />

@@ -239,7 +239,7 @@ const SkillAssessment = () => {
   return (
     <>
       <Helmet>
-        <title>Skill Assessment — IAmTalento</title>
+        <title>Skill Assessment | IAmTalento</title>
         <meta name="description" content="AI-powered skill assessment with real-time proctoring" />
       </Helmet>
 
@@ -589,7 +589,7 @@ const SkillAssessment = () => {
                         </motion.div>
                         <div>
                           <h2 className="text-xl font-bold font-display">Assessment Complete</h2>
-                          <p className="text-sm text-muted-foreground">{cluster?.label} — {r.correct}/{r.total} correct</p>
+                          <p className="text-sm text-muted-foreground">{cluster?.label} · {r.correct}/{r.total} correct</p>
                         </div>
                         <Badge className="bg-primary/10 text-primary border-primary/20 text-xs gap-1.5 px-4 py-1.5">
                           <TrendingUp className="h-3.5 w-3.5" /> Top {100 - r.percentile}% Percentile

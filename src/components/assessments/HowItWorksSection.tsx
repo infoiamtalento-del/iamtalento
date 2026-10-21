@@ -65,7 +65,7 @@ const steps: StepItem[] = [
     title: "Pay & Schedule",
     highlight: "Flexible slots • Instant confirmation",
     desc: "Complete a secure checkout and pick an assessment window that fits your schedule.",
-    why: "Flexible scheduling and a hassle-free experience — take the test on your time, at your pace.",
+    why: "Flexible scheduling and a hassle-free experience, take the test on your time, at your pace.",
     ctaLabel: "Book Your Slot",
     ctaHref: "/assessments/digital-marketing-fundamentals",
     icon: CreditCard,
@@ -557,7 +557,7 @@ const HowItWorksSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.08 }}
-            className="text-3xl md:text-4xl lg:text-[42px] font-bold font-display leading-[1.12] mt-3 mb-3 text-slate-900"
+            className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mt-3 mb-3 text-slate-900"
           >
             Your Journey to the Right Opportunity.{" "}
             <span className="text-[#002C66]">From Profile to Offer, for Any Role.</span>
@@ -569,7 +569,7 @@ const HowItWorksSection = () => {
             transition={{ delay: 0.12 }}
             className="text-slate-600 text-base md:text-lg"
           >
-            Six simple steps to prove your skills, earn recruiter trust, and land your dream role — hover over any step to explore.
+            Six simple steps to prove your skills, earn recruiter trust, and land your dream role, hover over any step to explore.
           </motion.p>
         </div>
 

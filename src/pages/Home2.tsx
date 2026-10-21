@@ -135,7 +135,7 @@ const Home2 = () => {
               Readiness Scores That <em>Employers Trust.</em>
             </h2>
             <p className="h2-dark-sub">
-              Our 30-layer AI proctoring and calibrated competency benchmarks evaluate true job readiness — not just test scores.
+              Our 30-layer AI proctoring and calibrated competency benchmarks evaluate true job readiness, not just test scores.
             </p>
           </div>
 

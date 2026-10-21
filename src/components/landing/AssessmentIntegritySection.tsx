@@ -80,7 +80,7 @@ const AssessmentIntegritySection = ({ align = "center" }: { align?: Align }) => 
             <span className="text-primary">Zero Tolerance.</span>
           </motion.h2>
           <p className={cn("text-muted-foreground text-base md:text-lg leading-relaxed", centered ? "max-w-2xl mx-auto" : "")}>
-            Every assessment is protected before, during, and after —
+            Every assessment is protected before, during, and after,
             <br className="hidden md:block" />
             so every score is actually earned.
           </p>

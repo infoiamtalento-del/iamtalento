@@ -1,34 +1,25 @@
-import "@fontsource-variable/source-serif-4/index.css";
+import { Building2 } from "lucide-react";
+import SectionBadge from "@/components/ui/section-badge";
 
-const SERIF_FONT = '"Source Serif 4 Variable", "Source Serif 4", Georgia, "Times New Roman", serif';
-const GREEN_ACCENT = "#1E563F";
-const HAIRLINE = "#DCDAD3";
+const BRAND_NAVY = "#002C66";
+const HAIRLINE = "hsl(var(--border))";
 
 const Home2TrustedSection = () => {
   return (
-    <section
-      style={{
-        backgroundColor: "#F6F4EF",
-        color: "#111827",
-        fontFamily: '"Inter", system-ui, -apple-system, sans-serif',
-      }}
-      className="py-16 md:py-20"
-    >
-      <div className="max-w-[1140px] mx-auto px-6">
+    <section className="py-16 md:py-20 bg-[#FBF4EB] text-foreground font-sans">
+      <div className="container">
         {/* ── Top Heading ── */}
         <div className="text-center max-w-3xl mx-auto">
-          <span className="block text-xs font-bold uppercase tracking-[0.13em] text-primary">
-            TRUSTED BY INDUSTRY LEADERS
-          </span>
+          <SectionBadge label="Trusted by Industry Leaders" icon={Building2} />
 
-          <h2 className="mt-3 text-3xl md:text-4xl font-bold font-display tracking-tight leading-[1.15] text-foreground">
+          <h2 className="text-3xl md:text-4xl font-bold font-display tracking-tight leading-[1.15] text-foreground mb-4">
             Trusted by organizations
             <br />
             building{" "}
             <span className="text-primary">high-performing teams.</span>
           </h2>
 
-          <p className="mt-4 text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
             From startups to global enterprises, organizations worldwide rely on TalentCIR
             <br className="hidden sm:inline" /> to make confident talent decisions every day.
           </p>
@@ -385,12 +376,11 @@ const Home2TrustedSection = () => {
           style={{ borderColor: HAIRLINE }}
         >
           {/* Stat 1 */}
-          <div className="flex items-center gap-6 py-9 px-4 md:px-7">
+          <div className="flex items-center gap-5 py-8 px-4 md:px-7">
             <div
-              className="w-[62px] h-[62px] rounded-full flex items-center justify-center shrink-0"
-              style={{ backgroundColor: "#E5E8E3", color: GREEN_ACCENT }}
+              className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0"
             >
-              <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="1.6">
+              <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="1.8">
                 <circle cx="9" cy="8" r="3" />
                 <path d="M4 18v-1a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v1" strokeLinecap="round" />
                 <path d="M15.5 5.5a2.5 2.5 0 0 1 0 5" strokeLinecap="round" />
@@ -398,19 +388,16 @@ const Home2TrustedSection = () => {
               </svg>
             </div>
             <div>
-              <div
-                style={{ fontFamily: SERIF_FONT }}
-                className="text-[38px] md:text-[42px] leading-none font-normal text-[#111827]"
-              >
+              <div className="text-3xl md:text-4xl leading-none font-bold font-display text-foreground tracking-tight">
                 5.3M+
               </div>
               <div
-                style={{ color: GREEN_ACCENT, letterSpacing: "0.09em" }}
-                className="mt-2.5 text-[11.5px] font-bold uppercase"
+                style={{ color: BRAND_NAVY, letterSpacing: "0.09em" }}
+                className="mt-2 text-xs font-bold uppercase"
               >
                 ASSESSMENTS CONDUCTED
               </div>
-              <p className="mt-1.5 text-[13.5px] leading-[1.55] text-[#6B7280]">
+              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                 Empowering millions of careers every year
               </p>
             </div>
@@ -418,14 +405,13 @@ const Home2TrustedSection = () => {
 
           {/* Stat 2 */}
           <div
-            className="flex items-center gap-6 py-9 px-4 md:px-9 border-t md:border-t-0 md:border-l"
+            className="flex items-center gap-5 py-8 px-4 md:px-9 border-t md:border-t-0 md:border-l"
             style={{ borderColor: HAIRLINE }}
           >
             <div
-              className="w-[62px] h-[62px] rounded-full flex items-center justify-center shrink-0"
-              style={{ backgroundColor: "#E5E8E3", color: GREEN_ACCENT }}
+              className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0"
             >
-              <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="1.6">
+              <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="1.8">
                 <rect x="3" y="7" width="18" height="13" rx="2" />
                 <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
                 <path d="M10 12h4" />
@@ -433,19 +419,16 @@ const Home2TrustedSection = () => {
               </svg>
             </div>
             <div>
-              <div
-                style={{ fontFamily: SERIF_FONT }}
-                className="text-[38px] md:text-[42px] leading-none font-normal text-[#111827]"
-              >
+              <div className="text-3xl md:text-4xl leading-none font-bold font-display text-foreground tracking-tight">
                 5,000+
               </div>
               <div
-                style={{ color: GREEN_ACCENT, letterSpacing: "0.09em" }}
-                className="mt-2.5 text-[11.5px] font-bold uppercase"
+                style={{ color: BRAND_NAVY, letterSpacing: "0.09em" }}
+                className="mt-2 text-xs font-bold uppercase"
               >
                 CUSTOMERS WORLDWIDE
               </div>
-              <p className="mt-1.5 text-[13.5px] leading-[1.55] text-[#6B7280]">
+              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                 From startups to global enterprises
               </p>
             </div>
@@ -453,33 +436,29 @@ const Home2TrustedSection = () => {
 
           {/* Stat 3 */}
           <div
-            className="flex items-center gap-6 py-9 px-4 md:px-9 border-t md:border-t-0 md:border-l"
+            className="flex items-center gap-5 py-8 px-4 md:px-9 border-t md:border-t-0 md:border-l"
             style={{ borderColor: HAIRLINE }}
           >
             <div
-              className="w-[62px] h-[62px] rounded-full flex items-center justify-center shrink-0"
-              style={{ backgroundColor: "#E5E8E3", color: GREEN_ACCENT }}
+              className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0"
             >
-              <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="1.6">
+              <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="1.8">
                 <circle cx="12" cy="12" r="9" />
                 <ellipse cx="12" cy="12" rx="4" ry="9" />
                 <path d="M3.5 9h17M3.5 15h17" />
               </svg>
             </div>
             <div>
-              <div
-                style={{ fontFamily: SERIF_FONT }}
-                className="text-[38px] md:text-[42px] leading-none font-normal text-[#111827]"
-              >
+              <div className="text-3xl md:text-4xl leading-none font-bold font-display text-foreground tracking-tight">
                 55+
               </div>
               <div
-                style={{ color: GREEN_ACCENT, letterSpacing: "0.09em" }}
-                className="mt-2.5 text-[11.5px] font-bold uppercase"
+                style={{ color: BRAND_NAVY, letterSpacing: "0.09em" }}
+                className="mt-2 text-xs font-bold uppercase"
               >
                 COUNTRIES
               </div>
-              <p className="mt-1.5 text-[13.5px] leading-[1.55] text-[#6B7280]">
+              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                 A truly global footprint
               </p>
             </div>

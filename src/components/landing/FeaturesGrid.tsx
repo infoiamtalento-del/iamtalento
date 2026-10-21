@@ -15,7 +15,7 @@ const screeningFeatures = [
 ];
 
 const assessmentFeatures = [
-  { icon: ClipboardCheck, title: "Custom Assessments", desc: "Create role-specific skill tests, coding challenges, aptitude assessments, and domain quizzes — or auto-generate from your JD.", stat: "200+ templates" },
+  { icon: ClipboardCheck, title: "Custom Assessments", desc: "Create role-specific skill tests, coding challenges, aptitude assessments, and domain quizzes, or auto-generate from your JD.", stat: "200+ templates" },
   { icon: Mic, title: "Voice & Personality Analysis", desc: "AI-powered voice analysis assesses communication skills, confidence levels, and personality traits during interviews.", stat: "AI voice scoring" },
   { icon: Video, title: "Live & Automated Interviews", desc: "AI-proctored video interviews with automated scheduling, recording, transcription, and behavioral scoring.", stat: "Automated proctoring" },
   { icon: Code2, title: "Code Quality Analysis", desc: "Real-time code execution, quality scoring, approach analysis, and code playback for engineering roles.", stat: "Live coding" },
@@ -58,7 +58,7 @@ const FeaturesGrid = () => {
         <div className="text-center max-w-2xl mx-auto mb-16">
           <SectionBadge label="Platform Features" icon={Zap} />
           <h2 className="text-3xl md:text-4xl font-bold font-display mb-4">Everything You Need to<br /><span className="text-primary">Hire & Get Hired</span></h2>
-          <p className="text-muted-foreground text-lg">AI screening, secure assessments, and career intelligence — built for both sides of hiring.</p>
+          <p className="text-muted-foreground text-lg">AI screening, secure assessments, and career intelligence, built for both sides of hiring.</p>
         </div>
 
         <Tabs defaultValue="screening" className="w-full">

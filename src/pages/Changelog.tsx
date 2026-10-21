@@ -4,14 +4,14 @@ import { Badge } from "@/components/ui/badge";
 
 const entries = [
   { version: "3.2.0", date: "Feb 12, 2026", changes: [
-    { type: "New", text: "Human-Led AI Screening — combine AI scores with recruiter judgment for final shortlists" },
+    { type: "New", text: "Human-Led AI Screening, combine AI scores with recruiter judgment for final shortlists" },
     { type: "New", text: "Adaptive skill assessments that adjust difficulty in real-time based on candidate performance" },
     { type: "Improvement", text: "AI screening accuracy improved from 96% to 98.5% with new multi-dimensional scoring model" },
     { type: "Fix", text: "Fixed timezone handling in scheduled assessment windows across different regions" },
   ]},
   { version: "3.1.0", date: "Jan 25, 2026", changes: [
     { type: "New", text: "Candidate skill gap analysis with personalized learning recommendations" },
-    { type: "Improvement", text: "Debiasing algorithms updated — third-party audit confirms 99.2% fairness score" },
+    { type: "Improvement", text: "Debiasing algorithms updated, third-party audit confirms 99.2% fairness score" },
     { type: "Improvement", text: "Resume parsing now supports 45+ languages with improved accuracy" },
     { type: "Fix", text: "Resolved edge case in multi-role matching where candidates received duplicate recommendations" },
   ]},
@@ -32,8 +32,8 @@ const typeColor: Record<string, string> = {
 const Changelog = () => (
   <>
     <Helmet>
-      <title>Changelog — I Am Talento | Latest Updates</title>
-      <meta name="description" content="See what's new in I Am Talento — latest AI screening features, assessment updates, and platform improvements." />
+      <title>Changelog | I Am Talento | Latest Updates</title>
+      <meta name="description" content="See what's new in I Am Talento, latest AI screening features, assessment updates, and platform improvements." />
     </Helmet>
     <Layout>
       <section className="pt-32 pb-24">

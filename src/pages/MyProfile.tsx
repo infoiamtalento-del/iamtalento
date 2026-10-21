@@ -106,7 +106,7 @@ const MyProfile = () => {
   return (
     <>
       <Helmet>
-        <title>{profile.full_name ? `${profile.full_name} — IAmTalento` : "My Profile — IAmTalento"}</title>
+        <title>{profile.full_name ? `${profile.full_name} | IAmTalento` : "My Profile | IAmTalento"}</title>
         <meta name="description" content={profile.professional_headline || "View your verified professional profile on IAmTalento."} />
       </Helmet>
 
@@ -236,7 +236,7 @@ const MyProfile = () => {
                             <h3 className="text-sm font-semibold">{exp.job_title}</h3>
                             <p className="text-xs text-muted-foreground">{exp.company_name}{exp.employment_type ? ` · ${exp.employment_type}` : ""}</p>
                             <p className="text-xs text-muted-foreground mt-0.5">
-                              {formatDate(exp.start_date)} — {exp.is_current ? "Present" : formatDate(exp.end_date)}
+                              {formatDate(exp.start_date)}, {exp.is_current ? "Present" : formatDate(exp.end_date)}
                               {exp.location ? ` · ${exp.location}` : ""}
                             </p>
                             {exp.description && <p className="text-xs text-muted-foreground mt-2 whitespace-pre-line">{exp.description}</p>}
@@ -260,9 +260,9 @@ const MyProfile = () => {
                           </div>
                           <div className="flex-1">
                             <h3 className="text-sm font-semibold">{edu.institution_name}</h3>
-                            <p className="text-xs text-muted-foreground">{edu.degree}{edu.field_of_study ? ` — ${edu.field_of_study}` : ""}</p>
+                            <p className="text-xs text-muted-foreground">{edu.degree}{edu.field_of_study ? `, ${edu.field_of_study}` : ""}</p>
                             {(edu.start_year || edu.end_year) && (
-                              <p className="text-xs text-muted-foreground mt-0.5">{edu.start_year || "?"} — {edu.end_year || "Present"}</p>
+                              <p className="text-xs text-muted-foreground mt-0.5">{edu.start_year || "?"}, {edu.end_year || "Present"}</p>
                             )}
                             {edu.grade && <p className="text-xs text-muted-foreground mt-0.5">Grade: {edu.grade}</p>}
                             {edu.description && <p className="text-xs text-muted-foreground mt-2">{edu.description}</p>}
@@ -285,7 +285,7 @@ const MyProfile = () => {
                             <h3 className="text-sm font-semibold">{proj.title}</h3>
                             {proj.organization && <p className="text-xs text-muted-foreground">{proj.organization}{proj.role_in_project ? ` · ${proj.role_in_project}` : ""}</p>}
                             {(proj.start_date || proj.end_date) && (
-                              <p className="text-xs text-muted-foreground mt-0.5">{formatDate(proj.start_date)} — {formatDate(proj.end_date) || "Present"}</p>
+                              <p className="text-xs text-muted-foreground mt-0.5">{formatDate(proj.start_date)}, {formatDate(proj.end_date) || "Present"}</p>
                             )}
                             {proj.description && <p className="text-xs text-muted-foreground mt-2">{proj.description}</p>}
                             {proj.impact && <p className="text-xs text-primary mt-1">Impact: {proj.impact}</p>}
@@ -389,7 +389,7 @@ const MyProfile = () => {
                         <h3 className="text-sm font-semibold">{v.role || "Volunteer"}</h3>
                         <p className="text-xs text-muted-foreground">{v.organization}{v.cause ? ` · ${v.cause}` : ""}</p>
                         {(v.start_date || v.end_date) && (
-                          <p className="text-xs text-muted-foreground mt-0.5">{formatDate(v.start_date)} — {formatDate(v.end_date) || "Present"}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">{formatDate(v.start_date)}, {formatDate(v.end_date) || "Present"}</p>
                         )}
                         {v.description && <p className="text-xs text-muted-foreground mt-1">{v.description}</p>}
                       </div>

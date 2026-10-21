@@ -36,7 +36,7 @@ const features = [
     icon: GraduationCap,
     tag: "🎓 AI Learning Recommendations",
     headline: "Personalized, Data-Driven Learning Roadmap",
-    description: "Targeted courses and projects built from your readiness report — not random content.",
+    description: "Targeted courses and projects built from your readiness report, not random content.",
     details: [
       { icon: GraduationCap, text: "Get Access to Industry-Relevant Courses" },
       { icon: BookOpen, text: "Learn in 5+ Languages, Anytime" },
@@ -56,7 +56,7 @@ const features = [
     icon: Briefcase,
     tag: "⚡ AI Job Search",
     headline: "Unlock High-Match, High-Growth Opportunities",
-    description: "Your verified profile unlocks roles that match your actual capabilities — not just keywords.",
+    description: "Your verified profile unlocks roles that match your actual capabilities, not just keywords.",
     details: [
       { icon: Users, text: "Build a Verified, Performance-Based Profile" },
       { icon: Zap, text: "Get AI-Powered Smart Job Matches" },
@@ -97,7 +97,7 @@ const features = [
     icon: Mic,
     tag: "Career Podcasts",
     headline: "Learn from the Voices Shaping Your Industry",
-    description: "Insider conversations with hiring leaders, founders, and top performers — straight to your ears.",
+    description: "Insider conversations with hiring leaders, founders, and top performers, straight to your ears.",
     details: [
       { icon: Mic, text: "Weekly Episodes with Industry Leaders" },
       { icon: Headphones, text: "Listen Anywhere, On Any Device" },
@@ -318,7 +318,7 @@ const PlatformFeaturesSection = () => {
             <span className="text-primary">One Career Leap.</span>
           </motion.h2>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-            Measure, match, and grow — all in one platform
+            Measure, match, and grow, all in one platform
             <br className="hidden md:block" />
             built for results.
           </p>

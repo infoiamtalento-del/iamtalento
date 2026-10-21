@@ -194,7 +194,7 @@ const EmployerProfileBuilder = () => {
 
   return (
     <>
-      <Helmet><title>Employer Profile — IAmTalento</title></Helmet>
+      <Helmet><title>Employer Profile | IAmTalento</title></Helmet>
       <div className="min-h-screen bg-background">
         {/* Header */}
         <header className="sticky top-0 z-50 bg-card border-b border-border">

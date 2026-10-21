@@ -69,7 +69,7 @@ const webinarPerks = [
   { icon: Mic, title: "Live Q&A", desc: "Ask questions directly to speakers during the session." },
   { icon: TrendingUp, title: "Career Insights", desc: "Learn about trends and opportunities from leaders." },
   { icon: CheckCircle, title: "Certificates", desc: "Earn attendance certificates for every session." },
-  { icon: Globe, title: "Join from Anywhere", desc: "100% online — attend from any device, any location." },
+  { icon: Globe, title: "Join from Anywhere", desc: "100% online, attend from any device, any location." },
 ];
 
 /* ─── Shared Components ─── */
@@ -112,9 +112,9 @@ const HackathonsContent = () => {
         <img src={hackathonHero} alt="Hackathon event" className="w-full h-64 md:h-80 object-cover" />
         <div className="absolute inset-0 bg-gradient-to-r from-foreground/70 to-foreground/20" />
         <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-10">
-          <Badge className="bg-primary text-primary-foreground border-0 w-fit mb-3">Season 3 — Now Open</Badge>
+          <Badge className="bg-primary text-primary-foreground border-0 w-fit mb-3">Season 3, Now Open</Badge>
           <h2 className="text-2xl md:text-4xl font-bold font-display text-white mb-2">Build. Ship. Get Hired.</h2>
-          <p className="text-white/80 text-sm md:text-base max-w-lg mb-4">Join India's most impactful hackathons — solve real problems, win prizes, and get noticed by top employers.</p>
+          <p className="text-white/80 text-sm md:text-base max-w-lg mb-4">Join India's most impactful hackathons, solve real problems, win prizes, and get noticed by top employers.</p>
           <div className="flex flex-wrap gap-3">
             <Link to="/hackathons">
               <Button className="bg-[hsl(33,100%,50%)] text-white hover:bg-[hsl(33,100%,45%)] border-0 gap-2">Explore Hackathons <ArrowRight className="h-4 w-4" /></Button>
@@ -199,7 +199,7 @@ const WebinarsContent = () => {
         <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-10">
           <Badge className="bg-primary text-primary-foreground border-0 w-fit mb-3">Live Every Week</Badge>
           <h2 className="text-2xl md:text-4xl font-bold font-display text-white mb-2">Learn from the Best, For Free.</h2>
-          <p className="text-white/80 text-sm md:text-base max-w-lg mb-4">Expert-led webinars on career growth, tech deep-dives, and interview prep — join live or watch on demand.</p>
+          <p className="text-white/80 text-sm md:text-base max-w-lg mb-4">Expert-led webinars on career growth, tech deep-dives, and interview prep, join live or watch on demand.</p>
           <div className="flex flex-wrap gap-3">
             <Link to="/webinars">
               <Button className="bg-[hsl(33,100%,50%)] text-white hover:bg-[hsl(33,100%,45%)] border-0 gap-2">Explore Webinars <ArrowRight className="h-4 w-4" /></Button>
@@ -297,7 +297,7 @@ const Meetups = () => {
   return (
     <>
       <Helmet>
-        <title>Hackathons & Webinars — I Am Talento</title>
+        <title>Hackathons & Webinars | I Am Talento</title>
         <meta name="description" content="Join hackathons and webinars to build skills, win prizes, and get hired by top companies." />
       </Helmet>
       <Layout>
@@ -309,7 +309,7 @@ const Meetups = () => {
                 Hackathons &<br /><span className="text-primary">Webinars</span>
               </h1>
               <p className="text-muted-foreground text-base md:text-lg max-w-xl">
-                Compete, learn, and connect — explore our curated events designed to accelerate your career.
+                Compete, learn, and connect, explore our curated events designed to accelerate your career.
               </p>
             </div>
 

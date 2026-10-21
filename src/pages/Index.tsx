@@ -29,13 +29,13 @@ import PlatformFeaturesSection from "@/components/landing/PlatformFeaturesSectio
 const Index = () => (
   <>
     <Helmet>
-      <title>IAmTalento — AI-Powered Industry Readiness & Skill Intelligence Platform</title>
+      <title>IAmTalento | AI-Powered Industry Readiness & Skill Intelligence Platform</title>
       <meta name="description" content="Measure your Industry Readiness Score. Benchmark against real professionals. Role-specific assessments, verified certifications, and AI-powered job matching." />
-      <meta property="og:title" content="IAmTalento — You Don't Lack Talent. You Lack Proof." />
+      <meta property="og:title" content="IAmTalento | You Don't Lack Talent. You Lack Proof." />
       <meta property="og:description" content="AI-powered Industry Readiness Score, secure proctored assessments, verified certifications, and smarter job matching." />
       <meta property="og:type" content="website" />
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content="IAmTalento — AI Industry Readiness Platform" />
+      <meta name="twitter:title" content="IAmTalento | AI Industry Readiness Platform" />
       <meta name="twitter:description" content="Measure your Industry Readiness. Benchmark against real professionals. Improve with precision." />
     </Helmet>
     <Layout>

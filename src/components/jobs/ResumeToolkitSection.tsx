@@ -62,7 +62,7 @@ const ResumeToolkitSection = () => {
             transition={{ delay: 0.1 }}
             className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto"
           >
-            AI-powered builder, grader, and expert templates —
+            AI-powered builder, grader, and expert templates,
             <br className="hidden md:block" />
             everything you need to land more interviews.
           </motion.p>

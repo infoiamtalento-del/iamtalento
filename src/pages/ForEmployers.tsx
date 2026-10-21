@@ -151,7 +151,7 @@ const Hero = () => (
             <span className="text-primary">With Proof.</span>
           </h1>
           <p className="mb-8 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
-            Find, verify, rank, and track job-ready candidates with AI — while your recruiters stay firmly in control.
+            Find, verify, rank, and track job-ready candidates with AI, while your recruiters stay firmly in control.
           </p>
           <div className="mb-8 flex flex-wrap gap-3">
             <Button asChild size="lg" className="h-12 gap-2 px-7"><Link to="/employer-profile">Post Jobs <ArrowRight className="h-4 w-4" /></Link></Button>
@@ -264,9 +264,9 @@ const FAQSection = () => {
 const ForEmployers = () => (
   <>
     <Helmet>
-      <title>For Employers — Hire Verified Talent Faster | IAmTalento</title>
+      <title>For Employers | Hire Verified Talent Faster | IAmTalento</title>
       <meta name="description" content="Find, verify, rank, and hire job-ready talent with AI-powered search, assessments, and evidence-backed candidate profiles." />
-      <meta property="og:title" content="IAmTalento for Employers — Hire with Proof" />
+      <meta property="og:title" content="IAmTalento for Employers | Hire with Proof" />
       <meta property="og:description" content="A clearer, faster hiring platform for verified talent and skills-first decisions." />
       <meta property="og:type" content="website" />
       <meta name="twitter:card" content="summary" />

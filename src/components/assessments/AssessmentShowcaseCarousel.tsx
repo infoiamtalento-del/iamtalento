@@ -200,7 +200,7 @@ const AssessmentShowcaseCarousel = () => {
             Choose Your <span className="text-primary">Assessment</span>
           </h2>
           <p className="text-muted-foreground">
-            From AI proctoring to live score dashboards — see what makes our assessments world-class.
+            From AI proctoring to live score dashboards, see what makes our assessments world-class.
           </p>
         </motion.div>
 

@@ -216,7 +216,7 @@ const AssessmentDiscovery = () => {
       }
     >
       <Helmet>
-        <title>Explore Skill Assessments — I Am Talento</title>
+        <title>Explore Skill Assessments | I Am Talento</title>
         <meta
           name="description"
           content="Discover proctored skill assessments by industry, domain and experience level, and get your verified CIR report."
@@ -231,7 +231,7 @@ const AssessmentDiscovery = () => {
               <span className="text-primary">Show What You Can Do.</span>
             </h1>
             <p className="text-slate-600 text-base md:text-lg max-w-xl mx-auto leading-relaxed text-center">
-              Find proctored assessments matched to your industry, domain, and experience level—then turn your verified score into a recruiter-ready CIR report.
+              Find proctored assessments matched to your industry, domain, and experience level, then turn your verified score into a recruiter-ready CIR report.
             </p>
           </div>
         </section>

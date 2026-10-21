@@ -79,7 +79,7 @@ const SalaryInsightsSection = () => {
             transition={{ delay: 0.1 }}
             className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto"
           >
-            Compare salaries, explore growth trends, and negotiate with confidence —
+            Compare salaries, explore growth trends, and negotiate with confidence,
             <br className="hidden md:block" />
             powered by data from 50,000+ verified Talento offers.
           </motion.p>
@@ -111,7 +111,7 @@ const SalaryInsightsSection = () => {
             <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-medium">
                 <Sparkles className="h-3.5 w-3.5" />
-                Live Salary Intelligence — 50,000+ verified Talento offers
+                Live Salary Intelligence, 50,000+ verified Talento offers
               </div>
               <Link
                 to="/assessments"
@@ -190,7 +190,7 @@ const SalaryInsightsSection = () => {
                         {formatINR(talento)}
                       </div>
                       <div className="text-sm text-muted-foreground mt-1">
-                        What a <span className="text-foreground font-semibold">{roleBaselines[role].label}</span> with {exp} {exp === 1 ? "year" : "years"} of experience can command — <span className="text-primary font-semibold">far above the market average</span>.
+                        What a <span className="text-foreground font-semibold">{roleBaselines[role].label}</span> with {exp} {exp === 1 ? "year" : "years"} of experience can command, <span className="text-primary font-semibold">far above the market average</span>.
                       </div>
                     </div>
                     <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 text-sm font-semibold bg-emerald-500/10 px-2.5 py-1 rounded-full">

@@ -7,12 +7,12 @@ import hackathonEvent1 from "@/assets/hackathon-event-1.jpg";
 import hackathonEvent2 from "@/assets/hackathon-event-2.jpg";
 
 const scheduleData = [
-  { title: "AI-Powered Resume Screener — Build Sprint", speaker: "Aditya Sharma", role: "CTO, RecruitAI", duration: "48 hrs", img: hackathonHero, tags: ["AI/ML", "Hiring Tech"], status: "live" as const },
-  { title: "FinTech Fraud Detection — Live Challenge", speaker: "Neha Kapoor", role: "VP Eng, Razorpay", duration: "48 hrs", img: hackathonEvent1, tags: ["FinTech", "Security"], status: "live" as const },
-  { title: "EdTech Accessibility Hackathon — Open Build", speaker: "Rohan Verma", role: "Product Lead, Byju's", duration: "48 hrs", img: hackathonEvent2, tags: ["EdTech", "Impact"], status: "live" as const },
-  { title: "Green Energy Dashboard — Sustainability Sprint", speaker: "Kavya Reddy", role: "Eng Lead, Tata Power", duration: "48 hrs", img: hackathonHero, tags: ["CleanTech", "Data Viz"], status: "upcoming" as const },
-  { title: "HealthTech Diagnostics — AI Challenge", speaker: "Vikram Joshi", role: "CTO, Practo", duration: "48 hrs", img: hackathonEvent1, tags: ["HealthTech", "AI"], status: "upcoming" as const },
-  { title: "Smart City IoT — Connected Solutions", speaker: "Priya Nair", role: "IoT Lead, Cisco India", duration: "48 hrs", img: hackathonEvent2, tags: ["IoT", "Smart City"], status: "upcoming" as const },
+  { title: "AI-Powered Resume Screener, Build Sprint", speaker: "Aditya Sharma", role: "CTO, RecruitAI", duration: "48 hrs", img: hackathonHero, tags: ["AI/ML", "Hiring Tech"], status: "live" as const },
+  { title: "FinTech Fraud Detection, Live Challenge", speaker: "Neha Kapoor", role: "VP Eng, Razorpay", duration: "48 hrs", img: hackathonEvent1, tags: ["FinTech", "Security"], status: "live" as const },
+  { title: "EdTech Accessibility Hackathon, Open Build", speaker: "Rohan Verma", role: "Product Lead, Byju's", duration: "48 hrs", img: hackathonEvent2, tags: ["EdTech", "Impact"], status: "live" as const },
+  { title: "Green Energy Dashboard, Sustainability Sprint", speaker: "Kavya Reddy", role: "Eng Lead, Tata Power", duration: "48 hrs", img: hackathonHero, tags: ["CleanTech", "Data Viz"], status: "upcoming" as const },
+  { title: "HealthTech Diagnostics, AI Challenge", speaker: "Vikram Joshi", role: "CTO, Practo", duration: "48 hrs", img: hackathonEvent1, tags: ["HealthTech", "AI"], status: "upcoming" as const },
+  { title: "Smart City IoT, Connected Solutions", speaker: "Priya Nair", role: "IoT Lead, Cisco India", duration: "48 hrs", img: hackathonEvent2, tags: ["IoT", "Smart City"], status: "upcoming" as const },
 ];
 
 const HackathonScheduleSection = () => {

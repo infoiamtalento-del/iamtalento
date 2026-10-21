@@ -16,13 +16,13 @@ import {
 import SectionBadge from "@/components/ui/section-badge";
 
 const steps = [
-  { icon: User,          label: "STEP 1", title: "Build Your Profile",      desc: "Tell us who you are in 2 minutes — role, experience, and goals.",          theme: "red" },
+  { icon: User,          label: "STEP 1", title: "Build Your Profile",      desc: "Tell us who you are in 2 minutes, role, experience, and goals.",          theme: "red" },
   { icon: Layers,        label: "STEP 2", title: "Pick Your Domain",        desc: "Choose your field & experience level for a fully tailored path.",          theme: "yellow" },
-  { icon: ListChecks,    label: "STEP 3", title: "Select Your Test",        desc: "Role-specific. AI-curated. Precise — built for your exact target job.",    theme: "red" },
+  { icon: ListChecks,    label: "STEP 3", title: "Select Your Test",        desc: "Role-specific. AI-curated. Precise, built for your exact target job.",    theme: "red" },
   { icon: MessageSquare, label: "STEP 4", title: "Practice Like It's Real", desc: "Mock interviews + AI practice tests that mirror real hiring pressure.",    theme: "yellow" },
   { icon: FileText,      label: "STEP 5", title: "Craft Your AI Resume",    desc: "Premium templates engineered to pass ATS and actually get callbacks.",     theme: "red" },
-  { icon: ShieldCheck,   label: "STEP 6", title: "Take the Proctored Test", desc: "Fair. Secure. Employer-trusted — your real skill, on the record.",         theme: "yellow" },
-  { icon: BarChart3,     label: "STEP 7", title: "Get Your ScoreCard",      desc: "One score that speaks louder than your CV — benchmarked against peers.",  theme: "red" },
+  { icon: ShieldCheck,   label: "STEP 6", title: "Take the Proctored Test", desc: "Fair. Secure. Employer-trusted, your real skill, on the record.",         theme: "yellow" },
+  { icon: BarChart3,     label: "STEP 7", title: "Get Your ScoreCard",      desc: "One score that speaks louder than your CV, benchmarked against peers.",  theme: "red" },
   { icon: Send,          label: "STEP 8", title: "Apply to 100+ Jobs",      desc: "Let employers come to you. Verified. Ranked. Ready to hire.",              theme: "yellow" },
 ];
 
@@ -57,7 +57,7 @@ const WebinarHowItWorksSection = () => {
             <span className="text-primary">Real Skill in 8 Steps</span>
           </h2>
           <p className="text-muted-foreground max-w-md">
-            From zero to offer-ready — a complete system built to prove your value.
+            From zero to offer-ready, a complete system built to prove your value.
           </p>
         </div>
 

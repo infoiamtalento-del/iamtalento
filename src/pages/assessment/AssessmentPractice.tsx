@@ -79,7 +79,7 @@ const AssessmentPractice = () => {
     <>
       <Helmet>
         <title>
-          {cfg.label} · {sub.name} — I Am Talento
+          {cfg.label} · {sub.name}, I Am Talento
         </title>
       </Helmet>
       <Layout>

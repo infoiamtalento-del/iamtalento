@@ -23,7 +23,7 @@ const Pricing = () => {
   return (
     <>
       <Helmet>
-        <title>{tab === "candidates" ? "Candidate" : "Employer"} Pricing — IAmTalento</title>
+        <title>{tab === "candidates" ? "Candidate" : "Employer"} Pricing | IAmTalento</title>
         <meta name="description" content="Explore IAmTalento pricing plans for candidates and employers. Start free, upgrade when ready." />
       </Helmet>
       <Layout>
@@ -48,7 +48,7 @@ const Pricing = () => {
               <p className="text-base md:text-lg text-primary-foreground/70 max-w-2xl mx-auto mb-8">
                 {tab === "candidates"
                   ? <>Build your profile and apply for roles free.<br className="hidden md:block" /><br className="hidden md:block" />Upgrade when you need verification.</>
-                  : <>Post jobs and browse talent free, then upgrade for verified profiles and custom assessments —<br className="hidden md:block" />pay only when your hiring needs grow.</>
+                  : <>Post jobs and browse talent free, then upgrade for verified profiles and custom assessments,<br className="hidden md:block" />pay only when your hiring needs grow.</>
                 }
               </p>
 

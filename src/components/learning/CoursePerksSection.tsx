@@ -436,7 +436,7 @@ const CommunityPanelVisual = () => {
   const threads = [
     { user: "Aditi K.", avatar: "https://randomuser.me/api/portraits/women/41.jpg", msg: "Can someone explain closures in simple terms?", replies: 12, time: "2h ago" },
     { user: "Rahul M.", avatar: "https://randomuser.me/api/portraits/men/34.jpg", msg: "Just completed the React module! 🎉", replies: 8, time: "4h ago" },
-    { user: "Sneha P.", avatar: "https://randomuser.me/api/portraits/women/63.jpg", msg: "Study group for AWS cert — anyone in?", replies: 24, time: "1h ago" },
+    { user: "Sneha P.", avatar: "https://randomuser.me/api/portraits/women/63.jpg", msg: "Study group for AWS cert, anyone in?", replies: 24, time: "1h ago" },
   ];
   return (
     <div className="relative h-full flex items-center justify-center p-4">

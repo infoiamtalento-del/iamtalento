@@ -8,10 +8,10 @@ const features = [
   {
     tag: "WHY IT MATTERS",
     title: "Stop Sending 100 Resumes. Start Proving Your Skills.",
-    desc: "97% of applications never get a human glance. With a verified assessment score, employers come to you — no cold applications needed.",
+    desc: "97% of applications never get a human glance. With a verified assessment score, employers come to you, no cold applications needed.",
     bullets: [
       { icon: XCircle, text: "Traditional resumes get lost in ATS filters", color: "text-amber-500" },
-      { icon: CheckCircle2, text: "Verified scores bypass screening — go straight to shortlist", color: "text-primary" },
+      { icon: CheckCircle2, text: "Verified scores bypass screening, go straight to shortlist", color: "text-primary" },
       { icon: TrendingUp, text: "3x more interview callbacks for verified candidates", color: "text-primary" },
     ],
     image: stepBuildProfileImg,
@@ -32,11 +32,11 @@ const features = [
   {
     tag: "GET FOUND",
     title: "Verified Talent Gets Found. Unverified Gets Scrolled Past.",
-    desc: "Recruiters filter for verified first. Your Verified Badge pushes you to the top of search results — like a blue checkmark for your career.",
+    desc: "Recruiters filter for verified first. Your Verified Badge pushes you to the top of search results, like a blue checkmark for your career.",
     bullets: [
       { icon: CheckCircle2, text: "Priority listing in employer search results", color: "text-primary" },
       { icon: TrendingUp, text: "67% interview callback rate for verified candidates", color: "text-primary" },
-      { icon: ShieldCheck, text: "Certificate valid for 12 months — always current", color: "text-primary" },
+      { icon: ShieldCheck, text: "Certificate valid for 12 months, always current", color: "text-primary" },
     ],
     image: stepReportImg,
     imageRight: true,

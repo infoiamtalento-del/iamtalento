@@ -28,7 +28,7 @@ const Blog = () => {
   return (
     <>
       <Helmet>
-        <title>Blog — I Am Talento | HR & Recruitment Insights</title>
+        <title>Blog | I Am Talento | HR & Recruitment Insights</title>
         <meta name="description" content="Insights on AI hiring, talent screening, assessment strategies, and HR best practices from the I Am Talento team." />
       </Helmet>
       <Layout>

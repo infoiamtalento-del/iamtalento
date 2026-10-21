@@ -20,7 +20,7 @@ const scheduleData = [
   { title: "Full-Stack Career Roadmap: Junior to Senior", speaker: "Rahul Mehta", role: "Engineering Lead, Swiggy", duration: "75 min", img: webinarCover2, speakerImg: webinarSpeaker2, tags: ["Tech Skills", "Career"], status: "live" as const },
   { title: "Digital Marketing Mastery: SEO + Performance", speaker: "Ananya Verma", role: "CMO, D2C Brand", duration: "90 min", img: webinarCover3, speakerImg: webinarSpeaker3, tags: ["Domain", "Marketing"], status: "live" as const },
   { title: "Data Science for Business Leaders", speaker: "Kabir Singh", role: "DS Head, Walmart Labs", duration: "60 min", img: webinarCover4, speakerImg: webinarSpeaker4, tags: ["Data Science", "Leadership"], status: "upcoming" as const },
-  { title: "Product Management — From 0 to PM", speaker: "Meera Joshi", role: "Sr. PM, Microsoft", duration: "75 min", img: webinarCover5, speakerImg: webinarSpeaker5, tags: ["Product", "Career"], status: "upcoming" as const },
+  { title: "Product Management, From 0 to PM", speaker: "Meera Joshi", role: "Sr. PM, Microsoft", duration: "75 min", img: webinarCover5, speakerImg: webinarSpeaker5, tags: ["Product", "Career"], status: "upcoming" as const },
   { title: "Cracking System Design Interviews", speaker: "Arun Kumar", role: "Principal Eng, Amazon", duration: "90 min", img: webinarCover6, speakerImg: webinarSpeaker6, tags: ["Tech Skills", "Interview"], status: "upcoming" as const },
 ];
 

@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
 
 const alerts = [
-  "Sneha from Mumbai just completed her Digital Marketing assessment — scored Above Market",
+  "Sneha from Mumbai just completed her Digital Marketing assessment, scored Above Market",
   'Rahul from Bangalore unlocked the "I Am Talento Verified" badge 12 minutes ago',
   "47 employers viewed verified candidate profiles in the last hour",
   "A hiring manager from Razorpay shortlisted 3 verified candidates today",
-  "Arjun just received an interview invite — 6 hours after completing his assessment",
+  "Arjun just received an interview invite, 6 hours after completing his assessment",
 ];
 
 const FomoTicker = () => (

@@ -148,7 +148,7 @@ const AssessmentTest = () => {
   return (
     <>
       <Helmet>
-        <title>{a.title} — Assessment in progress</title>
+        <title>{a.title} | Assessment in progress</title>
       </Helmet>
       <div className="min-h-screen bg-secondary/30 flex flex-col">
         {/* Top bar */}

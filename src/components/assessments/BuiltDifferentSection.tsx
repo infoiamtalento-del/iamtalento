@@ -110,7 +110,7 @@ const cardData = [
   {
     num: "01",
     title: "Expert authored",
-    desc: "Every question is written by engineers, PMs and designers actively working at top companies — not recycled from textbooks.",
+    desc: "Every question is written by engineers, PMs and designers actively working at top companies, not recycled from textbooks.",
     visual: <ExpertAvatars />,
   },
   {
@@ -122,7 +122,7 @@ const cardData = [
   {
     num: "03",
     title: "Always current",
-    desc: "When React 19 ships or a new AWS service goes mainstream, the assessments update within weeks — not years.",
+    desc: "When React 19 ships or a new AWS service goes mainstream, the assessments update within weeks, not years.",
     visual: <TickingClock />,
   },
 ];

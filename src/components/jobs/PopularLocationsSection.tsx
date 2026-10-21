@@ -22,7 +22,7 @@ const PopularLocationsSection = () => {
             <span className="text-primary">Hottest Job Markets</span>
           </h2>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-            From Bangalore and Mumbai to Delhi and Hyderabad —
+            From Bangalore and Mumbai to Delhi and Hyderabad,
             <br className="hidden md:block" />
             discover openings in the city you want to grow in.
           </p>

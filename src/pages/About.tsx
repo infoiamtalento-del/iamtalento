@@ -21,7 +21,7 @@ const team = [
 
 const milestones = [
   { year: "2022", event: "Founded with a mission to make AI hiring fair, fast, and accessible for everyone" },
-  { year: "2023", event: "Launched AI screening engine — processed 50,000 profiles in first 3 months" },
+  { year: "2023", event: "Launched AI screening engine, processed 50,000 profiles in first 3 months" },
   { year: "2024", event: "Raised Series A. Onboarded 5,000 employers. Launched custom assessment builder" },
   { year: "2025", event: "500K+ profiles screened. SOC 2 certified. Enterprise tier with human-led AI screening" },
   { year: "2026", event: "12,000+ employers, 100+ HR integrations. Recognized as top AI HR platform by Gartner" },
@@ -32,7 +32,7 @@ const About = () => {
   return (
     <>
       <Helmet>
-        <title>About — I Am Talento | Our Mission & Team</title>
+        <title>About | I Am Talento | Our Mission & Team</title>
         <meta name="description" content="Learn about I Am Talento's mission to make hiring fair and fast with AI. Meet the team building the future of talent intelligence." />
       </Helmet>
       <Layout>

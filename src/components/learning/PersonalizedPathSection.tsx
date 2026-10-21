@@ -44,7 +44,7 @@ const PersonalizedPathSection = () => (
             </h2>
 
             <p className="text-foreground/70 max-w-lg mb-10 leading-relaxed">
-              Based on your profile and readiness score, we map the most relevant route toward your target role —<br className="hidden md:block" />learn with direction, not guesswork.
+              Based on your profile and readiness score, we map the most relevant route toward your target role,<br className="hidden md:block" />learn with direction, not guesswork.
             </p>
 
             {/* Step row with connectors */}

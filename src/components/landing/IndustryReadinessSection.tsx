@@ -481,7 +481,7 @@ const IndustryReadinessSection = () => {
             Measure Your Industry<br /><span className="text-primary">Readiness Score</span>
           </h2>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-            Benchmark yourself against 50,000+ verified professionals —
+            Benchmark yourself against 50,000+ verified professionals,
             <br className="hidden md:block" />
             trusted by top employers across every industry.
           </p>

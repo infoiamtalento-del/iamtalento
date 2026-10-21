@@ -257,7 +257,7 @@ function JobMatchStage() {
           <Unlock className="w-4 h-4 text-primary-foreground" />
         </div>
         <p className="text-xs font-bold text-foreground">Profile Unlocked</p>
-        <p className="text-[9px] text-muted-foreground">Score of 82 — matched with premium roles</p>
+        <p className="text-[9px] text-muted-foreground">Score of 82, matched with premium roles</p>
       </div>
 
       <div className="space-y-2 flex-1">

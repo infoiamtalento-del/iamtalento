@@ -41,7 +41,7 @@ const AssessmentPreCheck = () => {
   return (
     <>
       <Helmet>
-        <title>Pre-test checks — {a.title}</title>
+        <title>Pre-test checks | {a.title}</title>
       </Helmet>
       <div className="min-h-screen bg-secondary/40 flex items-center justify-center p-5">
         <div className="w-full max-w-2xl rounded-2xl border border-border bg-background p-7 md:p-9">

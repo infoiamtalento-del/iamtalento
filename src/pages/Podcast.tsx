@@ -46,30 +46,30 @@ const tickerItems = [
   "🔴 Priya from Bangalore just joined the live session",
   "🔴 Rohit got a job offer after applying a tip from last week's episode",
   "🔴 847 people registered for tomorrow's podcast in the last 2 hours",
-  '🔴 "Cracking Product Management Roles" — starting in 18 minutes',
+  '🔴 "Cracking Product Management Roles", starting in 18 minutes',
 ];
 
 const episodeFilterTabs = ["All", "Tech", "Marketing", "Finance", "HR & Hiring", "Leadership", "Fresher Special"];
 
 const episodes = [
   { title: "Why 90% of Resumes Get Rejected Before a Human Reads Them", img: ep1, guest: "Priya Sharma", designation: "Sr. HR Lead, Infosys", duration: "34 min", views: "12.4K", insight: "The ATS filters out 90% before a recruiter even sees your resume.", category: "HR & Hiring", featured: true },
-  { title: "Salary Negotiation Masterclass — Stop Leaving Money on the Table", img: ep2, guest: "Rahul Mehta", designation: "Career Coach", duration: "41 min", views: "9.8K", insight: "Most candidates accept the first offer. Here's why you shouldn't.", category: "Leadership", featured: false },
-  { title: "From Fresher to ₹12 LPA in 18 Months — A Real Story", img: ep3, guest: "Karan M.", designation: "Software Engineer", duration: "28 min", views: "18.2K", insight: "He skipped the traditional path and bet on skills over degrees.", category: "Fresher Special", featured: true },
+  { title: "Salary Negotiation Masterclass, Stop Leaving Money on the Table", img: ep2, guest: "Rahul Mehta", designation: "Career Coach", duration: "41 min", views: "9.8K", insight: "Most candidates accept the first offer. Here's why you shouldn't.", category: "Leadership", featured: false },
+  { title: "From Fresher to ₹12 LPA in 18 Months, A Real Story", img: ep3, guest: "Karan M.", designation: "Software Engineer", duration: "28 min", views: "18.2K", insight: "He skipped the traditional path and bet on skills over degrees.", category: "Fresher Special", featured: true },
   { title: "The Skills That Actually Get You Promoted", img: ep4, guest: "Ananya Desai", designation: "VP Engineering", duration: "37 min", views: "7.1K", insight: "Technical skills get you hired. These skills get you promoted.", category: "Tech", featured: false },
   { title: "How LinkedIn Recruiters Really Search for Candidates", img: ep1, guest: "Vikram Singh", designation: "Talent Acquisition, Meta", duration: "29 min", views: "11.6K", insight: "Recruiters use Boolean strings you've never heard of.", category: "HR & Hiring", featured: false },
   { title: "Breaking into Product Management with No PM Experience", img: ep2, guest: "Sneha Kapoor", designation: "Product Lead, Razorpay", duration: "45 min", views: "8.3K", insight: "You don't need a PM title to start building PM experience.", category: "Tech", featured: true },
   { title: "How to Build a Personal Brand That Gets You Hired", img: ep3, guest: "Nisha Patel", designation: "Marketing Director, Zomato", duration: "33 min", views: "6.9K", insight: "Your online presence is your new resume. Most people ignore this.", category: "Marketing", featured: false },
-  { title: "The ₹50 LPA Roadmap — What Top Engineers Do Differently", img: ep4, guest: "Siddharth Rao", designation: "Staff Engineer, Google", duration: "52 min", views: "22.1K", insight: "It's not about working harder. It's about choosing the right problems.", category: "Tech", featured: true },
-  { title: "Finance Careers in 2026 — What's Hot, What's Not", img: ep1, guest: "Megha Joshi", designation: "CFO, Groww", duration: "38 min", views: "5.4K", insight: "Traditional finance roles are shrinking. Here's where the growth is.", category: "Finance", featured: false },
+  { title: "The ₹50 LPA Roadmap, What Top Engineers Do Differently", img: ep4, guest: "Siddharth Rao", designation: "Staff Engineer, Google", duration: "52 min", views: "22.1K", insight: "It's not about working harder. It's about choosing the right problems.", category: "Tech", featured: true },
+  { title: "Finance Careers in 2026, What's Hot, What's Not", img: ep1, guest: "Megha Joshi", designation: "CFO, Groww", duration: "38 min", views: "5.4K", insight: "Traditional finance roles are shrinking. Here's where the growth is.", category: "Finance", featured: false },
 ];
 
 const valueProps = [
-  { icon: Target, title: "Direct Access to Decision Makers", desc: "Ask your questions live to the people who actually make hiring decisions — no filters, no PR speak." },
+  { icon: Target, title: "Direct Access to Decision Makers", desc: "Ask your questions live to the people who actually make hiring decisions, no filters, no PR speak." },
   { icon: TrendingUp, title: "Actionable Career Intelligence", desc: "Every episode ends with a 3-step action plan you can implement before Monday morning." },
-  { icon: Award, title: "Exclusive Guest Insights", desc: "Guests share what they've never said publicly — hiring secrets, salary truths, and what your resume is missing." },
+  { icon: Award, title: "Exclusive Guest Insights", desc: "Guests share what they've never said publicly, hiring secrets, salary truths, and what your resume is missing." },
   { icon: Handshake, title: "Live Networking Rooms", desc: "Post-podcast networking breakout rooms let you connect with attendees and guests directly." },
   { icon: FileText, title: "Episode Recap Delivered to You", desc: "Can't attend live? Get a full AI-generated summary, key takeaways, and action points in your inbox." },
-  { icon: Bookmark, title: "Certificate of Attendance", desc: "Downloadable certificate for every live session you attend — add it to your I Am Talento profile." },
+  { icon: Bookmark, title: "Certificate of Attendance", desc: "Downloadable certificate for every live session you attend, add it to your I Am Talento profile." },
 ];
 
 const hostTabs = ["All", "Career", "Tech", "Industry", "Startups"];
@@ -267,7 +267,7 @@ const FeaturedSession = () => (
           </div>
           <div className="relative z-10 p-8 md:p-10 max-w-[55%] flex flex-col justify-center min-h-[280px]">
             <h3 className="text-xl md:text-2xl font-bold font-display mb-3 leading-tight text-primary-foreground">
-              The Hiring Manager's Playbook — What They Really Look For
+              The Hiring Manager's Playbook, What They Really Look For
             </h3>
             <p className="text-primary-foreground/60 text-sm mb-1">Guest: VP of Talent Acquisition, Fortune 500</p>
             <p className="text-primary-foreground/50 text-xs mb-6 flex items-center gap-2"><Calendar className="h-3.5 w-3.5" /> Saturday, 7:00 PM IST</p>
@@ -285,7 +285,7 @@ const FeaturedSession = () => (
         {/* Preview bullets */}
         <div className="space-y-3">
           <h3 className="text-sm font-bold font-display mb-2">Episode Preview</h3>
-          {["What hiring managers decide in the first 30 seconds", "Resume red flags that get you rejected", "How verified skill scores change the conversation", "Live Q&A — your questions answered"].map((item, i) => (
+          {["What hiring managers decide in the first 30 seconds", "Resume red flags that get you rejected", "How verified skill scores change the conversation", "Live Q&A, your questions answered"].map((item, i) => (
             <motion.div key={i} initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }} className="flex items-start gap-3 rounded-xl border border-border bg-card p-3.5 hover:border-primary/30 transition-colors">
               <div className="h-7 w-7 rounded-lg bg-accent flex items-center justify-center shrink-0">
                 <span className="text-[10px] font-bold text-primary">{String(i + 1).padStart(2, "0")}</span>
@@ -305,9 +305,9 @@ const FeaturedSession = () => (
 /* ─── SECTION: Live & Upcoming Schedule ─── */
 const scheduleData = [
   { title: "How Razorpay hires backend engineers in 2026", speaker: "Aarav Kapoor", role: "VP Engineering, Razorpay", duration: "45 min", img: ep1, insight: "The hiring bar is higher than ever. Here's what actually gets you through.", tags: ["Hiring", "Backend"], status: "live" as const },
-  { title: "Breaking into AI/ML roles without a PhD", speaker: "Sneha Reddy", role: "ML Lead, Google", duration: "38 min", img: ep2, insight: "You don't need a PhD — you need the right projects and portfolio.", tags: ["AI/ML", "Career"], status: "live" as const },
+  { title: "Breaking into AI/ML roles without a PhD", speaker: "Sneha Reddy", role: "ML Lead, Google", duration: "38 min", img: ep2, insight: "You don't need a PhD, you need the right projects and portfolio.", tags: ["AI/ML", "Career"], status: "live" as const },
   { title: "The resume mistakes costing you interviews", speaker: "Priya Menon", role: "HR Director, TCS", duration: "32 min", img: ep3, insight: "Most resumes fail before a human even reads them. Fix these 3 things.", tags: ["Resume", "Tips"], status: "live" as const },
-  { title: "From junior to staff in 3 years — Ananya's story", speaker: "Ananya Sharma", role: "Staff Eng, Flipkart", duration: "41 min", img: ep4, insight: "She skipped the traditional ladder and bet on impact over tenure.", tags: ["Career", "Growth"], status: "upcoming" as const },
+  { title: "From junior to staff in 3 years, Ananya's story", speaker: "Ananya Sharma", role: "Staff Eng, Flipkart", duration: "41 min", img: ep4, insight: "She skipped the traditional ladder and bet on impact over tenure.", tags: ["Career", "Growth"], status: "upcoming" as const },
   { title: "System design patterns every senior eng must know", speaker: "Rohan Kapoor", role: "SDE-III, Atlassian", duration: "52 min", img: ep1, insight: "The patterns that separate mid-level from senior in system design rounds.", tags: ["Technical", "Design"], status: "upcoming" as const },
   { title: "Building Zepto's tech team from 0 to 400 engineers", speaker: "Vikram Malhotra", role: "CTO, Zepto", duration: "48 min", img: ep2, insight: "Scaling a team is harder than scaling a product. Here's the playbook.", tags: ["Founder", "Hiring"], status: "upcoming" as const },
 ];
@@ -662,7 +662,7 @@ const NewsletterCTA = () => (
 const Podcast = () => (
   <>
     <Helmet>
-      <title>Live Podcasts — Real Conversations, Real Careers | I Am Talento</title>
+      <title>Live Podcasts | Real Conversations, Real Careers | I Am Talento</title>
       <meta name="description" content="Tune in as industry leaders share unfiltered insights on careers, hiring trends, and what it actually takes to succeed. 50,000+ monthly listeners." />
     </Helmet>
     <Layout>

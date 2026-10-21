@@ -32,7 +32,7 @@ const assessmentFeatures = [
 ];
 
 const candidateFeatures = [
-  { icon: Target, title: "Industry Readiness Score", desc: "AI-calculated score benchmarking you against peers — Above Market, Market Ready, or Below Market." },
+  { icon: Target, title: "Industry Readiness Score", desc: "AI-calculated score benchmarking you against peers, Above Market, Market Ready, or Below Market." },
   { icon: Search, title: "Skill Gap Analysis", desc: "Personalized roadmaps showing exactly what skills you need and curated learning paths." },
   { icon: Map, title: "Career Mapping", desc: "Visualize career trajectories and discover roles that match your growth potential." },
   { icon: Award, title: "Verified Skill Badge", desc: "Earn employer-trusted badges that prove your skills through secure, proctored assessments." },
@@ -86,7 +86,7 @@ const Features = () => {
   return (
     <>
       <Helmet>
-        <title>Features — I Am Talento | AI Screening, Assessments & Job Matching</title>
+        <title>Features | I Am Talento | AI Screening, Assessments & Job Matching</title>
         <meta name="description" content="Explore I Am Talento's AI screening, custom assessments, intelligent job matching, and hiring analytics features." />
       </Helmet>
       <Layout>

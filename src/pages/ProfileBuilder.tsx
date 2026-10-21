@@ -212,7 +212,7 @@ const ProfileBuilder = () => {
 
   return (
     <>
-      <Helmet><title>Build Your Profile — IAmTalento</title></Helmet>
+      <Helmet><title>Build Your Profile | IAmTalento</title></Helmet>
       <div className="min-h-screen bg-background">
         <header className="sticky top-0 z-20 border-b bg-card/80 backdrop-blur-sm">
           <div className="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">

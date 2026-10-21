@@ -79,7 +79,7 @@ const JobsSocialProof = () => (
         viewport={{ once: true }}
         transition={{ delay: 0.1 }}
       >
-        Leading employers rely on IAmTalento for skills-first, proctored hiring —
+        Leading employers rely on IAmTalento for skills-first, proctored hiring,
         <br className="hidden md:block" />
         so every shortlist arrives verified and interview-ready.
       </motion.p>

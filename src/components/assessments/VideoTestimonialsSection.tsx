@@ -20,13 +20,25 @@ import thumbRitika from "@/assets/podcast-studio-female.jpg";
 import thumbAarav from "@/assets/podcast-studio-male.jpg";
 import thumbAnanya from "@/assets/experts/female-2.jpg";
 import thumbVikram from "@/assets/experts/male-2.jpg";
+import thumbRohan from "@/assets/experts/male-3.jpg";
+import thumbMeera from "@/assets/experts/female-3.jpg";
+import thumbSiddharth from "@/assets/experts/male-4.jpg";
+import thumbKavya from "@/assets/experts/female-4.jpg";
 
 type VideoTestimonial = {
   id: string;
   name: string;
   role: string;
   prevRole: string;
-  company: "Swiggy" | "Razorpay" | "Flipkart" | "Deloitte";
+  company:
+    | "Swiggy"
+    | "Razorpay"
+    | "Flipkart"
+    | "Deloitte"
+    | "Zomato"
+    | "PhonePe"
+    | "Zerodha"
+    | "Amazon";
   city: string;
   irsScore: number;
   percentile: string;
@@ -130,6 +142,102 @@ const CompanyLogo = ({ company }: { company: VideoTestimonial["company"] }) => {
           <circle cx="83" cy="18.5" r="3.2" fill="#86BC25" />
         </svg>
       );
+
+    case "Zomato":
+      return (
+        <svg viewBox="0 0 112 30" className="h-4 w-auto" aria-label="Zomato">
+          <text
+            x="4"
+            y="21.5"
+            fill="#E23744"
+            fontSize="20"
+            fontWeight="900"
+            fontStyle="italic"
+            fontFamily="Inter, system-ui, sans-serif"
+            letterSpacing="-0.04em"
+          >
+            zomato
+          </text>
+        </svg>
+      );
+
+    case "PhonePe":
+      return (
+        <svg viewBox="0 0 132 30" className="h-4 w-auto" aria-label="PhonePe">
+          <circle cx="14" cy="15" r="10" fill="#5F259F" />
+          <text
+            x="10.5"
+            y="20"
+            fill="#ffffff"
+            fontSize="13"
+            fontWeight="800"
+            fontFamily="Inter, system-ui, sans-serif"
+          >
+            पे
+          </text>
+          <text
+            x="29"
+            y="20.5"
+            fill="#5F259F"
+            fontSize="17"
+            fontWeight="800"
+            fontFamily="Inter, system-ui, sans-serif"
+            letterSpacing="-0.02em"
+          >
+            PhonePe
+          </text>
+        </svg>
+      );
+
+    case "Zerodha":
+      return (
+        <svg viewBox="0 0 136 30" className="h-4 w-auto" aria-label="Zerodha">
+          <path d="M6 7h15l-9 8 9 8H6l9-8-9-8z" fill="#387ED1" />
+          <text
+            x="27"
+            y="20.5"
+            fill="#387ED1"
+            fontSize="16.5"
+            fontWeight="800"
+            fontFamily="Inter, system-ui, sans-serif"
+            letterSpacing="0.03em"
+          >
+            ZERODHA
+          </text>
+        </svg>
+      );
+
+    case "Amazon":
+      return (
+        <svg viewBox="0 0 116 30" className="h-4 w-auto" aria-label="Amazon">
+          <text
+            x="4"
+            y="19.5"
+            fill="#111827"
+            fontSize="18.5"
+            fontWeight="800"
+            fontFamily="Inter, system-ui, sans-serif"
+            letterSpacing="-0.03em"
+          >
+            amazon
+          </text>
+          <path
+            d="M16 23c14 4.2 33 4.2 46-1"
+            fill="none"
+            stroke="#FF9900"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+          />
+          <path
+            d="M59 20.5l4.2 1.2-1.8 3.8"
+            fill="none"
+            stroke="#FF9900"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      );
   }
 };
 
@@ -151,7 +259,7 @@ const testimonials: VideoTestimonial[] = [
     objectPosition: "center 12%",
     category: "Product & Growth",
     quote:
-      "I was applying to senior growth roles for months with zero callbacks. Once I attached my Verified CIR link, three hiring managers messaged me directly within a week — and I negotiated a 68% hike using the salary benchmark report.",
+      "I was applying to senior growth roles for months with zero callbacks. Once I attached my Verified CIR link, three hiring managers messaged me directly within a week, and I negotiated a 68% hike using the salary benchmark report.",
     captions: [
       "Before Talento, my resume looked like every other marketer's...",
       "The 5-round proctored assessment tested real campaign scenarios and ROI modeling.",
@@ -184,7 +292,7 @@ const testimonials: VideoTestimonial[] = [
     captions: [
       "Resume filters used to reject me in seconds because of my college tier.",
       "Talento's CIR report gave me an objective 92/100 score in Backend & System Design.",
-      "Recruiters trusted the 30-layer proctored badge immediately — I got 4 interview calls.",
+      "Recruiters trusted the 30-layer proctored badge immediately, I got 4 interview calls.",
     ],
     keyTakeaways: [
       "Overcame Tier-3 college resume bias",
@@ -248,6 +356,122 @@ const testimonials: VideoTestimonial[] = [
       "93/100 in Analytical & Problem Solving",
       "CIR report reviewed live in final interview",
       "Transitioned from Ops to Strategy",
+    ],
+  },
+  {
+    id: "rohan-zomato",
+    name: "Rohan Verma",
+    role: "Product Manager",
+    prevRole: "Business Analyst",
+    company: "Zomato",
+    city: "Gurugram",
+    irsScore: 93,
+    percentile: "Top 7%",
+    hike: "71% Salary Hike",
+    timeToHire: "Hired in 16 Days",
+    duration: "02:05",
+    durationSec: 125,
+    thumbnail: thumbRohan,
+    objectPosition: "center 10%",
+    category: "Product Management",
+    quote:
+      "Breaking into Product Management without an MBA felt impossible until I took the Product & Growth track. My 93/100 CIR score proved my product sense and metric thinking directly to Zomato's VP of Product.",
+    captions: [
+      "Every PM job posting asked for prior PM title or a Tier-1 MBA.",
+      "My proctored product teardown and experimentation scores ranked in the Top 7%.",
+      "Zomato fast-tracked me straight to the hiring manager panel.",
+    ],
+    keyTakeaways: [
+      "Transitioned from BA to Product Manager",
+      "Top 7% in Product Sense & Metrics",
+      "Fast-tracked past initial screening",
+    ],
+  },
+  {
+    id: "meera-phonepe",
+    name: "Meera Krishnan",
+    role: "Full-Stack Engineer",
+    prevRole: "Frontend Developer",
+    company: "PhonePe",
+    city: "Bengaluru",
+    irsScore: 95,
+    percentile: "Top 4%",
+    hike: "82% Package Jump",
+    timeToHire: "Hired in 12 Days",
+    duration: "01:52",
+    durationSec: 112,
+    thumbnail: thumbMeera,
+    objectPosition: "center 10%",
+    category: "Full-Stack Tech",
+    quote:
+      "Scoring 95/100 on the Full-Stack assessment changed everything. PhonePe recruiters reached out to me on Talento within 48 hours of my badge going live, and I closed an 82% compensation jump.",
+    captions: [
+      "I wanted to move from a service company into a high-scale fintech engineering team.",
+      "The live coding and React architecture rounds validated my production skills.",
+      "Received 5 recruiter messages within 48 hours of publishing my CIR badge.",
+    ],
+    keyTakeaways: [
+      "Moved from Service IT to Fintech Product",
+      "95/100 Composite Engineering Score",
+      "Hired in just 12 days from assessment",
+    ],
+  },
+  {
+    id: "siddharth-zerodha",
+    name: "Siddharth Joshi",
+    role: "Quantitative Risk Analyst",
+    prevRole: "Financial Analyst",
+    company: "Zerodha",
+    city: "Bengaluru",
+    irsScore: 91,
+    percentile: "Top 10%",
+    hike: "64% Salary Hike",
+    timeToHire: "Hired in 17 Days",
+    duration: "01:38",
+    durationSec: 98,
+    thumbnail: thumbSiddharth,
+    objectPosition: "center 10%",
+    category: "Banking & Finance",
+    quote:
+      "Finance and fintech roles demand rock-solid quantitative accuracy. Sharing my proctored CIR breakdown gave Zerodha's team complete confidence in my derivatives and Python modeling proficiency.",
+    captions: [
+      "Traditional resumes don't show how well you model risk under time pressure.",
+      "My CIR report highlighted a 94/100 in Quantitative & Financial Modeling.",
+      "Landed my dream role in Bengaluru with a 64% hike.",
+    ],
+    keyTakeaways: [
+      "94/100 in Financial & Risk Modeling",
+      "Zero redundant aptitude rounds",
+      "64% hike over previous CTC",
+    ],
+  },
+  {
+    id: "kavya-amazon",
+    name: "Kavya Sharma",
+    role: "Cloud & DevOps Engineer",
+    prevRole: "Systems Engineer",
+    company: "Amazon",
+    city: "Hyderabad",
+    irsScore: 94,
+    percentile: "Top 5%",
+    hike: "78% Package Jump",
+    timeToHire: "Hired in 15 Days",
+    duration: "02:08",
+    durationSec: 128,
+    thumbnail: thumbKavya,
+    objectPosition: "center 10%",
+    category: "Cloud & DevOps",
+    quote:
+      "The practical Kubernetes and AWS scenario tests were closer to real production incidents than any certification exam I've taken. My Top 5% CIR score helped me land interviews and an offer at Amazon.",
+    captions: [
+      "Multiple-choice cloud certs weren't getting me interviews at top tech firms.",
+      "Talento's practical debugging and CI/CD architecture rounds proved real depth.",
+      "Cracked my Amazon loop with a 78% jump in total compensation.",
+    ],
+    keyTakeaways: [
+      "Top 5% in Cloud Architecture & CI/CD",
+      "Bypassed initial technical phone screen",
+      "78% total compensation increase",
     ],
   },
 ];

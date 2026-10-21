@@ -646,8 +646,8 @@ const TalentoPro: React.FC = () => {
       <Helmet>
         <title>
           {currentRole === "employer"
-            ? "Employer Recruiter Studio — Talento Pro"
-            : "Verified Engineering Career Hub — Talento Pro"}
+            ? "Employer Recruiter Studio | Talento Pro"
+            : "Verified Engineering Career Hub | Talento Pro"}
         </title>
         <meta
           name="description"

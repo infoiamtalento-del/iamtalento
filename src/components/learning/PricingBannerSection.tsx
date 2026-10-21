@@ -24,7 +24,7 @@ const PricingBannerSection = () => (
               Get Full Access to All Courses
             </h3>
             <p className="text-sm md:text-base text-white/80 max-w-lg mb-3">
-              Unlock every course, certificate, mock interview, and career resource — one plan, unlimited learning.
+              Unlock every course, certificate, mock interview, and career resource, one plan, unlimited learning.
             </p>
             <div className="flex items-center gap-3">
               <span className="relative text-white/50 text-lg md:text-2xl font-bold">

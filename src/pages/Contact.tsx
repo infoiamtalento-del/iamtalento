@@ -17,7 +17,7 @@ const Contact = () => {
   return (
     <>
       <Helmet>
-        <title>Contact — I Am Talento</title>
+        <title>Contact | I Am Talento</title>
         <meta name="description" content="Get in touch with the I Am Talento team. We'd love to hear from you." />
       </Helmet>
       <Layout>

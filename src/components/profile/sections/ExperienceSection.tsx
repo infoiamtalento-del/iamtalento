@@ -127,7 +127,7 @@ const ExperienceSection = ({ experiences, onChange }: Props) => {
                     <p className="text-xs text-muted-foreground truncate">{exp.company_name || "Company"} {exp.location && `· ${exp.location}`}</p>
                     <div className="flex items-center gap-1 text-[11px] text-muted-foreground/60 mt-0.5">
                       <Calendar className="h-3 w-3" />
-                      {exp.start_date || "Start"} — {exp.is_current ? "Present" : exp.end_date || "End"}
+                      {exp.start_date || "Start"}, {exp.is_current ? "Present" : exp.end_date || "End"}
                     </div>
                   </div>
                 </div>

@@ -21,7 +21,7 @@ const AnimatedNumber = ({ target }: { target: number }) => {
 
 const PhoneMockupSection = () => (
   <section className="py-16 md:py-20">
-    <div className="max-w-[1160px] mx-auto px-6">
+    <div className="container">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}

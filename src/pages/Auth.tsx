@@ -135,7 +135,7 @@ const Auth = () => {
   return (
     <>
       <Helmet>
-        <title>{mode === "login" ? "Login" : "Sign Up"} — IAmTalento</title>
+        <title>{mode === "login" ? "Login" : "Sign Up"} | IAmTalento</title>
       </Helmet>
       <div className="min-h-screen flex bg-background">
         {/* Left Branding */}

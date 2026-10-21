@@ -23,7 +23,7 @@ import ExpertCoursesSection from "@/components/learning/ExpertCoursesSection";
 const Learning = () => (
   <>
     <Helmet>
-      <title>Learning — I Am Talento</title>
+      <title>Learning | I Am Talento</title>
       <meta name="description" content="AI-powered courses built for the real world. Learn skills that get you hired with personalized learning roadmaps, verified certificates, and real-world projects." />
     </Helmet>
     <Layout>

@@ -98,8 +98,8 @@ const ScoreMockup = () => {
 const OutcomeMockup = () => {
   const rows = [
     { letter: "A", bg: "#3B82F6", name: "Priya · Atlassian", msg: "Shortlisted for Senior Frontend (React)", time: "2m" },
-    { letter: "R", bg: "#8B5CF6", name: "Karan · Razorpay", msg: "Viewed your score — Top 8% React", time: "11m" },
-    { letter: "M", bg: "#22C55E", name: "Meera · Zepto", msg: "Sent interview slot — skip to round 2", time: "34m" },
+    { letter: "R", bg: "#8B5CF6", name: "Karan · Razorpay", msg: "Viewed your score, Top 8% React", time: "11m" },
+    { letter: "M", bg: "#22C55E", name: "Meera · Zepto", msg: "Sent interview slot, skip to round 2", time: "34m" },
   ];
   return (
     <div className="space-y-0">
@@ -130,7 +130,7 @@ const features = [
     icon: Target,
     tag: "The Test",
     headline: "Scenario-Based. Not Memorisation.",
-    description: "Every question mirrors a real work situation — timed, AI-proctored, and tamper-proof. You're tested on what you can actually do under conditions.",
+    description: "Every question mirrors a real work situation, timed, AI-proctored, and tamper-proof. You're tested on what you can actually do under conditions.",
     details: [
       { icon: CheckCircle2, text: "Real-world problem scenario questions" },
       { icon: CheckCircle2, text: "AI face + tab proctoring active" },
@@ -146,7 +146,7 @@ const features = [
     icon: BarChart3,
     tag: "Your Score",
     headline: "Your Score. Your Gaps. Your Plan.",
-    description: "The moment you finish, a full report is generated — percentile rank, skill-by-skill breakdown, and exactly where to improve for the roles you want.",
+    description: "The moment you finish, a full report is generated, percentile rank, skill-by-skill breakdown, and exactly where to improve for the roles you want.",
     details: [
       { icon: CheckCircle2, text: "Instant percentile rank & score" },
       { icon: CheckCircle2, text: "Skill-by-skill strength breakdown" },
@@ -165,7 +165,7 @@ const features = [
     description: "Your verified score surfaces your profile to 200+ hiring companies. No cold applications. No ATS filters. They find you by skill level.",
     details: [
       { icon: CheckCircle2, text: "Verified badge on your profile instantly" },
-      { icon: CheckCircle2, text: "Skip screening — direct to shortlist" },
+      { icon: CheckCircle2, text: "Skip screening, direct to shortlist" },
       { icon: CheckCircle2, text: "3x more interview callbacks on average" },
     ],
     cta: "Get Verified",

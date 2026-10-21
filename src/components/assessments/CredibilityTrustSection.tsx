@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import SectionBadge from "@/components/ui/section-badge";
 
 const trustItems = [
   { icon: Award, title: "Expert-Vetted", desc: "Built by industry SMEs" },
@@ -33,15 +34,13 @@ const CredibilityTrustSection = ({ align = "center" }: { align?: Align }) => {
           transition={{ duration: 0.5 }}
           className={centered ? "text-center max-w-2xl mx-auto mb-12" : "max-w-3xl mb-10 text-left"}
         >
-          <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary mb-4">
-            <ShieldCheck className="h-4 w-4" /> Our Assessments
-          </span>
+          <SectionBadge label="Our Assessments" icon={ShieldCheck} />
           <h2 className="text-3xl md:text-4xl font-bold font-display mb-4 leading-[1.15]">
             Credibility &amp; Trust
             <br /> <span className="text-primary">You Can Prove.</span>
           </h2>
           <p className={cn("text-muted-foreground text-base md:text-lg leading-relaxed", centered && "max-w-2xl mx-auto")}>
-            Built by the people who hire, lead, and build —
+            Built by the people who hire, lead, and build,
             <br className="hidden md:block" /> so every score carries real weight.
           </p>
         </motion.div>

@@ -38,7 +38,7 @@ const audiences = [
     accentLine: "bg-orange-500",
     tag: "Students & Freshers",
     title: "No proof. No platform.",
-    line: "Grades don't show potential. No way to validate what you know — or where to start.",
+    line: "Grades don't show potential. No way to validate what you know, or where to start.",
   },
   {
     icon: Building2,

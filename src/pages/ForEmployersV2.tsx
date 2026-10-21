@@ -118,7 +118,7 @@ const EmployerHero = () => (
             className="text-sm md:text-lg text-muted-foreground max-w-lg mb-8 leading-relaxed"
           >
             AI-powered Industry Readiness and skills-validation platform with pre-verified candidates,
-            30-layer proctored assessments, and objective AI reports — so you
+            30-layer proctored assessments, and objective AI reports, so you
             hire job-ready talent 3× faster, with 99% proctoring accuracy.
           </motion.p>
 
@@ -318,7 +318,7 @@ const EmployerSocialProofBar = () => (
 );
 
 /* ═══════════════════════════════════════════
-   2B. WHO IT'S FOR — ICP Persona Cards
+   2B. WHO IT'S FOR, ICP Persona Cards
    ═══════════════════════════════════════════ */
 const personas = [
   {
@@ -329,7 +329,7 @@ const personas = [
   {
     icon: Code2,
     title: "Startup Founder / CTO",
-    desc: "Hire engineers and builders using real work simulations. Stop guessing from résumés — see candidates solve real problems.",
+    desc: "Hire engineers and builders using real work simulations. Stop guessing from résumés, see candidates solve real problems.",
   },
   {
     icon: GraduationCap,
@@ -394,14 +394,14 @@ const WhoItsForSection = () => {
 };
 
 /* ═══════════════════════════════════════════
-   3. PROBLEM VS SOLUTION — Two-Column Accordion
+   3. PROBLEM VS SOLUTION, Two-Column Accordion
    ═══════════════════════════════════════════ */
 const employerProblems = [
   {
     icon: FileText,
     title: "Résumés Exaggerate, Interviews Miss the Mark",
     bullets: [
-      "70% of candidates embellish their CVs — you can't tell until onboarding.",
+      "70% of candidates embellish their CVs, you can't tell until onboarding.",
       "Structured interviews catch only surface-level competence.",
       "Hiring decisions rely on impressions, not evidence.",
     ],
@@ -451,7 +451,7 @@ const employerSolutions = [
     bullets: [
       "Every candidate simulation-tested before you see them.",
       "Role-specific competency scores ranked by Industry Readiness.",
-      "No more guesswork — only evidence-backed shortlists.",
+      "No more guesswork, only evidence-backed shortlists.",
     ],
   },
   {
@@ -483,11 +483,11 @@ const employerSolutions = [
   },
   {
     icon: ShieldCheck,
-    title: "30-Layer Proctoring — Every Score Is Earned",
+    title: "30-Layer Proctoring, Every Score Is Earned",
     bullets: [
       "AI identity verification, browser lockdown, and behavioral monitoring.",
       "Integrity score alongside every skill score.",
-      "Zero tolerance for cheating — your hiring team sees only real results.",
+      "Zero tolerance for cheating, your hiring team sees only real results.",
     ],
   },
 ];
@@ -639,7 +639,7 @@ const ProblemVsSolutionSection = () => {
           className="rounded-xl bg-primary/5 border border-primary/20 p-6 text-center max-w-3xl mx-auto"
         >
           <p className="text-sm sm:text-base md:text-lg font-semibold font-display text-foreground italic leading-relaxed">
-            "You're asked to hire faster and cheaper — IAmTalento gives you the proof to do both."
+            "You're asked to hire faster and cheaper, IAmTalento gives you the proof to do both."
           </p>
         </motion.div>
       </div>
@@ -648,7 +648,7 @@ const ProblemVsSolutionSection = () => {
 };
 
 /* ═══════════════════════════════════════════
-   5. HOW IT WORKS — 4 Steps
+   5. HOW IT WORKS, 4 Steps
    ═══════════════════════════════════════════ */
 const howItWorksSteps = [
   {
@@ -819,7 +819,7 @@ const EmployerIntegritySection = () => {
           >
             30 Layers of Integrity. Zero Tolerance for Cheating.
           </motion.h2>
-          <p className="text-sm sm:text-base text-muted-foreground lg:text-lg">Beyond basic webcam checks — a full integrity stack that protects every assessment your candidates take.</p>
+          <p className="text-sm sm:text-base text-muted-foreground lg:text-lg">Beyond basic webcam checks, a full integrity stack that protects every assessment your candidates take.</p>
         </div>
 
         <div ref={containerRef} className="relative max-w-4xl mx-auto">
@@ -922,7 +922,7 @@ const EmployerComplianceSection = () => {
           >
             Your Candidate Data. Our Responsibility.
           </motion.h2>
-          <p className="text-sm sm:text-base text-muted-foreground lg:text-lg">Enterprise-grade protection for every assessment, candidate record, and hiring decision — because your compliance is non-negotiable.</p>
+          <p className="text-sm sm:text-base text-muted-foreground lg:text-lg">Enterprise-grade protection for every assessment, candidate record, and hiring decision, because your compliance is non-negotiable.</p>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 max-w-5xl mx-auto">
@@ -1412,7 +1412,7 @@ const PlatformCapabilitiesSection = () => {
             <span className="block">Build skills-first teams.</span>
           </p>
           <p className="text-sm text-muted-foreground">
-            So your team can design, deliver, screen, and decide — without the manual grunt work.
+            So your team can design, deliver, screen, and decide, without the manual grunt work.
           </p>
         </div>
 
@@ -1910,11 +1910,11 @@ const faqs = [
   },
   {
     q: "What ATS platforms do you integrate with?",
-    a: "We integrate with 40+ ATS platforms including Greenhouse, Lever, Workday, BambooHR, and more. IAmTalento adds proctored assessments and AI scoring on top of your existing stack — no rip and replace.",
+    a: "We integrate with 40+ ATS platforms including Greenhouse, Lever, Workday, BambooHR, and more. IAmTalento adds proctored assessments and AI scoring on top of your existing stack, no rip and replace.",
   },
   {
     q: "How does AI proctoring work?",
-    a: "Our 30-layer proctoring combines AI identity verification, browser lockdown, audio monitoring, behavioral pattern analysis, and continuous face matching. Every session produces an integrity score alongside the skill score — so you can trust what you see.",
+    a: "Our 30-layer proctoring combines AI identity verification, browser lockdown, audio monitoring, behavioral pattern analysis, and continuous face matching. Every session produces an integrity score alongside the skill score, so you can trust what you see.",
   },
   {
     q: "Can I customize assessments for my specific roles?",
@@ -2064,14 +2064,14 @@ const FinalCTA = () => {
 const ForEmployersV2 = () => (
   <>
     <Helmet>
-      <title>For Employers — AI-Powered Hiring & Screening | IAmTalento</title>
+      <title>For Employers | AI-Powered Hiring & Screening | IAmTalento</title>
       <meta
         name="description"
         content="Stop guessing. Start hiring on proof. AI-powered Industry Readiness platform with pre-verified candidates, 30-layer proctored assessments, and objective skill scores."
       />
       <meta
         property="og:title"
-        content="IAmTalento for Employers — Hire Job-Ready Talent 3× Faster"
+        content="IAmTalento for Employers, Hire Job-Ready Talent 3× Faster"
       />
       <meta
         property="og:description"

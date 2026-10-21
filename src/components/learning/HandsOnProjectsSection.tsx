@@ -9,7 +9,7 @@ const HandsOnProjectsSection = () => (
       <div className="text-center mb-10">
         <SectionBadge label="Hands-On Learning" icon={Wrench} />
         <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
-          Learn by Doing —<br />
+          Learn by Doing,<br />
           <span className="text-primary">Not Just Watching</span>
         </h2>
         <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
@@ -157,7 +157,7 @@ const HandsOnProjectsSection = () => (
           </div>
           <h3 className="font-bold font-display mb-1.5">Add to Profile</h3>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Projects reflect directly on your verified profile — no separate portfolio needed.
+            Projects reflect directly on your verified profile, no separate portfolio needed.
           </p>
           <div className="flex gap-1.5 mt-4">
             {[1, 2, 3].map((n) => (

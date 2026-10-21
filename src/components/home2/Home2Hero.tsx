@@ -28,7 +28,7 @@ const Home2Hero = () => (
             <em>Learning. Skill Assessments. Job Hunt. All Connected.</em>
           </h1>
           <p className="h2-hero-lede">
-            Talent CIR is building India's next-generation talent ecosystem—bringing learning, AI-powered skill
+            Talent CIR is building India's next-generation talent ecosystem, bringing learning, AI-powered skill
             assessments, and Talent Hunt together on one platform.
           </p>
 

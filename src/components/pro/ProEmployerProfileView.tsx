@@ -140,7 +140,7 @@ export function ProEmployerProfileView({ user, jobs, onEdit, onToast, onOpenJob 
           <SectionTitle>Open Roles</SectionTitle>
         </div>
         {openJobs.length === 0 && (
-          <p className="text-sm text-muted-foreground">No open roles yet — post your first job to start receiving verified applicants.</p>
+          <p className="text-sm text-muted-foreground">No open roles yet, post your first job to start receiving verified applicants.</p>
         )}
         <div className="divide-y divide-border/60">
           {openJobs.slice(0, 5).map((job) => (
@@ -175,7 +175,7 @@ export function ProEmployerProfileView({ user, jobs, onEdit, onToast, onOpenJob 
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0">
               <HeartHandshake className="h-4 w-4" />
             </span>
-            <p className="text-sm text-muted-foreground leading-relaxed">What your team enjoys — shown to candidates on every job post.</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">What your team enjoys, shown to candidates on every job post.</p>
           </div>
           <div className="flex flex-wrap gap-2">
             {benefits.map((b) => <Chip key={b}>{b}</Chip>)}

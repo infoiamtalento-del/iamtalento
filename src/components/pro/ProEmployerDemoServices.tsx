@@ -33,7 +33,7 @@ export function ProEmployerDemoServices({ view, user, jobs, applications, state,
     setName(""); onToast("Demo record created. No invitation or payment was sent.");
   };
   const downloadInvoice = (id: string, description: string, amount: number) => {
-    const url = URL.createObjectURL(new Blob([`SAMPLE RECEIPT — NOT A TAX INVOICE\n${id}\n${user.cp?.name || user.name}\n${description}\nSample amount: ${formatINR(amount)}\nNo payment charged.`], { type: "text/plain" }));
+    const url = URL.createObjectURL(new Blob([`SAMPLE RECEIPT, NOT A TAX INVOICE\n${id}\n${user.cp?.name || user.name}\n${description}\nSample amount: ${formatINR(amount)}\nNo payment charged.`], { type: "text/plain" }));
     const link = document.createElement("a"); link.href = url; link.download = `sample-${id}.txt`; link.click(); URL.revokeObjectURL(url);
   };
   return <div className="employer-workspace space-y-5"><header className="workspace-header"><div><span className="workspace-eyebrow"><Icon size={14} />Employer workspace</span><h1 className="workspace-heading">{entry.label}</h1><p className="workspace-description">{view === "interviews" ? "Technical screening sessions and scheduled candidate interviews." : view === "subscription" ? "Your sample plan and included hiring credits." : view === "payment-history" ? "Sample transactions and downloadable demo receipts." : "Role-specific assessments and candidate results."}</p></div></header>

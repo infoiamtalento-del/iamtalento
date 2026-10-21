@@ -225,7 +225,7 @@ const SkillLogosSection = () => {
             <span className="text-primary">Coverage</span>
           </h2>
           <p className="text-muted-foreground text-base md:text-lg mt-2 max-w-xl mx-auto">
-            From programming languages to soft skills — we assess what actually matters to employers.
+            From programming languages to soft skills, we assess what actually matters to employers.
           </p>
         </motion.div>
 
@@ -279,7 +279,7 @@ const SkillLogosSection = () => {
           className="text-center text-sm text-muted-foreground mt-8"
         >
           <span className="font-bold text-foreground">200+</span> skills assessed across{" "}
-          <span className="font-bold text-foreground">5 categories</span> — and growing every month.
+          <span className="font-bold text-foreground">5 categories</span>, and growing every month.
         </motion.p>
       </div>
     </section>

@@ -45,7 +45,7 @@ const AboutSection = ({ summary, objective, achievements, onChange }: Props & { 
         id="key_achievements"
         value={achievements || ""}
         onChange={(e) => onChange("key_achievements", e.target.value)}
-        placeholder="Highlight your most impactful accomplishments — awards, metrics, recognitions..."
+        placeholder="Highlight your most impactful accomplishments, awards, metrics, recognitions..."
         className="min-h-[80px] text-sm resize-none"
         maxLength={500}
       />

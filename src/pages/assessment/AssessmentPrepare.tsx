@@ -29,7 +29,7 @@ const AssessmentPrepare = () => {
   return (
     <>
       <Helmet>
-        <title>Prepare for your test — I Am Talento</title>
+        <title>Prepare for your test | I Am Talento</title>
       </Helmet>
       <Layout>
         <section className="bg-background pt-28 pb-10 md:pt-36">

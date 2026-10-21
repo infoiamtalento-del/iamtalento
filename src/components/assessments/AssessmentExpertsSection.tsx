@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Sparkles, Linkedin, Briefcase, Building2 } from "lucide-react";
+import SectionBadge from "@/components/ui/section-badge";
 import male1 from "@/assets/experts/male-1.jpg";
 import male2 from "@/assets/experts/male-2.jpg";
 import male3 from "@/assets/experts/male-3.jpg";
@@ -241,16 +242,13 @@ const AssessmentExpertsSection = () => {
 
       <div className="container mx-auto px-4 relative">
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-5">
-            <Sparkles className="w-4 h-4" />
-            AI Assessments
-          </div>
+          <SectionBadge label="AI Assessments" icon={Sparkles} />
           <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4">
             AI Assessments Prepared By<br />
             <span className="text-primary">Industry Experts.</span>
           </h2>
-          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-            Co-authored with industry leaders and senior practitioners —
+          <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
+            Co-authored with industry leaders and senior practitioners,
             <br className="hidden md:block" />
             every question maps to what matters on the job.
           </p>

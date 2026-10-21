@@ -87,7 +87,7 @@ const genericQuestions = (skills: string[], label: string): Question[] =>
   Array.from({ length: 10 }, (_, i) =>
     mcq(
       `q${i + 1}`,
-      `${label} — scenario ${i + 1}: Which approach best reflects current best practice for ${skills[i % skills.length]}?`,
+      `${label}, scenario ${i + 1}: Which approach best reflects current best practice for ${skills[i % skills.length]}?`,
       [
         "Prioritise the quickest possible fix and move on",
         "Measure the baseline, run a controlled change, then validate the impact",

@@ -54,9 +54,9 @@ const ProctoringSection = ({ onCtaClick }: ProctoringSectionProps) => {
                 <span className="text-white/85">Here's Why.</span>
               </h2>
               <p className="text-base md:text-lg text-white/80 mb-6 max-w-md leading-relaxed">
-                Every assessment is protected with 30 layers of integrity —
+                Every assessment is protected with 30 layers of integrity,
                 <br className="hidden md:block" />
-                before, during, and after — so every score is earned.
+                before, during, and after, so every score is earned.
               </p>
               <div className="space-y-2.5 mb-8">
                 {[

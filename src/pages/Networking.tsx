@@ -94,7 +94,7 @@ const cities = [
 const howItWorks = [
   { step: "01", title: "Tell us your goals", desc: "Share what you're building, hiring for, or looking to learn." },
   { step: "02", title: "Get matched", desc: "We surface events and people aligned to your role, stage, and stack." },
-  { step: "03", title: "Show up & connect", desc: "Attend in person or virtually — we handle the icebreakers." },
+  { step: "03", title: "Show up & connect", desc: "Attend in person or virtually, we handle the icebreakers." },
   { step: "04", title: "Keep the momentum", desc: "Follow-ups, intros, and recap notes land in your inbox." },
 ];
 
@@ -109,7 +109,7 @@ const partners = ["Google", "Microsoft", "Stripe", "Razorpay", "Swiggy", "Flipka
 const faqs = [
   { q: "Are networking events free?", a: "Most community meetups and coffee chats are free. Premium summits and curated dinners have a small ticket fee." },
   { q: "How do you match attendees?", a: "We use your profile, goals, and recent activity to recommend the rooms most likely to move your career forward." },
-  { q: "Can I host my own event?", a: "Yes — apply to become a host and we'll help with venue, promotion, and attendee curation." },
+  { q: "Can I host my own event?", a: "Yes, apply to become a host and we'll help with venue, promotion, and attendee curation." },
   { q: "Do you run virtual events?", a: "Absolutely. Roughly half of our calendar is remote-friendly with live Q&A and breakout rooms." },
 ];
 
@@ -123,10 +123,10 @@ const hosts = [
 const hostCategories = ['All', 'Engineering', 'Product', 'AI', 'Design'];
 
 const perks = [
-  { icon: Gift, title: "Curated guest list", desc: "No cold rooms — every attendee is vetted for relevance." },
+  { icon: Gift, title: "Curated guest list", desc: "No cold rooms, every attendee is vetted for relevance." },
   { icon: Zap, title: "Warm intros, fast", desc: "AI-matched conversations the moment you walk in." },
   { icon: Shield, title: "Safe & inclusive", desc: "Strict code of conduct with on-site community leads." },
-  { icon: Clock, title: "Time-boxed", desc: "Most events wrap in 90 mins — designed for busy operators." },
+  { icon: Clock, title: "Time-boxed", desc: "Most events wrap in 90 mins, designed for busy operators." },
   { icon: Heart, title: "Lasting community", desc: "Slack groups, follow-ups, and alumni meetups baked in." },
   { icon: PlayCircle, title: "Recap & replays", desc: "Miss it? Get notes, photos, and clips delivered next day." },
 ];

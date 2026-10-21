@@ -589,7 +589,7 @@ const CareerIntelligencePackageSection = ({ beforeCta }: Props) => {
               className="bg-white text-[#002C66] hover:bg-[#FBF4EB] gap-2 font-extrabold h-11 px-6 rounded-xl text-xs sm:text-sm shadow-xs"
             >
               <Link to="/assessments/digital-marketing-fundamentals">
-                Get Report — ₹1,999 <ArrowRight className="h-4 w-4" />
+                Get Report · ₹1,999 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
           </div>

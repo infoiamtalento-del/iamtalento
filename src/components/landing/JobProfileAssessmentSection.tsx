@@ -54,7 +54,7 @@ const jobsSlides = [
   },
   {
     title: "Get Hired Faster",
-    description: "Skip the noise — get matched directly with relevant opportunities.",
+    description: "Skip the noise, get matched directly with relevant opportunities.",
     image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80",
   },
 ];
@@ -92,7 +92,7 @@ const JobProfileAssessmentSection = () => {
             <span className="text-primary">Hiring is Here</span>
           </motion.h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Showcase your skills, validate your expertise, and connect with employers who hire based on proven capabilities—not just resumes.
+            Showcase your skills, validate your expertise, and connect with employers who hire based on proven capabilities, not just resumes.
           </p>
         </div>
 
@@ -132,7 +132,7 @@ const JobProfileAssessmentSection = () => {
               Create Your Job Profile
             </h3>
             <p className="text-xs text-muted-foreground leading-relaxed mb-3">
-              Build a recruiter-ready profile in minutes — showcase skills, projects, and verified credentials.
+              Build a recruiter-ready profile in minutes, showcase skills, projects, and verified credentials.
             </p>
 
             <div className="mt-auto">
@@ -264,7 +264,7 @@ const JobProfileAssessmentSection = () => {
               Apply 100+ Jobs In One Click
             </h3>
             <p className="text-xs text-muted-foreground leading-relaxed mb-3">
-              Get matched with top employers actively hiring verified talent — apply faster, get hired sooner.
+              Get matched with top employers actively hiring verified talent, apply faster, get hired sooner.
             </p>
 
             <div className="mt-auto">

@@ -47,7 +47,7 @@ const OutcomesSection = () => {
         <div className="text-center max-w-2xl mx-auto mb-16">
           <SectionBadge label="Proven ROI" icon={TrendingUp} />
           <h2 className="text-3xl md:text-4xl font-bold font-display mb-4">Outcomes That Matter to Leadership</h2>
-          <p className="text-muted-foreground text-lg">Measurable improvements across every hiring KPI — data from 12,000+ employers using verified talent pipelines.</p>
+          <p className="text-muted-foreground text-lg">Measurable improvements across every hiring KPI, data from 12,000+ employers using verified talent pipelines.</p>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">

@@ -13,7 +13,7 @@ const stories = [
     score: 84,
     badge: "Above Market",
     photo: learnerPriya,
-    quote: "I had 4 years of experience but couldn't explain my value clearly. After my assessment, I had a benchmark to point to. Got 3 interview calls in 2 weeks — all inbound.",
+    quote: "I had 4 years of experience but couldn't explain my value clearly. After my assessment, I had a benchmark to point to. Got 3 interview calls in 2 weeks, all inbound.",
     result: "3 interviews in 2 weeks",
   },
   {
@@ -58,7 +58,7 @@ const CandidateStories = () => (
           <span className="text-primary">They Got Verified</span>
         </h2>
         <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mt-4">
-          Real candidates, real scores, real offers — see how a verified assessment<br className="hidden md:block" />
+          Real candidates, real scores, real offers, see how a verified assessment<br className="hidden md:block" />
           turned effort into interview calls and salary jumps.
         </p>
       </motion.div>

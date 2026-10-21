@@ -81,7 +81,7 @@ const DigitalSkillPassportSection = () => {
               </div>
 
               <div className="relative mt-10 md:mt-16 text-center text-[10px] tracking-[0.35em] uppercase text-yellow-200/70">
-                — Verified Talent —
+                Verified Talent
               </div>
 
               {/* MRZ-style bottom strip */}
