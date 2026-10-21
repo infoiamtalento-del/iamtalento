@@ -57,13 +57,13 @@ const CompanyMark = ({ name, className }: { name: string; className?: string }) 
 
 
 
-export const CenterIntro = ({ eyebrow, first, second, description, invert = false }: {
-  eyebrow: string; first: string; second: string; description?: React.ReactNode; invert?: boolean;
+export const CenterIntro = ({ eyebrow, first, second, description, invert = false, className }: {
+  eyebrow: string; first: string; second?: string; description?: React.ReactNode; invert?: boolean; className?: string;
 }) => (
-  <motion.div {...reveal} className="mx-auto mb-12 max-w-2xl text-center">
+  <motion.div {...reveal} className={cn("mx-auto mb-12 max-w-2xl text-center", className)}>
     <p className={cn("mb-3 text-xs font-bold uppercase tracking-[0.18em]", invert ? "text-primary-foreground/60" : "text-primary")}>{eyebrow}</p>
     <h2 className={cn("font-display text-3xl font-bold leading-[1.08] sm:text-4xl lg:text-5xl", description && "mb-5", invert && "text-primary-foreground")}>
-      {first}<br /><span className={invert ? "text-primary-foreground" : "text-primary"}>{second}</span>
+      {first}{second && <><br /><span className={invert ? "text-primary-foreground" : "text-primary"}>{second}</span></>}
     </h2>
     {description && <p className={cn("text-sm leading-relaxed md:text-base", invert ? "text-primary-foreground/70" : "text-muted-foreground")}>{description}</p>}
   </motion.div>
