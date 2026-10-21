@@ -140,7 +140,7 @@ const InterviewCta = () => (
 export const AIInterviewerSection = () => (
   <section className="bg-primary py-20 md:py-28">
     <div className="container">
-      <CenterIntro invert eyebrow="AI Interviewer" first="Meet Your Always-On" second="AI Interviewer." description={<>Run first-round interviews at scale without adding recruiter hours.<br className="hidden md:block" /> Every candidate gets a fair, consistent conversation.</>} />
+      <CenterIntro invert className="max-w-4xl" eyebrow="AI Interviewer" first="Meet Linda, Your AI Interviewer." description="Run first-round interviews at scale — every candidate gets a fair, consistent conversation." />
       <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-[1fr_auto_1fr] md:gap-8">
         <div className="order-2 space-y-5 md:order-none">{interviewPoints.slice(0, 4).map(p => <Point key={p.title} {...p} align="right" />)}</div>
         <div className="order-1 py-8 md:order-none md:px-2"><InterviewAvatar /></div>
