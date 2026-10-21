@@ -28,6 +28,10 @@ import tVideo1 from "@/assets/testimonial-1.mp4.asset.json";
 import tVideo2 from "@/assets/testimonial-2.mp4.asset.json";
 import tVideo3 from "@/assets/testimonial-3.mp4.asset.json";
 import tVideo4 from "@/assets/testimonial-4.mp4.asset.json";
+import expert1 from "@/assets/expert-1.jpg";
+import spRohan from "@/assets/speaker-rohan.jpg";
+import spKavya from "@/assets/speaker-kavya.jpg";
+import host2 from "@/assets/podcast-host-2.jpg";
 
 
 const reveal = {
@@ -44,6 +48,9 @@ const companyMarks: Record<string, { src: string; size: string }> = {
   Flipkart: { src: "/company-logos/flipkart.svg", size: "h-8" },
   Zoho: { src: "/company-logos/zoho.svg", size: "h-7" },
   TCS: { src: "/company-logos/tcs.svg", size: "h-6" },
+  Wipro: { src: "/company-logos/wipro.svg", size: "h-6" },
+  Amazon: { src: "/company-logos/amazon.svg", size: "h-6" },
+  Swiggy: { src: "/company-logos/swiggy.svg", size: "h-7" },
 };
 
 const CompanyMark = ({ name, className }: { name: string; className?: string }) => (
@@ -472,6 +479,10 @@ const stories = [
   { video: tVideo2, img: v2, name: "Priya Nair", role: "HR Director, Retail", company: "Flipkart", quote: "Proctoring reports gave our managers real confidence." },
   { video: tVideo3, img: v3, name: "Vikram Singh", role: "CTO, SaaS startup", company: "Zoho", quote: "The AI interviews feel human and save my engineers hours." },
   { video: tVideo4, img: w2, name: "Arjun Mehta", role: "Talent Manager, Consulting", company: "TCS", quote: "We scaled from 200 to 2,000 applicants without adding recruiters." },
+  { video: tVideo1, img: expert1, name: "Neha Kulkarni", role: "Head of Talent, Manufacturing", company: "Wipro", quote: "Shortlisting that took three days now takes an hour." },
+  { video: tVideo2, img: spRohan, name: "Rohan Gupta", role: "HR Business Partner, Logistics", company: "Amazon", quote: "Every offer we made last quarter came with evidence behind it." },
+  { video: tVideo3, img: spKavya, name: "Kavya Reddy", role: "Recruitment Lead, FinTech", company: "Razorpay", quote: "Our recruiters stopped chasing resumes and started meeting real candidates." },
+  { video: tVideo4, img: host2, name: "Anita Desai", role: "Talent Partner, Q-commerce", company: "Swiggy", quote: "We ran 400 interviews in a week without adding a single recruiter." },
 ];
 
 export const TestimonialsSection = () => (
