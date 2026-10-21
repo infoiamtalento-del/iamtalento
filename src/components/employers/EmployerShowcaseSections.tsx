@@ -28,6 +28,10 @@ import tVideo1 from "@/assets/testimonial-1.mp4.asset.json";
 import tVideo2 from "@/assets/testimonial-2.mp4.asset.json";
 import tVideo3 from "@/assets/testimonial-3.mp4.asset.json";
 import tVideo4 from "@/assets/testimonial-4.mp4.asset.json";
+import expert1 from "@/assets/expert-1.jpg";
+import spRohan from "@/assets/speaker-rohan.jpg";
+import spKavya from "@/assets/speaker-kavya.jpg";
+import host2 from "@/assets/podcast-host-2.jpg";
 
 
 const reveal = {
@@ -44,6 +48,9 @@ const companyMarks: Record<string, { src: string; size: string }> = {
   Flipkart: { src: "/company-logos/flipkart.svg", size: "h-8" },
   Zoho: { src: "/company-logos/zoho.svg", size: "h-7" },
   TCS: { src: "/company-logos/tcs.svg", size: "h-6" },
+  Wipro: { src: "/company-logos/wipro.svg", size: "h-6" },
+  Amazon: { src: "/company-logos/amazon.svg", size: "h-6" },
+  Swiggy: { src: "/company-logos/swiggy.svg", size: "h-7" },
 };
 
 const CompanyMark = ({ name, className }: { name: string; className?: string }) => (
@@ -394,9 +401,8 @@ const planItems = [
   { icon: ShieldCheck, label: "Verify Resume", text: "Confirm credentials and work history automatically.", video: pv_verify },
   { icon: Megaphone, label: "Advertise My Job", text: "Boost reach with promoted job campaigns.", video: pv_advertise },
   { icon: Wand2, label: "Create Own Assessment", text: "Build tests with your own questions and rubrics.", video: pv_assessment },
-  { icon: Palette, label: "Create Assessment with White Label", text: "Your logo, colours and domain on every test.", video: pv_whitelabel },
-  { icon: Users, label: "Bulk Hiring", text: "Screen and rank thousands of applicants at once.", video: pv_bulk },
-  { icon: GraduationCap, label: "Campus Hiring", text: "Run campus drives end-to-end online.", video: pv_campus },
+  { icon: Palette, label: "White Label", text: "Your logo, colours and domain on every test.", video: pv_whitelabel },
+  { icon: GraduationCap, label: "Bulk Hiring / Campus Hiring", text: "Screen thousands of applicants and run campus drives online.", video: pv_bulk },
   { icon: Sparkles, label: "Create AI Tests", text: "Paste a JD and let AI generate the test.", video: pv_aitests },
 ];
 
@@ -431,12 +437,12 @@ export const PlanVideoSection = () => {
               <span className="font-hand text-lg text-foreground">No credit card required</span>
             </div>
           </div>
-          <div className="flex flex-col items-center justify-center gap-4 bg-accent p-6 md:p-10">
-            <span className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary shadow-sm"><CirclePlay className="h-3.5 w-3.5" /> {item.label}</span>
-            <div className="w-full max-w-[280px] overflow-hidden rounded-[24px] border-4 border-card bg-foreground shadow-2xl">
-              <video key={item.video.url} src={item.video.url} autoPlay muted loop controls playsInline preload="metadata" className="aspect-[9/16] w-full object-cover" />
+          <div className="relative overflow-hidden bg-accent">
+            <div className="w-full overflow-hidden bg-foreground">
+              <video key={item.video.url} src={item.video.url} autoPlay muted loop controls playsInline preload="metadata" className="aspect-[4/5] w-full object-cover" />
             </div>
-            <p className="max-w-[280px] text-center text-sm text-muted-foreground">{item.text}</p>
+            <span className="absolute left-1/2 top-4 inline-flex -translate-x-1/2 items-center gap-2 rounded-full bg-card px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary shadow-sm"><CirclePlay className="h-3.5 w-3.5" /> {item.label}</span>
+            <p className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/85 via-foreground/45 to-transparent px-6 pb-14 pt-12 text-center text-sm text-primary-foreground">{item.text}</p>
           </div>
         </div>
       </motion.div>
@@ -473,6 +479,10 @@ const stories = [
   { video: tVideo2, img: v2, name: "Priya Nair", role: "HR Director, Retail", company: "Flipkart", quote: "Proctoring reports gave our managers real confidence." },
   { video: tVideo3, img: v3, name: "Vikram Singh", role: "CTO, SaaS startup", company: "Zoho", quote: "The AI interviews feel human and save my engineers hours." },
   { video: tVideo4, img: w2, name: "Arjun Mehta", role: "Talent Manager, Consulting", company: "TCS", quote: "We scaled from 200 to 2,000 applicants without adding recruiters." },
+  { video: tVideo1, img: expert1, name: "Neha Kulkarni", role: "Head of Talent, Manufacturing", company: "Wipro", quote: "Shortlisting that took three days now takes an hour." },
+  { video: tVideo2, img: spRohan, name: "Rohan Gupta", role: "HR Business Partner, Logistics", company: "Amazon", quote: "Every offer we made last quarter came with evidence behind it." },
+  { video: tVideo3, img: spKavya, name: "Kavya Reddy", role: "Recruitment Lead, FinTech", company: "Razorpay", quote: "Our recruiters stopped chasing resumes and started meeting real candidates." },
+  { video: tVideo4, img: host2, name: "Anita Desai", role: "Talent Partner, Q-commerce", company: "Swiggy", quote: "We ran 400 interviews in a week without adding a single recruiter." },
 ];
 
 export const TestimonialsSection = () => (
