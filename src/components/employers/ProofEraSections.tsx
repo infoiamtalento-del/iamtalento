@@ -190,11 +190,11 @@ export const NewEraSection = () => (
   <section className="bg-primary py-20 text-primary-foreground md:py-28">
     <div className="container grid gap-12 lg:grid-cols-2 lg:gap-16">
       <div>
-        <Heading align="left" invert eyebrow="The New Era of Hiring" title="Hiring Ran on Claims. The Next Era Runs on Proof." titleClassName="!leading-[1.55]" />
+        <Heading align="left" invert eyebrow="The New Era of Hiring" title="Hiring Ran on Claims. The Next Era Runs on Proof." titleClassName="!leading-[1.25] [&_h2]:!mb-4" />
         <motion.p {...reveal} className="text-base leading-relaxed text-primary-foreground/80">
           AI has made claims free, so claims are no longer worth much. The same AI can verify real skill at scale, in minutes. TalentCIR is built for that shift.
         </motion.p>
-        <div className="mt-8 flex flex-wrap gap-4">
+        <div className="mt-6 flex flex-wrap gap-4">
           <PrimaryCta invert />
           <SecondaryCta invert />
         </div>
