@@ -31,8 +31,8 @@ const reveal = {
 };
 
 /** Eyebrow + two-tone headline (first sentence ink, rest brand blue). */
-const Heading = ({ eyebrow, title, sub, align = "center", invert = false, className }: {
-  eyebrow?: string; title: string; sub?: React.ReactNode; align?: "center" | "left"; invert?: boolean; className?: string;
+const Heading = ({ eyebrow, title, sub, align = "center", invert = false, className, titleClassName }: {
+  eyebrow?: string; title: string; sub?: React.ReactNode; align?: "center" | "left"; invert?: boolean; className?: string; titleClassName?: string;
 }) => {
   const bar = title.indexOf("|");
   const idx = bar > -1 ? bar : title.indexOf(". ");
@@ -41,7 +41,7 @@ const Heading = ({ eyebrow, title, sub, align = "center", invert = false, classN
   return (
     <motion.div {...reveal} className={cn(align === "center" ? "mx-auto max-w-4xl text-center" : "max-w-xl", className)}>
       {eyebrow && <p className={cn("mb-3 text-xs font-bold uppercase tracking-[0.18em]", invert ? "text-primary-foreground/70" : "text-primary")}>{eyebrow}</p>}
-      <h2 className={cn("mb-5 font-display text-3xl font-bold leading-[1.1] sm:text-4xl lg:text-[2.75rem]", invert && "text-primary-foreground")}>
+      <h2 className={cn("mb-5 font-display text-3xl font-bold leading-[1.1] sm:text-4xl lg:text-[2.75rem]", invert && "text-primary-foreground", titleClassName)}>
         {first}{second && <><br /><span className={invert ? "text-primary-foreground/80" : "text-primary"}>{second}</span></>}
       </h2>
       {sub && <p className={cn("text-sm leading-relaxed md:text-base", invert ? "text-primary-foreground/80" : "text-muted-foreground")}>{sub}</p>}
@@ -190,10 +190,14 @@ export const NewEraSection = () => (
   <section className="bg-primary py-20 text-primary-foreground md:py-28">
     <div className="container grid gap-12 lg:grid-cols-2 lg:gap-16">
       <div>
-        <Heading align="left" invert eyebrow="The New Era of Hiring" title="Hiring Ran on Claims. The Next Era Runs on Proof." />
+        <Heading align="left" invert eyebrow="The New Era of Hiring" title="Hiring Ran on Claims. The Next Era Runs on Proof." titleClassName="leading-[1.45]" />
         <motion.p {...reveal} className="text-base leading-relaxed text-primary-foreground/80">
           AI has made claims free, so claims are no longer worth much. The same AI can verify real skill at scale, in minutes. TalentCIR is built for that shift.
         </motion.p>
+        <div className="mt-8 flex flex-wrap gap-4">
+          <PrimaryCta invert />
+          <SecondaryCta invert />
+        </div>
       </div>
       <motion.div {...reveal} className="rounded-lg border border-primary-foreground/20">
         <div className="grid grid-cols-2 border-b border-primary-foreground/20 text-[10px] font-bold uppercase tracking-[0.18em] text-primary-foreground/60">
@@ -206,10 +210,6 @@ export const NewEraSection = () => (
           </div>
         ))}
       </motion.div>
-    </div>
-    <div className="container mt-12 flex flex-wrap items-center justify-center gap-4">
-      <PrimaryCta invert />
-      <SecondaryCta invert />
     </div>
   </section>
 );
