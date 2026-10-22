@@ -43,6 +43,7 @@ const Resources = lazy(() => import("./pages/Resources"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const ForEmployers = lazy(() => import("./pages/ForEmployers"));
 const ForEmployersV2 = lazy(() => import("./pages/ForEmployersV2"));
+const ForEmployersProof = lazy(() => import("./pages/ForEmployersProof"));
 const Auth = lazy(() => import("./pages/Auth"));
 const ProfileBuilder = lazy(() => import("./pages/ProfileBuilder"));
 const EmployerProfileBuilder = lazy(() => import("./pages/EmployerProfileBuilder"));
@@ -98,6 +99,7 @@ const AnimatedRoutes = () => {
           <Route path="/resources" element={<PageTransition><Resources /></PageTransition>} />
           <Route path="/pricing" element={<PageTransition><Pricing /></PageTransition>} />
           <Route path="/for-employers" element={<PageTransition><ForEmployers /></PageTransition>} />
+          <Route path="/employers-page-2" element={<PageTransition><ForEmployersProof /></PageTransition>} />
           <Route path="/for-employers-v2" element={<PageTransition><ForEmployersV2 /></PageTransition>} />
           <Route path="/auth" element={<PageTransition><Auth /></PageTransition>} />
           <Route path="/profile" element={<PageTransition><ProfileBuilder /></PageTransition>} />

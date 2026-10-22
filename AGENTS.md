@@ -26,6 +26,6 @@
 
 - Render employer candidate and applicant entry points in one linkable full-page review within the Pro shell, reusing shell application state; this preserves cross-page stages, notes and interviews.
 - Keep the employer assessment dashboard in its own presentation component using shared employer service records; this keeps creation and results consistent without changing candidate assessment journeys.
-- Build the employer marketing page from the employer-only sections in ProofEraSections, ordered to the client content sheet, with ROI math in a tested pure helper, so candidate-facing sections (e.g. homepage Career Intelligence) never leak into employer copy.
+- Build the /employers-page-2 employer marketing page (the main /for-employers page keeps the earlier design) from the employer-only sections in ProofEraSections, ordered to the client content sheet, with ROI math in a tested pure helper, so candidate-facing sections (e.g. homepage Career Intelligence) never leak into employer copy.
 - Keep employer action banners in one reusable presentation component and send onboarding CTAs to the existing company-profile flow, so marketing never silently enters a demo account.
 - Keep networking calendar city and topic selection within its dedicated presentation, using existing sample events and registration destinations, so browsing does not change other page filters.
