@@ -1,211 +1,163 @@
-import { motion, useInView, useMotionValue, useTransform, animate } from "framer-motion";
-import { Users, NotebookPen, ShieldCheck, Clock, TrendingUp, Star, Award } from "lucide-react";
-import { useRef, useEffect, useState } from "react";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import {
+  Wallet,
+  BadgeCheck,
+  Bot,
+  Clock,
+  Users,
+  Briefcase,
+  PlayCircle,
+  Sparkles,
+  ShieldCheck,
+  Award,
+  Play,
+} from "lucide-react";
 import SectionBadge from "@/components/ui/section-badge";
+import productVideo from "@/assets/product-in-60-sec.mp4.asset.json";
+import videoThumb from "@/assets/employer-recruiter.jpg";
 
-/* ---------- Animated counter ---------- */
-const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: string }) => {
-  const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true });
-  const count = useMotionValue(0);
-  const rounded = useTransform(count, (v) => Math.round(v));
-  const [display, setDisplay] = useState(0);
-
-  useEffect(() => {
-    if (isInView) {
-      const controls = animate(count, target, { duration: 2, ease: [0.22, 1, 0.36, 1] });
-      return controls.stop;
-    }
-  }, [isInView, count, target]);
-
-  useEffect(() => {
-    const unsub = rounded.on("change", (v) => setDisplay(v));
-    return unsub;
-  }, [rounded]);
-
-  return (
-    <span ref={ref} className="tabular-nums">
-      {display}{suffix}
-    </span>
-  );
-};
-
-/* ---------- Learner avatars ---------- */
-const avatars = [
-  "https://randomuser.me/api/portraits/women/23.jpg",
-  "https://randomuser.me/api/portraits/men/45.jpg",
-  "https://randomuser.me/api/portraits/women/56.jpg",
-  "https://randomuser.me/api/portraits/men/67.jpg",
+const learnerUSPs = [
+  {
+    icon: Wallet,
+    title: "Affordable Learning",
+    text: "Expert knowledge without the hefty price tag, giving you high-ROI access to industry-grade education.",
+  },
+  {
+    icon: BadgeCheck,
+    title: "Verified Mentors",
+    text: "Learn from trusted industry professionals with proven track records and real workplace experience.",
+  },
+  {
+    icon: Bot,
+    title: "AI Learning Companion",
+    text: "Your doubts answered while you learn with instant contextual explanations, summaries, and practice quizzes.",
+  },
+  {
+    icon: Clock,
+    title: "Learn Anytime",
+    text: "Flexible learning on your schedule so you can upskill at your own pace without rigid deadlines.",
+  },
+  {
+    icon: Users,
+    title: "1:1 Expert Sessions",
+    text: "Personalised guidance when you need it through live one-to-one consultations with domain experts.",
+  },
+  {
+    icon: Briefcase,
+    title: "Real-World Knowledge",
+    text: "Practical skills beyond theory focused on real industry workflows, case studies, and execution.",
+  },
+  {
+    icon: PlayCircle,
+    title: "On-Demand Courses",
+    text: "Learn whenever and wherever you want with seamless access across desktop, tablet, and mobile.",
+  },
+  {
+    icon: Sparkles,
+    title: "Personalised Learning",
+    text: "A learning experience built around you that adapts to your skill gaps and career goals.",
+  },
 ];
 
-/* ---------- Component ---------- */
+const reveal = {
+  initial: { opacity: 0, y: 24 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-80px" },
+  transition: { duration: 0.6 },
+};
+
 const WhyChooseLearningSection = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
+  const [playing, setPlaying] = useState(false);
 
   return (
-    <section className="py-16 md:py-24 overflow-hidden">
-      <div className="container px-4 md:px-6" ref={sectionRef}>
-        {/* Header */}
-        <div className="text-center mb-10 md:mb-14">
-          <SectionBadge label="Why Us" icon={Award} />
-          <motion.h2
-            initial={{ opacity: 0, y: 24 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3"
+    <section aria-labelledby="learner-benefits-heading" className="bg-card py-20 md:py-28">
+      <div className="container px-4 md:px-6">
+        <motion.div {...reveal} className="mx-auto max-w-3xl text-center">
+          <SectionBadge label="Why Learners Choose Us" icon={Award} />
+          <h2
+            id="learner-benefits-heading"
+            className="mb-4 text-3xl md:text-4xl font-bold font-display leading-[1.15]"
           >
-            Choose Better Learning<br />
-            <span className="text-primary">For Your Career</span>
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.1, duration: 0.5 }}
-            className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto"
-          >
-            <span className="block">Learn with experts and up-to-date content.</span>
-            <span className="block">Build skills employers trust.</span>
-          </motion.p>
-        </div>
+            Everything You Need<br />
+            <span className="text-primary">To Learn With Confidence.</span>
+          </h2>
+          <p className="text-base md:text-lg leading-relaxed text-muted-foreground">
+            Eight advantages built into every step of your learning journey, from recorded expert lessons to 1:1 mentorship.
+          </p>
+        </motion.div>
 
-        {/* Bento Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-5xl mx-auto">
-
-          {/* Card 1 — Avatars + Partners */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.25, duration: 0.6 }}
-            className="rounded-2xl border border-border bg-card p-5 md:p-6 flex flex-col justify-between"
-          >
-            <div className="flex -space-x-2.5 mb-4">
-              {avatars.map((src, i) => (
-                <img
-                  key={i}
-                  src={src}
-                  alt="Learner"
-                  className="h-9 w-9 rounded-full border-2 border-background object-cover"
+        <div className="mx-auto mt-12 flex max-w-6xl flex-col items-start gap-8 lg:mt-16 lg:flex-row lg:gap-16">
+          {/* Left Sticky Column — Interactive Video Player with Clean Photo Thumbnail */}
+          <div className="w-full lg:sticky lg:top-28 lg:w-[45%] lg:shrink-0">
+            <div className="relative overflow-hidden rounded-lg border border-border bg-card shadow-md">
+              {playing ? (
+                <video
+                  src={productVideo.url}
+                  poster={videoThumb}
+                  controls
+                  autoPlay
+                  playsInline
+                  className="aspect-[4/3] w-full object-cover lg:aspect-[4/5]"
                 />
-              ))}
-            </div>
-            <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                <AnimatedCounter target={200} suffix="+" /> Experts
-              </p>
-              <p className="text-sm text-muted-foreground mt-1">Handpicked by industry leaders</p>
-            </div>
-          </motion.div>
-
-          {/* Card 2 — Curriculum Updates */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.35, duration: 0.6 }}
-            className="rounded-2xl border border-border bg-card p-5 md:p-6 flex flex-col justify-between"
-          >
-            <p className="text-sm text-foreground font-medium leading-snug">
-              Curriculum refreshed every quarter to match real-world demands
-            </p>
-            <div className="mt-4">
-              <p className="text-4xl md:text-5xl font-bold font-display text-foreground">
-                <AnimatedCounter target={4} suffix="x" />
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">Yearly refreshes</p>
-            </div>
-          </motion.div>
-
-          {/* Card 3 — Dark feature card (spans 1 row, right col) */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className="rounded-2xl bg-primary text-primary-foreground p-5 md:p-6 flex flex-col justify-between row-span-2"
-          >
-            <div>
-              <p className="text-sm text-primary-foreground/80 leading-relaxed">
-                We've helped <span className="font-bold text-primary-foreground">50,000+</span> learners
-                upskill and land roles at top companies worldwide.
-              </p>
-              <motion.div
-                initial={{ opacity: 0, x: -30, y: 30 }}
-                animate={isInView ? { opacity: 1, x: 0, y: 0 } : {}}
-                transition={{ delay: 0.7, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                className="mt-6"
-              >
-                <motion.div
-                  animate={isInView ? { y: [0, -6, 0] } : {}}
-                  transition={{ delay: 1.5, duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setPlaying(true)}
+                  aria-label="Play Why Learners Choose Us video"
+                  className="group relative block aspect-[4/3] w-full lg:aspect-[4/5] cursor-pointer"
                 >
-                  <TrendingUp className="h-16 w-16 text-primary-foreground mb-2" />
-                </motion.div>
-              </motion.div>
+                  <img
+                    src={videoThumb}
+                    alt="Learner mastering skills on laptop"
+                    className="h-full w-full object-cover"
+                    width={1408}
+                    height={1056}
+                    loading="lazy"
+                  />
+                  <span className="absolute inset-0 flex items-center justify-center bg-primary/5 transition group-hover:bg-transparent">
+                    <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary shadow-lg ring-4 ring-background transition group-hover:scale-105">
+                      <Play className="h-6 w-6 translate-x-0.5 text-primary-foreground fill-primary-foreground" />
+                    </span>
+                  </span>
+                </button>
+              )}
             </div>
 
-            <div className="mt-auto pt-6">
-              <div className="flex items-baseline gap-1">
-                <span className="text-4xl md:text-5xl font-bold font-display text-primary-foreground">
-                  <AnimatedCounter target={4} suffix="" />
+            <div className="mt-6 flex items-start gap-4 border-l-2 border-primary pl-5">
+              <ShieldCheck className="mt-1 h-6 w-6 shrink-0 text-primary" />
+              <p className="font-display text-xl font-semibold leading-snug tracking-normal">
+                Learn from Experts. Grow with AI.<br />
+                <span className="text-primary">Get Ahead in Your Career.</span>
+              </p>
+            </div>
+          </div>
+
+          {/* Right Column — Numbered Editorial USP List */}
+          <ol className="w-full divide-y divide-border border-y border-border">
+            {learnerUSPs.map(({ icon: Icon, title, text }, index) => (
+              <li key={title} className="flex items-start gap-4 py-6 sm:gap-6 sm:py-7">
+                <span
+                  aria-hidden="true"
+                  className="pt-1 font-display text-sm font-semibold tabular-nums text-muted-foreground/60"
+                >
+                  0{index + 1}
                 </span>
-                <span className="text-4xl md:text-5xl font-bold font-display text-primary-foreground">.8</span>
-                <span className="text-lg text-primary-foreground/50 font-bold">/5</span>
-              </div>
-              <div className="flex items-center gap-2 mt-1.5">
-                <div className="flex gap-0.5">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-3.5 w-3.5 text-yellow-400 fill-yellow-400" />
-                  ))}
+                <div className="min-w-0 flex-1">
+                  <h3 className="mb-2 font-display text-xl font-bold tracking-normal sm:text-2xl">
+                    {title}
+                  </h3>
+                  <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
+                    {text}
+                  </p>
                 </div>
-                <span className="text-[10px] uppercase tracking-wider font-bold text-primary-foreground/60">
-                  Trusted by learners
-                </span>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Card 4 — ROI stat */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.45, duration: 0.6 }}
-            className="rounded-2xl border border-border bg-card p-5 md:p-6 flex flex-col justify-between"
-          >
-            <p className="text-sm text-foreground font-medium leading-snug">
-              Lifelong access to all course content
-            </p>
-            <div className="mt-4">
-              <p className="text-5xl md:text-6xl font-bold font-display text-foreground">
-                <AnimatedCounter target={100} suffix="%" />
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">Content retention</p>
-            </div>
-          </motion.div>
-
-          {/* Card 5 — Industry partners + available badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.5, duration: 0.6 }}
-            className="rounded-2xl border border-border bg-card p-5 md:p-6 flex flex-col justify-between"
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <ShieldCheck className="h-5 w-5 text-primary" />
-              <span className="text-sm font-semibold text-foreground">Vetted by Industry Panels</span>
-            </div>
-            <div className="mt-auto">
-              <p className="text-3xl md:text-4xl font-bold font-display text-foreground">
-                <AnimatedCounter target={50} suffix="+" />
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">Industry partners</p>
-            </div>
-            <div className="flex items-center gap-1.5 mt-4">
-              <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
-              <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">
-                Enrolling Now
-              </span>
-            </div>
-          </motion.div>
-
+                <Icon
+                  aria-hidden="true"
+                  className="mt-1 h-5 w-5 shrink-0 text-primary sm:h-6 sm:w-6"
+                />
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
     </section>

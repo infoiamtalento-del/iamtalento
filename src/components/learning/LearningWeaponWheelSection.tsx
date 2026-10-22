@@ -1,17 +1,6 @@
 import { useState, useEffect, useId } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Wallet,
-  BadgeCheck,
-  Bot,
-  Clock,
-  Users,
-  Briefcase,
-  PlayCircle,
-  Sparkles,
-  Crosshair,
-  type LucideIcon,
-} from "lucide-react";
+import { Crosshair } from "lucide-react";
 import SectionBadge from "@/components/ui/section-badge";
 
 import usp01Affordable from "@/assets/usp-wheel/usp-01-affordable.jpg";
@@ -23,165 +12,161 @@ import usp06RealWorld from "@/assets/usp-wheel/usp-06-real-world.jpg";
 import usp07OnDemand from "@/assets/usp-wheel/usp-07-on-demand.jpg";
 import usp08Personalised from "@/assets/usp-wheel/usp-08-personalised.jpg";
 
+const C = 400;
+const R_IN = 195;
+const R_OUT = 312;
+const R_OUT_ACTIVE = 326;
+const R_L1 = 272;
+const R_L2 = 240;
+const R_SINGLE = 256;
+const R_HAIR = 346;
+const R_LABEL = 362;
+const R_FACE = 182;
+const CUT = 3.2;
+
 interface WheelUSP {
   id: string;
   slot: string;
+  lines: [string, string] | [string];
   headline: string;
   description: string;
-  icon: LucideIcon;
-  statLabel: string;
   categoryTag: string;
   image: string;
 }
 
 const WHEEL_USPS: WheelUSP[] = [
   {
-    id: "affordable-learning",
-    slot: "01",
-    headline: "Affordable Learning",
-    description: "Expert knowledge without the hefty price tag",
-    icon: Wallet,
-    statLabel: "High ROI Access",
-    categoryTag: "VALUE PERK",
-    image: usp01Affordable,
-  },
-  {
     id: "verified-mentors",
-    slot: "02",
+    slot: "01",
+    lines: ["Verified", "Mentors"],
     headline: "Verified Mentors",
     description: "Learn from trusted industry professionals",
-    icon: BadgeCheck,
-    statLabel: "100% Vetted",
-    categoryTag: "TRUST PERK",
+    categoryTag: "TRUSTED EXPERTS",
     image: usp02VerifiedMentors,
   },
   {
     id: "ai-learning-companion",
-    slot: "03",
+    slot: "02",
+    lines: ["AI Learning", "Companion"],
     headline: "AI Learning Companion",
     description: "Your doubts answered while you learn",
-    icon: Bot,
-    statLabel: "24/7 Instant Help",
-    categoryTag: "AI CORE PERK",
+    categoryTag: "AI ASSISTANCE",
     image: usp03AiCompanion,
   },
   {
-    id: "learn-anytime",
-    slot: "04",
-    headline: "Learn Anytime",
-    description: "Flexible learning on your schedule",
-    icon: Clock,
-    statLabel: "Zero Deadlines",
-    categoryTag: "PACE PERK",
-    image: usp04LearnAnytime,
-  },
-  {
     id: "expert-sessions",
-    slot: "05",
+    slot: "03",
+    lines: ["1:1 Expert", "Sessions"],
     headline: "1:1 Expert Sessions",
     description: "Personalised guidance when you need it",
-    icon: Users,
-    statLabel: "Live Mentorship",
-    categoryTag: "MENTOR PERK",
+    categoryTag: "LIVE MENTORSHIP",
     image: usp05ExpertSessions,
   },
   {
     id: "real-world-knowledge",
-    slot: "06",
+    slot: "04",
+    lines: ["Real-World", "Knowledge"],
     headline: "Real-World Knowledge",
     description: "Practical skills beyond theory",
-    icon: Briefcase,
-    statLabel: "Job-Ready Workflows",
-    categoryTag: "IMPACT PERK",
+    categoryTag: "APPLIED SKILLS",
     image: usp06RealWorld,
   },
   {
     id: "on-demand-courses",
-    slot: "07",
+    slot: "05",
+    lines: ["On-Demand", "Courses"],
     headline: "On-Demand Courses",
     description: "Learn whenever and wherever you want",
-    icon: PlayCircle,
-    statLabel: "Multi-Device",
-    categoryTag: "ACCESS PERK",
+    categoryTag: "ANYTIME ACCESS",
     image: usp07OnDemand,
   },
   {
+    id: "learn-anytime",
+    slot: "06",
+    lines: ["Learn", "Anytime"],
+    headline: "Learn Anytime",
+    description: "Flexible learning on your schedule",
+    categoryTag: "SELF-PACED",
+    image: usp04LearnAnytime,
+  },
+  {
     id: "personalised-learning",
-    slot: "08",
+    slot: "07",
+    lines: ["Personalised", "Learning"],
     headline: "Personalised Learning",
     description: "A learning experience built around you",
-    icon: Sparkles,
-    statLabel: "Adaptive Path",
-    categoryTag: "CUSTOM PERK",
+    categoryTag: "ADAPTIVE PATH",
     image: usp08Personalised,
+  },
+  {
+    id: "affordable-learning",
+    slot: "08",
+    lines: ["Affordable", "Learning"],
+    headline: "Affordable Learning",
+    description: "Expert knowledge without the hefty price tag",
+    categoryTag: "HIGH ROI VALUE",
+    image: usp01Affordable,
   },
 ];
 
-// Helper to convert polar to cartesian coordinates
-function polarToCartesian(cx: number, cy: number, r: number, angleInDegrees: number) {
-  const angleInRadians = (angleInDegrees * Math.PI) / 180.0;
-  return {
-    x: cx + r * Math.cos(angleInRadians),
-    y: cy + r * Math.sin(angleInRadians),
-  };
-}
+const OUTER_LABELS = [
+  { id: "cat-top", text: "EXPERT-LED LEARNING", a1: -34, a2: 34, flipped: false },
+  { id: "cat-br", text: "AI & MENTOR GUIDANCE", a1: 112, a2: 168, flipped: true },
+  { id: "cat-bl", text: "FLEXIBLE & PERSONALISED", a1: 192, a2: 252, flipped: true },
+];
 
-// Helper to create SVG annular sector (weapon wheel wedge) path
-function createWedgePath(
-  cx: number,
-  cy: number,
-  rInner: number,
-  rOuter: number,
-  startAngle: number,
-  endAngle: number
-) {
-  const startOuter = polarToCartesian(cx, cy, rOuter, endAngle);
-  const endOuter = polarToCartesian(cx, cy, rOuter, startAngle);
-  const startInner = polarToCartesian(cx, cy, rInner, endAngle);
-  const endInner = polarToCartesian(cx, cy, rInner, startAngle);
-  const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+const HAIRLINE_ARCS = [
+  { a1: 58, a2: 102 },
+  { a1: 172, a2: 188 },
+  { a1: 258, a2: 302 },
+];
 
-  return [
-    "M",
-    startOuter.x,
-    startOuter.y,
-    "A",
-    rOuter,
-    rOuter,
-    0,
-    largeArcFlag,
-    0,
-    endOuter.x,
-    endOuter.y,
-    "L",
-    endInner.x,
-    endInner.y,
-    "A",
-    rInner,
-    rInner,
-    0,
-    largeArcFlag,
-    1,
-    startInner.x,
-    startInner.y,
-    "Z",
-  ].join(" ");
-}
+const d2r = (d: number) => ((d - 90) * Math.PI) / 180;
+const pt = (r: number, a: number) =>
+  [C + r * Math.cos(d2r(a)), C + r * Math.sin(d2r(a))] as const;
 
-// Helper for outer accent arc
-function createArcPath(cx: number, cy: number, r: number, startAngle: number, endAngle: number) {
-  const start = polarToCartesian(cx, cy, r, endAngle);
-  const end = polarToCartesian(cx, cy, r, startAngle);
-  const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
-  return ["M", start.x, start.y, "A", r, r, 0, largeArcFlag, 0, end.x, end.y].join(" ");
-}
+const arc = (r: number, a1: number, a2: number, sweep: 0 | 1) => {
+  const [x1, y1] = pt(r, a1);
+  const [x2, y2] = pt(r, a2);
+  const large = Math.abs(a2 - a1) > 180 ? 1 : 0;
+  return `M ${x1} ${y1} A ${r} ${r} 0 ${large} ${sweep} ${x2} ${y2}`;
+};
+
+const inset = (r: number) => (CUT / r) * (180 / Math.PI);
+
+const segPath = (a1: number, a2: number, rOut: number) => {
+  const o1 = a1 + inset(rOut);
+  const o2 = a2 - inset(rOut);
+  const i1 = a1 + inset(R_IN);
+  const i2 = a2 - inset(R_IN);
+  const [ox1, oy1] = pt(rOut, o1);
+  const [ox2, oy2] = pt(rOut, o2);
+  const [ix2, iy2] = pt(R_IN, i2);
+  const [ix1, iy1] = pt(R_IN, i1);
+  return `M ${ox1} ${oy1} A ${rOut} ${rOut} 0 0 1 ${ox2} ${oy2} L ${ix2} ${iy2} A ${R_IN} ${R_IN} 0 0 0 ${ix1} ${iy1} Z`;
+};
+
+const isFlipped = (mid: number) => mid > 90 && mid < 270;
+
+const radiiFor = (count: number, flipped: boolean) =>
+  count === 1 ? [R_SINGLE] : flipped ? [R_L2, R_L1] : [R_L1, R_L2];
+
+const lineArc = (rc: number, a1: number, a2: number, flipped: boolean) => {
+  const g = inset(rc);
+  const base = flipped ? rc + 5 : rc - 5;
+  return flipped
+    ? arc(base, a2 - g, a1 + g, 0)
+    : arc(base, a1 + g, a2 - g, 1);
+};
+
+const catArc = (a1: number, a2: number, flipped: boolean) =>
+  flipped ? arc(R_LABEL + 6, a2, a1, 0) : arc(R_LABEL - 4, a1, a2, 1);
 
 const LearningWeaponWheelSection = () => {
-  const [activeIndex, setActiveIndex] = useState<number>(2); // Default to AI Learning Companion
+  const [activeIndex, setActiveIndex] = useState<number>(1); // Default to AI Learning Companion
   const [tooltipDismissed, setTooltipDismissed] = useState<boolean>(false);
   const baseId = useId();
 
-  // WCAG 1.4.13: Allow Escape key to dismiss the active hover tooltip without moving focus/hover
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -192,285 +177,255 @@ const LearningWeaponWheelSection = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const handleSelectSlot = (index: number) => {
+  const handleSelect = (index: number) => {
     setActiveIndex(index);
     setTooltipDismissed(false);
   };
 
   const activeUSP = WHEEL_USPS[activeIndex];
-  const ActiveIcon = activeUSP.icon;
-
-  // Enlarged Center-Aligned SVG Wheel geometry
-  const cx = 340;
-  const cy = 340;
-  const activeAngle = activeIndex * 45 - 90;
-
-  // Position for floating tooltip callout anchored near the active wedge's outer edge
-  const tooltipPos = polarToCartesian(cx, cy, 295, activeAngle);
-  const tooltipLeftPct = (tooltipPos.x / 680) * 100;
-  const tooltipTopPct = (tooltipPos.y / 680) * 100;
+  const activeMidAngle = activeIndex * 45 + 22.5;
+  const [tx, ty] = pt(342, activeMidAngle);
+  const tooltipLeftPct = (tx / 800) * 100;
+  const tooltipTopPct = (ty / 800) * 100;
 
   return (
     <section className="py-16 md:py-24 bg-[#FBF4EB] relative overflow-hidden">
       <div className="container px-4 md:px-6 relative z-10">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-8 md:mb-12">
-          <SectionBadge label="Interactive Learning Arsenal" icon={Crosshair} />
+        <div className="text-center max-w-3xl mx-auto mb-8 md:mb-10">
+          <SectionBadge label="Interactive Learning Ecosystem" icon={Crosshair} />
           <motion.h2
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4 text-slate-950"
+            className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3 text-slate-950"
           >
-            Select Your Power-Up.<br />
-            <span className="text-primary">Built Around How You Learn.</span>
+            Built Around{" "}
+            <span className="text-primary">How You Learn.</span>
           </motion.h2>
           <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
-            Hover or tap any segment on the radial wheel to inspect your learning perks and see how human expertise and AI assistance work hand in hand.
+            Hover or click any segment on the wheel to explore how expert-led courses, AI support, and 1:1 mentorship come together.
           </p>
         </div>
 
-        {/* ─── CENTER-ALIGNED ENLARGED GAME WEAPON WHEEL + HIGHLIGHTED TOOLTIP ─── */}
-        <div className="flex flex-col items-center justify-center max-w-4xl mx-auto">
-          <div className="relative w-full max-w-[680px] md:max-w-[740px] aspect-square flex items-center justify-center select-none">
-            <svg
-              viewBox="0 0 680 680"
-              className="w-full h-full overflow-visible drop-shadow-[0_14px_38px_rgba(0,44,102,0.14)]"
-              role="group"
-              aria-label="Learning USP Radial Selection Wheel"
-            >
-              <defs>
-                <filter id="wedgeGlow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feDropShadow dx="0" dy="8" stdDeviation="12" floodColor="#002C66" floodOpacity="0.32" />
-                </filter>
-                <clipPath id="centerHubClip">
-                  <circle cx={cx} cy={cy} r="126" />
-                </clipPath>
-              </defs>
+        {/* ─── CORPORATE SKILLS-STYLE WHEEL (Matching Reference Design) ─── */}
+        <div className="relative w-full max-w-[680px] md:max-w-[740px] mx-auto">
+          <svg
+            viewBox="0 0 800 800"
+            role="group"
+            aria-label="Learning USP Wheel"
+            className="w-full h-auto block overflow-visible select-none"
+          >
+            <defs>
+              <clipPath id={`${baseId}-wheel-face`}>
+                <circle cx={C} cy={C} r={R_FACE} />
+              </clipPath>
 
-              {/* Outer tactical radar circles in brand navy */}
-              <circle
-                cx={cx}
-                cy={cy}
-                r="332"
-                fill="none"
-                stroke="rgba(0, 44, 102, 0.18)"
-                strokeWidth="1.25"
-                strokeDasharray="4 6"
-              />
-              <circle
-                cx={cx}
-                cy={cy}
-                r="316"
-                fill="none"
-                stroke="rgba(0, 44, 102, 0.14)"
-                strokeWidth="1.25"
-              />
-
-              {/* 8 Enlarged Weapon Wheel Wedges */}
-              {WHEEL_USPS.map((usp, index) => {
-                const isSelected = activeIndex === index;
-                const centerAngle = index * 45 - 90;
-                const startAngle = centerAngle - 20.5;
-                const endAngle = centerAngle + 20.5;
-
-                const rInner = isSelected ? 136 : 144;
-                const rOuter = isSelected ? 304 : 282;
-
-                const wedgePath = createWedgePath(cx, cy, rInner, rOuter, startAngle, endAngle);
-                const outerArc = createArcPath(cx, cy, 316, startAngle + 2, endAngle - 2);
-                const labelPos = polarToCartesian(cx, cy, isSelected ? 222 : 214, centerAngle);
-                const slotPos = polarToCartesian(cx, cy, isSelected ? 156 : 162, centerAngle);
-                const IconComponent = usp.icon;
-                const tooltipId = `${baseId}-usp-tooltip-${usp.id}`;
-
-                return (
-                  <g
-                    key={usp.id}
-                    className="cursor-pointer transition-transform duration-200 focus:outline-none"
-                    onMouseEnter={() => handleSelectSlot(index)}
-                    onFocus={() => handleSelectSlot(index)}
-                    onClick={() => handleSelectSlot(index)}
-                    tabIndex={0}
-                    role="button"
-                    aria-pressed={isSelected}
-                    aria-describedby={isSelected && !tooltipDismissed ? tooltipId : undefined}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        handleSelectSlot(index);
-                      } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
-                        e.preventDefault();
-                        handleSelectSlot((index + 1) % WHEEL_USPS.length);
-                      } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
-                        e.preventDefault();
-                        handleSelectSlot((index - 1 + WHEEL_USPS.length) % WHEEL_USPS.length);
-                      }
-                    }}
-                  >
-                    {/* Wedge Sector: Solid #002C66 when active, crisp white card when idle */}
-                    <path
-                      d={wedgePath}
-                      fill={isSelected ? "#002C66" : "#FFFFFF"}
-                      stroke={isSelected ? "#002C66" : "rgba(15, 23, 42, 0.22)"}
-                      strokeWidth={isSelected ? "2.5" : "1.25"}
-                      filter={isSelected ? "url(#wedgeGlow)" : undefined}
-                      className="transition-all duration-300"
-                    />
-
-                    {/* Active Outer Tactical Highlight Rim in Brand Navy */}
-                    {isSelected && (
-                      <path
-                        d={outerArc}
-                        fill="none"
-                        stroke="#002C66"
-                        strokeWidth="5"
-                        strokeLinecap="round"
-                      />
-                    )}
-
-                    {/* Inner Slot Number Tag */}
-                    <text
-                      x={slotPos.x}
-                      y={slotPos.y}
-                      textAnchor="middle"
-                      dominantBaseline="central"
-                      className={`text-xs font-mono font-bold tracking-widest pointer-events-none ${
-                        isSelected ? "fill-white/80" : "fill-slate-400"
-                      }`}
-                    >
-                      {usp.slot}
-                    </text>
-
-                    {/* ForeignObject for Crisp Icon + Headline inside each Wedge */}
-                    <foreignObject
-                      x={labelPos.x - 70}
-                      y={labelPos.y - 44}
-                      width="140"
-                      height="88"
-                      className="pointer-events-none overflow-visible"
-                    >
-                      <div className="w-full h-full flex flex-col items-center justify-center text-center px-1">
-                        <div
-                          className={`h-10 w-10 rounded-full flex items-center justify-center mb-1.5 transition-all duration-200 ${
-                            isSelected
-                              ? "bg-white text-[#002C66] shadow-md scale-110"
-                              : "bg-[#002C66]/10 text-[#002C66] border border-[#002C66]/20"
-                          }`}
-                        >
-                          <IconComponent className="h-4 w-4" />
-                        </div>
-                        <span
-                          className={`text-[13px] font-display font-bold leading-[1.15] line-clamp-2 ${
-                            isSelected ? "text-white" : "text-slate-900"
-                          }`}
-                        >
-                          {usp.headline}
-                        </span>
-                      </div>
-                    </foreignObject>
-                  </g>
-                );
+              {/* Curved Text Paths for Each of the 8 Segments */}
+              {WHEEL_USPS.map((seg, si) => {
+                const a1 = si * 45;
+                const a2 = a1 + 45;
+                const flipped = isFlipped(a1 + 22.5);
+                const radii = radiiFor(seg.lines.length, flipped);
+                return radii.map((rc, li) => (
+                  <path
+                    key={`line-${si}-${li}`}
+                    id={`${baseId}-line-${si}-${li}`}
+                    d={lineArc(rc, a1, a2, flipped)}
+                  />
+                ));
               })}
 
-              {/* Enlarged Center Hub Portal with Dynamic Selected Image & Brand Navy Ring */}
-              <circle
-                cx={cx}
-                cy={cy}
-                r="132"
-                fill="#002C66"
+              {/* Curved Paths for Outer Category Labels */}
+              {OUTER_LABELS.map((cat) => (
+                <path
+                  key={cat.id}
+                  id={`${baseId}-${cat.id}`}
+                  d={catArc(cat.a1, cat.a2, cat.flipped)}
+                />
+              ))}
+            </defs>
+
+            {/* Outer Hairline Decorative Arcs */}
+            {HAIRLINE_ARCS.map((h, i) => (
+              <path
+                key={i}
+                d={arc(R_HAIR, h.a1, h.a2, 1)}
+                fill="none"
                 stroke="#002C66"
-                strokeWidth="3.5"
+                strokeOpacity={0.45}
+                strokeWidth={1.2}
               />
+            ))}
 
-              {/* Center Clipped Dynamic USP Image */}
-              <g clipPath="url(#centerHubClip)">
-                <image
-                  href={activeUSP.image}
-                  x={cx - 126}
-                  y={cy - 126}
-                  width="252"
-                  height="252"
-                  preserveAspectRatio="xMidYMid slice"
-                />
-                <circle cx={cx} cy={cy} r="126" fill="rgba(0, 44, 102, 0.38)" />
-              </g>
-
-              {/* Rotating Weapon Wheel Reticle Pointer in Brand Navy */}
-              <g
-                transform={`rotate(${activeAngle + 90}, ${cx}, ${cy})`}
-                className="transition-transform duration-300 ease-out pointer-events-none"
+            {/* Outer Curved Category Labels */}
+            {OUTER_LABELS.map((cat) => (
+              <text
+                key={cat.id}
+                fill="#002C66"
+                fontSize={13.5}
+                fontWeight={600}
+                letterSpacing={3.6}
+                className="font-sans uppercase select-none"
               >
-                <polygon
-                  points={`${cx},${cy - 140} ${cx - 10},${cy - 122} ${cx + 10},${cy - 122}`}
-                  fill="#002C66"
-                />
-              </g>
+                <textPath
+                  href={`#${baseId}-${cat.id}`}
+                  startOffset="50%"
+                  textAnchor="middle"
+                >
+                  {cat.text}
+                </textPath>
+              </text>
+            ))}
 
-              {/* Center Hub Active Text Overlay */}
-              <foreignObject
-                x={cx - 105}
-                y={cy - 75}
-                width="210"
-                height="150"
-                className="pointer-events-none"
+            {/* 8 Corporate Navy Annular Segments */}
+            {WHEEL_USPS.map((seg, si) => {
+              const isSelected = activeIndex === si;
+              const a1 = si * 45;
+              const a2 = a1 + 45;
+              const flipped = isFlipped(a1 + 22.5);
+              const radii = radiiFor(seg.lines.length, flipped);
+              const tooltipId = `${baseId}-tooltip-${seg.id}`;
+
+              return (
+                <g
+                  key={seg.id}
+                  className="cursor-pointer focus:outline-none"
+                  onMouseEnter={() => handleSelect(si)}
+                  onFocus={() => handleSelect(si)}
+                  onClick={() => handleSelect(si)}
+                  tabIndex={0}
+                  role="button"
+                  aria-pressed={isSelected}
+                  aria-describedby={isSelected && !tooltipDismissed ? tooltipId : undefined}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleSelect(si);
+                    } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+                      e.preventDefault();
+                      handleSelect((si + 1) % WHEEL_USPS.length);
+                    } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+                      e.preventDefault();
+                      handleSelect((si - 1 + WHEEL_USPS.length) % WHEEL_USPS.length);
+                    }
+                  }}
+                >
+                  <path
+                    d={segPath(a1, a2, isSelected ? R_OUT_ACTIVE : R_OUT)}
+                    fill={isSelected ? "#001E47" : "#002C66"}
+                    stroke={isSelected ? "#002C66" : "none"}
+                    strokeWidth={isSelected ? 2 : 0}
+                    className="transition-all duration-300 ease-out"
+                  />
+
+                  {/* Curved White Segment Labels */}
+                  {seg.lines.map((text, li) => {
+                    const rc = radii[li];
+                    const sweep = 45 - 2 * inset(rc);
+                    const arcLen = 2 * Math.PI * rc * (sweep / 360) - 16;
+                    const natural = text.length * 9.5;
+                    const textLength = natural > arcLen ? arcLen : undefined;
+
+                    return (
+                      <text
+                        key={`${si}-${li}`}
+                        fill="#FFFFFF"
+                        fontSize={isSelected ? 17.5 : 16.5}
+                        fontWeight={isSelected ? 700 : 600}
+                        className="font-sans select-none pointer-events-none transition-all duration-200"
+                      >
+                        <textPath
+                          href={`#${baseId}-line-${si}-${li}`}
+                          startOffset="50%"
+                          textAnchor="middle"
+                          textLength={textLength}
+                          lengthAdjust={textLength ? "spacingAndGlyphs" : undefined}
+                        >
+                          {text}
+                        </textPath>
+                      </text>
+                    );
+                  })}
+                </g>
+              );
+            })}
+
+            {/* Inner Soft Light Circle Background */}
+            <circle cx={C} cy={C} r={R_FACE} fill="#F4F3EF" />
+
+            {/* Center Clipped Dynamic Image */}
+            <image
+              href={activeUSP.image}
+              x={C - R_FACE}
+              y={C - R_FACE}
+              width={R_FACE * 2}
+              height={R_FACE * 2}
+              preserveAspectRatio="xMidYMid slice"
+              clipPath={`url(#${baseId}-wheel-face)`}
+            />
+
+            {/* Bottom White Readiness-Style Pill Card (Exact Match to Reference Bottom Pill) */}
+            <foreignObject
+              x={C - 155}
+              y={C + 88}
+              width={310}
+              height={86}
+              className="overflow-visible pointer-events-none"
+            >
+              <div className="w-full h-full flex items-center justify-center">
+                <div className="w-full rounded-full bg-white border border-slate-200/90 shadow-[0_8px_24px_rgba(0,44,102,0.14)] px-4 py-2.5 flex items-center gap-3.5">
+                  <div className="h-12 w-12 rounded-full bg-[#002C66] text-white font-display font-extrabold text-base flex items-center justify-center shrink-0">
+                    {activeUSP.slot}
+                  </div>
+                  <div className="min-w-0 flex-1 text-left">
+                    <span className="block text-[10px] font-bold tracking-[0.16em] uppercase text-slate-400 truncate">
+                      {activeUSP.categoryTag}
+                    </span>
+                    <span className="block text-[15px] font-extrabold font-display text-slate-900 leading-tight truncate mt-0.5">
+                      {activeUSP.headline}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </foreignObject>
+          </svg>
+
+          {/* ─── NEAT CORPORATE HOVER TOOLTIP ─── */}
+          <AnimatePresence mode="wait">
+            {!tooltipDismissed && (
+              <motion.div
+                key={activeUSP.id}
+                id={`${baseId}-tooltip-${activeUSP.id}`}
+                role="tooltip"
+                initial={{ opacity: 0, scale: 0.94, y: 4 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.94, y: 4 }}
+                transition={{ duration: 0.18 }}
+                onMouseEnter={() => setTooltipDismissed(false)}
+                style={{
+                  left: `${Math.min(Math.max(tooltipLeftPct, 18), 82)}%`,
+                  top: `${Math.min(Math.max(tooltipTopPct, 12), 88)}%`,
+                }}
+                className="absolute -translate-x-1/2 -translate-y-1/2 z-30 w-64 sm:w-72 rounded-xl bg-white border border-[#002C66]/25 shadow-[0_12px_32px_rgba(0,44,102,0.18)] p-4"
               >
-                <div className="w-full h-full flex flex-col items-center justify-end pb-3 text-center px-3">
-                  <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-white font-bold drop-shadow">
-                    SLOT {activeUSP.slot} ACTIVE
+                <div className="flex items-center justify-between gap-2 mb-1">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#002C66]">
+                    {activeUSP.categoryTag}
                   </span>
-                  <p className="text-base font-extrabold font-display text-white leading-tight mt-0.5 drop-shadow">
-                    {activeUSP.headline}
-                  </p>
-                  <span className="mt-1.5 inline-flex items-center gap-1 px-3 py-0.5 rounded-full bg-[#002C66] border border-white/40 text-[10px] font-semibold text-white shadow-sm">
-                    {activeUSP.statLabel}
+                  <span className="h-5 px-2 rounded-full bg-[#002C66] text-white text-[10px] font-bold inline-flex items-center">
+                    {activeUSP.slot} / 08
                   </span>
                 </div>
-              </foreignObject>
-            </svg>
-
-            {/* ─── HIGHLIGHTED FLOATING WEAPON-WHEEL TOOLTIP CALLOUT (Hoverable + Dismissible) ─── */}
-            <AnimatePresence mode="wait">
-              {!tooltipDismissed && (
-                <motion.div
-                  key={activeUSP.id}
-                  id={`${baseId}-usp-tooltip-${activeUSP.id}`}
-                  role="tooltip"
-                  initial={{ opacity: 0, scale: 0.92, y: 6 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.92, y: 4 }}
-                  transition={{ duration: 0.18 }}
-                  onMouseEnter={() => setTooltipDismissed(false)}
-                  style={{
-                    left: `${Math.min(Math.max(tooltipLeftPct, 16), 84)}%`,
-                    top: `${Math.min(Math.max(tooltipTopPct, 10), 90)}%`,
-                  }}
-                  className="absolute -translate-x-1/2 -translate-y-1/2 z-30 w-64 sm:w-72 rounded-xl bg-white border-2 border-[#002C66] p-4 shadow-[0_14px_38px_rgba(0,44,102,0.28)]"
-                >
-                  <div className="flex items-center justify-between gap-2 mb-1.5">
-                    <span className="inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-wider font-extrabold text-[#002C66]">
-                      <span className="h-2 w-2 rounded-full bg-[#002C66]" />
-                      {activeUSP.categoryTag} · #{activeUSP.slot}
-                    </span>
-                    <span className="px-2 py-0.5 rounded bg-[#002C66] text-white text-[9px] font-mono font-bold">
-                      EQUIPPED
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 mt-1">
-                    <div className="h-7 w-7 rounded-md bg-[#002C66] text-white flex items-center justify-center shrink-0">
-                      <ActiveIcon className="h-3.5 w-3.5" />
-                    </div>
-                    <h4 className="text-base font-extrabold font-display text-slate-950 leading-snug">
-                      {activeUSP.headline}
-                    </h4>
-                  </div>
-                  <p className="text-xs font-medium text-slate-700 leading-relaxed mt-2">
-                    {activeUSP.description}
-                  </p>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+                <h4 className="text-sm font-extrabold font-display text-slate-950 leading-snug">
+                  {activeUSP.headline}
+                </h4>
+                <p className="text-xs text-slate-600 leading-relaxed mt-1">
+                  {activeUSP.description}
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </section>

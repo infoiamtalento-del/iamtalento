@@ -31,16 +31,18 @@ const HandsOnProjectsSection = () => (
           <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary to-primary/80" />
           <div className="relative z-10 flex flex-col md:flex-row">
             {/* Text content */}
-            <div className="p-6 md:p-8 flex-1">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 text-xs font-semibold text-white mb-4">
-                <Layers className="h-3 w-3" /> Real-Time Projects
+            <div className="p-6 md:p-8 flex-1 flex flex-col justify-between">
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 text-xs font-semibold text-white mb-4">
+                  <Layers className="h-3 w-3" /> Real-Time Projects
+                </div>
+                <h3 className="text-xl md:text-2xl font-bold font-display mb-2 leading-tight max-w-xs text-white">
+                  Build Scalable Projects
+                </h3>
+                <p className="text-white/75 text-sm max-w-xs mb-6">
+                  Apply every lesson with domain expert feedback.
+                </p>
               </div>
-              <h3 className="text-xl md:text-2xl font-bold font-display mb-2 leading-tight max-w-md text-white">
-                Build Scalable Projects with Industry Mentorship
-              </h3>
-              <p className="text-white/70 text-sm max-w-sm mb-6">
-                Work on assignments used by actual companies. Get feedback from domain experts and build your portfolio.
-              </p>
               <div className="flex items-center gap-3">
                 <motion.div
                   whileHover={{ scale: 1.1 }}
@@ -48,7 +50,7 @@ const HandsOnProjectsSection = () => (
                 >
                   <Play className="h-4 w-4 text-white fill-white" />
                 </motion.div>
-                <span className="text-xs text-white/60">Watch how it works</span>
+                <span className="text-xs text-white/75">Watch how it works</span>
               </div>
             </div>
             {/* Video thumbnail */}
