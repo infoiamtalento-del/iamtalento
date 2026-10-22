@@ -34,9 +34,10 @@ const reveal = {
 const Heading = ({ eyebrow, title, sub, align = "center", invert = false, className }: {
   eyebrow?: string; title: string; sub?: React.ReactNode; align?: "center" | "left"; invert?: boolean; className?: string;
 }) => {
-  const idx = title.indexOf(". ");
-  const first = idx > -1 ? title.slice(0, idx + 1) : title;
-  const second = idx > -1 ? title.slice(idx + 2) : "";
+  const bar = title.indexOf("|");
+  const idx = bar > -1 ? bar : title.indexOf(". ");
+  const first = idx > -1 ? title.slice(0, bar > -1 ? idx : idx + 1) : title;
+  const second = idx > -1 ? title.slice(idx + (bar > -1 ? 1 : 2)) : "";
   return (
     <motion.div {...reveal} className={cn(align === "center" ? "mx-auto max-w-3xl text-center" : "max-w-xl", className)}>
       {eyebrow && <p className={cn("mb-3 text-xs font-bold uppercase tracking-[0.18em]", invert ? "text-primary-foreground/70" : "text-primary")}>{eyebrow}</p>}
@@ -157,7 +158,7 @@ const problems = [
 export const ProblemSection = () => (
   <section className="py-20 md:py-28">
     <div className="container">
-      <Heading eyebrow="The Problem" title="The Resume Was Built for a World. That No Longer Exists." sub="Today a candidate can generate a perfect CV, a tailored cover letter and rehearsed interview answers in under ten minutes. Your process was designed to read documents. Documents no longer tell you much." />
+      <Heading eyebrow="The Problem" title="The Resume Was Built for a World|That No Longer Exists." sub="Today a candidate can generate a perfect CV, a tailored cover letter and rehearsed interview answers in under ten minutes. Your process was designed to read documents. Documents no longer tell you much." />
       <div className="mt-12 grid gap-px overflow-hidden rounded-lg border border-border bg-border md:grid-cols-3">
         {problems.map((p) => (
           <motion.div key={p.n} {...reveal} className="bg-card p-7">
@@ -383,7 +384,7 @@ const scoreRows = [["Problem awareness", 92], ["Specific example", 86], ["Better
 export const ExplainableSection = () => (
   <section className="py-20 md:py-28">
     <div className="container">
-      <Heading eyebrow="Explainable AI" title="See Exactly Why Every Candidate. Scored What They Scored." sub="No black box. You write the question and define a great answer. TalentCIR scores every response against your rubric, criterion by criterion, and shows its reasoning. You can override any score." />
+      <Heading eyebrow="Explainable AI" title="See Exactly Why Every Candidate|Scored What They Scored." sub="No black box. You write the question and define a great answer. TalentCIR scores every response against your rubric, criterion by criterion, and shows its reasoning. You can override any score." />
       <div className="mt-12 grid gap-6 lg:grid-cols-3">
         <motion.div {...reveal} className="rounded-lg border border-border bg-card p-6">
           <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.18em] text-primary">1 · Your question, your rules</p>
