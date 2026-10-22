@@ -29,9 +29,9 @@ const Learning = () => (
     </Helmet>
     <Layout>
       <LearningHeroSection />
+      <LearnInLanguageSection />
       <AILearningCompanionSection />
       <LearningWeaponWheelSection />
-      <LearnInLanguageSection />
       <WhyChooseLearningSection />
       <TrendingCoursesSection />
       <PricingBannerSection />

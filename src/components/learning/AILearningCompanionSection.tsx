@@ -1,401 +1,458 @@
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, Star, GraduationCap, MessageSquare, CheckCircle2, FileText, Target, Calendar } from "lucide-react";
+import { Sparkles, ArrowLeft, ArrowRight, Plus, Check } from "lucide-react";
 import SectionBadge from "@/components/ui/section-badge";
 
-import female1 from "@/assets/experts/female-1.jpg";
-import female2 from "@/assets/experts/female-2.jpg";
-import female3 from "@/assets/experts/female-3.jpg";
-import male1 from "@/assets/experts/male-1.jpg";
-import male2 from "@/assets/experts/male-2.jpg";
-import male3 from "@/assets/experts/male-3.jpg";
-import learnerPriya from "@/assets/learner-priya.jpg";
-import learnerRahul from "@/assets/learner-rahul.jpg";
-import learnerAnanya from "@/assets/learner-ananya.jpg";
-import projectThumb from "@/assets/hands-on-project-thumb.jpg";
+interface CompanionFeature {
+  id: string;
+  number: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+  widgetTitle: string;
+  widgetBadge: string;
+  footerLeft: string;
+  footerRight: string;
+}
+
+const FEATURES: CompanionFeature[] = [
+  {
+    id: "feature-1",
+    number: "01",
+    eyebrow: "LESSON Q&A",
+    title: "Ask anything about your lesson",
+    description:
+      "Stuck on a concept? Ask AI while watching the video. Get contextual explanations, practical examples and step-by-step guidance without leaving your lesson.",
+    widgetTitle: "Live Lesson Q&A Velocity",
+    widgetBadge: "04:18 Paused",
+    footerLeft: "Timestamp Synced",
+    footerRight: "Instant AI Answer",
+  },
+  {
+    id: "feature-2",
+    number: "02",
+    eyebrow: "CONCEPT CLARITY",
+    title: "Understand difficult concepts",
+    description:
+      "Get complex topics explained in simple language. Ask for examples, alternative explanations or practical scenarios tailored to your learning needs.",
+    widgetTitle: "Concept Clarity Breakdown",
+    widgetBadge: "94% Clarity",
+    footerLeft: "24 Topics Simplified",
+    footerRight: "Analogy Mode Active",
+  },
+  {
+    id: "feature-3",
+    number: "03",
+    eyebrow: "PRACTICE QUIZZES",
+    title: "Test your knowledge",
+    description:
+      "Turn every lesson into an opportunity to practise. Generate quizzes, answer questions and understand where you need improvement.",
+    widgetTitle: "Accuracy vs. Recall Speed",
+    widgetBadge: "5/5 Mastery",
+    footerLeft: "Adaptive Quizzes",
+    footerRight: "92% Avg Score",
+  },
+  {
+    id: "feature-4",
+    number: "04",
+    eyebrow: "REVISION NOTES",
+    title: "Get instant learning summaries",
+    description:
+      "Review important concepts, key takeaways and lesson notes to reinforce your understanding and make revision easier.",
+    widgetTitle: "Key Takeaways & Notes",
+    widgetBadge: "Auto-Saved",
+    footerLeft: "3-Page Cheat Sheet",
+    footerRight: "1-Click Revision",
+  },
+  {
+    id: "feature-5",
+    number: "05",
+    eyebrow: "GAP ANALYSIS",
+    title: "Track your learning gaps",
+    description:
+      "Identify topics that need more practice based on your quiz results and learning activity. Get recommendations on what to revisit next.",
+    widgetTitle: "Topic Mastery Channels",
+    widgetBadge: "2 Gaps Found",
+    footerLeft: "Revisit Lesson 4.2",
+    footerRight: "Smart Path Updated",
+  },
+  {
+    id: "feature-6",
+    number: "06",
+    eyebrow: "MENTOR PREP",
+    title: "Prepare for expert sessions",
+    description:
+      "Let AI organise your unresolved questions and prepare a summary of the challenges you want to discuss with an industry expert.",
+    widgetTitle: "1:1 Expert Session Brief",
+    widgetBadge: "Brief Ready",
+    footerLeft: "3 Priority Questions",
+    footerRight: "Shared with Mentor",
+  },
+];
+
+/* Subtle flat diagonal line pattern in bottom-right corner (Zero Gradient) */
+const DiagonalLinesPattern = () => (
+  <svg
+    aria-hidden="true"
+    viewBox="0 0 200 200"
+    className="pointer-events-none absolute bottom-0 right-0 w-48 h-48 text-[#002C66]/[0.05]"
+  >
+    {Array.from({ length: 24 }).map((_, i) => {
+      const offset = i * 9;
+      return (
+        <line
+          key={i}
+          x1={200 - offset}
+          y1={200}
+          x2={200}
+          y2={200 - offset}
+          stroke="currentColor"
+          strokeWidth="1.5"
+        />
+      );
+    })}
+  </svg>
+);
 
 const AILearningCompanionSection = () => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [activeCardId, setActiveCardId] = useState<string | null>(null);
+
+  const handleScroll = (direction: "left" | "right") => {
+    if (!scrollRef.current) return;
+    const scrollAmount = 390;
+    scrollRef.current.scrollBy({
+      left: direction === "left" ? -scrollAmount : scrollAmount,
+      behavior: "smooth",
+    });
+  };
+
+  const toggleCard = (id: string) => {
+    setActiveCardId((prev) => (prev === id ? null : id));
+  };
+
   return (
-    <section id="ai-companion" className="py-16 md:py-24 bg-[#FBF4EB]">
+    <section id="ai-companion" className="py-16 md:py-24 bg-[#FBF4EB] overflow-hidden">
       <div className="container px-4 md:px-6">
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12 md:mb-14">
-          <SectionBadge label="How AI Transforms Your Learning Experience" icon={Sparkles} />
-          <motion.h2
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-4 text-slate-950"
-          >
-            Meet Your AI<br />
-            <span className="text-primary">Learning Companion</span>
-          </motion.h2>
-          <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
-            Not just another chatbot. An intelligent learning assistant that helps you understand, practise and apply what you learn.
-          </p>
+        {/* Top Header Row: Left-aligned Title & Subtitle + Right-aligned Circular Arrow Buttons */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 md:mb-12">
+          <div className="max-w-2xl">
+            <div className="flex justify-start">
+              <SectionBadge label="How AI Transforms Your Learning Experience" icon={Sparkles} />
+            </div>
+            <motion.h2
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3 text-slate-950"
+            >
+              Meet Your AI{" "}
+              <span className="text-primary">Learning Companion</span>
+            </motion.h2>
+            <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
+              Not just another chatbot. An intelligent learning assistant that helps you understand, practise and apply what you learn.
+            </p>
+          </div>
+
+          {/* Circular Prev / Next Navigation Buttons */}
+          <div className="flex items-center gap-3 shrink-0">
+            <button
+              type="button"
+              onClick={() => handleScroll("left")}
+              aria-label="Previous feature"
+              className="h-12 w-12 rounded-full border border-slate-900/70 bg-white text-slate-950 flex items-center justify-center hover:bg-[#002C66] hover:text-white hover:border-[#002C66] transition-colors cursor-pointer shadow-2xs"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => handleScroll("right")}
+              aria-label="Next feature"
+              className="h-12 w-12 rounded-full border border-slate-900/70 bg-white text-slate-950 flex items-center justify-center hover:bg-[#002C66] hover:text-white hover:border-[#002C66] transition-colors cursor-pointer shadow-2xs"
+            >
+              <ArrowRight className="h-5 w-5" />
+            </button>
+          </div>
         </div>
 
-        {/* ─── 6 Preply-Style Editorial Cards (2 Rows of 3) ─── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {/* ─── CARD 1: Ask Anything About Your Lesson (Stacked Cascading Cards Visual) ─── */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.45 }}
-            className="bg-white border border-slate-900/80 rounded-md pt-7 px-7 pb-0 flex flex-col justify-between overflow-hidden shadow-xs"
-          >
-            <div>
-              <div className="h-9 w-9 rounded-md bg-[#002C66] text-white font-display font-extrabold text-lg flex items-center justify-center mb-5">
-                1
-              </div>
-              <h3 className="text-2xl sm:text-[28px] font-extrabold font-display tracking-tight text-slate-950 leading-[1.12] mb-3.5">
-                Ask anything about your lesson.
-              </h3>
-              <p className="text-sm text-slate-700 leading-relaxed mb-6">
-                Stuck on a concept? Ask AI while watching the video. Get contextual explanations, practical examples and step-by-step guidance without leaving your lesson.
-              </p>
-            </div>
+        {/* Equal-Sized White Cards Track */}
+        <div
+          ref={scrollRef}
+          className="flex gap-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 -mr-4 pr-4 md:-mr-6 md:pr-6"
+        >
+          {FEATURES.map((feature, index) => {
+            const isSelected = activeCardId === feature.id;
+            return (
+              <motion.div
+                key={feature.id}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: index * 0.06 }}
+                onClick={() => toggleCard(feature.id)}
+                className={`group w-[335px] sm:w-[370px] h-[495px] shrink-0 snap-start rounded-2xl bg-white p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden cursor-pointer transition-all duration-200 ${
+                  isSelected
+                    ? "border-2 border-[#002C66] shadow-lg"
+                    : "border border-slate-200/90 hover:border-[#002C66]/50 shadow-xs hover:shadow-md"
+                }`}
+              >
+                <DiagonalLinesPattern />
 
-            {/* Bottom Visual: 3 Cascading Offset Cards (Exact Reference Card 1 Structure) */}
-            <div className="relative pt-2 pb-4">
-              {/* Top Card */}
-              <div className="relative z-30 rounded-lg border border-slate-900/75 bg-white p-3 flex items-start gap-3 shadow-xs mr-4">
-                <img
-                  src={female1}
-                  alt="Dr. Neha"
-                  className="h-14 w-14 rounded-md object-cover object-top shrink-0"
-                />
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between">
-                    <span className="font-extrabold font-display text-sm text-slate-950">
-                      Dr. Neha · AI Lesson
-                    </span>
-                    <span className="inline-flex items-center gap-0.5 text-xs font-extrabold text-slate-950">
-                      <Star className="h-3 w-3 fill-slate-950 text-slate-950" /> 4.9
-                    </span>
+                {/* ─── TOP SECTION: Strictly Locked Heights So All 6 Cards Align Perfectly ─── */}
+                <div className="relative z-10">
+                  {/* Top Bar: Blue Number Badge + Eyebrow + Circular Plus Button */}
+                  <div className="flex items-center justify-between gap-3 mb-4">
+                    <div className="flex items-center gap-2.5">
+                      <span className="h-7 w-7 rounded-md bg-[#002C66] text-white font-display font-extrabold text-xs flex items-center justify-center shrink-0">
+                        {feature.number}
+                      </span>
+                      <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-[#002C66]">
+                        {feature.eyebrow}
+                      </span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleCard(feature.id);
+                      }}
+                      aria-pressed={isSelected}
+                      aria-label={`Select ${feature.title}`}
+                      className={`h-9 w-9 rounded-full border flex items-center justify-center shrink-0 transition-all duration-200 cursor-pointer ${
+                        isSelected
+                          ? "bg-[#002C66] text-white border-[#002C66] rotate-45"
+                          : "border-slate-300 bg-white text-slate-900 group-hover:border-[#002C66] group-hover:bg-[#002C66] group-hover:text-white"
+                      }`}
+                    >
+                      <Plus className="h-4 w-4" />
+                    </button>
                   </div>
-                  <p className="text-[11px] text-slate-600 flex items-center gap-1 mt-0.5">
-                    <GraduationCap className="h-3 w-3 shrink-0" /> Paused at 04:18 · RAG Indexing
-                  </p>
-                  <p className="text-[11px] text-slate-600 flex items-center gap-1 mt-0.5 leading-snug">
-                    <MessageSquare className="h-3 w-3 shrink-0 text-[#002C66]" /> Instant step-by-step AI answer ready
-                  </p>
-                </div>
-              </div>
 
-              {/* Middle Offset Card */}
-              <div className="relative z-20 -mt-2.5 ml-3 mr-1 rounded-lg border border-slate-900/65 bg-white p-3 flex items-start gap-3 shadow-xs">
-                <img
-                  src={female2}
-                  alt="Kavitha"
-                  className="h-12 w-12 rounded-md object-cover object-top shrink-0"
-                />
-                <div className="min-w-0 flex-1">
-                  <p className="text-[11px] text-slate-600 flex items-center gap-1">
-                    <GraduationCap className="h-3 w-3 shrink-0" /> Growth Marketing · 11:20
-                  </p>
-                  <p className="text-[11px] text-slate-600 mt-0.5 leading-snug">
-                    Explained attribution model with B2B example
+                  {/* Title — Fixed 2-Line Height (56px) for Equal Alignment */}
+                  <h3 className="text-xl sm:text-[22px] font-extrabold font-display text-slate-950 leading-[1.22] min-h-[54px] flex items-start mb-2.5">
+                    {feature.title}
+                  </h3>
+
+                  {/* Description — Fixed 3-Line Height (63px) for Equal Alignment */}
+                  <p className="text-sm text-slate-600 leading-[1.5] h-[63px] line-clamp-3">
+                    {feature.description}
                   </p>
                 </div>
-              </div>
 
-              {/* Bottom Offset Card */}
-              <div className="relative z-10 -mt-2.5 ml-6 rounded-lg border border-slate-900/55 bg-white p-2.5 flex items-start gap-3">
-                <img
-                  src={male1}
-                  alt="Vikram"
-                  className="h-10 w-10 rounded-md object-cover object-top shrink-0"
-                />
-                <div className="min-w-0 flex-1">
-                  <p className="text-[11px] text-slate-600 truncate">
-                    System Design · Contextual code walkthrough
-                  </p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
+                {/* ─── BOTTOM SECTION: Equal-Height Framed UI Preview Box (236px) ─── */}
+                <div className="relative z-10 mt-auto rounded-xl bg-[#F4F7FA] border border-[#002C66]/12 p-2.5">
+                  <div className="rounded-lg bg-white border border-slate-200/80 p-3.5 h-[214px] flex flex-col justify-between shadow-2xs">
+                    {/* Unified Widget Top Bar */}
+                    <div className="flex items-center justify-between gap-2 pb-2 border-b border-slate-100">
+                      <span className="text-xs font-bold text-slate-900 truncate">
+                        {feature.widgetTitle}
+                      </span>
+                      <span className="px-2 py-0.5 rounded bg-[#002C66]/[0.08] text-[#002C66] text-[10px] font-bold shrink-0">
+                        {feature.widgetBadge}
+                      </span>
+                    </div>
 
-          {/* ─── CARD 2: Understand Difficult Concepts (Main Portrait + Overlapping PiP Frame) ─── */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.45, delay: 0.08 }}
-            className="bg-white border border-slate-900/80 rounded-md pt-7 px-7 pb-0 flex flex-col justify-between overflow-hidden shadow-xs"
-          >
-            <div>
-              <div className="h-9 w-9 rounded-md bg-[#002C66] text-white font-display font-extrabold text-lg flex items-center justify-center mb-5">
-                2
-              </div>
-              <h3 className="text-2xl sm:text-[28px] font-extrabold font-display tracking-tight text-slate-950 leading-[1.12] mb-3.5">
-                Understand difficult concepts.
-              </h3>
-              <p className="text-sm text-slate-700 leading-relaxed mb-6">
-                Get complex topics explained in simple language. Ask for examples, alternative explanations or practical scenarios tailored to your learning needs.
-              </p>
-            </div>
+                    {/* Unified Widget Middle Visual Canvas (118px) */}
+                    <div className="h-[118px] flex flex-col justify-center">
+                      {/* Widget 1: Multi-Line Trend Chart */}
+                      {index === 0 && (
+                        <div>
+                          <div className="flex items-center gap-3 text-[9px] text-slate-500 mb-1">
+                            <span className="inline-flex items-center gap-1">
+                              <span className="h-1.5 w-1.5 rounded-full bg-[#002C66]" /> Context
+                            </span>
+                            <span className="inline-flex items-center gap-1">
+                              <span className="h-1.5 w-1.5 rounded-full bg-[#10B981]" /> Clarity
+                            </span>
+                            <span className="inline-flex items-center gap-1">
+                              <span className="h-1.5 w-1.5 rounded-full bg-[#F59E0B]" /> Steps
+                            </span>
+                          </div>
+                          <svg viewBox="0 0 240 84" className="w-full h-20 overflow-visible">
+                            <line x1="18" y1="14" x2="232" y2="14" stroke="#F1F5F9" strokeWidth="1" />
+                            <line x1="18" y1="42" x2="232" y2="42" stroke="#F1F5F9" strokeWidth="1" />
+                            <line x1="18" y1="70" x2="232" y2="70" stroke="#F1F5F9" strokeWidth="1" />
+                            <text x="0" y="17" className="text-[8px] fill-slate-400">100</text>
+                            <text x="4" y="45" className="text-[8px] fill-slate-400">70</text>
+                            <text x="4" y="73" className="text-[8px] fill-slate-400">40</text>
+                            <polyline
+                              fill="none"
+                              stroke="#F59E0B"
+                              strokeWidth="2"
+                              points="22,60 76,36 132,30 188,24 228,22"
+                            />
+                            <polyline
+                              fill="none"
+                              stroke="#002C66"
+                              strokeWidth="2.2"
+                              points="22,66 76,62 132,38 188,18 228,12"
+                            />
+                            <polyline
+                              fill="none"
+                              stroke="#10B981"
+                              strokeWidth="2"
+                              points="22,72 76,54 132,52 188,46 228,28"
+                            />
+                          </svg>
+                        </div>
+                      )}
 
-            {/* Bottom Visual: Large Main Frame + Overlapping Right PiP Portrait (Exact Reference Card 2 Structure) */}
-            <div className="relative h-60 mt-auto">
-              {/* Main Instructor Frame */}
-              <div className="absolute left-0 bottom-0 w-[84%] h-56 rounded-t-xl border-t border-x border-slate-900/80 overflow-hidden bg-[#F5EFE6]">
-                <img
-                  src={female3}
-                  alt="Instructor explaining concept"
-                  className="w-full h-full object-cover object-top"
-                />
-                <div className="absolute bottom-2.5 left-2.5 bg-white/95 border border-slate-900/70 rounded-md px-2.5 py-1 text-[10px] font-bold text-slate-950 shadow-xs">
-                  Simple Analogy Mode
-                </div>
-              </div>
+                      {/* Widget 2: Semi-Circle Gauge + Metric Tiles */}
+                      {index === 1 && (
+                        <div className="grid grid-cols-12 gap-2.5 items-center">
+                          <div className="col-span-5 flex flex-col items-center">
+                            <svg viewBox="0 0 100 58" className="w-24">
+                              <path
+                                d="M 10 50 A 40 40 0 0 1 90 50"
+                                fill="none"
+                                stroke="#E2E8F0"
+                                strokeWidth="12"
+                              />
+                              <path
+                                d="M 10 50 A 40 40 0 0 1 82 26"
+                                fill="none"
+                                stroke="#002C66"
+                                strokeWidth="12"
+                              />
+                              <text
+                                x="50"
+                                y="48"
+                                textAnchor="middle"
+                                className="text-[15px] font-extrabold fill-slate-950"
+                              >
+                                94%
+                              </text>
+                            </svg>
+                            <span className="text-[9px] font-semibold text-slate-500 mt-0.5">
+                              Comprehension
+                            </span>
+                          </div>
+                          <div className="col-span-7 space-y-1.5">
+                            <div className="rounded-md bg-slate-50 border border-slate-100 px-2.5 py-1.5 flex items-center justify-between">
+                              <span className="text-[10px] font-medium text-slate-600">Analogy Match</span>
+                              <span className="text-[11px] font-extrabold text-[#002C66]">98%</span>
+                            </div>
+                            <div className="rounded-md bg-slate-50 border border-slate-100 px-2.5 py-1.5 flex items-center justify-between">
+                              <span className="text-[10px] font-medium text-slate-600">Real Scenarios</span>
+                              <span className="text-[11px] font-extrabold text-[#10B981]">89%</span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
 
-              {/* Overlapping Right Learner PiP Frame */}
-              <div className="absolute right-0 top-4 w-[42%] h-36 rounded-xl border border-slate-900/85 overflow-hidden bg-white shadow-md z-10">
-                <img
-                  src={learnerPriya}
-                  alt="Learner understanding concept"
-                  className="w-full h-full object-cover object-top"
-                />
-              </div>
-            </div>
-          </motion.div>
+                      {/* Widget 3: Bubble Mastery Matrix */}
+                      {index === 2 && (
+                        <div>
+                          <div className="flex items-center gap-3 text-[9px] text-slate-500 mb-1">
+                            <span className="inline-flex items-center gap-1">
+                              <span className="h-1.5 w-1.5 rounded-full bg-[#002C66]" /> Theory
+                            </span>
+                            <span className="inline-flex items-center gap-1">
+                              <span className="h-1.5 w-1.5 rounded-full bg-[#10B981]" /> Applied
+                            </span>
+                            <span className="inline-flex items-center gap-1">
+                              <span className="h-1.5 w-1.5 rounded-full bg-[#F59E0B]" /> Speed
+                            </span>
+                          </div>
+                          <svg viewBox="0 0 240 84" className="w-full h-20">
+                            <line x1="16" y1="14" x2="230" y2="14" stroke="#F1F5F9" strokeWidth="1" />
+                            <line x1="16" y1="42" x2="230" y2="42" stroke="#F1F5F9" strokeWidth="1" />
+                            <line x1="16" y1="70" x2="230" y2="70" stroke="#F1F5F9" strokeWidth="1" />
+                            <circle cx="76" cy="38" r="20" fill="#002C66" />
+                            <circle cx="128" cy="46" r="24" fill="#10B981" />
+                            <circle cx="186" cy="34" r="15" fill="#F59E0B" />
+                          </svg>
+                        </div>
+                      )}
 
-          {/* ─── CARD 3: Test Your Knowledge (Fanned Horizontal Cascading Photo Slices) ─── */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.45, delay: 0.16 }}
-            className="bg-white border border-slate-900/80 rounded-md pt-7 px-7 pb-7 flex flex-col justify-between overflow-hidden shadow-xs"
-          >
-            <div>
-              <div className="h-9 w-9 rounded-md bg-[#002C66] text-white font-display font-extrabold text-lg flex items-center justify-center mb-5">
-                3
-              </div>
-              <h3 className="text-2xl sm:text-[28px] font-extrabold font-display tracking-tight text-slate-950 leading-[1.12] mb-3.5">
-                Test your knowledge.
-              </h3>
-              <p className="text-sm text-slate-700 leading-relaxed mb-6">
-                Turn every lesson into an opportunity to practise. Generate quizzes, answer questions and understand where you need improvement.
-              </p>
-            </div>
+                      {/* Widget 4: Instant Revision Takeaways */}
+                      {index === 3 && (
+                        <div className="space-y-1.5">
+                          {[
+                            { label: "01. Core Framework Formula", tag: "03:42" },
+                            { label: "02. Production Workflow Steps", tag: "09:15" },
+                            { label: "03. Key Benchmarks & Fixes", tag: "14:50" },
+                          ].map((row, i) => (
+                            <div
+                              key={i}
+                              className="rounded-md bg-slate-50 border border-slate-100 px-2.5 py-1.5 flex items-center justify-between"
+                            >
+                              <span className="text-[10px] font-semibold text-slate-800 truncate">
+                                {row.label}
+                              </span>
+                              <span className="text-[9px] font-mono font-bold text-[#002C66]">
+                                {row.tag}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
 
-            {/* Bottom Visual: Fanned Horizontal Slices (Exact Reference Card 3 Structure) */}
-            <div className="relative h-44 flex items-stretch mt-auto">
-              {/* Slice 1 */}
-              <div className="w-8 rounded-l-xl border-y border-l border-slate-900/80 overflow-hidden shrink-0">
-                <img
-                  src={projectThumb}
-                  alt=""
-                  className="w-full h-full object-cover object-[20%_center] opacity-75"
-                />
-              </div>
-              {/* Slice 2 */}
-              <div className="w-8 -ml-1.5 rounded-l-xl border-y border-l border-slate-900/80 overflow-hidden shrink-0">
-                <img
-                  src={projectThumb}
-                  alt=""
-                  className="w-full h-full object-cover object-[35%_center] opacity-85"
-                />
-              </div>
-              {/* Slice 3 */}
-              <div className="w-8 -ml-1.5 rounded-l-xl border-y border-l border-slate-900/80 overflow-hidden shrink-0">
-                <img
-                  src={projectThumb}
-                  alt=""
-                  className="w-full h-full object-cover object-[50%_center] opacity-95"
-                />
-              </div>
-              {/* Main Front Frame */}
-              <div className="flex-1 -ml-1.5 rounded-xl border border-slate-900/85 overflow-hidden relative shadow-xs">
-                <img
-                  src={projectThumb}
-                  alt="Practising with AI quizzes"
-                  className="w-full h-full object-cover object-center"
-                />
-                <div className="absolute bottom-2.5 right-2.5 bg-white/95 border border-slate-900/75 rounded-md px-2.5 py-1 text-[10px] font-extrabold text-slate-950 flex items-center gap-1 shadow-xs">
-                  <CheckCircle2 className="h-3 w-3 text-emerald-600" /> Quiz: 5/5 Mastery
-                </div>
-              </div>
-            </div>
-          </motion.div>
+                      {/* Widget 5: Grouped Bar Chart */}
+                      {index === 4 && (
+                        <svg viewBox="0 0 240 96" className="w-full h-24">
+                          <line x1="20" y1="14" x2="230" y2="14" stroke="#F1F5F9" strokeWidth="1" />
+                          <line x1="20" y1="44" x2="230" y2="44" stroke="#F1F5F9" strokeWidth="1" />
+                          <line x1="20" y1="74" x2="230" y2="74" stroke="#F1F5F9" strokeWidth="1" />
+                          {/* Module 1 */}
+                          <rect x="42" y="24" width="8" height="50" fill="#002C66" rx="1.5" />
+                          <rect x="52" y="14" width="8" height="60" fill="#10B981" rx="1.5" />
+                          <rect x="62" y="36" width="8" height="38" fill="#F59E0B" rx="1.5" />
+                          {/* Module 2 */}
+                          <rect x="112" y="48" width="8" height="26" fill="#002C66" rx="1.5" />
+                          <rect x="122" y="26" width="8" height="48" fill="#10B981" rx="1.5" />
+                          <rect x="132" y="56" width="8" height="18" fill="#F59E0B" rx="1.5" />
+                          {/* Module 3 */}
+                          <rect x="182" y="20" width="8" height="54" fill="#002C66" rx="1.5" />
+                          <rect x="192" y="32" width="8" height="42" fill="#10B981" rx="1.5" />
+                          <rect x="202" y="42" width="8" height="32" fill="#F59E0B" rx="1.5" />
+                          <text x="56" y="88" textAnchor="middle" className="text-[8px] fill-slate-500">
+                            Module 1
+                          </text>
+                          <text x="126" y="88" textAnchor="middle" className="text-[8px] fill-slate-500">
+                            Module 2
+                          </text>
+                          <text x="196" y="88" textAnchor="middle" className="text-[8px] fill-slate-500">
+                            Module 3
+                          </text>
+                        </svg>
+                      )}
 
-          {/* ─── CARD 4: Get Instant Learning Summaries (Stacked Cascading Summary Cards) ─── */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.45, delay: 0.2 }}
-            className="bg-white border border-slate-900/80 rounded-md pt-7 px-7 pb-0 flex flex-col justify-between overflow-hidden shadow-xs"
-          >
-            <div>
-              <div className="h-9 w-9 rounded-md bg-[#002C66] text-white font-display font-extrabold text-lg flex items-center justify-center mb-5">
-                4
-              </div>
-              <h3 className="text-2xl sm:text-[28px] font-extrabold font-display tracking-tight text-slate-950 leading-[1.12] mb-3.5">
-                Get instant learning summaries.
-              </h3>
-              <p className="text-sm text-slate-700 leading-relaxed mb-6">
-                Review important concepts, key takeaways and lesson notes to reinforce your understanding and make revision easier.
-              </p>
-            </div>
+                      {/* Widget 6: 1:1 Expert Session Brief */}
+                      {index === 5 && (
+                        <div className="space-y-1.5">
+                          {[
+                            "Unresolved query from Lesson 4.2",
+                            "Architecture review for project repo",
+                            "Production deployment checklist",
+                          ].map((item, i) => (
+                            <div
+                              key={i}
+                              className="flex items-center gap-2 rounded-md bg-slate-50 border border-slate-100 px-2.5 py-1.5"
+                            >
+                              <span className="h-4 w-4 rounded-full bg-[#002C66] text-white flex items-center justify-center shrink-0">
+                                <Check className="h-2.5 w-2.5" />
+                              </span>
+                              <span className="text-[10px] font-semibold text-slate-800 truncate">
+                                {item}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
 
-            {/* Bottom Visual: 3 Cascading Summary Cards (Reference Card 1 Style) */}
-            <div className="relative pt-2 pb-4">
-              <div className="relative z-30 rounded-lg border border-slate-900/75 bg-white p-3 flex items-start gap-3 shadow-xs mr-4">
-                <img
-                  src={male2}
-                  alt="Arjun"
-                  className="h-14 w-14 rounded-md object-cover object-top shrink-0"
-                />
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between">
-                    <span className="font-extrabold font-display text-sm text-slate-950">
-                      Module 02 Summary
-                    </span>
-                    <span className="inline-flex items-center gap-0.5 text-[11px] font-extrabold text-[#002C66]">
-                      <FileText className="h-3 w-3" /> Saved
-                    </span>
+                    {/* Unified Widget Footer Bar */}
+                    <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-[10px]">
+                      <span className="text-slate-500 font-medium">{feature.footerLeft}</span>
+                      <span className="font-bold text-[#002C66]">{feature.footerRight}</span>
+                    </div>
                   </div>
-                  <p className="text-[11px] text-slate-600 mt-0.5">
-                    3 core formulas &amp; cohort benchmarks
-                  </p>
-                  <p className="text-[11px] text-slate-600 mt-0.5">
-                    1-click revision cheat sheet ready
-                  </p>
                 </div>
-              </div>
-
-              <div className="relative z-20 -mt-2.5 ml-3 mr-1 rounded-lg border border-slate-900/65 bg-white p-3 flex items-start gap-3 shadow-xs">
-                <img
-                  src={male3}
-                  alt="Saurabh"
-                  className="h-12 w-12 rounded-md object-cover object-top shrink-0"
-                />
-                <div className="min-w-0 flex-1">
-                  <p className="text-[11px] font-bold text-slate-900">
-                    Valuation &amp; Cash Flow Notes
-                  </p>
-                  <p className="text-[11px] text-slate-600 mt-0.5">
-                    Key takeaways synced to your notebook
-                  </p>
-                </div>
-              </div>
-
-              <div className="relative z-10 -mt-2.5 ml-6 rounded-lg border border-slate-900/55 bg-white p-2.5 flex items-start gap-3">
-                <img
-                  src={female1}
-                  alt="Neha"
-                  className="h-10 w-10 rounded-md object-cover object-top shrink-0"
-                />
-                <div className="min-w-0 flex-1">
-                  <p className="text-[11px] text-slate-600 truncate">
-                    Transformer Architecture · 5 bullet summary
-                  </p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* ─── CARD 5: Track Your Learning Gaps (Main Portrait + Overlapping Gap Card) ─── */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.45, delay: 0.28 }}
-            className="bg-white border border-slate-900/80 rounded-md pt-7 px-7 pb-0 flex flex-col justify-between overflow-hidden shadow-xs"
-          >
-            <div>
-              <div className="h-9 w-9 rounded-md bg-[#002C66] text-white font-display font-extrabold text-lg flex items-center justify-center mb-5">
-                5
-              </div>
-              <h3 className="text-2xl sm:text-[28px] font-extrabold font-display tracking-tight text-slate-950 leading-[1.12] mb-3.5">
-                Track your learning gaps.
-              </h3>
-              <p className="text-sm text-slate-700 leading-relaxed mb-6">
-                Identify topics that need more practice based on your quiz results and learning activity. Get recommendations on what to revisit next.
-              </p>
-            </div>
-
-            {/* Bottom Visual: Large Frame + Overlapping PiP Portrait (Reference Card 2 Style) */}
-            <div className="relative h-60 mt-auto">
-              <div className="absolute left-0 bottom-0 w-[84%] h-56 rounded-t-xl border-t border-x border-slate-900/80 overflow-hidden bg-[#F5EFE6]">
-                <img
-                  src={learnerRahul}
-                  alt="Learner tracking skill gaps"
-                  className="w-full h-full object-cover object-top"
-                />
-                <div className="absolute bottom-2.5 left-2.5 bg-white/95 border border-slate-900/70 rounded-md px-2.5 py-1 text-[10px] font-bold text-slate-950 flex items-center gap-1 shadow-xs">
-                  <Target className="h-3 w-3 text-[#002C66]" /> Revisit Next: Lesson 4.2
-                </div>
-              </div>
-
-              <div className="absolute right-0 top-4 w-[42%] h-36 rounded-xl border border-slate-900/85 overflow-hidden bg-white shadow-md z-10">
-                <img
-                  src={male1}
-                  alt="Mentor guidance"
-                  className="w-full h-full object-cover object-top"
-                />
-              </div>
-            </div>
-          </motion.div>
-
-          {/* ─── CARD 6: Prepare for Expert Sessions (Fanned Horizontal Slices) ─── */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.45, delay: 0.36 }}
-            className="bg-white border border-slate-900/80 rounded-md pt-7 px-7 pb-7 flex flex-col justify-between overflow-hidden shadow-xs"
-          >
-            <div>
-              <div className="h-9 w-9 rounded-md bg-[#002C66] text-white font-display font-extrabold text-lg flex items-center justify-center mb-5">
-                6
-              </div>
-              <h3 className="text-2xl sm:text-[28px] font-extrabold font-display tracking-tight text-slate-950 leading-[1.12] mb-3.5">
-                Prepare for expert sessions.
-              </h3>
-              <p className="text-sm text-slate-700 leading-relaxed mb-6">
-                Let AI organise your unresolved questions and prepare a summary of the challenges you want to discuss with an industry expert.
-              </p>
-            </div>
-
-            {/* Bottom Visual: Fanned Horizontal Slices (Reference Card 3 Style) */}
-            <div className="relative h-44 flex items-stretch mt-auto">
-              <div className="w-8 rounded-l-xl border-y border-l border-slate-900/80 overflow-hidden shrink-0">
-                <img
-                  src={learnerAnanya}
-                  alt=""
-                  className="w-full h-full object-cover object-[25%_top] opacity-75"
-                />
-              </div>
-              <div className="w-8 -ml-1.5 rounded-l-xl border-y border-l border-slate-900/80 overflow-hidden shrink-0">
-                <img
-                  src={learnerAnanya}
-                  alt=""
-                  className="w-full h-full object-cover object-[40%_top] opacity-85"
-                />
-              </div>
-              <div className="w-8 -ml-1.5 rounded-l-xl border-y border-l border-slate-900/80 overflow-hidden shrink-0">
-                <img
-                  src={learnerAnanya}
-                  alt=""
-                  className="w-full h-full object-cover object-[55%_top] opacity-95"
-                />
-              </div>
-              <div className="flex-1 -ml-1.5 rounded-xl border border-slate-900/85 overflow-hidden relative shadow-xs">
-                <img
-                  src={learnerAnanya}
-                  alt="Prepared for 1-to-1 expert consultation"
-                  className="w-full h-full object-cover object-top"
-                />
-                <div className="absolute bottom-2.5 right-2.5 bg-white/95 border border-slate-900/75 rounded-md px-2.5 py-1 text-[10px] font-extrabold text-slate-950 flex items-center gap-1 shadow-xs">
-                  <Calendar className="h-3 w-3 text-[#002C66]" /> 1:1 Brief Ready
-                </div>
-              </div>
-            </div>
-          </motion.div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
