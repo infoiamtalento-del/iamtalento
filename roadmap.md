@@ -248,3 +248,7 @@
 
 ## Employer page v2 — new era section
 - Move the two CTA buttons below the left-hand text and add space between the headline lines — done; buttons sit left-aligned under the description (x 231 matches the headline's x 231) and the two headline lines sit 68px apart at 1797 width, phone layout checked with both buttons readable, no horizontal overflow, build OK.
+
+## Employer page v2 — trust bar logos colour flip
+- Logos now render in full colour by default and turn greyscale + faded on hover (was the reverse).
+- Checked in the preview: default filter none, hover grayscale applied; build clean.
