@@ -1,6 +1,8 @@
 import { Helmet } from "react-helmet-async";
 import Layout from "@/components/layout/Layout";
 import LearningHeroSection from "@/components/learning/LearningHeroSection";
+import AILearningCompanionSection from "@/components/learning/AILearningCompanionSection";
+import LearningWeaponWheelSection from "@/components/learning/LearningWeaponWheelSection";
 
 import CoursePerksSection from "@/components/learning/CoursePerksSection";
 import PricingBannerSection from "@/components/learning/PricingBannerSection";
@@ -9,7 +11,6 @@ import WhyChooseLearningSection from "@/components/learning/WhyChooseLearningSec
 
 import LearnerStoriesSection from "@/components/learning/LearnerStoriesSection";
 import GetCertifiedSection from "@/components/learning/GetCertifiedSection";
-
 
 import LearnInLanguageSection from "@/components/learning/LearnInLanguageSection";
 import MasterclassesSection from "@/components/learning/MasterclassesSection";
@@ -28,12 +29,14 @@ const Learning = () => (
     </Helmet>
     <Layout>
       <LearningHeroSection />
+      <AILearningCompanionSection />
+      <LearningWeaponWheelSection />
       <LearnInLanguageSection />
       <WhyChooseLearningSection />
       <TrendingCoursesSection />
-      <ExpertCoursesSection />
       <PricingBannerSection />
       <HandsOnProjectsSection />
+      <ExpertCoursesSection />
       <CoursePerksSection />
       
       <GrowthTrackerSection />
@@ -49,3 +52,4 @@ const Learning = () => (
 );
 
 export default Learning;
+

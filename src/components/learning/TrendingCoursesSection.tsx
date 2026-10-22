@@ -11,6 +11,10 @@ import courseAiMl from "@/assets/course-ai-ml.jpg";
 import courseData from "@/assets/course-data-analytics.jpg";
 import courseMarketing from "@/assets/course-digital-marketing.jpg";
 import coursePython from "@/assets/course-python.jpg";
+import expertImg1 from "@/assets/expert-course-1.jpg";
+import expertImg2 from "@/assets/expert-course-2.jpg";
+import expertImg3 from "@/assets/expert-course-3.jpg";
+import expertImg4 from "@/assets/expert-course-4.jpg";
 
 const categories = ["All", "AI & ML", "Data Science", "Marketing", "Development", "Design", "Finance"];
 
@@ -19,6 +23,10 @@ const courses = [
   { title: "Data Analytics Masterclass", category: "Data Science", level: "Intermediate", rating: 4.7, learners: "9,800", instructor: "Arjun Patel", image: courseData, languages: ["EN", "TA"], duration: "12 hrs", price: "₹799", originalPrice: "₹4,999", bestseller: false },
   { title: "Digital Marketing with AI Tools", category: "Marketing", level: "Beginner", rating: 4.9, learners: "15,200", instructor: "Kavitha Rajan", image: courseMarketing, languages: ["EN", "HI", "TE"], duration: "6 hrs", price: "₹499", originalPrice: "₹2,999", bestseller: true },
   { title: "Python for Job-Ready Developers", category: "Development", level: "Intermediate", rating: 4.6, learners: "7,300", instructor: "Vikram Desai", image: coursePython, languages: ["EN"], duration: "15 hrs", price: "₹999", originalPrice: "₹5,999", bestseller: false },
+  { title: "Product UI/UX & Figma Design Systems", category: "Design", level: "Intermediate", rating: 4.9, learners: "11,600", instructor: "Tanya Verma", image: expertImg2, languages: ["EN", "HI"], duration: "10 hrs", price: "₹649", originalPrice: "₹3,499", bestseller: true },
+  { title: "Full-Stack React, Next.js & TypeScript", category: "Development", level: "Advanced", rating: 4.8, learners: "14,900", instructor: "Rohan Malhotra", image: expertImg3, languages: ["EN", "HI"], duration: "18 hrs", price: "₹899", originalPrice: "₹4,999", bestseller: true },
+  { title: "Financial Modeling & Valuation Bootcamp", category: "Finance", level: "Intermediate", rating: 4.7, learners: "8,450", instructor: "CA Saurabh Jain", image: expertImg4, languages: ["EN"], duration: "14 hrs", price: "₹749", originalPrice: "₹4,499", bestseller: false },
+  { title: "Generative AI & LLM Agents in Production", category: "AI & ML", level: "Advanced", rating: 4.9, learners: "18,300", instructor: "Dr. Priya Menon", image: expertImg1, languages: ["EN", "TA", "TE"], duration: "11 hrs", price: "₹699", originalPrice: "₹3,999", bestseller: true },
 ];
 
 const TrendingCoursesSection = () => {
