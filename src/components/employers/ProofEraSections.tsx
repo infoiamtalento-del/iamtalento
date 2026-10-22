@@ -54,8 +54,8 @@ const PrimaryCta = ({ label = "Start hiring free", to = START, invert }: { label
     {to.startsWith("#") ? <a href={to}>{label} <ArrowRight className="h-4 w-4" /></a> : <Link to={to}>{label} <ArrowRight className="h-4 w-4" /></Link>}
   </Button>
 );
-const SecondaryCta = ({ label = "Book a demo", to = DEMO }: { label?: string; to?: string }) => (
-  <Button asChild size="lg" variant="outline" className="h-12 gap-2 px-6">
+const SecondaryCta = ({ label = "Book a demo", to = DEMO, invert }: { label?: string; to?: string; invert?: boolean }) => (
+  <Button asChild size="lg" variant="outline" className={invert ? "h-12 gap-2 border-primary-foreground/40 bg-transparent px-6 text-primary-foreground hover:bg-primary-foreground/10" : "h-12 gap-2 px-6"}>
     {to.startsWith("#") ? <a href={to}>{label}</a> : <Link to={to}>{label}</Link>}
   </Button>
 );
