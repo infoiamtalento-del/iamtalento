@@ -190,9 +190,9 @@ export const NewEraSection = () => (
   <section className="bg-primary py-20 text-primary-foreground md:py-28">
     <div className="container grid gap-12 lg:grid-cols-2 lg:gap-16">
       <div>
-        <Heading align="left" invert eyebrow="The New Era of Hiring" title="For Centuries, Hiring Ran on Claims. The Next Era Runs on Proof." />
+        <Heading align="left" invert eyebrow="The New Era of Hiring" title="Hiring Ran on Claims. The Next Era Runs on Proof." />
         <motion.p {...reveal} className="text-base leading-relaxed text-primary-foreground/80">
-          The resume asked employers to take a candidate's word for it. That worked when writing a convincing one took effort. AI has made claims free, so claims are no longer worth much. The same AI now makes it possible to verify real skill, at scale, in minutes. That is the shift. TalentCIR is built for it.
+          AI has made claims free, so claims are no longer worth much. The same AI can verify real skill at scale, in minutes. TalentCIR is built for that shift.
         </motion.p>
       </div>
       <motion.div {...reveal} className="rounded-lg border border-primary-foreground/20">
@@ -207,7 +207,10 @@ export const NewEraSection = () => (
         ))}
       </motion.div>
     </div>
-    <p className="container mt-12 text-center font-display text-lg font-semibold md:text-xl">The teams that hire on proof first will hire the people everyone else overlooks.</p>
+    <div className="container mt-12 flex flex-wrap items-center justify-center gap-4">
+      <PrimaryCta invert />
+      <SecondaryCta />
+    </div>
   </section>
 );
 
