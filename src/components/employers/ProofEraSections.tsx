@@ -146,7 +146,7 @@ export const ProofTrustBar = () => (
       </div>
       <div className="mt-8 flex flex-wrap items-center justify-center gap-x-10 gap-y-5 border-t border-border/60 pt-8">
         {["tcs", "infosys", "wipro", "google", "accenture", "razorpay", "zoho", "flipkart", "amazon", "swiggy"].map((name) => (
-          <img key={name} src={`/company-logos/${name}.svg`} alt={`${name.toUpperCase()} logo`} loading="lazy" className="h-5 w-auto opacity-60 grayscale transition hover:opacity-100 hover:grayscale-0 md:h-6" />
+          <img key={name} src={`/company-logos/${name}.svg`} alt={`${name.toUpperCase()} logo`} loading="lazy" className="h-5 w-auto opacity-100 transition hover:grayscale hover:opacity-60 md:h-6" />
         ))}
       </div>
     </div>
