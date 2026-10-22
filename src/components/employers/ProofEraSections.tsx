@@ -209,7 +209,7 @@ export const NewEraSection = () => (
     </div>
     <div className="container mt-12 flex flex-wrap items-center justify-center gap-4">
       <PrimaryCta invert />
-      <SecondaryCta />
+      <SecondaryCta invert />
     </div>
   </section>
 );
