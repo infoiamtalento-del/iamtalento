@@ -39,7 +39,7 @@ const Heading = ({ eyebrow, title, sub, align = "center", invert = false, classN
   const first = idx > -1 ? title.slice(0, bar > -1 ? idx : idx + 1) : title;
   const second = idx > -1 ? title.slice(idx + (bar > -1 ? 1 : 2)) : "";
   return (
-    <motion.div {...reveal} className={cn(align === "center" ? "mx-auto max-w-3xl text-center" : "max-w-xl", className)}>
+    <motion.div {...reveal} className={cn(align === "center" ? "mx-auto max-w-4xl text-center" : "max-w-xl", className)}>
       {eyebrow && <p className={cn("mb-3 text-xs font-bold uppercase tracking-[0.18em]", invert ? "text-primary-foreground/70" : "text-primary")}>{eyebrow}</p>}
       <h2 className={cn("mb-5 font-display text-3xl font-bold leading-[1.1] sm:text-4xl lg:text-[2.75rem]", invert && "text-primary-foreground")}>
         {first}{second && <><br /><span className={invert ? "text-primary-foreground/80" : "text-primary"}>{second}</span></>}
