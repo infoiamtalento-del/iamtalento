@@ -245,3 +245,6 @@
 
 ## Home hero — headline enlarged
 - Increase "India's Next Big Leap / in Hiring Starts Here." font size by 15% — done; headline now clamp(25px, 6.3cqw, 55px) above 640px and clamp(23px, 6.7cqw, 30px) on phones, sub-line held at its previous rendered size (0.44em / 0.75em), checked in browser at 1497, 890 and 390 with no clipping or overlap, build OK
+
+## Employer page v2 — new era section
+- Move the two CTA buttons below the left-hand text and add space between the headline lines — done; buttons sit left-aligned under the description (x 231 matches the headline's x 231) and the two headline lines sit 68px apart at 1797 width, phone layout checked with both buttons readable, no horizontal overflow, build OK.
