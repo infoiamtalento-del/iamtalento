@@ -39,14 +39,10 @@ const LearningHeroSection = () => {
                 <SectionBadge label="AI-Powered Learning Studio" icon={BookOpen} />
               </div>
 
-              <h1 className="text-3xl sm:text-4xl xl:text-[44px] font-bold font-display tracking-tight text-slate-950 mb-4 leading-[1.25]">
-                Learn from Experts.
-                <br />
-                <span className="text-[#002C66]">
-                  Grow with AI.
-                  <br />
-                  Get Ahead.
-                </span>
+              <h1 className="text-3xl sm:text-4xl xl:text-[44px] font-bold font-display tracking-tight text-slate-950 mb-4 leading-[1.38]">
+                <span className="block">Learn from Experts.</span>
+                <span className="block text-[#002C66] mt-1">Grow with AI.</span>
+                <span className="block text-[#002C66] mt-1">Get Ahead.</span>
               </h1>
 
               <p className="text-base md:text-lg text-slate-600 mb-6 max-w-xl leading-relaxed">

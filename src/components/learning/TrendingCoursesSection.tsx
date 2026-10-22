@@ -7,26 +7,26 @@ import SectionBadge from "@/components/ui/section-badge";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-import courseAiMl from "@/assets/course-ai-ml.jpg";
-import courseData from "@/assets/course-data-analytics.jpg";
-import courseMarketing from "@/assets/course-digital-marketing.jpg";
-import coursePython from "@/assets/course-python.jpg";
 import expertImg1 from "@/assets/expert-course-1.jpg";
 import expertImg2 from "@/assets/expert-course-2.jpg";
 import expertImg3 from "@/assets/expert-course-3.jpg";
 import expertImg4 from "@/assets/expert-course-4.jpg";
+import expertFemale1 from "@/assets/experts/female-1.jpg";
+import expertFemale3 from "@/assets/experts/female-3.jpg";
+import expertMale1 from "@/assets/experts/male-1.jpg";
+import expertMale3 from "@/assets/experts/male-3.jpg";
 
 const categories = ["All", "AI & ML", "Data Science", "Marketing", "Development", "Design", "Finance"];
 
 const courses = [
-  { title: "AI for Non-Tech Professionals", category: "AI & ML", level: "Beginner", rating: 4.8, learners: "12,400", instructor: "Dr. Neha Sharma", image: courseAiMl, languages: ["EN", "HI"], duration: "8 hrs", price: "Free", originalPrice: "₹3,999", bestseller: true },
-  { title: "Data Analytics Masterclass", category: "Data Science", level: "Intermediate", rating: 4.7, learners: "9,800", instructor: "Arjun Patel", image: courseData, languages: ["EN", "TA"], duration: "12 hrs", price: "₹799", originalPrice: "₹4,999", bestseller: false },
-  { title: "Digital Marketing with AI Tools", category: "Marketing", level: "Beginner", rating: 4.9, learners: "15,200", instructor: "Kavitha Rajan", image: courseMarketing, languages: ["EN", "HI", "TE"], duration: "6 hrs", price: "₹499", originalPrice: "₹2,999", bestseller: true },
-  { title: "Python for Job-Ready Developers", category: "Development", level: "Intermediate", rating: 4.6, learners: "7,300", instructor: "Vikram Desai", image: coursePython, languages: ["EN"], duration: "15 hrs", price: "₹999", originalPrice: "₹5,999", bestseller: false },
+  { title: "AI for Non-Tech Professionals", category: "AI & ML", level: "Beginner", rating: 4.8, learners: "12,400", instructor: "Dr. Neha Sharma", image: expertFemale1, languages: ["EN", "HI"], duration: "8 hrs", price: "Free", originalPrice: "₹3,999", bestseller: true },
+  { title: "Data Analytics Masterclass", category: "Data Science", level: "Intermediate", rating: 4.7, learners: "9,800", instructor: "Arjun Patel", image: expertMale1, languages: ["EN", "TA"], duration: "12 hrs", price: "₹799", originalPrice: "₹4,999", bestseller: false },
+  { title: "Digital Marketing with AI Tools", category: "Marketing", level: "Beginner", rating: 4.9, learners: "15,200", instructor: "Kavitha Rajan", image: expertFemale3, languages: ["EN", "HI", "TE"], duration: "6 hrs", price: "₹499", originalPrice: "₹2,999", bestseller: true },
+  { title: "Python for Job-Ready Developers", category: "Development", level: "Intermediate", rating: 4.6, learners: "7,300", instructor: "Vikram Desai", image: expertMale3, languages: ["EN"], duration: "15 hrs", price: "₹999", originalPrice: "₹5,999", bestseller: false },
   { title: "Product UI/UX & Figma Design Systems", category: "Design", level: "Intermediate", rating: 4.9, learners: "11,600", instructor: "Tanya Verma", image: expertImg2, languages: ["EN", "HI"], duration: "10 hrs", price: "₹649", originalPrice: "₹3,499", bestseller: true },
   { title: "Full-Stack React, Next.js & TypeScript", category: "Development", level: "Advanced", rating: 4.8, learners: "14,900", instructor: "Rohan Malhotra", image: expertImg3, languages: ["EN", "HI"], duration: "18 hrs", price: "₹899", originalPrice: "₹4,999", bestseller: true },
-  { title: "Financial Modeling & Valuation Bootcamp", category: "Finance", level: "Intermediate", rating: 4.7, learners: "8,450", instructor: "CA Saurabh Jain", image: expertImg4, languages: ["EN"], duration: "14 hrs", price: "₹749", originalPrice: "₹4,499", bestseller: false },
-  { title: "Generative AI & LLM Agents in Production", category: "AI & ML", level: "Advanced", rating: 4.9, learners: "18,300", instructor: "Dr. Priya Menon", image: expertImg1, languages: ["EN", "TA", "TE"], duration: "11 hrs", price: "₹699", originalPrice: "₹3,999", bestseller: true },
+  { title: "Financial Modeling & Valuation Bootcamp", category: "Finance", level: "Intermediate", rating: 4.7, learners: "8,450", instructor: "CA Saurabh Jain", image: expertImg1, languages: ["EN"], duration: "14 hrs", price: "₹749", originalPrice: "₹4,499", bestseller: false },
+  { title: "Generative AI & LLM Agents in Production", category: "AI & ML", level: "Advanced", rating: 4.9, learners: "18,300", instructor: "Dr. Priya Menon", image: expertImg4, languages: ["EN", "TA", "TE"], duration: "11 hrs", price: "₹699", originalPrice: "₹3,999", bestseller: true },
 ];
 
 const TrendingCoursesSection = () => {
@@ -77,8 +77,8 @@ const TrendingCoursesSection = () => {
               className="rounded-xl border bg-card overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
             >
               {/* Thumbnail */}
-              <div className="relative h-36 overflow-hidden">
-                <img src={c.image} alt={c.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div className="relative aspect-[5/4] overflow-hidden bg-slate-100">
+                <img src={c.image} alt={c.title} className="w-full h-full object-cover object-[center_12%] group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 {c.bestseller && (
                   <span className="absolute top-2 left-2 text-[9px] font-bold bg-[hsl(33,100%,50%)] text-white px-2 py-0.5 rounded-sm uppercase tracking-wide">Bestseller</span>

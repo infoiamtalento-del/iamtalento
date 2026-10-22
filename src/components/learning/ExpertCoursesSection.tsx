@@ -141,11 +141,11 @@ const ExpertCoursesSection = () => {
             className="rounded-xl border bg-card overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
           >
             {/* Thumbnail */}
-            <div className="relative h-52 md:h-56 overflow-hidden">
+            <div className="relative aspect-[5/4] overflow-hidden bg-slate-100">
               <img
                 src={c.image}
                 alt={c.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-cover object-[center_12%] group-hover:scale-105 transition-transform duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
