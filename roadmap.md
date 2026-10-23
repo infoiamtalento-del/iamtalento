@@ -271,3 +271,8 @@
 - Left-column text now uses the homepage hero's exact type scale and font: headline clamp(25px,6.3cqw,55px) bold Inter, sub-line 0.44em regular, paragraph clamp(16px,1.15vw,18px), buttons 15px/700, item titles 14px/600 with 12.5px subtitles; the copy column is a container so the clamp resolves the same way.
 - Grid changed to the homepage's 1.22fr/0.78fr with 44px gap so the headline renders at the same 49.65px (was 45.44px); the shortlist card column is now 504px wide and still renders complete.
 - Checked at 1797 and 390: headline 49.65px / sub-line 21.85px on both pages, no clipping, no overflow, no page errors; build OK.
+
+## Employer page v2 — two ways section moved and rewritten
+- Moved TwoWaysSection to sit directly below ProofTrustBar (the logo row), before ProblemSection.
+- Replaced the copy with the client's 23 Oct text: eyebrow "Two Ways to Find Your Next Great Hire", headline "Find Talent. / Or Hire Talent That's Already Interviewed.", the description, card 01 Talent Discovery and card 02 AI-Interviewed, Verified Talent, each with five points and its own CTA ("Explore the Talent Pool", "Discover Interviewed Talent", both to /employer-profile).
+- Checked at 1797 and 390: section is the first below the hero, both cards show number badge, label, headline, five bullets and button, no clipping, no overflow, no page errors; build OK.
