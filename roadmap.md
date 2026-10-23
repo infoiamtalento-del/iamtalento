@@ -288,3 +288,7 @@
 ## Employer page v2 — product ecosystem grid added
 - Reused the earlier design's six-product platform grid on /employers-page-2 directly above ProblemSection ("The Resume Was Built for a World That No Longer Exists."), with the client's new eyebrow "Product Ecosystem", headline "One Platform. Six Products" / "to Make Hiring Smarter." and description; panels, Get Started links and the closing button unchanged.
 - Checked at 1797 and 390: section sits before the resume section, all six panels present, old /for-employers headline still "Everything It Takes, / In One Platform.", no clipping, no overflow, no page errors.
+
+## Employer page v2 — AI Interviewer showcase after the ecosystem grid
+- Added LindaShowcaseSection (EmployerShowcaseSections) directly after the "One Platform. Six Products" section: white background, the client's interview-dashboard screenshot left (CDN asset ai-interview-dashboard.jpg), right column "Meet Linda," over "Your AI Interviewer." in blue, the original description and all eight capability points in a two-column grid, Get Started → /employer-profile; the circle portrait and navy band are gone.
+- Checked at 1797 and 390 with the image injected locally (dev server doesn't serve /__l5e; hosted preview does): image loads, no clipping, no overflow; build OK.
