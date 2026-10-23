@@ -313,4 +313,4 @@
 - Replace the two-row logo grid with one row that scrolls continuously — done; one row of ten logos (duplicated for a seamless loop) at the same 44px height, 30s marquee, pauses on hover, stops for reduced-motion, no page overflow, build OK
 
 ## Employer page v2 — remove pricing and promise sections
-- Remove "Pay for Candidates Assessed. Not for Seats That Sit Empty." and "Our Promise: A Better Shortlist, or Your Money Back." — in progress
+- Remove "Pay for Candidates Assessed. Not for Seats That Sit Empty." and "Our Promise: A Better Shortlist, or Your Money Back." — done; both headlines absent from the live page, Premium Solutions, questions and closing call to action render unchanged, no overflow, build OK
