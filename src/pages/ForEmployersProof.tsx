@@ -24,6 +24,7 @@ const ForEmployersProof = () => (
       <ProofHero />
       <ProofTrustBar />
       <TwoWaysSection />
+      <PlatformSection eyebrow="Product Ecosystem" first="One Platform. Six Products" second="to Make Hiring Smarter." description={<>Assess, proctor, brand, and interview without juggling separate tools.<br className="hidden md:block" /> Six capabilities, one connected workflow.</>} />
       <ProblemSection />
       <NewEraSection />
       <HowItWorksSection />
