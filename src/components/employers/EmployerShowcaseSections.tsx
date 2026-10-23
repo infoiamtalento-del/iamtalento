@@ -645,7 +645,6 @@ export const PremiumSolutionsSection = () => (
           </motion.div>
         ))}
       </div>
-      <p className="mt-10 text-center text-xs text-muted-foreground">Each solution is a paid service. Select a card to explore its pricing page.</p>
     </div>
   </section>
 );

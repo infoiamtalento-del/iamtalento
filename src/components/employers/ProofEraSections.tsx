@@ -138,9 +138,6 @@ export const ProofHero = () => (
         <div className="absolute -top-5 right-4 flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold shadow-lg">
           <Bot className="h-4 w-4 text-primary" /> Linda finished 48 interviews overnight. Scores ready.
         </div>
-        <figcaption className="mt-4 text-center text-sm text-muted-foreground">
-          312 applicants in. 18 verified candidates out. Every score backed by a proctored test and a recorded interview.
-        </figcaption>
       </motion.figure>
     </div>
   </section>
