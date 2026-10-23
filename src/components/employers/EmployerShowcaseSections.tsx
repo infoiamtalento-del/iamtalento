@@ -616,7 +616,7 @@ const premiumSolutions = [
 ];
 
 export const PremiumSolutionsSection = () => (
-  <section aria-labelledby="premium-solutions-heading" className="py-20 md:py-28">
+  <section aria-label="Premium hiring solutions" className="py-20 md:py-28">
     <div className="container">
       <CenterIntro
         eyebrow="TalentCIR · Premium Solutions"
