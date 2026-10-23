@@ -233,34 +233,238 @@ export const NewEraSection = () => (
 
 /* ---------------- 6. Two ways ---------------- */
 const panels = [
-  { no: "01", name: "Talent Discovery", title: "Find Talent from our Job Portal", body: "Explore a wide pool of candidate resumes and professional profiles. Find relevant talent using smart filters and shortlist candidates based on your hiring requirements.", bullets: ["Search candidate resumes and profiles.", "Filter by skills, experience, location and qualifications.", "Discover relevant candidates for open positions.", "Review candidate details and career history.", "Shortlist and invite candidates for interviews."], cta: "Explore the Talent Pool", featured: true },
-  { no: "02", name: "AI-Interviewed, Verified Talent", title: "Hire Vetted, AI-Interviewed Talent", body: "Access candidates who have already completed AI-powered interviews. Review their actual interview recordings, evaluate their responses and compare assessment insights.", bullets: ["Watch completed AI interview videos.", "Review interview responses and transcripts.", "Access candidate scores and competency insights.", "Evaluate communication and role-specific skills.", "Shortlist candidates for the next interview round."], cta: "Discover Interviewed Talent" },
+  {
+    no: "01",
+    name: "Talent Discovery",
+    title: "Find Talent from our Job Portal",
+    body: "Explore a wide pool of candidate resumes and professional profiles. Find relevant talent using smart filters and shortlist candidates based on your hiring requirements.",
+    bullets: [
+      "Search candidate resumes and profiles.",
+      "Filter by skills, experience, location and qualifications.",
+      "Discover relevant candidates for open positions.",
+      "Review candidate details and career history.",
+      "Shortlist and invite candidates for interviews.",
+    ],
+    cta: "Explore the Talent Pool",
+    featured: true,
+    pillars: [
+      { title: "Resume Search", desc: "Search candidate resumes and profiles across roles." },
+      { title: "Smart Filters", desc: "Filter by skills, experience, location and qualifications." },
+      { title: "Career History", desc: "Review candidate details and verified career history." },
+      { title: "Fast Shortlist", desc: "Shortlist and invite relevant candidates for interviews." },
+    ],
+  },
+  {
+    no: "02",
+    name: "AI-Interviewed, Verified Talent",
+    title: "Hire Vetted, AI-Interviewed Talent",
+    body: "Access candidates who have already completed AI-powered interviews. Review their actual interview recordings, evaluate their responses and compare assessment insights.",
+    bullets: [
+      "Watch completed AI interview videos.",
+      "Review interview responses and transcripts.",
+      "Access candidate scores and competency insights.",
+      "Evaluate communication and role-specific skills.",
+      "Shortlist candidates for the next interview round.",
+    ],
+    cta: "Discover Interviewed Talent",
+    pillars: [
+      { title: "AI Interview Videos", desc: "Watch completed AI interview recordings on demand." },
+      { title: "Transcripts", desc: "Review structured interview responses and transcripts." },
+      { title: "CIR Scores", desc: "Access candidate scores and competency insights." },
+      { title: "Skill Evaluation", desc: "Evaluate communication and role-specific readiness." },
+    ],
+  },
 ];
 
-export const TwoWaysSection = () => (
-  <section className="py-20 md:py-28">
-    <div className="container">
-      <Heading eyebrow="Two Ways to Find Your Next Great Hire" title="Find Talent or Hire Talent|That's Already Interviewed." sub="Whether you want to discover candidates from a large talent pool or access candidates with completed AI interviews, TalentCIR gives you two smarter ways to hire." />
-      <div className="mt-12 grid gap-6 lg:grid-cols-2">
-        {panels.map((p) => (
-          <motion.div key={p.no} {...reveal} className={cn("flex flex-col rounded-lg border p-8", p.featured ? "border-primary bg-accent/50" : "border-border bg-card")}>
-            <div className="mb-5 flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary font-display text-sm font-bold text-primary-foreground">{p.no}</span>
-              <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">{p.name}</span>
-            </div>
-            <h3 className="mb-3 font-display text-2xl font-bold">{p.title}</h3>
-            <p className="mb-6 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
-            <ul className="mb-8 space-y-3">
-              {p.bullets.map((b) => <li key={b} className="flex items-start gap-3 text-sm"><Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" /> {b}</li>)}
-            </ul>
-            <div className="mt-auto"><PrimaryCta label={p.cta} /></div>
-          </motion.div>
-        ))}
-      </div>
-    </div>
-  </section>
-);
+export const TwoWaysSection = () => {
+  const left = panels[0];
+  const right = panels[1];
 
+  return (
+    <section className="py-20 md:py-28">
+      <div className="container">
+        <Heading
+          eyebrow="Two Ways to Find Your Next Great Hire"
+          title="Find Talent or Hire Talent|That's Already Interviewed."
+          sub="Whether you want to discover candidates from a large talent pool or access candidates with completed AI interviews, TalentCIR gives you two smarter ways to hire."
+        />
+
+        {/* Split White + Brand Navy Showcase Container (Reference Style) */}
+        <motion.div
+          {...reveal}
+          className="relative mt-12 overflow-hidden rounded-2xl border border-slate-200/90 shadow-[0_24px_60px_-20px_rgba(0,44,102,0.18)]"
+        >
+          {/* Top Split Content + Center Portrait Badge */}
+          <div className="relative grid grid-cols-1 lg:grid-cols-2">
+            {/* Left Side — White Card (01 Talent Discovery) */}
+            <div className="bg-white p-8 sm:p-10 lg:p-12 lg:pr-32 xl:pr-36 flex flex-col">
+              <div className="mb-4 flex items-center gap-2.5">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#002C66] font-display text-xs font-bold text-white">
+                  {left.no}
+                </span>
+                <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-800">
+                  {left.name}
+                </span>
+              </div>
+
+              <h3 className="mb-3 font-display text-2xl sm:text-3xl font-bold leading-[1.18] text-slate-950">
+                Find Talent from our
+                <br />
+                <span className="text-[#002C66]">Job Portal.</span>
+              </h3>
+
+              <p className="mb-5 text-sm sm:text-base leading-relaxed text-slate-600">
+                {left.body}
+              </p>
+
+              <ul className="mb-7 space-y-2">
+                {left.bullets.map((b) => (
+                  <li key={b} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#002C66]" />
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-auto">
+                <Link
+                  to={START}
+                  className="inline-flex h-12 items-center gap-2.5 rounded-md bg-[#002C66] px-6 text-sm font-bold text-white transition hover:bg-[#00204d]"
+                >
+                  <span>{left.cta}</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Center Segmented Ring + Portrait Straddling the Seam */}
+            <div className="hidden lg:flex pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+              <div className="relative h-56 w-56 xl:h-64 xl:w-64 rounded-full bg-[#FBF4EB] p-3.5 shadow-xl flex items-center justify-center">
+                <svg
+                  viewBox="0 0 220 220"
+                  className="absolute inset-0 h-full w-full -rotate-90"
+                  aria-hidden="true"
+                >
+                  <circle
+                    cx="110"
+                    cy="110"
+                    r="96"
+                    fill="none"
+                    stroke="#002C66"
+                    strokeWidth="12"
+                    strokeDasharray="34 8"
+                    strokeDashoffset="0"
+                  />
+                  <circle
+                    cx="110"
+                    cy="110"
+                    r="96"
+                    fill="none"
+                    stroke="#3B82F6"
+                    strokeWidth="14"
+                    strokeDasharray="36 8"
+                    strokeDashoffset="-300"
+                  />
+                </svg>
+
+                <div className="relative h-40 w-40 xl:h-44 xl:w-44 overflow-hidden rounded-full border-4 border-[#FBF4EB] bg-slate-200">
+                  <img
+                    src={recruiterImage}
+                    alt="Verified hiring specialist"
+                    className="h-full w-full object-cover grayscale"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Right Side — Brand Navy Card (02 AI-Interviewed, Verified Talent) */}
+            <div className="bg-[#002C66] p-8 sm:p-10 lg:p-12 lg:pl-32 xl:pl-36 text-white flex flex-col">
+              <div className="mb-4 flex items-center gap-2.5">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white font-display text-xs font-bold text-[#002C66]">
+                  {right.no}
+                </span>
+                <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/85">
+                  {right.name}
+                </span>
+              </div>
+
+              <h3 className="mb-3 font-display text-2xl sm:text-3xl font-bold leading-[1.18] text-white">
+                Hire Vetted,
+                <br />
+                <span className="text-sky-300">AI-Interviewed Talent.</span>
+              </h3>
+
+              <p className="mb-5 text-sm sm:text-base leading-relaxed text-white/80">
+                {right.body}
+              </p>
+
+              <ul className="mb-7 space-y-2">
+                {right.bullets.map((b) => (
+                  <li key={b} className="flex items-start gap-2.5 text-xs sm:text-sm text-white/85">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-sky-300" />
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-auto">
+                <Link
+                  to={START}
+                  className="inline-flex h-12 items-center gap-2.5 rounded-md bg-[#FBF4EB] px-6 text-sm font-bold text-[#002C66] transition hover:bg-white"
+                >
+                  <span>{right.cta}</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Timeline Strip Across Both Halves */}
+          <div className="grid grid-cols-1 lg:grid-cols-2">
+            {/* Left 4 Pillars on White */}
+            <div className="bg-white px-8 pb-9 pt-2 sm:px-10 lg:px-12">
+              <div className="border-t border-slate-200 pt-5 grid grid-cols-2 sm:grid-cols-4 gap-5">
+                {left.pillars.map((item) => (
+                  <div key={item.title} className="relative">
+                    <span className="hidden sm:block -mt-[25px] mb-3 h-2.5 w-2.5 rounded-full bg-[#002C66] ring-4 ring-white" />
+                    <p className="font-display text-xs sm:text-sm font-bold text-slate-950 mb-1">
+                      {item.title}
+                    </p>
+                    <p className="text-[11px] sm:text-xs leading-relaxed text-slate-500">
+                      {item.desc}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right 4 Pillars on Brand Navy */}
+            <div className="bg-[#002C66] px-8 pb-9 pt-2 sm:px-10 lg:px-12 text-white">
+              <div className="border-t border-white/20 pt-5 grid grid-cols-2 sm:grid-cols-4 gap-5">
+                {right.pillars.map((item, idx) => (
+                  <div key={item.title} className="relative">
+                    <span className="hidden sm:block -mt-[25px] mb-3 h-2.5 w-2.5 rounded-full bg-sky-300 ring-4 ring-[#002C66]" />
+                    <p
+                      className={cn(
+                        "font-display text-xs sm:text-sm font-bold mb-1",
+                        idx === 2 ? "text-sky-300" : "text-white"
+                      )}
+                    >
+                      {item.title}
+                    </p>
+                    <p className="text-[11px] sm:text-xs leading-relaxed text-white/70">
+                      {item.desc}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
 /* ---------------- 7. How it works ---------------- */
 const steps = [
   { day: "Monday", t: "Describe the role", d: "Paste your JD. TalentCIR suggests the skills to test, the right assessment and the interview questions. Change anything you like." },

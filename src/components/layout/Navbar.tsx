@@ -37,12 +37,12 @@ const candidateProducts: ProductItem[] = [
 ];
 
 const employerProducts: ProductItem[] = [
-  { label: "Skill Assessment Library", desc: "Ready-made, proctored tests for every role", href: "/for-employers", icon: Library },
-  { label: "20 Layers of Cheating Prevention", desc: "AI proctoring across the entire test journey", href: "/for-employers", icon: ShieldCheck },
-  { label: "Custom AI Assessment Creation", desc: "Build role-specific tests in minutes", href: "/for-employers", icon: Wand2 },
-  { label: "White-Label Branding", desc: "Your brand on every assessment touchpoint", href: "/for-employers", icon: Palette },
-  { label: "Bulk Campus Hiring & Screening", desc: "Screen thousands of candidates at once", href: "/for-employers", icon: Users },
-  { label: "Create AI Scheduled Interviews", desc: "Automated interview rounds, hands-free", href: "/for-employers", icon: CalendarClock },
+  { label: "Skill Assessment Library", desc: "Ready-made, proctored tests for every role", href: "/employers-page-2", icon: Library },
+  { label: "20 Layers of Cheating Prevention", desc: "AI proctoring across the entire test journey", href: "/employers-page-2", icon: ShieldCheck },
+  { label: "Custom AI Assessment Creation", desc: "Build role-specific tests in minutes", href: "/employers-page-2", icon: Wand2 },
+  { label: "White-Label Branding", desc: "Your brand on every assessment touchpoint", href: "/employers-page-2", icon: Palette },
+  { label: "Bulk Campus Hiring & Screening", desc: "Screen thousands of candidates at once", href: "/employers-page-2", icon: Users },
+  { label: "Create AI Scheduled Interviews", desc: "Automated interview rounds, hands-free", href: "/employers-page-2", icon: CalendarClock },
 ];
 
 const ProductItemRow = ({ item }: { item: ProductItem }) => (
@@ -292,7 +292,7 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
               </Link>
             ) : null}
 
-            <Link to="/for-employers">
+            <Link to="/employers-page-2">
               <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 border-0">
                 For Employers
               </Button>
@@ -482,7 +482,7 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
                   </Button>
                 </Link>
               ) : null}
-              <Link to="/for-employers" onClick={() => setMobileOpen(false)}>
+              <Link to="/employers-page-2" onClick={() => setMobileOpen(false)}>
                 <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 border-0">
                   For Employers
                 </Button>
