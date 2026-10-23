@@ -167,7 +167,7 @@ export const LindaShowcaseSection = () => (
     <div className="container">
       <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
         <motion.div {...reveal} className="overflow-hidden rounded-2xl border border-border bg-card shadow-xl">
-          <img src={lindaDashboard.url} alt="TalentCIR AI interview in progress" className="h-full w-full object-cover" loading="lazy" />
+          <img src={lindaDashboard.url} alt="TalentCIR AI interview in progress" className="w-full object-cover" loading="lazy" />
         </motion.div>
         <div>
           <motion.div {...reveal}>
