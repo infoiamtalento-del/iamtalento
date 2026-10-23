@@ -307,4 +307,4 @@
 - Revised that section's header to the client's later wording: eyebrow "Candidate Intelligence Report", two-line headline "Why the CIR Report is a" / "Game Changer in Talent Acquisition"; the line "Understand What's Inside a Candidate's CIR Report." was removed and the description kept.
 
 ## Employer page v2 — remove two caption lines
-- Remove the hero caption under the shortlist card and the "Each solution is a paid service..." line under Premium Solutions — in progress
+- Remove the hero caption under the shortlist card and the "Each solution is a paid service..." line under Premium Solutions — done; both lines confirmed absent from the live page, eight solution cards and hero card render unchanged, build OK
