@@ -276,3 +276,7 @@
 - Moved TwoWaysSection to sit directly below ProofTrustBar (the logo row), before ProblemSection.
 - Replaced the copy with the client's 23 Oct text: eyebrow "Two Ways to Find Your Next Great Hire", headline "Find Talent. / Or Hire Talent That's Already Interviewed.", the description, card 01 Talent Discovery and card 02 AI-Interviewed, Verified Talent, each with five points and its own CTA ("Explore the Talent Pool", "Discover Interviewed Talent", both to /employer-profile).
 - Checked at 1797 and 390: section is the first below the hero, both cards show number badge, label, headline, five bullets and button, no clipping, no overflow, no page errors; build OK.
+
+## Employer page v2 — two ways headline lines
+- Headline now breaks as "Find Talent or Hire Talent" / "That's Already Interviewed." (was "Find Talent." / "Or Hire Talent That's Already Interviewed.").
+- Checked at 1797 and 390: two lines on desktop, natural wrap on phone, no clipping, no overflow; build OK.
