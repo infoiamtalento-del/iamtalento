@@ -296,3 +296,7 @@
 ## Employer page v2 — dashboard image brand text
 - Edited the interview-dashboard image so its sidebar brand reads "TalentCIR" instead of "TalentIQ"; re-published it as the CDN asset behind src/assets/ai-interview-dashboard.jpg.asset.json and deleted the superseded copy.
 - Checked the served asset and the on-page render (image injected locally, dev server doesn't serve /__l5e): brand reads TalentCIR, sharp at the displayed 588px width, nothing clipped; build OK.
+
+## Employer page v2 — platform heading numerals
+- Changed the Product Ecosystem headline on /employers-page-2 from "One Platform. Six Products" to "1 Platform. 6 Products"; second line, description and panels untouched.
+- Checked at 1797x1038: heading reads "1 Platform. 6 Products / to Make Hiring Smarter.", no horizontal overflow; build OK.
