@@ -158,6 +158,42 @@ export const AIInterviewerSection = () => (
   </section>
 );
 
+/* ---------- AI interviewer showcase (light, employers-page-2) ---------- */
+import lindaDashboard from "@/assets/ai-interview-dashboard.jpg.asset.json";
+
+export const LindaShowcaseSection = () => (
+  <section className="py-20 md:py-28">
+    <div className="container">
+      <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
+        <motion.div {...reveal} className="overflow-hidden rounded-2xl border border-border bg-card shadow-xl">
+          <img src={lindaDashboard.url} alt="TalentCIR AI interview in progress" className="h-full w-full object-cover" loading="lazy" />
+        </motion.div>
+        <div>
+          <motion.div {...reveal}>
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-primary">AI Interviewer</p>
+            <h2 className="font-display text-3xl font-bold leading-[1.08] sm:text-4xl lg:text-5xl">
+              Meet Linda,<br /><span className="text-primary">Your AI Interviewer.</span>
+            </h2>
+            <p className="mt-4 text-sm leading-relaxed text-muted-foreground md:text-base">Run first-round interviews at scale — every candidate gets a fair, consistent conversation.</p>
+          </motion.div>
+          <div className="mt-8 grid gap-x-8 gap-y-6 sm:grid-cols-2">
+            {interviewPoints.map(({ icon: Icon, title, text }, i) => (
+              <motion.div {...reveal} transition={{ duration: 0.5, delay: i * 0.05 }} key={title} className="flex items-start gap-3">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-accent/60 text-primary"><Icon className="h-5 w-5" /></span>
+                <div>
+                  <h3 className="font-display text-sm font-bold text-foreground">{title}</h3>
+                  <p className="mt-1 text-xs leading-snug text-muted-foreground">{text}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+          <div className="mt-10"><Button asChild size="lg" className="gap-2"><Link to="/employer-profile">Get Started <ArrowRight className="h-4 w-4" /></Link></Button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
 const Point = ({ icon: Icon, title, text, align }: { icon: typeof Mic; title: string; text: string; align?: "right" }) => (
   <motion.div {...reveal} className={cn("flex gap-4", align === "right" && "md:flex-row-reverse md:text-right")}>
     <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary-foreground/20 bg-primary-foreground/10 text-primary-foreground"><Icon className="h-5 w-5" /></span>
