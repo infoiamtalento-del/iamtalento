@@ -292,3 +292,7 @@
 ## Employer page v2 — AI Interviewer showcase after the ecosystem grid
 - Added LindaShowcaseSection (EmployerShowcaseSections) directly after the "One Platform. Six Products" section: white background, the client's interview-dashboard screenshot left (CDN asset ai-interview-dashboard.jpg), right column "Meet Linda," over "Your AI Interviewer." in blue, the original description and all eight capability points in a two-column grid, Get Started → /employer-profile; the circle portrait and navy band are gone.
 - Checked at 1797 and 390 with the image injected locally (dev server doesn't serve /__l5e; hosted preview does): image loads, no clipping, no overflow; build OK.
+
+## Employer page v2 — dashboard image brand text
+- Edited the interview-dashboard image so its sidebar brand reads "TalentCIR" instead of "TalentIQ"; re-published it as the CDN asset behind src/assets/ai-interview-dashboard.jpg.asset.json and deleted the superseded copy.
+- Checked the served asset and the on-page render (image injected locally, dev server doesn't serve /__l5e): brand reads TalentCIR, sharp at the displayed 588px width, nothing clipped; build OK.
