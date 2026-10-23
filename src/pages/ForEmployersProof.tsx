@@ -5,7 +5,7 @@ import {
   ProofStrip, ProofHero, ProofTrustBar, TwoWaysSection, LindaSection,
   ProofPricing, PromiseSection, ProofFAQ, FinalCtaSection,
 } from "@/components/employers/ProofEraSections";
-import { PlatformSection, LindaShowcaseSection, TestimonialsSection, USPSection } from "@/components/employers/EmployerShowcaseSections";
+import { PlatformSection, LindaShowcaseSection, TestimonialsSection, USPSection, PremiumSolutionsSection } from "@/components/employers/EmployerShowcaseSections";
 import CareerIntelligencePackageHome from "@/components/landing/CareerIntelligencePackageHome";
 
 const proofBenefits = [
@@ -39,6 +39,7 @@ const ForEmployersProof = () => (
       <CareerIntelligencePackageHome eyebrow="Candidate Intelligence Report" heading={{ first: "Why the CIR Report is a", second: "Game Changer in Talent Acquisition" }} description={<>Discover strengths, identify critical skill gaps, and benchmark candidates against<br className="hidden md:block" />relevant industry standards with an 8-in-1 Career Intelligence Report.</>} />
       <TestimonialsSection />
       <LindaSection />
+      <PremiumSolutionsSection />
       <ProofPricing />
       <PromiseSection />
       <ProofFAQ />

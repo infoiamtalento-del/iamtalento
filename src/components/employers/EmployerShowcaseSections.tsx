@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  ArrowRight, BarChart3, Building2, CalendarClock, Cable, CheckCircle2, CirclePlay, Code2, Fingerprint,
-  GraduationCap, Library, Lock, Megaphone, MessageSquare, Mic, Palette, Quote, ShieldCheck, Sparkles,
+  ArrowRight, BarChart3, Building2, CalendarClock, Cable, CheckCircle2, CirclePlay, ClipboardCheck, Code2, Fingerprint,
+  GraduationCap, Library, Lock, Megaphone, MessageSquare, Mic, Palette, Quote, ScanLine, Search, ShieldCheck, Sparkles,
   Star, UserCog, Users, Wand2, Briefcase, Globe2, Server, Type, Video, Volume2, MoreVertical, Play, Pause, FileText, PenTool, BadgePercent, Table2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -599,6 +599,53 @@ export const USPSection = ({
           ))}
         </ol>
       </div>
+    </div>
+  </section>
+);
+
+/* ---------- Premium solutions: eight linked service cards ---------- */
+const premiumSolutions = [
+  { icon: Search, title: "Talent Hunt", text: "Create professional, ATS-friendly resumes." },
+  { icon: Briefcase, title: "Job Posting", text: "Publish vacancies and attract relevant candidates." },
+  { icon: ScanLine, title: "AI Resume Screening", text: "Identify and shortlist suitable candidates." },
+  { icon: Megaphone, title: "Job Advertising", text: "Promote vacancies to expand your reach." },
+  { icon: ClipboardCheck, title: "Custom Assessments", text: "Evaluate candidates against role-specific skills." },
+  { icon: Palette, title: "White-Label Platform", text: "Launch a hiring experience under your brand." },
+  { icon: GraduationCap, title: "Bulk & Campus Hiring", text: "Manage high-volume recruitment at scale." },
+  { icon: Wand2, title: "AI Test Generator", text: "Create role-specific tests to assess talent." },
+];
+
+export const PremiumSolutionsSection = () => (
+  <section aria-label="Premium hiring solutions" className="py-20 md:py-28">
+    <div className="container">
+      <CenterIntro
+        eyebrow="TalentCIR · Premium Solutions"
+        first="One Platform. 8 Powerful Hiring Solutions."
+        description={<>Everything your hiring team needs, from resume screening to large-scale recruitment. Explore our AI-powered solutions and choose the services that fit your hiring goals.</>}
+      />
+      <p className="mx-auto -mt-6 mb-10 max-w-2xl text-center text-xs font-semibold uppercase tracking-[0.14em] text-primary">Explore a solution to view its plans and pricing.</p>
+      <div className="mx-auto grid max-w-6xl gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {premiumSolutions.map(({ icon: Icon, title, text }, i) => (
+          <motion.div {...reveal} key={title}>
+            <Link
+              to="/pricing?tab=employers"
+              aria-label={`${title} plans and pricing`}
+              className="group flex h-full flex-col rounded-lg border border-border bg-card p-6 transition hover:-translate-y-1 hover:border-primary/40 hover:shadow-md"
+            >
+              <div className="mb-5 flex items-center justify-between">
+                <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary"><Icon className="h-5 w-5" /></span>
+                <span aria-hidden="true" className="font-display text-sm font-semibold tabular-nums text-muted-foreground/50">{String(i + 1).padStart(2, "0")}</span>
+              </div>
+              <h3 className="font-display text-lg font-bold tracking-normal">{title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{text}</p>
+              <span className="mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-semibold text-primary">
+                View Plans & Pricing <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+              </span>
+            </Link>
+          </motion.div>
+        ))}
+      </div>
+      <p className="mt-10 text-center text-xs text-muted-foreground">Each solution is a paid service. Select a card to explore its pricing page.</p>
     </div>
   </section>
 );
