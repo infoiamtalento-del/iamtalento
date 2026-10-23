@@ -174,10 +174,10 @@ const platformPoints = [
   { title: "Bulk Campus Hiring & Screening", text: "Screen thousands of candidates at once, with ranked shortlists ready for your team the moment the drive ends." },
   { title: "Create AI Scheduled Interviews", text: "Automated interview rounds, hands-free. Candidates join on their schedule and you review evidence-linked scores." },
 ];
-export const PlatformSection = () => (
+export const PlatformSection = ({ eyebrow = "One Platform", first = "Everything It Takes,", second = "In One Platform.", description }: { eyebrow?: string; first?: string; second?: string; description?: React.ReactNode }) => (
   <section className="py-20 md:py-28">
     <div className="container">
-      <CenterIntro eyebrow="One Platform" first="Everything It Takes," second="In One Platform." description={<>Assess, proctor, brand, and interview without juggling separate tools.<br className="hidden md:block" /> Six capabilities, one connected workflow.</>} />
+      <CenterIntro eyebrow={eyebrow} first={first} second={second} description={description ?? <>Assess, proctor, brand, and interview without juggling separate tools.<br className="hidden md:block" /> Six capabilities, one connected workflow.</>} />
       <div className="mx-auto grid max-w-7xl border-l border-t border-border sm:grid-cols-2 lg:grid-cols-3">
         {platformPoints.map(({ title, text }, i) => (
           <motion.div {...reveal} transition={{ duration: 0.5, delay: i * 0.06 }} key={title} className={cn("group flex flex-col border-b border-r border-border p-8 transition-colors hover:bg-card md:p-10", i === 0 && "bg-card")}>

@@ -6,6 +6,7 @@ import {
   ResponsibleAISection, ResultsSection, RoiSection, ComparisonSection, BuiltForTeamSection, ProofTestimonials,
   CandidateExperienceSection, ProofIntegrations, ProofPricing, PromiseSection, ProofFAQ, FinalCtaSection,
 } from "@/components/employers/ProofEraSections";
+import { PlatformSection } from "@/components/employers/EmployerShowcaseSections";
 
 /** Section order follows the "Employer Page v2: The New Era" content sheet exactly. */
 const ForEmployersProof = () => (
