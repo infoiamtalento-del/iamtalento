@@ -80,7 +80,7 @@ const shortlist = [
 export const ProofHero = () => (
   <section className="relative overflow-hidden bg-background pb-16 pt-14 md:pb-24 md:pt-20">
     <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-accent/60 to-transparent" />
-    <div className="container relative grid items-center gap-12 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+    <div className="container relative grid items-center gap-12 xl:grid-cols-[minmax(0,1.12fr)_minmax(0,0.88fr)]">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
         <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-primary">The Future of Hiring Is Here</p>
         <h1 className="font-display text-4xl font-bold leading-[1.08] sm:text-5xl">
