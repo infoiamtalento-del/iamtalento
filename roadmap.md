@@ -280,3 +280,7 @@
 ## Employer page v2 — two ways headline lines
 - Headline now breaks as "Find Talent or Hire Talent" / "That's Already Interviewed." (was "Find Talent." / "Or Hire Talent That's Already Interviewed.").
 - Checked at 1797 and 390: two lines on desktop, natural wrap on phone, no clipping, no overflow; build OK.
+
+## Employer page v2 — two ways card copy
+- Card 01 headline now "Find Talent from our Job Portal" (was "Your Next Great Hire Could Be One Search Away."); card 02 headline now "Hire Vetted, AI-Interviewed Talent" (was "Skip the First-Round Bottleneck. Meet Interview-Ready Candidates."); card 02 description now ends at "compare assessment insights." — "before scheduling your next round." removed.
+- Checked at 1797 and 390: both new headlines present, old ones gone, no clipping, no overflow, no page errors; build OK.
