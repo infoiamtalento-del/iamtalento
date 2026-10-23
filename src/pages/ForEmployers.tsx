@@ -238,7 +238,7 @@ const ForEmployers = () => (
       <TrustStats />
       <PlatformSection />
       <AIInterviewerSection />
-      <USPSection />
+      <USPSection items={allUSPs} />
       <CareerIntelligencePackageHome heading={{ first: "What You Get Inside", second: "Candidates CIR Report" }} />
       <AIEvaluateSection />
       <ReasonsVideo />

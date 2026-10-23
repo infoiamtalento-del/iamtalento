@@ -37,6 +37,7 @@ const ForEmployersProof = () => (
       <TwoWaysSection />
       <PlatformSection eyebrow="Product Ecosystem" first="1 Platform. 6 Products" second="to Make Hiring Smarter." description={<>Assess, proctor, brand, and interview without juggling separate tools.<br className="hidden md:block" /> Six capabilities, one connected workflow.</>} />
       <LindaShowcaseSection />
+      <USPSection eyebrow="Why TalentCIR" items={proofBenefits} />
       <CareerIntelligencePackageHome eyebrow="Candidate Intelligence Report" heading={{ first: "Why the CIR Report is a", second: "Game Changer in Talent Acquisition" }} description={<>Discover strengths, identify critical skill gaps, and benchmark candidates against<br className="hidden md:block" />relevant industry standards with an 8-in-1 Career Intelligence Report.</>} />
       <TestimonialsSection />
       <ProblemSection />
