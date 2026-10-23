@@ -256,3 +256,8 @@
 ## Employer page v2 — hero copy swap
 - Hero left column replaced with the client's copy: eyebrow "The Future of Hiring Is Here", headline "Stop Screening Resumes." / "Start Finding the Right People.", bold line "TalentCIR changes the way you hire.", the discover/interview/assess/shortlist paragraph, CTAs "Book a Demo" + "Explore the Platform", and the two closing lines.
 - Checked at 1797 and 390: both buttons work (Book a Demo scrolls to the demo form, Explore the Platform opens /employer-profile), no overflow, no page errors.
+
+## Employer page v2 — hero in the main-hero format
+- Left column rebuilt to the reference format: uppercase label, large two-line bold headline, medium regular line, muted paragraph, solid + outlined buttons, proof line with bold navy phrases, thin divider, three icon items (title + grey subtitle).
+- Removed "Built for founders who need to scale and HR teams that need to hire better."
+- Checked at 1797 (headline exactly two lines, 48px, column fits) and 390 (all three items render, no overflow); Book a Demo scrolls to the form, Explore the Platform opens /employer-profile; build OK.
