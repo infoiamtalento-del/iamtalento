@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Layers, Play } from "lucide-react";
+import {
+  ArrowRight,
+  Briefcase,
+  CheckCircle2,
+  GraduationCap,
+  Layers,
+  Play,
+  ShieldCheck,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import SectionBadge from "@/components/ui/section-badge";
 import { cn } from "@/lib/utils";
@@ -20,11 +28,20 @@ import avatar3 from "@/assets/learner-priya.jpg";
 const engines = [
   {
     id: "learn",
+    step: "01",
+    engineBadge: "ENGINE 01",
+    title: "LEARN",
     tabLabel: "01 · LEARN",
-    headline: "Turn Knowledge into Skills.",
-    description:
-      "Learn from industry experts, master in-demand skills, and gain the practical knowledge to thrive in the real world.",
-    tagline: "Learn with purpose. Grow with confidence.",
+    headline: "Learn Smarter. Level Up Faster.",
+    icon: GraduationCap,
+    points: [
+      "Learn from the Experts",
+      "Master In-Demand Skills",
+      "Your AI Learning Companion",
+      "Get Your Doubts Cleared, 1:1",
+      "Everything You Need to Succeed",
+    ],
+    tagline: "Don't just learn. Become industry-ready.",
     cta: "Explore Learning",
     href: "/learning",
     videoUrl: video1.url,
@@ -32,11 +49,20 @@ const engines = [
   },
   {
     id: "assess",
+    step: "02",
+    engineBadge: "ENGINE 02",
+    title: "SKILL ASSESSMENT",
     tabLabel: "02 · SKILL ASSESSMENT",
-    headline: "Turn Your Skills into Proof.",
-    description:
-      "Get your CIR (Career Intelligence Report). Assess your skills, measure your industry readiness, discover skill gaps, and understand where you stand in today's competitive job market.",
-    tagline: "Know your strengths. Prove your potential.",
+    headline: "Know Your Skills. Prove Your Worth.",
+    icon: ShieldCheck,
+    points: [
+      "AI-Powered Skill Tests",
+      "Your Personal CIR Report",
+      "Measure Your Industry Readiness",
+      "Discover Your Skill Gaps",
+      "Get Your Career Roadmap",
+    ],
+    tagline: "Stop guessing your potential. Start measuring it.",
     cta: "Take Skill Assessment",
     href: "/assessments/explore",
     videoUrl: video2.url,
@@ -44,11 +70,20 @@ const engines = [
   },
   {
     id: "hire",
+    step: "03",
+    engineBadge: "ENGINE 03",
+    title: "GET HIRED",
     tabLabel: "03 · GET HIRED",
-    headline: "Turn Your Potential into Opportunity.",
-    description:
-      "Discover relevant jobs, showcase your assessed skills, and connect with employers looking for talent like you.",
-    tagline: "Get discovered. Get shortlisted. Get hired.",
+    headline: "Get Discovered. Get Shortlisted. Get Hired.",
+    icon: Briefcase,
+    points: [
+      "Find Jobs That Fit You",
+      "Build a Resume That Stands Out",
+      "Showcase Your Verified Skills",
+      "Prepare to Ace Interviews",
+      "Connect with Real Opportunities",
+    ],
+    tagline: "Your skills deserve the right opportunity.",
     cta: "Browse Jobs",
     href: "/jobs",
     videoUrl: video3.url,
@@ -61,6 +96,7 @@ const TalentCirAdvantageSection = () => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const activeEngine = engines[activeTab];
+  const ActiveIcon = activeEngine.icon;
 
   const handleSelectTab = (idx: number) => {
     setActiveTab(idx);
@@ -69,39 +105,38 @@ const TalentCirAdvantageSection = () => {
 
   return (
     <section className="py-20 md:py-28 bg-[#FBF4EB] text-slate-950 border-t border-slate-900/10">
-      <div className="container px-4 md:px-6">
-        {/* ── Top Centered Heading (Matching Reference Layout) ── */}
+      <div className="container">
+        {/* ── Top Centered Heading (Matching Other Home Page Section Headings) ── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.55 }}
-          className="text-center max-w-3xl mx-auto mb-12 md:mb-14"
+          className="text-center max-w-2xl mx-auto mb-10 md:mb-12"
         >
-          <SectionBadge label="THE TALENT CIR ADVANTAGE" icon={Layers} />
+          <SectionBadge label="The Talent CIR Advantage" icon={Layers} />
 
-          <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-bold font-display tracking-tight leading-[1.15] text-slate-950 mb-3">
-            India&apos;s Largest <span className="italic font-serif font-normal text-[#002C66]">Talent Ecosystem.</span>
+          <h2 className="text-3xl md:text-4xl font-bold font-display tracking-tight leading-[1.15] text-foreground mb-3">
+            India&apos;s Largest{" "}
+            <span className="text-primary">Talent Ecosystem.</span>
           </h2>
 
-          <p className="text-lg sm:text-xl font-display font-semibold text-slate-900 mb-3">
+          <p className="text-muted-foreground text-base md:text-lg max-w-xl mx-auto">
             Three Engines. One Journey. A World of Opportunity.
-          </p>
-
-          <p className="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-            From learning in-demand skills to proving your industry readiness to landing the right opportunity, Talent CIR brings your entire career journey together in one intelligent ecosystem.
           </p>
         </motion.div>
 
-        {/* ── Horizontal Underline Tab Bar (Exact Reference Style) ── */}
-        <div className="max-w-6xl mx-auto">
+        {/* ── Highlighted 3-Engine Selector Cards + Connected Showcase ── */}
+        <div className="w-full">
+          {/* 3 Prominent Engine Pillar Cards */}
           <div
             role="tablist"
             aria-label="Talent CIR Engines"
-            className="grid grid-cols-1 sm:grid-cols-3 border-b border-slate-900/15 mb-6"
+            className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 mb-6"
           >
             {engines.map((engine, index) => {
               const isSelected = activeTab === index;
+              const Icon = engine.icon;
               return (
                 <button
                   key={engine.id}
@@ -110,18 +145,68 @@ const TalentCirAdvantageSection = () => {
                   aria-selected={isSelected}
                   onClick={() => handleSelectTab(index)}
                   className={cn(
-                    "relative py-4 px-4 text-center sm:text-left font-display text-sm sm:text-base md:text-lg transition-colors cursor-pointer",
+                    "group relative rounded-2xl p-5 sm:p-6 text-left transition-all duration-300 cursor-pointer border",
                     isSelected
-                      ? "font-bold text-slate-950"
-                      : "font-medium text-slate-400 hover:text-slate-700"
+                      ? "bg-[#002C66] text-white border-[#002C66] shadow-[0_20px_45px_-12px_rgba(0,44,102,0.38)] -translate-y-1"
+                      : "bg-white text-slate-900 border-slate-200/90 hover:border-[#002C66]/40 hover:shadow-md hover:-translate-y-0.5"
                   )}
                 >
-                  <span>{engine.tabLabel}</span>
+                  <div className="flex items-center justify-between gap-3 mb-4">
+                    <div className="flex items-center gap-3">
+                      <span
+                        className={cn(
+                          "h-11 w-11 rounded-xl flex items-center justify-center transition-colors",
+                          isSelected
+                            ? "bg-white text-[#002C66] shadow-sm"
+                            : "bg-[#FBF4EB] text-[#002C66] group-hover:bg-[#002C66] group-hover:text-white"
+                        )}
+                      >
+                        <Icon className="h-5 w-5" />
+                      </span>
+                      <div>
+                        <span
+                          className={cn(
+                            "block text-[11px] font-bold uppercase tracking-[0.2em]",
+                            isSelected ? "text-white/75" : "text-[#002C66]"
+                          )}
+                        >
+                          {engine.engineBadge}
+                        </span>
+                        <span
+                          className={cn(
+                            "block font-display text-lg sm:text-xl font-bold tracking-tight",
+                            isSelected ? "text-white" : "text-slate-950"
+                          )}
+                        >
+                          {engine.title}
+                        </span>
+                      </div>
+                    </div>
+
+                    <span
+                      className={cn(
+                        "font-display text-2xl sm:text-3xl font-extrabold leading-none select-none",
+                        isSelected
+                          ? "text-white/25"
+                          : "text-slate-200 group-hover:text-[#002C66]/25"
+                      )}
+                    >
+                      {engine.step}
+                    </span>
+                  </div>
+
+                  <p
+                    className={cn(
+                      "text-xs sm:text-sm font-medium line-clamp-1",
+                      isSelected ? "text-white/90" : "text-slate-600"
+                    )}
+                  >
+                    {engine.headline}
+                  </p>
+
+                  {/* Active pointer notch */}
                   {isSelected && (
-                    <motion.span
-                      layoutId="talent-cir-tab-underline"
-                      className="absolute bottom-[-1px] left-0 right-0 sm:right-auto sm:w-44 h-[2.5px] bg-[#002C66]"
-                    />
+                    <span className="hidden md:block absolute -bottom-2 left-10 h-4 w-4 rotate-45 bg-[#002C66]" />
                   )}
                 </button>
               );
@@ -129,7 +214,7 @@ const TalentCirAdvantageSection = () => {
           </div>
 
           {/* ── Large Rounded Showcase Card (Copy Left + Video Right) ── */}
-          <div className="rounded-[28px] bg-white border border-slate-200/90 p-7 sm:p-10 md:p-14 shadow-[0_22px_60px_-20px_rgba(0,44,102,0.12)]">
+          <div className="rounded-[28px] bg-white border border-slate-200/90 p-7 sm:p-10 md:p-14 shadow-[0_22px_60px_-20px_rgba(0,44,102,0.14)]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeEngine.id}
@@ -139,25 +224,39 @@ const TalentCirAdvantageSection = () => {
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                 className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
               >
-                {/* Left Column — Vertically Centered Bold Copy */}
+                {/* Left Column — Highlighted Engine Header + 5 Feature Pills */}
                 <div className="lg:col-span-6 text-left space-y-5">
-                  <span className="inline-block text-xs font-bold uppercase tracking-[0.18em] text-[#002C66]">
-                    {activeEngine.tabLabel}
-                  </span>
+                  <div className="inline-flex items-center gap-2.5 rounded-full bg-[#FBF4EB] border border-[#002C66]/15 px-3.5 py-1.5">
+                    <span className="h-6 w-6 rounded-full bg-[#002C66] text-white text-[11px] font-bold flex items-center justify-center">
+                      {activeEngine.step}
+                    </span>
+                    <ActiveIcon className="h-3.5 w-3.5 text-[#002C66]" />
+                    <span className="text-xs font-bold uppercase tracking-[0.16em] text-[#002C66]">
+                      {activeEngine.title}
+                    </span>
+                  </div>
 
-                  <h3 className="text-2xl sm:text-3xl md:text-[34px] font-bold font-display text-slate-950 leading-[1.2] tracking-tight">
+                  <h3 className="text-2xl sm:text-3xl md:text-[36px] font-bold font-display text-slate-950 leading-[1.15] tracking-tight">
                     {activeEngine.headline}
                   </h3>
 
-                  <p className="text-base sm:text-lg font-medium text-slate-700 leading-relaxed">
-                    {activeEngine.description}
-                  </p>
+                  <ul className="grid grid-cols-1 gap-2.5 pt-1">
+                    {activeEngine.points.map((point) => (
+                      <li
+                        key={point}
+                        className="flex items-center gap-3 rounded-xl bg-[#FBF4EB]/70 border border-slate-200/80 px-4 py-2.5 text-sm sm:text-base font-bold text-slate-900"
+                      >
+                        <CheckCircle2 className="h-5 w-5 text-[#002C66] shrink-0" />
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
 
                   <p className="font-display text-base sm:text-lg font-bold text-[#002C66] pt-1">
                     {activeEngine.tagline}
                   </p>
 
-                  <div className="pt-2">
+                  <div className="pt-1">
                     <Link
                       to={activeEngine.href}
                       className="inline-flex items-center gap-2.5 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white px-6 py-3 text-sm font-bold shadow-sm transition-all"
@@ -225,7 +324,8 @@ const TalentCirAdvantageSection = () => {
             More than learning. More than assessment. More than a job portal.
           </p>
           <p className="text-sm sm:text-base text-slate-600 leading-relaxed mb-6">
-            Talent CIR connects the dots between what you learn, what you can prove, and where you can go next.
+            Talent CIR connects the dots between what you learn, what you can
+            prove, and where you can go next.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4">
