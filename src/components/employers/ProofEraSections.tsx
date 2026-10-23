@@ -82,24 +82,42 @@ export const ProofHero = () => (
     <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-accent/60 to-transparent" />
     <div className="container relative grid items-center gap-12 xl:grid-cols-[minmax(0,1.12fr)_minmax(0,0.88fr)]">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-        <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-primary">The Future of Hiring Is Here</p>
-        <h1 className="font-display text-4xl font-bold leading-[1.08] sm:text-5xl">
+        <p className="text-xs font-bold uppercase tracking-[0.13em] text-primary">The Future of Hiring Is Here</p>
+        <h1 className="mt-5 font-display text-[clamp(28px,2.9vw,48px)] font-bold leading-[1.16] tracking-[-0.01em]">
           Stop Screening Resumes.<br /><span className="text-primary">Start Finding the Right People.</span>
         </h1>
-        <p className="mt-6 font-display text-xl font-semibold leading-snug tracking-tight sm:text-2xl">
+        <p className="mt-3 text-[clamp(18px,1.35vw,24px)] font-normal leading-snug text-foreground/80">
           TalentCIR changes the way you hire.
         </p>
-        <p className="mt-4 mb-8 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
+        <p className="mt-6 max-w-[620px] text-[clamp(16px,1.15vw,18px)] leading-[1.625] text-foreground/75">
           Discover talent, watch AI-conducted interviews, assess real skills and shortlist better candidates&mdash;all from one AI-powered hiring platform.
         </p>
-        <div className="mb-8 flex flex-wrap gap-3">
-          <PrimaryCta label="Book a Demo" to={DEMO} />
-          <SecondaryCta label="Explore the Platform" to="/employer-profile" />
+        <div className="mt-12 flex flex-wrap gap-5 gap-x-7">
+          <Button asChild className="h-[52px] min-w-[190px] gap-3 rounded-md bg-primary px-6 text-[15px] font-bold text-primary-foreground transition hover:-translate-y-0.5">
+            <a href={DEMO}>Book a Demo <ArrowRight className="h-[17px] w-[17px]" /></a>
+          </Button>
+          <Button asChild variant="outline" className="h-[52px] min-w-[190px] gap-3 rounded-md border-primary px-6 text-[15px] font-bold text-primary transition hover:-translate-y-0.5 hover:bg-primary/5">
+            <Link to="/employer-profile">Explore the Platform</Link>
+          </Button>
         </div>
-        <div className="space-y-2 text-sm font-medium text-muted-foreground">
-          <p>One platform. Smarter decisions. Better hiring.</p>
-          <p>Built for founders who need to scale and HR teams that need to hire better.</p>
-        </div>
+        <p className="mt-6 text-[15px] leading-[1.55] text-foreground/75">
+          One platform. <span className="font-semibold text-primary">Smarter decisions.</span> <span className="font-semibold text-primary">Better hiring.</span>
+        </p>
+        <ul className="mt-10 flex flex-wrap gap-x-7 gap-y-4 border-t border-border pt-7">
+          {[
+            { icon: Search, t: "Search Talent", s: "50,000+ verified candidates" },
+            { icon: Mic, t: "AI Interviews", s: "Every candidate, same questions" },
+            { icon: FileText, t: "CIR Reports", s: "Score with evidence attached" },
+          ].map(({ icon: Icon, t, s }) => (
+            <li key={t} className="flex max-w-[190px] items-start gap-2.5">
+              <Icon className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+              <div>
+                <strong className="block text-sm font-semibold">{t}</strong>
+                <span className="mt-0.5 block text-[12.5px] text-muted-foreground">{s}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
       </motion.div>
       <motion.figure initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.7 }} className="relative">
         <div className="overflow-hidden rounded-lg border border-border bg-card shadow-xl">
