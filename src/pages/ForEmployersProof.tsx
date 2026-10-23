@@ -2,7 +2,7 @@ import { Award, BarChart3, Clock, Timer, TrendingDown, Users } from "lucide-reac
 import { Helmet } from "react-helmet-async";
 import Layout from "@/components/layout/Layout";
 import {
-  ProofStrip, ProofHero, ProofTrustBar, TwoWaysSection, LindaSection,
+  ProofStrip, ProofHero, ProofTrustBar, TwoWaysSection,
   ProofPricing, PromiseSection, ProofFAQ, FinalCtaSection,
 } from "@/components/employers/ProofEraSections";
 import { PlatformSection, LindaShowcaseSection, TestimonialsSection, USPSection, PremiumSolutionsSection } from "@/components/employers/EmployerShowcaseSections";
@@ -38,7 +38,6 @@ const ForEmployersProof = () => (
       <USPSection eyebrow="Why TalentCIR" items={proofBenefits} />
       <CareerIntelligencePackageHome eyebrow="Candidate Intelligence Report" heading={{ first: "Why the CIR Report is a", second: "Game Changer in Talent Acquisition" }} description={<>Discover strengths, identify critical skill gaps, and benchmark candidates against<br className="hidden md:block" />relevant industry standards with an 8-in-1 Career Intelligence Report.</>} />
       <TestimonialsSection />
-      <LindaSection />
       <PremiumSolutionsSection />
       <ProofPricing />
       <PromiseSection />
