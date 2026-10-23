@@ -2,10 +2,8 @@ import { Award, BarChart3, Clock, Timer, TrendingDown, Users } from "lucide-reac
 import { Helmet } from "react-helmet-async";
 import Layout from "@/components/layout/Layout";
 import {
-  ProofStrip, ProofHero, ProofTrustBar, ProblemSection, NewEraSection, TwoWaysSection, HowItWorksSection,
-  TwoWeeksSection, ProductTourSection, LindaSection, ExplainableSection, CirReportSection, IntegritySection,
-  ResponsibleAISection, ResultsSection, RoiSection, ComparisonSection, BuiltForTeamSection, ProofTestimonials,
-  CandidateExperienceSection, ProofIntegrations, ProofPricing, PromiseSection, ProofFAQ, FinalCtaSection,
+  ProofStrip, ProofHero, ProofTrustBar, TwoWaysSection, LindaSection,
+  ProofPricing, PromiseSection, ProofFAQ, FinalCtaSection,
 } from "@/components/employers/ProofEraSections";
 import { PlatformSection, LindaShowcaseSection, TestimonialsSection, USPSection } from "@/components/employers/EmployerShowcaseSections";
 import CareerIntelligencePackageHome from "@/components/landing/CareerIntelligencePackageHome";
@@ -19,7 +17,7 @@ const proofBenefits = [
   { icon: BarChart3, title: "Make Smarter Hiring Decisions", lead: "Less Guesswork. More Hiring Confidence.", text: "Compare candidates using structured interview responses, relevant skill scores and assessment insights—all in one platform." },
 ];
 
-/** Section order follows the "Employer Page v2: The New Era" content sheet exactly. */
+/** Employer page v2: the sheet sections the client kept, in sheet order. */
 const ForEmployersProof = () => (
   <>
     <Helmet>
@@ -40,23 +38,7 @@ const ForEmployersProof = () => (
       <USPSection eyebrow="Why TalentCIR" items={proofBenefits} />
       <CareerIntelligencePackageHome eyebrow="Candidate Intelligence Report" heading={{ first: "Why the CIR Report is a", second: "Game Changer in Talent Acquisition" }} description={<>Discover strengths, identify critical skill gaps, and benchmark candidates against<br className="hidden md:block" />relevant industry standards with an 8-in-1 Career Intelligence Report.</>} />
       <TestimonialsSection />
-      <ProblemSection />
-      <NewEraSection />
-      <HowItWorksSection />
-      <TwoWeeksSection />
-      <ProductTourSection />
       <LindaSection />
-      <ExplainableSection />
-      <CirReportSection />
-      <IntegritySection />
-      <ResponsibleAISection />
-      <ResultsSection />
-      <RoiSection />
-      <ComparisonSection />
-      <BuiltForTeamSection />
-      <ProofTestimonials />
-      <CandidateExperienceSection />
-      <ProofIntegrations />
       <ProofPricing />
       <PromiseSection />
       <ProofFAQ />
