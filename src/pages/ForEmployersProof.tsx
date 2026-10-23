@@ -6,6 +6,7 @@ import {
   ResponsibleAISection, ResultsSection, RoiSection, ComparisonSection, BuiltForTeamSection, ProofTestimonials,
   CandidateExperienceSection, ProofIntegrations, ProofPricing, PromiseSection, ProofFAQ, FinalCtaSection,
 } from "@/components/employers/ProofEraSections";
+import { PlatformSection } from "@/components/employers/EmployerShowcaseSections";
 
 /** Section order follows the "Employer Page v2: The New Era" content sheet exactly. */
 const ForEmployersProof = () => (
@@ -23,6 +24,7 @@ const ForEmployersProof = () => (
       <ProofHero />
       <ProofTrustBar />
       <TwoWaysSection />
+      <PlatformSection eyebrow="Product Ecosystem" first="One Platform. Six Products" second="to Make Hiring Smarter." description={<>Assess, proctor, brand, and interview without juggling separate tools.<br className="hidden md:block" /> Six capabilities, one connected workflow.</>} />
       <ProblemSection />
       <NewEraSection />
       <HowItWorksSection />

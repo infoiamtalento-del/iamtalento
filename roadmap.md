@@ -284,3 +284,7 @@
 ## Employer page v2 — two ways card copy
 - Card 01 headline now "Find Talent from our Job Portal" (was "Your Next Great Hire Could Be One Search Away."); card 02 headline now "Hire Vetted, AI-Interviewed Talent" (was "Skip the First-Round Bottleneck. Meet Interview-Ready Candidates."); card 02 description now ends at "compare assessment insights." — "before scheduling your next round." removed.
 - Checked at 1797 and 390: both new headlines present, old ones gone, no clipping, no overflow, no page errors; build OK.
+
+## Employer page v2 — product ecosystem grid added
+- Reused the earlier design's six-product platform grid on /employers-page-2 directly above ProblemSection ("The Resume Was Built for a World That No Longer Exists."), with the client's new eyebrow "Product Ecosystem", headline "One Platform. Six Products" / "to Make Hiring Smarter." and description; panels, Get Started links and the closing button unchanged.
+- Checked at 1797 and 390: section sits before the resume section, all six panels present, old /for-employers headline still "Everything It Takes, / In One Platform.", no clipping, no overflow, no page errors.
