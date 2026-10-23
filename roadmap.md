@@ -308,3 +308,6 @@
 
 ## Employer page v2 — remove two caption lines
 - Remove the hero caption under the shortlist card and the "Each solution is a paid service..." line under Premium Solutions — done; both lines confirmed absent from the live page, eight solution cards and hero card render unchanged, build OK
+
+## Employer page v2 — logo strip as a moving carousel
+- Replace the two-row logo grid with one row that scrolls continuously — done; one row of ten logos (duplicated for a seamless loop) at the same 44px height, 30s marquee, pauses on hover, stops for reduced-motion, no page overflow, build OK
