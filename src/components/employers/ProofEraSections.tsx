@@ -239,7 +239,7 @@ const panels = [
 export const TwoWaysSection = () => (
   <section className="py-20 md:py-28">
     <div className="container">
-      <Heading eyebrow="Two Ways to Find Your Next Great Hire" title="Find Talent.|Or Hire Talent That's Already Interviewed." sub="Whether you want to discover candidates from a large talent pool or access candidates with completed AI interviews, TalentCIR gives you two smarter ways to hire." />
+      <Heading eyebrow="Two Ways to Find Your Next Great Hire" title="Find Talent or Hire Talent|That's Already Interviewed." sub="Whether you want to discover candidates from a large talent pool or access candidates with completed AI interviews, TalentCIR gives you two smarter ways to hire." />
       <div className="mt-12 grid gap-6 lg:grid-cols-2">
         {panels.map((p) => (
           <motion.div key={p.no} {...reveal} className={cn("flex flex-col rounded-lg border p-8", p.featured ? "border-primary bg-accent/50" : "border-border bg-card")}>
