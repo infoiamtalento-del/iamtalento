@@ -339,35 +339,70 @@ export const TwoWaysSection = () => {
 
             {/* Center Segmented Ring + Portrait Straddling the Seam */}
             <div className="hidden lg:flex pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-              <div className="relative h-56 w-56 xl:h-64 xl:w-64 rounded-full bg-[#FBF4EB] p-3.5 shadow-xl flex items-center justify-center">
+              <div className="relative h-60 w-60 xl:h-68 xl:w-68 rounded-full bg-[#FBF4EB] shadow-xl flex items-center justify-center">
                 <svg
-                  viewBox="0 0 220 220"
-                  className="absolute inset-0 h-full w-full -rotate-90"
+                  viewBox="0 0 260 260"
+                  className="absolute inset-0 h-full w-full"
                   aria-hidden="true"
                 >
-                  <circle
-                    cx="110"
-                    cy="110"
-                    r="96"
-                    fill="none"
-                    stroke="#002C66"
-                    strokeWidth="12"
-                    strokeDasharray="34 8"
-                    strokeDashoffset="0"
-                  />
-                  <circle
-                    cx="110"
-                    cy="110"
-                    r="96"
-                    fill="none"
-                    stroke="#3B82F6"
-                    strokeWidth="14"
-                    strokeDasharray="36 8"
-                    strokeDashoffset="-300"
-                  />
+                  {(() => {
+                    const cx = 130;
+                    const cy = 130;
+                    const rIn = 88;
+                    const polar = (r: number, deg: number) => {
+                      const rad = (deg * Math.PI) / 180;
+                      return `${(cx + r * Math.sin(rad)).toFixed(2)} ${(cy - r * Math.cos(rad)).toFixed(2)}`;
+                    };
+                    const wedge = (rInner: number, rOuter: number, startDeg: number, endDeg: number) => {
+                      const p1 = polar(rOuter, startDeg);
+                      const p2 = polar(rOuter, endDeg);
+                      const p3 = polar(rInner, endDeg);
+                      const p4 = polar(rInner, startDeg);
+                      return `M ${p1} A ${rOuter} ${rOuter} 0 0 1 ${p2} L ${p3} A ${rInner} ${rInner} 0 0 0 ${p4} Z`;
+                    };
+
+                    // 6 uniform-thickness wedges on the left half (bottom-left to top-left)
+                    const leftWedges = [
+                      [182, 208],
+                      [212, 238],
+                      [242, 268],
+                      [272, 298],
+                      [302, 328],
+                      [332, 358],
+                    ];
+
+                    // 6 progressive-thickness wedges on the right half (top-right thin -> bottom-right thick)
+                    const rightWedges: [number, number, number][] = [
+                      [2, 28, 97],
+                      [32, 58, 102],
+                      [62, 88, 107],
+                      [92, 118, 113],
+                      [122, 148, 119],
+                      [152, 178, 125],
+                    ];
+
+                    return (
+                      <>
+                        {leftWedges.map(([a1, a2]) => (
+                          <path
+                            key={`l-${a1}`}
+                            d={wedge(rIn, 106, a1, a2)}
+                            fill="#002C66"
+                          />
+                        ))}
+                        {rightWedges.map(([a1, a2, rOut]) => (
+                          <path
+                            key={`r-${a1}`}
+                            d={wedge(rIn, rOut, a1, a2)}
+                            fill="#2B7FFF"
+                          />
+                        ))}
+                      </>
+                    );
+                  })()}
                 </svg>
 
-                <div className="relative h-40 w-40 xl:h-44 xl:w-44 overflow-hidden rounded-full border-4 border-[#FBF4EB] bg-slate-200">
+                <div className="relative h-[162px] w-[162px] xl:h-[184px] xl:w-[184px] overflow-hidden rounded-full border-[5px] border-white bg-slate-200 shadow-inner">
                   <img
                     src={recruiterImage}
                     alt="Verified hiring specialist"
