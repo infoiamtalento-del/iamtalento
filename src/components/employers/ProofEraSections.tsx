@@ -80,27 +80,26 @@ const shortlist = [
 export const ProofHero = () => (
   <section className="relative overflow-hidden bg-background pb-16 pt-14 md:pb-24 md:pt-20">
     <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-accent/60 to-transparent" />
-    <div className="container relative grid items-center gap-12 xl:grid-cols-[minmax(0,1.12fr)_minmax(0,0.88fr)]">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+    <div className="container relative grid items-center gap-11 xl:grid-cols-[minmax(0,1.22fr)_minmax(0,0.78fr)]">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="[container-type:inline-size]">
         <p className="text-xs font-bold uppercase tracking-[0.13em] text-primary">The Future of Hiring Is Here</p>
-        <h1 className="mt-5 font-display text-[clamp(28px,2.9vw,48px)] font-bold leading-[1.16] tracking-[-0.01em]">
-          Stop Screening Resumes.<br /><span className="text-primary">Start Finding the Right People.</span>
+        <h1 className="mt-[21px] font-sans text-[clamp(25px,6.3cqw,55px)] font-bold leading-[1.16] tracking-[-0.01em]">
+          Stop Screening Resumes.
+          <span className="block text-primary">Start Finding the Right People.</span>
+          <em className="mt-[10px] block text-[0.44em] font-normal not-italic text-foreground/80">TalentCIR changes the way you hire.</em>
         </h1>
-        <p className="mt-3 text-[clamp(18px,1.35vw,24px)] font-normal leading-snug text-foreground/80">
-          TalentCIR changes the way you hire.
-        </p>
         <p className="mt-6 max-w-[620px] text-[clamp(16px,1.15vw,18px)] leading-[1.625] text-foreground/75">
           Discover talent, watch AI-conducted interviews, assess real skills and shortlist better candidates&mdash;all from one AI-powered hiring platform.
         </p>
         <div className="mt-12 flex flex-wrap gap-5 gap-x-7">
-          <Button asChild className="h-[52px] min-w-[190px] gap-3 rounded-md bg-primary px-6 text-[15px] font-bold text-primary-foreground transition hover:-translate-y-0.5">
+          <Button asChild className="h-[52px] min-w-[190px] gap-3 rounded-md bg-primary px-[22px] text-[15px] font-bold text-primary-foreground transition hover:-translate-y-0.5">
             <a href={DEMO}>Book a Demo <ArrowRight className="h-[17px] w-[17px]" /></a>
           </Button>
-          <Button asChild variant="outline" className="h-[52px] min-w-[190px] gap-3 rounded-md border-primary px-6 text-[15px] font-bold text-primary transition hover:-translate-y-0.5 hover:bg-primary/5">
+          <Button asChild variant="outline" className="h-[52px] min-w-[190px] gap-3 rounded-md border-primary px-[22px] text-[15px] font-bold text-primary transition hover:-translate-y-0.5 hover:bg-primary/5">
             <Link to="/employer-profile">Explore the Platform</Link>
           </Button>
         </div>
-        <ul className="mt-10 flex flex-wrap gap-x-7 gap-y-4 border-t border-border pt-7">
+        <ul className="mt-10 flex flex-wrap gap-x-7 gap-y-4 border-t border-border pt-[26px]">
           {[
             { icon: Layers, t: "One Platform", s: "Assessments, interviews and reports in one place" },
             { icon: Gauge, t: "Smarter decisions", s: "Every score arrives with evidence" },
