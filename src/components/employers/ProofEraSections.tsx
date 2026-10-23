@@ -82,21 +82,23 @@ export const ProofHero = () => (
     <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-accent/60 to-transparent" />
     <div className="container relative grid items-center gap-12 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-        <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-primary">The New Era of Hiring</p>
-        <h1 className="mb-6 font-display text-4xl font-bold leading-[1.05] sm:text-5xl">
-          Anyone Can Write a Great Resume Now.<br /><span className="text-primary">Hire the People Who Can Prove It.</span>
+        <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-primary">The Future of Hiring Is Here</p>
+        <h1 className="font-display text-4xl font-bold leading-[1.08] sm:text-5xl">
+          Stop Screening Resumes.<br /><span className="text-primary">Start Finding the Right People.</span>
         </h1>
-        <p className="mb-8 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
-          TalentCIR tests, interviews and verifies every candidate with AI, then hands your team a ranked shortlist with the evidence attached. Or skip the wait and hire from 50,000+ people who have already proven their skills.
+        <p className="mt-6 font-display text-xl font-semibold leading-snug tracking-tight sm:text-2xl">
+          TalentCIR changes the way you hire.
+        </p>
+        <p className="mt-4 mb-8 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
+          Discover talent, watch AI-conducted interviews, assess real skills and shortlist better candidates&mdash;all from one AI-powered hiring platform.
         </p>
         <div className="mb-8 flex flex-wrap gap-3">
-          <PrimaryCta />
-          <SecondaryCta label="See a real candidate report" to={SAMPLE} />
+          <PrimaryCta label="Book a Demo" to={DEMO} />
+          <SecondaryCta label="Explore the Platform" to="/employer-profile" />
         </div>
-        <div className="flex flex-wrap gap-x-6 gap-y-3 text-xs font-medium text-muted-foreground">
-          {["Free for your first 5 candidates", "Live in 10 minutes", "Data stays in India"].map((f) => (
-            <span key={f} className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> {f}</span>
-          ))}
+        <div className="space-y-2 text-sm font-medium text-muted-foreground">
+          <p>One platform. Smarter decisions. Better hiring.</p>
+          <p>Built for founders who need to scale and HR teams that need to hire better.</p>
         </div>
       </motion.div>
       <motion.figure initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.7 }} className="relative">

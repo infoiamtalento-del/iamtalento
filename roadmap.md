@@ -252,3 +252,7 @@
 ## Employer page v2 — trust bar logos colour flip
 - Logos now render in full colour by default and turn greyscale + faded on hover (was the reverse).
 - Checked in the preview: default filter none, hover grayscale applied; build clean.
+
+## Employer page v2 — hero copy swap
+- Hero left column replaced with the client's copy: eyebrow "The Future of Hiring Is Here", headline "Stop Screening Resumes." / "Start Finding the Right People.", bold line "TalentCIR changes the way you hire.", the discover/interview/assess/shortlist paragraph, CTAs "Book a Demo" + "Explore the Platform", and the two closing lines.
+- Checked at 1797 and 390: both buttons work (Book a Demo scrolls to the demo form, Explore the Platform opens /employer-profile), no overflow, no page errors.
