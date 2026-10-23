@@ -300,3 +300,7 @@
 ## Employer page v2 — platform heading numerals
 - Changed the Product Ecosystem headline on /employers-page-2 from "One Platform. Six Products" to "1 Platform. 6 Products"; second line, description and panels untouched.
 - Checked at 1797x1038: heading reads "1 Platform. 6 Products / to Make Hiring Smarter.", no horizontal overflow; build OK.
+
+## Employer page v2 — CIR report section above the resume section
+- Reused the homepage Career Intelligence section (CareerIntelligencePackageHome) on /employers-page-2 directly above ProblemSection ("The Resume Was Built for a World That No Longer Exists."), passing the client's eyebrow "Candidate Intelligence", headline "Why the CIR Report Is a Game Changer" / "Understand What's Inside a Candidate's CIR Report." and description "Discover strengths, identify critical skill gaps, and benchmark candidates against relevant industry standards with an 8-in-1 Career Intelligence Report."; the component gained optional eyebrow and description props so the homepage and /for-employers keep their original copy.
+- Checked at 1797x1038: section sits before the resume section, badge and copy correct, no overflow, homepage and /for-employers headings unchanged; build OK.

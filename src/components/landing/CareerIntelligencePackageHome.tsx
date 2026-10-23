@@ -672,7 +672,7 @@ const ModuleVisualPanel = ({ activeIdx }: { activeIdx: number }) => {
   );
 };
 
-const CareerIntelligencePackageHome = ({ beforeCta, heading }: { beforeCta?: ReactNode; heading?: { first: string; second: string } } = {}) => {
+const CareerIntelligencePackageHome = ({ beforeCta, heading, eyebrow, description }: { beforeCta?: ReactNode; heading?: { first: string; second: string }; eyebrow?: string; description?: ReactNode } = {}) => {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
   const [activeIdx, setActiveIdx] = useState(0);
@@ -689,7 +689,7 @@ const CareerIntelligencePackageHome = ({ beforeCta, heading }: { beforeCta?: Rea
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5 }}
           >
-            <SectionBadge label="Career Intelligence Report" icon={Sparkles} />
+            <SectionBadge label={eyebrow ?? "Career Intelligence Report"} icon={Sparkles} />
           </motion.div>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -707,9 +707,9 @@ const CareerIntelligencePackageHome = ({ beforeCta, heading }: { beforeCta?: Rea
             transition={{ duration: 0.5, delay: 0.18 }}
             className="text-muted-foreground text-base md:text-lg max-w-3xl mx-auto"
           >
-            Discover your strengths, close critical skill gaps, and benchmark yourself against
-            <br className="hidden md:block" />
-            industry standards with an 8-in-1 verified career dossier.
+            {description ?? (<>Discover your strengths, close critical skill gaps, and benchmark yourself against
+              <br className="hidden md:block" />
+              industry standards with an 8-in-1 verified career dossier.</>)}
           </motion.p>
         </div>
 
