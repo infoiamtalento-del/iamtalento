@@ -261,3 +261,8 @@
 - Left column rebuilt to the reference format: uppercase label, large two-line bold headline, medium regular line, muted paragraph, solid + outlined buttons, proof line with bold navy phrases, thin divider, three icon items (title + grey subtitle).
 - Removed "Built for founders who need to scale and HR teams that need to hire better."
 - Checked at 1797 (headline exactly two lines, 48px, column fits) and 390 (all three items render, no overflow); Book a Demo scrolls to the form, Explore the Platform opens /employer-profile; build OK.
+
+## Employer page v2 — hero three bottom points
+- Client corrected the three icon items: they are "One Platform", "Smarter decisions", "Better hiring" (not Search Talent / AI Interviews / CIR Reports).
+- The separate proof line above the divider was removed as a duplicate of those three titles; each item keeps a small grey subtitle (mine, awaiting the client's wording).
+- Checked at 1797 and 390: three items render on one row each with two-line subtitles, no clipping, no overflow, no page errors; build OK.
