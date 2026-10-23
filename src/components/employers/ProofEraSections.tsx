@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowRight, ArrowDown, BadgeCheck, Bot, Briefcase, Building2, CalendarClock, Check, ChevronDown, Clock, Code2,
-  Eye, FileText, Fingerprint, Globe2, GraduationCap, Languages, Lock, Mic, MonitorSmartphone, Palette, Play,
-  Rocket, ScanFace, Search, ShieldCheck, Sparkles, Star, UserCheck, Users, Wand2, X, Minus,
+  Eye, FileText, Fingerprint, Gauge, Globe2, GraduationCap, Languages, Layers, Lock, Mic, MonitorSmartphone, Palette, Play,
+  Rocket, ScanFace, Search, ShieldCheck, Sparkles, Star, TrendingUp, UserCheck, Users, Wand2, X, Minus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -100,16 +100,13 @@ export const ProofHero = () => (
             <Link to="/employer-profile">Explore the Platform</Link>
           </Button>
         </div>
-        <p className="mt-6 text-[15px] leading-[1.55] text-foreground/75">
-          One platform. <span className="font-semibold text-primary">Smarter decisions.</span> <span className="font-semibold text-primary">Better hiring.</span>
-        </p>
         <ul className="mt-10 flex flex-wrap gap-x-7 gap-y-4 border-t border-border pt-7">
           {[
-            { icon: Search, t: "Search Talent", s: "50,000+ verified candidates" },
-            { icon: Mic, t: "AI Interviews", s: "Every candidate, same questions" },
-            { icon: FileText, t: "CIR Reports", s: "Score with evidence attached" },
+            { icon: Layers, t: "One Platform", s: "Assessments, interviews and reports in one place" },
+            { icon: Gauge, t: "Smarter decisions", s: "Every score arrives with evidence" },
+            { icon: TrendingUp, t: "Better hiring", s: "Shortlist better candidates, faster" },
           ].map(({ icon: Icon, t, s }) => (
-            <li key={t} className="flex max-w-[190px] items-start gap-2.5">
+            <li key={t} className="flex max-w-[210px] items-start gap-2.5">
               <Icon className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
               <div>
                 <strong className="block text-sm font-semibold">{t}</strong>
