@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import lindaDashboard from "@/assets/ai-interview-dashboard.jpg.asset.json";
 import interviewer from "@/assets/webinar-speaker-3.jpg";
 import p3 from "@/assets/speaker-meera.jpg";
 import v1 from "@/assets/mock-interview-1.jpg";
@@ -159,7 +160,7 @@ export const AIInterviewerSection = () => (
 );
 
 /* ---------- AI interviewer showcase (light, employers-page-2) ---------- */
-import lindaDashboard from "@/assets/ai-interview-dashboard.jpg.asset.json";
+
 
 export const LindaShowcaseSection = () => (
   <section className="py-20 md:py-28">
