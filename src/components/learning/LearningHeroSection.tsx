@@ -5,11 +5,20 @@ import {
   CirclePlay,
   Play,
   Layers,
+  ShieldCheck,
+  Target,
+  TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import SectionBadge from "@/components/ui/section-badge";
 import projectThumb from "@/assets/hands-on-project-thumb.jpg";
+
+const heroBenefits = [
+  { icon: ShieldCheck, title: "AI Learning Courses", sub: "100+" },
+  { icon: Target, title: "1:1 Doubt Clearing Mentors", sub: "500+" },
+  { icon: TrendingUp, title: "Free AI Tool Courses", sub: "25+" },
+];
 
 const LearningHeroSection = () => {
   return (
@@ -38,28 +47,54 @@ const LearningHeroSection = () => {
               <p className="text-base md:text-lg text-slate-600 mb-6 max-w-xl leading-relaxed">
                 Learn practical skills from industry experts, get AI-powered learning support, and unlock one-on-one expert guidance to accelerate your career.
               </p>
+
+              <div className="flex flex-wrap items-center gap-3 pt-1">
+                <Button
+                  asChild
+                  size="lg"
+                  className="h-12 px-7 rounded-xl bg-[#002C66] text-white hover:bg-[#00204d] font-bold gap-2 shadow-sm cursor-pointer"
+                >
+                  <Link to="/learning#courses">
+                    Explore Courses <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="h-12 px-6 rounded-xl bg-white border-[#002C66]/20 text-slate-900 hover:bg-white hover:border-[#002C66] hover:text-[#002C66] font-bold gap-2 cursor-pointer"
+                >
+                  <a href="#why-learners-choose-us">
+                    <CirclePlay className="h-5 w-5 text-[#002C66]" /> How It Works
+                  </a>
+                </Button>
+              </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3 pt-2">
-              <Button
-                asChild
-                size="lg"
-                className="h-12 px-7 rounded-xl bg-[#002C66] text-white hover:bg-[#00204d] font-bold gap-2 shadow-sm cursor-pointer"
-              >
-                <Link to="/learning#courses">
-                  Explore Courses <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="h-12 px-6 rounded-xl bg-white border-[#002C66]/20 text-slate-900 hover:bg-white hover:border-[#002C66] hover:text-[#002C66] font-bold gap-2 cursor-pointer"
-              >
-                <a href="#why-learners-choose-us">
-                  <CirclePlay className="h-5 w-5 text-[#002C66]" /> How It Works
-                </a>
-              </Button>
+            <div className="w-full mt-7">
+              <p className="text-[15px] leading-[1.55] text-slate-700">
+                <span className="font-semibold text-[#002C66]">10,000+ Learners Certified.</span>{" "}
+                <span className="font-semibold text-[#002C66]">500+ Top Employers</span> Trust Us to Upskill Their Teams.
+              </p>
+
+              <ul className="mt-6 pt-6 border-t border-slate-900/15 flex flex-wrap gap-y-3 gap-x-7">
+                {heroBenefits.map((b, i) => {
+                  const Icon = b.icon;
+                  return (
+                    <li key={i} className="flex items-start gap-2.5">
+                      <Icon size={20} className="text-[#002C66] shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="block text-sm font-semibold text-slate-950">
+                          {b.title}
+                        </strong>
+                        <span className="block text-xs text-slate-500 mt-0.5">
+                          {b.sub}
+                        </span>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
             </div>
           </motion.div>
 

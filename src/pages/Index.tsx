@@ -22,7 +22,7 @@ import CareerIntelligencePackageHome from "@/components/landing/CareerIntelligen
 import VideoTestimonialsSection from "@/components/assessments/VideoTestimonialsSection";
 import FreeAccessSection from "@/components/landing/FreeAccessSection";
 import DigitalSkillPassportSection from "@/components/landing/DigitalSkillPassportSection";
-import FreeFeaturesSection from "@/components/landing/FreeFeaturesSection";
+import TalentCirAdvantageSection from "@/components/landing/TalentCirAdvantageSection";
 import GetHiredBanner from "@/components/landing/GetHiredBanner";
 import PlatformFeaturesSection from "@/components/landing/PlatformFeaturesSection";
 
@@ -43,7 +43,7 @@ const Index = () => (
       <Home2TrustedSection />
       {/* <JobsSocialProof /> */}
 
-      <FreeFeaturesSection />
+      <TalentCirAdvantageSection />
 
       {/* <JobProfileAssessmentSection /> */}
       <FeaturedCompanies />

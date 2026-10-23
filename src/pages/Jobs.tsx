@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import Layout from "@/components/layout/Layout";
 import JobsHeroSection from "@/components/landing/JobsHeroSection";
 import JobsSocialProof from "@/components/jobs/JobsSocialProof";
+import FreeFeaturesSection from "@/components/landing/FreeFeaturesSection";
 import FeaturedCompanies from "@/components/jobs/FeaturedCompanies";
 import TopCategoriesSection from "@/components/jobs/TopCategoriesSection";
 import FeaturedJobsBanner from "@/components/jobs/FeaturedJobsBanner";
@@ -24,9 +25,11 @@ const Jobs = () => {
         {/* Hero Search */}
         <JobsHeroSection />
 
-
         {/* Trusted by companies marquee */}
         <JobsSocialProof />
+
+        {/* Unlock 8 FREE Career Benefits */}
+        <FreeFeaturesSection />
 
         {/* Top Categories */}
         <TopCategoriesSection />
