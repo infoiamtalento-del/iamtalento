@@ -1,16 +1,21 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Wallet,
-  BadgeCheck,
-  Bot,
-  Clock,
-  Users,
-  Briefcase,
-  PlayCircle,
+  Video,
+  FileText,
+  Layout,
+  ClipboardCheck,
   Sparkles,
-  ShieldCheck,
+  Users,
+  MessageSquare,
+  Bot,
+  BookOpenCheck,
+  BarChart3,
+  Route,
+  CalendarClock,
   Award,
+  TrendingUp,
+  ShieldCheck,
   Play,
 } from "lucide-react";
 import SectionBadge from "@/components/ui/section-badge";
@@ -19,46 +24,93 @@ import videoThumb from "@/assets/employer-recruiter.jpg";
 
 const learnerUSPs = [
   {
-    icon: Wallet,
-    title: "Affordable Learning",
-    text: "Expert knowledge without the hefty price tag, giving you high-ROI access to industry-grade education.",
+    number: "01",
+    icon: Video,
+    title: "Mock Interview Videos",
+    text: "Learn how to answer real-world interview questions.",
   },
   {
-    icon: BadgeCheck,
-    title: "Verified Mentors",
-    text: "Learn from trusted industry professionals with proven track records and real workplace experience.",
+    number: "02",
+    icon: FileText,
+    title: "Interview Q&A PDF",
+    text: "Access curated questions and expert answers.",
   },
   {
-    icon: Bot,
-    title: "AI Learning Companion",
-    text: "Your doubts answered while you learn with instant contextual explanations, summaries, and practice quizzes.",
+    number: "03",
+    icon: Layout,
+    title: "Blueprints & Templates",
+    text: "Use ready-to-apply professional resources.",
   },
   {
-    icon: Clock,
-    title: "Learn Anytime",
-    text: "Flexible learning on your schedule so you can upskill at your own pace without rigid deadlines.",
+    number: "04",
+    icon: ClipboardCheck,
+    title: "Practice Tests",
+    text: "Test your knowledge and identify weak areas.",
   },
   {
-    icon: Users,
-    title: "1:1 Expert Sessions",
-    text: "Personalised guidance when you need it through live one-to-one consultations with domain experts.",
-  },
-  {
-    icon: Briefcase,
-    title: "Real-World Knowledge",
-    text: "Practical skills beyond theory focused on real industry workflows, case studies, and execution.",
-  },
-  {
-    icon: PlayCircle,
-    title: "On-Demand Courses",
-    text: "Learn whenever and wherever you want with seamless access across desktop, tablet, and mobile.",
-  },
-  {
+    number: "05",
     icon: Sparkles,
-    title: "Personalised Learning",
-    text: "A learning experience built around you that adapts to your skill gaps and career goals.",
+    title: "AI Personalisation",
+    text: "Get learning recommendations tailored to your needs.",
+  },
+  {
+    number: "06",
+    icon: Users,
+    title: "Community & Peers",
+    text: "Connect, collaborate, and learn with others.",
+  },
+  {
+    number: "07",
+    icon: MessageSquare,
+    title: "Doubt Resolution",
+    text: "Get answers to your learning questions.",
+  },
+  {
+    number: "08",
+    icon: Bot,
+    title: "AI Learning Assistant",
+    text: "Ask questions and get instant explanations while learning.",
+  },
+  {
+    number: "09",
+    icon: BookOpenCheck,
+    title: "Smart Notes & Summaries",
+    text: "Revise key concepts with AI-generated notes.",
+  },
+  {
+    number: "10",
+    icon: BarChart3,
+    title: "Skill Gap Analysis",
+    text: "Discover areas where you need improvement.",
+  },
+  {
+    number: "11",
+    icon: Route,
+    title: "Personalised Learning Path",
+    text: "Follow a learning journey aligned with your goals.",
+  },
+  {
+    number: "12",
+    icon: CalendarClock,
+    title: "Expert Office Hours",
+    text: "Get personalised guidance from industry professionals.",
+  },
+  {
+    number: "13",
+    icon: Award,
+    title: "Completion Certificate",
+    text: "Showcase your course completion and acquired knowledge.",
+  },
+  {
+    number: "14",
+    icon: TrendingUp,
+    title: "Progress Tracker",
+    text: "Monitor your learning progress and performance.",
   },
 ];
+
+const leftColumnUSPs = learnerUSPs.slice(0, 7);
+const rightColumnUSPs = learnerUSPs.slice(7, 14);
 
 const reveal = {
   initial: { opacity: 0, y: 24 },
@@ -71,7 +123,11 @@ const WhyChooseLearningSection = () => {
   const [playing, setPlaying] = useState(false);
 
   return (
-    <section aria-labelledby="learner-benefits-heading" className="bg-card py-20 md:py-28">
+    <section
+      id="why-learners-choose-us"
+      aria-labelledby="learner-benefits-heading"
+      className="bg-card py-20 md:py-28"
+    >
       <div className="container px-4 md:px-6">
         <motion.div {...reveal} className="mx-auto max-w-3xl text-center">
           <SectionBadge label="Why Learners Choose Us" icon={Award} />
@@ -79,17 +135,43 @@ const WhyChooseLearningSection = () => {
             id="learner-benefits-heading"
             className="mb-4 text-3xl md:text-4xl font-bold font-display leading-[1.15]"
           >
-            Everything You Need<br />
-            <span className="text-primary">To Learn With Confidence.</span>
+            What You Get With<br />
+            <span className="text-primary">Every Course</span>
           </h2>
           <p className="text-base md:text-lg leading-relaxed text-muted-foreground">
-            Eight advantages built into every step of your learning journey, from recorded expert lessons to 1:1 mentorship.
+            Fourteen advantages built into every step of your learning journey, from mock interview preparation to AI-powered career guidance.
           </p>
         </motion.div>
 
-        <div className="mx-auto mt-12 flex max-w-6xl flex-col items-start gap-8 lg:mt-16 lg:flex-row lg:gap-16">
-          {/* Left Sticky Column — Interactive Video Player with Clean Photo Thumbnail */}
-          <div className="w-full lg:sticky lg:top-28 lg:w-[45%] lg:shrink-0">
+        <div className="mx-auto mt-12 grid max-w-7xl grid-cols-1 items-start gap-8 lg:mt-16 lg:grid-cols-12 lg:gap-8 xl:gap-10">
+          {/* Left Column — Points 01 to 07 */}
+          <ol className="lg:col-span-4 w-full divide-y divide-border border-y border-border">
+            {leftColumnUSPs.map(({ number, icon: Icon, title, text }) => (
+              <li key={number} className="flex items-start gap-3.5 py-5 sm:gap-4 sm:py-6">
+                <span
+                  aria-hidden="true"
+                  className="pt-0.5 font-display text-xs font-semibold tabular-nums text-muted-foreground/60"
+                >
+                  {number}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <h3 className="mb-1.5 font-display text-lg font-bold tracking-normal sm:text-xl leading-snug">
+                    {title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    {text}
+                  </p>
+                </div>
+                <Icon
+                  aria-hidden="true"
+                  className="mt-1 h-5 w-5 shrink-0 text-primary"
+                />
+              </li>
+            ))}
+          </ol>
+
+          {/* Center Sticky Column — Interactive Video Player */}
+          <div className="lg:col-span-4 w-full lg:sticky lg:top-28">
             <div className="relative overflow-hidden rounded-lg border border-border bg-card shadow-md">
               {playing ? (
                 <video
@@ -126,34 +208,34 @@ const WhyChooseLearningSection = () => {
 
             <div className="mt-6 flex items-start gap-4 border-l-2 border-primary pl-5">
               <ShieldCheck className="mt-1 h-6 w-6 shrink-0 text-primary" />
-              <p className="font-display text-xl font-semibold leading-snug tracking-normal">
+              <p className="font-display text-lg font-semibold leading-snug tracking-normal">
                 Learn from Experts. Grow with AI.<br />
-                <span className="text-primary">Get Ahead in Your Career.</span>
+                <span className="text-primary">Get Career-Ready.</span>
               </p>
             </div>
           </div>
 
-          {/* Right Column — Numbered Editorial USP List */}
-          <ol className="w-full divide-y divide-border border-y border-border">
-            {learnerUSPs.map(({ icon: Icon, title, text }, index) => (
-              <li key={title} className="flex items-start gap-4 py-6 sm:gap-6 sm:py-7">
+          {/* Right Column — Points 08 to 14 */}
+          <ol start={8} className="lg:col-span-4 w-full divide-y divide-border border-y border-border">
+            {rightColumnUSPs.map(({ number, icon: Icon, title, text }) => (
+              <li key={number} className="flex items-start gap-3.5 py-5 sm:gap-4 sm:py-6">
                 <span
                   aria-hidden="true"
-                  className="pt-1 font-display text-sm font-semibold tabular-nums text-muted-foreground/60"
+                  className="pt-0.5 font-display text-xs font-semibold tabular-nums text-muted-foreground/60"
                 >
-                  0{index + 1}
+                  {number}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <h3 className="mb-2 font-display text-xl font-bold tracking-normal sm:text-2xl">
+                  <h3 className="mb-1.5 font-display text-lg font-bold tracking-normal sm:text-xl leading-snug">
                     {title}
                   </h3>
-                  <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
+                  <p className="text-sm leading-relaxed text-muted-foreground">
                     {text}
                   </p>
                 </div>
                 <Icon
                   aria-hidden="true"
-                  className="mt-1 h-5 w-5 shrink-0 text-primary sm:h-6 sm:w-6"
+                  className="mt-1 h-5 w-5 shrink-0 text-primary"
                 />
               </li>
             ))}
