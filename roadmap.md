@@ -266,3 +266,8 @@
 - Client corrected the three icon items: they are "One Platform", "Smarter decisions", "Better hiring" (not Search Talent / AI Interviews / CIR Reports).
 - The separate proof line above the divider was removed as a duplicate of those three titles; each item keeps a small grey subtitle (mine, awaiting the client's wording).
 - Checked at 1797 and 390: three items render on one row each with two-line subtitles, no clipping, no overflow, no page errors; build OK.
+
+## Employer page v2 — hero text matched to the homepage hero
+- Left-column text now uses the homepage hero's exact type scale and font: headline clamp(25px,6.3cqw,55px) bold Inter, sub-line 0.44em regular, paragraph clamp(16px,1.15vw,18px), buttons 15px/700, item titles 14px/600 with 12.5px subtitles; the copy column is a container so the clamp resolves the same way.
+- Grid changed to the homepage's 1.22fr/0.78fr with 44px gap so the headline renders at the same 49.65px (was 45.44px); the shortlist card column is now 504px wide and still renders complete.
+- Checked at 1797 and 390: headline 49.65px / sub-line 21.85px on both pages, no clipping, no overflow, no page errors; build OK.
