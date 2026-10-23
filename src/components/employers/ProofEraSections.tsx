@@ -232,18 +232,21 @@ export const NewEraSection = () => (
 
 /* ---------------- 6. Two ways ---------------- */
 const panels = [
-  { icon: Search, title: "Hire from the verified talent pool", body: "50,000+ candidates have already taken proctored assessments and an AI interview. Search by role, skill, city and CIR score, and see the evidence before you contact anyone.", bullets: ["Filter by CIR score, domain and notice period", "See scores before you unlock a profile", "Shortlist in minutes, not weeks"], cta: "Search the talent pool", featured: true },
-  { icon: FileText, title: "Assess your own applicants", body: "Send one link to every applicant, from your job post, campus drive or ATS. TalentCIR tests, interviews and ranks them all, and your team only meets the ones who cleared the bar.", bullets: ["200+ ready tests, or a custom test from your JD", "First-round interviews by Linda, 24/7", "Proctoring on every attempt"], cta: "Create an assessment" },
+  { no: "01", name: "Talent Discovery", title: "Your Next Great Hire Could Be One Search Away.", body: "Explore a wide pool of candidate resumes and professional profiles. Find relevant talent using smart filters and shortlist candidates based on your hiring requirements.", bullets: ["Search candidate resumes and profiles.", "Filter by skills, experience, location and qualifications.", "Discover relevant candidates for open positions.", "Review candidate details and career history.", "Shortlist and invite candidates for interviews."], cta: "Explore the Talent Pool", featured: true },
+  { no: "02", name: "AI-Interviewed, Verified Talent", title: "Skip the First-Round Bottleneck. Meet Interview-Ready Candidates.", body: "Access candidates who have already completed AI-powered interviews. Review their actual interview recordings, evaluate their responses and compare assessment insights before scheduling your next round.", bullets: ["Watch completed AI interview videos.", "Review interview responses and transcripts.", "Access candidate scores and competency insights.", "Evaluate communication and role-specific skills.", "Shortlist candidates for the next interview round."], cta: "Discover Interviewed Talent" },
 ];
 
 export const TwoWaysSection = () => (
   <section className="py-20 md:py-28">
     <div className="container">
-      <Heading eyebrow="Two Ways to Hire on Proof" title="Bring Your Candidates. Or Hire Ours, Already Verified." sub="Every other assessment platform starts from zero with every role. TalentCIR also gives you people who have already passed." />
+      <Heading eyebrow="Two Ways to Find Your Next Great Hire" title="Find Talent.|Or Hire Talent That's Already Interviewed." sub="Whether you want to discover candidates from a large talent pool or access candidates with completed AI interviews, TalentCIR gives you two smarter ways to hire." />
       <div className="mt-12 grid gap-6 lg:grid-cols-2">
-        {panels.map(({ icon: Icon, ...p }) => (
-          <motion.div key={p.title} {...reveal} className={cn("flex flex-col rounded-lg border p-8", p.featured ? "border-primary bg-accent/50" : "border-border bg-card")}>
-            <Icon className="mb-5 h-8 w-8 text-primary" />
+        {panels.map((p) => (
+          <motion.div key={p.no} {...reveal} className={cn("flex flex-col rounded-lg border p-8", p.featured ? "border-primary bg-accent/50" : "border-border bg-card")}>
+            <div className="mb-5 flex items-center gap-3">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary font-display text-sm font-bold text-primary-foreground">{p.no}</span>
+              <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">{p.name}</span>
+            </div>
             <h3 className="mb-3 font-display text-2xl font-bold">{p.title}</h3>
             <p className="mb-6 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
             <ul className="mb-8 space-y-3">

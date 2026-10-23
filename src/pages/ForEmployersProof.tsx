@@ -22,9 +22,9 @@ const ForEmployersProof = () => (
       <ProofStrip />
       <ProofHero />
       <ProofTrustBar />
+      <TwoWaysSection />
       <ProblemSection />
       <NewEraSection />
-      <TwoWaysSection />
       <HowItWorksSection />
       <TwoWeeksSection />
       <ProductTourSection />
