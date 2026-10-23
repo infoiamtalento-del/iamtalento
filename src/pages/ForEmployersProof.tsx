@@ -1,3 +1,4 @@
+import { Award, BarChart3, Clock, Timer, TrendingDown, Users } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import Layout from "@/components/layout/Layout";
 import {
@@ -6,8 +7,17 @@ import {
   ResponsibleAISection, ResultsSection, RoiSection, ComparisonSection, BuiltForTeamSection, ProofTestimonials,
   CandidateExperienceSection, ProofIntegrations, ProofPricing, PromiseSection, ProofFAQ, FinalCtaSection,
 } from "@/components/employers/ProofEraSections";
-import { PlatformSection, LindaShowcaseSection, TestimonialsSection } from "@/components/employers/EmployerShowcaseSections";
+import { PlatformSection, LindaShowcaseSection, TestimonialsSection, USPSection } from "@/components/employers/EmployerShowcaseSections";
 import CareerIntelligencePackageHome from "@/components/landing/CareerIntelligencePackageHome";
+
+const proofBenefits = [
+  { icon: Timer, title: "Reduce Time-to-Hire", lead: "Hire Faster. Fill Positions Sooner.", text: "Automate first-round interviews and streamline candidate screening to accelerate your hiring workflow." },
+  { icon: TrendingDown, title: "Reduce Hiring Costs", lead: "Save Manpower. Cut Repetitive Work.", text: "Reduce manual screening effort and repetitive interview hours so your recruitment team can focus on high-value hiring activities." },
+  { icon: Award, title: "Hire Skills, Not Just Resumes", lead: "Look Beyond the CV.", text: "Use skill assessments, AI interview insights and candidate readiness reports to make better-informed hiring decisions." },
+  { icon: Clock, title: "Interview 24/7 with AI", lead: "Your Hiring Doesn't Sleep.", text: "Let candidates complete AI-powered first-round interviews beyond office hours, without coordinating every interview manually." },
+  { icon: Users, title: "Scale Hiring Without Scaling Your Team", lead: "More Candidates. Less Recruiter Workload.", text: "Streamline campus drives, bulk recruitment and high-volume screening with connected hiring tools." },
+  { icon: BarChart3, title: "Make Smarter Hiring Decisions", lead: "Less Guesswork. More Hiring Confidence.", text: "Compare candidates using structured interview responses, relevant skill scores and assessment insights—all in one platform." },
+];
 
 /** Section order follows the "Employer Page v2: The New Era" content sheet exactly. */
 const ForEmployersProof = () => (

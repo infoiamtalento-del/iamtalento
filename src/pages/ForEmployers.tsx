@@ -21,11 +21,10 @@ import Layout from "@/components/layout/Layout";
 import CareerIntelligencePackageHome from "@/components/landing/CareerIntelligencePackageHome";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { AIInterviewerSection, PlatformSection, TeamsSection, IntegrationsSection, TestimonialsSection, TrustStats, AIEvaluateSection, PlanVideoSection } from "@/components/employers/EmployerShowcaseSections";
+import { AIInterviewerSection, PlatformSection, TeamsSection, IntegrationsSection, TestimonialsSection, TrustStats, AIEvaluateSection, PlanVideoSection, USPSection } from "@/components/employers/EmployerShowcaseSections";
 import EmployerActionBanner from "@/components/employers/EmployerActionBanner";
 import reasonsThumb from "@/assets/employer-10-reasons-thumb.jpg";
 import reasonsVideo from "@/assets/videos/talentcir-10-reasons.mp4.asset.json";
-import recruiterImage from "@/assets/employer-recruiter.jpg";
 import candidateAnanya from "@/assets/learner-ananya.jpg";
 import candidatePriya from "@/assets/learner-priya.jpg";
 import candidateRahul from "@/assets/learner-rahul.jpg";
@@ -100,44 +99,6 @@ const allUSPs = [
   { icon: BarChart3, title: "Clear Analytics", text: "Transparent hiring metrics and recruitment analytics keep every decision measurable." },
 ];
 
-const USPSection = () => (
-  <section aria-labelledby="employer-benefits-heading" className="bg-card py-20 md:py-28">
-    <div className="container">
-      <motion.div {...reveal} className="mx-auto max-w-3xl text-center">
-        <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-primary">Why IAmTalento</p>
-        <h2 id="employer-benefits-heading" className="mb-5 font-display text-3xl font-bold leading-[1.08] tracking-normal sm:text-4xl lg:text-5xl">
-          Everything Your Team Needs<br />
-          <span className="text-primary">To Hire With Proof.</span>
-        </h2>
-        <p className="text-sm leading-relaxed text-muted-foreground md:text-base">
-          Six advantages built into every step of your hiring journey, from search to final decision.
-          <br className="hidden md:block" /> Each one is included at no extra cost.
-        </p>
-      </motion.div>
-      <div className="mx-auto mt-12 flex max-w-6xl flex-col items-start gap-8 lg:mt-16 lg:flex-row lg:gap-16">
-        <div className="w-full lg:sticky lg:top-28 lg:w-[45%] lg:shrink-0">
-          <img src={recruiterImage} alt="Recruiter reviewing candidates in a bright workplace" className="aspect-[4/3] w-full rounded-lg object-cover lg:aspect-[4/5]" width={1408} height={1056} loading="lazy" />
-          <div className="mt-6 flex items-start gap-4 border-l-2 border-primary pl-5">
-            <ShieldCheck className="mt-1 h-6 w-6 shrink-0 text-primary" />
-            <p className="font-display text-xl font-semibold leading-snug tracking-normal">Everything Your Team Needs.<br /><span className="text-primary">To Hire With Proof.</span></p>
-          </div>
-        </div>
-        <ol className="w-full divide-y divide-border border-y border-border">
-          {allUSPs.map(({ icon: Icon, title, text }, index) => (
-            <li key={title} className="flex items-start gap-4 py-6 sm:gap-6 sm:py-7">
-              <span aria-hidden="true" className="pt-1 font-display text-sm font-semibold tabular-nums text-muted-foreground/60">0{index + 1}</span>
-              <div className="min-w-0 flex-1">
-                <h3 className="mb-2 font-display text-xl font-bold tracking-normal sm:text-2xl">{title}</h3>
-                <p className="max-w-md text-sm leading-relaxed text-muted-foreground">{text}</p>
-              </div>
-              <Icon aria-hidden="true" className="mt-1 h-5 w-5 shrink-0 text-primary sm:h-6 sm:w-6" />
-            </li>
-          ))}
-        </ol>
-      </div>
-    </div>
-  </section>
-);
 
 const Hero = () => (
   <section className="relative overflow-hidden bg-background pb-16 pt-32 md:pb-24 md:pt-40">
