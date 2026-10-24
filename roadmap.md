@@ -1,5 +1,9 @@
 # Roadmap
 
+## Hackathon 2 — reference redesign
+- Create /hackathon2 without changing /hackathons; carry all sections from image 1 into image 2's editorial summit layout — in progress.
+- Verify section coverage, event filters, carousel, registration links and desktop/mobile presentation — pending.
+
 ## Employer page — plan video flush and aligned
 - Remove the space on all four sides of the plan section video and set it to a 4:5 shape so the left and right columns look aligned — done; the video now measures 479x599 (ratio 0.800) with zero gap on all four sides and both columns at 599px, verified in the browser with no page errors.
 

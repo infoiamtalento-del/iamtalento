@@ -1,5 +1,7 @@
 # Project Rules
 
+- Keep /hackathon2 in its own editorial presentation with isolated styles and reference content data, leaving /hackathons and shared navigation unchanged so the redesign remains independently reviewable.
+
 - Keep employer account side navigation and the profile dropdown sourced from one shared menu, with role-specific views in the Pro shell, so labels and destinations stay consistent without changing candidate navigation.
 
 - Render Pro job descriptions in a dedicated full-page detail component within the Pro shell, sharing the selected job, match calculations, and application/save handlers with all job-card entry points.
