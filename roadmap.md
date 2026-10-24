@@ -1,8 +1,8 @@
 # Roadmap
 
 ## Hackathon 2 — spacing corrections
-- Review every section and correct uneven section gaps, image heights, heading gaps, logo-strip padding and card alignment — in progress.
-- Check the complete page at desktop, tablet and phone widths and preserve existing interactions — pending.
+- Review every section and correct uneven section gaps, image heights, heading gaps, logo-strip padding and card alignment — done; consistent 56px desktop / 40px phone section spacing, restored logo strip vertical padding, bounded editorial photos, removed doubled FAQ heading gaps, aligned track-card actions and compact event rows.
+- Check the complete page at desktop, tablet and phone widths and preserve existing interactions — done; all 16 sections visually reviewed at 1797, 820 and 390 widths, no overflow or missing images, status/track filters and event/story controls work, no browser errors; build OK. Original hackathon page unchanged.
 
 ## Hackathon 2 — reference redesign
 - Create /hackathon2 without changing /hackathons; carry all sections from image 1 into image 2's editorial summit layout — done; includes challenges, company proof, five steps, featured event, seasons, tickets, benefits, tracks, judging, partners, stories, community, FAQ and closing actions. Small screenshot copy reconstructed from existing hackathon content; existing sample dates retained.
