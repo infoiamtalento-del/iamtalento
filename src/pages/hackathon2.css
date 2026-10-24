@@ -1,7 +1,11 @@
 .hackathon2 { background: hsl(var(--hackathon-paper)); letter-spacing: 0; }
 .hackathon2 h1,.hackathon2 h2,.hackathon2 h3 { letter-spacing: 0; }
-.hackathon2 .ht2-wrap { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
-.hackathon2 .ht2-band { padding: 72px 0; }
+.hackathon2 .ht2-wrap { max-width: 1280px; margin: 0 auto; padding-inline: 32px; }
+.hackathon2 .ht2-band { padding: 56px 0; }
+.hackathon2 .ht2-heading { margin-bottom: 28px; }
+.hackathon2 .ht2-wrap.grid > .ht2-heading { margin-bottom: 0; }
+.hackathon2 .ht2-wrap.grid { column-gap: 40px; row-gap: 28px; }
+.hackathon2 .ht2-wrap.grid > * { min-width: 0; }
 .hackathon2 .ht2-eyebrow { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 14px; color: hsl(var(--primary)); }
 .hackathon2 .ht2-title { font-size: 36px; line-height: 1.16; font-weight: 700; }
 .hackathon2 .ht2-copy { margin-top: 16px; max-width: 620px; font-size: 15px; line-height: 1.8; color: hsl(var(--muted-foreground)); }
@@ -13,15 +17,41 @@
 .hackathon2 .ht2-dark h2,.hackathon2 .ht2-dark h3,.hackathon2 .ht2-forest h2 { color: hsl(var(--hackathon-on-dark)); }
 .hackathon2 .ht2-dark .ht2-copy,.hackathon2 .ht2-forest .ht2-copy { color: hsl(var(--hackathon-on-dark) / .75); }
 .hackathon2 .ht2-dark .ht2-eyebrow,.hackathon2 .ht2-forest .ht2-eyebrow { color: hsl(var(--hackathon-on-dark) / .65); }
-.hackathon2 .ht2-hero { padding: 140px 0 42px; }
+.hackathon2 .ht2-hero { padding: 120px 0 56px; }
 .hackathon2 .ht2-hero h1 { font-size: 64px; line-height: 1.05; font-weight: 700; }
 .hackathon2 .ht2-hero-image { width: 100%; aspect-ratio: 1.28; object-fit: cover; border-radius: 8px; }
-.hackathon2 .ht2-photo { width: 100%; height: 100%; min-height: 350px; object-fit: cover; border-radius: 8px; }
+.hackathon2 .ht2-photo { display: block; width: 100%; height: 400px; min-height: 0; object-fit: cover; border-radius: 8px; }
+.hackathon2 .ht2-feature-grid { column-gap: 40px; row-gap: 28px; }
+.hackathon2 .ht2-track-card { display: flex; flex-direction: column; align-items: flex-start; }
+.hackathon2 .ht2-track-card > p { flex: 1; }
+.hackathon2 .ht2-event-row { column-gap: 24px; row-gap: 12px; grid-template-columns: 100px minmax(0, 1fr) 100px 150px; }
+.hackathon2 .ht2-event-row > img { width: 100px; }
 .hackathon2 .ht2-line { border-bottom: 1px solid hsl(var(--border)); }
 .hackathon2 .ht2-pill { border-radius: 999px; }
 .hackathon2 .ht2-ribbon { padding: 19px 0; overflow: hidden; border-block: 1px solid hsl(var(--border)); }
 .hackathon2 .ht2-marquee { display: flex; width: max-content; gap: 48px; animation: ht2-scroll 40s linear infinite; }
 .hackathon2 .ht2-ribbon:hover .ht2-marquee { animation-play-state: paused; }
 @keyframes ht2-scroll { to { transform: translateX(-50%); } }
-@media(max-width:767px) { .hackathon2 .ht2-wrap { padding: 0 20px; } .hackathon2 .ht2-band { padding: 48px 0; } .hackathon2 .ht2-hero { padding-top: 110px; } .hackathon2 .ht2-hero h1 { font-size: 42px; } .hackathon2 .ht2-title { font-size: 28px; } .hackathon2 .ht2-photo { min-height: 240px; } }
+@media (min-width:768px) and (max-width:1023px) {
+  .hackathon2 .ht2-wrap { padding-inline: 24px; }
+  .hackathon2 .ht2-photo { height: 360px; }
+  .hackathon2 .ht2-event-row { grid-template-columns: 80px minmax(0, 1fr) 140px; column-gap: 16px; }
+  .hackathon2 .ht2-event-row > img { width: 80px; }
+  .hackathon2 .ht2-event-row > p { grid-column: 2; }
+  .hackathon2 .ht2-event-row > a { grid-column: 3; grid-row: 1 / span 2; }
+}
+@media(max-width:767px) {
+  .hackathon2 .ht2-wrap { padding-inline: 20px; }
+  .hackathon2 .ht2-band { padding: 40px 0; }
+  .hackathon2 .ht2-heading { margin-bottom: 24px; }
+  .hackathon2 .ht2-hero { padding: 110px 0 40px; }
+  .hackathon2 .ht2-hero > .ht2-wrap > .grid:first-child { gap: 28px; }
+  .hackathon2 .ht2-hero h1 { font-size: 42px; }
+  .hackathon2 .ht2-title { font-size: 28px; }
+  .hackathon2 .ht2-photo { height: 280px; }
+  .hackathon2 .ht2-event-row { grid-template-columns: 72px minmax(0, 1fr); column-gap: 16px; padding-block: 24px; }
+  .hackathon2 .ht2-event-row > img { width: 72px; height: 72px; align-self: start; }
+  .hackathon2 .ht2-event-row > p { grid-column: 2; }
+  .hackathon2 .ht2-event-row > a { grid-column: 1 / -1; margin-top: 4px; }
+}
 @media(prefers-reduced-motion:reduce) { .hackathon2 .ht2-marquee { animation: none; } .hackathon2 * { scroll-behavior: auto; } }
