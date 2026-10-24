@@ -1,6 +1,6 @@
 # Project Rules
 
-- Keep /hackathon2 in its own editorial presentation with isolated styles and reference content data, leaving /hackathons and shared navigation unchanged so the redesign remains independently reviewable.
+- Keep /hackathon2 in its own editorial presentation with isolated styles and reference content data; use the shared navigation container on every section to keep header alignment consistent, leaving /hackathons and shared navigation unchanged so the redesign remains independently reviewable.
 
 - Keep employer account side navigation and the profile dropdown sourced from one shared menu, with role-specific views in the Pro shell, so labels and destinations stay consistent without changing candidate navigation.
 
