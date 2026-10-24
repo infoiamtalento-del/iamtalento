@@ -3,7 +3,7 @@
   --secondary: var(--job-tint);
   --secondary-foreground: var(--foreground);
   --accent: var(--job-tint);
-  --border: var(--job-border);
+  --border: var(--job-tint);
   background: hsl(var(--card));
   letter-spacing: 0;
 }
