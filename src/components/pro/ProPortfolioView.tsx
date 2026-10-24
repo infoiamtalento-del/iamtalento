@@ -209,7 +209,7 @@ const stripProto = (u: string) => u.replace(/^https?:\/\//, "");
 type PortfolioProject = { t: string; l?: string; d?: string; s?: string; m?: string };
 
 const SAMPLE_PROJECTS: PortfolioProject[] = [
-  { t: "OpenUI Component Library", l: "github.com/vignesh/openui", d: "Tree-shakeable, WCAG AA compliant headless UI system.", s: "React, TypeScript, Tailwind CSS", m: "1.2k GitHub stars" },
+  { t: "OpenUI Component Library", l: "github.com/yogesh/openui", d: "Tree-shakeable, WCAG AA compliant headless UI system.", s: "React, TypeScript, Tailwind CSS", m: "1.2k GitHub stars" },
   { t: "Pulse Health Tracker", l: "pulse-demo.app", d: "Realtime health tracking PWA built with Next.js and WebSockets.", s: "Next.js, IndexedDB, WebSockets", m: "99.9% uptime" },
 ];
 

@@ -1678,7 +1678,7 @@
      nt: 15,
     },
    ];
-   let users = ld("users", []), apps = ld("apps", []), sess = ld("sess", null); if (!sess) { sess = "cand@demo.com"; if (!users.some(function(u){ return u.email === sess; })) { users.push({ email: sess, pw: "demo", role: "candidate", name: "Vignesh", exp: 3, sk: ["React", "TypeScript", "SQL"], ce: ["Meta Certified Frontend Developer"], as: { React: 88, SQL: 82 } }); } } let dummy_remove = 
+   let users = ld("users", []), apps = ld("apps", []), sess = ld("sess", null); if (!sess) { sess = "cand@demo.com"; if (!users.some(function(u){ return u.email === sess; })) { users.push({ email: sess, pw: "demo", role: "candidate", name: "Yogesh", exp: 3, sk: ["React", "TypeScript", "SQL"], ce: ["Meta Certified Frontend Developer"], as: { React: 88, SQL: 82 } }); } } let dummy_remove = 
     apps = ld("apps", []),
     sess = ld("sess", null),
     view = "jobs",
@@ -1703,9 +1703,9 @@
     sz: [],
    });
    let F = defF();
-   users.forEach((x) => { if (x.name === "Demo Candidate") x.name = "Vignesh"; if (x.name === "Demo Company") x.name = "Super30"; });
+   users.forEach((x) => { if (x.name === "Demo Candidate" || x.name === "Vignesh") x.name = "Yogesh"; if (x.name === "Demo Company") x.name = "Super30"; });
    (jobs || []).forEach((j) => { if (j.c === "Demo Company") j.c = "Super30"; });
-   apps.forEach((a) => { if (a.name === "Demo Candidate") a.name = "Vignesh"; });
+   apps.forEach((a) => { if (a.name === "Demo Candidate" || a.name === "Vignesh") a.name = "Yogesh"; });
    const me = () => users.find((u) => u.email === sess),
     skl = (s) =>
      String(s)
@@ -1785,7 +1785,7 @@
    const cb = (c) => (c.ce || []).map((x) => `<span class="tag" style="margin-right:5px"> ${esc(x)}</span>`).join("");
    function demoCand(em) {
     const t = Date.now(),
-     b = { who: em, name: "Vignesh", exp: 3, sk: ["React", "TypeScript", "SQL"], ce: [], cn: "" };
+     b = { who: em, name: "Yogesh", exp: 3, sk: ["React", "TypeScript", "SQL"], ce: [], cn: "" };
     apps.push(
      { ...b, id: t + 1, jid: 3, st: "Applied", at: t - 20 * 36e5, upd: [] },
      {
@@ -2796,7 +2796,7 @@
 <div class="lr"><label>Password</label>${reg ? "" : '<a href="#" data-a="forgot">Forgot password?</a>'}</div><div class="ip">${ic('<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>')}<input id="pw" type="password" placeholder="••••••••"><button class="eye" data-a="eye">${ic('<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>')}</button></div>
 ${reg && c ? `<div class="two"><div><label>Experience (yrs)</label><div class="ip"><input id="ex" type="number" min="0" value="0"></div></div><div><label>City</label><div class="ip"><input id="ct"></div></div></div><label>Skills</label><div class="ip"><input id="ks" placeholder="React, SQL"></div>` : ""}
 <button class="go" data-a="submit">${reg ? "Create Account" : "Sign In"} ${ic('<path d="M5 12h14M13 6l6 6-6 6"/>')}</button><p class="alt">${reg ? "Already have an account?" : "Don't have an account?"} <a href="#" data-a="tog">${reg ? "Log in" : "Sign Up"}</a></p>
-<div class="row" style="justify-content:center"><button class="btn g s" data-a="demo"> Quick login as ${mode === "candidate" ? "Vignesh" : "Super30"}</button><button class="btn g s" data-a="soc">Google</button><button class="btn g s" data-a="soc">LinkedIn</button></div><p id="err" style="color:var(--pri);font-size:13px;text-align:center"></p></div></div></div>`;
+<div class="row" style="justify-content:center"><button class="btn g s" data-a="demo"> Quick login as ${mode === "candidate" ? "Yogesh" : "Super30"}</button><button class="btn g s" data-a="soc">Google</button><button class="btn g s" data-a="soc">LinkedIn</button></div><p id="err" style="color:var(--pri);font-size:13px;text-align:center"></p></div></div></div>`;
    }
    function side() {
     const chk = (k, L) =>
@@ -3944,7 +3944,7 @@ ${reg && c ? `<div class="two"><div><label>Experience (yrs)</label><div class="i
         email: em,
         pw: "demo",
         role: "candidate",
-        name: "Vignesh",
+        name: "Yogesh",
         exp: 3,
         city: "Bengaluru",
         sk: ["React", "TypeScript", "SQL"],
@@ -3957,7 +3957,7 @@ ${reg && c ? `<div class="two"><div><label>Experience (yrs)</label><div class="i
         ],
         ed: [{ sc: "Anna University", dg: "B.E. Computer Science", yr: "2022" }],
         ce: ["Meta Front-End · Coursera"],
-        pj: [{ t: "JobTracker", l: "github.com/vignesh/jobtracker", d: "React + Supabase job tracker." }],
+        pj: [{ t: "JobTracker", l: "github.com/yogesh/jobtracker", d: "React + Supabase job tracker." }],
         sl: { React: "Expert", TypeScript: "Intermediate", SQL: "Intermediate" },
         pf: { sal: 18, np: 30, wm: "Hybrid", ty: "Full-time", loc: "Bengaluru, Chennai", rl: true },
         st: "Actively looking",

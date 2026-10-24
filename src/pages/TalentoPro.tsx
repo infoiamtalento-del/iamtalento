@@ -77,7 +77,7 @@ const normalizeUsers = (raw: any): Record<string, ProUser> => {
   const mergeUser = (base: ProUser, incoming: any): ProUser => {
     if (!incoming || typeof incoming !== "object") return base;
     const isCand = base.role === "candidate" || incoming.role === "candidate";
-    const name = isCand && (incoming.name === "Arjun Mehta" || !incoming.name) ? base.name : incoming.name;
+    const name = isCand && (incoming.name === "Arjun Mehta" || incoming.name === "Vignesh" || !incoming.name) ? base.name : incoming.name;
     const sk = isCand && base.sk ? [...new Set([...(base.sk || []), ...(incoming.sk || [])])] : incoming.sk || base.sk;
     return {
       ...base,
@@ -380,7 +380,7 @@ const TalentoPro: React.FC = () => {
     setActiveView(role === "employer" ? "cp" : "jobs");
     setEditingCp(false);
     setDrawerState(null);
-    addToast(`Switched account to ${role === "employer" ? "Super30 (Employer)" : "Vignesh (Candidate)"}`);
+    addToast(`Switched account to ${role === "employer" ? "Super30 (Employer)" : "Yogesh (Candidate)"}`);
   };
 
   // User Profile updater

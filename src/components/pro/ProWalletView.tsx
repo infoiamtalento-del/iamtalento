@@ -74,7 +74,7 @@ export const ProWalletView: React.FC<ProWalletViewProps> = ({
   const [saveCard, setSaveCard] = useState(true);
 
   // UPI fields
-  const [upiId, setUpiId] = useState("vignesh@okaxis");
+  const [upiId, setUpiId] = useState("yogesh@okaxis");
 
   // Net banking & wallet
   const [selectedBank, setSelectedBank] = useState("HDFC Bank");
@@ -83,7 +83,7 @@ export const ProWalletView: React.FC<ProWalletViewProps> = ({
   // Saved payment methods
   const [savedMethods, setSavedMethods] = useState<SavedMethod[]>([
     { id: "pm-card-4242", kind: "card", label: "Visa ••4242", sub: "Credit card · expires 08/29", def: true },
-    { id: "pm-upi-okaxis", kind: "upi", label: "vignesh@okaxis", sub: "UPI ID" },
+    { id: "pm-upi-okaxis", kind: "upi", label: "yogesh@okaxis", sub: "UPI ID" },
   ]);
   const [managing, setManaging] = useState(false);
 

@@ -82,6 +82,7 @@ export const CANDIDATE_PHOTOS: Record<string, string> = {
   "Arjun Rao": learnerVikram,
   "Priya Menon": learnerPriya,
   "Ananya Sharma": learnerAnanya,
+  "Yogesh": expertMale3,
   "Vignesh": expertMale3,
   "Nikhil Kumar": expertMale4,
   "Tanvi Gupta": expertFemale4,
