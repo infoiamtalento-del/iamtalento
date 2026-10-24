@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import lindaDashboard from "@/assets/ai-interview-dashboard.jpg.asset.json";
+import lindaDashboardImg from "@/assets/ai-interview-dashboard.jpg";
 import interviewer from "@/assets/webinar-speaker-3.jpg";
 import p3 from "@/assets/speaker-meera.jpg";
 import v1 from "@/assets/mock-interview-1.jpg";
@@ -169,7 +169,7 @@ export const LindaShowcaseSection = () => (
     <div className="container">
       <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
         <motion.div {...reveal} className="overflow-hidden rounded-2xl border border-border bg-card shadow-xl">
-          <img src={lindaDashboard.url} alt="TalentCIR AI interview in progress" className="w-full object-cover" loading="lazy" />
+          <img src={lindaDashboardImg} alt="TalentCIR AI interview in progress" className="w-full object-cover" loading="lazy" />
         </motion.div>
         <div>
           <motion.div {...reveal}>
