@@ -38,7 +38,7 @@ const companies = ['Google', 'Microsoft', 'Amazon', 'Flipkart', 'Infosys', 'TCS'
 const logos = ['google', 'microsoft', 'amazon', 'flipkart', 'infosys', 'tcs', 'razorpay', 'swiggy', 'atlassian'];
 
 function Heading({ eyebrow, first, second, description }: { eyebrow: string; first: string; second?: string; description?: string }) {
-  return <div className="mb-9"><span className="ht2-eyebrow">{eyebrow}</span><h2 className="ht2-title">{first}{second && <><br /><span className="text-primary">{second}</span></>}</h2>{description && <p className="ht2-copy">{description}</p>}</div>;
+  return <div className="ht2-heading"><span className="ht2-eyebrow">{eyebrow}</span><h2 className="ht2-title">{first}{second && <><br /><span className="text-primary">{second}</span></>}</h2>{description && <p className="ht2-copy">{description}</p>}</div>;
 }
 function Register({ label = 'Register Now', event, outline = false }: { label?: string; event?: string; outline?: boolean }) {
   return <Button asChild variant={outline ? 'outline' : 'default'} className="rounded-full gap-2"><Link to={`/auth?${new URLSearchParams({ mode: 'signup', ...(event ? { event } : {}) })}`}>{label}<ArrowRight className="h-4 w-4" /></Link></Button>;
