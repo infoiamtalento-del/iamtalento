@@ -5,11 +5,11 @@
 .hackathon2 .ht2-eyebrow { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 14px; color: hsl(var(--primary)); }
 .hackathon2 .ht2-title { font-size: 36px; line-height: 1.16; font-weight: 700; }
 .hackathon2 .ht2-copy { margin-top: 16px; max-width: 620px; font-size: 15px; line-height: 1.8; color: hsl(var(--muted-foreground)); }
-.hackathon2 .ht2-surface { background-color: hsl(var(--card)) !important; }
-.hackathon2 .ht2-tint { background-color: hsl(var(--hackathon-tint)) !important; }
-.hackathon2 .ht2-lime { background-color: hsl(var(--hackathon-lime)) !important; }
-.hackathon2 .ht2-dark { background-color: hsl(var(--primary)) !important; color: hsl(var(--hackathon-on-dark)); }
-.hackathon2 .ht2-forest { background-color: hsl(var(--hackathon-forest)) !important; color: hsl(var(--hackathon-on-dark)); }
+#root .hackathon2 .ht2-surface { background-color: hsl(var(--card)) !important; }
+#root .hackathon2 .ht2-tint { background-color: hsl(var(--hackathon-tint)) !important; }
+#root .hackathon2 .ht2-lime { background-color: hsl(var(--hackathon-lime)) !important; }
+#root .hackathon2 .ht2-dark { background-color: hsl(var(--primary)) !important; color: hsl(var(--hackathon-on-dark)); }
+#root .hackathon2 .ht2-forest { background-color: hsl(var(--hackathon-forest)) !important; color: hsl(var(--hackathon-on-dark)); }
 .hackathon2 .ht2-dark h2,.hackathon2 .ht2-dark h3,.hackathon2 .ht2-forest h2 { color: hsl(var(--hackathon-on-dark)); }
 .hackathon2 .ht2-dark .ht2-copy,.hackathon2 .ht2-forest .ht2-copy { color: hsl(var(--hackathon-on-dark) / .75); }
 .hackathon2 .ht2-dark .ht2-eyebrow,.hackathon2 .ht2-forest .ht2-eyebrow { color: hsl(var(--hackathon-on-dark) / .65); }
