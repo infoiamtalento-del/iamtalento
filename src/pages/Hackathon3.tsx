@@ -12,6 +12,7 @@ import recruiter from '@/assets/employer-recruiter.jpg';
 import team from '@/assets/employer-team.jpg';
 import './hackathon2.css';
 import FeaturedEventCard from '@/components/landing/FeaturedEventCard';
+import WinnersHallOfFame from '@/components/hackathon/WinnersHallOfFame';
 
 const trust = ['Industry-Sponsored Challenges', 'Multiple Industry Domains', 'Metropolitan City Events', 'National Media Recognition', 'Exclusive Talent Discovery', 'Employer Hiring Opportunities'];
 const heroPrizes = [
@@ -65,11 +66,6 @@ const sponsorPerks = [
   { icon: Users, title: 'Engage Future Professionals', text: 'Interact with emerging talent, participate in judging, and explore suitable candidates for open roles.' },
 ];
 const employerBenefits = ['Discover hackathon winners and high-performing participants.', 'Access candidate profiles with skills, portfolios, and competition credentials.', 'Filter talent by industry, role, skill set, location, and experience.', 'Shortlist candidates and initiate interview requests.', 'Submit hiring offers through the Talent Auction marketplace.', 'Track candidate engagement and recruitment progress.'];
-const winners = [
-  { image: event1, award: 'Champion', title: 'AI & Data Science', meta: 'Bengaluru · 2026' },
-  { image: event2, award: 'Runner-Up', title: 'Finance & FinTech', meta: 'Mumbai · 2026' },
-  { image: hero, award: 'Champion', title: 'Digital Marketing & Growth', meta: 'Delhi · 2026' },
-];
 const judgeProfile = ['Name, role, and company', 'Area of expertise', 'Industry experience', 'Hackathons or challenges evaluated'];
 const faqs = [
   ['Who can participate in TalentCIR Hackathons?', 'Students, graduates and working professionals can participate, subject to the eligibility criteria listed on each hackathon.'],
@@ -147,6 +143,8 @@ export default function Hackathon3() {
     {/* Featured event */}
     <section id="ht3-feature" className="ht2-band scroll-mt-24"><div className="container ht2-wrap"><Heading eyebrow="Featured Event" first="Code Arena · Season 4" second="Registration Is Open." description="India's flagship industry hackathon returns with tougher challenges, bigger prizes and a national stage. Free entry, real business problems, and a direct line to hiring partners." /><FeaturedEventCard monoAccents registerTo="/auth?mode=signup" /></div></section>
 
+    <section id="ht3-fame" className="ht2-band ht2-surface scroll-mt-24"><div className="container ht2-wrap"><Heading eyebrow="Winners Hall of Fame" first="Meet the Talent" second="That Stood Out." description="Celebrate exceptional performers who turned their skills into recognised achievements." /><WinnersHallOfFame /></div></section>
+
 
     {/* 5. Upcoming */}
     <section id="ht3-upcoming" className="ht2-band ht2-soft scroll-mt-24"><div className="container ht2-wrap"><Heading eyebrow="Upcoming hackathons" first="Your Next Big Opportunity" second="Starts Here." description="Find an upcoming competition, explore its challenges, and register to showcase your skills." /><div className="border-t border-border">{events.map((event, index) => <div key={event.name} className="ht2-event-row ht2-line grid items-center py-6"><img src={[hero, event2, event1][index]} alt="" className="h-[100px] rounded-md object-cover" loading="lazy" /><div><p className="text-xs font-semibold uppercase text-primary">{event.deadline}</p><h3 className="mt-1 text-xl font-bold">{event.name}</h3><p className="mt-1 text-sm text-muted-foreground">{event.industry} · {event.city} · {event.format}</p></div><p><span className="block text-xs text-muted-foreground">Champion prize</span><span className="font-bold">{event.prize}</span></p><Cta label="View Details" to={`/auth?${new URLSearchParams({ mode: 'signup', event: event.name })}`} outline /></div>)}</div></div></section>
@@ -166,7 +164,6 @@ export default function Hackathon3() {
     <section className="ht2-band ht2-tint"><div className="container ht2-wrap"><div className="ht2-feature-grid grid items-center md:grid-cols-2"><div><span className="ht2-eyebrow">For employers & recruiters</span><h2 className="ht2-title">Hire Proven Performers,<br /><span className="text-primary">Not Just Resumes.</span></h2><p className="ht2-copy">TalentCIR gives employers a new way to discover talent through demonstrated performance, industry challenges, and verified achievements.</p><ul className="mt-6 space-y-3">{employerBenefits.map(item => <li key={item} className="flex gap-3 text-sm"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{item}</li>)}</ul><div className="mt-7 flex flex-wrap gap-3"><Cta label="Start Hiring with TalentCIR" to="/for-employers" /><Cta label="Explore Employer Plans" to="/pricing?tab=employers" outline /></div></div><img src={hero} alt="Employers reviewing hackathon submissions" className="ht2-photo" loading="lazy" /></div></div></section>
 
     {/* 12. Hall of Fame */}
-    <section id="ht3-fame" className="ht2-band ht2-surface scroll-mt-24"><div className="container ht2-wrap"><Heading eyebrow="Winners hall of fame" first="Meet the Talent" second="That Stood Out." description="Celebrate exceptional performers who turned their skills into recognised achievements." /><div className="grid gap-6 md:grid-cols-3">{winners.map(winner => <article key={winner.title} className="ht2-tint overflow-hidden rounded-md"><img src={winner.image} alt={`${winner.title} hackathon winners`} className="h-56 w-full object-cover" loading="lazy" /><div className="p-6"><p className="flex items-center gap-2 text-xs font-semibold uppercase text-primary"><Award className="h-4 w-4" />{winner.award}</p><h3 className="mt-2 text-lg font-bold">{winner.title}</h3><p className="mt-1 text-sm text-muted-foreground">{winner.meta}</p></div></article>)}</div><div className="mt-8"><Cta label="View All Winners" outline /></div></div></section>
 
     {/* 13. Judges */}
     <section className="ht2-band ht2-tint"><div className="container ht2-wrap grid items-center gap-10 md:grid-cols-2"><div><span className="ht2-eyebrow">Hackathon judges & industry experts</span><h2 className="ht2-title">Evaluated by People Who<br /><span className="text-primary">Understand the Industry.</span></h2><p className="ht2-copy">Industry leaders, experienced professionals, technical specialists, and subject-matter experts evaluate every performance using transparent, challenge-specific criteria.</p><div className="mt-7"><Cta label="Become a Judge" to="/contact" /></div></div><div className="ht2-surface rounded-md p-8"><Gavel className="h-9 w-9 text-primary" /><h3 className="mt-5 text-lg font-bold">Every judge profile shows</h3><ul className="mt-5 space-y-3">{judgeProfile.map(item => <li key={item} className="flex items-center gap-3 text-sm"><BarChart3 className="h-4 w-4 shrink-0 text-primary" />{item}</li>)}</ul></div></div></section>
