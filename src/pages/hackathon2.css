@@ -63,3 +63,21 @@
   .hackathon2 .ht2-event-row > a { grid-column: 1 / -1; margin-top: 4px; }
 }
 @media(prefers-reduced-motion:reduce) { .hackathon2 .ht2-marquee { animation: none; } .hackathon2 * { scroll-behavior: auto; } }
+/* Hackathon3 hero: second headline line sits on one line with the brand-blue
+   phrase inline. */
+.hackathon2 .ht3-hero-copy h1 .ht3-hl2 { display: block; }
+.hackathon2 .ht3-hero-copy h1 .ht3-hl2-accent { color: hsl(var(--primary)); }
+
+/* Hackathon3 hiring partners: single-row continuous logo carousel. */
+.hackathon2 .ht3-logo-strip { position: relative; overflow: hidden; margin-top: 40px; padding-block: 6px; }
+.hackathon2 .ht3-logo-marquee { gap: 56px; animation-duration: 35s; }
+.hackathon2 .ht3-logo-strip:hover .ht2-marquee { animation-play-state: paused; }
+.hackathon2 .ht3-logo { flex: 0 0 auto; height: 40px; width: auto; max-width: 170px; object-fit: contain; }
+.hackathon2 .ht3-logo-fade { position: absolute; top: 0; bottom: 0; width: 96px; z-index: 2; pointer-events: none; }
+.hackathon2 .ht3-logo-fade-left { left: 0; background: linear-gradient(to right, hsl(var(--cream)), transparent); }
+.hackathon2 .ht3-logo-fade-right { right: 0; background: linear-gradient(to left, hsl(var(--cream)), transparent); }
+@media (max-width: 767px) {
+  .hackathon2 .ht3-logo { height: 30px; max-width: 120px; }
+  .hackathon2 .ht3-logo-marquee { gap: 36px; }
+  .hackathon2 .ht3-logo-fade { width: 56px; }
+}
