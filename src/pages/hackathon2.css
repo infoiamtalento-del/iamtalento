@@ -73,3 +73,10 @@
   .hackathon2 .ht3-logo { height: 30px; max-width: 120px; }
   .hackathon2 .ht3-logo-marquee { gap: 36px; }
 }
+/* Hackathon3 hiring partners: faded ends on the continuous logo row. */
+.hackathon2 .ht3-logo-fade { position: absolute; top: 0; bottom: 0; width: 160px; z-index: 2; pointer-events: none; }
+.hackathon2 .ht3-logo-fade-left { left: 0; background: linear-gradient(to right, hsl(var(--cream)) 0%, hsl(var(--cream)) 30%, transparent 100%); }
+.hackathon2 .ht3-logo-fade-right { right: 0; background: linear-gradient(to left, hsl(var(--cream)) 0%, hsl(var(--cream)) 30%, transparent 100%); }
+@media (max-width: 767px) {
+  .hackathon2 .ht3-logo-fade { width: 64px; }
+}
