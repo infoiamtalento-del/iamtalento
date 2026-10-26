@@ -359,3 +359,9 @@
 
 ## Hackathon3 — remove employer and judge sections
 - Delete the "Hire Proven Performers, Not Just Resumes." and "Evaluated by People Who Understand the Industry." sections — done; both headings absent from the live page, unused employerBenefits/judgeProfile data and the BarChart3 icon removed, sponsors and FAQ sections still render, no horizontal overflow, build OK.
+
+## Hackathon3 — upcoming event dates
+- Add date and time to each card in "Your Next Big Opportunity Starts Here." — done; every row now shows a calendar-icon date and a clock-icon time under the industry/city/format line, three rows verified in the browser with no horizontal overflow and build OK. Dates and times are assistant placeholders awaiting the real schedule.
+
+## Hackathon3 — winners filter box colours
+- Make the text inside the navy filter box white and the dropdown fields clean white — done; the five labels now render at full white (was 70% opacity), the five fields are solid white with dark text, and Reset is a solid white pill with navy text instead of a faded grey one; verified in the browser (label colour rgb(255,255,255) at opacity 1, fields rgb(255,255,255), Reset opacity 1), no horizontal overflow, no page errors, build OK.

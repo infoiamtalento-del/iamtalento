@@ -35,22 +35,21 @@ export default function WinnersHallOfFame({ ctaTo = '/auth?mode=signup' }: { cta
   const list = useMemo(() => winners.filter(w =>
     (!f.industry || w.industry === f.industry) && (!f.city || w.city === f.city) && (!f.year || w.year === f.year) &&
     (!f.award || w.award === f.award) && (!f.skill || w.skills.includes(f.skill))), [f]);
-  const active = Object.values(f).some(Boolean);
 
   return (
     <div>
       <div className="ht2-dark mt-2 mb-10 grid gap-4 rounded-xl p-6 sm:grid-cols-2 lg:grid-cols-6">
         {filterKeys.map(({ key, label }) => (
-          <label key={key} className="flex flex-col gap-1.5 text-[11px] font-semibold uppercase tracking-wider opacity-70">
+          <label key={key} className="flex flex-col gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-white">
             {label}
             <select value={f[key]} onChange={e => setF({ ...f, [key]: e.target.value })} aria-label={label}
-              className="h-11 rounded-md border border-border/50 bg-card px-3 text-sm font-medium normal-case tracking-normal text-foreground">
+              className="h-11 rounded-md border border-white/25 bg-white px-3 text-sm font-medium normal-case tracking-normal text-foreground">
               <option value="">All</option>
               {options(key).map(o => <option key={o} value={o}>{o}</option>)}
             </select>
           </label>
         ))}
-        <Button variant="outline" className="self-end rounded-full border-primary/20 bg-card text-primary" disabled={!active} onClick={() => setF(empty)}>
+        <Button variant="outline" className="self-end rounded-full border-white/30 bg-white text-primary hover:bg-white/90" onClick={() => setF(empty)}>
           <RotateCcw className="h-4 w-4" />Reset
         </Button>
       </div>
