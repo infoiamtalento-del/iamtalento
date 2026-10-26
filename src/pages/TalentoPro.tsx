@@ -21,6 +21,7 @@ import { getCandidatePhoto } from "@/data/portalAssets";
 import { ProView, ProDrawerState } from "@/components/pro/proTypes";
 import Navbar from "@/components/layout/Navbar";
 import { ProEmployerSidebar } from "@/components/pro/ProEmployerSidebar";
+import { ProEmployeeServices } from "@/components/pro/ProEmployeeServices";
 import { ProJobsView } from "@/components/pro/ProJobsView";
 import { ProJobDetail } from "@/components/pro/ProJobDetail";
 import { ProProfileView } from "@/components/pro/ProProfileView";
@@ -229,25 +230,29 @@ const TalentoPro: React.FC = () => {
   const candidateViews: ProView[] = [
     "account",
     "dash",
+    "profile",
+    "cert",
+    "learning-mentors",
+    "freelancing",
+    "port",
+    "resume",
+    "events-community",
+    "notif",
+    "analytics",
+    "payment-history",
+    "support",
     "cp",
     "post",
     "pipe",
     "employer-assessments",
-    "notif",
     "advertise",
     "corporate-learning",
-    "payment-history",
-    "support",
     "jobs",
     "saved",
-    "profile",
     "applied",
     "upd",
     "disc",
-    "resume",
-    "cert",
     "wallet",
-    "port",
     "ver",
   ];
 
@@ -698,6 +703,7 @@ const TalentoPro: React.FC = () => {
             unreadCount={unreadCount}
             userName={currentUser.name}
             userRole={currentRole === "employer" ? "Employer Workspace" : "Employee Workspace"}
+            isEmployer={currentRole === "employer"}
             onNavigate={(view) => {
               setDrawerState(null);
               setSearchParams({ view });
@@ -982,6 +988,22 @@ const TalentoPro: React.FC = () => {
                 onNavigate={(v) => setActiveView(v)}
                 onUpdateUser={handleUpdateUser}
                 onOpenDrawer={openDrawer}
+                onToast={addToast}
+              />
+            )}
+
+            {(effectiveView === "learning-mentors" ||
+              effectiveView === "freelancing" ||
+              effectiveView === "events-community" ||
+              effectiveView === "analytics") && (
+              <ProEmployeeServices
+                view={effectiveView}
+                userName={currentUser.name}
+                onNavigate={(v) => {
+                  setSearchParams({ view: v });
+                  setActiveView(v);
+                  window.scrollTo({ top: 0 });
+                }}
                 onToast={addToast}
               />
             )}

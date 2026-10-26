@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { employerMenuItems, employerLogoutIcon as LogoutIcon } from "./employerMenu";
+import { employerMenuItems, employeeMenuItems, employerLogoutIcon as LogoutIcon } from "./employerMenu";
 import type { ProView } from "./proTypes";
 import { LayoutDashboard } from "lucide-react";
 
@@ -11,6 +11,7 @@ interface Props {
   unreadCount: number;
   userName?: string;
   userRole?: string;
+  isEmployer?: boolean;
 }
 
 export function ProEmployerSidebar({
@@ -20,7 +21,10 @@ export function ProEmployerSidebar({
   unreadCount,
   userName,
   userRole = "Workspace",
+  isEmployer = false,
 }: Props) {
+  const menuItems = isEmployer ? employerMenuItems : employeeMenuItems;
+
   return (
     <aside className="w-full lg:w-64 shrink-0">
       <div className="lg:sticky lg:top-24 rounded-2xl border border-border bg-card p-3 shadow-xs">
@@ -43,7 +47,7 @@ export function ProEmployerSidebar({
         </div>
 
         <nav aria-label="Dashboard navigation" className="space-y-1">
-          {employerMenuItems.map(({ id, label, icon: Icon }) => {
+          {menuItems.map(({ id, label, icon: Icon }) => {
             const isActive = activeView === id;
             return (
               <button

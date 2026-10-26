@@ -11,6 +11,10 @@ import {
   Receipt,
   Headphones,
   LogOut,
+  UserCheck,
+  FolderGit2,
+  Calendar,
+  BarChart3,
   type LucideIcon,
 } from "lucide-react";
 import type { ProView } from "./proTypes";
@@ -27,6 +31,22 @@ export const employerMenuItems: EmployerMenuItem[] = [
   { id: "notif", label: "Notifications", icon: Bell },
   { id: "advertise", label: "Advertise & Subscriptions", icon: Megaphone },
   { id: "corporate-learning", label: "Corporate Learning", icon: BookOpen },
+  { id: "payment-history", label: "Payment & Invoices", icon: Receipt },
+  { id: "support", label: "Support Center", icon: Headphones },
+];
+
+export const employeeMenuItems: EmployerMenuItem[] = [
+  { id: "account", label: "My Account", icon: UserRound },
+  { id: "dash", label: "Dashboard", icon: LayoutDashboard },
+  { id: "profile", label: "Candidate Profile", icon: UserCheck },
+  { id: "cert", label: "Assessments", icon: GraduationCap },
+  { id: "learning-mentors", label: "Learning & Mentors", icon: BookOpen },
+  { id: "freelancing", label: "Freelancing", icon: Briefcase },
+  { id: "port", label: "Portfolio", icon: FolderGit2 },
+  { id: "resume", label: "AI Resume Builder", icon: FileText },
+  { id: "events-community", label: "Events & Community", icon: Calendar },
+  { id: "notif", label: "Notifications", icon: Bell },
+  { id: "analytics", label: "Analytics", icon: BarChart3 },
   { id: "payment-history", label: "Payment & Invoices", icon: Receipt },
   { id: "support", label: "Support Center", icon: Headphones },
 ];
