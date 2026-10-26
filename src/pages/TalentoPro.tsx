@@ -43,6 +43,7 @@ import { ProEmployerJobPosting } from "@/components/pro/ProEmployerJobPosting";
 import { ProEmployerPipeline } from "@/components/pro/ProEmployerPipeline";
 import { ProEmployerNotifications } from "@/components/pro/ProEmployerNotifications";
 import { ProEmployerMyAccount } from "@/components/pro/ProEmployerMyAccount";
+import { ProEmployeeMyAccount } from "@/components/pro/ProEmployeeMyAccount";
 import { ProEmployerDemoServices } from "@/components/pro/ProEmployerDemoServices";
 import { ProEmployerCandidateDetail } from "@/components/pro/ProEmployerCandidateDetail";
 import { Button } from "@/components/ui/button";
@@ -694,35 +695,34 @@ const TalentoPro: React.FC = () => {
       />
 
       {/* Main Content View Switcher */}
-      <main className="flex-1 container w-full pt-24 pb-8">
-        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
-          {/* Left Side Dashboard Sidebar */}
-          <ProEmployerSidebar
-            activeView={effectiveView}
-            unreadCount={unreadCount}
-            userName={currentUser.name}
-            userRole={currentRole === "employer" ? "Employer Workspace" : "Employee Workspace"}
-            isEmployer={currentRole === "employer"}
-            onNavigate={(view) => {
-              setDrawerState(null);
-              setSearchParams({ view });
-              setEditingCp(false);
-              setActiveView(view);
-              window.scrollTo({ top: 0 });
-            }}
-            onLogout={() => {
-              localStorage.removeItem("tq_sess");
-              window.location.href = "/auth";
-            }}
-          />
+      <main className="flex-1 w-full min-h-screen pt-16 pb-12 lg:pl-64 xl:pl-72 flex flex-col">
+        {/* Left Side Dashboard Sidebar (Fixed) */}
+        <ProEmployerSidebar
+          activeView={effectiveView}
+          unreadCount={unreadCount}
+          userName={currentUser.name}
+          userRole={currentRole === "employer" ? "Employer Workspace" : "Employee Workspace"}
+          isEmployer={currentRole === "employer"}
+          onNavigate={(view) => {
+            setDrawerState(null);
+            setSearchParams({ view });
+            setEditingCp(false);
+            setActiveView(view);
+            window.scrollTo({ top: 0 });
+          }}
+          onLogout={() => {
+            localStorage.removeItem("tq_sess");
+            window.location.href = "/auth";
+          }}
+        />
 
-          <div className="min-w-0 flex-1 w-full">
-            <div className="mb-6 flex flex-wrap items-center gap-4 border-b border-border pb-4">
-              <div className="mr-auto">
-                <p className="text-sm font-semibold text-primary">Workspace · {currentUser.name}</p>
-                <p className="mt-0.5 text-xs text-muted-foreground">Real-time pipeline &amp; dashboard</p>
-              </div>
+        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 py-6 min-w-0 flex-1">
+          <div className="mb-6 flex flex-wrap items-center gap-4 border-b border-border pb-4">
+            <div className="mr-auto">
+              <p className="text-sm font-semibold text-primary">Workspace · {currentUser.name}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">Real-time pipeline &amp; dashboard</p>
             </div>
+          </div>
         {candidatePage ? (selectedApplicant || selectedCandidate ? <ProEmployerCandidateDetail key={JSON.stringify(candidatePage)} application={selectedApplicant} candidate={selectedCandidate} job={jobs.find(j => j.id === (selectedApplicant?.jid || (candidatePage.type === "candidate" ? candidatePage.jobId : undefined)))} onBack={closeCandidate} onToast={addToast} onSave={(id, changes, message, interview) => { setApps(previous => previous.map(a => a.id === id ? { ...a, ...changes, st: interview ? "Interview" : changes.st, iv: interview || a.iv, upd: [...(a.upd || []), ...(a.st !== changes.st ? [{ msg: `Candidate status updated to "${changes.st}".`, at: Date.now() }] : []), ...(message.trim() ? [{ msg: message.trim(), at: Date.now() }] : []), ...(interview ? [{ msg: `Interview round scheduled for ${interview}.`, at: Date.now() }] : [])] } : a)); addToast("Application changes saved. Demo updates only; no message sent."); }} /> : <div className="py-12"><p>Candidate not found in this workspace.</p><Button onClick={closeCandidate} variant="outline" className="mt-4">Back to Candidates</Button></div>) : selectedJob ? <ProJobDetail key={selectedJob.id} job={selectedJob} user={currentUser} jobs={jobs} applications={apps} onBack={() => setDrawerState(null)} onOpenJob={(id) => { setDrawerState({ type: "job", id }); window.scrollTo({ top: 0 }); }} onApply={handleApplyJob} onSave={handleSaveJob} /> : (
         <AnimatePresence mode="wait">
           <motion.div
@@ -734,7 +734,11 @@ const TalentoPro: React.FC = () => {
           >
             {/* WORKSPACE & DASHBOARD VIEWS (ACCESSIBLE TO BOTH EMPLOYEE & EMPLOYER) */}
             {effectiveView === "account" && (
-              <ProEmployerMyAccount user={currentUser} jobs={jobs} applications={apps} onNavigate={setActiveView} />
+              currentRole === "employer" ? (
+                <ProEmployerMyAccount user={currentUser} jobs={jobs} applications={apps} onNavigate={setActiveView} />
+              ) : (
+                <ProEmployeeMyAccount user={currentUser} jobs={jobs} applications={apps} onNavigate={setActiveView} />
+              )
             )}
 
             {effectiveView === "dash" && (
@@ -1002,7 +1006,6 @@ const TalentoPro: React.FC = () => {
           </motion.div>
         </AnimatePresence>
         )}
-        </div>
         </div>
       </main>
 

@@ -226,10 +226,17 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 border-b border-border bg-card shadow-sm transition-all duration-300",
-        scrolled ? "py-3" : "py-4"
+        isProPage ? "h-16 flex items-center py-0" : (scrolled ? "py-3" : "py-4")
       )}
     >
-      <nav className="container flex items-center" aria-label="Main navigation">
+      <nav
+        className={cn(
+          isProPage
+            ? "w-full px-4 sm:px-6 lg:px-8 xl:px-10 flex items-center"
+            : "container flex items-center"
+        )}
+        aria-label="Main navigation"
+      >
         <Link to="/" className="flex items-center gap-2 group mr-auto" aria-label="IAmTalento Home">
           <img src={siteLogo.url} alt="I Am Talento" className="h-10 w-auto object-contain" />
         </Link>
@@ -292,11 +299,13 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
               </Link>
             ) : null}
 
-            <Link to="/employers-page-2">
-              <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 border-0">
-                For Employers
-              </Button>
-            </Link>
+            {!isAuthenticated && (
+              <Link to="/employers-page-2">
+                <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 border-0">
+                  For Employers
+                </Button>
+              </Link>
+            )}
 
             {isAuthenticated && (accountMenu ? accountMenu(handleSignOut) : (
               <div className="flex items-center gap-2">
@@ -482,11 +491,13 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
                   </Button>
                 </Link>
               ) : null}
-              <Link to="/employers-page-2" onClick={() => setMobileOpen(false)}>
-                <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 border-0">
-                  For Employers
-                </Button>
-              </Link>
+              {!isAuthenticated && (
+                <Link to="/employers-page-2" onClick={() => setMobileOpen(false)}>
+                  <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 border-0">
+                    For Employers
+                  </Button>
+                </Link>
+              )}
               {isAuthenticated && !accountMenu && (
                 <div className="space-y-1.5 pt-2 border-t border-border">
                   <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-accent/50">
