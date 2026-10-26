@@ -20,8 +20,8 @@ import {
 import { getCandidatePhoto } from "@/data/portalAssets";
 import { ProView, ProDrawerState } from "@/components/pro/proTypes";
 import Navbar from "@/components/layout/Navbar";
-import { ProCandidateAccountMenu } from "@/components/pro/ProCandidateAccountMenu";
-import { ProEmployerAccountMenu } from "@/components/pro/ProEmployerAccountMenu";
+import { ProEmployerSidebar } from "@/components/pro/ProEmployerSidebar";
+import { ProEmployeeServices } from "@/components/pro/ProEmployeeServices";
 import { ProJobsView } from "@/components/pro/ProJobsView";
 import { ProJobDetail } from "@/components/pro/ProJobDetail";
 import { ProProfileView } from "@/components/pro/ProProfileView";
@@ -46,7 +46,6 @@ import { ProEmployerMyAccount } from "@/components/pro/ProEmployerMyAccount";
 import { ProEmployerDemoServices } from "@/components/pro/ProEmployerDemoServices";
 import { ProEmployerCandidateDetail } from "@/components/pro/ProEmployerCandidateDetail";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { DEMO_EMPLOYER_JOBS, DEMO_EMPLOYER_APPS, INITIAL_EMPLOYER_DEMO, createDemoApplication, type EmployerDemoState } from "@/data/employerDemo";
 
 interface ToastMessage {
@@ -77,7 +76,7 @@ const normalizeUsers = (raw: any): Record<string, ProUser> => {
   const mergeUser = (base: ProUser, incoming: any): ProUser => {
     if (!incoming || typeof incoming !== "object") return base;
     const isCand = base.role === "candidate" || incoming.role === "candidate";
-    const name = isCand && (incoming.name === "Arjun Mehta" || !incoming.name) ? base.name : incoming.name;
+    const name = isCand && (incoming.name === "Arjun Mehta" || incoming.name === "Vignesh" || !incoming.name) ? base.name : incoming.name;
     const sk = isCand && base.sk ? [...new Set([...(base.sk || []), ...(incoming.sk || [])])] : incoming.sk || base.sk;
     return {
       ...base,
@@ -228,46 +227,60 @@ const TalentoPro: React.FC = () => {
 
   // Effective view validation so invalid/mismatched view never renders blank
   const candidateViews: ProView[] = [
+    "account",
+    "dash",
+    "profile",
+    "cert",
+    "learning-mentors",
+    "freelancing",
+    "port",
+    "resume",
+    "events-community",
+    "notif",
+    "analytics",
+    "payment-history",
+    "support",
+    "cp",
+    "post",
+    "pipe",
+    "employer-assessments",
+    "advertise",
+    "corporate-learning",
     "jobs",
     "saved",
-    "profile",
-    "dash",
     "applied",
     "upd",
     "disc",
-    "resume",
-    "cert",
     "wallet",
-    "port",
     "ver",
-    "support",
   ];
 
   const employerViews: ProView[] = [
+    "account",
     "dash",
-    "pipe",
-    "talent",
-    "post",
     "cp",
+    "post",
+    "pipe",
+    "employer-assessments",
     "notif",
+    "advertise",
+    "corporate-learning",
+    "payment-history",
+    "support",
+    "talent",
+    "interviews",
+    "subscription",
+    "settings",
     "wallet",
     "port",
     "ver",
-    "account",
-    "employer-assessments",
-    "interviews",
-    "advertise",
-    "subscription",
-    "payment-history",
-    "settings",
-    "support",
   ];
 
   const effectiveView: ProView = useMemo(() => {
     if (currentRole === "employer") {
-      return employerViews.includes(activeView) ? activeView : "cp";
+      return employerViews.includes(activeView) ? activeView : "account";
     }
-    return candidateViews.includes(activeView) ? activeView : "jobs";
+    return candidateViews.includes(activeView) ? activeView : "account";
   }, [currentRole, activeView]);
 
   // Drawer & Comparison States
@@ -380,7 +393,7 @@ const TalentoPro: React.FC = () => {
     setActiveView(role === "employer" ? "cp" : "jobs");
     setEditingCp(false);
     setDrawerState(null);
-    addToast(`Switched account to ${role === "employer" ? "Super30 (Employer)" : "Vignesh (Candidate)"}`);
+    addToast(`Switched account to ${role === "employer" ? "Super30 (Employer)" : "Yogesh (Candidate)"}`);
   };
 
   // User Profile updater
@@ -664,33 +677,52 @@ const TalentoPro: React.FC = () => {
           role: currentRole,
         }}
         onSignOut={() => localStorage.removeItem("tq_sess")}
-        accountMenu={currentRole === "candidate" ? (onSignOut) => (
-          <ProCandidateAccountMenu
-            name={currentUser.name}
-            avatarSrc={getCandidatePhoto(currentUser.name)}
-            activeView={effectiveView}
-            unreadCount={unreadCount}
-            isDarkMode={isDarkMode}
-            onNavigate={(view) => { setDrawerState(null); setActiveView(view); window.scrollTo({ top: 0 }); }}
-            onCertificate={() => setDrawerState({ type: "certificate", key: "overall" })}
-            onToggleTheme={() => setIsDarkMode((value) => !value)}
-            onSignOut={onSignOut}
-          />
-        ) : (onSignOut) => (
-          <ProEmployerAccountMenu
-            name={currentUser.name}
-            activeView={effectiveView}
-            unreadCount={unreadCount}
-            onNavigate={(view) => { setDrawerState(null); setSearchParams({ view }); setEditingCp(false); setActiveView(view); window.scrollTo({ top: 0 }); }}
-            onSignOut={onSignOut}
-          />
+        accountMenu={() => (
+          <div className="flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full border border-border bg-card shadow-2xs select-none">
+            <div className="h-7 w-7 rounded-full bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center shrink-0 overflow-hidden">
+              {getCandidatePhoto(currentUser.name) ? (
+                <img src={getCandidatePhoto(currentUser.name)} alt={currentUser.name} className="h-full w-full object-cover" />
+              ) : (
+                (currentUser.name?.charAt(0) || "U").toUpperCase()
+              )}
+            </div>
+            <span className="text-xs font-bold text-foreground max-w-[110px] truncate">
+              {currentUser.name}
+            </span>
+          </div>
         )}
       />
 
       {/* Main Content View Switcher */}
       <main className="flex-1 container w-full pt-24 pb-8">
-        {currentRole === "employer" && <div className="mb-6 flex flex-wrap items-center gap-4 border-b border-border pb-4"><div className="mr-auto"><p className="text-sm font-semibold text-primary">Demo workspace · Sample data</p><p className="mt-1 text-xs text-muted-foreground">Simulated activity only. No real messages, AI sessions or charges.</p></div><label className="flex items-center gap-2 text-xs"><Switch aria-label="Simulate live activity" checked={simulateLive} onCheckedChange={setSimulateLive} />Simulate live activity</label><Button size="sm" variant="outline" onClick={simulateApplication}>Simulate new application</Button></div>}
-        <div className="min-w-0 flex-1">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+          {/* Left Side Dashboard Sidebar */}
+          <ProEmployerSidebar
+            activeView={effectiveView}
+            unreadCount={unreadCount}
+            userName={currentUser.name}
+            userRole={currentRole === "employer" ? "Employer Workspace" : "Employee Workspace"}
+            isEmployer={currentRole === "employer"}
+            onNavigate={(view) => {
+              setDrawerState(null);
+              setSearchParams({ view });
+              setEditingCp(false);
+              setActiveView(view);
+              window.scrollTo({ top: 0 });
+            }}
+            onLogout={() => {
+              localStorage.removeItem("tq_sess");
+              window.location.href = "/auth";
+            }}
+          />
+
+          <div className="min-w-0 flex-1 w-full">
+            <div className="mb-6 flex flex-wrap items-center gap-4 border-b border-border pb-4">
+              <div className="mr-auto">
+                <p className="text-sm font-semibold text-primary">Workspace · {currentUser.name}</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">Real-time pipeline &amp; dashboard</p>
+              </div>
+            </div>
         {candidatePage ? (selectedApplicant || selectedCandidate ? <ProEmployerCandidateDetail key={JSON.stringify(candidatePage)} application={selectedApplicant} candidate={selectedCandidate} job={jobs.find(j => j.id === (selectedApplicant?.jid || (candidatePage.type === "candidate" ? candidatePage.jobId : undefined)))} onBack={closeCandidate} onToast={addToast} onSave={(id, changes, message, interview) => { setApps(previous => previous.map(a => a.id === id ? { ...a, ...changes, st: interview ? "Interview" : changes.st, iv: interview || a.iv, upd: [...(a.upd || []), ...(a.st !== changes.st ? [{ msg: `Candidate status updated to "${changes.st}".`, at: Date.now() }] : []), ...(message.trim() ? [{ msg: message.trim(), at: Date.now() }] : []), ...(interview ? [{ msg: `Interview round scheduled for ${interview}.`, at: Date.now() }] : [])] } : a)); addToast("Application changes saved. Demo updates only; no message sent."); }} /> : <div className="py-12"><p>Candidate not found in this workspace.</p><Button onClick={closeCandidate} variant="outline" className="mt-4">Back to Candidates</Button></div>) : selectedJob ? <ProJobDetail key={selectedJob.id} job={selectedJob} user={currentUser} jobs={jobs} applications={apps} onBack={() => setDrawerState(null)} onOpenJob={(id) => { setDrawerState({ type: "job", id }); window.scrollTo({ top: 0 }); }} onApply={handleApplyJob} onSave={handleSaveJob} /> : (
         <AnimatePresence mode="wait">
           <motion.div
@@ -700,272 +732,277 @@ const TalentoPro: React.FC = () => {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
           >
-            {/* CANDIDATE VIEWS */}
-            {currentRole === "candidate" && (
-              <>
-                {effectiveView === "jobs" && (
-                  <ProJobsView
-                    user={currentUser}
-                    jobs={jobs}
-                    applications={apps}
-                    onOpenJob={(jobId) => setDrawerState({ type: "job", id: jobId })}
-                    onApplyJob={handleApplyJob}
-                    onSaveJob={handleSaveJob}
-                    onCompareToggle={(jobId) => {
-                      setCompareJobs((prev) =>
-                        prev.includes(jobId) ? prev.filter((id) => id !== jobId) : [...prev, jobId]
-                      );
-                    }}
-                    compareSelection={compareJobs}
-                    onOpenCompareDrawer={() => setDrawerState({ type: "compare-jobs" })}
-                    onToast={addToast}
-                  />
-                )}
-
-                {effectiveView === "saved" && (
-                  <ProJobsView
-                    user={currentUser}
-                    jobs={jobs}
-                    applications={apps}
-                    initialOnlySaved={true}
-                    onOpenJob={(jobId) => setDrawerState({ type: "job", id: jobId })}
-                    onApplyJob={handleApplyJob}
-                    onSaveJob={handleSaveJob}
-                    onCompareToggle={(jobId) => {
-                      setCompareJobs((prev) =>
-                        prev.includes(jobId) ? prev.filter((id) => id !== jobId) : [...prev, jobId]
-                      );
-                    }}
-                    compareSelection={compareJobs}
-                    onOpenCompareDrawer={() => setDrawerState({ type: "compare-jobs" })}
-                    onToast={addToast}
-                  />
-                )}
-
-                {effectiveView === "profile" && (
-                  <ProProfileView
-                    user={currentUser}
-                    onSaveProfile={handleUpdateUser}
-                    onToast={addToast}
-                  />
-                )}
-
-                {effectiveView === "dash" && (
-                  <ProDashboardView
-                    user={currentUser}
-                    jobs={jobs}
-                    applications={apps}
-                    onNavigate={(v) => setActiveView(v)}
-                    onOpenDrawer={openDrawer}
-                    onAddSkill={(skill) => {
-                      const currentSkills = currentUser.sk || [];
-                      if (!currentSkills.includes(skill)) {
-                        handleUpdateUser({
-                          ...currentUser,
-                          sk: [...currentSkills, skill],
-                        });
-                        addToast(`Added "${skill}" to your skills!`);
-                      }
-                    }}
-                  />
-                )}
-
-                {effectiveView === "applied" && (
-                  <ProApplicationsView
-                    user={currentUser}
-                    jobs={jobs}
-                    applications={apps}
-                    onWithdrawApplication={handleWithdrawApplication}
-                    onOpenDrawer={openDrawer}
-                  />
-                )}
-
-                {effectiveView === "upd" && (
-                  <ProNotificationsView
-                    user={currentUser}
-                    jobs={jobs}
-                    applications={apps}
-                    onOpenDrawer={openDrawer}
-                    onMarkSeen={() => {
-                      handleUpdateUser({
-                        ...currentUser,
-                        seen: Date.now(),
-                      });
-                    }}
-                  />
-                )}
-
-                {effectiveView === "disc" && (
-                  <ProDiscoverView
-                    user={currentUser}
-                    jobs={jobs}
-                    applications={apps}
-                    onApplyJob={handleApplyJob}
-                    onSaveJob={handleSaveJob}
-                    onToast={addToast}
-                  />
-                )}
-
-                {effectiveView === "resume" && (
-                  <ProResumeBuilderView
-                    user={currentUser}
-                    jobs={jobs}
-                    onSaveUser={handleUpdateUser}
-                    onToast={addToast}
-                  />
-                )}
-
-                {effectiveView === "cert" && (
-                  <ProCertificationsView
-                    user={currentUser}
-                    onAddCertification={(certStr) => {
-                      const current = currentUser.ce || [];
-                      handleUpdateUser({ ...currentUser, ce: [...current, certStr] });
-                      addToast("Certification added to your profile!");
-                    }}
-                    onRemoveCertification={(index) => {
-                      const current = currentUser.ce || [];
-                      handleUpdateUser({ ...currentUser, ce: current.filter((_, i) => i !== index) });
-                      addToast("Certification removed.");
-                    }}
-                    onOpenDrawer={openDrawer}
-                    onNavigateToQuiz={() => { window.location.href = "/assessments/explore"; }}
-                  />
-                )}
-
-                {effectiveView === "wallet" && (
-                  <ProWalletView
-                    user={currentUser}
-                    onUpdateWallet={handleUpdateWallet}
-                    onOpenDrawer={openDrawer}
-                    onToast={addToast}
-                  />
-                )}
-
-                {effectiveView === "port" && (
-                  <ProPortfolioView
-                    user={currentUser}
-                    jobs={jobs}
-                    onOpenDrawer={openDrawer}
-                    onToast={addToast}
-                    onUpdateUser={handleUpdateUser}
-                  />
-                )}
-
-                {effectiveView === "ver" && (
-                  <ProVerifiedView
-                    user={currentUser}
-                    jobs={jobs}
-                    onNavigate={(v) => setActiveView(v)}
-                    onUpdateUser={handleUpdateUser}
-                    onOpenDrawer={openDrawer}
-                    onToast={addToast}
-                  />
-                )}
-
-                {effectiveView === "support" && (
-                  <ProSupportView onToast={addToast} />
-                )}
-              </>
+            {/* WORKSPACE & DASHBOARD VIEWS (ACCESSIBLE TO BOTH EMPLOYEE & EMPLOYER) */}
+            {effectiveView === "account" && (
+              <ProEmployerMyAccount user={currentUser} jobs={jobs} applications={apps} onNavigate={setActiveView} />
             )}
 
-            {/* EMPLOYER VIEWS */}
-            {currentRole === "employer" && (
-              <>
-                {effectiveView === "account" && <ProEmployerMyAccount user={currentUser} jobs={jobs} applications={apps} onNavigate={setActiveView} />}
-                {["employer-assessments", "interviews", "advertise", "subscription", "settings", "payment-history"].includes(effectiveView) && <ProEmployerDemoServices view={effectiveView} user={currentUser} jobs={jobs} applications={apps} state={employerDemo} onChange={(next) => { setEmployerDemo(next); setApps(previous => previous.map(app => { const result = next.assessments.find(r => r.candidate === app.name && r.status === "Completed" && r.score !== undefined); return result ? { ...app, as: { ...app.as, [result.name]: result.score ?? 0 } } : app; })); }} onNavigate={setActiveView} onOpenDrawer={openDrawer} onToast={addToast} onUpdateUser={handleUpdateUser} onSamplePayment={(description) => { handleUpdateWallet(currentUser.wal?.bal || 0, { id: `DEMO-${Date.now()}`, at: Date.now(), type: "debit", amt: 0, desc: description, via: "Simulation", st: "Demo only" }); addToast("Demo plan activated; sample receipt added. No charge."); }} />}
-                {effectiveView === "post" && <ProEmployerJobPosting user={currentUser} onPublishJob={handlePublishJob} onToast={addToast} />}
-                {effectiveView === "pipe" && <ProEmployerPipeline user={currentUser} jobs={jobs} applications={apps} onOpenDrawer={openDrawer} onBulkUpdateStage={handleBulkUpdateStage} onBulkSendReview={handleBulkSendReview} />}
-                {effectiveView === "support" && <ProSupportView onToast={addToast} demoAccount={currentUser.email} />}
-                {effectiveView === "dash" && (
-                  <ProDashboardView
-                    user={currentUser}
-                    jobs={jobs}
-                    applications={apps}
-                    onNavigate={(v) => setActiveView(v)}
-                    onOpenDrawer={openDrawer}
-                    onAddSkill={() => {}}
-                    onDuplicateJob={handleDuplicateJob}
-                    onCloseJob={handleCloseJob}
-                  />
-                )}
+            {effectiveView === "dash" && (
+              <ProDashboardView
+                user={currentUser}
+                jobs={jobs}
+                applications={apps}
+                onNavigate={(v) => setActiveView(v)}
+                onOpenDrawer={openDrawer}
+                onAddSkill={() => {}}
+                onDuplicateJob={handleDuplicateJob}
+                onCloseJob={handleCloseJob}
+              />
+            )}
 
-                {effectiveView === "cp" && !editingCp && (
-                  <ProEmployerProfileView
-                    user={currentUser}
-                    jobs={jobs}
-                    onEdit={() => setEditingCp(true)}
-                    onToast={addToast}
-                    onOpenJob={(id) => setDrawerState({ type: "job", id })}
-                  />
-                )}
+            {effectiveView === "cp" && !editingCp && (
+              <ProEmployerProfileView
+                user={currentUser}
+                jobs={jobs}
+                onEdit={() => setEditingCp(true)}
+                onToast={addToast}
+                onOpenJob={(id) => setDrawerState({ type: "job", id })}
+              />
+            )}
 
-                {(effectiveView === "talent" ||
-                  (effectiveView === "cp" && editingCp)) && (
-                  <ProEmployerViews
-                    view={effectiveView}
-                    user={currentUser}
-                    jobs={jobs}
-                    applications={apps}
-                    onSaveCompanyProfile={(cp) => {
-                      handleUpdateUser({ ...currentUser, cp });
-                      setEditingCp(false);
-                    }}
-                    onPublishJob={handlePublishJob}
-                    onUpdateApplicantStage={handleUpdateApplicantStage}
-                    onBulkUpdateStage={handleBulkUpdateStage}
-                    onBulkSendReview={handleBulkSendReview}
-                    onOpenDrawer={openDrawer}
-                    onToast={addToast}
-                  />
-                )}
+            {(effectiveView === "talent" || (effectiveView === "cp" && editingCp)) && (
+              <ProEmployerViews
+                view={effectiveView}
+                user={currentUser}
+                jobs={jobs}
+                applications={apps}
+                onSaveCompanyProfile={(cp) => {
+                  handleUpdateUser({ ...currentUser, cp });
+                  setEditingCp(false);
+                }}
+                onPublishJob={handlePublishJob}
+                onUpdateApplicantStage={handleUpdateApplicantStage}
+                onBulkUpdateStage={handleBulkUpdateStage}
+                onBulkSendReview={handleBulkSendReview}
+                onOpenDrawer={openDrawer}
+                onToast={addToast}
+              />
+            )}
 
-                {effectiveView === "notif" && (
-                  <ProEmployerNotifications
-                    user={currentUser}
-                    jobs={jobs}
-                    applications={apps}
-                    onOpenDrawer={openDrawer}
-                    onNavigate={setActiveView}
-                    onMarkSeen={() => {
-                      handleUpdateUser({ ...currentUser, seen: Date.now() });
-                    }}
-                  />
-                )}
+            {effectiveView === "post" && (
+              <ProEmployerJobPosting user={currentUser} onPublishJob={handlePublishJob} onToast={addToast} />
+            )}
 
-                {effectiveView === "wallet" && (
-                  <ProWalletView
-                    user={currentUser}
-                    onUpdateWallet={handleUpdateWallet}
-                    onOpenDrawer={openDrawer}
-                    onToast={addToast}
-                  />
-                )}
+            {effectiveView === "pipe" && (
+              <ProEmployerPipeline
+                user={currentUser}
+                jobs={jobs}
+                applications={apps}
+                onOpenDrawer={openDrawer}
+                onBulkUpdateStage={handleBulkUpdateStage}
+                onBulkSendReview={handleBulkSendReview}
+              />
+            )}
 
-                {effectiveView === "port" && (
-                  <ProPortfolioView
-                    user={currentUser}
-                    jobs={jobs}
-                    onOpenDrawer={openDrawer}
-                    onToast={addToast}
-                  />
-                )}
+            {["employer-assessments", "interviews", "advertise", "subscription", "corporate-learning", "settings", "payment-history"].includes(effectiveView) && (
+              <ProEmployerDemoServices
+                view={effectiveView}
+                user={currentUser}
+                jobs={jobs}
+                applications={apps}
+                state={employerDemo}
+                onChange={(next) => {
+                  setEmployerDemo(next);
+                  setApps(previous => previous.map(app => {
+                    const result = next.assessments.find(r => r.candidate === app.name && r.status === "Completed" && r.score !== undefined);
+                    return result ? { ...app, as: { ...app.as, [result.name]: result.score ?? 0 } } : app;
+                  }));
+                }}
+                onNavigate={setActiveView}
+                onOpenDrawer={openDrawer}
+                onToast={addToast}
+                onUpdateUser={handleUpdateUser}
+                onSamplePayment={(description) => {
+                  handleUpdateWallet(currentUser.wal?.bal || 0, {
+                    id: `DEMO-${Date.now()}`,
+                    at: Date.now(),
+                    type: "debit",
+                    amt: 0,
+                    desc: description,
+                    via: "Simulation",
+                    st: "Demo only",
+                  });
+                  addToast("Demo plan activated; sample receipt added. No charge.");
+                }}
+              />
+            )}
 
-                {effectiveView === "ver" && (
-                  <ProVerifiedView
-                    user={currentUser}
-                    jobs={jobs}
-                    onNavigate={(v) => setActiveView(v)}
-                    onUpdateUser={handleUpdateUser}
-                    onOpenDrawer={openDrawer}
-                    onToast={addToast}
-                  />
-                )}
-              </>
+            {effectiveView === "notif" && (
+              <ProEmployerNotifications
+                user={currentUser}
+                jobs={jobs}
+                applications={apps}
+                onOpenDrawer={openDrawer}
+                onNavigate={setActiveView}
+                onMarkSeen={() => {
+                  handleUpdateUser({ ...currentUser, seen: Date.now() });
+                }}
+              />
+            )}
+
+            {effectiveView === "support" && (
+              <ProSupportView onToast={addToast} demoAccount={currentUser.email} />
+            )}
+
+            {effectiveView === "jobs" && (
+              <ProJobsView
+                user={currentUser}
+                jobs={jobs}
+                applications={apps}
+                onOpenJob={(jobId) => setDrawerState({ type: "job", id: jobId })}
+                onApplyJob={handleApplyJob}
+                onSaveJob={handleSaveJob}
+                onCompareToggle={(jobId) => {
+                  setCompareJobs((prev) =>
+                    prev.includes(jobId) ? prev.filter((id) => id !== jobId) : [...prev, jobId]
+                  );
+                }}
+                compareSelection={compareJobs}
+                onOpenCompareDrawer={() => setDrawerState({ type: "compare-jobs" })}
+                onToast={addToast}
+              />
+            )}
+
+            {effectiveView === "saved" && (
+              <ProJobsView
+                user={currentUser}
+                jobs={jobs}
+                applications={apps}
+                initialOnlySaved={true}
+                onOpenJob={(jobId) => setDrawerState({ type: "job", id: jobId })}
+                onApplyJob={handleApplyJob}
+                onSaveJob={handleSaveJob}
+                onCompareToggle={(jobId) => {
+                  setCompareJobs((prev) =>
+                    prev.includes(jobId) ? prev.filter((id) => id !== jobId) : [...prev, jobId]
+                  );
+                }}
+                compareSelection={compareJobs}
+                onOpenCompareDrawer={() => setDrawerState({ type: "compare-jobs" })}
+                onToast={addToast}
+              />
+            )}
+
+            {effectiveView === "profile" && (
+              <ProProfileView
+                user={currentUser}
+                onSaveProfile={handleUpdateUser}
+                onToast={addToast}
+              />
+            )}
+
+            {effectiveView === "applied" && (
+              <ProApplicationsView
+                user={currentUser}
+                jobs={jobs}
+                applications={apps}
+                onWithdrawApplication={handleWithdrawApplication}
+                onOpenDrawer={openDrawer}
+              />
+            )}
+
+            {effectiveView === "upd" && (
+              <ProNotificationsView
+                user={currentUser}
+                jobs={jobs}
+                applications={apps}
+                onOpenDrawer={openDrawer}
+                onMarkSeen={() => {
+                  handleUpdateUser({
+                    ...currentUser,
+                    seen: Date.now(),
+                  });
+                }}
+              />
+            )}
+
+            {effectiveView === "disc" && (
+              <ProDiscoverView
+                user={currentUser}
+                jobs={jobs}
+                applications={apps}
+                onApplyJob={handleApplyJob}
+                onSaveJob={handleSaveJob}
+                onToast={addToast}
+              />
+            )}
+
+            {effectiveView === "resume" && (
+              <ProResumeBuilderView
+                user={currentUser}
+                jobs={jobs}
+                onSaveUser={handleUpdateUser}
+                onToast={addToast}
+              />
+            )}
+
+            {effectiveView === "cert" && (
+              <ProCertificationsView
+                user={currentUser}
+                onAddCertification={(certStr) => {
+                  const current = currentUser.ce || [];
+                  handleUpdateUser({ ...currentUser, ce: [...current, certStr] });
+                  addToast("Certification added to your profile!");
+                }}
+                onRemoveCertification={(index) => {
+                  const current = currentUser.ce || [];
+                  handleUpdateUser({ ...currentUser, ce: current.filter((_, i) => i !== index) });
+                  addToast("Certification removed.");
+                }}
+                onOpenDrawer={openDrawer}
+                onNavigateToQuiz={() => { window.location.href = "/assessments/explore"; }}
+              />
+            )}
+
+            {effectiveView === "wallet" && (
+              <ProWalletView
+                user={currentUser}
+                onUpdateWallet={handleUpdateWallet}
+                onOpenDrawer={openDrawer}
+                onToast={addToast}
+              />
+            )}
+
+            {effectiveView === "port" && (
+              <ProPortfolioView
+                user={currentUser}
+                jobs={jobs}
+                onOpenDrawer={openDrawer}
+                onToast={addToast}
+                onUpdateUser={handleUpdateUser}
+              />
+            )}
+
+            {effectiveView === "ver" && (
+              <ProVerifiedView
+                user={currentUser}
+                jobs={jobs}
+                onNavigate={(v) => setActiveView(v)}
+                onUpdateUser={handleUpdateUser}
+                onOpenDrawer={openDrawer}
+                onToast={addToast}
+              />
+            )}
+
+            {(effectiveView === "learning-mentors" ||
+              effectiveView === "freelancing" ||
+              effectiveView === "events-community" ||
+              effectiveView === "analytics") && (
+              <ProEmployeeServices
+                view={effectiveView}
+                userName={currentUser.name}
+                onNavigate={(v) => {
+                  setSearchParams({ view: v });
+                  setActiveView(v);
+                  window.scrollTo({ top: 0 });
+                }}
+                onToast={addToast}
+              />
             )}
           </motion.div>
         </AnimatePresence>
         )}
+        </div>
         </div>
       </main>
 

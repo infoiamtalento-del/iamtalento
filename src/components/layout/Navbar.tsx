@@ -198,7 +198,7 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
         }
       : isProPage
       ? {
-          name: "Vignesh",
+          name: "Yogesh",
           email: "demo.candidate@talento.app",
           avatarSrc: undefined,
           role: "candidate",

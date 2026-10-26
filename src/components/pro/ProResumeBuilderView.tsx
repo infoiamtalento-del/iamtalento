@@ -135,7 +135,7 @@ export const ProResumeBuilderView: React.FC<ProResumeBuilderViewProps> = ({
     })) || [
       {
         name: "OpenUI Component Library",
-        link: "github.com/vignesh/openui",
+        link: "github.com/yogesh/openui",
         desc: "Tree-shakeable, WCAG AA compliant headless UI system.",
       },
     ],

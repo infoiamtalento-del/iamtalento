@@ -190,7 +190,7 @@ export const DEFAULT_USERS: Record<string, ProUser> = {
   "demo.candidate@talento.app": {
     email: "demo.candidate@talento.app",
     role: "candidate",
-    name: "Vignesh",
+    name: "Yogesh",
     exp: 2.5,
     city: "Bengaluru",
     head: "Frontend Developer · React · 2.5 yrs",
@@ -218,11 +218,11 @@ export const DEFAULT_USERS: Record<string, ProUser> = {
     ],
     ed: [{ sc: "Anna University", dg: "B.E. Computer Science", yr: "2022" }],
     pj: [
-      { t: "JobTracker", l: "github.com/vignesh/jobtracker", d: "A job tracking application to manage applications, interviews and follow-ups in one place." },
-      { t: "E-commerce Analytics Dashboard", l: "github.com/vignesh/ecommerce-analytics", d: "Real-time analytics dashboard for e-commerce business with sales, products and customer insights." },
-      { t: "Lead Management CRM", l: "github.com/vignesh/lead-crm", d: "A lead tracking and pipeline management system with automated follow-ups and notifications." },
+      { t: "JobTracker", l: "github.com/yogesh/jobtracker", d: "A job tracking application to manage applications, interviews and follow-ups in one place." },
+      { t: "E-commerce Analytics Dashboard", l: "github.com/yogesh/ecommerce-analytics", d: "Real-time analytics dashboard for e-commerce business with sales, products and customer insights." },
+      { t: "Lead Management CRM", l: "github.com/yogesh/lead-crm", d: "A lead tracking and pipeline management system with automated follow-ups and notifications." },
     ],
-    links: { li: "linkedin.com/in/vignesh-dev", gh: "github.com/vignesh", pf: "vigneshportfolio.co" },
+    links: { li: "linkedin.com/in/yogesh-dev", gh: "github.com/yogesh", pf: "yogeshportfolio.co" },
     pf: { sal: 22, np: 15, wm: "Remote / Hybrid", ty: "Full-time", loc: "Bengaluru, Hyderabad, Remote", rl: true },
     st: "Open to offers",
     saved: [1, 3, 5],
@@ -230,7 +230,7 @@ export const DEFAULT_USERS: Record<string, ProUser> = {
       bal: 1252,
       hist: [
         { id: "TXN-4001", desc: "Profile boost (7 days)", amt: 99, type: "debit", at: Date.now() - 86400000 * 2, via: "Wallet balance", st: "Success" },
-        { id: "TXN-4002", desc: "Wallet top-up", amt: 500, type: "credit", at: Date.now() - 86400000 * 5, via: "UPI · vignesh@okaxis", st: "Success" },
+        { id: "TXN-4002", desc: "Wallet top-up", amt: 500, type: "credit", at: Date.now() - 86400000 * 5, via: "UPI · yogesh@okaxis", st: "Success" },
         { id: "TXN-4003", desc: "Expert resume review", amt: 149, type: "debit", at: Date.now() - 86400000 * 9, via: "Wallet balance", st: "Success" },
         { id: "TXN-4004", desc: "Wallet top-up", amt: 1000, type: "credit", at: Date.now() - 86400000 * 12, via: "Visa ••4242", st: "Success" },
       ],

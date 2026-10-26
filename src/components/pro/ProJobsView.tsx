@@ -280,7 +280,7 @@ export const ProJobsView: React.FC<ProJobsViewProps> = ({
       });
   }, [jobs, F, user, savedJobIds]);
 
-  const firstName = (user.name || "Vignesh").split(" ")[0];
+  const firstName = (user.name || "Yogesh").split(" ")[0];
   const companyCount = new Set(jobs.map((j) => j.c)).size;
 
   return (
