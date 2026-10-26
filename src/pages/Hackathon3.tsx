@@ -66,8 +66,6 @@ const sponsorPerks = [
   { icon: Target, title: 'Set Real Industry Challenges', text: "Bring business problems to the competition and evaluate the quality of participants' solutions." },
   { icon: Users, title: 'Engage Future Professionals', text: 'Interact with emerging talent, participate in judging, and explore suitable candidates for open roles.' },
 ];
-const employerBenefits = ['Discover hackathon winners and high-performing participants.', 'Access candidate profiles with skills, portfolios, and competition credentials.', 'Filter talent by industry, role, skill set, location, and experience.', 'Shortlist candidates and initiate interview requests.', 'Submit hiring offers through the Talent Auction marketplace.', 'Track candidate engagement and recruitment progress.'];
-const judgeProfile = ['Name, role, and company', 'Area of expertise', 'Industry experience', 'Hackathons or challenges evaluated'];
 const faqs = [
   ['Who can participate in TalentCIR Hackathons?', 'Students, graduates and working professionals can participate, subject to the eligibility criteria listed on each hackathon.'],
   ['Are the hackathons conducted across India?', 'Yes. Competitions are held across metropolitan cities in India, with some events open to online participation.'],
