@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Award, BarChart3, BrainCircuit, Briefcase, CheckCircle2, Code2, Cpu, Eye, Gavel, HeartPulse, Landmark, Megaphone, Newspaper, Search, ShieldCheck, Sparkles, Target, Trophy, Users } from 'lucide-react';
+import { ArrowRight, Award, BarChart3, BrainCircuit, Briefcase, CheckCircle2, Code2, Cpu, Eye, Gavel, HeartPulse, Landmark, Megaphone, Newspaper, Search, Sparkles, Target, Trophy, Users } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
