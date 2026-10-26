@@ -132,7 +132,7 @@ export default function Hackathon3() {
     {/* 2. Hiring partners */}
     <section id="ht3-partners" className="ht2-band scroll-mt-24"><div className="container ht2-wrap">
       <Heading eyebrow="Hiring Partners" first="Top Companies. Big Prizes." second="Real Possibilities." description="Meet the teams behind industry challenges and career opportunities." />
-      <div className="ht3-logo-strip"><div className="ht3-logo-fade ht3-logo-fade-left" /><div className="ht3-logo-fade ht3-logo-fade-right" /><div className="ht2-marquee ht3-logo-marquee">{[...logos, ...logos].map((logo, i) => <img key={`${logo}-${i}`} src={`/company-logos/${logo}.svg`} alt={`${logo} logo`} className="ht3-logo" loading="lazy" />)}</div></div>
+      <div className="ht3-logo-strip"><div className="ht2-marquee ht3-logo-marquee">{[...logos, ...logos].map((logo, i) => <img key={`${logo}-${i}`} src={`/company-logos/${logo}.svg`} alt={`${logo} logo`} className="ht3-logo" loading="lazy" />)}</div></div>
     </div></section>
 
     {/* 3. Why participate */}

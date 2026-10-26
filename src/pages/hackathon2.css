@@ -73,10 +73,9 @@
   .hackathon2 .ht3-logo { height: 30px; max-width: 120px; }
   .hackathon2 .ht3-logo-marquee { gap: 36px; }
 }
-/* Hackathon3 hiring partners: faded ends on the continuous logo row. */
-.hackathon2 .ht3-logo-fade { position: absolute; top: 0; bottom: 0; width: 160px; z-index: 2; pointer-events: none; }
-.hackathon2 .ht3-logo-fade-left { left: 0; background: linear-gradient(to right, hsl(var(--cream)) 0%, hsl(var(--cream)) 30%, transparent 100%); }
-.hackathon2 .ht3-logo-fade-right { right: 0; background: linear-gradient(to left, hsl(var(--cream)) 0%, hsl(var(--cream)) 30%, transparent 100%); }
+/* Hackathon3 hiring partners: faded ends on the continuous logo row.
+   background-image is forced off sitewide (index.css), so the fade is a mask. */
+.hackathon2 .ht3-logo-strip { -webkit-mask-image: linear-gradient(to right, transparent 0, hsl(var(--cream)) 96px, hsl(var(--cream)) calc(100% - 96px), transparent 100%); mask-image: linear-gradient(to right, transparent 0, hsl(var(--cream)) 96px, hsl(var(--cream)) calc(100% - 96px), transparent 100%); -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
 @media (max-width: 767px) {
-  .hackathon2 .ht3-logo-fade { width: 64px; }
+  .hackathon2 .ht3-logo-strip { -webkit-mask-image: linear-gradient(to right, transparent 0, hsl(var(--cream)) 40px, hsl(var(--cream)) calc(100% - 40px), transparent 100%); mask-image: linear-gradient(to right, transparent 0, hsl(var(--cream)) 40px, hsl(var(--cream)) calc(100% - 40px), transparent 100%); }
 }
