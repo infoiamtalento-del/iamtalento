@@ -50,7 +50,7 @@ export default function WinnersHallOfFame({ ctaTo = '/auth?mode=signup' }: { cta
             </select>
           </label>
         ))}
-        <Button variant="outline" className="self-end rounded-full" disabled={!active} onClick={() => setF(empty)}>
+        <Button variant="outline" className="self-end rounded-full border-primary/20 bg-card text-primary" disabled={!active} onClick={() => setF(empty)}>
           <RotateCcw className="h-4 w-4" />Reset
         </Button>
       </div>
