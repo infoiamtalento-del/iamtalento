@@ -175,10 +175,38 @@ export default function Hackathon3() {
     {/* 5. Why participate */}
     <section id="ht3-reasons" className="ht2-band scroll-mt-24"><div className="container ht2-wrap"><Heading eyebrow="Why Join" first="Why Participate in a" second="TalentCIR Hackathon?" description="Six reasons this competition is worth your time, your talent and your energy." /><div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">{whyCards.map(({ icon: Icon, title, sub, text, image }) => <article key={title} className="ht2-surface flex flex-col overflow-hidden rounded-md border border-border/60"><div className="relative"><img src={image} alt={title} className="h-44 w-full object-cover" loading="lazy" /><span className="absolute -bottom-5 left-6 flex h-11 w-11 items-center justify-center rounded-md border-4 border-card bg-primary/10 text-primary"><Icon className="h-5 w-5" /></span></div><div className="px-6 pb-6 pt-9"><h3 className="text-lg font-bold">{title}</h3><p className="mt-1 text-sm font-semibold text-primary">{sub}</p><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text}</p></div></article>)}</div></div></section>
 
-    {/* 6. Prize & rewards */}
+    {/* 6. Featured event */}
+    <section id="ht3-featured" className="ht2-band scroll-mt-24"><div className="container ht2-wrap">
+      <div className="ht2-dark grid items-center gap-10 rounded-md p-8 md:grid-cols-[1.05fr_.95fr] md:p-10">
+        <div>
+          <div className="flex flex-wrap gap-3">
+            <span className="flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold uppercase tracking-wide" style={{ background: 'hsl(var(--hackathon-on-dark) / .14)' }}><span className="h-2 w-2 rounded-full bg-current" />Registration Live</span>
+            <span className="flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold" style={{ background: 'hsl(var(--hackathon-on-dark) / .14)' }}><Flame className="h-3.5 w-3.5" />Free Entry</span>
+          </div>
+          <h2 className="ht2-title mt-6">Code Arena · Season 4</h2>
+          <p className="ht2-copy">Build AI-powered tools that solve real hiring, skilling, and workforce challenges. Ship something that matters.</p>
+          <div className="mt-6 flex flex-wrap gap-3">{featuredChips.map(({ icon: Icon, label }) => <span key={label} className="flex items-center gap-2 rounded-full bg-card px-4 py-2 text-xs font-semibold text-primary"><Icon className="h-3.5 w-3.5" />{label}</span>)}</div>
+          <div className="mt-8 flex items-start gap-3">{remaining.map((value, i) => <span key={featuredUnits[i]} className="flex items-start gap-3"><span className="text-center"><span className="block font-display text-4xl font-bold leading-none">{value}</span><span className="mt-2 block text-[10px] font-bold uppercase tracking-wider opacity-60">{featuredUnits[i]}</span></span>{i < 3 && <span className="font-display text-3xl font-bold leading-none opacity-25">:</span>}</span>)}</div>
+          <div className="mt-8 flex flex-wrap items-center gap-4">
+            <Button asChild className="rounded-full bg-card text-primary hover:bg-card/90"><Link to="/auth?mode=signup">Register Now<ArrowRight className="h-4 w-4" /></Link></Button>
+            <span className="text-sm opacity-75">2,340+ already registered</span>
+          </div>
+          <div className="mt-8 flex items-center gap-4 rounded-md p-4" style={{ background: 'hsl(var(--hackathon-on-dark) / .10)', border: '1px solid hsl(var(--hackathon-on-dark) / .18)' }}>
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-card text-primary"><Zap className="h-5 w-5" /></span>
+            <span><span className="block text-[10px] font-bold uppercase tracking-wider opacity-65">Hosted by</span><span className="block font-display text-base font-bold">TalentCIR</span></span>
+          </div>
+        </div>
+        <div className="relative">
+          <img src={featuredSlides[slide]} alt="Code Arena participants" className="h-full min-h-[300px] w-full rounded-md object-cover md:min-h-[440px]" loading="lazy" />
+          <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-2">{featuredSlides.map((_, i) => <button key={i} type="button" aria-label={`Show photo ${i + 1}`} onClick={() => setSlide(i)} className={i === slide ? 'h-2 w-6 rounded-full bg-card' : 'h-2 w-2 rounded-full'} style={i === slide ? undefined : { background: 'hsl(var(--hackathon-on-dark) / .45)' }} />)}</div>
+        </div>
+      </div>
+    </div></section>
+
+    {/* 7. Prize & rewards */}
     <section id="ht3-prizes" className="ht2-band ht2-tint scroll-mt-24"><div className="container ht2-wrap"><Heading eyebrow="Prize & Rewards" first="Big Ideas Deserve" second="Bigger Rewards." description="Your skills could unlock life-changing prizes, national exposure and exclusive hiring opportunities." /><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">{prizeTiers.map(({ icon: Icon, label, value, note, text, featured }) => <article key={label} className={`flex flex-col rounded-md p-6 ${featured ? 'ht2-dark' : 'ht2-surface border border-border/60'}`}><span className={`flex h-11 w-11 items-center justify-center rounded-full ${featured ? '' : 'bg-primary/10 text-primary'}`} style={featured ? { background: 'hsl(var(--hackathon-on-dark) / .14)' } : undefined}><Icon className="h-5 w-5" /></span><p className={`mt-6 text-[11px] font-bold uppercase tracking-wider ${featured ? 'opacity-70' : 'text-muted-foreground'}`}>{label}</p><p className="mt-2 font-display text-2xl font-bold leading-tight">{value}</p><p className={`mt-1 text-xs font-semibold ${featured ? 'opacity-80' : 'text-primary'}`}>{note}</p><p className={`mt-4 text-sm leading-relaxed ${featured ? 'opacity-75' : 'text-muted-foreground'}`}>{text}</p></article>)}</div><div className="mt-8"><Cta label="Compete for the Crown" /></div><p className="mt-6 text-sm text-muted-foreground">Third-place, finalist and participation rewards are indicative and confirmed on each hackathon page.</p></div></section>
 
-    {/* 6. How it works */}
+    {/* 8. How it works */}
     <section id="ht3-how" className="ht2-band ht2-surface scroll-mt-24"><div className="container ht2-wrap"><Heading eyebrow="How it works" first="From Registration" second="to Recognition." description="Six clear steps take you from your first registration to real hiring opportunities." /><div className="grid gap-6 md:grid-cols-3">{steps.map(([n, title, text]) => <article key={n} className="ht2-tint rounded-md p-7"><span className="text-xs text-primary">STEP {n}</span><h3 className="mt-2 text-xl font-bold">{title}</h3><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text}</p></article>)}</div></div></section>
 
     {/* 2. Trust strip */}
