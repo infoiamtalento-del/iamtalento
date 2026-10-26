@@ -333,3 +333,9 @@
 - Move the prizes section up to position 5 (after industries) and rebuild it as a five-card reward row per the reference image — implemented
 - Verify card content, navy featured card, responsive layout and section order — pending
 - Move "How It Works" up to position 6, directly after the prize cards, keeping the six supplied steps — done; order and content verified in the browser, build OK.
+
+## Hackathon3 — how it works alignment
+- Make steps 1-3 and steps 4-6 use one consistent presentation in the How It Works section — pending
+
+## Hackathon3 — why participate photo cards
+- Add the six photo-led "Why Participate in a TalentCIR Hackathon?" cards above "Big Ideas Deserve Bigger Rewards." — pending
