@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Award, BadgeCheck, BrainCircuit, Briefcase, CheckCircle2, Code2, Cpu, Crown, Eye, Gavel, HeartPulse, Landmark, MapPin, Medal, Megaphone, Newspaper, Search, ShoppingBag, Sparkles, Star, Target, Trophy, Users } from 'lucide-react';
+import { ArrowRight, Award, BadgeCheck, BrainCircuit, Briefcase, Calendar, CheckCircle2, Clock, Code2, Cpu, Crown, Eye, Gavel, HeartPulse, Landmark, MapPin, Medal, Megaphone, Newspaper, Search, ShoppingBag, Sparkles, Star, Target, Trophy, Users } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
@@ -33,9 +33,9 @@ const industries = [
   { icon: Briefcase, title: 'Business & Strategy' },
 ];
 const events = [
-  { name: 'National AI Innovation Hackathon', industry: 'AI & Data Science', city: 'Bengaluru', format: 'Team / Individual', deadline: 'Registration Open', prize: '₹5,00,000' },
-  { name: 'FinTech Builders Challenge', industry: 'Finance & FinTech', city: 'Mumbai', format: 'Team', deadline: 'Opening Soon', prize: '₹5,00,000' },
-  { name: 'Growth Marketing Sprint', industry: 'Digital Marketing & Growth', city: 'Delhi', format: 'Individual', deadline: 'Opening Soon', prize: '₹5,00,000' },
+  { name: 'National AI Innovation Hackathon', industry: 'AI & Data Science', city: 'Bengaluru', format: 'Team / Individual', deadline: 'Registration Open', prize: '₹5,00,000', date: 'Sat–Sun, 14–15 Nov 2026', time: '9:00 AM – 6:00 PM IST' },
+  { name: 'FinTech Builders Challenge', industry: 'Finance & FinTech', city: 'Mumbai', format: 'Team', deadline: 'Opening Soon', prize: '₹5,00,000', date: 'Sat–Sun, 12–13 Dec 2026', time: '9:00 AM – 6:00 PM IST' },
+  { name: 'Growth Marketing Sprint', industry: 'Digital Marketing & Growth', city: 'Delhi', format: 'Individual', deadline: 'Opening Soon', prize: '₹5,00,000', date: 'Sat–Sun, 23–24 Jan 2027', time: '9:00 AM – 6:00 PM IST' },
 ];
 const steps = [
   ['01', 'Discover & Register', 'Choose an industry hackathon, review the eligibility criteria, and register individually or as a team.'],
