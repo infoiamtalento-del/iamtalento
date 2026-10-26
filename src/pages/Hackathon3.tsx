@@ -80,6 +80,14 @@ const faqs = [
   ['How can my company sponsor a hackathon?', 'Select Become a Sponsor and our partnerships team will share the sponsorship deck and next steps.'],
 ];
 const logos = ['google', 'microsoft', 'amazon', 'flipkart', 'infosys', 'tcs', 'razorpay', 'swiggy'];
+const whyPoints = [
+  { icon: Trophy, title: 'Win Big', text: 'Compete for cash prizes worth ₹7.5 lakhs.', figure: '₹7,50,000' },
+  { icon: Target, title: 'Prove Your Skills', text: 'Showcase real-world abilities through industry challenges.' },
+  { icon: Newspaper, title: 'Get Famous', text: 'Earn opportunities for newspaper features and digital PR.' },
+  { icon: Search, title: 'Get Discovered', text: 'Put your talent in front of leading recruiters.' },
+  { icon: Gavel, title: 'Get Auctioned? No. Get Offers!', text: 'Let employers compete to hire you through Job Auctions.' },
+  { icon: Sparkles, title: 'Fast-Track Your Career', text: 'Turn your winning performance into career opportunities.' },
+];
 
 function Heading({ eyebrow, first, second, description }: { eyebrow: string; first: string; second?: string; description?: string }) {
   return <div className="ht2-heading"><span className="ht2-eyebrow">{eyebrow}</span><h2 className="ht2-title">{first}{second && <><br /><span className="text-primary">{second}</span></>}</h2>{description && <p className="ht2-copy">{description}</p>}</div>;
@@ -111,6 +119,14 @@ export default function Hackathon3() {
     <section id="ht3-partners" className="ht2-band scroll-mt-24"><div className="container ht2-wrap">
       <Heading eyebrow="Hiring Partners" first="Top Companies. Big Prizes." second="Real Possibilities." description="Meet the teams behind industry challenges and career opportunities." />
       <div className="grid grid-cols-2 items-center gap-x-10 gap-y-10 sm:grid-cols-4">{logos.map(logo => <img key={logo} src={`/company-logos/${logo}.svg`} alt={`${logo} logo`} className="h-9 w-auto max-w-full object-contain justify-self-center" loading="lazy" />)}</div>
+    </div></section>
+
+    {/* 3. Why participate */}
+    <section id="ht3-why" className="ht2-band ht2-surface scroll-mt-24"><div className="container ht2-wrap">
+      <Heading eyebrow="Why Participate" first="One Hackathon." second="Unlimited Possibilities." description="It's not just about winning a competition. It's about proving your talent to the companies that matter." />
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{whyPoints.map(({ icon: Icon, title, text, figure }, index) => figure
+        ? <article key={title} className="ht2-dark flex flex-col justify-between rounded-md p-7"><div className="flex items-center justify-between"><Icon className="h-6 w-6" /><span className="text-xs font-bold opacity-60">0{index + 1}</span></div><div className="mt-10"><p className="font-display text-4xl font-bold leading-none">{figure}</p><h3 className="mt-4 text-lg font-bold">{title}</h3><p className="ht2-copy mt-2 text-sm">{text}</p></div></article>
+        : <article key={title} className="flex flex-col justify-between rounded-md border border-border/60 p-7 transition-colors hover:border-primary/40"><div className="flex items-center justify-between"><Icon className="h-6 w-6 text-primary" /><span className="text-xs font-bold text-muted-foreground">0{index + 1}</span></div><div className="mt-10"><h3 className="text-lg font-bold">{title}</h3><p className="mt-2 text-sm text-muted-foreground">{text}</p></div></article>)}</div>
     </div></section>
 
     {/* 2. Trust strip */}
