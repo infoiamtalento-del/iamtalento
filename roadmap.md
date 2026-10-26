@@ -326,3 +326,5 @@
 ## Hackathon3 — why participate section
 - Add "Why Participate" as section 3 with the six supplied points and a designed layout — pending
 - Verify the six points, prize figure and desktop/phone layout — pending
+- Add section 4 using the "One Platform. Every Industry. Endless Possibilities." design with the nine supplied industries, new heading copy and Find Your Hackathon CTA — pending
+- Verify the nine industries, CTA destination and desktop/phone layout — pending
