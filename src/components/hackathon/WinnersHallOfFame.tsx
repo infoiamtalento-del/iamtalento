@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Award, BadgeCheck, Briefcase, Calendar, FolderGit2, MapPin, Newspaper, RotateCcw } from 'lucide-react';
+import { ArrowRight, Award, BadgeCheck, Briefcase, Calendar, ChevronDown, FolderGit2, MapPin, Newspaper, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import p1 from '@/assets/carousel-candidate1.jpg';
 import p2 from '@/assets/demo-avatar.jpg';
@@ -42,11 +42,14 @@ export default function WinnersHallOfFame({ ctaTo = '/auth?mode=signup' }: { cta
         {filterKeys.map(({ key, label }) => (
           <label key={key} className="flex flex-col gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-white">
             {label}
-            <select value={f[key]} onChange={e => setF({ ...f, [key]: e.target.value })} aria-label={label}
-              className="h-11 rounded-md border border-white/25 bg-white px-3 text-sm font-medium normal-case tracking-normal text-foreground">
-              <option value="">All</option>
-              {options(key).map(o => <option key={o} value={o}>{o}</option>)}
-            </select>
+            <span className="relative block">
+              <select value={f[key]} onChange={e => setF({ ...f, [key]: e.target.value })} aria-label={label}
+                className="h-11 w-full cursor-pointer appearance-none rounded-md border border-white/25 bg-white px-3 pr-9 text-sm font-medium normal-case tracking-normal text-foreground">
+                <option value="">All</option>
+                {options(key).map(o => <option key={o} value={o}>{o}</option>)}
+              </select>
+              <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-primary" />
+            </span>
           </label>
         ))}
         <Button variant="outline" className="self-end rounded-full border-white/30 bg-white text-primary hover:bg-white/90" onClick={() => setF(empty)}>

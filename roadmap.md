@@ -368,3 +368,6 @@
 
 ## Hackathon3 — hero headline enlarged
 - Increase the size of the hero headline — done; `.ht3-hero-copy h1` raised from clamp(26px,4.8cqw,40px) to clamp(30px,6.8cqw,52px), so it renders 43.8px at 1719 width (was 30.9px), 39.7px at 1280 and 52px at 890, still exactly two lines with no horizontal overflow; phone stays 42px.
+
+## Hackathon3 — winners filter dropdown arrows
+- Make the dropdown arrows clearly visible and responsive — done; each field now uses appearance-none with its own brand-blue chevron drawn at the right edge (pointer-events-none so clicks reach the field), verified in the browser: five chevrons render, the element under the arrow is the select itself, picking a value filters 4 cards to 1, Reset restores 4, no horizontal overflow, no page errors, build OK.
