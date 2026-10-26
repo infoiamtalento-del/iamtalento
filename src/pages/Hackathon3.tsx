@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Award, BarChart3, BrainCircuit, Briefcase, CheckCircle2, Code2, Cpu, Eye, Gavel, HeartPulse, Landmark, Megaphone, Newspaper, Search, Sparkles, Target, Trophy, Users } from 'lucide-react';
+import { ArrowRight, Award, BarChart3, BrainCircuit, Briefcase, CheckCircle2, Code2, Cpu, Eye, Gavel, HeartPulse, Landmark, MapPin, Megaphone, Newspaper, Search, Sparkles, Target, Trophy, Users } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
@@ -17,6 +17,11 @@ const benefits = [
   { icon: Award, title: 'Get Recognised', text: 'Showcase your achievements through winner profiles and media opportunities.' },
   { icon: Briefcase, title: 'Get Hired', text: 'Connect with employers looking for proven talent.' },
 ];
+const heroPrizes = [
+  { icon: Trophy, value: '₹5,00,000', label: 'Champion prize' },
+  { icon: Award, value: '₹2,50,000', label: 'Runner-up prize' },
+  { icon: MapPin, value: 'Pan-India', label: 'City competitions' },
+];
 const industries = [
   { icon: BrainCircuit, title: 'AI & Data Science', text: 'Build intelligent solutions, analyse data, and solve complex problems.', cta: 'Explore AI Hackathons' },
   { icon: Code2, title: 'IT & Software Development', text: 'Showcase coding, software engineering, and product development skills.', cta: 'Explore IT Hackathons' },
@@ -27,9 +32,9 @@ const industries = [
 ];
 const moreIndustries = ['Sales', 'Business Management', 'Design', 'Supply Chain', 'Human Resources', 'Sustainability', 'Entrepreneurship'];
 const events = [
-  { name: 'National AI Innovation Hackathon', industry: 'AI & Data Science', city: 'Bengaluru', format: 'Team / Individual', deadline: 'Registration Open', prize: '₹50,000' },
-  { name: 'FinTech Builders Challenge', industry: 'Finance & FinTech', city: 'Mumbai', format: 'Team', deadline: 'Opening Soon', prize: '₹50,000' },
-  { name: 'Growth Marketing Sprint', industry: 'Digital Marketing & Growth', city: 'Delhi', format: 'Individual', deadline: 'Opening Soon', prize: '₹50,000' },
+  { name: 'National AI Innovation Hackathon', industry: 'AI & Data Science', city: 'Bengaluru', format: 'Team / Individual', deadline: 'Registration Open', prize: '₹5,00,000' },
+  { name: 'FinTech Builders Challenge', industry: 'Finance & FinTech', city: 'Mumbai', format: 'Team', deadline: 'Opening Soon', prize: '₹5,00,000' },
+  { name: 'Growth Marketing Sprint', industry: 'Digital Marketing & Growth', city: 'Delhi', format: 'Individual', deadline: 'Opening Soon', prize: '₹5,00,000' },
 ];
 const steps = [
   ['01', 'Discover & Register', 'Choose an industry hackathon, review the eligibility criteria, and register individually or as a team.'],
@@ -40,7 +45,7 @@ const steps = [
   ['06', 'Unlock Hiring Opportunities', "Connect with employers through TalentCIR's Talent Auction marketplace, where companies can express interest and submit hiring offers."],
 ];
 const prizes = [
-  { label: 'Champion', amount: '₹50,000', items: ["Winner's certificate", 'Featured winner profile', 'Media and PR opportunities', 'Employer discovery opportunities'] },
+  { label: 'Champion', amount: '₹5,00,000', items: ["Winner's certificate", 'Featured winner profile', 'Media and PR opportunities', 'Employer discovery opportunities'] },
   { label: 'Runner-Up', amount: '₹2,50,000', items: ['Runner-up recognition', 'Achievement certificate', 'Profile visibility opportunities', 'Employer discovery opportunities'] },
 ];
 const media = ['Newspaper features and winner announcements', 'Digital PR publications and online media coverage', 'Winner interviews and professional success stories', 'TalentCIR Hall of Fame profiles', 'Social media and industry community features', 'Employer-facing achievement showcases'];
