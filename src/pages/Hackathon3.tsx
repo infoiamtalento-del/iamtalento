@@ -12,6 +12,7 @@ import recruiter from '@/assets/employer-recruiter.jpg';
 import team from '@/assets/employer-team.jpg';
 import './hackathon2.css';
 import FeaturedEventCard from '@/components/landing/FeaturedEventCard';
+import { HackathonPrizeStrip } from '@/components/landing/HackathonSpotlightSection';
 import WinnersHallOfFame from '@/components/hackathon/WinnersHallOfFame';
 
 const trust = ['Industry-Sponsored Challenges', 'Multiple Industry Domains', 'Metropolitan City Events', 'National Media Recognition', 'Exclusive Talent Discovery', 'Employer Hiring Opportunities'];
@@ -104,7 +105,7 @@ export default function Hackathon3() {
     <meta property="og:title" content="Hackathons · Compete. Get Recognised. Get Hired. | TalentCIR" />
     <meta property="og:description" content="Compete in industry hackathons, earn recognition and get discovered by employers." />
     <meta property="og:type" content="website" /><meta name="twitter:card" content="summary_large_image" />
-  </Helmet><div className="hackathon2">
+  </Helmet><div className="hackathon2 ht3-page">
     {/* 1. Hero */}
     <section id="ht3-overview" className="ht2-hero ht2-tint scroll-mt-24"><div className="container ht2-wrap">
       <div className="grid items-center gap-12 lg:grid-cols-2">
@@ -120,7 +121,7 @@ export default function Hackathon3() {
     </div></section>
 
     {/* 3. Why participate */}
-    <section id="ht3-reasons" className="ht2-band scroll-mt-24"><div className="container ht2-wrap"><Heading eyebrow="Why Join" first="Why Participate in a" second="TalentCIR Hackathon?" description="Six reasons this competition is worth your time, your talent and your energy." /><div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">{whyCards.map(({ icon: Icon, title, sub, text, image }) => <article key={title} className="ht2-surface flex flex-col overflow-hidden rounded-md border border-border/60"><div className="relative"><img src={image} alt={title} className="h-44 w-full object-cover" loading="lazy" /><span className="absolute -bottom-5 left-6 flex h-11 w-11 items-center justify-center rounded-md border-4 border-card bg-primary/10 text-primary"><Icon className="h-5 w-5" /></span></div><div className="px-6 pb-6 pt-9"><h3 className="text-lg font-bold">{title}</h3><p className="mt-1 text-sm font-semibold text-primary">{sub}</p><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text}</p></div></article>)}</div></div></section>
+    <section id="ht3-reasons" className="ht2-band scroll-mt-24"><div className="container ht2-wrap"><Heading eyebrow="Why Join" first="Why Participate in a" second="TalentCIR Hackathon?" description="Six reasons this competition is worth your time, your talent and your energy." /><div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">{whyCards.map(({ icon: Icon, title, sub, text, image }) => <article key={title} className="ht2-surface flex flex-col overflow-hidden rounded-md border border-border/60"><div className="relative"><img src={image} alt={title} className="h-44 w-full object-cover" loading="lazy" /></div><div className="p-6"><h3 className="text-lg font-bold">{title}</h3><p className="mt-1 text-sm font-semibold text-primary">{sub}</p><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text}</p></div></article>)}</div></div></section>
 
     {/* 4. Industries */}
     <section id="ht3-industries" className="ht2-band ht2-surface scroll-mt-24"><div className="container ht2-wrap">
@@ -137,11 +138,10 @@ export default function Hackathon3() {
     <section id="ht3-how" className="ht2-band ht2-surface scroll-mt-24"><div className="container ht2-wrap"><Heading eyebrow="How it works" first="From Registration" second="to Recognition." description="Six clear steps take you from your first registration to real hiring opportunities." /><div className="grid gap-6 md:grid-cols-3">{steps.map(([n, title, text]) => <article key={n} className="ht2-tint rounded-md p-7"><span className="text-xs text-primary">STEP {n}</span><h3 className="mt-2 text-xl font-bold">{title}</h3><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text}</p></article>)}</div></div></section>
 
     {/* 2. Trust strip */}
-    <div className="ht2-ribbon ht2-soft"><div className="ht2-marquee">{[0, 1].map(repeat => <div key={repeat} aria-hidden={repeat === 1} className="flex items-center gap-12">{trust.map(item => <span className="flex items-center gap-12 whitespace-nowrap text-sm font-medium" key={item}>{item}<Sparkles className="h-4 w-4 text-primary" /></span>)}</div>)}</div></div>
 
     {/* 3. Introduction */}
     {/* Featured event */}
-    <section id="ht3-feature" className="ht2-band scroll-mt-24"><div className="container ht2-wrap"><Heading eyebrow="Featured Event" first="Code Arena · Season 4" second="Registration Is Open." description="India's flagship industry hackathon returns with tougher challenges, bigger prizes and a national stage. Free entry, real business problems, and a direct line to hiring partners." /><FeaturedEventCard monoAccents registerTo="/auth?mode=signup" /></div></section>
+    <section id="ht3-feature" className="ht2-band scroll-mt-24"><div className="container ht2-wrap"><Heading eyebrow="Featured Event" first="Code Arena · Season 4" second="Registration Is Open." description="India's flagship industry hackathon returns with tougher challenges, bigger prizes and a national stage. Free entry, real business problems, and a direct line to hiring partners." /><FeaturedEventCard monoAccents registerTo="/auth?mode=signup" /><HackathonPrizeStrip /></div></section>
 
     <section id="ht3-fame" className="ht2-band ht2-surface scroll-mt-24"><div className="container ht2-wrap"><Heading eyebrow="Winners Hall of Fame" first="Meet the Talent" second="That Stood Out." description="Celebrate exceptional performers who turned their skills into recognised achievements." /><WinnersHallOfFame /></div></section>
 
