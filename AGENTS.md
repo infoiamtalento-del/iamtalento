@@ -32,3 +32,5 @@
 - Keep employer action banners in one reusable presentation component and send onboarding CTAs to the existing company-profile flow, so marketing never silently enters a demo account.
 - Keep networking calendar city and topic selection within its dedicated presentation, using existing sample events and registration destinations, so browsing does not change other page filters.
 - Keep the numbered employer benefits list in one shared presentation component whose items, eyebrow and headline arrive as props, so each employer page supplies its own benefits without a second copy of the layout.
+
+- Site-wide CSS forces `background-image: none !important` on every element (index.css "zero gradients sitewide"), so `bg-gradient-*` utilities and CSS gradients never paint; build edge fades, soft wipes and similar effects with `mask-image` instead.
