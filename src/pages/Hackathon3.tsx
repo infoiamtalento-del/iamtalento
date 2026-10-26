@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Award, BarChart3, BrainCircuit, Briefcase, CheckCircle2, Code2, Cpu, Eye, Gavel, HeartPulse, Landmark, MapPin, Megaphone, Newspaper, Search, Sparkles, Target, Trophy, Users } from 'lucide-react';
+import { ArrowRight, Award, BarChart3, BrainCircuit, Briefcase, CheckCircle2, Code2, Cpu, Eye, Gavel, HeartPulse, Landmark, MapPin, Megaphone, Newspaper, Search, ShoppingBag, Sparkles, Target, Trophy, Users } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
@@ -10,7 +10,6 @@ import event1 from '@/assets/hackathon-event-1.jpg';
 import event2 from '@/assets/hackathon-event-2.jpg';
 import './hackathon2.css';
 
-const navItems = [['Overview', 'ht3-overview'], ['Industries', 'ht3-industries'], ['Upcoming Events', 'ht3-upcoming'], ['Prizes', 'ht3-prizes'], ['Hall of Fame', 'ht3-fame'], ['Talent Auction', 'ht3-auction'], ['Sponsors', 'ht3-sponsors'], ['FAQs', 'ht3-faq']];
 const trust = ['Industry-Sponsored Challenges', 'Multiple Industry Domains', 'Metropolitan City Events', 'National Media Recognition', 'Exclusive Talent Discovery', 'Employer Hiring Opportunities'];
 const benefits = [
   { icon: Code2, title: 'Compete', text: 'Solve practical challenges that test your abilities.' },
@@ -23,14 +22,16 @@ const heroPrizes = [
   { icon: MapPin, value: 'Pan-India', label: 'City competitions' },
 ];
 const industries = [
-  { icon: BrainCircuit, title: 'AI & Data Science', text: 'Build intelligent solutions, analyse data, and solve complex problems.', cta: 'Explore AI Hackathons' },
-  { icon: Code2, title: 'IT & Software Development', text: 'Showcase coding, software engineering, and product development skills.', cta: 'Explore IT Hackathons' },
-  { icon: Megaphone, title: 'Digital Marketing & Growth', text: 'Demonstrate SEO, performance marketing, analytics, and growth strategy.', cta: 'Explore Marketing Hackathons' },
-  { icon: Landmark, title: 'Finance & FinTech', text: 'Tackle financial analysis, business modelling, and fintech challenges.', cta: 'Explore Finance Hackathons' },
-  { icon: Cpu, title: 'Engineering & Robotics', text: 'Turn technical knowledge into practical prototypes and innovative solutions.', cta: 'Explore Engineering Hackathons' },
-  { icon: HeartPulse, title: 'Healthcare & Life Sciences', text: 'Explore healthcare innovation, health technology, and research challenges.', cta: 'Explore Healthcare Hackathons' },
+  { icon: BrainCircuit, title: 'AI & Technology' },
+  { icon: Megaphone, title: 'Digital Marketing' },
+  { icon: Landmark, title: 'Finance & FinTech' },
+  { icon: HeartPulse, title: 'Healthcare' },
+  { icon: Code2, title: 'Software & IT' },
+  { icon: Sparkles, title: 'Design & Creative' },
+  { icon: ShoppingBag, title: 'E-Commerce' },
+  { icon: Cpu, title: 'Engineering' },
+  { icon: Briefcase, title: 'Business & Strategy' },
 ];
-const moreIndustries = ['Sales', 'Business Management', 'Design', 'Supply Chain', 'Human Resources', 'Sustainability', 'Entrepreneurship'];
 const events = [
   { name: 'National AI Innovation Hackathon', industry: 'AI & Data Science', city: 'Bengaluru', format: 'Team / Individual', deadline: 'Registration Open', prize: '₹5,00,000' },
   { name: 'FinTech Builders Challenge', industry: 'Finance & FinTech', city: 'Mumbai', format: 'Team', deadline: 'Opening Soon', prize: '₹5,00,000' },
@@ -80,7 +81,15 @@ const faqs = [
   ['Do I need to pay to participate?', 'Fees depend on the hackathon. Each event page shows whether registration is free or paid.'],
   ['How can my company sponsor a hackathon?', 'Select Become a Sponsor and our partnerships team will share the sponsorship deck and next steps.'],
 ];
-const logos = ['google', 'microsoft', 'amazon', 'flipkart', 'infosys', 'tcs'];
+const logos = ['google', 'microsoft', 'amazon', 'flipkart', 'infosys', 'tcs', 'razorpay', 'swiggy'];
+const whyPoints = [
+  { icon: Trophy, title: 'Win Big', text: 'Compete for cash prizes worth ₹7.5 lakhs.', figure: '₹7,50,000' },
+  { icon: Target, title: 'Prove Your Skills', text: 'Showcase real-world abilities through industry challenges.' },
+  { icon: Newspaper, title: 'Get Famous', text: 'Earn opportunities for newspaper features and digital PR.' },
+  { icon: Search, title: 'Get Discovered', text: 'Put your talent in front of leading recruiters.' },
+  { icon: Gavel, title: 'Get Auctioned? No. Get Offers!', text: 'Let employers compete to hire you through Job Auctions.' },
+  { icon: Sparkles, title: 'Fast-Track Your Career', text: 'Turn your winning performance into career opportunities.' },
+];
 
 function Heading({ eyebrow, first, second, description }: { eyebrow: string; first: string; second?: string; description?: string }) {
   return <div className="ht2-heading"><span className="ht2-eyebrow">{eyebrow}</span><h2 className="ht2-title">{first}{second && <><br /><span className="text-primary">{second}</span></>}</h2>{description && <p className="ht2-copy">{description}</p>}</div>;
@@ -108,18 +117,33 @@ export default function Hackathon3() {
       <p className="mt-8 text-xs text-muted-foreground">Prize amounts vary by event and are confirmed on each hackathon page.</p>
     </div></section>
 
-    {/* Page navigation */}
-    <nav aria-label="Hackathon sections" className="ht2-surface ht2-line"><div className="container ht2-wrap flex gap-2 overflow-x-auto py-3">{navItems.map(([label, id]) => <button key={id} type="button" onClick={() => scrollTo(id)} className="ht2-pill whitespace-nowrap px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-primary">{label}</button>)}</div></nav>
+    {/* 2. Hiring partners */}
+    <section id="ht3-partners" className="ht2-band scroll-mt-24"><div className="container ht2-wrap">
+      <Heading eyebrow="Hiring Partners" first="Top Companies. Big Prizes." second="Real Possibilities." description="Meet the teams behind industry challenges and career opportunities." />
+      <div className="grid grid-cols-2 items-center gap-x-10 gap-y-10 sm:grid-cols-4">{logos.map(logo => <img key={logo} src={`/company-logos/${logo}.svg`} alt={`${logo} logo`} className="h-9 w-auto max-w-full object-contain justify-self-center" loading="lazy" />)}</div>
+    </div></section>
+
+    {/* 3. Why participate */}
+    <section id="ht3-why" className="ht2-band ht2-surface scroll-mt-24"><div className="container ht2-wrap">
+      <Heading eyebrow="Why Participate" first="One Hackathon." second="Unlimited Possibilities." description="It's not just about winning a competition. It's about proving your talent to the companies that matter." />
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{whyPoints.map(({ icon: Icon, title, text, figure }, index) => figure
+        ? <article key={title} className="ht2-dark flex flex-col justify-between rounded-md p-7"><div className="flex items-center justify-between"><Icon className="h-6 w-6" /><span className="text-xs font-bold opacity-60">0{index + 1}</span></div><div className="mt-10"><p className="font-display text-4xl font-bold leading-none">{figure}</p><h3 className="mt-4 text-lg font-bold">{title}</h3><p className="ht2-copy mt-2 text-sm">{text}</p></div></article>
+        : <article key={title} className="flex flex-col justify-between rounded-md border border-border/60 p-7 transition-colors hover:border-primary/40"><div className="flex items-center justify-between"><Icon className="h-6 w-6 text-primary" /><span className="text-xs font-bold text-muted-foreground">0{index + 1}</span></div><div className="mt-10"><h3 className="text-lg font-bold">{title}</h3><p className="mt-2 text-sm text-muted-foreground">{text}</p></div></article>)}</div>
+    </div></section>
+
+    {/* 4. Industries */}
+    <section id="ht3-industries" className="ht2-band ht2-surface scroll-mt-24"><div className="container ht2-wrap">
+      <Heading eyebrow="Industry-Wise Hackathons" first="Every Industry. Every Skill." second="One Big Stage." description="Whatever your expertise, there's a challenge waiting for you." />
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{industries.map(({ icon: Icon, title }) => <button key={title} type="button" onClick={() => scrollTo('ht3-upcoming')} className="ht2-tint group flex items-center gap-4 rounded-md p-6 text-left transition-colors hover:bg-primary/5"><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary"><Icon className="h-5 w-5" /></span><span className="font-display text-base font-bold">{title}</span><ArrowRight className="ml-auto h-4 w-4 shrink-0 text-primary opacity-0 transition-opacity group-hover:opacity-100" /></button>)}</div>
+      <div className="mt-8"><Button variant="outline" className="rounded-full" onClick={() => scrollTo('ht3-upcoming')}>Find Your Hackathon<ArrowRight className="h-4 w-4" /></Button></div>
+    </div></section>
 
     {/* 2. Trust strip */}
     <div className="ht2-ribbon ht2-soft"><div className="ht2-marquee">{[0, 1].map(repeat => <div key={repeat} aria-hidden={repeat === 1} className="flex items-center gap-12">{trust.map(item => <span className="flex items-center gap-12 whitespace-nowrap text-sm font-medium" key={item}>{item}<Sparkles className="h-4 w-4 text-primary" /></span>)}</div>)}</div></div>
 
     {/* 3. Introduction */}
     <section className="ht2-band ht2-dark"><div className="container ht2-wrap grid items-center gap-10 md:grid-cols-2"><div><span className="ht2-eyebrow">More than a hackathon</span><h2 className="ht2-title">Where Skills<br />Meet Opportunity.</h2><p className="ht2-copy">TalentCIR Hackathons discover, evaluate, and celebrate exceptional talent across industries. Participants compete in real-world challenges built around industry needs, while leading companies engage with emerging professionals.</p><p className="ht2-copy">From the competition floor to national media coverage and the Talent Auction marketplace, we turn demonstrated skills into meaningful career opportunities.</p><div className="mt-7 grid gap-5 sm:grid-cols-3">{benefits.map(({ icon: Icon, title, text }) => <div key={title}><Icon className="h-6 w-6" /><p className="mt-3 font-bold">{title}</p><p className="mt-1 text-xs opacity-75">{text}</p></div>)}</div></div><img src={event1} className="ht2-photo" alt="Participants presenting solutions at a hackathon" loading="lazy" /></div></section>
-    <div className="container ht2-wrap py-8"><div className="flex flex-wrap items-center justify-between gap-6">{logos.map(logo => <img key={logo} src={`/company-logos/${logo}.svg`} alt={logo} className="h-9 w-24 object-contain" loading="lazy" />)}</div></div>
 
-    {/* 4. Industries */}
-    <section id="ht3-industries" className="ht2-band ht2-surface scroll-mt-24"><div className="container ht2-wrap"><Heading eyebrow="Explore hackathons by industry" first="One Platform. Every Industry." second="Endless Possibilities." description="Discover competitions that match your skills, interests, and career ambitions." /><div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">{industries.map(({ icon: Icon, title, text, cta }) => <article key={title} className="ht2-tint ht2-track-card rounded-md p-7"><Icon className="mb-6 h-10 w-10 text-primary" /><h3 className="text-xl font-bold">{title}</h3><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text}</p><button type="button" onClick={() => scrollTo('ht3-upcoming')} className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary">{cta}<ArrowRight className="h-4 w-4" /></button></article>)}</div><div className="mt-7 flex flex-wrap items-center gap-2"><span className="mr-2 text-sm text-muted-foreground">Also coming:</span>{moreIndustries.map(item => <span key={item} className="ht2-pill border border-border px-3 py-1 text-xs font-medium">{item}</span>)}</div><div className="mt-8"><Button variant="outline" className="rounded-full" onClick={() => scrollTo('ht3-upcoming')}>View All Industry Hackathons<ArrowRight className="h-4 w-4" /></Button></div></div></section>
 
     {/* 5. Upcoming */}
     <section id="ht3-upcoming" className="ht2-band ht2-soft scroll-mt-24"><div className="container ht2-wrap"><Heading eyebrow="Upcoming hackathons" first="Your Next Big Opportunity" second="Starts Here." description="Find an upcoming competition, explore its challenges, and register to showcase your skills." /><div className="border-t border-border">{events.map((event, index) => <div key={event.name} className="ht2-event-row ht2-line grid items-center py-6"><img src={[hero, event2, event1][index]} alt="" className="h-[100px] rounded-md object-cover" loading="lazy" /><div><p className="text-xs font-semibold uppercase text-primary">{event.deadline}</p><h3 className="mt-1 text-xl font-bold">{event.name}</h3><p className="mt-1 text-sm text-muted-foreground">{event.industry} · {event.city} · {event.format}</p></div><p><span className="block text-xs text-muted-foreground">Champion prize</span><span className="font-bold">{event.prize}</span></p><Cta label="View Details" to={`/auth?${new URLSearchParams({ mode: 'signup', event: event.name })}`} outline /></div>)}</div></div></section>

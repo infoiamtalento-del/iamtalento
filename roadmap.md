@@ -322,3 +322,9 @@
 
 ## Employer page v2 — remove pricing and promise sections
 - Remove "Pay for Candidates Assessed. Not for Seats That Sit Empty." and "Our Promise: A Better Shortlist, or Your Money Back." — done; both headlines absent from the live page, Premium Solutions, questions and closing call to action render unchanged, no overflow, build OK
+
+## Hackathon3 — why participate section
+- Add "Why Participate" as section 3 with the six supplied points and a designed layout — done; navy featured tile with ₹7,50,000 plus five bordered tiles, 3x2 grid, verified desktop and phone, build OK
+- Verify the six points, prize figure and desktop/phone layout — done; all six titles and descriptions render, no overflow, phone layout checked
+- Add section 4 using the industries design with the nine supplied industries, new heading copy and Find Your Hackathon CTA — done; moved directly after Why Participate, 3x3 grid of icon tiles, old six-card version and "Also coming" pills removed
+- Verify the nine industries, CTA destination and desktop/phone layout — done; nine titles in supplied order, CTA scrolls to upcoming events, no overflow, build OK
