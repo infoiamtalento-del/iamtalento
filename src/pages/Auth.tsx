@@ -44,7 +44,7 @@ const Auth = () => {
   const openDemoProfile = () => {
     const demoEmail = role === "employer" ? "demo.employer@talento.app" : "demo.candidate@talento.app";
     localStorage.setItem("tq_sess", JSON.stringify(demoEmail));
-    navigate(`/talento-pro?view=${role === "employer" ? "cp" : "profile"}`);
+    navigate("/talento-pro?view=dash");
   };
   const demoUser = DEFAULT_USERS[role === "employer" ? "demo.employer@talento.app" : "demo.candidate@talento.app"];
 

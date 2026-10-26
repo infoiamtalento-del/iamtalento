@@ -2,29 +2,92 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { employerMenuItems, employerLogoutIcon as LogoutIcon } from "./employerMenu";
 import type { ProView } from "./proTypes";
+import { LayoutDashboard } from "lucide-react";
 
 interface Props {
   activeView: ProView;
   onNavigate: (view: ProView) => void;
   onLogout: () => void;
   unreadCount: number;
+  userName?: string;
+  userRole?: string;
 }
 
-export function ProEmployerSidebar({ activeView, onNavigate, onLogout, unreadCount }: Props) {
+export function ProEmployerSidebar({
+  activeView,
+  onNavigate,
+  onLogout,
+  unreadCount,
+  userName,
+  userRole = "Workspace",
+}: Props) {
   return (
-    <aside className="hidden lg:block w-56 shrink-0 border-r border-border pr-5">
-      <nav aria-label="Employer account" className="sticky top-24 space-y-1 max-h-[calc(100dvh-7rem)] overflow-y-auto">
-        <p className="px-3 pb-3 text-xs font-semibold uppercase text-muted-foreground">Employer account</p>
-        {employerMenuItems.map(({ id, label, icon: Icon }) => (
-          <Button key={id} variant="ghost" aria-current={activeView === id ? "page" : undefined} onClick={() => onNavigate(id)} className={cn("w-full justify-start gap-3 px-3 text-xs h-10", activeView === id ? "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground" : "text-muted-foreground")}>
-            <Icon /><span className="whitespace-normal text-left">{label}</span>
-            {id === "notif" && unreadCount > 0 && <span className="ml-auto text-[10px]">{unreadCount}</span>}
-          </Button>
-        ))}
-        <div className="pt-3 mt-3 border-t border-border">
-          <Button variant="ghost" onClick={onLogout} className="w-full justify-start gap-3 px-3 text-xs text-muted-foreground"><LogoutIcon />Logout</Button>
+    <aside className="w-full lg:w-64 shrink-0">
+      <div className="lg:sticky lg:top-24 rounded-2xl border border-border bg-card p-3 shadow-xs">
+        <div className="px-3 py-2.5 mb-2 border-b border-border/80">
+          <div className="flex items-center gap-2">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <LayoutDashboard className="h-4 w-4" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground truncate">
+                Dashboard Menu
+              </p>
+              {userName && (
+                <p className="text-xs font-semibold text-foreground truncate">
+                  {userName}
+                </p>
+              )}
+            </div>
+          </div>
         </div>
-      </nav>
+
+        <nav aria-label="Dashboard navigation" className="space-y-1">
+          {employerMenuItems.map(({ id, label, icon: Icon }) => {
+            const isActive = activeView === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                aria-current={isActive ? "page" : undefined}
+                onClick={() => onNavigate(id)}
+                className={cn(
+                  "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-medium transition-all text-left cursor-pointer",
+                  isActive
+                    ? "bg-primary text-primary-foreground font-semibold shadow-xs"
+                    : "text-muted-foreground hover:bg-accent/70 hover:text-foreground"
+                )}
+              >
+                <Icon className={cn("h-4 w-4 shrink-0", isActive ? "text-primary-foreground" : "text-primary")} />
+                <span className="min-w-0 flex-1 truncate">{label}</span>
+                {id === "notif" && unreadCount > 0 && (
+                  <span
+                    className={cn(
+                      "ml-auto flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold",
+                      isActive
+                        ? "bg-primary-foreground text-primary"
+                        : "bg-primary text-primary-foreground"
+                    )}
+                  >
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+
+          <div className="pt-2 mt-2 border-t border-border">
+            <button
+              type="button"
+              onClick={onLogout}
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-medium text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
+            >
+              <LogoutIcon className="h-4 w-4 shrink-0 text-destructive" />
+              <span>Logout</span>
+            </button>
+          </div>
+        </nav>
+      </div>
     </aside>
   );
 }

@@ -25,6 +25,7 @@ export type ProView =
   | "advertise"
   | "subscription"
   | "payment-history"
+  | "corporate-learning"
   | "settings"
   | "support";
 
