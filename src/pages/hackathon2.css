@@ -9,7 +9,7 @@
 }
 .hackathon2 h1,.hackathon2 h2,.hackathon2 h3 { letter-spacing: 0; }
 .hackathon2 .ht2-wrap { margin-inline: auto; }
-.hackathon2 .ht2-band { padding: 56px 0; }
+.hackathon2 .ht2-band { padding: 22px 0; }
 .hackathon2 .ht2-heading { margin-bottom: 28px; }
 .hackathon2 .ht2-wrap.grid > .ht2-heading { margin-bottom: 0; }
 .hackathon2 .ht2-wrap.grid { column-gap: 40px; row-gap: 28px; }
@@ -17,14 +17,30 @@
 .hackathon2 .ht2-eyebrow { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 14px; color: hsl(var(--primary)); }
 .hackathon2 .ht2-title { font-size: 36px; line-height: 1.16; font-weight: 700; }
 .hackathon2 .ht2-copy { margin-top: 16px; max-width: 620px; font-size: 15px; line-height: 1.8; color: hsl(var(--muted-foreground)); }
-#root .hackathon2 .ht2-surface { background-color: hsl(var(--card)) !important; }
-#root .hackathon2 .ht2-tint { background-color: hsl(var(--ht2-beige)) !important; }
-#root .hackathon2 .ht2-soft { background-color: hsl(var(--ht2-beige)) !important; }
-#root .hackathon2 .ht2-dark { background-color: hsl(var(--primary)) !important; color: hsl(var(--hackathon-on-dark)); }
+
+/* Sitewide theme: beige page, section content held in white or navy boxes */
+.hackathon2 .ht2-band > .container,
+.hackathon2 .ht2-hero > .container {
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 28px;
+  padding: 44px 40px;
+  box-shadow: 0 1px 2px rgb(16 24 40 / .05);
+}
+.hackathon2 .ht2-hero { padding: 104px 0 22px; }
+.hackathon2 .ht2-dark > .container { background-color: hsl(var(--primary)); border-color: hsl(var(--primary)); color: hsl(var(--hackathon-on-dark)); }
 .hackathon2 .ht2-dark h2,.hackathon2 .ht2-dark h3 { color: hsl(var(--hackathon-on-dark)); }
 .hackathon2 .ht2-dark .ht2-copy { color: hsl(var(--hackathon-on-dark) / .75); }
 .hackathon2 .ht2-dark .ht2-eyebrow { color: hsl(var(--hackathon-on-dark) / .65); }
-.hackathon2 .ht2-hero { padding: 120px 0 56px; }
+#root .hackathon2 .ht2-wrap .ht2-surface,
+#root .hackathon2 .ht2-wrap .ht2-tint,
+#root .hackathon2 .ht2-wrap .ht2-soft { background-color: hsl(var(--ht2-beige)) !important; }
+.hackathon2 .ht2-wrap .ht2-surface,
+.hackathon2 .ht2-wrap .ht2-tint,
+.hackathon2 .ht2-wrap .ht2-soft { border: 1px solid hsl(var(--border)); border-radius: 14px; }
+.hackathon2 .ht2-dark .ht2-wrap .ht2-surface,
+.hackathon2 .ht2-dark .ht2-wrap .ht2-tint,
+.hackathon2 .ht2-dark .ht2-wrap .ht2-soft { border-color: hsl(var(--hackathon-on-dark) / .2); }
 .hackathon2 .ht2-hero h1 { font-size: 64px; line-height: 1.05; font-weight: 700; }
 .hackathon2 .ht2-hero-image { width: 100%; aspect-ratio: 1.28; object-fit: cover; border-radius: 8px; }
 .hackathon2 .ht2-photo { display: block; width: 100%; height: 400px; min-height: 0; object-fit: cover; border-radius: 8px; }
@@ -40,6 +56,8 @@
 .hackathon2 .ht2-ribbon:hover .ht2-marquee { animation-play-state: paused; }
 @keyframes ht2-scroll { to { transform: translateX(-50%); } }
 @media (min-width:768px) and (max-width:1023px) {
+  .hackathon2 .ht2-band > .container,
+  .hackathon2 .ht2-hero > .container { padding: 32px 26px; border-radius: 22px; }
   .hackathon2 .ht2-photo { height: 360px; }
   .hackathon2 .ht2-event-row { grid-template-columns: 80px minmax(0, 1fr) 140px; column-gap: 16px; }
   .hackathon2 .ht2-event-row > img { width: 80px; }
@@ -47,10 +65,12 @@
   .hackathon2 .ht2-event-row > a { grid-column: 3; grid-row: 1 / span 2; }
 }
 @media(max-width:767px) {
-  .hackathon2 .ht2-band { padding: 40px 0; }
+  .hackathon2 .ht2-band { padding: 14px 0; }
+  .hackathon2 .ht2-band > .container,
+  .hackathon2 .ht2-hero > .container { padding: 24px 18px; border-radius: 18px; }
   .hackathon2 .ht2-heading { margin-bottom: 24px; }
-  .hackathon2 .ht2-hero { padding: 110px 0 40px; }
-  .hackathon2 .ht2-hero > .ht2-wrap > .grid:first-child { gap: 28px; }
+  .hackathon2 .ht2-hero { padding: 96px 0 14px; }
+  .hackathon2 .ht2-hero > .container > .grid:first-child { gap: 28px; }
   .hackathon2 .ht2-hero h1 { font-size: 42px; }
   .hackathon2 .ht2-title { font-size: 28px; }
   .hackathon2 .ht2-photo { height: 280px; }
