@@ -346,6 +346,7 @@
 ## Hackathon3 — featured event section
 - Replace the "MORE THAN A HACKATHON / Where Skills Meet Opportunity." navy section with the homepage featured-event card ("Code Arena · Season 4") — done; the card now lives in one shared component used by the homepage spotlight and /hackathon3, the old navy section and its unused data were removed, and Register Now opens the sign-up route
 - Verify badges, metadata pills, countdown, register action, partner card and image carousel on desktop and phone — done; desktop and 390px phone checked in the browser (two status pills, four detail pills, countdown, Register Now → /auth?mode=signup, channel-partner card, photo carousel loading, no horizontal overflow), homepage card unchanged, build OK. The countdown still reads 00 because the card's Aug 15–17, 2025 deadline has passed — awaiting the real event date.
+- Give the card's photo column a real height on phones so the image shows there too — done; the shared card's photo box now measures 250px at 390 width and 476px at 1280 width, screenshot inspected, no horizontal overflow, build OK.
 
 ## Hackathon3 — hero copy refresh
 - Set the hero headline to "Compete with the Best. Get Recognised." / "Get Hired." with the supplied description, and remove the "Prize amounts vary by event..." note — done; verified in the browser (two headline lines, black then brand blue, description reads back, note absent, no horizontal overflow) and build OK.
