@@ -172,7 +172,7 @@ export const FeaturedEventCard = ({ registerTo, monoAccents = false }: FeaturedE
           </div>
         </div>
 
-        <div className="lg:w-[42%] min-h-[250px] lg:min-h-0 p-2 lg:p-3">
+        <div className="h-[250px] lg:h-auto lg:w-[42%] lg:min-h-0 p-2 lg:p-3">
           <SpotlightCarousel />
         </div>
       </div>
