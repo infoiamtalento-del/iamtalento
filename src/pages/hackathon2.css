@@ -18,8 +18,8 @@
 .hackathon2 .ht2-title { font-size: 36px; line-height: 1.16; font-weight: 700; }
 .hackathon2 .ht2-copy { margin-top: 16px; max-width: 620px; font-size: 15px; line-height: 1.8; color: hsl(var(--muted-foreground)); }
 #root .hackathon2 .ht2-surface { background-color: hsl(var(--card)) !important; }
-#root .hackathon2 .ht2-tint { background-color: hsl(var(--job-tint)) !important; }
-#root .hackathon2 .ht2-soft { background-color: hsl(var(--job-tint)) !important; }
+#root .hackathon2 .ht2-tint { background-color: hsl(var(--ht2-beige)) !important; }
+#root .hackathon2 .ht2-soft { background-color: hsl(var(--ht2-beige)) !important; }
 #root .hackathon2 .ht2-dark { background-color: hsl(var(--primary)) !important; color: hsl(var(--hackathon-on-dark)); }
 .hackathon2 .ht2-dark h2,.hackathon2 .ht2-dark h3 { color: hsl(var(--hackathon-on-dark)); }
 .hackathon2 .ht2-dark .ht2-copy { color: hsl(var(--hackathon-on-dark) / .75); }
