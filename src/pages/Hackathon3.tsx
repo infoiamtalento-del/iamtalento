@@ -11,13 +11,9 @@ import event2 from '@/assets/hackathon-event-2.jpg';
 import recruiter from '@/assets/employer-recruiter.jpg';
 import team from '@/assets/employer-team.jpg';
 import './hackathon2.css';
+import FeaturedEventCard from '@/components/landing/FeaturedEventCard';
 
 const trust = ['Industry-Sponsored Challenges', 'Multiple Industry Domains', 'Metropolitan City Events', 'National Media Recognition', 'Exclusive Talent Discovery', 'Employer Hiring Opportunities'];
-const benefits = [
-  { icon: Code2, title: 'Compete', text: 'Solve practical challenges that test your abilities.' },
-  { icon: Award, title: 'Get Recognised', text: 'Showcase your achievements through winner profiles and media opportunities.' },
-  { icon: Briefcase, title: 'Get Hired', text: 'Connect with employers looking for proven talent.' },
-];
 const heroPrizes = [
   { icon: Trophy, value: '₹5,00,000', label: 'Champion prize' },
   { icon: Award, value: '₹2,50,000', label: 'Runner-up prize' },
@@ -148,7 +144,8 @@ export default function Hackathon3() {
     <div className="ht2-ribbon ht2-soft"><div className="ht2-marquee">{[0, 1].map(repeat => <div key={repeat} aria-hidden={repeat === 1} className="flex items-center gap-12">{trust.map(item => <span className="flex items-center gap-12 whitespace-nowrap text-sm font-medium" key={item}>{item}<Sparkles className="h-4 w-4 text-primary" /></span>)}</div>)}</div></div>
 
     {/* 3. Introduction */}
-    <section className="ht2-band ht2-dark"><div className="container ht2-wrap grid items-center gap-10 md:grid-cols-2"><div><span className="ht2-eyebrow">More than a hackathon</span><h2 className="ht2-title">Where Skills<br />Meet Opportunity.</h2><p className="ht2-copy">TalentCIR Hackathons discover, evaluate, and celebrate exceptional talent across industries. Participants compete in real-world challenges built around industry needs, while leading companies engage with emerging professionals.</p><p className="ht2-copy">From the competition floor to national media coverage and the Talent Auction marketplace, we turn demonstrated skills into meaningful career opportunities.</p><div className="mt-7 grid gap-5 sm:grid-cols-3">{benefits.map(({ icon: Icon, title, text }) => <div key={title}><Icon className="h-6 w-6" /><p className="mt-3 font-bold">{title}</p><p className="mt-1 text-xs opacity-75">{text}</p></div>)}</div></div><img src={event1} className="ht2-photo" alt="Participants presenting solutions at a hackathon" loading="lazy" /></div></section>
+    {/* Featured event */}
+    <section id="ht3-feature" className="ht2-band scroll-mt-24"><div className="container ht2-wrap"><FeaturedEventCard monoAccents registerTo="/auth?mode=signup" /></div></section>
 
 
     {/* 5. Upcoming */}
