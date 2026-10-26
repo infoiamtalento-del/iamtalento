@@ -10,7 +10,6 @@ import event1 from '@/assets/hackathon-event-1.jpg';
 import event2 from '@/assets/hackathon-event-2.jpg';
 import './hackathon2.css';
 
-const navItems = [['Overview', 'ht3-overview'], ['Industries', 'ht3-industries'], ['Upcoming Events', 'ht3-upcoming'], ['Prizes', 'ht3-prizes'], ['Hall of Fame', 'ht3-fame'], ['Talent Auction', 'ht3-auction'], ['Sponsors', 'ht3-sponsors'], ['FAQs', 'ht3-faq']];
 const trust = ['Industry-Sponsored Challenges', 'Multiple Industry Domains', 'Metropolitan City Events', 'National Media Recognition', 'Exclusive Talent Discovery', 'Employer Hiring Opportunities'];
 const benefits = [
   { icon: Code2, title: 'Compete', text: 'Solve practical challenges that test your abilities.' },
@@ -80,7 +79,7 @@ const faqs = [
   ['Do I need to pay to participate?', 'Fees depend on the hackathon. Each event page shows whether registration is free or paid.'],
   ['How can my company sponsor a hackathon?', 'Select Become a Sponsor and our partnerships team will share the sponsorship deck and next steps.'],
 ];
-const logos = ['google', 'microsoft', 'amazon', 'flipkart', 'infosys', 'tcs'];
+const logos = ['google', 'microsoft', 'amazon', 'flipkart', 'infosys', 'tcs', 'razorpay', 'swiggy'];
 
 function Heading({ eyebrow, first, second, description }: { eyebrow: string; first: string; second?: string; description?: string }) {
   return <div className="ht2-heading"><span className="ht2-eyebrow">{eyebrow}</span><h2 className="ht2-title">{first}{second && <><br /><span className="text-primary">{second}</span></>}</h2>{description && <p className="ht2-copy">{description}</p>}</div>;
@@ -108,15 +107,17 @@ export default function Hackathon3() {
       <p className="mt-8 text-xs text-muted-foreground">Prize amounts vary by event and are confirmed on each hackathon page.</p>
     </div></section>
 
-    {/* Page navigation */}
-    <nav aria-label="Hackathon sections" className="ht2-surface ht2-line"><div className="container ht2-wrap flex gap-2 overflow-x-auto py-3">{navItems.map(([label, id]) => <button key={id} type="button" onClick={() => scrollTo(id)} className="ht2-pill whitespace-nowrap px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-primary">{label}</button>)}</div></nav>
+    {/* 2. Hiring partners */}
+    <section id="ht3-partners" className="ht2-band scroll-mt-24"><div className="container ht2-wrap">
+      <Heading eyebrow="Hiring Partners" first="Top Companies. Big Prizes." second="Real Possibilities." description="Meet the teams behind industry challenges and career opportunities." />
+      <div className="grid grid-cols-2 items-center gap-x-10 gap-y-10 sm:grid-cols-4">{logos.map(logo => <img key={logo} src={`/company-logos/${logo}.svg`} alt={`${logo} logo`} className="h-9 w-auto max-w-full object-contain justify-self-center" loading="lazy" />)}</div>
+    </div></section>
 
     {/* 2. Trust strip */}
     <div className="ht2-ribbon ht2-soft"><div className="ht2-marquee">{[0, 1].map(repeat => <div key={repeat} aria-hidden={repeat === 1} className="flex items-center gap-12">{trust.map(item => <span className="flex items-center gap-12 whitespace-nowrap text-sm font-medium" key={item}>{item}<Sparkles className="h-4 w-4 text-primary" /></span>)}</div>)}</div></div>
 
     {/* 3. Introduction */}
     <section className="ht2-band ht2-dark"><div className="container ht2-wrap grid items-center gap-10 md:grid-cols-2"><div><span className="ht2-eyebrow">More than a hackathon</span><h2 className="ht2-title">Where Skills<br />Meet Opportunity.</h2><p className="ht2-copy">TalentCIR Hackathons discover, evaluate, and celebrate exceptional talent across industries. Participants compete in real-world challenges built around industry needs, while leading companies engage with emerging professionals.</p><p className="ht2-copy">From the competition floor to national media coverage and the Talent Auction marketplace, we turn demonstrated skills into meaningful career opportunities.</p><div className="mt-7 grid gap-5 sm:grid-cols-3">{benefits.map(({ icon: Icon, title, text }) => <div key={title}><Icon className="h-6 w-6" /><p className="mt-3 font-bold">{title}</p><p className="mt-1 text-xs opacity-75">{text}</p></div>)}</div></div><img src={event1} className="ht2-photo" alt="Participants presenting solutions at a hackathon" loading="lazy" /></div></section>
-    <div className="container ht2-wrap py-8"><div className="flex flex-wrap items-center justify-between gap-6">{logos.map(logo => <img key={logo} src={`/company-logos/${logo}.svg`} alt={logo} className="h-9 w-24 object-contain" loading="lazy" />)}</div></div>
 
     {/* 4. Industries */}
     <section id="ht3-industries" className="ht2-band ht2-surface scroll-mt-24"><div className="container ht2-wrap"><Heading eyebrow="Explore hackathons by industry" first="One Platform. Every Industry." second="Endless Possibilities." description="Discover competitions that match your skills, interests, and career ambitions." /><div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">{industries.map(({ icon: Icon, title, text, cta }) => <article key={title} className="ht2-tint ht2-track-card rounded-md p-7"><Icon className="mb-6 h-10 w-10 text-primary" /><h3 className="text-xl font-bold">{title}</h3><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text}</p><button type="button" onClick={() => scrollTo('ht3-upcoming')} className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary">{cta}<ArrowRight className="h-4 w-4" /></button></article>)}</div><div className="mt-7 flex flex-wrap items-center gap-2"><span className="mr-2 text-sm text-muted-foreground">Also coming:</span>{moreIndustries.map(item => <span key={item} className="ht2-pill border border-border px-3 py-1 text-xs font-medium">{item}</span>)}</div><div className="mt-8"><Button variant="outline" className="rounded-full" onClick={() => scrollTo('ht3-upcoming')}>View All Industry Hackathons<ArrowRight className="h-4 w-4" /></Button></div></div></section>
