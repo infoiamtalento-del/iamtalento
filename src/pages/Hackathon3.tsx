@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Award, BarChart3, BrainCircuit, Briefcase, CheckCircle2, Code2, Cpu, Eye, Gavel, HeartPulse, Landmark, MapPin, Megaphone, Newspaper, Search, ShoppingBag, Sparkles, Target, Trophy, Users } from 'lucide-react';
+import { ArrowRight, Award, BadgeCheck, BarChart3, BrainCircuit, Briefcase, CheckCircle2, Code2, Cpu, Crown, Eye, Gavel, HeartPulse, Landmark, MapPin, Medal, Megaphone, Newspaper, Search, ShoppingBag, Sparkles, Star, Target, Trophy, Users } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
@@ -45,9 +45,12 @@ const steps = [
   ['05', 'Get Discovered by Employers', 'With your consent, your verified achievements and professional profile can be showcased to participating employers.'],
   ['06', 'Unlock Hiring Opportunities', "Connect with employers through TalentCIR's Talent Auction marketplace, where companies can express interest and submit hiring offers."],
 ];
-const prizes = [
-  { label: 'Champion', amount: '₹5,00,000', items: ["Winner's certificate", 'Featured winner profile', 'Media and PR opportunities', 'Employer discovery opportunities'] },
-  { label: 'Runner-Up', amount: '₹2,50,000', items: ['Runner-up recognition', 'Achievement certificate', 'Profile visibility opportunities', 'Employer discovery opportunities'] },
+const prizeTiers = [
+  { icon: Crown, label: 'Champion', value: '₹5,00,000', note: "Winner's Prize", text: 'Plus recognition and Job Auction eligibility', featured: true },
+  { icon: Award, label: 'Runner-Up', value: '₹2,50,000', note: 'Runner-Up Prize', text: 'Plus recognition and employer visibility' },
+  { icon: Medal, label: 'Third Place', value: '₹1,00,000', note: 'Third-Place Prize', text: 'Plus recognition and verified achievement badge' },
+  { icon: Star, label: 'Top 10', value: 'Verified Badge', note: 'Finalist Recognition', text: 'Employer visibility and achievement certificate' },
+  { icon: BadgeCheck, label: 'All Participants', value: 'Certificate', note: 'Participation Reward', text: 'Verified profile boost and skill credentials' },
 ];
 const media = ['Newspaper features and winner announcements', 'Digital PR publications and online media coverage', 'Winner interviews and professional success stories', 'TalentCIR Hall of Fame profiles', 'Social media and industry community features', 'Employer-facing achievement showcases'];
 const auction = [
@@ -138,6 +141,9 @@ export default function Hackathon3() {
       <div className="mt-8"><Button variant="outline" className="rounded-full" onClick={() => scrollTo('ht3-upcoming')}>Find Your Hackathon<ArrowRight className="h-4 w-4" /></Button></div>
     </div></section>
 
+    {/* 5. Prize & rewards */}
+    <section id="ht3-prizes" className="ht2-band ht2-tint scroll-mt-24"><div className="container ht2-wrap"><Heading eyebrow="Prize & Rewards" first="Big Ideas Deserve" second="Bigger Rewards." description="Your skills could unlock life-changing prizes, national exposure and exclusive hiring opportunities." /><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">{prizeTiers.map(({ icon: Icon, label, value, note, text, featured }) => <article key={label} className={`flex flex-col rounded-md p-6 ${featured ? 'ht2-dark' : 'ht2-surface border border-border/60'}`}><span className={`flex h-11 w-11 items-center justify-center rounded-full ${featured ? '' : 'bg-primary/10 text-primary'}`} style={featured ? { background: 'hsl(var(--hackathon-on-dark) / .14)' } : undefined}><Icon className="h-5 w-5" /></span><p className={`mt-6 text-[11px] font-bold uppercase tracking-wider ${featured ? 'opacity-70' : 'text-muted-foreground'}`}>{label}</p><p className="mt-2 font-display text-2xl font-bold leading-tight">{value}</p><p className={`mt-1 text-xs font-semibold ${featured ? 'opacity-80' : 'text-primary'}`}>{note}</p><p className={`mt-4 text-sm leading-relaxed ${featured ? 'opacity-75' : 'text-muted-foreground'}`}>{text}</p></article>)}</div><div className="mt-8"><Cta label="Compete for the Crown" /></div><p className="mt-6 text-sm text-muted-foreground">Third-place, finalist and participation rewards are indicative and confirmed on each hackathon page.</p></div></section>
+
     {/* 2. Trust strip */}
     <div className="ht2-ribbon ht2-soft"><div className="ht2-marquee">{[0, 1].map(repeat => <div key={repeat} aria-hidden={repeat === 1} className="flex items-center gap-12">{trust.map(item => <span className="flex items-center gap-12 whitespace-nowrap text-sm font-medium" key={item}>{item}<Sparkles className="h-4 w-4 text-primary" /></span>)}</div>)}</div></div>
 
@@ -151,8 +157,6 @@ export default function Hackathon3() {
     {/* 6. How it works */}
     <section className="ht2-band ht2-surface"><div className="container ht2-wrap"><Heading eyebrow="How it works" first="From Registration" second="to Recognition." description="Six clear steps take you from your first registration to real hiring opportunities." /><div className="grid gap-6 md:grid-cols-3">{steps.slice(0, 3).map(([n, title, text]) => <article key={n} className="ht2-tint rounded-md p-7"><span className="text-xs text-primary">STEP {n}</span><h3 className="mt-2 text-xl font-bold">{title}</h3><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text}</p></article>)}</div><div className="mt-7 grid gap-5 md:grid-cols-3">{steps.slice(3).map(([n, title, text]) => <div key={n} className="flex gap-5 border-t border-border py-5"><span className="text-2xl font-bold text-primary">{n}</span><div><h3 className="font-bold">{title}</h3><p className="mt-2 text-sm text-muted-foreground">{text}</p></div></div>)}</div></div></section>
 
-    {/* 7. Prizes */}
-    <section id="ht3-prizes" className="ht2-band ht2-tint scroll-mt-24"><div className="container ht2-wrap"><Heading eyebrow="Prizes & rewards" first="Great Skills Deserve" second="Great Recognition." description="Compete for cash prizes, professional recognition, and opportunities that can accelerate your career." /><div className="grid gap-6 md:grid-cols-2">{prizes.map((prize, index) => <article key={prize.label} className={`rounded-md p-8 ${index === 0 ? 'ht2-dark' : 'ht2-surface'}`}><Trophy className="h-8 w-8" /><p className="mt-5 text-xs font-semibold uppercase opacity-75">{prize.label}</p><p className="mt-2 font-display text-5xl font-bold">{prize.amount}</p><ul className="mt-6 space-y-3">{prize.items.map(item => <li key={item} className="flex items-center gap-3 text-sm"><CheckCircle2 className="h-4 w-4 shrink-0" />{item}</li>)}</ul></article>)}</div><p className="mt-6 text-sm text-muted-foreground">Additional rewards may include sponsor prizes, mentorship, interview opportunities, and industry networking, depending on the event.</p></div></section>
 
     {/* 8. Media & PR */}
     <section className="ht2-band ht2-surface"><div className="container ht2-wrap"><div className="ht2-feature-grid grid items-center md:grid-cols-2"><img src={event2} alt="Hackathon winners on stage" className="ht2-photo" loading="lazy" /><div><span className="ht2-eyebrow">National media & PR spotlight</span><h2 className="ht2-title">Your Achievement Deserves<br /><span className="text-primary">a National Audience.</span></h2><p className="ht2-copy">Winning a TalentCIR Hackathon is more than a competition result. It's a chance to showcase your capabilities, accomplishments, and professional potential. Selected winners can receive:</p><ul className="mt-6 grid gap-3 sm:grid-cols-2">{media.map(item => <li key={item} className="flex gap-3 text-sm"><Newspaper className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{item}</li>)}</ul><div className="mt-7"><Button className="rounded-full" onClick={() => scrollTo('ht3-fame')}>Explore the Hall of Fame<ArrowRight className="h-4 w-4" /></Button></div></div></div></div></section>
