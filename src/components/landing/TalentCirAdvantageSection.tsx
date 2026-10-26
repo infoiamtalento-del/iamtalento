@@ -26,7 +26,7 @@ const engines = [
     id: "learn",
     step: "01",
     title: "LEARN",
-    headline: "Learn Smarter. Level Up Faster.",
+    headline: "Learn. Grow. Excel.",
     icon: GraduationCap,
     points: [
       "Learn from the Experts",
@@ -45,7 +45,7 @@ const engines = [
     id: "assess",
     step: "02",
     title: "SKILL ASSESSMENT",
-    headline: "Know Your Skills. Prove Your Worth.",
+    headline: "Test Skills. Know Your Worth.",
     icon: ShieldCheck,
     points: [
       "AI-Powered Skill Tests",
@@ -64,7 +64,7 @@ const engines = [
     id: "hire",
     step: "03",
     title: "GET HIRED",
-    headline: "Get Discovered. Get Shortlisted. Get Hired.",
+    headline: "Get Seen. Get Hired.",
     icon: Briefcase,
     points: [
       "Find Jobs That Fit You",
