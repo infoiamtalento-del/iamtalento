@@ -34,3 +34,5 @@
 - Keep the numbered employer benefits list in one shared presentation component whose items, eyebrow and headline arrive as props, so each employer page supplies its own benefits without a second copy of the layout.
 
 - Site-wide CSS forces `background-image: none !important` on every element (index.css "zero gradients sitewide"), so `bg-gradient-*` utilities and CSS gradients never paint; build edge fades, soft wipes and similar effects with `mask-image` instead.
+
+- Keep the hackathon featured-event card ("Code Arena · Season 4") in one shared component (src/components/landing/FeaturedEventCard.tsx) used by both the homepage spotlight and /hackathon3, with the register destination and palette-restricted accents passed as props, so the card stays identical across pages without changing homepage behaviour.
