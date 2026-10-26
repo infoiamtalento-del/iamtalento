@@ -339,6 +339,3 @@
 
 ## Hackathon3 — why participate photo cards
 - Add the six photo-led "Why Participate in a TalentCIR Hackathon?" cards above "Big Ideas Deserve Bigger Rewards." — pending
-
-## Hackathon3 — featured event banner
-- Add the "Code Arena" featured-event banner (pills, meta chips, live countdown, register CTA, host card, photo carousel) above "Big Ideas Deserve Bigger Rewards." in brand blue — done
