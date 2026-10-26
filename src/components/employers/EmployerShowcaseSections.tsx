@@ -171,7 +171,7 @@ export const LindaShowcaseSection = () => (
         <motion.div {...reveal} className="overflow-hidden rounded-2xl border border-border bg-card shadow-xl">
           <img src={lindaDashboardImg} alt="TalentCIR AI interview in progress" className="w-full object-cover" loading="lazy" />
         </motion.div>
-        <div>
+        <div className="rounded-2xl border border-border bg-card p-7 shadow-sm md:p-10">
           <motion.div {...reveal}>
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-primary">AI Interviewer</p>
             <h2 className="font-display text-3xl font-bold leading-[1.08] sm:text-4xl lg:text-5xl">
@@ -182,7 +182,7 @@ export const LindaShowcaseSection = () => (
           <div className="mt-8 grid gap-x-8 gap-y-6 sm:grid-cols-2">
             {interviewPoints.map(({ icon: Icon, title, text }, i) => (
               <motion.div {...reveal} transition={{ duration: 0.5, delay: i * 0.05 }} key={title} className="flex items-start gap-3">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-accent/60 text-primary"><Icon className="h-5 w-5" /></span>
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-primary/10 text-primary"><Icon className="h-5 w-5" /></span>
                 <div>
                   <h3 className="font-display text-sm font-bold text-foreground">{title}</h3>
                   <p className="mt-1 text-xs leading-snug text-muted-foreground">{text}</p>
@@ -213,13 +213,13 @@ const platformPoints = [
   { title: "Bulk Campus Hiring & Screening", text: "Screen thousands of candidates at once, with ranked shortlists ready for your team the moment the drive ends." },
   { title: "Create AI Scheduled Interviews", text: "Automated interview rounds, hands-free. Candidates join on their schedule and you review evidence-linked scores." },
 ];
-export const PlatformSection = ({ eyebrow = "One Platform", first = "Everything It Takes,", second = "In One Platform.", description }: { eyebrow?: string; first?: string; second?: string; description?: React.ReactNode }) => (
+export const PlatformSection = ({ eyebrow = "One Platform", first = "Everything It Takes,", second = "In One Platform.", description, boxed = false }: { eyebrow?: string; first?: string; second?: string; description?: React.ReactNode; boxed?: boolean }) => (
   <section className="py-20 md:py-28">
     <div className="container">
       <CenterIntro eyebrow={eyebrow} first={first} second={second} description={description ?? <>Assess, proctor, brand, and interview without juggling separate tools.<br className="hidden md:block" /> Six capabilities, one connected workflow.</>} />
-      <div className="mx-auto grid max-w-7xl border-l border-t border-border sm:grid-cols-2 lg:grid-cols-3">
+      <div className={cn("mx-auto grid max-w-7xl sm:grid-cols-2 lg:grid-cols-3", boxed ? "gap-5" : "border-l border-t border-border")}>
         {platformPoints.map(({ title, text }, i) => (
-          <motion.div {...reveal} transition={{ duration: 0.5, delay: i * 0.06 }} key={title} className={cn("group flex flex-col border-b border-r border-border p-8 transition-colors hover:bg-card md:p-10", i === 0 && "bg-card")}>
+          <motion.div {...reveal} transition={{ duration: 0.5, delay: i * 0.06 }} key={title} className={cn("group flex flex-col p-8 transition-colors md:p-10", boxed ? "rounded-xl border border-border bg-card shadow-sm hover:-translate-y-1 hover:border-primary/30 hover:shadow-md" : "border-b border-r border-border hover:bg-card", !boxed && i === 0 && "bg-card")}>
             <p className="text-sm font-semibold tracking-[0.15em] text-primary">0{i + 1}</p>
             <h3 className="mb-5 mt-10 font-serif text-3xl font-normal leading-tight tracking-normal text-foreground">{title}</h3>
             <p className="flex-1 text-base leading-relaxed text-muted-foreground">{text}</p>
@@ -559,6 +559,7 @@ export const USPSection = ({
     <br className="hidden md:block" /> Each one is included at no extra cost.</>,
   items,
   image = recruiterImage,
+  boxed = false,
 }: {
   eyebrow?: string;
   first?: string;
@@ -566,9 +567,11 @@ export const USPSection = ({
   description?: React.ReactNode;
   items: USPItem[];
   image?: string;
+  boxed?: boolean;
 }) => (
   <section aria-labelledby="employer-benefits-heading" className="bg-card py-20 md:py-28">
     <div className="container">
+      <div className={cn(boxed && "rounded-2xl border border-border bg-card p-6 shadow-sm md:p-10")}>
       <motion.div {...reveal} className="mx-auto max-w-3xl text-center">
         <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-primary">{eyebrow}</p>
         <h2 id="employer-benefits-heading" className="mb-5 font-display text-3xl font-bold leading-[1.08] tracking-normal sm:text-4xl lg:text-5xl">
@@ -598,6 +601,7 @@ export const USPSection = ({
             </li>
           ))}
         </ol>
+      </div>
       </div>
     </div>
   </section>
