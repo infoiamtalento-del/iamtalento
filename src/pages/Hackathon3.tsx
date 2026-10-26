@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Award, BarChart3, BrainCircuit, Briefcase, CheckCircle2, Code2, Cpu, Eye, Gavel, HeartPulse, Landmark, Megaphone, Newspaper, Search, Sparkles, Target, Trophy, Users } from 'lucide-react';
+import { ArrowRight, Award, BarChart3, BrainCircuit, Briefcase, CheckCircle2, Code2, Cpu, Eye, Gavel, HeartPulse, Landmark, MapPin, Megaphone, Newspaper, Search, Sparkles, Target, Trophy, Users } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
@@ -17,6 +17,11 @@ const benefits = [
   { icon: Award, title: 'Get Recognised', text: 'Showcase your achievements through winner profiles and media opportunities.' },
   { icon: Briefcase, title: 'Get Hired', text: 'Connect with employers looking for proven talent.' },
 ];
+const heroPrizes = [
+  { icon: Trophy, value: '₹5,00,000', label: 'Champion prize' },
+  { icon: Award, value: '₹2,50,000', label: 'Runner-up prize' },
+  { icon: MapPin, value: 'Pan-India', label: 'City competitions' },
+];
 const industries = [
   { icon: BrainCircuit, title: 'AI & Data Science', text: 'Build intelligent solutions, analyse data, and solve complex problems.', cta: 'Explore AI Hackathons' },
   { icon: Code2, title: 'IT & Software Development', text: 'Showcase coding, software engineering, and product development skills.', cta: 'Explore IT Hackathons' },
@@ -27,9 +32,9 @@ const industries = [
 ];
 const moreIndustries = ['Sales', 'Business Management', 'Design', 'Supply Chain', 'Human Resources', 'Sustainability', 'Entrepreneurship'];
 const events = [
-  { name: 'National AI Innovation Hackathon', industry: 'AI & Data Science', city: 'Bengaluru', format: 'Team / Individual', deadline: 'Registration Open', prize: '₹50,000' },
-  { name: 'FinTech Builders Challenge', industry: 'Finance & FinTech', city: 'Mumbai', format: 'Team', deadline: 'Opening Soon', prize: '₹50,000' },
-  { name: 'Growth Marketing Sprint', industry: 'Digital Marketing & Growth', city: 'Delhi', format: 'Individual', deadline: 'Opening Soon', prize: '₹50,000' },
+  { name: 'National AI Innovation Hackathon', industry: 'AI & Data Science', city: 'Bengaluru', format: 'Team / Individual', deadline: 'Registration Open', prize: '₹5,00,000' },
+  { name: 'FinTech Builders Challenge', industry: 'Finance & FinTech', city: 'Mumbai', format: 'Team', deadline: 'Opening Soon', prize: '₹5,00,000' },
+  { name: 'Growth Marketing Sprint', industry: 'Digital Marketing & Growth', city: 'Delhi', format: 'Individual', deadline: 'Opening Soon', prize: '₹5,00,000' },
 ];
 const steps = [
   ['01', 'Discover & Register', 'Choose an industry hackathon, review the eligibility criteria, and register individually or as a team.'],
@@ -40,7 +45,7 @@ const steps = [
   ['06', 'Unlock Hiring Opportunities', "Connect with employers through TalentCIR's Talent Auction marketplace, where companies can express interest and submit hiring offers."],
 ];
 const prizes = [
-  { label: 'Champion', amount: '₹50,000', items: ["Winner's certificate", 'Featured winner profile', 'Media and PR opportunities', 'Employer discovery opportunities'] },
+  { label: 'Champion', amount: '₹5,00,000', items: ["Winner's certificate", 'Featured winner profile', 'Media and PR opportunities', 'Employer discovery opportunities'] },
   { label: 'Runner-Up', amount: '₹2,50,000', items: ['Runner-up recognition', 'Achievement certificate', 'Profile visibility opportunities', 'Employer discovery opportunities'] },
 ];
 const media = ['Newspaper features and winner announcements', 'Digital PR publications and online media coverage', 'Winner interviews and professional success stories', 'TalentCIR Hall of Fame profiles', 'Social media and industry community features', 'Employer-facing achievement showcases'];
@@ -97,11 +102,10 @@ export default function Hackathon3() {
     {/* 1. Hero */}
     <section id="ht3-overview" className="ht2-hero ht2-tint scroll-mt-24"><div className="container ht2-wrap">
       <div className="grid items-center gap-12 lg:grid-cols-2">
-        <div className="h2-root" style={{ background: 'transparent' }}><div className="h2-hero ht3-hero-copy" style={{ padding: 0, minHeight: 0, display: 'block', background: 'transparent' }}><div className="h2-hero-copy"><span className="h2-eyebrow">India-Wide Industry Hackathons</span><h1>Compete with the Best.<span className="h2-hero-accent">Get Recognised. Get Hired.</span><em>Real-World Challenges. Cash Prizes. National Recognition. All Connected.</em></h1><p className="h2-hero-lede">Prove your skills through real-world industry challenges. Compete with top talent, win exciting cash prizes, earn national media recognition, and get discovered by leading companies through TalentCIR.</p><div className="h2-hero-actions"><button type="button" className="h2-btn h2-btn-primary" onClick={() => scrollTo('ht3-upcoming')}>Explore Hackathons<ArrowRight /></button><button type="button" className="h2-btn h2-btn-ghost" onClick={() => scrollTo('ht3-sponsors')}>Become a Sponsor</button></div><p className="h2-hero-trust">Win <span>cash prizes</span>, earn <span>national media recognition</span> and get discovered by leading companies.</p><ul className="h2-hero-chips">{benefits.map(({ icon: Icon, title, text }) => <li key={title}><Icon size={20} /><div><b className="block text-sm font-semibold">{title}</b><span>{text}</span></div></li>)}</ul></div></div></div>
+        <div className="h2-root" style={{ background: 'transparent' }}><div className="h2-hero ht3-hero-copy" style={{ padding: 0, minHeight: 0, display: 'block', background: 'transparent' }}><div className="h2-hero-copy"><span className="h2-eyebrow">India-Wide Industry Hackathons</span><h1>Compete with the Best.<span className="h2-hero-accent">Get Recognised. Get Hired.</span><em>Real-World Challenges. Cash Prizes. National Recognition. All Connected.</em></h1><p className="h2-hero-lede">Prove your skills through real-world industry challenges. Compete with top talent, win exciting cash prizes, earn national media recognition, and get discovered by leading companies through TalentCIR.</p><div className="h2-hero-actions"><button type="button" className="h2-btn h2-btn-primary" onClick={() => scrollTo('ht3-upcoming')}>Explore Hackathons<ArrowRight /></button><button type="button" className="h2-btn h2-btn-ghost" onClick={() => scrollTo('ht3-sponsors')}>Become a Sponsor</button></div><p className="h2-hero-trust">Win <span>cash prizes</span>, earn <span>national media recognition</span> and get discovered by leading companies.</p><ul className="h2-hero-chips">{heroPrizes.map(({ icon: Icon, value, label }) => <li key={label}><Icon size={20} /><div><b className="block text-sm font-semibold">{value}</b><span>{label}</span></div></li>)}</ul></div></div></div>
         <div className="relative"><img src={arena} className="ht2-hero-image" alt="Participants competing at a TalentCIR hackathon" /><div className="absolute bottom-5 left-5 rounded-md bg-card px-4 py-3"><p className="text-xs text-muted-foreground">Pan-India</p><p className="font-bold text-primary">City Competitions</p></div></div>
       </div>
-      <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-3">{[['₹50,000', 'Champion Prize*'], ['₹2,50,000', 'Runner-Up Prize*'], ['Pan-India', 'City Competitions']].map(([value, label]) => <div className="ht2-surface rounded-md p-5" key={label}><p className="text-xs text-muted-foreground">{label}</p><p className="mt-2 font-display text-3xl font-bold">{value}</p></div>)}</div>
-      <p className="mt-3 text-xs text-muted-foreground">*Prize amounts vary by event and are confirmed on each hackathon page.</p>
+      <p className="mt-8 text-xs text-muted-foreground">Prize amounts vary by event and are confirmed on each hackathon page.</p>
     </div></section>
 
     {/* Page navigation */}
