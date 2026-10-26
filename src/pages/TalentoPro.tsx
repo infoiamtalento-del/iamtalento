@@ -695,7 +695,7 @@ const TalentoPro: React.FC = () => {
       />
 
       {/* Main Content View Switcher */}
-      <main className="flex-1 container w-full pt-24 pb-8">
+      <main className="flex-1 w-full max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 pt-24 pb-12">
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
           {/* Left Side Dashboard Sidebar */}
           <ProEmployerSidebar

@@ -229,7 +229,14 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
         scrolled ? "py-3" : "py-4"
       )}
     >
-      <nav className="container flex items-center" aria-label="Main navigation">
+      <nav
+        className={cn(
+          isProPage
+            ? "w-full max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 flex items-center"
+            : "container flex items-center"
+        )}
+        aria-label="Main navigation"
+      >
         <Link to="/" className="flex items-center gap-2 group mr-auto" aria-label="IAmTalento Home">
           <img src={siteLogo.url} alt="I Am Talento" className="h-10 w-auto object-contain" />
         </Link>

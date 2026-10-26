@@ -26,7 +26,7 @@ export function ProEmployerSidebar({
   const menuItems = isEmployer ? employerMenuItems : employeeMenuItems;
 
   return (
-    <aside className="w-full lg:w-64 shrink-0">
+    <aside className="w-full lg:w-64 xl:w-72 shrink-0">
       <div className="lg:sticky lg:top-24 rounded-2xl border border-border bg-card p-3 shadow-xs">
         <div className="px-3 py-2.5 mb-2 border-b border-border/80">
           <div className="flex items-center gap-2">
