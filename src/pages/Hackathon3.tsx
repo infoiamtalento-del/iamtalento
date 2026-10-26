@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Award, BarChart3, BrainCircuit, Briefcase, CheckCircle2, Code2, Cpu, Eye, Gavel, HeartPulse, Landmark, MapPin, Megaphone, Newspaper, Search, ShoppingBag, Sparkles, Target, Trophy, Users } from 'lucide-react';
+import { ArrowRight, Award, BadgeCheck, BarChart3, BrainCircuit, Briefcase, CheckCircle2, Code2, Cpu, Crown, Eye, Gavel, HeartPulse, Landmark, MapPin, Medal, Megaphone, Newspaper, Search, ShoppingBag, Sparkles, Star, Target, Trophy, Users } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
@@ -45,9 +45,12 @@ const steps = [
   ['05', 'Get Discovered by Employers', 'With your consent, your verified achievements and professional profile can be showcased to participating employers.'],
   ['06', 'Unlock Hiring Opportunities', "Connect with employers through TalentCIR's Talent Auction marketplace, where companies can express interest and submit hiring offers."],
 ];
-const prizes = [
-  { label: 'Champion', amount: '₹5,00,000', items: ["Winner's certificate", 'Featured winner profile', 'Media and PR opportunities', 'Employer discovery opportunities'] },
-  { label: 'Runner-Up', amount: '₹2,50,000', items: ['Runner-up recognition', 'Achievement certificate', 'Profile visibility opportunities', 'Employer discovery opportunities'] },
+const prizeTiers = [
+  { icon: Crown, label: 'Champion', value: '₹5,00,000', note: "Winner's Prize", text: 'Plus recognition and Job Auction eligibility', featured: true },
+  { icon: Award, label: 'Runner-Up', value: '₹2,50,000', note: 'Runner-Up Prize', text: 'Plus recognition and employer visibility' },
+  { icon: Medal, label: 'Third Place', value: '₹1,00,000', note: 'Third-Place Prize', text: 'Plus recognition and verified achievement badge' },
+  { icon: Star, label: 'Top 10', value: 'Verified Badge', note: 'Finalist Recognition', text: 'Employer visibility and achievement certificate' },
+  { icon: BadgeCheck, label: 'All Participants', value: 'Certificate', note: 'Participation Reward', text: 'Verified profile boost and skill credentials' },
 ];
 const media = ['Newspaper features and winner announcements', 'Digital PR publications and online media coverage', 'Winner interviews and professional success stories', 'TalentCIR Hall of Fame profiles', 'Social media and industry community features', 'Employer-facing achievement showcases'];
 const auction = [
