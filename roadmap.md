@@ -332,3 +332,4 @@
 ## Hackathon3 — prize & rewards section
 - Move the prizes section up to position 5 (after industries) and rebuild it as a five-card reward row per the reference image — implemented
 - Verify card content, navy featured card, responsive layout and section order — pending
+- Move "How It Works" up to position 6, directly after the prize cards, keeping the six supplied steps — done; order and content verified in the browser, build OK.
