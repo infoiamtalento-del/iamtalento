@@ -39,12 +39,12 @@ export default function WinnersHallOfFame({ ctaTo = '/auth?mode=signup' }: { cta
 
   return (
     <div>
-      <div className="ht2-surface mb-8 grid gap-3 rounded-xl border border-border/60 p-4 sm:grid-cols-2 lg:grid-cols-6">
+      <div className="ht2-dark mt-2 mb-10 grid gap-4 rounded-xl p-6 sm:grid-cols-2 lg:grid-cols-6">
         {filterKeys.map(({ key, label }) => (
-          <label key={key} className="flex flex-col gap-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <label key={key} className="flex flex-col gap-1.5 text-[11px] font-semibold uppercase tracking-wider opacity-70">
             {label}
             <select value={f[key]} onChange={e => setF({ ...f, [key]: e.target.value })} aria-label={label}
-              className="h-10 rounded-md border border-border bg-card px-3 text-sm font-medium normal-case tracking-normal text-foreground">
+              className="h-11 rounded-md border border-border/50 bg-card px-3 text-sm font-medium normal-case tracking-normal text-foreground">
               <option value="">All</option>
               {options(key).map(o => <option key={o} value={o}>{o}</option>)}
             </select>
