@@ -27,28 +27,8 @@ const partnerLogos = [
 ];
 const doubledLogos = [...partnerLogos, ...partnerLogos];
 
-const HackathonSpotlightSection = () => {
-  const navigate = useNavigate();
-
-  return (
-    <section className="py-16 md:py-24">
-      <div className="container px-4 md:px-6">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-10 text-center flex flex-col items-center">
-          <SectionBadge label="Season 4: Now Open" icon={Trophy} />
-          <h2 className="mt-4 text-3xl md:text-4xl font-bold font-display text-foreground leading-[1.15]">
-            Compete. Build.
-            <br />
-            <span className="text-primary">Get Hired.</span>
-          </h2>
-          <p className="mt-4 text-muted-foreground text-base md:text-lg max-w-2xl">
-            Join India's biggest coding competition. Win cash prizes, earn your verified badge,
-            <br className="hidden md:block" />
-            and unlock direct interviews with top tech companies.
-          </p>
-        </motion.div>
-
-        <FeaturedEventCard />
-
+export const HackathonPrizeStrip = () => (
+      <>
         <div className="relative mt-4 py-3 overflow-hidden rounded-xl bg-card border border-border">
           <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-card to-transparent z-10" />
           <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-card to-transparent z-10" />
@@ -87,6 +67,33 @@ const HackathonSpotlightSection = () => {
             </motion.div>
           ))}
         </div>
+
+      </>
+);
+
+const HackathonSpotlightSection = () => {
+  const navigate = useNavigate();
+
+  return (
+    <section className="py-16 md:py-24">
+      <div className="container px-4 md:px-6">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-10 text-center flex flex-col items-center">
+          <SectionBadge label="Season 4: Now Open" icon={Trophy} />
+          <h2 className="mt-4 text-3xl md:text-4xl font-bold font-display text-foreground leading-[1.15]">
+            Compete. Build.
+            <br />
+            <span className="text-primary">Get Hired.</span>
+          </h2>
+          <p className="mt-4 text-muted-foreground text-base md:text-lg max-w-2xl">
+            Join India's biggest coding competition. Win cash prizes, earn your verified badge,
+            <br className="hidden md:block" />
+            and unlock direct interviews with top tech companies.
+          </p>
+        </motion.div>
+
+        <FeaturedEventCard />
+
+        <HackathonPrizeStrip />
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}

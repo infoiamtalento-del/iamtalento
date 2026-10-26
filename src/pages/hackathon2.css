@@ -79,3 +79,8 @@
 @media (max-width: 767px) {
   .hackathon2 .ht3-logo-strip { -webkit-mask-image: linear-gradient(to right, transparent 0, hsl(var(--cream)) 40px, hsl(var(--cream)) calc(100% - 40px), transparent 100%); mask-image: linear-gradient(to right, transparent 0, hsl(var(--cream)) 40px, hsl(var(--cream)) calc(100% - 40px), transparent 100%); }
 }
+/* /hackathon3: every non-navy section sits on the page beige */
+#root .hackathon2.ht3-page section.ht2-surface,
+#root .hackathon2.ht3-page section.ht2-tint,
+#root .hackathon2.ht3-page section.ht2-soft,
+#root .hackathon2.ht3-page section.ht2-hero { background-color: hsl(var(--cream)) !important; }
