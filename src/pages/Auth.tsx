@@ -44,7 +44,7 @@ const Auth = () => {
   const openDemoProfile = () => {
     const demoEmail = role === "employer" ? "demo.employer@talento.app" : "demo.candidate@talento.app";
     localStorage.setItem("tq_sess", JSON.stringify(demoEmail));
-    navigate("/talento-pro?view=dash");
+    navigate(role === "employer" ? "/talento-pro?view=dash&role=employer" : "/talento-pro?view=dash");
   };
   const demoUser = DEFAULT_USERS[role === "employer" ? "demo.employer@talento.app" : "demo.candidate@talento.app"];
 
@@ -67,9 +67,15 @@ const Auth = () => {
       .select("role")
       .eq("user_id", data.user.id);
     
-    const isEmployer = roles?.some((r: any) => r.role === "employer");
+    const isEmployer = roles?.some((r: any) => r.role === "employer") || role === "employer";
     toast.success("Welcome back!");
-    navigate(isEmployer ? "/employer-profile" : "/profile");
+    if (isEmployer) {
+      localStorage.setItem("tq_sess", JSON.stringify("demo.employer@talento.app"));
+      navigate("/talento-pro?view=dash&role=employer");
+    } else {
+      localStorage.setItem("tq_sess", JSON.stringify("demo.candidate@talento.app"));
+      navigate("/talento-pro?view=dash");
+    }
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
