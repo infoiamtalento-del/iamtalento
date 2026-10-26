@@ -322,3 +322,7 @@
 
 ## Employer page v2 — remove pricing and promise sections
 - Remove "Pay for Candidates Assessed. Not for Seats That Sit Empty." and "Our Promise: A Better Shortlist, or Your Money Back." — done; both headlines absent from the live page, Premium Solutions, questions and closing call to action render unchanged, no overflow, build OK
+
+## Hackathon3 — why participate section
+- Add "Why Participate" as section 3 with the six supplied points and a designed layout — pending
+- Verify the six points, prize figure and desktop/phone layout — pending
