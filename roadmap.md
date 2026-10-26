@@ -343,3 +343,4 @@
 ## Hackathon3 — hero copy refresh
 - Set the hero headline to "Compete with the Best. Get Recognised." / "Get Hired." with the supplied description, and remove the "Prize amounts vary by event..." note — done; verified in the browser (two headline lines, black then brand blue, description reads back, note absent, no horizontal overflow) and build OK.
 - Add the proof line "Leading brands. Real business challenges. Exceptional talent." below the hero buttons in the homepage pattern — done; sits between the buttons and the three prize items in the same muted-with-blue-spans style as the homepage hero, verified in the browser with no horizontal overflow and build OK.
+- Remove the "Your Skills Could Win You ₹5 Lakhs & a Career Breakthrough." sub-line from the hero — done; sub-line absent from the live page, headline still two lines, no horizontal overflow, build OK.
