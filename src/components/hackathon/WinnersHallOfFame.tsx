@@ -57,24 +57,19 @@ export default function WinnersHallOfFame({ ctaTo = '/auth?mode=signup' }: { cta
 
       <div className="space-y-6">
         {list.map(w => (
-          <article key={w.name} className="ht2-surface grid overflow-hidden rounded-xl border border-border/60 shadow-sm md:grid-cols-[240px_1fr]">
-            <div className="ht2-dark flex flex-col items-center justify-center p-6 text-center">
-              <div className="relative">
-                <img src={w.photo} alt={`${w.name}, ${w.award}`} className="h-24 w-24 rounded-lg border-4 object-cover" style={{ borderColor: 'hsl(var(--hackathon-on-dark) / .25)' }} loading="lazy" />
-                <span className="absolute -bottom-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-card text-primary"><Award className="h-4 w-4" /></span>
-              </div>
-              <h3 className="mt-4 font-bold">{w.name}</h3>
-              <p className="text-xs opacity-75">{w.industry}</p>
-              <span className="mt-3 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider" style={{ background: 'hsl(var(--hackathon-on-dark) / .14)' }}>{w.award}</span>
+          <article key={w.name} className="ht2-surface grid overflow-hidden rounded-xl border border-border/60 shadow-sm md:grid-cols-[260px_1fr]">
+            <div className="relative h-72 md:h-auto">
+              <img src={w.photo} alt={`${w.name}, ${w.award}`} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+              <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-card px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-primary shadow-sm"><Award className="h-3.5 w-3.5" />{w.award}</span>
             </div>
             <div className="p-6 md:p-7">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <h4 className="text-xl font-bold">{w.hackathon}</h4>
+                    <h3 className="text-2xl font-bold">{w.name}</h3>
                     <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold uppercase text-primary"><BadgeCheck className="h-3 w-3" />Verified</span>
                   </div>
-                  <p className="mt-1 text-sm font-semibold text-primary">{w.industry}</p>
+                  <p className="mt-1 text-sm font-semibold text-primary">{w.hackathon} · {w.industry}</p>
                   <p className="mt-2 flex flex-wrap gap-4 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1"><MapPin className="h-3.5 w-3.5" />{w.city}</span>
                     <span className="flex items-center gap-1"><Calendar className="h-3.5 w-3.5" />{w.year}</span>
