@@ -147,8 +147,9 @@ export const ProofHero = () => (
 const trustLogos = ["tcs", "infosys", "wipro", "google", "accenture", "razorpay", "zoho", "flipkart", "amazon", "swiggy"];
 
 export const ProofTrustBar = () => (
-  <section className="border-y border-border/60 bg-card py-10">
-    <div className="container text-center">
+  <section className="py-12 md:py-16">
+    <div className="container">
+      <div className="rounded-2xl border border-border bg-card p-8 text-center shadow-sm md:p-10">
       <p className="mb-6 text-[10px] font-bold uppercase tracking-[0.22em] text-muted-foreground">Hiring teams already hiring on proof</p>
       <div className="flex flex-wrap items-center justify-center gap-3">
         {[
@@ -165,6 +166,7 @@ export const ProofTrustBar = () => (
             <img key={`${name}-${i}`} src={`/company-logos/${name}.svg`} alt={`${name.toUpperCase()} logo`} loading="lazy" className="h-9 w-auto shrink-0 opacity-100 transition hover:grayscale hover:opacity-60 md:h-11" />
           ))}
         </div>
+      </div>
       </div>
     </div>
   </section>
