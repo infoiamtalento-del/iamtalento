@@ -226,13 +226,13 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 border-b border-border bg-card shadow-sm transition-all duration-300",
-        scrolled ? "py-3" : "py-4"
+        isProPage ? "h-16 flex items-center py-0" : (scrolled ? "py-3" : "py-4")
       )}
     >
       <nav
         className={cn(
           isProPage
-            ? "w-full max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 flex items-center"
+            ? "w-full px-4 sm:px-6 lg:px-8 xl:px-10 flex items-center"
             : "container flex items-center"
         )}
         aria-label="Main navigation"
