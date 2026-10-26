@@ -18,6 +18,7 @@ import {
 } from "@/data/proData";
 
 import { getCandidatePhoto } from "@/data/portalAssets";
+import { Building2 } from "lucide-react";
 import { ProView, ProDrawerState } from "@/components/pro/proTypes";
 import Navbar from "@/components/layout/Navbar";
 import { ProEmployerSidebar } from "@/components/pro/ProEmployerSidebar";
@@ -109,7 +110,11 @@ const normalizeUsers = (raw: any): Record<string, ProUser> => {
 
 const TalentoPro: React.FC = () => {
   // Navigation & Shell State
+  const [searchParams, setSearchParams] = useSearchParams();
   const [sessionEmail, setSessionEmail] = useState<string>(() => {
+    const fromRole = new URLSearchParams(window.location.search).get("role");
+    if (fromRole === "employer") return "demo.employer@talento.app";
+    if (fromRole === "employee" || fromRole === "candidate") return "demo.candidate@talento.app";
     const s = loadStorage("sess", "demo.candidate@talento.app");
     return s && typeof s === "string" ? s : "demo.candidate@talento.app";
   });
@@ -134,11 +139,10 @@ const TalentoPro: React.FC = () => {
 
   const currentRole: "candidate" | "employer" = currentUser.role || "candidate";
 
-  const [searchParams, setSearchParams] = useSearchParams();
   const [activeView, setActiveView] = useState<ProView>(() => {
     const fromParam = searchParams.get("view") as ProView | null;
     if (fromParam) return fromParam;
-    return currentRole === "employer" ? "cp" : "jobs";
+    return "dash";
   });
 
   useEffect(() => {
@@ -146,7 +150,13 @@ const TalentoPro: React.FC = () => {
     if (fromParam) {
       setActiveView(fromParam);
     }
-  }, [searchParams]);
+    const roleParam = searchParams.get("role");
+    if (roleParam === "employer" && sessionEmail !== "demo.employer@talento.app") {
+      setSessionEmail("demo.employer@talento.app");
+    } else if ((roleParam === "employee" || roleParam === "candidate") && sessionEmail !== "demo.candidate@talento.app") {
+      setSessionEmail("demo.candidate@talento.app");
+    }
+  }, [searchParams, sessionEmail]);
 
   const [editingCp, setEditingCp] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
@@ -681,7 +691,9 @@ const TalentoPro: React.FC = () => {
         accountMenu={() => (
           <div className="flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full border border-border bg-card shadow-2xs select-none">
             <div className="h-7 w-7 rounded-full bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center shrink-0 overflow-hidden">
-              {getCandidatePhoto(currentUser.name) ? (
+              {currentRole === "employer" ? (
+                <Building2 className="h-4 w-4" />
+              ) : getCandidatePhoto(currentUser.name) ? (
                 <img src={getCandidatePhoto(currentUser.name)} alt={currentUser.name} className="h-full w-full object-cover" />
               ) : (
                 (currentUser.name?.charAt(0) || "U").toUpperCase()
