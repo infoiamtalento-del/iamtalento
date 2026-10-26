@@ -20,8 +20,6 @@ import {
 import { getCandidatePhoto } from "@/data/portalAssets";
 import { ProView, ProDrawerState } from "@/components/pro/proTypes";
 import Navbar from "@/components/layout/Navbar";
-import { ProCandidateAccountMenu } from "@/components/pro/ProCandidateAccountMenu";
-import { ProEmployerAccountMenu } from "@/components/pro/ProEmployerAccountMenu";
 import { ProEmployerSidebar } from "@/components/pro/ProEmployerSidebar";
 import { ProJobsView } from "@/components/pro/ProJobsView";
 import { ProJobDetail } from "@/components/pro/ProJobDetail";
@@ -675,22 +673,19 @@ const TalentoPro: React.FC = () => {
           role: currentRole,
         }}
         onSignOut={() => localStorage.removeItem("tq_sess")}
-        accountMenu={(onSignOut) => (
-          <ProEmployerAccountMenu
-            name={currentUser.name}
-            avatarSrc={getCandidatePhoto(currentUser.name)}
-            roleLabel={currentRole === "employer" ? "Employer Account" : "Employee Account"}
-            activeView={effectiveView}
-            unreadCount={unreadCount}
-            onNavigate={(view) => {
-              setDrawerState(null);
-              setSearchParams({ view });
-              setEditingCp(false);
-              setActiveView(view);
-              window.scrollTo({ top: 0 });
-            }}
-            onSignOut={onSignOut}
-          />
+        accountMenu={() => (
+          <div className="flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full border border-border bg-card shadow-2xs select-none">
+            <div className="h-7 w-7 rounded-full bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center shrink-0 overflow-hidden">
+              {getCandidatePhoto(currentUser.name) ? (
+                <img src={getCandidatePhoto(currentUser.name)} alt={currentUser.name} className="h-full w-full object-cover" />
+              ) : (
+                (currentUser.name?.charAt(0) || "U").toUpperCase()
+              )}
+            </div>
+            <span className="text-xs font-bold text-foreground max-w-[110px] truncate">
+              {currentUser.name}
+            </span>
+          </div>
         )}
       />
 
