@@ -35,7 +35,6 @@ export default function WinnersHallOfFame({ ctaTo = '/auth?mode=signup' }: { cta
   const list = useMemo(() => winners.filter(w =>
     (!f.industry || w.industry === f.industry) && (!f.city || w.city === f.city) && (!f.year || w.year === f.year) &&
     (!f.award || w.award === f.award) && (!f.skill || w.skills.includes(f.skill))), [f]);
-  const active = Object.values(f).some(Boolean);
 
   return (
     <div>
