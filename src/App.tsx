@@ -53,6 +53,7 @@ const SkillAssessment = lazy(() => import("./pages/SkillAssessment"));
 const Podcasts = lazy(() => import("./pages/Podcasts"));
 const Hackathons = lazy(() => import("./pages/Hackathons"));
 const Hackathon2 = lazy(() => import("./pages/Hackathon2"));
+const Hackathon3 = lazy(() => import("./pages/Hackathon3"));
 const Networking = lazy(() => import("./pages/Networking"));
 const AssessmentDiscovery = lazy(() => import("./pages/assessment/AssessmentDiscovery"));
 const AssessmentDetail = lazy(() => import("./pages/assessment/AssessmentDetail"));
@@ -95,6 +96,7 @@ const AnimatedRoutes = () => {
           <Route path="/meetups" element={<PageTransition><Hackathons /></PageTransition>} />
           <Route path="/hackathons" element={<PageTransition><Hackathons /></PageTransition>} />
           <Route path="/hackathon2" element={<PageTransition><Hackathon2 /></PageTransition>} />
+          <Route path="/hackathon3" element={<PageTransition><Hackathon3 /></PageTransition>} />
           <Route path="/podcasts" element={<PageTransition><Podcasts /></PageTransition>} />
           <Route path="/webinars" element={<PageTransition><Podcasts /></PageTransition>} />
           <Route path="/podcast" element={<PageTransition><Podcasts /></PageTransition>} />
