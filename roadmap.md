@@ -356,3 +356,6 @@
 - Set the hero headline to "Compete with the Best." on line one and "Get Recognised. Get Hired." on line two, with both phrases brand blue — — done; verified in the browser (headline two lines, second line fully brand blue; logos one row, 16 images all loading, continuous scroll with faded ends, no horizontal overflow) and build OK.
 - Turn the Top Companies logos into a single-row continuous moving carousel like the employer page 2 strip — done; verified in the browser (headline two lines, second line fully brand blue; logos one row, 16 images all loading, continuous scroll with faded ends, no horizontal overflow) and build OK.
 - Make "Get Recognised." and "Get Hired." the same brand blue on the hero's second line — done; verified in the browser (headline two lines, second line fully brand blue; logos one row, 16 images all loading, continuous scroll with faded ends, no horizontal overflow) and build OK.
+
+## Hackathon3 — remove employer and judge sections
+- Delete the "Hire Proven Performers, Not Just Resumes." and "Evaluated by People Who Understand the Industry." sections — done; both headings absent from the live page, unused employerBenefits/judgeProfile data and the BarChart3 icon removed, sponsors and FAQ sections still render, no horizontal overflow, build OK.

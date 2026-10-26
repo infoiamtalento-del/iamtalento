@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Award, BadgeCheck, BarChart3, BrainCircuit, Briefcase, CheckCircle2, Code2, Cpu, Crown, Eye, Gavel, HeartPulse, Landmark, MapPin, Medal, Megaphone, Newspaper, Search, ShoppingBag, Sparkles, Star, Target, Trophy, Users } from 'lucide-react';
+import { ArrowRight, Award, BadgeCheck, BrainCircuit, Briefcase, CheckCircle2, Code2, Cpu, Crown, Eye, Gavel, HeartPulse, Landmark, MapPin, Medal, Megaphone, Newspaper, Search, ShoppingBag, Sparkles, Star, Target, Trophy, Users } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
@@ -66,8 +66,6 @@ const sponsorPerks = [
   { icon: Target, title: 'Set Real Industry Challenges', text: "Bring business problems to the competition and evaluate the quality of participants' solutions." },
   { icon: Users, title: 'Engage Future Professionals', text: 'Interact with emerging talent, participate in judging, and explore suitable candidates for open roles.' },
 ];
-const employerBenefits = ['Discover hackathon winners and high-performing participants.', 'Access candidate profiles with skills, portfolios, and competition credentials.', 'Filter talent by industry, role, skill set, location, and experience.', 'Shortlist candidates and initiate interview requests.', 'Submit hiring offers through the Talent Auction marketplace.', 'Track candidate engagement and recruitment progress.'];
-const judgeProfile = ['Name, role, and company', 'Area of expertise', 'Industry experience', 'Hackathons or challenges evaluated'];
 const faqs = [
   ['Who can participate in TalentCIR Hackathons?', 'Students, graduates and working professionals can participate, subject to the eligibility criteria listed on each hackathon.'],
   ['Are the hackathons conducted across India?', 'Yes. Competitions are held across metropolitan cities in India, with some events open to online participation.'],
@@ -188,13 +186,9 @@ export default function Hackathon3() {
     {/* 10. Sponsors */}
     <section id="ht3-sponsors" className="ht2-band ht2-surface scroll-mt-24"><div className="container ht2-wrap"><Heading eyebrow="For corporate sponsors" first="Don't Just Hire Talent." second="Discover It Before Everyone Else." description="Partner with TalentCIR to create industry challenges, build your employer brand, and engage with high-potential candidates through practical competitions." /><div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">{sponsorPerks.map(({ icon: Icon, title, text }) => <article key={title} className="ht2-tint rounded-md p-7"><Icon className="mb-6 h-9 w-9 text-primary" /><h3 className="text-lg font-bold">{title}</h3><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text}</p></article>)}</div><div className="mt-8 flex flex-wrap gap-3"><Cta label="Become a Corporate Sponsor" to="/contact" /><Cta label="Request the Sponsorship Deck" to="/contact" outline /></div></div></section>
 
-    {/* 11. Employers */}
-    <section className="ht2-band ht2-tint"><div className="container ht2-wrap"><div className="ht2-feature-grid grid items-center md:grid-cols-2"><div><span className="ht2-eyebrow">For employers & recruiters</span><h2 className="ht2-title">Hire Proven Performers,<br /><span className="text-primary">Not Just Resumes.</span></h2><p className="ht2-copy">TalentCIR gives employers a new way to discover talent through demonstrated performance, industry challenges, and verified achievements.</p><ul className="mt-6 space-y-3">{employerBenefits.map(item => <li key={item} className="flex gap-3 text-sm"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{item}</li>)}</ul><div className="mt-7 flex flex-wrap gap-3"><Cta label="Start Hiring with TalentCIR" to="/for-employers" /><Cta label="Explore Employer Plans" to="/pricing?tab=employers" outline /></div></div><img src={hero} alt="Employers reviewing hackathon submissions" className="ht2-photo" loading="lazy" /></div></div></section>
 
     {/* 12. Hall of Fame */}
 
-    {/* 13. Judges */}
-    <section className="ht2-band ht2-tint"><div className="container ht2-wrap grid items-center gap-10 md:grid-cols-2"><div><span className="ht2-eyebrow">Hackathon judges & industry experts</span><h2 className="ht2-title">Evaluated by People Who<br /><span className="text-primary">Understand the Industry.</span></h2><p className="ht2-copy">Industry leaders, experienced professionals, technical specialists, and subject-matter experts evaluate every performance using transparent, challenge-specific criteria.</p><div className="mt-7"><Cta label="Become a Judge" to="/contact" /></div></div><div className="ht2-surface rounded-md p-8"><Gavel className="h-9 w-9 text-primary" /><h3 className="mt-5 text-lg font-bold">Every judge profile shows</h3><ul className="mt-5 space-y-3">{judgeProfile.map(item => <li key={item} className="flex items-center gap-3 text-sm"><BarChart3 className="h-4 w-4 shrink-0 text-primary" />{item}</li>)}</ul></div></div></section>
 
     {/* 14. FAQ */}
     <section id="ht3-faq" className="ht2-band ht2-surface scroll-mt-24"><div className="container ht2-wrap grid gap-10 lg:grid-cols-[1fr_1.4fr]"><Heading eyebrow="Frequently asked questions" first="Questions," second="Answered." description="Everything you need to know before you compete, sponsor or hire." /><Accordion type="single" collapsible>{faqs.map(([q, a], i) => <AccordionItem key={q} value={`faq-${i}`}><AccordionTrigger className="text-left">{q}</AccordionTrigger><AccordionContent className="text-muted-foreground">{a}</AccordionContent></AccordionItem>)}</Accordion></div></section>
