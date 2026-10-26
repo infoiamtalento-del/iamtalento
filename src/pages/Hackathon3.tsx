@@ -1,6 +1,7 @@
+import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Award, BadgeCheck, BarChart3, BrainCircuit, Briefcase, CheckCircle2, Code2, Cpu, Crown, Eye, Gavel, HeartPulse, Landmark, MapPin, Medal, Megaphone, Newspaper, Search, ShoppingBag, Sparkles, Star, Target, Trophy, Users } from 'lucide-react';
+import { ArrowRight, Award, BadgeCheck, BarChart3, BrainCircuit, Briefcase, Calendar, CheckCircle2, Code2, Cpu, Crown, Eye, Flame, Gavel, HeartPulse, Landmark, MapPin, Medal, Megaphone, Monitor, Newspaper, Search, ShoppingBag, Sparkles, Star, Target, Trophy, Users, Zap } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
@@ -103,6 +104,19 @@ const whyCards = [
   { icon: Gavel, title: 'Get Auctioned? No. Get Offers!', sub: 'Competitive Hiring Opportunities', text: 'Employers compete to hire you through transparent Job Auctions. You always choose.', image: team },
   { icon: Sparkles, title: 'Fast-Track Your Career', sub: 'Turn Performance into Opportunity', text: 'Convert your winning performance into real career and business opportunities.', image: event2 },
 ];
+const featuredSlides = [arena, event1, event2];
+const featuredChips = [
+  { icon: Calendar, label: 'Aug 15–17, 2027' },
+  { icon: Monitor, label: 'Online · Global' },
+  { icon: Users, label: 'Teams of 1–4' },
+  { icon: Zap, label: '48hrs + 2wk build' },
+];
+const featuredUnits = ['Days', 'Hours', 'Mins', 'Secs'];
+const featuredUntil = '2027-08-15T09:00:00+05:30';
+function timeLeft(iso: string) {
+  const seconds = Math.max(0, Math.floor((new Date(iso).getTime() - Date.now()) / 1000));
+  return [Math.floor(seconds / 86400), Math.floor(seconds / 3600) % 24, Math.floor(seconds / 60) % 60, seconds % 60].map((n) => String(n).padStart(2, '0'));
+}
 
 function Heading({ eyebrow, first, second, description }: { eyebrow: string; first: string; second?: string; description?: string }) {
   return <div className="ht2-heading"><span className="ht2-eyebrow">{eyebrow}</span><h2 className="ht2-title">{first}{second && <><br /><span className="text-primary">{second}</span></>}</h2>{description && <p className="ht2-copy">{description}</p>}</div>;
@@ -113,6 +127,13 @@ function Cta({ label, to = '/auth?mode=signup', outline = false, secondary = fal
 
 export default function Hackathon3() {
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  const [slide, setSlide] = useState(0);
+  const [remaining, setRemaining] = useState(() => timeLeft(featuredUntil));
+  useEffect(() => {
+    const tick = window.setInterval(() => setRemaining(timeLeft(featuredUntil)), 1000);
+    const rotate = window.setInterval(() => setSlide((s) => (s + 1) % featuredSlides.length), 5000);
+    return () => { window.clearInterval(tick); window.clearInterval(rotate); };
+  }, []);
 
   return <Layout><Helmet>
     <title>Hackathons · Compete. Get Recognised. Get Hired. | TalentCIR</title>
