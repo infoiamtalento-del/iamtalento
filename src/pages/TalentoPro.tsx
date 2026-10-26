@@ -46,7 +46,6 @@ import { ProEmployerMyAccount } from "@/components/pro/ProEmployerMyAccount";
 import { ProEmployerDemoServices } from "@/components/pro/ProEmployerDemoServices";
 import { ProEmployerCandidateDetail } from "@/components/pro/ProEmployerCandidateDetail";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { DEMO_EMPLOYER_JOBS, DEMO_EMPLOYER_APPS, INITIAL_EMPLOYER_DEMO, createDemoApplication, type EmployerDemoState } from "@/data/employerDemo";
 
 interface ToastMessage {
@@ -721,14 +720,7 @@ const TalentoPro: React.FC = () => {
             <div className="mb-6 flex flex-wrap items-center gap-4 border-b border-border pb-4">
               <div className="mr-auto">
                 <p className="text-sm font-semibold text-primary">Workspace · {currentUser.name}</p>
-                <p className="mt-0.5 text-xs text-muted-foreground">Demo environment · Real-time pipeline &amp; dashboard</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <label className="flex items-center gap-2 text-xs cursor-pointer">
-                  <Switch aria-label="Simulate live activity" checked={simulateLive} onCheckedChange={setSimulateLive} />
-                  Simulate activity
-                </label>
-                <Button size="sm" variant="outline" onClick={simulateApplication}>Simulate new application</Button>
+                <p className="mt-0.5 text-xs text-muted-foreground">Real-time pipeline &amp; dashboard</p>
               </div>
             </div>
         {candidatePage ? (selectedApplicant || selectedCandidate ? <ProEmployerCandidateDetail key={JSON.stringify(candidatePage)} application={selectedApplicant} candidate={selectedCandidate} job={jobs.find(j => j.id === (selectedApplicant?.jid || (candidatePage.type === "candidate" ? candidatePage.jobId : undefined)))} onBack={closeCandidate} onToast={addToast} onSave={(id, changes, message, interview) => { setApps(previous => previous.map(a => a.id === id ? { ...a, ...changes, st: interview ? "Interview" : changes.st, iv: interview || a.iv, upd: [...(a.upd || []), ...(a.st !== changes.st ? [{ msg: `Candidate status updated to "${changes.st}".`, at: Date.now() }] : []), ...(message.trim() ? [{ msg: message.trim(), at: Date.now() }] : []), ...(interview ? [{ msg: `Interview round scheduled for ${interview}.`, at: Date.now() }] : [])] } : a)); addToast("Application changes saved. Demo updates only; no message sent."); }} /> : <div className="py-12"><p>Candidate not found in this workspace.</p><Button onClick={closeCandidate} variant="outline" className="mt-4">Back to Candidates</Button></div>) : selectedJob ? <ProJobDetail key={selectedJob.id} job={selectedJob} user={currentUser} jobs={jobs} applications={apps} onBack={() => setDrawerState(null)} onOpenJob={(id) => { setDrawerState({ type: "job", id }); window.scrollTo({ top: 0 }); }} onApply={handleApplyJob} onSave={handleSaveJob} /> : (
