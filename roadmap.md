@@ -328,3 +328,7 @@
 - Verify the six points, prize figure and desktop/phone layout — done; all six titles and descriptions render, no overflow, phone layout checked
 - Add section 4 using the industries design with the nine supplied industries, new heading copy and Find Your Hackathon CTA — done; moved directly after Why Participate, 3x3 grid of icon tiles, old six-card version and "Also coming" pills removed
 - Verify the nine industries, CTA destination and desktop/phone layout — done; nine titles in supplied order, CTA scrolls to upcoming events, no overflow, build OK
+
+## Hackathon3 — prize & rewards section
+- Move the prizes section up to position 5 (after industries) and rebuild it as a five-card reward row per the reference image — implemented
+- Verify card content, navy featured card, responsive layout and section order — pending
