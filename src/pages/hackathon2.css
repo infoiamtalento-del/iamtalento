@@ -1,10 +1,10 @@
 .hackathon2 {
-  --background: var(--card);
-  --secondary: var(--job-tint);
-  --secondary-foreground: var(--foreground);
-  --accent: var(--job-tint);
-  --border: var(--job-tint);
-  background: hsl(var(--card));
+  --background: var(--cream);
+  --secondary: var(--cream);
+  --secondary-foreground: var(--primary);
+  --accent: 33.8 55% 92.5%;
+  --ht2-beige: 33.8 55% 92.5%;
+  background: hsl(var(--cream));
   letter-spacing: 0;
 }
 .hackathon2 h1,.hackathon2 h2,.hackathon2 h3 { letter-spacing: 0; }
@@ -18,8 +18,8 @@
 .hackathon2 .ht2-title { font-size: 36px; line-height: 1.16; font-weight: 700; }
 .hackathon2 .ht2-copy { margin-top: 16px; max-width: 620px; font-size: 15px; line-height: 1.8; color: hsl(var(--muted-foreground)); }
 #root .hackathon2 .ht2-surface { background-color: hsl(var(--card)) !important; }
-#root .hackathon2 .ht2-tint { background-color: hsl(var(--job-tint)) !important; }
-#root .hackathon2 .ht2-soft { background-color: hsl(var(--job-tint)) !important; }
+#root .hackathon2 .ht2-tint { background-color: hsl(var(--ht2-beige)) !important; }
+#root .hackathon2 .ht2-soft { background-color: hsl(var(--ht2-beige)) !important; }
 #root .hackathon2 .ht2-dark { background-color: hsl(var(--primary)) !important; color: hsl(var(--hackathon-on-dark)); }
 .hackathon2 .ht2-dark h2,.hackathon2 .ht2-dark h3 { color: hsl(var(--hackathon-on-dark)); }
 .hackathon2 .ht2-dark .ht2-copy { color: hsl(var(--hackathon-on-dark) / .75); }
