@@ -28,7 +28,7 @@
   box-shadow: 0 1px 2px rgb(16 24 40 / .05);
 }
 .hackathon2 .ht2-hero { padding: 104px 0 22px; }
-.hackathon2 .ht2-dark > .container { background-color: hsl(var(--primary)); border-color: hsl(var(--primary)); }
+.hackathon2 .ht2-dark > .container { background-color: hsl(var(--primary)); border-color: hsl(var(--primary)); color: hsl(var(--hackathon-on-dark)); }
 .hackathon2 .ht2-dark h2,.hackathon2 .ht2-dark h3 { color: hsl(var(--hackathon-on-dark)); }
 .hackathon2 .ht2-dark .ht2-copy { color: hsl(var(--hackathon-on-dark) / .75); }
 .hackathon2 .ht2-dark .ht2-eyebrow { color: hsl(var(--hackathon-on-dark) / .65); }
