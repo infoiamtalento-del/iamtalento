@@ -8,6 +8,8 @@ import arena from '@/assets/hackathon-arena-hero.jpg';
 import hero from '@/assets/hackathon-hero.jpg';
 import event1 from '@/assets/hackathon-event-1.jpg';
 import event2 from '@/assets/hackathon-event-2.jpg';
+import recruiter from '@/assets/employer-recruiter.jpg';
+import team from '@/assets/employer-team.jpg';
 import './hackathon2.css';
 
 const trust = ['Industry-Sponsored Challenges', 'Multiple Industry Domains', 'Metropolitan City Events', 'National Media Recognition', 'Exclusive Talent Discovery', 'Employer Hiring Opportunities'];
@@ -93,6 +95,14 @@ const whyPoints = [
   { icon: Gavel, title: 'Get Auctioned? No. Get Offers!', text: 'Let employers compete to hire you through Job Auctions.' },
   { icon: Sparkles, title: 'Fast-Track Your Career', text: 'Turn your winning performance into career opportunities.' },
 ];
+const whyCards = [
+  { icon: Trophy, title: 'Win Big', sub: 'Cash Prizes Worth ₹7,50,000', text: 'Compete for exciting cash prizes across different hackathons and city-level competitions.', image: arena },
+  { icon: Target, title: 'Prove Your Skills', sub: 'Showcase Real-World Abilities', text: 'Solve industry challenges and demonstrate your practical skills to real evaluators.', image: event1 },
+  { icon: Newspaper, title: 'Get Famous', sub: 'Media & PR Opportunities', text: 'Get featured in newspapers, digital publications and online media as a hackathon achiever.', image: hero },
+  { icon: Search, title: 'Get Discovered', sub: 'Connect with Top Recruiters', text: 'Put your verified talent in front of recruiters and companies actively hiring.', image: recruiter },
+  { icon: Gavel, title: 'Get Auctioned? No. Get Offers!', sub: 'Competitive Hiring Opportunities', text: 'Employers compete to hire you through transparent Job Auctions. You always choose.', image: team },
+  { icon: Sparkles, title: 'Fast-Track Your Career', sub: 'Turn Performance into Opportunity', text: 'Convert your winning performance into real career and business opportunities.', image: event2 },
+];
 
 function Heading({ eyebrow, first, second, description }: { eyebrow: string; first: string; second?: string; description?: string }) {
   return <div className="ht2-heading"><span className="ht2-eyebrow">{eyebrow}</span><h2 className="ht2-title">{first}{second && <><br /><span className="text-primary">{second}</span></>}</h2>{description && <p className="ht2-copy">{description}</p>}</div>;
@@ -141,11 +151,14 @@ export default function Hackathon3() {
       <div className="mt-8"><Button variant="outline" className="rounded-full" onClick={() => scrollTo('ht3-upcoming')}>Find Your Hackathon<ArrowRight className="h-4 w-4" /></Button></div>
     </div></section>
 
-    {/* 5. Prize & rewards */}
+    {/* 5. Why participate */}
+    <section id="ht3-reasons" className="ht2-band scroll-mt-24"><div className="container ht2-wrap"><Heading eyebrow="Why Join" first="Why Participate in a" second="TalentCIR Hackathon?" description="Six reasons this competition is worth your time, your talent and your energy." /><div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">{whyCards.map(({ icon: Icon, title, sub, text, image }) => <article key={title} className="ht2-surface flex flex-col overflow-hidden rounded-md border border-border/60"><div className="relative"><img src={image} alt={title} className="h-44 w-full object-cover" loading="lazy" /><span className="absolute -bottom-5 left-6 flex h-11 w-11 items-center justify-center rounded-md border-4 border-card bg-primary/10 text-primary"><Icon className="h-5 w-5" /></span></div><div className="px-6 pb-6 pt-9"><h3 className="text-lg font-bold">{title}</h3><p className="mt-1 text-sm font-semibold text-primary">{sub}</p><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text}</p></div></article>)}</div></div></section>
+
+    {/* 6. Prize & rewards */}
     <section id="ht3-prizes" className="ht2-band ht2-tint scroll-mt-24"><div className="container ht2-wrap"><Heading eyebrow="Prize & Rewards" first="Big Ideas Deserve" second="Bigger Rewards." description="Your skills could unlock life-changing prizes, national exposure and exclusive hiring opportunities." /><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">{prizeTiers.map(({ icon: Icon, label, value, note, text, featured }) => <article key={label} className={`flex flex-col rounded-md p-6 ${featured ? 'ht2-dark' : 'ht2-surface border border-border/60'}`}><span className={`flex h-11 w-11 items-center justify-center rounded-full ${featured ? '' : 'bg-primary/10 text-primary'}`} style={featured ? { background: 'hsl(var(--hackathon-on-dark) / .14)' } : undefined}><Icon className="h-5 w-5" /></span><p className={`mt-6 text-[11px] font-bold uppercase tracking-wider ${featured ? 'opacity-70' : 'text-muted-foreground'}`}>{label}</p><p className="mt-2 font-display text-2xl font-bold leading-tight">{value}</p><p className={`mt-1 text-xs font-semibold ${featured ? 'opacity-80' : 'text-primary'}`}>{note}</p><p className={`mt-4 text-sm leading-relaxed ${featured ? 'opacity-75' : 'text-muted-foreground'}`}>{text}</p></article>)}</div><div className="mt-8"><Cta label="Compete for the Crown" /></div><p className="mt-6 text-sm text-muted-foreground">Third-place, finalist and participation rewards are indicative and confirmed on each hackathon page.</p></div></section>
 
     {/* 6. How it works */}
-    <section id="ht3-how" className="ht2-band ht2-surface scroll-mt-24"><div className="container ht2-wrap"><Heading eyebrow="How it works" first="From Registration" second="to Recognition." description="Six clear steps take you from your first registration to real hiring opportunities." /><div className="grid gap-6 md:grid-cols-3">{steps.slice(0, 3).map(([n, title, text]) => <article key={n} className="ht2-tint rounded-md p-7"><span className="text-xs text-primary">STEP {n}</span><h3 className="mt-2 text-xl font-bold">{title}</h3><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text}</p></article>)}</div><div className="mt-7 grid gap-5 md:grid-cols-3">{steps.slice(3).map(([n, title, text]) => <div key={n} className="flex gap-5 border-t border-border py-5"><span className="text-2xl font-bold text-primary">{n}</span><div><h3 className="font-bold">{title}</h3><p className="mt-2 text-sm text-muted-foreground">{text}</p></div></div>)}</div></div></section>
+    <section id="ht3-how" className="ht2-band ht2-surface scroll-mt-24"><div className="container ht2-wrap"><Heading eyebrow="How it works" first="From Registration" second="to Recognition." description="Six clear steps take you from your first registration to real hiring opportunities." /><div className="grid gap-6 md:grid-cols-3">{steps.map(([n, title, text]) => <article key={n} className="ht2-tint rounded-md p-7"><span className="text-xs text-primary">STEP {n}</span><h3 className="mt-2 text-xl font-bold">{title}</h3><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text}</p></article>)}</div></div></section>
 
     {/* 2. Trust strip */}
     <div className="ht2-ribbon ht2-soft"><div className="ht2-marquee">{[0, 1].map(repeat => <div key={repeat} aria-hidden={repeat === 1} className="flex items-center gap-12">{trust.map(item => <span className="flex items-center gap-12 whitespace-nowrap text-sm font-medium" key={item}>{item}<Sparkles className="h-4 w-4 text-primary" /></span>)}</div>)}</div></div>
