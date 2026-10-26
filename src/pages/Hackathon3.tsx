@@ -66,11 +66,6 @@ const sponsorPerks = [
   { icon: Users, title: 'Engage Future Professionals', text: 'Interact with emerging talent, participate in judging, and explore suitable candidates for open roles.' },
 ];
 const employerBenefits = ['Discover hackathon winners and high-performing participants.', 'Access candidate profiles with skills, portfolios, and competition credentials.', 'Filter talent by industry, role, skill set, location, and experience.', 'Shortlist candidates and initiate interview requests.', 'Submit hiring offers through the Talent Auction marketplace.', 'Track candidate engagement and recruitment progress.'];
-const winners = [
-  { image: event1, award: 'Champion', title: 'AI & Data Science', meta: 'Bengaluru · 2026' },
-  { image: event2, award: 'Runner-Up', title: 'Finance & FinTech', meta: 'Mumbai · 2026' },
-  { image: hero, award: 'Champion', title: 'Digital Marketing & Growth', meta: 'Delhi · 2026' },
-];
 const judgeProfile = ['Name, role, and company', 'Area of expertise', 'Industry experience', 'Hackathons or challenges evaluated'];
 const faqs = [
   ['Who can participate in TalentCIR Hackathons?', 'Students, graduates and working professionals can participate, subject to the eligibility criteria listed on each hackathon.'],
