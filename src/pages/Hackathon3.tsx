@@ -145,7 +145,7 @@ export default function Hackathon3() {
 
     {/* 3. Introduction */}
     {/* Featured event */}
-    <section id="ht3-feature" className="ht2-band scroll-mt-24"><div className="container ht2-wrap"><FeaturedEventCard monoAccents registerTo="/auth?mode=signup" /></div></section>
+    <section id="ht3-feature" className="ht2-band scroll-mt-24"><div className="container ht2-wrap"><Heading eyebrow="Featured Event" first="Code Arena · Season 4" second="Registration Is Open." description="India's flagship industry hackathon returns with tougher challenges, bigger prizes and a national stage. Free entry, real business problems, and a direct line to hiring partners." /><FeaturedEventCard monoAccents registerTo="/auth?mode=signup" /></div></section>
 
 
     {/* 5. Upcoming */}
