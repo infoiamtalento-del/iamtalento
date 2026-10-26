@@ -292,11 +292,13 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
               </Link>
             ) : null}
 
-            <Link to="/employers-page-2">
-              <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 border-0">
-                For Employers
-              </Button>
-            </Link>
+            {!isAuthenticated && (
+              <Link to="/employers-page-2">
+                <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 border-0">
+                  For Employers
+                </Button>
+              </Link>
+            )}
 
             {isAuthenticated && (accountMenu ? accountMenu(handleSignOut) : (
               <div className="flex items-center gap-2">
@@ -482,11 +484,13 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
                   </Button>
                 </Link>
               ) : null}
-              <Link to="/employers-page-2" onClick={() => setMobileOpen(false)}>
-                <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 border-0">
-                  For Employers
-                </Button>
-              </Link>
+              {!isAuthenticated && (
+                <Link to="/employers-page-2" onClick={() => setMobileOpen(false)}>
+                  <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 border-0">
+                    For Employers
+                  </Button>
+                </Link>
+              )}
               {isAuthenticated && !accountMenu && (
                 <div className="space-y-1.5 pt-2 border-t border-border">
                   <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-accent/50">

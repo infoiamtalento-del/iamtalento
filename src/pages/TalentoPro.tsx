@@ -43,6 +43,7 @@ import { ProEmployerJobPosting } from "@/components/pro/ProEmployerJobPosting";
 import { ProEmployerPipeline } from "@/components/pro/ProEmployerPipeline";
 import { ProEmployerNotifications } from "@/components/pro/ProEmployerNotifications";
 import { ProEmployerMyAccount } from "@/components/pro/ProEmployerMyAccount";
+import { ProEmployeeMyAccount } from "@/components/pro/ProEmployeeMyAccount";
 import { ProEmployerDemoServices } from "@/components/pro/ProEmployerDemoServices";
 import { ProEmployerCandidateDetail } from "@/components/pro/ProEmployerCandidateDetail";
 import { Button } from "@/components/ui/button";
@@ -734,7 +735,11 @@ const TalentoPro: React.FC = () => {
           >
             {/* WORKSPACE & DASHBOARD VIEWS (ACCESSIBLE TO BOTH EMPLOYEE & EMPLOYER) */}
             {effectiveView === "account" && (
-              <ProEmployerMyAccount user={currentUser} jobs={jobs} applications={apps} onNavigate={setActiveView} />
+              currentRole === "employer" ? (
+                <ProEmployerMyAccount user={currentUser} jobs={jobs} applications={apps} onNavigate={setActiveView} />
+              ) : (
+                <ProEmployeeMyAccount user={currentUser} jobs={jobs} applications={apps} onNavigate={setActiveView} />
+              )
             )}
 
             {effectiveView === "dash" && (
