@@ -346,3 +346,4 @@
 - Remove the "Your Skills Could Win You ₹5 Lakhs & a Career Breakthrough." sub-line from the hero — done; sub-line absent from the live page, headline still two lines, no horizontal overflow, build OK.
 - Set the hero headline to "Compete with the Best." on line one and "Get Recognised. Get Hired." on line two, with "Get Hired." in brand blue — in progress
 - Turn the Top Companies logos into a single-row continuous moving carousel like the employer page 2 strip — in progress
+- Make "Get Recognised." and "Get Hired." the same brand blue on the hero's second line — in progress
