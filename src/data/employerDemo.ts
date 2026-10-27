@@ -17,8 +17,35 @@ export const DEMO_EMPLOYER_APPS: ProApplication[] = CANDIDATES_SEED.map((_, i) =
   return { ...createDemoApplication(i, jid), st: stage, at: Date.now() - (i + 1) * 7200000, note: i === 0 ? "Strong React portfolio. Check availability for a technical round." : "", iv: stage === "Interview" ? new Date(Date.now() + (i + 1) * 86400000).toISOString().slice(0, 16) : undefined, upd: stage === "Applied" ? [] : [{ msg: `Application moved to ${stage}.`, at: Date.now() - 3600000 }] };
 });
 
+export interface EmployerAssessmentQuestion {
+  id: string;
+  q: string;
+  options: string[];
+  answer: number;
+  points: number;
+  skillTag: string;
+}
+
+export interface EmployerAssessmentRecord {
+  id: number;
+  name: string;
+  candidate: string;
+  score?: number;
+  status: string;
+  type?: string;
+  difficulty?: string;
+  passingScore?: number;
+  proctoring?: boolean;
+  skills?: string[];
+  questions?: number;
+  duration?: number;
+  at?: number;
+  description?: string;
+  questionItems?: EmployerAssessmentQuestion[];
+}
+
 export interface EmployerDemoState {
-  assessments: { id: number; name: string; candidate: string; score?: number; status: string; type?: string; questions?: number; duration?: number; at?: number; description?: string }[];
+  assessments: EmployerAssessmentRecord[];
   aiInterviews: { id: number; name: string; candidate: string; status: string; score?: number }[];
   campaigns: { id: number; name: string; status: string; views: number; clicks: number; at?: number; category?: string }[];
   plan: string;
@@ -28,12 +55,97 @@ export interface EmployerDemoState {
 
 export const INITIAL_EMPLOYER_DEMO: EmployerDemoState = {
   assessments: [
-    { id: 1, name: "React & TypeScript", candidate: "Aarav Mehta", score: 88, status: "Completed", type: "Technical", questions: 10, duration: 30, at: Date.now() - 86400000 * 7, description: "React hooks, component design and TypeScript fundamentals." },
-    { id: 2, name: "SQL & Analytics", candidate: "Diya Nair", status: "Invited", type: "Technical", questions: 12, duration: 30, at: Date.now() - 86400000 * 5, description: "SQL joins, data modelling and analytical reasoning." },
-    { id: 3, name: "Aptitude Test", candidate: "Aarav Mehta", status: "Invited", type: "Aptitude", questions: 20, duration: 45, at: Date.now() - 86400000 * 4, description: "Logical and quantitative reasoning." },
-    { id: 4, name: "Communication Assessment", candidate: "Diya Nair", status: "Invited", type: "HR Round", questions: 5, duration: 15, at: Date.now() - 86400000 * 3, description: "Written communication and workplace scenarios." },
-    { id: 5, name: "Cloud Platform Screening", candidate: "", status: "Draft", type: "Technical", questions: 15, duration: 45, at: Date.now() - 86400000 * 2, description: "Cloud architecture, infrastructure automation and incident response." },
-    { id: 6, name: "Teamwork & Collaboration", candidate: "", status: "Draft", type: "HR Round", questions: 8, duration: 20, at: Date.now() - 86400000, description: "Collaboration, ownership and professional judgement." },
+    {
+      id: 1,
+      name: "React & TypeScript",
+      candidate: "Aarav Mehta",
+      score: 88,
+      status: "Completed",
+      type: "Technical",
+      difficulty: "Advanced",
+      passingScore: 70,
+      proctoring: true,
+      skills: ["React 18", "TypeScript", "Hooks & Concurrency"],
+      questions: 10,
+      duration: 30,
+      at: Date.now() - 86400000 * 7,
+      description: "React hooks, concurrent rendering, component architecture, and strict TypeScript generics.",
+    },
+    {
+      id: 2,
+      name: "SQL & Analytics",
+      candidate: "Diya Nair",
+      status: "Invited",
+      type: "Technical",
+      difficulty: "Intermediate",
+      passingScore: 65,
+      proctoring: true,
+      skills: ["SQL Joins", "Window Functions", "Query Indexing"],
+      questions: 12,
+      duration: 30,
+      at: Date.now() - 86400000 * 5,
+      description: "SQL joins, window aggregations, indexing execution plans, and analytical problem solving.",
+    },
+    {
+      id: 3,
+      name: "Aptitude Test",
+      candidate: "Aarav Mehta",
+      status: "Invited",
+      type: "Aptitude",
+      difficulty: "Core",
+      passingScore: 60,
+      proctoring: true,
+      skills: ["Logical Reasoning", "Quantitative Analysis", "Data Interpretation"],
+      questions: 20,
+      duration: 45,
+      at: Date.now() - 86400000 * 4,
+      description: "Logical deduction, quantitative reasoning, and structured analytical speed test.",
+    },
+    {
+      id: 4,
+      name: "Communication Assessment",
+      candidate: "Diya Nair",
+      status: "Invited",
+      type: "HR Round",
+      difficulty: "Core",
+      passingScore: 60,
+      proctoring: false,
+      skills: ["Stakeholder Communication", "Conflict Resolution", "Agile Ownership"],
+      questions: 5,
+      duration: 15,
+      at: Date.now() - 86400000 * 3,
+      description: "Written executive communication, async team collaboration, and workplace scenarios.",
+    },
+    {
+      id: 5,
+      name: "Cloud Platform Screening",
+      candidate: "",
+      status: "Draft",
+      type: "Technical",
+      difficulty: "Advanced",
+      passingScore: 75,
+      proctoring: true,
+      skills: ["AWS", "Kubernetes", "Terraform", "CI/CD"],
+      questions: 15,
+      duration: 45,
+      at: Date.now() - 86400000 * 2,
+      description: "Cloud architecture, Kubernetes cluster autoscaling, Terraform IaC, and incident response.",
+    },
+    {
+      id: 6,
+      name: "Teamwork & Collaboration",
+      candidate: "",
+      status: "Draft",
+      type: "HR Round",
+      difficulty: "Intermediate",
+      passingScore: 60,
+      proctoring: false,
+      skills: ["Cross-Functional Leadership", "Mentorship", "Engineering Culture"],
+      questions: 8,
+      duration: 20,
+      at: Date.now() - 86400000,
+      description: "Collaboration, ownership, code review empathy, and professional engineering judgement.",
+    },
   ],
   aiInterviews: [{ id: 1, name: "Frontend technical screening", candidate: "Aarav Mehta", status: "Completed", score: 86 }],
   campaigns: [{ id: 1, name: "Engineering careers at Super30", status: "Active", views: 1240, clicks: 86, at: Date.now() - 86400000 * 14, category: "Employer Brand · Engineering" }],
