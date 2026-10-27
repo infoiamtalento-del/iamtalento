@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Star, Users, ArrowRight, TrendingUp, Clock, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import SectionBadge from "@/components/ui/section-badge";
 import { useState } from "react";
@@ -19,7 +19,7 @@ import expertMale3 from "@/assets/experts/male-3.jpg";
 const categories = ["All", "AI & ML", "Data Science", "Marketing", "Development", "Design", "Finance"];
 
 const courses = [
-  { title: "AI for Non-Tech Professionals", category: "AI & ML", level: "Beginner", rating: 4.8, learners: "12,400", instructor: "Dr. Neha Sharma", image: expertFemale1, languages: ["EN", "HI"], duration: "8 hrs", price: "Free", originalPrice: "₹3,999", bestseller: true },
+  { title: "AI for Non-Tech Professionals", category: "AI & ML", level: "Beginner", rating: 4.8, learners: "12,400", instructor: "Dr. Neha Sharma", image: expertFemale1, languages: ["EN", "HI"], duration: "8 hrs", price: "Free", originalPrice: "₹3,999", bestseller: true, slug: "/learning/courses/ai-engineer-agentic-track" },
   { title: "Data Analytics Masterclass", category: "Data Science", level: "Intermediate", rating: 4.7, learners: "9,800", instructor: "Arjun Patel", image: expertMale1, languages: ["EN", "TA"], duration: "12 hrs", price: "₹799", originalPrice: "₹4,999", bestseller: false },
   { title: "Digital Marketing with AI Tools", category: "Marketing", level: "Beginner", rating: 4.9, learners: "15,200", instructor: "Kavitha Rajan", image: expertFemale3, languages: ["EN", "HI", "TE"], duration: "6 hrs", price: "₹499", originalPrice: "₹2,999", bestseller: true },
   { title: "Python for Job-Ready Developers", category: "Development", level: "Intermediate", rating: 4.6, learners: "7,300", instructor: "Vikram Desai", image: expertMale3, languages: ["EN"], duration: "15 hrs", price: "₹999", originalPrice: "₹5,999", bestseller: false },
