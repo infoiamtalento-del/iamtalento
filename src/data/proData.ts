@@ -84,6 +84,16 @@ export interface ProUser {
   seen?: number;
   ph?: string;
   phv?: boolean;
+  phone?: string;
+  twoFactor?: boolean;
+  twoFactorMethod?: "authenticator" | "sms";
+  twoFactorPhone?: string;
+  privacyVisibility?: "public" | "applied_only" | "private";
+  emailAlerts?: boolean;
+  smsAlerts?: boolean;
+  marketingEmails?: boolean;
+  loginAlerts?: boolean;
+  passwordLastChanged?: number;
   gst?: string;
   vr?: { at: number; id: string };
   ver?: { id: boolean; test: boolean; exp: boolean };
@@ -218,9 +228,27 @@ export const DEFAULT_USERS: Record<string, ProUser> = {
     ],
     ed: [{ sc: "Anna University", dg: "B.E. Computer Science", yr: "2022" }],
     pj: [
-      { t: "JobTracker", l: "github.com/yogesh/jobtracker", d: "A job tracking application to manage applications, interviews and follow-ups in one place." },
-      { t: "E-commerce Analytics Dashboard", l: "github.com/yogesh/ecommerce-analytics", d: "Real-time analytics dashboard for e-commerce business with sales, products and customer insights." },
-      { t: "Lead Management CRM", l: "github.com/yogesh/lead-crm", d: "A lead tracking and pipeline management system with automated follow-ups and notifications." },
+      {
+        t: "JobTracker Pro Platform",
+        l: "github.com/yogesh/jobtracker",
+        d: "Autonomous job tracking application with real-time 24h review SLA updates, interview scheduling, and ATS-friendly resume exports.",
+        s: "React, TypeScript, Node.js, Tailwind CSS, PostgreSQL",
+        m: "1,200+ Active Users · 99.8% SLA adherence",
+      },
+      {
+        t: "E-Commerce Analytics & Conversion Suite",
+        l: "github.com/yogesh/ecommerce-analytics",
+        d: "High-performance analytics dashboard providing revenue breakdowns, cart abandonment funnels, and cohort analysis with sub-second chart rendering.",
+        s: "Next.js, TypeScript, Tailwind CSS, Chart.js, Express",
+        m: "Processes 250k+ daily events · 40% faster queries",
+      },
+      {
+        t: "Lead Management & Sales CRM",
+        l: "github.com/yogesh/lead-crm",
+        d: "Full-stack CRM with automated multi-channel follow-ups, kanban pipeline boards, and role-based access control for distributed teams.",
+        s: "React, Redux Toolkit, MongoDB, Docker, REST API",
+        m: "Adopted by 3 sales teams · Reduced churn by 18%",
+      },
     ],
     links: { li: "linkedin.com/in/yogesh-dev", gh: "github.com/yogesh", pf: "yogeshportfolio.co" },
     pf: { sal: 22, np: 15, wm: "Remote / Hybrid", ty: "Full-time", loc: "Bengaluru, Hyderabad, Remote", rl: true },
@@ -237,11 +265,29 @@ export const DEFAULT_USERS: Record<string, ProUser> = {
     },
     ver: { id: true, test: true, exp: true },
     views: 148,
+    phone: "+91 98765 43210",
+    twoFactor: false,
+    twoFactorMethod: "authenticator",
+    privacyVisibility: "public",
+    emailAlerts: true,
+    smsAlerts: true,
+    marketingEmails: false,
+    loginAlerts: true,
+    passwordLastChanged: Date.now() - 86400000 * 18,
   },
   "demo.employer@talento.app": {
     email: "demo.employer@talento.app",
     role: "employer",
     name: "Super30",
+    phone: "+91 98450 12345",
+    twoFactor: true,
+    twoFactorMethod: "authenticator",
+    privacyVisibility: "public",
+    emailAlerts: true,
+    smsAlerts: true,
+    marketingEmails: false,
+    loginAlerts: true,
+    passwordLastChanged: Date.now() - 86400000 * 30,
     cp: {
       name: "Super30 Technologies",
       about: "Building next-generation AI agents and developer tooling for global engineering teams.",

@@ -409,10 +409,26 @@ const TalentoPro: React.FC = () => {
 
   // User Profile updater
   const handleUpdateUser = (updatedUser: ProUser) => {
-    setUsers((prev) => ({
-      ...prev,
-      [sessionEmail]: updatedUser,
-    }));
+    if (updatedUser.email && updatedUser.email !== sessionEmail) {
+      setUsers((prev) => {
+        const next = { ...prev };
+        delete next[sessionEmail];
+        next[updatedUser.email] = updatedUser;
+        return next;
+      });
+      setApps((prev) =>
+        prev.map((a) => (a.who === sessionEmail ? { ...a, who: updatedUser.email, name: updatedUser.name } : a))
+      );
+      setJobs((prev) =>
+        prev.map((j) => (j.by === sessionEmail ? { ...j, by: updatedUser.email } : j))
+      );
+      setSessionEmail(updatedUser.email);
+    } else {
+      setUsers((prev) => ({
+        ...prev,
+        [sessionEmail]: updatedUser,
+      }));
+    }
   };
 
   // Job Actions
@@ -747,9 +763,23 @@ const TalentoPro: React.FC = () => {
             {/* WORKSPACE & DASHBOARD VIEWS (ACCESSIBLE TO BOTH EMPLOYEE & EMPLOYER) */}
             {effectiveView === "account" && (
               currentRole === "employer" ? (
-                <ProEmployerMyAccount user={currentUser} jobs={jobs} applications={apps} onNavigate={setActiveView} />
+                <ProEmployerMyAccount
+                  user={currentUser}
+                  jobs={jobs}
+                  applications={apps}
+                  onNavigate={setActiveView}
+                  onUpdateUser={handleUpdateUser}
+                  onToast={addToast}
+                />
               ) : (
-                <ProEmployeeMyAccount user={currentUser} jobs={jobs} applications={apps} onNavigate={setActiveView} />
+                <ProEmployeeMyAccount
+                  user={currentUser}
+                  jobs={jobs}
+                  applications={apps}
+                  onNavigate={setActiveView}
+                  onUpdateUser={handleUpdateUser}
+                  onToast={addToast}
+                />
               )
             )}
 
@@ -986,6 +1016,7 @@ const TalentoPro: React.FC = () => {
                 onOpenDrawer={openDrawer}
                 onToast={addToast}
                 onUpdateUser={handleUpdateUser}
+                onNavigate={setActiveView}
               />
             )}
 
