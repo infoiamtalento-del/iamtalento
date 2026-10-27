@@ -1016,6 +1016,7 @@ const TalentoPro: React.FC = () => {
                 onOpenDrawer={openDrawer}
                 onToast={addToast}
                 onUpdateUser={handleUpdateUser}
+                onNavigate={setActiveView}
               />
             )}
 
