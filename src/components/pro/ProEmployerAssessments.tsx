@@ -8,7 +8,6 @@ import {
   Plus,
   Search,
   Code2,
-  Settings2,
   Sparkles,
   Eye,
   Pencil,
@@ -22,6 +21,16 @@ import {
   Lock,
   Timer,
   Award,
+  LayoutGrid,
+  List,
+  ChevronRight,
+  Target,
+  BarChart3,
+  Layers,
+  FileCheck2,
+  SlidersHorizontal,
+  UserCheck,
+  Briefcase,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,19 +39,19 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { ProHero } from "./ProHero";
+import { MatchRing } from "./ProMatchRing";
 import type {
   EmployerDemoState,
   EmployerAssessmentRecord,
   EmployerAssessmentQuestion,
 } from "@/data/employerDemo";
 import type { ProApplication } from "@/data/proData";
-import "./employer-workspace.css";
 
 interface Props {
   state: EmployerDemoState;
@@ -197,7 +206,72 @@ const DEFAULT_QUESTION_TEMPLATES: Record<string, EmployerAssessmentQuestion[]> =
   ],
 };
 
-function getQuestionsForRecord(rec: Partial<EmployerAssessmentRecord>): EmployerAssessmentQuestion[] {
+interface BlueprintPreset {
+  key: "react" | "sql" | "cloud" | "hr";
+  title: string;
+  type: string;
+  difficulty: string;
+  duration: number;
+  passingScore: number;
+  skills: string;
+  badge: string;
+  description: string;
+}
+
+const BLUEPRINT_PRESETS: BlueprintPreset[] = [
+  {
+    key: "react",
+    title: "Frontend React 18 & TypeScript Architecture",
+    type: "Coding",
+    difficulty: "Advanced",
+    duration: 45,
+    passingScore: 75,
+    skills: "React 18, TypeScript, State Management, Performance",
+    badge: "Most Popular",
+    description:
+      "Evaluates production React concurrency, TypeScript generics, custom hooks, and rendering optimization.",
+  },
+  {
+    key: "sql",
+    title: "Backend SQL & Distributed Data Engineering",
+    type: "Technical",
+    difficulty: "Intermediate",
+    duration: 40,
+    passingScore: 70,
+    skills: "PostgreSQL, Window Functions, Indexing, Query Tuning",
+    badge: "Data & Backend",
+    description:
+      "Tests complex SQL aggregations, window functions, composite B-Tree indexing, and query execution plans.",
+  },
+  {
+    key: "cloud",
+    title: "Cloud Infrastructure, Kubernetes & DevSecOps",
+    type: "System Design",
+    difficulty: "Advanced",
+    duration: 45,
+    passingScore: 72,
+    skills: "AWS, Kubernetes, Terraform, CI/CD Security",
+    badge: "Cloud & SRE",
+    description:
+      "Assesses Kubernetes workload orchestration, Terraform IaC workflows, and cloud edge security architecture.",
+  },
+  {
+    key: "hr",
+    title: "Engineering Leadership & Behavioral Judgment",
+    type: "HR / Behavioral",
+    difficulty: "Intermediate",
+    duration: 25,
+    passingScore: 65,
+    skills: "Stakeholder Management, Incident Response, Ownership",
+    badge: "Culture & Fit",
+    description:
+      "Scenario-based evaluation of engineering communication, release ownership, and cross-functional alignment.",
+  },
+];
+
+function getQuestionsForRecord(
+  rec: Partial<EmployerAssessmentRecord>
+): EmployerAssessmentQuestion[] {
   if (rec.questionItems && rec.questionItems.length > 0) {
     return rec.questionItems;
   }
@@ -226,6 +300,7 @@ export function ProEmployerAssessments({
 }: Props) {
   const [filter, setFilter] = useState("All");
   const [query, setQuery] = useState("");
+  const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
 
   // Create / Edit Builder Modal State
   const [builderOpen, setBuilderOpen] = useState(false);
@@ -256,33 +331,58 @@ export function ProEmployerAssessments({
   // View Details / Candidate Result Modal State
   const [selected, setSelected] = useState<number | null>(null);
 
-  const status = (value: string) => (value === "Invited" ? "Active" : value);
+  const normalizeStatus = (value: string) => (value === "Invited" ? "Active" : value);
   const records = state.assessments;
   const filtered = records.filter(
     (r) =>
-      (filter === "All" || status(r.status) === filter) &&
-      `${r.name} ${r.candidate} ${r.type || ""}`.toLowerCase().includes(query.toLowerCase())
+      (filter === "All" || normalizeStatus(r.status) === filter) &&
+      `${r.name} ${r.candidate} ${r.type || ""} ${(r.skills || []).join(" ")}`
+        .toLowerCase()
+        .includes(query.toLowerCase())
   );
   const record = records.find((r) => r.id === selected);
 
-  const openCreateModal = () => {
+  const completedRecords = records.filter((r) => r.status === "Completed");
+  const avgCompletedScore = completedRecords.length
+    ? Math.round(
+        completedRecords.reduce((acc, r) => acc + (r.score ?? 80), 0) /
+          completedRecords.length
+      )
+    : 84;
+
+  const openCreateModal = (preset?: BlueprintPreset) => {
     setEditingId(null);
     setBuilderTab("edit");
-    setName("");
-    setType("Technical");
-    setDifficulty("Intermediate");
-    setPassingScore(70);
-    setProctoring(true);
-    setSkillsInput("React, TypeScript, REST APIs");
-    setQuestions(10);
-    setDuration(30);
-    setCandidate("");
-    setDescription(
-      "Role-aligned technical screening with AI Cheating Prevention and sub-skill CIR evaluation."
-    );
-    setQuestionItems(
-      DEFAULT_QUESTION_TEMPLATES.react.map((q) => ({ ...q, options: [...q.options] }))
-    );
+    if (preset) {
+      setName(preset.title);
+      setType(preset.type);
+      setDifficulty(preset.difficulty);
+      setPassingScore(preset.passingScore);
+      setProctoring(true);
+      setSkillsInput(preset.skills);
+      setDuration(preset.duration);
+      setCandidate("");
+      setDescription(preset.description);
+      const tpl = DEFAULT_QUESTION_TEMPLATES[preset.key] || DEFAULT_QUESTION_TEMPLATES.react;
+      setQuestionItems(tpl.map((q) => ({ ...q, options: [...q.options] })));
+      setQuestions(Math.max(10, tpl.length));
+    } else {
+      setName("");
+      setType("Technical");
+      setDifficulty("Intermediate");
+      setPassingScore(70);
+      setProctoring(true);
+      setSkillsInput("React, TypeScript, REST APIs");
+      setQuestions(10);
+      setDuration(30);
+      setCandidate("");
+      setDescription(
+        "Role-aligned technical screening with AI Cheating Prevention and sub-skill CIR evaluation."
+      );
+      setQuestionItems(
+        DEFAULT_QUESTION_TEMPLATES.react.map((q) => ({ ...q, options: [...q.options] }))
+      );
+    }
     setBuilderOpen(true);
   };
 
@@ -298,7 +398,10 @@ export function ProEmployerAssessments({
     setQuestions(rec.questions ?? 10);
     setDuration(rec.duration ?? 30);
     setCandidate(rec.candidate || "");
-    setDescription(rec.description || "");
+    setDescription(
+      rec.description ||
+        "Role-aligned technical screening with AI Cheating Prevention and sub-skill CIR evaluation."
+    );
     const existingQs = getQuestionsForRecord(rec).map((q) => ({
       ...q,
       options: [...q.options],
@@ -337,7 +440,7 @@ export function ProEmployerAssessments({
       ...state,
       assessments: [cloned, ...records],
     });
-    onToast(`Duplicated assessment "${rec.name}" as a new editable draft.`);
+    onToast(`Duplicated "${rec.name}" as a new editable draft.`);
   };
 
   const handleDelete = (rec: EmployerAssessmentRecord) => {
@@ -358,7 +461,6 @@ export function ProEmployerAssessments({
       .filter(Boolean);
 
     if (editingId !== null) {
-      // Update existing assessment
       const updatedList = records.map((r) => {
         if (r.id !== editingId) return r;
         const nextStatus =
@@ -387,7 +489,6 @@ export function ProEmployerAssessments({
       setBuilderOpen(false);
       onToast(`Updated assessment "${name.trim()}" successfully!`);
     } else {
-      // Create new assessment
       const newRec: EmployerAssessmentRecord = {
         id: Date.now(),
         name: name.trim(),
@@ -408,7 +509,7 @@ export function ProEmployerAssessments({
       setBuilderOpen(false);
       onToast(
         candidate
-          ? `Assessment "${newRec.name}" created and invitation assigned to ${candidate}.`
+          ? `Assessment "${newRec.name}" created and assigned to ${candidate}.`
           : `Assessment "${newRec.name}" saved. You can preview or edit it anytime.`
       );
     }
@@ -420,7 +521,7 @@ export function ProEmployerAssessments({
       ...prev,
       {
         id: `custom-q-${Date.now()}`,
-        q: `Question ${nextIdx}: Describe or select the optimal engineering solution for this scenario.`,
+        q: `Question ${nextIdx}: Select the most scalable architectural solution for this production scenario.`,
         options: ["Option A (Correct Solution)", "Option B", "Option C", "Option D"],
         answer: 0,
         points: 10,
@@ -458,955 +559,1096 @@ export function ProEmployerAssessments({
     setQuestionItems((prev) => prev.filter((_, i) => i !== idx));
   };
 
+  const getStatusStyle = (rawStatus: string) => {
+    const st = normalizeStatus(rawStatus);
+    if (st === "Completed") {
+      return {
+        badge: "bg-emerald-500/10 text-emerald-700 border-emerald-500/30",
+        accentBar: "bg-emerald-500",
+        dot: "bg-emerald-500",
+        label: "Completed",
+      };
+    }
+    if (st === "Active") {
+      return {
+        badge: "bg-sky-500/10 text-sky-700 border-sky-500/30",
+        accentBar: "bg-[#002C66]",
+        dot: "bg-sky-500",
+        label: "Active / Invited",
+      };
+    }
+    return {
+      badge: "bg-amber-500/15 text-amber-800 border-amber-500/30",
+      accentBar: "bg-[#FB923C]",
+      dot: "bg-[#FB923C]",
+      label: "Editable Template",
+    };
+  };
+
   return (
-    <div className="employer-workspace space-y-5">
-      <Button variant="ghost" className="px-0 text-primary" onClick={onBack}>
-        <ArrowLeft />
-        Back to Dashboard
-      </Button>
-
-      <header className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="workspace-heading">Employer Assessments Studio</h1>
-          <p className="workspace-description">
-            Create custom assessments, preview the live candidate test experience, edit existing assessments &amp; questions, and track candidate scores.
-          </p>
+    <div className="space-y-6">
+      {/* Top Breadcrumb Navigation */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <button
+          type="button"
+          onClick={onBack}
+          className="inline-flex items-center gap-2 text-xs font-bold text-[#002C66] hover:text-[#FB923C] transition-colors cursor-pointer"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Employer Dashboard
+        </button>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 font-semibold text-emerald-700">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            AI Cheating Prevention Engine Active
+          </span>
         </div>
-        <Button onClick={openCreateModal} className="gap-1.5 cursor-pointer">
-          <Plus className="h-4 w-4" /> Create New Assessment
-        </Button>
-      </header>
+      </div>
 
-      {/* KPI Cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {/* ================= EXECUTIVE HERO BANNER ================= */}
+      <ProHero
+        eyebrow="IAmTalento Employer Assessment Studio"
+        icon={<ClipboardList className="h-5 w-5" />}
+        title="Create, Preview & Manage Role Assessments"
+        subtitle="Build custom technical, coding, system design, or behavioral assessments. Preview the exact proctored candidate test experience and edit any existing assessment or question bank in real time."
+        aside={
+          <div className="flex flex-col gap-2.5 lg:w-80">
+            <button
+              type="button"
+              onClick={() => openCreateModal()}
+              className="flex w-full items-center gap-3.5 rounded-2xl bg-[#FB923C] hover:bg-[#F97316] px-4 py-3.5 text-left text-white shadow-md transition-all cursor-pointer"
+            >
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/20">
+                <Plus className="h-5 w-5 text-white" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-bold text-white">
+                  Create New Assessment
+                </span>
+                <span className="block text-[11px] text-white/90">
+                  Custom Questions · Proctoring · Live Preview
+                </span>
+              </span>
+              <ChevronRight className="h-4 w-4 shrink-0 text-white" />
+            </button>
+
+            {records[0] && (
+              <button
+                type="button"
+                onClick={() => openPreviewModal(records[0])}
+                className="flex w-full items-center justify-between rounded-xl bg-white/15 hover:bg-white/25 px-4 py-2.5 text-xs font-semibold text-white transition-all cursor-pointer"
+              >
+                <span className="flex items-center gap-2">
+                  <Eye className="h-4 w-4 text-[#FB923C]" />
+                  Preview Candidate Test Simulator
+                </span>
+                <ChevronRight className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+        }
+      >
+        <div className="flex flex-wrap items-center gap-2 pt-1">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/25">
+            <ClipboardList className="h-3.5 w-3.5 text-[#FB923C]" /> {records.length} Total Assessments
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/25">
+            <ShieldCheck className="h-3.5 w-3.5 text-emerald-300" /> AI Proctoring Integrity: 99.6%
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/25">
+            <BarChart3 className="h-3.5 w-3.5 text-sky-300" /> Avg Candidate Score: {avgCompletedScore}%
+          </span>
+        </div>
+      </ProHero>
+
+      {/* ================= 4 EXECUTIVE KPI SUMMARY CARDS ================= */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
           {
             label: "Total Assessments",
             value: records.length,
+            sub: `${records.filter((r) => r.status === "Draft").length} reusable templates ready`,
             icon: ClipboardList,
-            filter: "All",
+            iconBg: "bg-[#002C66]/10 text-[#002C66]",
+            targetFilter: "All",
           },
           {
-            label: "Completed",
-            value: records.filter((r) => r.status === "Completed").length,
+            label: "Completed Evaluations",
+            value: completedRecords.length,
+            sub: `Avg Score: ${avgCompletedScore}% · CIR Generated`,
             icon: CheckCircle2,
-            filter: "Completed",
+            iconBg: "bg-emerald-500/10 text-emerald-600",
+            targetFilter: "Completed",
           },
           {
-            label: "Active / Invited",
+            label: "Active / Invited Tests",
             value: records.filter((r) =>
               ["Invited", "Pending", "Active"].includes(r.status)
             ).length,
+            sub: "Awaiting candidate submission",
             icon: Clock,
-            filter: "Active",
+            iconBg: "bg-sky-500/10 text-sky-600",
+            targetFilter: "Active",
           },
           {
-            label: "Invited Candidates",
+            label: "Assigned Candidates",
             value: new Set(
               records.filter((r) => r.candidate).map((r) => r.candidate)
             ).size,
+            sub: "Synced with Applicant Pipeline",
             icon: Users,
-            filter: "All",
+            iconBg: "bg-[#FB923C]/15 text-[#EA580C]",
+            targetFilter: "All",
           },
-        ].map(({ label, value, icon: Icon, filter: next }) => (
-          <Button
-            key={label}
-            variant="ghost"
-            className="workspace-stat"
-            onClick={() => setFilter(next)}
-          >
-            <div className="workspace-icon !h-12 !w-12 !rounded-full">
-              <Icon size={24} />
-            </div>
-            <div>
-              <span>{label}</span>
-              <strong>{value}</strong>
-            </div>
-          </Button>
-        ))}
+        ].map((kpi) => {
+          const Icon = kpi.icon;
+          const isSelected = filter === kpi.targetFilter && kpi.label !== "Assigned Candidates";
+          return (
+            <button
+              key={kpi.label}
+              type="button"
+              onClick={() => setFilter(kpi.targetFilter)}
+              className={cn(
+                "group rounded-2xl border bg-card p-5 text-left shadow-sm transition-all cursor-pointer flex items-start gap-4",
+                isSelected
+                  ? "border-[#002C66] ring-2 ring-[#002C66]/15"
+                  : "border-border hover:border-[#002C66]/40 hover:shadow-md"
+              )}
+            >
+              <span
+                className={cn(
+                  "flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl transition-transform group-hover:scale-105",
+                  kpi.iconBg
+                )}
+              >
+                <Icon className="h-6 w-6" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <span className="text-xs font-semibold text-muted-foreground block">
+                  {kpi.label}
+                </span>
+                <div className="font-display text-2xl font-extrabold text-foreground mt-0.5">
+                  {kpi.value}
+                </div>
+                <span className="text-[11px] font-medium text-muted-foreground mt-1 block truncate">
+                  {kpi.sub}
+                </span>
+              </div>
+            </button>
+          );
+        })}
       </div>
 
-      {/* Create Banner */}
-      <section className="workspace-panel flex flex-wrap items-center gap-6">
-        <div className="workspace-icon !h-20 !w-20">
-          <ClipboardList size={45} />
-        </div>
-        <div className="min-w-0 flex-1">
-          <h2 className="text-lg font-bold">
-            Create, Preview &amp; Edit Custom Assessments
-          </h2>
-          <p className="mt-1.5 text-xs text-muted-foreground">
-            Build role-specific technical, coding, aptitude, or HR assessments. Preview the exact candidate test interface and edit any existing assessment or question bank at any time.
-          </p>
-          <div className="mt-3.5 flex flex-wrap gap-2.5">
-            {[
-              { icon: Eye, text: "Interactive Candidate Preview" },
-              { icon: Pencil, text: "Edit Existing Assessments & Questions" },
-              { icon: ShieldCheck, text: "AI Cheating Prevention" },
-              { icon: Sparkles, text: "Instant CIR Scorecard" },
-            ].map(({ icon: Icon, text }) => (
-              <span key={text} className="workspace-chip">
-                <Icon size={12} />
-                {text}
-              </span>
-            ))}
+      {/* ================= QUICK-START ASSESSMENT BLUEPRINTS ================= */}
+      <section className="rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-sm space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-4">
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#002C66]/10 text-[#002C66]">
+              <Layers className="h-5 w-5" />
+            </span>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="font-display text-base font-bold text-foreground">
+                  Quick-Start Assessment Blueprints (1-Click Templates)
+                </h2>
+                <span className="rounded-full bg-[#FB923C]/15 px-2.5 py-0.5 text-[10px] font-bold text-[#EA580C]">
+                  Pre-Built Question Banks
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Launch a pre-configured industry assessment template or customize its questions before inviting candidates.
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="flex flex-wrap items-center gap-2.5">
-          {records[0] && (
-            <Button
-              variant="outline"
-              onClick={() => openPreviewModal(records[0])}
-              className="gap-1.5 cursor-pointer"
-            >
-              <Eye className="h-4 w-4" /> Preview Sample Assessment
-            </Button>
-          )}
-          <Button onClick={openCreateModal} className="gap-1.5 cursor-pointer">
-            <Plus className="h-4 w-4" /> Create Assessment
+          <Button
+            onClick={() => openCreateModal()}
+            className="bg-[#002C66] hover:bg-[#001F4D] text-white rounded-xl h-9 px-4 text-xs font-bold gap-1.5 cursor-pointer shrink-0"
+          >
+            <Plus className="h-4 w-4" /> Build From Scratch
           </Button>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {BLUEPRINT_PRESETS.map((bp) => (
+            <div
+              key={bp.key}
+              className="group flex flex-col justify-between rounded-xl border border-border bg-background p-4 hover:border-[#002C66]/40 hover:shadow-sm transition-all"
+            >
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="rounded-md bg-[#002C66]/10 px-2 py-0.5 text-[10px] font-bold text-[#002C66]">
+                    {bp.type} · {bp.difficulty}
+                  </span>
+                  <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                    {bp.duration}m · {bp.passingScore}% Pass
+                  </span>
+                </div>
+                <h3 className="font-display text-sm font-bold text-foreground group-hover:text-[#002C66] transition-colors">
+                  {bp.title}
+                </h3>
+                <p className="text-[11px] leading-relaxed text-muted-foreground">
+                  {bp.description}
+                </p>
+                <div className="flex flex-wrap gap-1 pt-1">
+                  {bp.skills.split(",").map((s) => (
+                    <span
+                      key={s}
+                      className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-foreground/80"
+                    >
+                      {s.trim()}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-border/60 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => openCreateModal(bp)}
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#002C66] hover:bg-[#001F4D] px-3 py-2 text-xs font-bold text-white transition-colors cursor-pointer"
+                >
+                  <Plus className="h-3.5 w-3.5" /> Customize &amp; Use
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* Assessments Table */}
-      <section className="workspace-panel">
-        <div className="mb-5 flex flex-wrap justify-between gap-4">
-          <div className="flex flex-wrap gap-2">
-            {["All", "Active", "Draft", "Completed"].map((f) => (
-              <Button
-                size="sm"
-                key={f}
-                variant={filter === f ? "default" : "outline"}
-                onClick={() => setFilter(f)}
-              >
-                {f} (
-                {
-                  records.filter((r) => f === "All" || status(r.status) === f)
-                    .length
-                }
-                )
-              </Button>
-            ))}
+      {/* ================= MANAGE, PREVIEW & EDIT ASSESSMENTS DIRECTORY ================= */}
+      <section className="rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-sm space-y-5">
+        {/* Filter, Search & View Mode Toolbar */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-border pb-4">
+          <div>
+            <h2 className="font-display text-base font-bold text-foreground flex items-center gap-2">
+              Your Employer Assessments Directory
+              <Badge variant="outline" className="text-[11px] font-bold">
+                {filtered.length} Assessments
+              </Badge>
+            </h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Click <strong>Preview</strong> to test the live candidate view, or click{" "}
+              <strong>Edit</strong> to modify any existing assessment&apos;s settings and questions.
+            </p>
           </div>
-          <div className="relative">
-            <Search size={15} className="absolute left-3 top-3 text-primary" />
-            <Input
-              aria-label="Search assessments"
-              className="pl-9"
-              placeholder="Search assessments or candidates..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
+
+          <div className="flex flex-wrap items-center gap-2.5">
+            {/* Search Box */}
+            <div className="relative min-w-[230px] flex-1 sm:flex-initial">
+              <Search
+                size={15}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+              />
+              <Input
+                aria-label="Search assessments"
+                className="pl-9 h-9 rounded-xl text-xs"
+                placeholder="Search title, skill, or candidate..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+            </div>
+
+            {/* Grid / Table View Toggle */}
+            <div className="inline-flex items-center rounded-xl border border-border bg-muted/40 p-1">
+              <button
+                type="button"
+                onClick={() => setViewMode("grid")}
+                className={cn(
+                  "inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-bold transition-all cursor-pointer",
+                  viewMode === "grid"
+                    ? "bg-[#002C66] text-white shadow-2xs"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <LayoutGrid className="h-3.5 w-3.5" /> Cards
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode("table")}
+                className={cn(
+                  "inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-bold transition-all cursor-pointer",
+                  viewMode === "table"
+                    ? "bg-[#002C66] text-white shadow-2xs"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <List className="h-3.5 w-3.5" /> Table
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[880px] text-left text-xs">
-            <thead className="bg-muted/40 text-muted-foreground">
-              <tr>
-                {[
-                  "Assessment Name & Skills",
-                  "Type & Level",
-                  "Questions",
-                  "Duration & Cutoff",
-                  "Status / Score",
-                  "Created On",
-                  "Actions (Preview / Edit / Manage)",
-                ].map((h) => (
-                  <th className="p-3 font-medium" key={h}>
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((r) => {
-                const qList = getQuestionsForRecord(r);
-                return (
-                  <tr
-                    className="border-b border-border hover:bg-muted/20 transition-colors"
-                    key={r.id}
+        {/* Status Filter Pills */}
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            {[
+              { id: "All", label: "All Assessments" },
+              { id: "Active", label: "Active / Invited" },
+              { id: "Completed", label: "Completed" },
+              { id: "Draft", label: "Draft Templates" },
+            ].map((tab) => {
+              const count = records.filter(
+                (r) => tab.id === "All" || normalizeStatus(r.status) === tab.id
+              ).length;
+              const active = filter === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setFilter(tab.id)}
+                  className={cn(
+                    "inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold transition-all cursor-pointer",
+                    active
+                      ? "bg-[#002C66] text-white shadow-sm"
+                      : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
+                  )}
+                >
+                  <span>{tab.label}</span>
+                  <span
+                    className={cn(
+                      "rounded-full px-1.5 py-0.2 text-[10px]",
+                      active ? "bg-white/20 text-white" : "bg-background text-foreground"
+                    )}
                   >
-                    <td className="p-3">
-                      <div className="flex items-start gap-3">
-                        <span className="workspace-icon !h-9 !w-9 !rounded-full shrink-0 mt-0.5">
-                          <Code2 size={16} />
-                        </span>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <p className="font-bold text-foreground text-sm">
-                              {r.name}
-                            </p>
-                            {(r.proctoring ?? true) && (
-                              <span className="inline-flex items-center gap-1 rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700">
-                                <ShieldCheck className="h-3 w-3" /> Proctored
-                              </span>
-                            )}
-                          </div>
-                          <p className="mt-0.5 text-[11px] text-muted-foreground">
-                            Candidate:{" "}
-                            <strong className="text-foreground">
-                              {r.candidate || "Template / No candidate assigned"}
-                            </strong>
-                          </p>
-                          {r.skills && r.skills.length > 0 && (
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {r.skills.map((s) => (
-                                <span
-                                  key={s}
-                                  className="rounded bg-primary/10 text-primary px-1.5 py-0.5 text-[10px] font-medium"
-                                >
-                                  {s}
-                                </span>
-                              ))}
-                            </div>
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => openCreateModal()}
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[#FB923C] hover:bg-[#F97316] px-4 py-2 text-xs font-bold text-white shadow-xs transition-all cursor-pointer"
+          >
+            <Plus className="h-4 w-4" /> Create Assessment
+          </button>
+        </div>
+
+        {/* ================= VIEW MODE 1: MODERN EXECUTIVE CARDS GRID ================= */}
+        {viewMode === "grid" ? (
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+            {filtered.map((r) => {
+              const qList = getQuestionsForRecord(r);
+              const stStyle = getStatusStyle(r.status);
+              const cutoff = r.passingScore ?? 70;
+              const passed = (r.score ?? 0) >= cutoff;
+
+              return (
+                <div
+                  key={r.id}
+                  className="group relative flex flex-col justify-between rounded-2xl border border-border bg-background shadow-2xs hover:shadow-md hover:border-[#002C66]/40 transition-all overflow-hidden"
+                >
+                  {/* Top Colored Status Strip */}
+                  <div className={cn("h-1.5 w-full", stStyle.accentBar)} />
+
+                  <div className="p-5 space-y-4 flex-1 flex flex-col justify-between">
+                    <div className="space-y-3">
+                      {/* Top Badges Row */}
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <span className="inline-flex items-center gap-1 rounded-lg bg-[#002C66]/10 px-2.5 py-1 text-[11px] font-bold text-[#002C66]">
+                            <Code2 className="h-3.5 w-3.5" />
+                            {r.type || "Technical"}
+                          </span>
+                          <span className="rounded-lg border border-border bg-muted/40 px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">
+                            {r.difficulty || "Intermediate"}
+                          </span>
+                          {(r.proctoring ?? true) && (
+                            <span className="inline-flex items-center gap-1 rounded-lg bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
+                              <ShieldCheck className="h-3 w-3" /> AI Proctored
+                            </span>
                           )}
                         </div>
+
+                        <span
+                          className={cn(
+                            "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-bold",
+                            stStyle.badge
+                          )}
+                        >
+                          <span className={cn("h-1.5 w-1.5 rounded-full", stStyle.dot)} />
+                          {stStyle.label}
+                        </span>
                       </div>
-                    </td>
-                    <td className="p-3">
-                      <div className="font-semibold text-foreground">
-                        {r.type || "Technical"}
+
+                      {/* Assessment Title & Description */}
+                      <div>
+                        <h3 className="font-display text-base font-bold text-foreground group-hover:text-[#002C66] transition-colors">
+                          {r.name}
+                        </h3>
+                        <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                          {r.description ||
+                            "Role-aligned technical evaluation with automated grading and sub-skill CIR telemetry."}
+                        </p>
                       </div>
-                      <div className="text-[11px] text-muted-foreground">
-                        {r.difficulty || "Intermediate"} Level
-                      </div>
-                    </td>
-                    <td className="p-3">
-                      <div className="font-semibold text-foreground">
-                        {r.questions ?? qList.length} Qs
-                      </div>
-                      <div className="text-[11px] text-muted-foreground">
-                        {qList.length} interactive sample Qs
-                      </div>
-                    </td>
-                    <td className="p-3">
-                      <div className="font-semibold text-foreground">
-                        {r.duration ? `${r.duration} mins` : "30 mins"}
-                      </div>
-                      <div className="text-[11px] text-muted-foreground">
-                        Pass Cutoff: {r.passingScore ?? 65}%
-                      </div>
-                    </td>
-                    <td className="p-3">
-                      <span className="workspace-chip">{status(r.status)}</span>
-                      {r.score !== undefined && (
-                        <div className="mt-1 text-xs font-extrabold text-emerald-600">
-                          Score: {r.score}%
+
+                      {/* Skills Tags */}
+                      {r.skills && r.skills.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5">
+                          {r.skills.map((skill) => (
+                            <span
+                              key={skill}
+                              className="rounded-md bg-primary/8 border border-primary/15 px-2 py-0.5 text-[10px] font-semibold text-primary"
+                            >
+                              {skill}
+                            </span>
+                          ))}
                         </div>
                       )}
-                    </td>
-                    <td className="p-3 text-muted-foreground">
-                      {r.at
-                        ? new Date(r.at).toLocaleDateString("en-GB")
-                        : "Oct 2026"}
-                    </td>
-                    <td className="p-3">
-                      <div className="flex flex-wrap items-center gap-1.5">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => openPreviewModal(r)}
-                          className="h-8 gap-1 px-2.5 text-xs font-semibold border-primary/40 text-primary hover:bg-primary/10 cursor-pointer"
-                          title="Preview how this assessment looks to candidates"
-                        >
-                          <Eye className="h-3.5 w-3.5" /> Preview
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => openEditModal(r)}
-                          className="h-8 gap-1 px-2.5 text-xs font-semibold cursor-pointer"
-                          title="Edit assessment settings and questions"
-                        >
-                          <Pencil className="h-3.5 w-3.5" /> Edit
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => setSelected(r.id)}
-                          className="h-8 px-2.5 text-xs font-semibold cursor-pointer"
-                        >
-                          Results
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleDuplicate(r)}
-                          className="h-8 w-8 p-0 text-muted-foreground hover:text-primary cursor-pointer"
-                          title="Duplicate assessment"
-                        >
-                          <Copy className="h-3.5 w-3.5" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleDelete(r)}
-                          className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive cursor-pointer"
-                          title="Delete assessment"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
+                    </div>
+
+                    <div className="space-y-3 pt-2">
+                      {/* 3-Column Telemetry Strip */}
+                      <div className="grid grid-cols-3 gap-2 rounded-xl border border-border/70 bg-muted/30 p-3 text-center">
+                        <div>
+                          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground block">
+                            Questions
+                          </span>
+                          <span className="font-display text-sm font-bold text-foreground mt-0.5 block">
+                            {r.questions ?? qList.length} Qs
+                          </span>
+                          <span className="text-[10px] text-primary font-medium">
+                            {qList.length} in Preview
+                          </span>
+                        </div>
+                        <div className="border-x border-border/70 px-2">
+                          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground block">
+                            Duration
+                          </span>
+                          <span className="font-display text-sm font-bold text-foreground mt-0.5 block">
+                            {r.duration ?? 30} Mins
+                          </span>
+                          <span className="text-[10px] text-muted-foreground">Timed Test</span>
+                        </div>
+                        <div>
+                          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground block">
+                            Pass Cutoff
+                          </span>
+                          <span className="font-display text-sm font-bold text-emerald-700 mt-0.5 block">
+                            {cutoff}% Score
+                          </span>
+                          <span className="text-[10px] text-muted-foreground">Auto-Graded</span>
+                        </div>
                       </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+
+                      {/* Candidate & Score Strip */}
+                      <div className="flex items-center justify-between gap-3 rounded-xl border border-border/60 bg-card px-3.5 py-2.5">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#002C66] text-[11px] font-bold text-white">
+                            {r.candidate
+                              ? r.candidate
+                                  .split(" ")
+                                  .map((w) => w[0])
+                                  .join("")
+                                  .slice(0, 2)
+                              : "TP"}
+                          </span>
+                          <div className="min-w-0">
+                            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground block">
+                              {r.candidate ? "Assigned Candidate" : "Template Mode"}
+                            </span>
+                            <span className="text-xs font-bold text-foreground truncate block">
+                              {r.candidate || "Reusable for any applicant"}
+                            </span>
+                          </div>
+                        </div>
+
+                        {r.score !== undefined ? (
+                          <div className="flex items-center gap-2 shrink-0">
+                            <div className="text-right">
+                              <span
+                                className={cn(
+                                  "text-xs font-extrabold block",
+                                  passed ? "text-emerald-600" : "text-amber-600"
+                                )}
+                              >
+                                {r.score}% Score
+                              </span>
+                              <span className="text-[10px] text-muted-foreground block">
+                                {passed ? "Passed Cutoff" : "Below Cutoff"}
+                              </span>
+                            </div>
+                            <MatchRing percent={r.score} size={38} />
+                          </div>
+                        ) : (
+                          <span className="text-[11px] font-semibold text-muted-foreground shrink-0">
+                            {r.at
+                              ? new Date(r.at).toLocaleDateString("en-GB", {
+                                  day: "2-digit",
+                                  month: "short",
+                                  year: "numeric",
+                                })
+                              : "Oct 2026"}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card Footer Action Bar */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border bg-muted/25 px-5 py-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => openPreviewModal(r)}
+                        className="inline-flex items-center gap-1.5 rounded-xl bg-[#002C66] hover:bg-[#001F4D] px-3.5 py-2 text-xs font-bold text-white shadow-2xs transition-all cursor-pointer"
+                      >
+                        <Eye className="h-3.5 w-3.5 text-[#FB923C]" />
+                        Preview Assessment
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => openEditModal(r)}
+                        className="inline-flex items-center gap-1.5 rounded-xl border border-[#002C66]/30 bg-card hover:bg-[#002C66]/5 px-3.5 py-2 text-xs font-bold text-[#002C66] transition-all cursor-pointer"
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                        Edit
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setSelected(r.id)}
+                        className="inline-flex items-center gap-1 rounded-xl border border-border bg-card hover:bg-muted px-3 py-2 text-xs font-semibold text-foreground transition-all cursor-pointer"
+                      >
+                        <BarChart3 className="h-3.5 w-3.5 text-primary" />
+                        Results
+                      </button>
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => handleDuplicate(r)}
+                        title="Duplicate assessment"
+                        className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-[#002C66]/10 hover:text-[#002C66] transition-colors cursor-pointer"
+                      >
+                        <Copy className="h-3.5 w-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(r)}
+                        title="Delete assessment"
+                        className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors cursor-pointer"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          /* ================= VIEW MODE 2: COMPACT EXECUTIVE TABLE ================= */
+          <div className="overflow-x-auto rounded-xl border border-border">
+            <table className="w-full min-w-[900px] text-left text-xs">
+              <thead className="bg-[#002C66] text-white">
+                <tr>
+                  {[
+                    "Assessment Name & Skills",
+                    "Category & Level",
+                    "Questions",
+                    "Duration & Cutoff",
+                    "Candidate & Status",
+                    "Actions (Preview / Edit / Manage)",
+                  ].map((h) => (
+                    <th className="px-4 py-3.5 font-semibold" key={h}>
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border bg-card">
+                {filtered.map((r) => {
+                  const qList = getQuestionsForRecord(r);
+                  const stStyle = getStatusStyle(r.status);
+                  return (
+                    <tr
+                      className="hover:bg-muted/30 transition-colors"
+                      key={r.id}
+                    >
+                      <td className="p-4">
+                        <div className="flex items-start gap-3">
+                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#002C66]/10 text-[#002C66] mt-0.5">
+                            <Code2 size={17} />
+                          </span>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <p className="font-bold text-foreground text-sm">
+                                {r.name}
+                              </p>
+                              {(r.proctoring ?? true) && (
+                                <span className="inline-flex items-center gap-1 rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700">
+                                  <ShieldCheck className="h-3 w-3" /> Proctored
+                                </span>
+                              )}
+                            </div>
+                            {r.skills && r.skills.length > 0 && (
+                              <div className="flex flex-wrap gap-1 mt-1.5">
+                                {r.skills.map((s) => (
+                                  <span
+                                    key={s}
+                                    className="rounded bg-primary/10 text-primary px-1.5 py-0.5 text-[10px] font-medium"
+                                  >
+                                    {s}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="font-bold text-foreground">
+                          {r.type || "Technical"}
+                        </div>
+                        <div className="text-[11px] text-muted-foreground mt-0.5">
+                          {r.difficulty || "Intermediate"} Level
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="font-bold text-foreground">
+                          {r.questions ?? qList.length} Questions
+                        </div>
+                        <div className="text-[11px] text-primary font-medium mt-0.5">
+                          {qList.length} interactive sample Qs
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="font-bold text-foreground">
+                          {r.duration ? `${r.duration} mins` : "30 mins"}
+                        </div>
+                        <div className="text-[11px] text-emerald-700 font-semibold mt-0.5">
+                          Pass Cutoff: {r.passingScore ?? 70}%
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="font-bold text-foreground mb-1">
+                          {r.candidate || "Reusable Template"}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={cn(
+                              "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-bold",
+                              stStyle.badge
+                            )}
+                          >
+                            {stStyle.label}
+                          </span>
+                          {r.score !== undefined && (
+                            <span className="text-xs font-extrabold text-emerald-600">
+                              {r.score}%
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => openPreviewModal(r)}
+                            className="inline-flex items-center gap-1 rounded-lg bg-[#002C66] hover:bg-[#001F4D] px-3 py-1.5 text-xs font-bold text-white cursor-pointer"
+                          >
+                            <Eye className="h-3.5 w-3.5 text-[#FB923C]" /> Preview
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => openEditModal(r)}
+                            className="inline-flex items-center gap-1 rounded-lg border border-[#002C66]/30 bg-card hover:bg-[#002C66]/5 px-3 py-1.5 text-xs font-bold text-[#002C66] cursor-pointer"
+                          >
+                            <Pencil className="h-3.5 w-3.5" /> Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setSelected(r.id)}
+                            className="inline-flex items-center gap-1 rounded-lg border border-border bg-card hover:bg-muted px-2.5 py-1.5 text-xs font-semibold text-foreground cursor-pointer"
+                          >
+                            Results
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDuplicate(r)}
+                            className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer"
+                            title="Duplicate"
+                          >
+                            <Copy className="h-3.5 w-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(r)}
+                            className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-destructive/10 hover:text-destructive cursor-pointer"
+                            title="Delete"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+
         {!filtered.length && (
-          <p className="py-12 text-center text-sm text-muted-foreground">
-            No assessments match your selection.
-          </p>
+          <div className="rounded-2xl border border-dashed border-border py-12 text-center space-y-3">
+            <ClipboardList className="h-10 w-10 text-muted-foreground mx-auto" />
+            <div className="space-y-1">
+              <p className="text-sm font-bold text-foreground">
+                No assessments match your current filter
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Try clearing your search query or create a new custom assessment.
+              </p>
+            </div>
+            <Button
+              onClick={() => {
+                setFilter("All");
+                setQuery("");
+              }}
+              variant="outline"
+              size="sm"
+              className="rounded-xl text-xs"
+            >
+              Reset Filters
+            </Button>
+          </div>
         )}
       </section>
 
       {/* ================= CREATE / EDIT ASSESSMENT BUILDER MODAL (WITH LIVE PREVIEW TAB) ================= */}
       <Dialog open={builderOpen} onOpenChange={setBuilderOpen}>
-        <DialogContent className="sm:max-w-3xl max-h-[92vh] overflow-y-auto">
-          <DialogHeader>
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <DialogTitle className="text-lg font-bold">
-                {editingId !== null
-                  ? `Edit Assessment — ${name || "Untitled"}`
-                  : "Create New Employer Assessment"}
-              </DialogTitle>
-              <div className="flex items-center gap-1.5 rounded-xl bg-muted p-1">
-                <button
-                  type="button"
-                  onClick={() => setBuilderTab("edit")}
-                  className={cn(
-                    "px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5",
-                    builderTab === "edit"
-                      ? "bg-[#002C66] text-white shadow-xs"
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  <Pencil className="h-3.5 w-3.5" /> 1. Configure &amp; Edit Questions
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setBuilderTab("preview")}
-                  className={cn(
-                    "px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5",
-                    builderTab === "preview"
-                      ? "bg-[#FB923C] text-white shadow-xs"
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  <Eye className="h-3.5 w-3.5" /> 2. Preview Assessment ({questionItems.length} Qs)
-                </button>
-              </div>
-            </div>
-            <DialogDescription className="text-xs">
-              {builderTab === "edit"
-                ? "Configure assessment settings, proctoring rules, candidate assignment, and customize questions below."
-                : "Live preview of how candidates will experience this assessment before you save."}
-            </DialogDescription>
-          </DialogHeader>
-
-          {builderTab === "edit" ? (
-            <form onSubmit={handleSaveBuilder} className="space-y-4 text-xs">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                <label className="grid gap-1.5 font-semibold text-foreground">
-                  Assessment Name *
-                  <Input
-                    aria-label="Assessment name"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="e.g. Senior React & TypeScript Architecture Test"
-                  />
-                </label>
-
-                <label className="grid gap-1.5 font-semibold text-foreground">
-                  Assessment Type
-                  <select
-                    aria-label="Assessment type"
-                    className="h-10 rounded-md border border-border bg-background px-3 text-xs"
-                    value={type}
-                    onChange={(e) => setType(e.target.value)}
-                  >
-                    {["Technical", "Coding & System Design", "Aptitude", "HR Round"].map(
-                      (t) => (
-                        <option key={t}>{t}</option>
-                      )
-                    )}
-                  </select>
-                </label>
-
-                <label className="grid gap-1.5 font-semibold text-foreground">
-                  Difficulty Level
-                  <select
-                    aria-label="Difficulty level"
-                    className="h-10 rounded-md border border-border bg-background px-3 text-xs"
-                    value={difficulty}
-                    onChange={(e) => setDifficulty(e.target.value)}
-                  >
-                    {["Core", "Intermediate", "Advanced"].map((d) => (
-                      <option key={d}>{d}</option>
-                    ))}
-                  </select>
-                </label>
-
-                <label className="grid gap-1.5 font-semibold text-foreground">
-                  Invite Candidate (or leave blank for Template/Draft)
-                  <select
-                    aria-label="Assessment candidate"
-                    className="h-10 rounded-md border border-border bg-background px-3 text-xs"
-                    value={candidate}
-                    onChange={(e) => setCandidate(e.target.value)}
-                  >
-                    <option value="">Save as reusable template / draft</option>
-                    {[...new Set(applications.map((a) => a.name))].map((n) => (
-                      <option key={n}>{n}</option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-
-              <div className="grid grid-cols-3 gap-3.5">
-                <label className="grid gap-1.5 font-semibold text-foreground">
-                  Total Questions
-                  <Input
-                    aria-label="Question count"
-                    required
-                    type="number"
-                    min={1}
-                    value={questions}
-                    onChange={(e) => setQuestions(Number(e.target.value))}
-                  />
-                </label>
-                <label className="grid gap-1.5 font-semibold text-foreground">
-                  Duration (mins)
-                  <Input
-                    aria-label="Duration"
-                    required
-                    type="number"
-                    min={5}
-                    value={duration}
-                    onChange={(e) => setDuration(Number(e.target.value))}
-                  />
-                </label>
-                <label className="grid gap-1.5 font-semibold text-foreground">
-                  Pass Cutoff (%)
-                  <Input
-                    aria-label="Passing score"
-                    required
-                    type="number"
-                    min={30}
-                    max={100}
-                    value={passingScore}
-                    onChange={(e) => setPassingScore(Number(e.target.value))}
-                  />
-                </label>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 items-center">
-                <label className="grid gap-1.5 font-semibold text-foreground">
-                  Skills Tested (comma-separated)
-                  <Input
-                    value={skillsInput}
-                    onChange={(e) => setSkillsInput(e.target.value)}
-                    placeholder="React, TypeScript, State Management"
-                  />
-                </label>
-
-                <label className="flex items-center gap-2.5 rounded-xl border border-border bg-muted/20 p-3 mt-4 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={proctoring}
-                    onChange={(e) => setProctoring(e.target.checked)}
-                    className="h-4 w-4 accent-[#002C66]"
-                  />
-                  <div>
-                    <span className="font-bold text-foreground block">
-                      Enable AI Cheating Prevention Proctoring
-                    </span>
-                    <span className="text-[11px] text-muted-foreground">
-                      Webcam, Mic, Browser Lock &amp; Tab-Switch Guard
-                    </span>
-                  </div>
-                </label>
-              </div>
-
-              <label className="grid gap-1.5 font-semibold text-foreground">
-                Assessment Brief &amp; Instructions for Candidates
-                <Textarea
-                  aria-label="Assessment brief"
-                  rows={2}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Describe the topics covered and instructions for candidates..."
-                />
-              </label>
-
-              {/* Editable Question Bank Section */}
-              <div className="space-y-3 rounded-xl border border-border bg-muted/15 p-4">
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-2.5">
-                  <div>
-                    <h4 className="font-bold text-sm text-foreground">
-                      Assessment Questions ({questionItems.length} Configured)
-                    </h4>
-                    <p className="text-[11px] text-muted-foreground">
-                      Edit existing questions, modify answer choices, mark the correct option, or add new questions.
-                    </p>
-                  </div>
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    onClick={addQuestionItem}
-                    className="h-8 gap-1 text-xs font-bold border-primary/40 text-primary cursor-pointer"
-                  >
-                    <Plus className="h-3.5 w-3.5" /> Add Question
-                  </Button>
+        <DialogContent className="sm:max-w-4xl max-h-[92vh] overflow-y-auto p-0 gap-0 rounded-2xl overflow-hidden border-border">
+          {/* Executive Navy Modal Header */}
+          <div className="bg-[#002C66] text-white p-5 sm:p-6">
+            <DialogHeader>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="space-y-1">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#FB923C]">
+                    <Sparkles className="h-3 w-3" />
+                    {editingId !== null ? "Edit Existing Assessment" : "Assessment Studio Builder"}
+                  </span>
+                  <DialogTitle className="text-xl font-bold text-white">
+                    {editingId !== null
+                      ? `Edit Assessment: ${name || "Untitled"}`
+                      : "Create New Employer Assessment"}
+                  </DialogTitle>
+                  <DialogDescription className="text-xs text-white/80">
+                    Configure assessment parameters, customize the question bank &amp; answer key, and preview the live candidate test view before saving.
+                  </DialogDescription>
                 </div>
 
-                <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
-                  {questionItems.map((qItem, qIdx) => (
-                    <div
-                      key={qItem.id}
-                      className="rounded-xl border border-border bg-card p-3.5 space-y-2.5"
-                    >
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="font-bold text-xs text-primary">
-                          Question #{qIdx + 1} ({qItem.points} pts)
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <Input
-                            value={qItem.skillTag}
-                            onChange={(e) =>
-                              updateQuestionItem(qIdx, { skillTag: e.target.value })
-                            }
-                            placeholder="Skill tag"
-                            className="h-7 w-36 text-[11px]"
-                          />
+                {/* Step Switcher Tabs */}
+                <div className="flex items-center gap-1.5 rounded-xl bg-white/10 p-1">
+                  <button
+                    type="button"
+                    onClick={() => setBuilderTab("edit")}
+                    className={cn(
+                      "px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5",
+                      builderTab === "edit"
+                        ? "bg-white text-[#002C66] shadow-xs"
+                        : "text-white/85 hover:text-white hover:bg-white/10"
+                    )}
+                  >
+                    <Pencil className="h-3.5 w-3.5" /> 1. Configure &amp; Questions
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setBuilderTab("preview")}
+                    className={cn(
+                      "px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5",
+                      builderTab === "preview"
+                        ? "bg-[#FB923C] text-white shadow-xs"
+                        : "text-white/85 hover:text-white hover:bg-white/10"
+                    )}
+                  >
+                    <Eye className="h-3.5 w-3.5" /> 2. Live Preview ({questionItems.length} Qs)
+                  </button>
+                </div>
+              </div>
+            </DialogHeader>
+          </div>
+
+          <div className="p-5 sm:p-6">
+            {builderTab === "edit" ? (
+              <form className="space-y-6 text-xs" onSubmit={handleSaveBuilder}>
+                {/* Section 1: Assessment Configuration */}
+                <div className="rounded-2xl border border-border bg-muted/20 p-4 sm:p-5 space-y-4">
+                  <div className="flex items-center justify-between border-b border-border pb-3">
+                    <div className="flex items-center gap-2">
+                      <SlidersHorizontal className="h-4 w-4 text-[#002C66]" />
+                      <h3 className="text-sm font-bold text-foreground">
+                        Assessment Parameters &amp; Settings
+                      </h3>
+                    </div>
+                    <span className="text-[11px] text-muted-foreground">
+                      All fields can be edited anytime
+                    </span>
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <label className="grid gap-1.5 font-semibold text-foreground sm:col-span-2">
+                      Assessment Title *
+                      <Input
+                        required
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="e.g. Senior React & TypeScript Architecture Challenge"
+                        className="h-10 rounded-xl bg-card"
+                      />
+                    </label>
+
+                    <label className="grid gap-1.5 font-semibold text-foreground">
+                      Assessment Category
+                      <select
+                        value={type}
+                        onChange={(e) => setType(e.target.value)}
+                        className="h-10 rounded-xl border border-border bg-card px-3 text-xs font-medium"
+                      >
+                        <option value="Technical">Technical</option>
+                        <option value="Coding">Coding</option>
+                        <option value="System Design">System Design</option>
+                        <option value="Aptitude">Aptitude &amp; Logic</option>
+                        <option value="HR / Behavioral">HR / Behavioral</option>
+                      </select>
+                    </label>
+
+                    <label className="grid gap-1.5 font-semibold text-foreground">
+                      Difficulty Level
+                      <select
+                        value={difficulty}
+                        onChange={(e) => setDifficulty(e.target.value)}
+                        className="h-10 rounded-xl border border-border bg-card px-3 text-xs font-medium"
+                      >
+                        <option value="Core">Core (0–2 Years)</option>
+                        <option value="Intermediate">Intermediate (2–5 Years)</option>
+                        <option value="Advanced">Advanced (5+ Years / Lead)</option>
+                      </select>
+                    </label>
+
+                    <label className="grid gap-1.5 font-semibold text-foreground sm:col-span-2">
+                      Evaluated Skills (comma-separated tags)
+                      <Input
+                        value={skillsInput}
+                        onChange={(e) => setSkillsInput(e.target.value)}
+                        placeholder="React, TypeScript, System Design, REST APIs"
+                        className="h-10 rounded-xl bg-card"
+                      />
+                    </label>
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-3">
+                    <label className="grid gap-1.5 font-semibold text-foreground">
+                      Total Questions Count
+                      <Input
+                        type="number"
+                        min={1}
+                        max={100}
+                        value={questions}
+                        onChange={(e) => setQuestions(Number(e.target.value))}
+                        className="h-10 rounded-xl bg-card"
+                      />
+                    </label>
+                    <label className="grid gap-1.5 font-semibold text-foreground">
+                      Time Limit (Minutes)
+                      <Input
+                        type="number"
+                        min={5}
+                        max={180}
+                        value={duration}
+                        onChange={(e) => setDuration(Number(e.target.value))}
+                        className="h-10 rounded-xl bg-card"
+                      />
+                    </label>
+                    <label className="grid gap-1.5 font-semibold text-foreground">
+                      Pass Cutoff Score (%)
+                      <Input
+                        type="number"
+                        min={30}
+                        max={95}
+                        value={passingScore}
+                        onChange={(e) => setPassingScore(Number(e.target.value))}
+                        className="h-10 rounded-xl bg-card"
+                      />
+                    </label>
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-2 pt-1">
+                    <label className="grid gap-1.5 font-semibold text-foreground">
+                      Assign Candidate (Optional)
+                      <select
+                        value={candidate}
+                        onChange={(e) => setCandidate(e.target.value)}
+                        className="h-10 rounded-xl border border-border bg-card px-3 text-xs font-medium"
+                      >
+                        <option value="">Save as Reusable Template / Draft</option>
+                        {Array.from(
+                          new Set([
+                            ...applications.map((a) => a.name),
+                            ...records.map((r) => r.candidate).filter(Boolean),
+                          ])
+                        ).map((cName) => (
+                          <option key={cName} value={cName}>
+                            {cName}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+
+                    <div className="flex items-center justify-between rounded-xl border border-border bg-card p-3.5">
+                      <div>
+                        <div className="font-bold text-foreground flex items-center gap-1.5">
+                          <ShieldCheck className="h-4 w-4 text-emerald-600" />
+                          AI Cheating Prevention
+                        </div>
+                        <p className="text-[11px] text-muted-foreground mt-0.5">
+                          Webcam gaze check, audio lock &amp; tab-switch guard
+                        </p>
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={proctoring}
+                        onChange={(e) => setProctoring(e.target.checked)}
+                        className="h-4 w-4 accent-[#002C66] cursor-pointer"
+                      />
+                    </div>
+                  </div>
+
+                  <label className="grid gap-1.5 font-semibold text-foreground">
+                    Assessment Instructions &amp; Candidate Brief
+                    <Textarea
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder="Describe the role expectations, evaluation criteria, and test rules..."
+                      className="rounded-xl bg-card min-h-[68px]"
+                    />
+                  </label>
+                </div>
+
+                {/* Section 2: Interactive Question Bank Editor */}
+                <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
+                    <div>
+                      <h4 className="font-display text-sm font-bold text-foreground flex items-center gap-2">
+                        <Code2 className="h-4 w-4 text-[#002C66]" />
+                        Assessment Question Bank ({questionItems.length} Questions)
+                      </h4>
+                      <p className="text-[11px] text-muted-foreground">
+                        Add, edit, or reorder questions and mark the correct option for automated grading.
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      {(["react", "sql", "cloud", "aptitude", "hr"] as const).map((tplKey) => (
+                        <button
+                          key={tplKey}
+                          type="button"
+                          onClick={() =>
+                            setQuestionItems(
+                              DEFAULT_QUESTION_TEMPLATES[tplKey].map((q) => ({
+                                ...q,
+                                options: [...q.options],
+                              }))
+                            )
+                          }
+                          className="rounded-lg border border-border bg-muted/40 px-2.5 py-1 text-[10px] font-bold uppercase text-muted-foreground hover:text-foreground hover:border-[#002C66]/40 cursor-pointer"
+                        >
+                          Load {tplKey} Qs
+                        </button>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={addQuestionItem}
+                        className="inline-flex items-center gap-1 rounded-lg bg-[#002C66] hover:bg-[#001F4D] px-3 py-1.5 text-xs font-bold text-white cursor-pointer"
+                      >
+                        <Plus className="h-3.5 w-3.5" /> Add Question
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 max-h-[360px] overflow-y-auto pr-1">
+                    {questionItems.map((qItem, qIdx) => (
+                      <div
+                        key={qItem.id}
+                        className="rounded-xl border border-border bg-muted/15 p-4 space-y-3"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <span className="inline-flex items-center justify-center h-6 w-6 rounded-md bg-[#002C66] text-white text-[11px] font-bold">
+                              Q{qIdx + 1}
+                            </span>
+                            <Input
+                              value={qItem.skillTag || ""}
+                              onChange={(e) =>
+                                updateQuestionItem(qIdx, { skillTag: e.target.value })
+                              }
+                              placeholder="Sub-skill tag (e.g. React Hooks)"
+                              className="h-7 w-48 text-[11px] rounded-lg bg-card"
+                            />
+                            <span className="text-[11px] text-muted-foreground font-semibold">
+                              {qItem.points || 10} pts
+                            </span>
+                          </div>
                           <button
                             type="button"
                             onClick={() => removeQuestionItem(qIdx)}
                             className="text-muted-foreground hover:text-destructive p-1 cursor-pointer"
                             title="Remove question"
                           >
-                            <Trash2 className="h-3.5 w-3.5" />
+                            <Trash2 className="h-4 w-4" />
                           </button>
                         </div>
-                      </div>
 
-                      <Input
-                        value={qItem.q}
-                        onChange={(e) => updateQuestionItem(qIdx, { q: e.target.value })}
-                        placeholder="Enter question prompt..."
-                        className="text-xs font-medium"
-                      />
+                        <Input
+                          value={qItem.q}
+                          onChange={(e) => updateQuestionItem(qIdx, { q: e.target.value })}
+                          placeholder="Enter question prompt..."
+                          className="h-9 text-xs font-semibold rounded-lg bg-card"
+                        />
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        {qItem.options.map((opt, optIdx) => {
-                          const isCorrect = qItem.answer === optIdx;
-                          return (
-                            <div
-                              key={optIdx}
-                              className={cn(
-                                "flex items-center gap-2 rounded-lg border px-2.5 py-1.5",
-                                isCorrect
-                                  ? "border-emerald-500/50 bg-emerald-500/10"
-                                  : "border-border bg-background"
-                              )}
-                            >
-                              <input
-                                type="radio"
-                                name={`correct-${qItem.id}`}
-                                checked={isCorrect}
-                                onChange={() =>
-                                  updateQuestionItem(qIdx, { answer: optIdx })
-                                }
-                                title="Mark as correct option"
-                                className="accent-emerald-600 cursor-pointer"
-                              />
-                              <Input
-                                value={opt}
-                                onChange={(e) =>
-                                  updateQuestionOption(qIdx, optIdx, e.target.value)
-                                }
-                                className="h-7 border-0 bg-transparent px-1 text-xs shadow-none focus-visible:ring-0"
-                              />
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <DialogFooter className="flex flex-wrap items-center justify-between sm:justify-between gap-2 pt-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setBuilderTab("preview")}
-                  className="gap-1.5 cursor-pointer"
-                >
-                  <Eye className="h-4 w-4 text-primary" /> Preview Assessment Before Saving
-                </Button>
-                <div className="flex items-center gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setBuilderOpen(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button type="submit" className="gap-1.5 cursor-pointer">
-                    <CheckCircle2 className="h-4 w-4" />
-                    {editingId !== null ? "Save Changes" : "Create Assessment"}
-                  </Button>
-                </div>
-              </DialogFooter>
-            </form>
-          ) : (
-            /* LIVE PREVIEW TAB INSIDE CREATE / EDIT MODAL */
-            <div className="space-y-4 py-2 text-xs">
-              <div className="rounded-2xl bg-[#002C66] text-white p-5 flex flex-wrap items-center justify-between gap-4">
-                <div>
-                  <div className="text-[10px] font-bold uppercase tracking-widest text-[#FB923C]">
-                    Candidate Assessment Live Preview
-                  </div>
-                  <h3 className="text-base font-extrabold mt-0.5">
-                    {name || "Untitled Employer Assessment"}
-                  </h3>
-                  <p className="text-xs text-white/80 mt-1">
-                    {description || "Role-aligned technical screening assessment."}
-                  </p>
-                </div>
-                <div className="flex flex-wrap items-center gap-2 text-xs">
-                  <span className="rounded-lg bg-white/15 px-3 py-1.5 font-bold">
-                    {duration} mins
-                  </span>
-                  <span className="rounded-lg bg-white/15 px-3 py-1.5 font-bold">
-                    Pass Cutoff: {passingScore}%
-                  </span>
-                  {proctoring && (
-                    <span className="rounded-lg bg-emerald-500/20 border border-emerald-400/40 px-3 py-1.5 font-bold text-emerald-200">
-                      AI Proctored
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
-                {questionItems.map((qItem, idx) => (
-                  <div
-                    key={qItem.id}
-                    className="rounded-xl border border-border bg-card p-4 space-y-2.5"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-primary">
-                        Question {idx + 1} of {questionItems.length}
-                      </span>
-                      <Badge variant="outline" className="text-[10px]">
-                        {qItem.skillTag} · {qItem.points} pts
-                      </Badge>
-                    </div>
-                    <p className="font-bold text-sm text-foreground">{qItem.q}</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                      {qItem.options.map((opt, oIdx) => {
-                        const isAns = qItem.answer === oIdx;
-                        return (
-                          <div
-                            key={oIdx}
-                            className={cn(
-                              "flex items-center justify-between rounded-lg border p-2.5 text-xs",
-                              isAns
-                                ? "border-emerald-500/50 bg-emerald-500/10 font-bold text-emerald-800 dark:text-emerald-300"
-                                : "border-border bg-background text-muted-foreground"
-                            )}
-                          >
-                            <span>
-                              {String.fromCharCode(65 + oIdx)}. {opt}
-                            </span>
-                            {isAns && (
-                              <span className="text-[10px] font-bold text-emerald-600">
-                                ✓ Correct
-                              </span>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <DialogFooter className="flex items-center justify-between sm:justify-between pt-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setBuilderTab("edit")}
-                  className="gap-1.5 cursor-pointer"
-                >
-                  <Pencil className="h-3.5 w-3.5" /> Back to Edit Questions
-                </Button>
-                <Button
-                  type="button"
-                  onClick={handleSaveBuilder as any}
-                  className="gap-1.5 cursor-pointer"
-                >
-                  <CheckCircle2 className="h-4 w-4" />
-                  {editingId !== null ? "Save Changes" : "Create Assessment"}
-                </Button>
-              </DialogFooter>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* ================= STANDALONE INTERACTIVE ASSESSMENT PREVIEW MODAL ================= */}
-      <Dialog
-        open={Boolean(previewRecord)}
-        onOpenChange={(open) => !open && setPreviewRecord(null)}
-      >
-        <DialogContent className="sm:max-w-2xl max-h-[92vh] overflow-y-auto">
-          {previewRecord && (() => {
-            const pQuestions = getQuestionsForRecord(previewRecord);
-            const activeQ = pQuestions[previewQuestionIdx] || pQuestions[0];
-            return (
-              <>
-                <DialogHeader>
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <Badge
-                        variant="outline"
-                        className="bg-primary/10 text-primary border-primary/30 text-xs"
-                      >
-                        {previewRecord.type || "Technical"} ·{" "}
-                        {previewRecord.difficulty || "Intermediate"}
-                      </Badge>
-                      {(previewRecord.proctoring ?? true) && (
-                        <Badge
-                          variant="outline"
-                          className="bg-emerald-500/10 text-emerald-700 border-emerald-500/30 text-xs"
-                        >
-                          AI Cheating Prevention Active
-                        </Badge>
-                      )}
-                    </div>
-
-                    <div className="flex items-center gap-1 rounded-xl bg-muted p-1">
-                      <button
-                        type="button"
-                        onClick={() => setPreviewMode("candidate")}
-                        className={cn(
-                          "px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer",
-                          previewMode === "candidate"
-                            ? "bg-[#002C66] text-white"
-                            : "text-muted-foreground hover:text-foreground"
-                        )}
-                      >
-                        Candidate Test View
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setPreviewMode("answer-key")}
-                        className={cn(
-                          "px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer",
-                          previewMode === "answer-key"
-                            ? "bg-[#FB923C] text-white"
-                            : "text-muted-foreground hover:text-foreground"
-                        )}
-                      >
-                        Employer Answer Key ({pQuestions.length})
-                      </button>
-                    </div>
-                  </div>
-
-                  <DialogTitle className="text-lg font-bold mt-1">
-                    {previewRecord.name} — Assessment Preview
-                  </DialogTitle>
-                  <DialogDescription className="text-xs">
-                    {previewRecord.description ||
-                      "Role-specific candidate evaluation."}
-                  </DialogDescription>
-                </DialogHeader>
-
-                {previewMode === "candidate" ? (
-                  <div className="space-y-4 py-2 text-xs">
-                    {/* Proctoring Telemetry Bar */}
-                    <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border bg-muted/30 px-3.5 py-2.5">
-                      <div className="flex items-center gap-3">
-                        <span className="flex items-center gap-1 text-emerald-600 font-semibold">
-                          <Camera className="h-3.5 w-3.5" /> Webcam Verified
-                        </span>
-                        <span className="flex items-center gap-1 text-emerald-600 font-semibold">
-                          <Mic className="h-3.5 w-3.5" /> Audio Clear
-                        </span>
-                        <span className="flex items-center gap-1 text-emerald-600 font-semibold">
-                          <Lock className="h-3.5 w-3.5" /> Browser Lock
-                        </span>
-                      </div>
-                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 px-2.5 py-0.5 font-bold text-amber-700">
-                        <Timer className="h-3.5 w-3.5" />{" "}
-                        {previewRecord.duration ?? 30}:00 mins · Cutoff{" "}
-                        {previewRecord.passingScore ?? 65}%
-                      </span>
-                    </div>
-
-                    {previewSubmittedScore !== null ? (
-                      <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-5 text-center space-y-2">
-                        <Award className="h-8 w-8 text-emerald-600 mx-auto" />
-                        <h4 className="text-base font-extrabold text-foreground">
-                          Preview Test Completed — Score: {previewSubmittedScore}%
-                        </h4>
-                        <p className="text-muted-foreground">
-                          This is how the candidate&apos;s instant score and CIR breakdown are computed upon submission.
-                        </p>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => {
-                            setPreviewSubmittedScore(null);
-                            setPreviewQuestionIdx(0);
-                            setPreviewAnswers({});
-                          }}
-                          className="mt-2 cursor-pointer"
-                        >
-                          Reset Preview Try-Out
-                        </Button>
-                      </div>
-                    ) : (
-                      activeQ && (
-                        <div className="rounded-xl border border-border bg-card p-4 space-y-3">
-                          <div className="flex items-center justify-between text-xs text-muted-foreground">
-                            <span className="font-bold text-primary">
-                              Sample Question {previewQuestionIdx + 1} of{" "}
-                              {pQuestions.length}
-                            </span>
-                            <Badge variant="outline" className="text-[10px]">
-                              {activeQ.skillTag} · {activeQ.points} points
-                            </Badge>
-                          </div>
-
-                          <h4 className="text-sm font-bold text-foreground leading-snug">
-                            {activeQ.q}
-                          </h4>
-
-                          <div className="space-y-2 pt-1">
-                            {activeQ.options.map((opt, oIdx) => {
-                              const chosen =
-                                previewAnswers[previewQuestionIdx] === oIdx;
-                              return (
-                                <button
-                                  key={oIdx}
-                                  type="button"
-                                  onClick={() =>
-                                    setPreviewAnswers((p) => ({
-                                      ...p,
-                                      [previewQuestionIdx]: oIdx,
-                                    }))
-                                  }
-                                  className={cn(
-                                    "w-full flex items-center gap-3 rounded-xl border p-3 text-left text-xs font-medium transition-all cursor-pointer",
-                                    chosen
-                                      ? "border-primary bg-primary/10 text-primary font-bold"
-                                      : "border-border bg-background hover:bg-muted/40 text-foreground"
-                                  )}
-                                >
-                                  <span
-                                    className={cn(
-                                      "flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-[11px] font-bold",
-                                      chosen
-                                        ? "border-primary bg-primary text-primary-foreground"
-                                        : "border-border text-muted-foreground"
-                                    )}
-                                  >
-                                    {String.fromCharCode(65 + oIdx)}
-                                  </span>
-                                  <span>{opt}</span>
-                                </button>
-                              );
-                            })}
-                          </div>
-
-                          <div className="flex items-center justify-between pt-3 border-t border-border">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              disabled={previewQuestionIdx === 0}
-                              onClick={() =>
-                                setPreviewQuestionIdx((i) => Math.max(0, i - 1))
-                              }
-                            >
-                              Previous
-                            </Button>
-                            {previewQuestionIdx < pQuestions.length - 1 ? (
-                              <Button
-                                size="sm"
-                                onClick={() =>
-                                  setPreviewQuestionIdx((i) => i + 1)
-                                }
-                                className="cursor-pointer"
-                              >
-                                Next Question
-                              </Button>
-                            ) : (
-                              <Button
-                                size="sm"
-                                onClick={() => {
-                                  let correct = 0;
-                                  pQuestions.forEach((q, idx) => {
-                                    if (previewAnswers[idx] === q.answer)
-                                      correct++;
-                                  });
-                                  setPreviewSubmittedScore(
-                                    Math.round(
-                                      (correct / pQuestions.length) * 100
-                                    )
-                                  );
-                                }}
-                                className="bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer"
-                              >
-                                Submit Preview Test
-                              </Button>
-                            )}
-                          </div>
-                        </div>
-                      )
-                    )}
-                  </div>
-                ) : (
-                  /* EMPLOYER ANSWER KEY & RUBRIC VIEW */
-                  <div className="space-y-3 py-2 max-h-80 overflow-y-auto pr-1 text-xs">
-                    {pQuestions.map((qItem, idx) => (
-                      <div
-                        key={qItem.id}
-                        className="rounded-xl border border-border bg-card p-3.5 space-y-2"
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="font-bold text-primary">
-                            Q{idx + 1}. {qItem.skillTag}
-                          </span>
-                          <span className="text-muted-foreground font-semibold">
-                            {qItem.points} points
-                          </span>
-                        </div>
-                        <p className="font-bold text-foreground">{qItem.q}</p>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                          {qItem.options.map((opt, oIdx) => {
-                            const isAns = qItem.answer === oIdx;
+                        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                          {qItem.options.map((opt, optIdx) => {
+                            const isCorrect = qItem.answer === optIdx;
                             return (
                               <div
-                                key={oIdx}
+                                key={optIdx}
                                 className={cn(
-                                  "rounded-lg border px-2.5 py-1.5 flex items-center justify-between",
-                                  isAns
-                                    ? "border-emerald-500/50 bg-emerald-500/10 font-bold text-emerald-700"
-                                    : "border-border bg-background text-muted-foreground"
+                                  "flex items-center gap-2 rounded-xl border p-2 transition-colors",
+                                  isCorrect
+                                    ? "border-emerald-500/60 bg-emerald-500/10"
+                                    : "border-border bg-card"
                                 )}
                               >
-                                <span>
-                                  {String.fromCharCode(65 + oIdx)}. {opt}
-                                </span>
-                                {isAns && <Check className="h-3.5 w-3.5" />}
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    updateQuestionItem(qIdx, { answer: optIdx })
+                                  }
+                                  className={cn(
+                                    "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-bold cursor-pointer transition-colors",
+                                    isCorrect
+                                      ? "bg-emerald-600 text-white"
+                                      : "bg-muted text-muted-foreground hover:bg-[#002C66]/15"
+                                  )}
+                                  title="Click to mark as correct answer"
+                                >
+                                  {String.fromCharCode(65 + optIdx)}
+                                </button>
+                                <Input
+                                  value={opt}
+                                  onChange={(e) =>
+                                    updateQuestionOption(qIdx, optIdx, e.target.value)
+                                  }
+                                  className="h-7 text-[11px] border-0 bg-transparent px-1 focus-visible:ring-0"
+                                />
+                                {isCorrect && (
+                                  <span className="text-[9px] font-bold text-emerald-700 px-1.5 shrink-0">
+                                    Correct
+                                  </span>
+                                )}
                               </div>
                             );
                           })}
@@ -1414,155 +1656,636 @@ export function ProEmployerAssessments({
                       </div>
                     ))}
                   </div>
+                </div>
+
+                {/* Builder Footer Actions */}
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-border">
+                  <button
+                    type="button"
+                    onClick={() => setBuilderTab("preview")}
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-[#002C66]/30 bg-card hover:bg-[#002C66]/5 px-4 py-2.5 text-xs font-bold text-[#002C66] cursor-pointer"
+                  >
+                    <Eye className="h-4 w-4 text-[#FB923C]" /> Preview Candidate View
+                  </button>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setBuilderOpen(false)}
+                      className="rounded-xl h-10 px-4 text-xs font-semibold cursor-pointer"
+                    >
+                      Cancel
+                    </Button>
+                    <button
+                      type="submit"
+                      className="inline-flex items-center gap-1.5 rounded-xl bg-[#FB923C] hover:bg-[#F97316] px-5 py-2.5 text-xs font-bold text-white shadow-sm cursor-pointer"
+                    >
+                      <CheckCircle2 className="h-4 w-4" />
+                      {editingId !== null ? "Save Assessment Changes" : "Create Assessment"}
+                    </button>
+                  </div>
+                </div>
+              </form>
+            ) : (
+              /* ================= LIVE PREVIEW TAB INSIDE CREATE/EDIT MODAL ================= */
+              <div className="space-y-5 text-xs">
+                <div className="rounded-2xl bg-[#002C66] text-white p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="rounded bg-[#FB923C] px-2 py-0.5 text-[10px] font-extrabold uppercase text-white">
+                        Live Candidate Test Preview
+                      </span>
+                      <span className="text-[11px] text-white/80">
+                        {type} · {difficulty} Level
+                      </span>
+                    </div>
+                    <h3 className="text-base font-bold text-white">
+                      {name || "Untitled Employer Assessment"}
+                    </h3>
+                    <p className="text-[11px] text-white/80">
+                      {description ||
+                        "Candidates will complete this proctored assessment under timed conditions."}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 rounded-xl bg-white/15 px-3 py-1.5 text-xs font-bold text-white">
+                      <Timer className="h-4 w-4 text-[#FB923C]" /> {duration}:00 mins
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 rounded-xl bg-white/15 px-3 py-1.5 text-xs font-bold text-white">
+                      Cutoff: {passingScore}%
+                    </span>
+                  </div>
+                </div>
+
+                {/* Proctoring Bar */}
+                {proctoring && (
+                  <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-2.5 text-[11px]">
+                    <div className="flex flex-wrap items-center gap-4 text-emerald-800 font-semibold">
+                      <span className="flex items-center gap-1.5">
+                        <Camera className="h-3.5 w-3.5" /> Webcam AI Active
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <Mic className="h-3.5 w-3.5" /> Audio Guard Enabled
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <Lock className="h-3.5 w-3.5" /> Browser Tab-Switch Lock
+                      </span>
+                    </div>
+                    <span className="font-bold text-emerald-700">
+                      Integrity Protection On
+                    </span>
+                  </div>
                 )}
 
-                <DialogFooter className="flex flex-wrap items-center justify-between sm:justify-between gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      const rec = previewRecord;
-                      setPreviewRecord(null);
-                      openEditModal(rec);
-                    }}
-                    className="gap-1.5 cursor-pointer"
+                {/* Questions Preview List */}
+                <div className="space-y-3 max-h-[380px] overflow-y-auto pr-1">
+                  {questionItems.map((qItem, idx) => (
+                    <div
+                      key={qItem.id}
+                      className="rounded-xl border border-border bg-card p-4 space-y-3 shadow-2xs"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-bold text-[#002C66]">
+                          Question {idx + 1} of {questionItems.length} ·{" "}
+                          {qItem.skillTag || type}
+                        </span>
+                        <span className="rounded bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                          {qItem.points || 10} Points
+                        </span>
+                      </div>
+                      <p className="text-sm font-bold text-foreground">{qItem.q}</p>
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                        {qItem.options.map((opt, oIdx) => {
+                          const isCorrect = qItem.answer === oIdx;
+                          return (
+                            <div
+                              key={oIdx}
+                              className={cn(
+                                "flex items-center gap-2.5 rounded-xl border p-2.5 text-xs",
+                                isCorrect
+                                  ? "border-emerald-500/50 bg-emerald-500/10 font-semibold text-emerald-950"
+                                  : "border-border bg-background text-foreground"
+                              )}
+                            >
+                              <span
+                                className={cn(
+                                  "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-bold",
+                                  isCorrect
+                                    ? "bg-emerald-600 text-white"
+                                    : "bg-muted text-muted-foreground"
+                                )}
+                              >
+                                {String.fromCharCode(65 + oIdx)}
+                              </span>
+                              <span className="flex-1">{opt}</span>
+                              {isCorrect && (
+                                <span className="text-[10px] font-bold text-emerald-700">
+                                  ✓ Key
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-border">
+                  <button
+                    type="button"
+                    onClick={() => setBuilderTab("edit")}
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card hover:bg-muted px-4 py-2.5 text-xs font-bold text-foreground cursor-pointer"
                   >
-                    <Pencil className="h-3.5 w-3.5" /> Edit This Assessment &amp; Questions
-                  </Button>
-                  <Button
-                    onClick={() => setPreviewRecord(null)}
-                    className="cursor-pointer"
+                    <Pencil className="h-3.5 w-3.5" /> Back to Edit Questions
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) =>
+                      handleSaveBuilder(e as unknown as FormEvent)
+                    }
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-[#FB923C] hover:bg-[#F97316] px-5 py-2.5 text-xs font-bold text-white shadow-sm cursor-pointer"
                   >
-                    Close Preview
-                  </Button>
-                </DialogFooter>
-              </>
-            );
-          })()}
+                    <CheckCircle2 className="h-4 w-4" />
+                    {editingId !== null ? "Save Assessment Changes" : "Create Assessment"}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </DialogContent>
       </Dialog>
 
-      {/* ================= CANDIDATE RESULTS & INVITATION MODAL ================= */}
+      {/* ================= STANDALONE INTERACTIVE ASSESSMENT PREVIEW MODAL ================= */}
       <Dialog
-        open={!!record}
-        onOpenChange={(open) => {
-          if (!open) setSelected(null);
-        }}
+        open={Boolean(previewRecord)}
+        onOpenChange={() => setPreviewRecord(null)}
       >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{record?.name}</DialogTitle>
-          </DialogHeader>
-          {record && (
-            <div className="space-y-4">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="workspace-chip">{status(record.status)}</span>
-                <span className="text-xs text-muted-foreground">
-                  {record.type || "Technical"} · {record.difficulty || "Intermediate"} ·{" "}
-                  Pass Cutoff: {record.passingScore ?? 65}%
-                </span>
-              </div>
-              <p className="text-sm">
-                Candidate: <strong>{record.candidate || "Not invited yet"}</strong>
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {record.description || "No assessment brief supplied."}
-              </p>
-              <p className="text-sm">
-                {record.questions ? `${record.questions} questions` : "10 questions"} ·{" "}
-                {record.duration ? `${record.duration} minutes` : "30 minutes"}
-              </p>
+        <DialogContent className="sm:max-w-4xl max-h-[92vh] overflow-y-auto p-0 gap-0 rounded-2xl overflow-hidden border-border">
+          {previewRecord &&
+            (() => {
+              const pQuestions = getQuestionsForRecord(previewRecord);
+              const activeQ =
+                pQuestions[previewQuestionIdx] || pQuestions[0];
 
-              {record.status === "Draft" && (
-                <label className="grid gap-2 text-sm">
-                  Invite candidate
-                  <select
-                    aria-label="Invite draft candidate"
-                    className="h-10 rounded-md border border-border bg-background px-3"
-                    value=""
-                    onChange={(e) => {
-                      if (!e.target.value) return;
-                      onChange({
-                        ...state,
-                        assessments: records.map((r) =>
-                          r.id === record.id
-                            ? { ...r, candidate: e.target.value, status: "Invited" }
-                            : r
-                        ),
-                      });
-                      onToast(
-                        `Assigned "${record.name}" to ${e.target.value}.`
-                      );
-                    }}
-                  >
-                    <option value="">Select candidate</option>
-                    {[...new Set(applications.map((a) => a.name))].map((n) => (
-                      <option key={n}>{n}</option>
-                    ))}
-                  </select>
-                </label>
-              )}
+              return (
+                <div>
+                  {/* Top Navy Assessment Simulator Bar */}
+                  <div className="bg-[#002C66] text-white p-5 sm:p-6">
+                    <DialogHeader>
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <div className="space-y-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="rounded-md bg-[#FB923C] px-2.5 py-0.5 text-[10px] font-extrabold uppercase text-white">
+                              Interactive Assessment Preview
+                            </span>
+                            <span className="rounded-md bg-white/15 px-2.5 py-0.5 text-[10px] font-semibold text-white">
+                              {previewRecord.type || "Technical"} ·{" "}
+                              {previewRecord.difficulty || "Intermediate"}
+                            </span>
+                            {(previewRecord.proctoring ?? true) && (
+                              <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/20 px-2 py-0.5 text-[10px] font-semibold text-emerald-200">
+                                <ShieldCheck className="h-3 w-3" /> AI Proctored
+                              </span>
+                            )}
+                          </div>
+                          <DialogTitle className="text-xl font-bold text-white mt-1">
+                            {previewRecord.name}
+                          </DialogTitle>
+                          <DialogDescription className="text-xs text-white/80">
+                            {previewRecord.description ||
+                              "Interactive preview of the candidate testing terminal and employer answer key."}
+                          </DialogDescription>
+                        </div>
 
-              {record.score !== undefined ? (
-                <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 space-y-1">
-                  <p className="text-base font-extrabold text-emerald-700">
-                    Verified Candidate Score: {record.score}% (Passed)
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    AI Proctoring Integrity: 99.6% · Zero Tab-Switch Flags
-                  </p>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <div className="flex items-center gap-1 rounded-xl bg-white/10 p-1">
+                            <button
+                              type="button"
+                              onClick={() => setPreviewMode("candidate")}
+                              className={cn(
+                                "px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer",
+                                previewMode === "candidate"
+                                  ? "bg-white text-[#002C66]"
+                                  : "text-white/85 hover:text-white"
+                              )}
+                            >
+                              Candidate Test View
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setPreviewMode("answer-key")}
+                              className={cn(
+                                "px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer",
+                                previewMode === "answer-key"
+                                  ? "bg-[#FB923C] text-white"
+                                  : "text-white/85 hover:text-white"
+                              )}
+                            >
+                              Employer Answer Key
+                            </button>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const recToEdit = previewRecord;
+                              setPreviewRecord(null);
+                              openEditModal(recToEdit);
+                            }}
+                            className="inline-flex items-center gap-1.5 rounded-xl bg-[#FB923C] hover:bg-[#F97316] px-3.5 py-2 text-xs font-bold text-white cursor-pointer"
+                          >
+                            <Pencil className="h-3.5 w-3.5" /> Edit Assessment
+                          </button>
+                        </div>
+                      </div>
+                    </DialogHeader>
+
+                    {/* Telemetry Sub-bar inside Navy Header */}
+                    <div className="mt-4 pt-3 border-t border-white/15 flex flex-wrap items-center justify-between gap-3 text-xs text-white/90">
+                      <div className="flex flex-wrap items-center gap-4">
+                        <span className="flex items-center gap-1.5">
+                          <Camera className="h-3.5 w-3.5 text-emerald-300" /> Camera Verified
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                          <Mic className="h-3.5 w-3.5 text-emerald-300" /> Audio Guard Active
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                          <Lock className="h-3.5 w-3.5 text-emerald-300" /> Fullscreen Lock
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="rounded-lg bg-white/15 px-2.5 py-1 font-mono font-bold text-white flex items-center gap-1.5">
+                          <Timer className="h-3.5 w-3.5 text-[#FB923C]" />
+                          {previewRecord.duration ?? 30}:00 Mins
+                        </span>
+                        <span className="rounded-lg bg-white/15 px-2.5 py-1 font-bold text-white">
+                          Pass Cutoff: {previewRecord.passingScore ?? 70}%
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Modal Body */}
+                  <div className="p-5 sm:p-6 space-y-5 text-xs">
+                    {previewMode === "candidate" ? (
+                      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[220px_1fr]">
+                        {/* Left Sidebar: Question Palette */}
+                        <div className="rounded-2xl border border-border bg-muted/20 p-4 space-y-4">
+                          <div>
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
+                              Question Navigator
+                            </span>
+                            <div className="grid grid-cols-4 gap-2 mt-2.5">
+                              {pQuestions.map((q, idx) => {
+                                const answered =
+                                  previewAnswers[idx] !== undefined;
+                                const isCurrent = previewQuestionIdx === idx;
+                                return (
+                                  <button
+                                    key={q.id}
+                                    type="button"
+                                    onClick={() => setPreviewQuestionIdx(idx)}
+                                    className={cn(
+                                      "h-9 rounded-xl text-xs font-bold transition-all cursor-pointer",
+                                      isCurrent
+                                        ? "bg-[#002C66] text-white shadow-xs"
+                                        : answered
+                                        ? "bg-emerald-500/15 text-emerald-700 border border-emerald-500/30"
+                                        : "bg-card border border-border text-muted-foreground hover:text-foreground"
+                                    )}
+                                  >
+                                    Q{idx + 1}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+
+                          <div className="border-t border-border pt-3 space-y-2 text-[11px]">
+                            <div className="flex items-center justify-between">
+                              <span className="text-muted-foreground">Answered</span>
+                              <span className="font-bold text-foreground">
+                                {Object.keys(previewAnswers).length} / {pQuestions.length}
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-muted-foreground">Pass Cutoff</span>
+                              <span className="font-bold text-emerald-700">
+                                {previewRecord.passingScore ?? 70}%
+                              </span>
+                            </div>
+                          </div>
+
+                          {previewRecord.skills && previewRecord.skills.length > 0 && (
+                            <div className="border-t border-border pt-3">
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-1.5">
+                                Skills Covered
+                              </span>
+                              <div className="flex flex-wrap gap-1">
+                                {previewRecord.skills.map((s) => (
+                                  <span
+                                    key={s}
+                                    className="rounded bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary"
+                                  >
+                                    {s}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Right Column: Active Question Terminal */}
+                        <div className="space-y-4">
+                          {activeQ && (
+                            <div className="rounded-2xl border border-border bg-card p-5 space-y-4 shadow-2xs">
+                              <div className="flex items-center justify-between">
+                                <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#002C66]/10 px-2.5 py-1 text-xs font-bold text-[#002C66]">
+                                  Question {previewQuestionIdx + 1} of {pQuestions.length} ·{" "}
+                                  {activeQ.skillTag || previewRecord.type || "Technical"}
+                                </span>
+                                <span className="rounded-lg bg-muted px-2.5 py-1 text-[11px] font-bold text-foreground">
+                                  {activeQ.points || 10} Points
+                                </span>
+                              </div>
+
+                              <h4 className="font-display text-base font-bold text-foreground leading-snug">
+                                {activeQ.q}
+                              </h4>
+
+                              <div className="space-y-2.5">
+                                {activeQ.options.map((opt, oIdx) => {
+                                  const chosen =
+                                    previewAnswers[previewQuestionIdx] === oIdx;
+                                  return (
+                                    <button
+                                      key={oIdx}
+                                      type="button"
+                                      onClick={() =>
+                                        setPreviewAnswers((prev) => ({
+                                          ...prev,
+                                          [previewQuestionIdx]: oIdx,
+                                        }))
+                                      }
+                                      className={cn(
+                                        "flex w-full items-center gap-3 rounded-xl border p-3.5 text-left text-xs transition-all cursor-pointer",
+                                        chosen
+                                          ? "border-[#002C66] bg-[#002C66]/5 font-bold text-foreground ring-1 ring-[#002C66]"
+                                          : "border-border bg-background hover:border-[#002C66]/40 text-foreground"
+                                      )}
+                                    >
+                                      <span
+                                        className={cn(
+                                          "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold",
+                                          chosen
+                                            ? "bg-[#002C66] text-white"
+                                            : "bg-muted text-muted-foreground"
+                                        )}
+                                      >
+                                        {String.fromCharCode(65 + oIdx)}
+                                      </span>
+                                      <span className="flex-1">{opt}</span>
+                                      {chosen && (
+                                        <CheckCircle2 className="h-4 w-4 text-[#002C66] shrink-0" />
+                                      )}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+
+                              <div className="flex items-center justify-between pt-3 border-t border-border">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  disabled={previewQuestionIdx === 0}
+                                  onClick={() =>
+                                    setPreviewQuestionIdx((i) => Math.max(0, i - 1))
+                                  }
+                                  className="rounded-xl cursor-pointer"
+                                >
+                                  Previous Question
+                                </Button>
+
+                                {previewQuestionIdx < pQuestions.length - 1 ? (
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setPreviewQuestionIdx((i) =>
+                                        Math.min(pQuestions.length - 1, i + 1)
+                                      )
+                                    }
+                                    className="inline-flex items-center gap-1.5 rounded-xl bg-[#002C66] hover:bg-[#001F4D] px-4 py-2 text-xs font-bold text-white cursor-pointer"
+                                  >
+                                    Next Question <ChevronRight className="h-3.5 w-3.5" />
+                                  </button>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      let correct = 0;
+                                      pQuestions.forEach((q, idx) => {
+                                        if (previewAnswers[idx] === q.answer)
+                                          correct++;
+                                      });
+                                      const pct = Math.round(
+                                        (correct / pQuestions.length) * 100
+                                      );
+                                      setPreviewSubmittedScore(pct);
+                                    }}
+                                    className="inline-flex items-center gap-1.5 rounded-xl bg-[#FB923C] hover:bg-[#F97316] px-4 py-2 text-xs font-bold text-white cursor-pointer"
+                                  >
+                                    <Play className="h-3.5 w-3.5" /> Test Score Calculation
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          )}
+
+                          {previewSubmittedScore !== null && (
+                            <div className="rounded-2xl border border-emerald-500/40 bg-emerald-500/10 p-4 flex flex-wrap items-center justify-between gap-3">
+                              <div className="flex items-center gap-3">
+                                <Award className="h-7 w-7 text-emerald-600" />
+                                <div>
+                                  <div className="text-sm font-bold text-foreground">
+                                    Preview Test Simulation Score: {previewSubmittedScore}%
+                                  </div>
+                                  <p className="text-[11px] text-muted-foreground">
+                                    Pass Cutoff is {previewRecord.passingScore ?? 70}% ·{" "}
+                                    {previewSubmittedScore >=
+                                    (previewRecord.passingScore ?? 70)
+                                      ? "Candidate would PASS and generate a verified CIR report."
+                                      : "Below cutoff threshold."}
+                                  </p>
+                                </div>
+                              </div>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setPreviewMode("answer-key")}
+                                className="rounded-xl text-xs cursor-pointer"
+                              >
+                                Inspect Full Answer Key
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      /* Employer Answer Key View */
+                      <div className="space-y-3 max-h-[420px] overflow-y-auto pr-1">
+                        {pQuestions.map((qItem, idx) => (
+                          <div
+                            key={qItem.id}
+                            className="rounded-xl border border-border bg-card p-4 space-y-2.5"
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="font-bold text-[#002C66]">
+                                Q{idx + 1}: {qItem.skillTag || "Core Competency"}
+                              </span>
+                              <span className="text-[11px] font-semibold text-muted-foreground">
+                                {qItem.points || 10} pts
+                              </span>
+                            </div>
+                            <p className="text-sm font-bold text-foreground">{qItem.q}</p>
+                            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                              {qItem.options.map((opt, oIdx) => {
+                                const isAnswer = qItem.answer === oIdx;
+                                return (
+                                  <div
+                                    key={oIdx}
+                                    className={cn(
+                                      "flex items-center gap-2 rounded-xl border p-2.5 text-xs",
+                                      isAnswer
+                                        ? "border-emerald-500/60 bg-emerald-500/10 font-bold text-emerald-900"
+                                        : "border-border bg-muted/20 text-muted-foreground"
+                                    )}
+                                  >
+                                    <span
+                                      className={cn(
+                                        "flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold",
+                                        isAnswer
+                                          ? "bg-emerald-600 text-white"
+                                          : "bg-muted text-muted-foreground"
+                                      )}
+                                    >
+                                      {String.fromCharCode(65 + oIdx)}
+                                    </span>
+                                    <span className="flex-1">{opt}</span>
+                                    {isAnswer && (
+                                      <Check className="h-4 w-4 text-emerald-600 shrink-0" />
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-border">
+                      <span className="text-[11px] text-muted-foreground">
+                        Assigned Candidate:{" "}
+                        <strong className="text-foreground">
+                          {previewRecord.candidate || "Template (Reusable)"}
+                        </strong>
+                      </span>
+                      <Button
+                        variant="outline"
+                        onClick={() => setPreviewRecord(null)}
+                        className="rounded-xl text-xs cursor-pointer"
+                      >
+                        Close Preview
+                      </Button>
+                    </div>
+                  </div>
                 </div>
-              ) : (
-                record.candidate && (
-                  <Button
-                    onClick={() => {
-                      onChange({
-                        ...state,
-                        assessments: records.map((r) =>
-                          r.id === record.id
-                            ? { ...r, status: "Completed", score: 84 }
-                            : r
-                        ),
-                      });
-                      onToast("Simulated candidate completion: 84% verified score.");
-                    }}
-                  >
-                    <CheckCircle2 />
-                    Simulate Candidate Completion (84%)
-                  </Button>
-                )
-              )}
+              );
+            })()}
+        </DialogContent>
+      </Dialog>
 
-              <DialogFooter className="flex flex-wrap justify-between sm:justify-between gap-2 pt-2 border-t border-border">
-                <div className="flex items-center gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
+      {/* ================= CANDIDATE RESULTS & CIR SCORECARD MODAL ================= */}
+      <Dialog open={Boolean(record)} onOpenChange={() => setSelected(null)}>
+        <DialogContent className="sm:max-w-xl p-0 gap-0 rounded-2xl overflow-hidden border-border">
+          {record && (
+            <div>
+              <div className="bg-[#002C66] text-white p-5">
+                <DialogHeader>
+                  <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-0.5 text-[10px] font-bold uppercase text-[#FB923C]">
+                    Candidate Assessment Report
+                  </span>
+                  <DialogTitle className="text-lg font-bold text-white mt-1">
+                    {record.name}
+                  </DialogTitle>
+                  <DialogDescription className="text-xs text-white/80">
+                    {record.type || "Technical"} ·{" "}
+                    {record.difficulty || "Intermediate"} Level · Pass Cutoff:{" "}
+                    {record.passingScore ?? 70}%
+                  </DialogDescription>
+                </DialogHeader>
+              </div>
+
+              <div className="p-5 space-y-4 text-xs">
+                <div className="flex items-center justify-between rounded-2xl border border-border bg-muted/20 p-4">
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-bold uppercase text-muted-foreground">
+                      Candidate
+                    </span>
+                    <div className="text-sm font-bold text-foreground">
+                      {record.candidate || "Unassigned Assessment Template"}
+                    </div>
+                    <span className="text-[11px] text-muted-foreground block">
+                      Status: <strong>{normalizeStatus(record.status)}</strong> ·{" "}
+                      {record.questions || 15} Questions · {record.duration || 30} mins
+                    </span>
+                  </div>
+                  {record.score !== undefined && (
+                    <div className="flex items-center gap-3">
+                      <div className="text-right">
+                        <span className="text-lg font-extrabold text-emerald-600 block">
+                          {record.score}%
+                        </span>
+                        <span className="text-[10px] font-semibold text-emerald-700">
+                          Verified Score
+                        </span>
+                      </div>
+                      <MatchRing percent={record.score} size={52} />
+                    </div>
+                  )}
+                </div>
+
+                <p className="text-muted-foreground leading-relaxed">
+                  {record.description ||
+                    "Role-aligned assessment with AI Cheating Prevention and sub-skill evaluation."}
+                </p>
+
+                <div className="flex flex-wrap items-center justify-end gap-2 pt-3 border-t border-border">
+                  <button
+                    type="button"
                     onClick={() => {
                       const rec = record;
                       setSelected(null);
                       openPreviewModal(rec);
                     }}
-                    className="gap-1.5 cursor-pointer"
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card hover:bg-muted px-3.5 py-2 text-xs font-bold text-foreground cursor-pointer"
                   >
-                    <Eye className="h-3.5 w-3.5" /> Preview Assessment
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
+                    <Eye className="h-3.5 w-3.5 text-[#002C66]" /> Preview Questions
+                  </button>
+                  <button
+                    type="button"
                     onClick={() => {
                       const rec = record;
                       setSelected(null);
                       openEditModal(rec);
                     }}
-                    className="gap-1.5 cursor-pointer"
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-[#002C66] hover:bg-[#001F4D] px-4 py-2 text-xs font-bold text-white cursor-pointer"
                   >
-                    <Pencil className="h-3.5 w-3.5" /> Edit Assessment
-                  </Button>
+                    <Pencil className="h-3.5 w-3.5 text-[#FB923C]" /> Edit Assessment
+                  </button>
                 </div>
-                <Button size="sm" onClick={() => setSelected(null)}>
-                  Close
-                </Button>
-              </DialogFooter>
+              </div>
             </div>
           )}
         </DialogContent>
