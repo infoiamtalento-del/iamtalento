@@ -31,11 +31,7 @@ import {
   ShieldCheck,
   MapPin,
   Globe,
-  Building2,
   Wrench,
-  Lightbulb,
-  BarChart3,
-  Clock,
   SlidersHorizontal,
   Search,
   UserCheck,
@@ -43,9 +39,12 @@ import {
   FileText,
   Brain,
   Check,
-  Play,
-  RefreshCw,
+  Building2,
 } from "lucide-react";
+
+import heroRobotImg from "@/assets/si-guide-img-1.jpg";
+import pathDegreeImg from "@/assets/si-guide-img-2.jpg";
+import pathBeyondImg from "@/assets/si-guide-img-3.jpg";
 
 // ============================================================================
 // REAL-TIME CAREER INTELLIGENCE DATA CATALOG (SI GUIDE ENGINE)
@@ -55,7 +54,12 @@ export interface CareerRoleDetail {
   id: string;
   title: string;
   categoryTags: string[];
-  industry: "Business & Sales" | "Marketing & Growth" | "Human Resources" | "Technology & AI" | "Finance & Analytics";
+  industry:
+    | "Business & Sales"
+    | "Marketing & Growth"
+    | "Human Resources"
+    | "Technology & AI"
+    | "Finance & Analytics";
   pathwayFit: ("degree" | "beyond")[];
   eligibleDegrees: string[];
   badgeNote: string;
@@ -796,10 +800,9 @@ const AiGuidance: React.FC = () => {
   const [interests, setInterests] = useState<string[]>(["Business", "Marketing", "Sales & Growth"]);
   const [preferredLocation, setPreferredLocation] = useState("Bengaluru (Hybrid / On-Site)");
   const [salaryExpectation, setSalaryExpectation] = useState("₹4 LPA – ₹8 LPA (Entry Track)");
-  const [profileGenerated, setProfileGenerated] = useState(true);
-  const [lastGeneratedAt, setLastGeneratedAt] = useState("Just now · Live AI Engine");
+  const [lastGeneratedAt, setLastGeneratedAt] = useState("Live AI Profile Synced");
 
-  // Section 03: Selected Career Discovery Path ("degree" = Path 01, "beyond" = Path 02, "all" = Both)
+  // Section 03: Selected Career Discovery Path ("degree" = Path 01, "beyond" = Path 02)
   const [selectedPathway, setSelectedPathway] = useState<"degree" | "beyond">("degree");
 
   // Section 04: Filters for Personalised Career Opportunities
@@ -842,7 +845,6 @@ const AiGuidance: React.FC = () => {
   const recommendedRoles = useMemo(() => {
     return CAREER_ROLES_DB.filter((role) => {
       if (selectedPathway === "degree") {
-        // Path 01: Prioritize degree-aligned careers
         const degClean = education.split(" ")[0];
         const matchesDeg =
           role.eligibleDegrees.some((d) => d.includes(degClean) || degClean.includes(d)) ||
@@ -892,11 +894,9 @@ const AiGuidance: React.FC = () => {
 
   const handleGenerateCareerOptions = (e: React.FormEvent) => {
     e.preventDefault();
-    setProfileGenerated(true);
     setLastGeneratedAt(
-      new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + " · Personalised"
+      "Updated " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
     );
-    // Auto-select top role for chosen education
     if (education === "B.Tech" || education === "BCA / MCA" || specialisation === "Computer Science") {
       setActiveRoleId("sde");
     } else if (education === "B.Com" || specialisation === "Finance" || specialisation === "Business Analytics") {
@@ -944,31 +944,31 @@ const AiGuidance: React.FC = () => {
         />
       </Helmet>
 
-      <div className="min-h-screen bg-background text-foreground pt-20 pb-20">
+      <div className="min-h-screen text-slate-900 pt-20 pb-20">
         {/* =====================================================================
-            01. HERO SECTION — SUPER INTELLIGENCE GUIDE
+            01. HERO SECTION — SUPER INTELLIGENCE GUIDE (WITH PDF IMAGE 1)
         ===================================================================== */}
-        <section className="relative overflow-hidden bg-[#002C66] text-white py-14 lg:py-20 border-b border-white/10">
-          <div className="container relative z-10">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-              {/* Left Column: Hero Copy & CTAs */}
-              <div className="lg:col-span-7 space-y-6">
-                <div className="inline-flex flex-wrap items-center gap-2 rounded-full bg-white/10 border border-white/20 px-4 py-1.5 text-xs font-bold tracking-wider uppercase text-[#FB923C]">
-                  <Sparkles className="h-3.5 w-3.5" />
-                  <span>SUPER INTELLIGENCE GUIDE · AI CAREER COMPASS</span>
+        <section className="py-10 lg:py-16 border-b border-slate-200/80">
+          <div className="container">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+              {/* Left Column: High-Contrast Executive Typography */}
+              <div className="lg:col-span-6 space-y-5">
+                <div className="inline-flex items-center gap-2 rounded-full bg-[#002C66] px-4 py-1.5 text-xs font-extrabold tracking-wider uppercase text-white shadow-xs">
+                  <Sparkles className="h-3.5 w-3.5 text-[#FB923C]" />
+                  <span>SUPER INTELLIGENCE GUIDE</span>
                 </div>
 
-                <h1 className="font-display text-3xl sm:text-5xl lg:text-[54px] font-extrabold tracking-tight leading-[1.1] text-white">
+                <h1 className="font-display text-4xl sm:text-5xl lg:text-[54px] font-extrabold tracking-tight leading-[1.08] text-slate-950">
                   Your Education.{" "}
-                  <span className="text-[#FB923C]">Your Options.</span>{" "}
-                  Your Future.
+                  <span className="text-[#002C66] block sm:inline">Your Options.</span>{" "}
+                  <span className="text-[#EA580C]">Your Future.</span>
                 </h1>
 
-                <p className="text-base sm:text-lg text-white/90 leading-relaxed max-w-2xl">
+                <p className="text-base sm:text-lg text-slate-700 font-medium leading-relaxed max-w-xl">
                   Discover the careers you can pursue, the skills you need, the salary you could earn and the opportunities waiting for you — powered by AI.
                 </p>
 
-                <p className="text-sm text-white/75 max-w-xl">
+                <p className="text-sm text-slate-600 leading-relaxed max-w-xl">
                   Personalised career guidance based on your education, interests and career preferences.
                 </p>
 
@@ -976,9 +976,9 @@ const AiGuidance: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => scrollToSection("section-profile", 0)}
-                    className="inline-flex items-center gap-2.5 rounded-2xl bg-[#FB923C] hover:bg-[#F97316] px-7 py-4 text-sm font-extrabold text-white shadow-lg transition-all cursor-pointer"
+                    className="inline-flex items-center gap-2.5 rounded-xl bg-[#002C66] hover:bg-[#001F4D] px-7 py-4 text-sm font-extrabold text-white shadow-md transition-all cursor-pointer"
                   >
-                    <Compass className="h-5 w-5" />
+                    <Compass className="h-5 w-5 text-[#FB923C]" />
                     Discover My Career Path
                     <ArrowRight className="h-4 w-4" />
                   </button>
@@ -986,131 +986,88 @@ const AiGuidance: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => scrollToSection("section-roles", 2)}
-                    className="inline-flex items-center gap-2 rounded-2xl border border-white/25 bg-white/10 hover:bg-white/20 px-6 py-4 text-sm font-bold text-white transition-all cursor-pointer"
+                    className="inline-flex items-center gap-2 rounded-xl border-2 border-[#002C66]/20 bg-white hover:border-[#002C66] px-6 py-3.5 text-sm font-bold text-[#002C66] shadow-2xs transition-all cursor-pointer"
                   >
-                    <Briefcase className="h-4 w-4 text-[#FB923C]" />
+                    <Briefcase className="h-4 w-4 text-[#EA580C]" />
                     Explore Career Options ({CAREER_ROLES_DB.length})
                   </button>
                 </div>
 
-                {/* Live Trust Pills */}
-                <div className="grid grid-cols-3 gap-3 pt-4 max-w-xl border-t border-white/15">
-                  <div>
-                    <div className="text-xl font-extrabold text-[#FB923C]">2 Pathways</div>
-                    <div className="text-[11px] text-white/75">Degree &amp; Beyond-Degree</div>
+                {/* High-Contrast KPI Strip */}
+                <div className="grid grid-cols-3 gap-3 pt-4 max-w-xl">
+                  <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-2xs">
+                    <div className="text-lg font-extrabold text-[#002C66]">2 Pathways</div>
+                    <div className="text-[11px] font-medium text-slate-600">Degree &amp; Beyond-Degree</div>
                   </div>
-                  <div>
-                    <div className="text-xl font-extrabold text-emerald-300">Live ₹ Salary</div>
-                    <div className="text-[11px] text-white/75">Entry, Mid &amp; Senior Tiers</div>
+                  <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-2xs">
+                    <div className="text-lg font-extrabold text-emerald-700">Live ₹ Salary</div>
+                    <div className="text-[11px] font-medium text-slate-600">Entry, Mid &amp; Senior Tiers</div>
                   </div>
-                  <div>
-                    <div className="text-xl font-extrabold text-sky-300">7-Step Flow</div>
-                    <div className="text-[11px] text-white/75">Actionable Career Roadmap</div>
+                  <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-2xs">
+                    <div className="text-lg font-extrabold text-[#EA580C]">7-Step Flow</div>
+                    <div className="text-[11px] font-medium text-slate-600">Actionable Career Roadmap</div>
                   </div>
                 </div>
               </div>
 
-              {/* Right Column: Interactive AI Super Intelligence Visual Showcase (from Page 1 of PDF) */}
-              <div className="lg:col-span-5">
-                <div className="rounded-3xl border border-white/20 bg-white/10 p-5 sm:p-6 shadow-2xl space-y-4">
-                  <div className="flex items-center justify-between border-b border-white/15 pb-3">
-                    <div className="flex items-center gap-2.5">
-                      <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#FB923C] text-white font-extrabold">
-                        SI
-                      </span>
-                      <div>
-                        <div className="text-xs font-extrabold uppercase tracking-wider text-white">
-                          AI Super Intelligence Engine
-                        </div>
-                        <div className="text-[11px] text-emerald-300 flex items-center gap-1">
-                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                          Real-Time Profile Telemetry Active
-                        </div>
-                      </div>
+              {/* Right Column: PDF Hero Image (Robot + Candidate with TOP COURSES, BEST COLLEGES, CAREER SUGGESTIONS) */}
+              <div className="lg:col-span-6">
+                <div className="rounded-3xl border-2 border-slate-200/90 bg-white p-3 sm:p-4 shadow-xl space-y-3">
+                  <div className="relative overflow-hidden rounded-2xl border border-slate-200">
+                    <img
+                      src={heroRobotImg}
+                      alt="AI Super Intelligence Guide assisting student with Top Courses, Best Colleges, and Career Suggestions"
+                      className="w-full h-[300px] sm:h-[370px] object-cover object-center"
+                    />
+                    <div className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-[#002C66] px-3 py-1 text-[11px] font-bold text-white shadow-md">
+                      <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                      AI Career Companion Live
                     </div>
-                    <span className="rounded-full bg-white/15 px-3 py-1 text-[10px] font-bold text-white">
-                      {education} · {specialisation}
-                    </span>
                   </div>
 
-                  {/* The 3 Holographic Cards from PDF Page 1 Screenshot */}
-                  <div className="space-y-3">
-                    <div
+                  {/* Interactive Quick-Jump Bar Below the Hero Photo */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                    <button
+                      type="button"
                       onClick={() => scrollToSection("section-skills", 3)}
-                      className="group flex items-center justify-between rounded-2xl border border-sky-300/30 bg-sky-500/20 p-4 hover:bg-sky-500/30 transition-all cursor-pointer"
+                      className="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-[#002C66] hover:text-white p-3 text-left transition-all cursor-pointer group"
                     >
-                      <div className="flex items-center gap-3.5">
-                        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/20 text-white">
-                          <BookOpen className="h-5 w-5" />
-                        </span>
-                        <div>
-                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-sky-200 block">
-                            AI Curated Learning
-                          </span>
-                          <h3 className="text-sm font-extrabold text-white">
-                            TOP COURSES &amp; SKILLS FOR YOU
-                          </h3>
-                          <p className="text-[11px] text-white/80 mt-0.5">
-                            Matched to {activeRole.title} skill gaps
-                          </p>
+                      <BookOpen className="h-4 w-4 text-[#002C66] group-hover:text-[#FB923C] shrink-0" />
+                      <div className="min-w-0">
+                        <div className="text-[11px] font-extrabold truncate">Top Courses For You</div>
+                        <div className="text-[10px] text-slate-500 group-hover:text-white/80 truncate">
+                          Close skill gaps
                         </div>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-white/70 group-hover:translate-x-1 transition-transform" />
-                    </div>
+                    </button>
 
-                    <div
+                    <button
+                      type="button"
                       onClick={() => scrollToSection("section-detail", 3)}
-                      className="group flex items-center justify-between rounded-2xl border border-white/25 bg-white/15 p-4 hover:bg-white/25 transition-all cursor-pointer"
+                      className="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-[#002C66] hover:text-white p-3 text-left transition-all cursor-pointer group"
                     >
-                      <div className="flex items-center gap-3.5">
-                        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#FB923C] text-white">
-                          <GraduationCap className="h-5 w-5" />
-                        </span>
-                        <div>
-                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#FB923C] block">
-                            Degree &amp; Credential Fit
-                          </span>
-                          <h3 className="text-sm font-extrabold text-white">
-                            ELIGIBILITY &amp; CERTIFICATIONS FOR YOU
-                          </h3>
-                          <p className="text-[11px] text-white/80 mt-0.5">
-                            Verified pathways for {education} ({specialisation})
-                          </p>
+                      <GraduationCap className="h-4 w-4 text-[#EA580C] group-hover:text-[#FB923C] shrink-0" />
+                      <div className="min-w-0">
+                        <div className="text-[11px] font-extrabold truncate">Degree &amp; Eligibility</div>
+                        <div className="text-[10px] text-slate-500 group-hover:text-white/80 truncate">
+                          {education} ({specialisation})
                         </div>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-white/70 group-hover:translate-x-1 transition-transform" />
-                    </div>
+                    </button>
 
-                    <div
+                    <button
+                      type="button"
                       onClick={() => scrollToSection("section-roles", 2)}
-                      className="group flex items-center justify-between rounded-2xl border border-emerald-400/30 bg-emerald-500/20 p-4 hover:bg-emerald-500/30 transition-all cursor-pointer"
+                      className="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-[#002C66] hover:text-white p-3 text-left transition-all cursor-pointer group"
                     >
-                      <div className="flex items-center gap-3.5">
-                        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500 text-white">
-                          <Briefcase className="h-5 w-5" />
-                        </span>
-                        <div>
-                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-200 block">
-                            Personalised Role Matches
-                          </span>
-                          <h3 className="text-sm font-extrabold text-white">
-                            CAREER SUGGESTIONS &amp; ₹ SALARY
-                          </h3>
-                          <p className="text-[11px] text-white/80 mt-0.5">
-                            Top Match: {activeRole.title} ({activeRole.salary.entry.range})
-                          </p>
+                      <Briefcase className="h-4 w-4 text-emerald-600 group-hover:text-emerald-300 shrink-0" />
+                      <div className="min-w-0">
+                        <div className="text-[11px] font-extrabold truncate">Career Suggestions</div>
+                        <div className="text-[10px] text-slate-500 group-hover:text-white/80 truncate">
+                          {activeRole.salary.entry.range}
                         </div>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-white/70 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </div>
-
-                  {/* Live Profile Status Footer */}
-                  <div className="rounded-xl bg-[#001D44] p-3.5 flex items-center justify-between text-xs">
-                    <span className="text-white/80">
-                      Active Target: <strong className="text-white">{activeRole.title}</strong>
-                    </span>
-                    <span className="font-bold text-[#FB923C]">{lastGeneratedAt}</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -1121,18 +1078,18 @@ const AiGuidance: React.FC = () => {
         {/* =====================================================================
             RECOMMENDED SI GUIDE USER JOURNEY (7-STEP INTERACTIVE NAVIGATOR)
         ===================================================================== */}
-        <div className="sticky top-16 z-30 border-b border-border bg-card/95 backdrop-blur-md shadow-xs">
+        <div className="sticky top-16 z-30 border-b border-slate-200 bg-white/95 backdrop-blur-md shadow-xs">
           <div className="container py-3">
             <div className="flex items-center justify-between gap-2 mb-2">
               <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#002C66] flex items-center gap-1.5">
-                <Layers className="h-3.5 w-3.5 text-[#FB923C]" />
+                <Layers className="h-3.5 w-3.5 text-[#EA580C]" />
                 Recommended SI Guide User Journey (Interactive 7-Step Workflow)
               </span>
-              <span className="text-[11px] text-muted-foreground hidden sm:inline">
+              <span className="text-[11px] font-medium text-slate-500 hidden sm:inline">
                 Click any step to jump directly to that stage
               </span>
             </div>
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
               {USER_JOURNEY_STEPS.map((item, idx) => {
                 const isActive = activeJourneyStep === idx;
                 return (
@@ -1141,10 +1098,10 @@ const AiGuidance: React.FC = () => {
                     type="button"
                     onClick={() => scrollToSection(item.anchor, idx)}
                     className={cn(
-                      "shrink-0 inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold transition-all cursor-pointer border",
+                      "shrink-0 inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold transition-all cursor-pointer border",
                       isActive
-                        ? "bg-[#002C66] text-white border-[#002C66] shadow-2xs"
-                        : "bg-background text-foreground border-border hover:border-[#002C66]/40"
+                        ? "bg-[#002C66] text-white border-[#002C66] shadow-xs"
+                        : "bg-slate-50 text-slate-800 border-slate-200 hover:border-[#002C66]"
                     )}
                   >
                     <span
@@ -1168,27 +1125,27 @@ const AiGuidance: React.FC = () => {
               02. CANDIDATE PROFILE SETUP — "Tell Us About Yourself."
           ===================================================================== */}
           <section id="section-profile" ref={profileSectionRef} className="scroll-mt-36">
-            <div className="rounded-3xl border border-border bg-card shadow-sm overflow-hidden">
+            <div className="rounded-3xl border border-slate-200 bg-white shadow-md overflow-hidden">
               <div className="h-2 w-full bg-[#002C66]" />
               <div className="p-6 sm:p-8 lg:p-10 space-y-6">
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-border pb-6">
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-200 pb-6">
                   <div className="space-y-1.5">
-                    <div className="inline-flex items-center gap-2 rounded-full bg-[#002C66]/10 px-3 py-1 text-xs font-extrabold text-[#002C66]">
-                      <span>02. Candidate Profile Setup</span>
-                    </div>
-                    <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-foreground">
+                    <span className="inline-flex items-center gap-2 rounded-full bg-[#002C66]/10 px-3.5 py-1 text-xs font-extrabold text-[#002C66]">
+                      02. Candidate Profile Setup
+                    </span>
+                    <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-slate-950">
                       Tell Us About Yourself.
                     </h2>
-                    <p className="text-sm text-muted-foreground max-w-2xl">
+                    <p className="text-sm text-slate-600 max-w-2xl">
                       Your career journey starts with understanding where you are today. Provide a few details to receive relevant career recommendations.
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-3 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3">
+                  <div className="flex items-center gap-3 rounded-2xl border border-emerald-500/30 bg-emerald-50 px-4 py-3">
                     <UserCheck className="h-5 w-5 text-emerald-600 shrink-0" />
                     <div className="text-xs">
-                      <div className="font-bold text-foreground">Live Profile Active</div>
-                      <div className="text-muted-foreground">
+                      <div className="font-bold text-slate-900">{lastGeneratedAt}</div>
+                      <div className="text-slate-600">
                         {education} ({specialisation}) · {experience} · {country}
                       </div>
                     </div>
@@ -1199,14 +1156,14 @@ const AiGuidance: React.FC = () => {
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {/* 1. Highest Education */}
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
                         <GraduationCap className="h-4 w-4 text-[#002C66]" />
                         Highest Education
                       </label>
                       <select
                         value={education}
                         onChange={(e) => setEducation(e.target.value)}
-                        className="h-11 w-full rounded-xl border border-border bg-background px-3.5 text-sm font-semibold text-foreground"
+                        className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3.5 text-sm font-semibold text-slate-900"
                       >
                         {EDUCATION_OPTIONS.map((opt) => (
                           <option key={opt} value={opt}>
@@ -1214,21 +1171,21 @@ const AiGuidance: React.FC = () => {
                           </option>
                         ))}
                       </select>
-                      <p className="text-[11px] text-muted-foreground">
+                      <p className="text-[11px] text-slate-500">
                         BBA, B.Com, B.Tech, MBA, BA, B.Sc. and more
                       </p>
                     </div>
 
                     {/* 2. Specialisation */}
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
                         <BookOpen className="h-4 w-4 text-[#002C66]" />
                         Specialisation
                       </label>
                       <select
                         value={specialisation}
                         onChange={(e) => setSpecialisation(e.target.value)}
-                        className="h-11 w-full rounded-xl border border-border bg-background px-3.5 text-sm font-semibold text-foreground"
+                        className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3.5 text-sm font-semibold text-slate-900"
                       >
                         {SPECIALISATION_OPTIONS.map((opt) => (
                           <option key={opt} value={opt}>
@@ -1236,21 +1193,21 @@ const AiGuidance: React.FC = () => {
                           </option>
                         ))}
                       </select>
-                      <p className="text-[11px] text-muted-foreground">
+                      <p className="text-[11px] text-slate-500">
                         Marketing, Finance, HR, Computer Science, etc.
                       </p>
                     </div>
 
                     {/* 3. Country */}
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
                         <Globe className="h-4 w-4 text-[#002C66]" />
                         Country
                       </label>
                       <select
                         value={country}
                         onChange={(e) => setCountry(e.target.value)}
-                        className="h-11 w-full rounded-xl border border-border bg-background px-3.5 text-sm font-semibold text-foreground"
+                        className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3.5 text-sm font-semibold text-slate-900"
                       >
                         {COUNTRY_OPTIONS.map((opt) => (
                           <option key={opt} value={opt}>
@@ -1258,14 +1215,14 @@ const AiGuidance: React.FC = () => {
                           </option>
                         ))}
                       </select>
-                      <p className="text-[11px] text-muted-foreground">
+                      <p className="text-[11px] text-slate-500">
                         India or another preferred country
                       </p>
                     </div>
 
                     {/* 4. Career Experience */}
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
                         <Briefcase className="h-4 w-4 text-[#002C66]" />
                         Career Experience
                       </label>
@@ -1279,28 +1236,28 @@ const AiGuidance: React.FC = () => {
                               "h-11 rounded-xl border text-xs font-bold transition-all cursor-pointer px-2",
                               experience === exp
                                 ? "bg-[#002C66] text-white border-[#002C66]"
-                                : "bg-background text-foreground border-border hover:border-[#002C66]/40"
+                                : "bg-slate-50 text-slate-800 border-slate-300 hover:border-[#002C66]"
                             )}
                           >
                             {exp}
                           </button>
                         ))}
                       </div>
-                      <p className="text-[11px] text-muted-foreground">
+                      <p className="text-[11px] text-slate-500">
                         Fresher, Experienced or Career Switcher
                       </p>
                     </div>
 
                     {/* 5. Preferred Work Location */}
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
                         <MapPin className="h-4 w-4 text-[#002C66]" />
                         Preferred Work Location
                       </label>
                       <select
                         value={preferredLocation}
                         onChange={(e) => setPreferredLocation(e.target.value)}
-                        className="h-11 w-full rounded-xl border border-border bg-background px-3.5 text-sm font-semibold text-foreground"
+                        className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3.5 text-sm font-semibold text-slate-900"
                       >
                         {LOCATION_OPTIONS.map((opt) => (
                           <option key={opt} value={opt}>
@@ -1308,21 +1265,21 @@ const AiGuidance: React.FC = () => {
                           </option>
                         ))}
                       </select>
-                      <p className="text-[11px] text-muted-foreground">
+                      <p className="text-[11px] text-slate-500">
                         City, country, remote or hybrid
                       </p>
                     </div>
 
                     {/* 6. Salary Expectations (Optional) */}
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
                         <IndianRupee className="h-4 w-4 text-[#002C66]" />
                         Salary Expectations (Optional)
                       </label>
                       <select
                         value={salaryExpectation}
                         onChange={(e) => setSalaryExpectation(e.target.value)}
-                        className="h-11 w-full rounded-xl border border-border bg-background px-3.5 text-sm font-semibold text-foreground"
+                        className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3.5 text-sm font-semibold text-slate-900"
                       >
                         {SALARY_EXPECTATION_OPTIONS.map((opt) => (
                           <option key={opt} value={opt}>
@@ -1330,7 +1287,7 @@ const AiGuidance: React.FC = () => {
                           </option>
                         ))}
                       </select>
-                      <p className="text-[11px] text-muted-foreground">
+                      <p className="text-[11px] text-slate-500">
                         Used to calibrate target role compensation bands
                       </p>
                     </div>
@@ -1338,7 +1295,7 @@ const AiGuidance: React.FC = () => {
 
                   {/* 7. Career Interests Pills */}
                   <div className="space-y-2 pt-1">
-                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
                       Career Interests (Select one or more) — Technology, Business, Marketing, Finance &amp; more
                     </label>
                     <div className="flex flex-wrap gap-2">
@@ -1353,7 +1310,7 @@ const AiGuidance: React.FC = () => {
                               "inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold border transition-all cursor-pointer",
                               active
                                 ? "bg-[#002C66] text-white border-[#002C66]"
-                                : "bg-background text-muted-foreground border-border hover:text-foreground"
+                                : "bg-slate-50 text-slate-700 border-slate-300 hover:text-slate-950"
                             )}
                           >
                             {active && <Check className="h-3.5 w-3.5 text-[#FB923C]" />}
@@ -1365,16 +1322,16 @@ const AiGuidance: React.FC = () => {
                   </div>
 
                   {/* Submit CTA */}
-                  <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-border">
-                    <div className="text-xs text-muted-foreground">
+                  <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-slate-200">
+                    <div className="text-xs text-slate-600">
                       SI Guide matches your profile against{" "}
-                      <strong className="text-foreground">500+ verified employer role rubrics</strong> in real time.
+                      <strong className="text-slate-900">500+ verified employer role rubrics</strong> in real time.
                     </div>
                     <button
                       type="submit"
-                      className="inline-flex items-center gap-2 rounded-2xl bg-[#FB923C] hover:bg-[#F97316] px-7 py-3.5 text-sm font-extrabold text-white shadow-md transition-all cursor-pointer"
+                      className="inline-flex items-center gap-2 rounded-xl bg-[#002C66] hover:bg-[#001F4D] px-7 py-3.5 text-sm font-extrabold text-white shadow-md transition-all cursor-pointer"
                     >
-                      <Sparkles className="h-4 w-4" />
+                      <Sparkles className="h-4 w-4 text-[#FB923C]" />
                       Generate My Career Options
                       <ArrowRight className="h-4 w-4" />
                     </button>
@@ -1386,66 +1343,74 @@ const AiGuidance: React.FC = () => {
 
           {/* =====================================================================
               03. CHOOSE YOUR CAREER DISCOVERY PATH — "Two Ways to Discover Your Future."
+              (WITH PDF IMAGES 2 & 3)
           ===================================================================== */}
           <section id="section-pathway" className="scroll-mt-36 space-y-6">
             <div className="text-center max-w-3xl mx-auto space-y-2">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-[#002C66]/10 px-3.5 py-1 text-xs font-extrabold text-[#002C66]">
                 03. Choose Your Career Discovery Path
               </span>
-              <h2 className="font-display text-2xl sm:text-4xl font-extrabold text-foreground">
+              <h2 className="font-display text-2xl sm:text-4xl font-extrabold text-slate-950">
                 Two Ways to Discover Your Future.
               </h2>
-              <p className="text-sm text-muted-foreground">
-                Select how you want SI Guide to filter your career opportunities — aligned strictly with your degree or open across all high-growth industries.
+              <p className="text-sm text-slate-600">
+                Select how you want SI Guide to filter your career opportunities — aligned with your degree or open across all industries.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              {/* PATH 01: Careers Based on My Education */}
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+              {/* PATH 01: Careers Based on My Education (With PDF Image 2) */}
               <div
                 onClick={() => {
                   setSelectedPathway("degree");
                   setActiveJourneyStep(1);
                 }}
                 className={cn(
-                  "group rounded-3xl border-2 bg-card overflow-hidden shadow-sm transition-all cursor-pointer flex flex-col justify-between",
+                  "group rounded-3xl border-2 bg-white overflow-hidden shadow-md transition-all cursor-pointer flex flex-col justify-between",
                   selectedPathway === "degree"
                     ? "border-[#002C66] ring-4 ring-[#002C66]/10"
-                    : "border-border hover:border-[#002C66]/40"
+                    : "border-slate-200 hover:border-[#002C66]/50"
                 )}
               >
                 <div>
-                  <div className="bg-[#002C66] text-white p-6 flex items-center justify-between">
-                    <div className="space-y-1">
-                      <span className="inline-block rounded-md bg-[#FB923C] px-2.5 py-0.5 text-[11px] font-extrabold uppercase text-white">
-                        PATH 01
-                      </span>
-                      <h3 className="font-display text-xl sm:text-2xl font-extrabold text-white pt-1">
-                        Careers Based on My Education
-                      </h3>
+                  {/* PDF Page 3 Image */}
+                  <div className="relative h-64 sm:h-72 w-full overflow-hidden border-b border-slate-200">
+                    <img
+                      src={pathDegreeImg}
+                      alt="Path 01: Careers Based on My Education"
+                      className="h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute top-4 left-4 inline-flex items-center gap-2 rounded-lg bg-[#002C66] px-3 py-1.5 text-xs font-extrabold uppercase tracking-wider text-white shadow-md">
+                      <GraduationCap className="h-4 w-4 text-[#FB923C]" />
+                      PATH 01
                     </div>
-                    <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-white">
-                      <GraduationCap className="h-7 w-7 text-[#FB923C]" />
-                    </span>
+                    {selectedPathway === "degree" && (
+                      <div className="absolute top-4 right-4 rounded-full bg-emerald-600 px-3 py-1 text-[11px] font-bold text-white shadow-md">
+                        ✓ Active Pathway
+                      </div>
+                    )}
                   </div>
 
-                  <div className="p-6 space-y-4">
-                    <p className="text-sm text-foreground/90 leading-relaxed">
+                  <div className="p-6 sm:p-7 space-y-4">
+                    <h3 className="font-display text-2xl font-extrabold text-slate-950">
+                      Careers Based on My Education
+                    </h3>
+                    <p className="text-sm text-slate-600 leading-relaxed">
                       Discover career opportunities aligned with your degree, specialisation and qualifications.
                     </p>
 
-                    <div className="rounded-2xl border border-[#002C66]/20 bg-[#002C66]/5 p-4 space-y-1.5">
+                    <div className="rounded-2xl border border-[#002C66]/20 bg-slate-50 p-4 space-y-1">
                       <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#002C66]">
-                        Live Degree Mapping ({education} · {specialisation})
+                        Degree-Aligned Mapping ({education} · {specialisation})
                       </div>
-                      <p className="text-xs font-semibold text-foreground leading-relaxed">
+                      <p className="text-xs font-semibold text-slate-800 leading-relaxed">
                         {degreeExampleText}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="px-6 pb-6">
+                <div className="px-6 sm:px-7 pb-6">
                   <button
                     type="button"
                     onClick={(e) => {
@@ -1454,10 +1419,10 @@ const AiGuidance: React.FC = () => {
                       scrollToSection("section-roles", 2);
                     }}
                     className={cn(
-                      "w-full inline-flex items-center justify-center gap-2 rounded-2xl py-3.5 px-5 text-xs font-extrabold transition-all cursor-pointer",
+                      "w-full inline-flex items-center justify-center gap-2 rounded-xl py-3.5 px-5 text-xs font-extrabold transition-all cursor-pointer",
                       selectedPathway === "degree"
                         ? "bg-[#002C66] text-white shadow-sm"
-                        : "bg-muted text-foreground hover:bg-[#002C66] hover:text-white"
+                        : "bg-slate-100 text-slate-900 hover:bg-[#002C66] hover:text-white"
                     )}
                   >
                     <GraduationCap className="h-4 w-4" />
@@ -1467,51 +1432,58 @@ const AiGuidance: React.FC = () => {
                 </div>
               </div>
 
-              {/* PATH 02: Careers Beyond My Degree */}
+              {/* PATH 02: Careers Beyond My Degree (With PDF Image 3) */}
               <div
                 onClick={() => {
                   setSelectedPathway("beyond");
                   setActiveJourneyStep(1);
                 }}
                 className={cn(
-                  "group rounded-3xl border-2 bg-card overflow-hidden shadow-sm transition-all cursor-pointer flex flex-col justify-between",
+                  "group rounded-3xl border-2 bg-white overflow-hidden shadow-md transition-all cursor-pointer flex flex-col justify-between",
                   selectedPathway === "beyond"
-                    ? "border-[#FB923C] ring-4 ring-[#FB923C]/15"
-                    : "border-border hover:border-[#FB923C]/50"
+                    ? "border-[#002C66] ring-4 ring-[#002C66]/10"
+                    : "border-slate-200 hover:border-[#002C66]/50"
                 )}
               >
                 <div>
-                  <div className="bg-slate-900 text-white p-6 flex items-center justify-between">
-                    <div className="space-y-1">
-                      <span className="inline-block rounded-md bg-emerald-500 px-2.5 py-0.5 text-[11px] font-extrabold uppercase text-white">
-                        PATH 02
-                      </span>
-                      <h3 className="font-display text-xl sm:text-2xl font-extrabold text-white pt-1">
-                        Careers Beyond My Degree
-                      </h3>
+                  {/* PDF Page 4 Image */}
+                  <div className="relative h-64 sm:h-72 w-full overflow-hidden border-b border-slate-200">
+                    <img
+                      src={pathBeyondImg}
+                      alt="Path 02: Careers Beyond My Degree"
+                      className="h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute top-4 left-4 inline-flex items-center gap-2 rounded-lg bg-[#FB923C] px-3 py-1.5 text-xs font-extrabold uppercase tracking-wider text-white shadow-md">
+                      <Compass className="h-4 w-4 text-white" />
+                      PATH 02
                     </div>
-                    <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-white">
-                      <Compass className="h-7 w-7 text-emerald-400" />
-                    </span>
+                    {selectedPathway === "beyond" && (
+                      <div className="absolute top-4 right-4 rounded-full bg-emerald-600 px-3 py-1 text-[11px] font-bold text-white shadow-md">
+                        ✓ Active Pathway
+                      </div>
+                    )}
                   </div>
 
-                  <div className="p-6 space-y-4">
-                    <p className="text-sm text-foreground/90 leading-relaxed">
+                  <div className="p-6 sm:p-7 space-y-4">
+                    <h3 className="font-display text-2xl font-extrabold text-slate-950">
+                      Careers Beyond My Degree
+                    </h3>
+                    <p className="text-sm text-slate-600 leading-relaxed">
                       Explore opportunities across industries, including roles that accept candidates from different educational backgrounds.
                     </p>
 
-                    <div className="rounded-2xl border border-emerald-500/25 bg-emerald-500/5 p-4 space-y-1.5">
-                      <div className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-700">
-                        Cross-Disciplinary &amp; Skill-First Pathways
+                    <div className="rounded-2xl border border-emerald-500/30 bg-emerald-50/50 p-4 space-y-1">
+                      <div className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-800">
+                        Cross-Industry &amp; Skill-First Pathways
                       </div>
-                      <p className="text-xs font-semibold text-foreground leading-relaxed">
+                      <p className="text-xs font-semibold text-slate-800 leading-relaxed">
                         {beyondDegreeExampleText}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="px-6 pb-6">
+                <div className="px-6 sm:px-7 pb-6">
                   <button
                     type="button"
                     onClick={(e) => {
@@ -1520,10 +1492,10 @@ const AiGuidance: React.FC = () => {
                       scrollToSection("section-roles", 2);
                     }}
                     className={cn(
-                      "w-full inline-flex items-center justify-center gap-2 rounded-2xl py-3.5 px-5 text-xs font-extrabold transition-all cursor-pointer",
+                      "w-full inline-flex items-center justify-center gap-2 rounded-xl py-3.5 px-5 text-xs font-extrabold transition-all cursor-pointer",
                       selectedPathway === "beyond"
-                        ? "bg-[#FB923C] text-white shadow-sm"
-                        : "bg-muted text-foreground hover:bg-[#FB923C] hover:text-white"
+                        ? "bg-[#002C66] text-white shadow-sm"
+                        : "bg-slate-100 text-slate-900 hover:bg-[#002C66] hover:text-white"
                     )}
                   >
                     <Compass className="h-4 w-4" />
@@ -1539,8 +1511,8 @@ const AiGuidance: React.FC = () => {
               04. YOUR PERSONALISED CAREER OPPORTUNITIES — "Discover Jobs You Can Actually Pursue."
           ===================================================================== */}
           <section id="section-roles" ref={rolesSectionRef} className="scroll-mt-36 space-y-6">
-            <div className="rounded-3xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-6">
-              <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 border-b border-border pb-5">
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-md space-y-6">
+              <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 border-b border-slate-200 pb-5">
                 <div className="space-y-1.5">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-[#002C66]/10 px-3 py-1 text-xs font-extrabold text-[#002C66]">
@@ -1552,10 +1524,10 @@ const AiGuidance: React.FC = () => {
                         : "Path 02: All Cross-Industry Options"}
                     </span>
                   </div>
-                  <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-foreground">
+                  <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-slate-950">
                     Discover Jobs You Can Actually Pursue.
                   </h2>
-                  <p className="text-sm text-muted-foreground max-w-2xl">
+                  <p className="text-sm text-slate-600 max-w-2xl">
                     Based on your selected pathway, education and preferences, SI Guide presents a personalised list of relevant job roles.
                   </p>
                 </div>
@@ -1563,18 +1535,18 @@ const AiGuidance: React.FC = () => {
                 {/* Useful Filters Bar from PDF Page 5 */}
                 <div className="flex flex-wrap items-center gap-2">
                   <div className="relative">
-                    <Search className="h-3.5 w-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                    <Search className="h-3.5 w-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                     <Input
                       value={searchRoleQuery}
                       onChange={(e) => setSearchRoleQuery(e.target.value)}
                       placeholder="Filter role or skill..."
-                      className="h-9 pl-8 rounded-xl text-xs w-44"
+                      className="h-9 pl-8 rounded-xl text-xs w-44 bg-white border-slate-300"
                     />
                   </div>
                   <select
                     value={industryFilter}
                     onChange={(e) => setIndustryFilter(e.target.value)}
-                    className="h-9 rounded-xl border border-border bg-background px-3 text-xs font-semibold"
+                    className="h-9 rounded-xl border border-slate-300 bg-white px-3 text-xs font-semibold text-slate-800"
                   >
                     <option value="All">All Industries</option>
                     <option value="Business & Sales">Business &amp; Sales</option>
@@ -1586,7 +1558,7 @@ const AiGuidance: React.FC = () => {
                   <select
                     value={workModeFilter}
                     onChange={(e) => setWorkModeFilter(e.target.value)}
-                    className="h-9 rounded-xl border border-border bg-background px-3 text-xs font-semibold"
+                    className="h-9 rounded-xl border border-slate-300 bg-white px-3 text-xs font-semibold text-slate-800"
                   >
                     <option value="All">All Locations / Modes</option>
                     <option value="Hybrid">Hybrid</option>
@@ -1597,8 +1569,8 @@ const AiGuidance: React.FC = () => {
 
               {/* Filter Tag Pills (Industry · Salary Range · Experience Level · Location · Degree Eligibility · Skills Required) */}
               <div className="flex flex-wrap items-center gap-2 text-[11px]">
-                <span className="font-bold text-muted-foreground flex items-center gap-1">
-                  <SlidersHorizontal className="h-3 w-3 text-[#002C66]" /> Active Filters:
+                <span className="font-bold text-slate-600 flex items-center gap-1">
+                  <SlidersHorizontal className="h-3 w-3 text-[#002C66]" /> Useful Filters:
                 </span>
                 {[
                   `Industry: ${industryFilter}`,
@@ -1610,7 +1582,7 @@ const AiGuidance: React.FC = () => {
                 ].map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-lg border border-border bg-muted/40 px-2.5 py-1 font-semibold text-foreground"
+                    className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 font-semibold text-slate-800"
                   >
                     {tag}
                   </span>
@@ -1629,10 +1601,10 @@ const AiGuidance: React.FC = () => {
                         setActiveJourneyStep(2);
                       }}
                       className={cn(
-                        "group rounded-2xl border bg-background overflow-hidden shadow-2xs transition-all cursor-pointer flex flex-col justify-between",
+                        "group rounded-2xl border bg-white overflow-hidden shadow-2xs transition-all cursor-pointer flex flex-col justify-between",
                         isSelected
                           ? "border-[#002C66] ring-2 ring-[#002C66]/20 shadow-md"
-                          : "border-border hover:border-[#002C66]/40 hover:shadow-md"
+                          : "border-slate-200 hover:border-[#002C66]/50 hover:shadow-md"
                       )}
                     >
                       <div>
@@ -1647,13 +1619,13 @@ const AiGuidance: React.FC = () => {
                             <span className="rounded-lg bg-[#002C66]/10 px-2.5 py-1 text-[10px] font-extrabold text-[#002C66]">
                               {role.categoryTags.join(" · ")}
                             </span>
-                            <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-extrabold text-emerald-700">
+                            <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-[11px] font-extrabold text-emerald-700">
                               {role.matchBase}% AI Match
                             </span>
                           </div>
 
                           <div>
-                            <h3 className="font-display text-lg font-extrabold text-foreground group-hover:text-[#002C66] transition-colors">
+                            <h3 className="font-display text-lg font-extrabold text-slate-950 group-hover:text-[#002C66] transition-colors">
                               {role.title}
                             </h3>
                             <p className="text-xs font-semibold text-[#EA580C] mt-0.5">
@@ -1661,13 +1633,13 @@ const AiGuidance: React.FC = () => {
                             </p>
                           </div>
 
-                          <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                          <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">
                             {role.overview}
                           </p>
 
-                          <div className="grid grid-cols-2 gap-2 rounded-xl bg-muted/35 p-3 border border-border/60 text-xs">
+                          <div className="grid grid-cols-2 gap-2 rounded-xl bg-slate-50 p-3 border border-slate-200 text-xs">
                             <div>
-                              <span className="text-[10px] text-muted-foreground block">
+                              <span className="text-[10px] text-slate-500 block">
                                 Entry Salary (India)
                               </span>
                               <strong className="font-bold text-[#002C66]">
@@ -1675,10 +1647,10 @@ const AiGuidance: React.FC = () => {
                               </strong>
                             </div>
                             <div>
-                              <span className="text-[10px] text-muted-foreground block">
+                              <span className="text-[10px] text-slate-500 block">
                                 Eligible Degrees
                               </span>
-                              <strong className="font-bold text-foreground truncate block">
+                              <strong className="font-bold text-slate-900 truncate block">
                                 {role.eligibleDegrees.slice(0, 4).join(", ")}
                               </strong>
                             </div>
@@ -1686,7 +1658,7 @@ const AiGuidance: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="px-5 py-3.5 border-t border-border bg-muted/20 flex items-center justify-between">
+                      <div className="px-5 py-3.5 border-t border-slate-200 bg-slate-50/70 flex items-center justify-between">
                         <span className="text-[11px] font-bold text-[#002C66]">
                           {isSelected ? "✓ Currently Inspecting" : "Click to Inspect Role"}
                         </span>
@@ -1707,8 +1679,8 @@ const AiGuidance: React.FC = () => {
                 })}
               </div>
 
-              <p className="text-[11px] text-muted-foreground italic">
-                * Recommendations are dynamically generated from your candidate profile ({education} · {specialisation}) and the eligibility requirements of each role.
+              <p className="text-[11px] text-slate-500 italic">
+                * Illustrative &amp; live recommendations generated from your candidate profile ({education} · {specialisation}) and the eligibility requirements of each role.
               </p>
             </div>
           </section>
@@ -1717,9 +1689,9 @@ const AiGuidance: React.FC = () => {
               05. EXPLORE EVERY JOB ROLE IN DETAIL — "Know the Role Before You Choose the Career."
           ===================================================================== */}
           <section id="section-detail" ref={detailSectionRef} className="scroll-mt-36 space-y-6">
-            <div className="rounded-3xl border border-border bg-card overflow-hidden shadow-sm">
+            <div className="rounded-3xl border border-slate-200 bg-white overflow-hidden shadow-md">
               {/* Role Header Bar */}
-              <div className="bg-[#002C66] text-white p-6 sm:p-8">
+              <div className="pro-hero bg-[#002C66] text-white p-6 sm:p-8">
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                   <div className="space-y-1.5">
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-[#FB923C]">
@@ -1728,7 +1700,7 @@ const AiGuidance: React.FC = () => {
                     <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-white">
                       Know the Role Before You Choose the Career: {activeRole.title}
                     </h2>
-                    <p className="text-xs sm:text-sm text-white/80">
+                    <p className="text-xs sm:text-sm text-white/85">
                       Switch roles below to inspect the Role Overview, Responsibilities, Eligibility, Skills, Salary &amp; Future Outlook.
                     </p>
                   </div>
@@ -1744,7 +1716,7 @@ const AiGuidance: React.FC = () => {
                           "rounded-xl px-3 py-2 text-xs font-bold transition-all cursor-pointer",
                           r.id === activeRole.id
                             ? "bg-[#FB923C] text-white shadow-xs"
-                            : "bg-white/10 text-white/80 hover:bg-white/20 hover:text-white"
+                            : "bg-white/10 text-white/85 hover:bg-white/20 hover:text-white"
                         )}
                       >
                         {r.title.split(" ")[0]} {r.title.split(" ")[1]}
@@ -1757,48 +1729,48 @@ const AiGuidance: React.FC = () => {
               {/* 6 Comprehensive Role Detail Cards (Exact 6 Sections from PDF Pages 5–6) */}
               <div className="p-6 sm:p-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
                 {/* 1. Role Overview */}
-                <div className="rounded-2xl border border-border bg-background p-5 space-y-3">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5 space-y-3">
                   <div className="flex items-center gap-2.5">
                     <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#002C66]/10 text-[#002C66]">
                       <Briefcase className="h-5 w-5" />
                     </span>
                     <div>
-                      <h3 className="font-display text-base font-extrabold text-foreground">
+                      <h3 className="font-display text-base font-extrabold text-slate-950">
                         1. Role Overview
                       </h3>
-                      <p className="text-[11px] text-muted-foreground">
+                      <p className="text-[11px] text-slate-500">
                         Understand what the job involves, its purpose and where it fits within an organisation.
                       </p>
                     </div>
                   </div>
-                  <p className="text-xs sm:text-sm text-foreground/90 leading-relaxed">
+                  <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
                     {activeRole.overview}
                   </p>
-                  <div className="rounded-xl bg-muted/40 p-3 text-xs border border-border/60">
+                  <div className="rounded-xl bg-white p-3.5 text-xs border border-slate-200">
                     <strong className="text-[#002C66] block mb-0.5">Organisational Fit:</strong>
-                    <span className="text-muted-foreground">{activeRole.orgFit}</span>
+                    <span className="text-slate-600">{activeRole.orgFit}</span>
                   </div>
                 </div>
 
                 {/* 2. Roles & Responsibilities */}
-                <div className="rounded-2xl border border-border bg-background p-5 space-y-3">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5 space-y-3">
                   <div className="flex items-center gap-2.5">
                     <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600">
                       <CheckCircle2 className="h-5 w-5" />
                     </span>
                     <div>
-                      <h3 className="font-display text-base font-extrabold text-foreground">
+                      <h3 className="font-display text-base font-extrabold text-slate-950">
                         2. Roles &amp; Responsibilities
                       </h3>
-                      <p className="text-[11px] text-muted-foreground">
+                      <p className="text-[11px] text-slate-500">
                         Explore daily tasks, core responsibilities, deliverables and expected outcomes.
                       </p>
                     </div>
                   </div>
-                  <ul className="space-y-2 text-xs text-foreground/90">
+                  <ul className="space-y-2.5 text-xs text-slate-700">
                     {activeRole.responsibilities.map((item, idx) => (
                       <li key={idx} className="flex items-start gap-2">
-                        <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-[10px] font-bold text-emerald-700">
+                        <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-[10px] font-bold text-emerald-700">
                           ✓
                         </span>
                         <span>{item}</span>
@@ -1808,50 +1780,50 @@ const AiGuidance: React.FC = () => {
                 </div>
 
                 {/* 3. Education & Eligibility */}
-                <div className="rounded-2xl border border-border bg-background p-5 space-y-3">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5 space-y-3">
                   <div className="flex items-center gap-2.5">
                     <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#FB923C]/15 text-[#EA580C]">
                       <GraduationCap className="h-5 w-5" />
                     </span>
                     <div>
-                      <h3 className="font-display text-base font-extrabold text-foreground">
+                      <h3 className="font-display text-base font-extrabold text-slate-950">
                         3. Education &amp; Eligibility
                       </h3>
-                      <p className="text-[11px] text-muted-foreground">
+                      <p className="text-[11px] text-slate-500">
                         Check accepted degrees, qualifications, experience requirements and entry routes.
                       </p>
                     </div>
                   </div>
                   <div className="grid grid-cols-1 gap-2.5 text-xs">
-                    <div className="rounded-xl bg-muted/30 p-3 border border-border/50">
-                      <strong className="text-foreground block">Accepted Degrees:</strong>
-                      <span className="text-muted-foreground">{activeRole.eligibility.acceptedDegrees}</span>
+                    <div className="rounded-xl bg-white p-3 border border-slate-200">
+                      <strong className="text-slate-900 block">Accepted Degrees:</strong>
+                      <span className="text-slate-600">{activeRole.eligibility.acceptedDegrees}</span>
                     </div>
-                    <div className="rounded-xl bg-muted/30 p-3 border border-border/50">
-                      <strong className="text-foreground block">Experience &amp; Qualifications:</strong>
-                      <span className="text-muted-foreground">
+                    <div className="rounded-xl bg-white p-3 border border-slate-200">
+                      <strong className="text-slate-900 block">Experience &amp; Qualifications:</strong>
+                      <span className="text-slate-600">
                         {activeRole.eligibility.experienceReq} · {activeRole.eligibility.qualifications}
                       </span>
                     </div>
-                    <div className="rounded-xl bg-muted/30 p-3 border border-border/50">
-                      <strong className="text-foreground block">Recommended Entry Routes:</strong>
-                      <span className="text-muted-foreground">{activeRole.eligibility.entryRoutes}</span>
+                    <div className="rounded-xl bg-white p-3 border border-slate-200">
+                      <strong className="text-slate-900 block">Recommended Entry Routes:</strong>
+                      <span className="text-slate-600">{activeRole.eligibility.entryRoutes}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* 4. Skills & Tools + 5. Salary + 6. Career Growth Summary */}
-                <div className="rounded-2xl border border-border bg-background p-5 space-y-3 flex flex-col justify-between">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5 space-y-3 flex flex-col justify-between">
                   <div className="space-y-3">
                     <div className="flex items-center gap-2.5">
                       <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-500/10 text-sky-600">
                         <Wrench className="h-5 w-5" />
                       </span>
                       <div>
-                        <h3 className="font-display text-base font-extrabold text-foreground">
+                        <h3 className="font-display text-base font-extrabold text-slate-950">
                           4. Skills, Tools, Salary &amp; Growth Snapshot
                         </h3>
-                        <p className="text-[11px] text-muted-foreground">
+                        <p className="text-[11px] text-slate-500">
                           Core tools, earning potential in {country}, and progression track.
                         </p>
                       </div>
@@ -1870,23 +1842,23 @@ const AiGuidance: React.FC = () => {
                       )}
                     </div>
 
-                    <div className="grid grid-cols-3 gap-2 rounded-xl bg-muted/30 p-3 border border-border/60 text-xs text-center">
+                    <div className="grid grid-cols-3 gap-2 rounded-xl bg-white p-3 border border-slate-200 text-xs text-center">
                       <div>
-                        <span className="text-[10px] text-muted-foreground block">Entry-Level</span>
+                        <span className="text-[10px] text-slate-500 block">Entry-Level</span>
                         <strong className="text-[#002C66] font-extrabold">{activeRole.salary.entry.range}</strong>
                       </div>
-                      <div className="border-x border-border">
-                        <span className="text-[10px] text-muted-foreground block">Mid-Career</span>
+                      <div className="border-x border-slate-200">
+                        <span className="text-[10px] text-slate-500 block">Mid-Career</span>
                         <strong className="text-emerald-700 font-extrabold">{activeRole.salary.mid.range}</strong>
                       </div>
                       <div>
-                        <span className="text-[10px] text-muted-foreground block">Senior Level</span>
+                        <span className="text-[10px] text-slate-500 block">Senior Level</span>
                         <strong className="text-[#EA580C] font-extrabold">{activeRole.salary.senior.range}</strong>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-border">
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-slate-200">
                     <button
                       type="button"
                       onClick={() => scrollToSection("section-salary", 3)}
@@ -1911,22 +1883,22 @@ const AiGuidance: React.FC = () => {
               06. SALARY INSIGHTS — "Know Your Earning Potential."
           ===================================================================== */}
           <section id="section-salary" className="scroll-mt-36 space-y-6">
-            <div className="rounded-3xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-6">
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-border pb-5">
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-md space-y-6">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-200 pb-5">
                 <div className="space-y-1.5">
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-extrabold text-emerald-700">
                     06. Salary Insights · {country} Market Data
                   </span>
-                  <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-foreground">
+                  <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-slate-950">
                     Know Your Earning Potential: {activeRole.title}
                   </h2>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-slate-600">
                     Understand how compensation may change with experience, skills, location and industry.
                   </p>
                 </div>
 
                 {/* Location Tier Switcher */}
-                <div className="inline-flex items-center rounded-xl border border-border bg-muted/40 p-1">
+                <div className="inline-flex items-center rounded-xl border border-slate-200 bg-slate-100 p-1">
                   {[
                     { id: "tier1", label: "Tier-1 Metro (BLR/BOM/NCR)" },
                     { id: "tier2", label: "Tier-2 Hub (MAA/HYD/PNQ)" },
@@ -1940,7 +1912,7 @@ const AiGuidance: React.FC = () => {
                         "rounded-lg px-3 py-1.5 text-xs font-bold transition-all cursor-pointer",
                         cityTierMultiplier === t.id
                           ? "bg-[#002C66] text-white"
-                          : "text-muted-foreground hover:text-foreground"
+                          : "text-slate-600 hover:text-slate-950"
                       )}
                     >
                       {t.label}
@@ -1977,31 +1949,31 @@ const AiGuidance: React.FC = () => {
                   <div
                     key={card.tier}
                     className={cn(
-                      "rounded-2xl border border-border bg-background p-5 space-y-3 shadow-2xs",
+                      "rounded-2xl border border-slate-200 bg-slate-50/50 p-5 space-y-3 shadow-2xs",
                       card.accent
                     )}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                      <span className="text-xs font-bold uppercase tracking-wider text-slate-600">
                         {card.tier}
                       </span>
-                      <span className="rounded-full bg-muted px-2.5 py-0.5 text-[10px] font-bold text-foreground">
+                      <span className="rounded-full bg-white border border-slate-200 px-2.5 py-0.5 text-[10px] font-bold text-slate-800">
                         {card.badge}
                       </span>
                     </div>
-                    <div className="font-display text-2xl font-extrabold text-foreground flex items-center gap-1">
+                    <div className="font-display text-2xl font-extrabold text-slate-950 flex items-center gap-1">
                       {card.data.range}
                     </div>
                     <div className="text-xs font-semibold text-emerald-700">
                       Est. Take-Home: {card.data.monthly}
                     </div>
-                    <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+                    <div className="h-2 w-full rounded-full bg-slate-200 overflow-hidden">
                       <div
                         className="h-full rounded-full bg-[#002C66]"
                         style={{ width: card.barWidth }}
                       />
                     </div>
-                    <p className="text-[11px] text-muted-foreground leading-relaxed">
+                    <p className="text-[11px] text-slate-600 leading-relaxed">
                       {card.data.note}
                     </p>
                   </div>
@@ -2009,7 +1981,7 @@ const AiGuidance: React.FC = () => {
               </div>
 
               {/* Salary Factors (Exact 4 points from PDF Page 7) */}
-              <div className="rounded-2xl border border-border bg-muted/20 p-5">
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
                 <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-3">
                   Key Salary Factors That Influence Your Compensation
                 </h3>
@@ -2032,12 +2004,12 @@ const AiGuidance: React.FC = () => {
                       desc: "Candidates with a verified IAmTalento CIR score (80%+) command top-decile salary bands.",
                     },
                   ].map((f) => (
-                    <div key={f.title} className="rounded-xl border border-border bg-card p-3.5 space-y-1">
-                      <div className="font-bold text-foreground flex items-center gap-1.5">
+                    <div key={f.title} className="rounded-xl border border-slate-200 bg-white p-3.5 space-y-1">
+                      <div className="font-bold text-slate-900 flex items-center gap-1.5">
                         <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
                         {f.title}
                       </div>
-                      <p className="text-[11px] text-muted-foreground leading-relaxed">{f.desc}</p>
+                      <p className="text-[11px] text-slate-600 leading-relaxed">{f.desc}</p>
                     </div>
                   ))}
                 </div>
@@ -2049,22 +2021,22 @@ const AiGuidance: React.FC = () => {
               07. SKILLS YOU NEED TO SUCCEED — "Find Out What Employers Expect."
           ===================================================================== */}
           <section id="section-skills" className="scroll-mt-36 space-y-6">
-            <div className="rounded-3xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-6">
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-border pb-5">
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-md space-y-6">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-200 pb-5">
                 <div className="space-y-1.5">
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-[#002C66]/10 px-3 py-1 text-xs font-extrabold text-[#002C66]">
                     07. Skills You Need to Succeed
                   </span>
-                  <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-foreground">
+                  <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-slate-950">
                     Find Out What Employers Expect for {activeRole.title}.
                   </h2>
-                  <p className="text-sm text-muted-foreground max-w-2xl">
+                  <p className="text-sm text-slate-600 max-w-2xl">
                     Every career requires a combination of technical knowledge, practical capabilities and interpersonal skills. Check the skills you already have to calculate your live Skill Gap!
                   </p>
                 </div>
 
                 {/* Live Skill Readiness Meter */}
-                <div className="flex items-center gap-4 rounded-2xl border border-[#002C66]/20 bg-[#002C66]/5 px-5 py-3.5">
+                <div className="flex items-center gap-4 rounded-2xl border border-[#002C66]/20 bg-slate-50 px-5 py-3.5">
                   <div>
                     <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#002C66] block">
                       Your Current Readiness
@@ -2072,7 +2044,7 @@ const AiGuidance: React.FC = () => {
                     <div className="text-2xl font-extrabold text-[#002C66]">
                       {skillReadinessPct}% Ready
                     </div>
-                    <span className="text-[11px] text-muted-foreground">
+                    <span className="text-[11px] text-slate-600">
                       {matchedSkillsCount} of {allRoleSkills.length} core skills checked
                     </span>
                   </div>
@@ -2082,9 +2054,9 @@ const AiGuidance: React.FC = () => {
                       setShowSkillGapAnalysis(true);
                       toast.success(`Skill Gap Analysis updated for ${activeRole.title}!`);
                     }}
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-[#FB923C] hover:bg-[#F97316] px-4 py-2.5 text-xs font-extrabold text-white shadow-xs cursor-pointer"
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-[#002C66] hover:bg-[#001F4D] px-4 py-2.5 text-xs font-extrabold text-white shadow-xs cursor-pointer"
                   >
-                    <Target className="h-4 w-4" />
+                    <Target className="h-4 w-4 text-[#FB923C]" />
                     Discover My Skill Gaps
                   </button>
                 </div>
@@ -2093,9 +2065,9 @@ const AiGuidance: React.FC = () => {
               {/* 5 Structured Skill Categories from PDF Page 7 */}
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
                 {/* 1. Essential Skills */}
-                <div className="rounded-2xl border border-border bg-background p-5 space-y-3">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-5 space-y-3">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-extrabold text-foreground">
+                    <h3 className="text-sm font-extrabold text-slate-950">
                       1. Essential Skills Required
                     </h3>
                     <span className="rounded bg-[#002C66]/10 px-2 py-0.5 text-[10px] font-bold text-[#002C66]">
@@ -2111,8 +2083,8 @@ const AiGuidance: React.FC = () => {
                           className={cn(
                             "flex items-center gap-2.5 rounded-xl border p-2.5 text-xs cursor-pointer transition-all",
                             checked
-                              ? "border-emerald-500/40 bg-emerald-500/10 font-bold text-foreground"
-                              : "border-border bg-card text-muted-foreground hover:text-foreground"
+                              ? "border-emerald-500/50 bg-emerald-50 font-bold text-slate-900"
+                              : "border-slate-200 bg-white text-slate-700 hover:text-slate-950"
                           )}
                         >
                           <input
@@ -2131,9 +2103,9 @@ const AiGuidance: React.FC = () => {
                 </div>
 
                 {/* 2. Preferred Skills */}
-                <div className="rounded-2xl border border-border bg-background p-5 space-y-3">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-5 space-y-3">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-extrabold text-foreground">
+                    <h3 className="text-sm font-extrabold text-slate-950">
                       2. Preferred Employability Skills
                     </h3>
                     <span className="rounded bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
@@ -2149,8 +2121,8 @@ const AiGuidance: React.FC = () => {
                           className={cn(
                             "flex items-center gap-2.5 rounded-xl border p-2.5 text-xs cursor-pointer transition-all",
                             checked
-                              ? "border-emerald-500/40 bg-emerald-500/10 font-bold text-foreground"
-                              : "border-border bg-card text-muted-foreground hover:text-foreground"
+                              ? "border-emerald-500/50 bg-emerald-50 font-bold text-slate-900"
+                              : "border-slate-200 bg-white text-slate-700 hover:text-slate-950"
                           )}
                         >
                           <input
@@ -2169,9 +2141,9 @@ const AiGuidance: React.FC = () => {
                 </div>
 
                 {/* 3. Software & Industry Tools */}
-                <div className="rounded-2xl border border-border bg-background p-5 space-y-3">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-5 space-y-3">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-extrabold text-foreground">
+                    <h3 className="text-sm font-extrabold text-slate-950">
                       3. Software &amp; Industry Tools
                     </h3>
                     <span className="rounded bg-[#FB923C]/15 px-2 py-0.5 text-[10px] font-bold text-[#EA580C]">
@@ -2187,8 +2159,8 @@ const AiGuidance: React.FC = () => {
                           className={cn(
                             "flex items-center gap-2.5 rounded-xl border p-2.5 text-xs cursor-pointer transition-all",
                             checked
-                              ? "border-emerald-500/40 bg-emerald-500/10 font-bold text-foreground"
-                              : "border-border bg-card text-muted-foreground hover:text-foreground"
+                              ? "border-emerald-500/50 bg-emerald-50 font-bold text-slate-900"
+                              : "border-slate-200 bg-white text-slate-700 hover:text-slate-950"
                           )}
                         >
                           <input
@@ -2207,18 +2179,18 @@ const AiGuidance: React.FC = () => {
                 </div>
 
                 {/* 4. Certifications That Strengthen a Profile */}
-                <div className="rounded-2xl border border-border bg-background p-5 space-y-3">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-5 space-y-3">
                   <div className="flex items-center gap-2">
                     <Award className="h-4 w-4 text-[#002C66]" />
-                    <h3 className="text-sm font-extrabold text-foreground">
+                    <h3 className="text-sm font-extrabold text-slate-950">
                       4. Recommended Certifications
                     </h3>
                   </div>
-                  <ul className="space-y-2 text-xs text-muted-foreground">
+                  <ul className="space-y-2 text-xs">
                     {activeRole.skills.certifications.map((cert) => (
                       <li
                         key={cert}
-                        className="flex items-start gap-2 rounded-xl bg-muted/30 p-2.5 border border-border/50 text-foreground font-medium"
+                        className="flex items-start gap-2 rounded-xl bg-white p-2.5 border border-slate-200 text-slate-800 font-medium"
                       >
                         <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
                         <span>{cert}</span>
@@ -2228,11 +2200,11 @@ const AiGuidance: React.FC = () => {
                 </div>
 
                 {/* 5. Skills Demonstrated Through Projects or Assessments */}
-                <div className="rounded-2xl border border-border bg-background p-5 space-y-3 md:col-span-2">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-5 space-y-3 md:col-span-2">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <Rocket className="h-4 w-4 text-[#FB923C]" />
-                      <h3 className="text-sm font-extrabold text-foreground">
+                      <Rocket className="h-4 w-4 text-[#EA580C]" />
+                      <h3 className="text-sm font-extrabold text-slate-950">
                         5. Portfolio Projects &amp; Assessments to Prove Capability
                       </h3>
                     </div>
@@ -2247,12 +2219,12 @@ const AiGuidance: React.FC = () => {
                     {activeRole.skills.demonstrableProjects.map((proj, i) => (
                       <div
                         key={proj}
-                        className="rounded-xl border border-border bg-muted/25 p-3.5 text-xs space-y-1.5"
+                        className="rounded-xl border border-slate-200 bg-white p-3.5 text-xs space-y-1.5"
                       >
                         <span className="inline-block rounded bg-[#002C66] px-2 py-0.5 text-[10px] font-bold text-white">
                           Proof Project 0{i + 1}
                         </span>
-                        <p className="font-semibold text-foreground leading-relaxed">{proj}</p>
+                        <p className="font-semibold text-slate-900 leading-relaxed">{proj}</p>
                       </div>
                     ))}
                   </div>
@@ -2261,15 +2233,15 @@ const AiGuidance: React.FC = () => {
 
               {/* Dynamic Skill Gap Action Banner when "Discover My Skill Gaps" is clicked */}
               {showSkillGapAnalysis && (
-                <div className="rounded-2xl bg-[#002C66] text-white p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="pro-hero rounded-2xl bg-[#002C66] text-white p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="space-y-1">
                     <div className="text-xs font-extrabold uppercase tracking-wider text-[#FB923C]">
                       AI Skill Gap Diagnostic Result
                     </div>
-                    <h4 className="text-base font-bold">
+                    <h4 className="text-base font-bold text-white">
                       You have {matchedSkillsCount}/{allRoleSkills.length} target skills ({skillReadinessPct}% Readiness) for {activeRole.title}.
                     </h4>
-                    <p className="text-xs text-white/80">
+                    <p className="text-xs text-white/85">
                       Priority gaps to close next:{" "}
                       <strong className="text-white">
                         {allRoleSkills
@@ -2302,16 +2274,16 @@ const AiGuidance: React.FC = () => {
               08. YOUR PERSONALISED CAREER ROADMAP — "From Where You Are to Where You Want to Be."
           ===================================================================== */}
           <section id="section-roadmap" ref={roadmapSectionRef} className="scroll-mt-36 space-y-6">
-            <div className="rounded-3xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-6">
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-border pb-5">
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-md space-y-6">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-200 pb-5">
                 <div className="space-y-1.5">
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-[#002C66]/10 px-3 py-1 text-xs font-extrabold text-[#002C66]">
                     08. Your Personalised Career Roadmap
                   </span>
-                  <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-foreground">
+                  <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-slate-950">
                     From Where You Are to Where You Want to Be.
                   </h2>
-                  <p className="text-sm text-muted-foreground max-w-2xl">
+                  <p className="text-sm text-slate-600 max-w-2xl">
                     SI Guide translates career recommendations into an actionable 5-step plan tailored to your current profile ({education} · {specialisation} → {activeRole.title}).
                   </p>
                 </div>
@@ -2319,7 +2291,7 @@ const AiGuidance: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setRoadmapModalOpen(true)}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-[#002C66] hover:bg-[#001F4D] px-6 py-3.5 text-xs font-extrabold text-white shadow-sm cursor-pointer shrink-0"
+                  className="inline-flex items-center gap-2 rounded-xl bg-[#002C66] hover:bg-[#001F4D] px-6 py-3.5 text-xs font-extrabold text-white shadow-sm cursor-pointer shrink-0"
                 >
                   <Rocket className="h-4 w-4 text-[#FB923C]" />
                   Build My Career Roadmap
@@ -2373,7 +2345,7 @@ const AiGuidance: React.FC = () => {
                 ].map((step) => (
                   <div
                     key={step.num}
-                    className="flex flex-col justify-between rounded-2xl border border-border bg-background p-5 space-y-4 hover:border-[#002C66]/40 hover:shadow-md transition-all"
+                    className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-slate-50/50 p-5 space-y-4 hover:border-[#002C66]/40 hover:shadow-md transition-all"
                   >
                     <div className="space-y-2.5">
                       <div className="flex items-center justify-between">
@@ -2384,13 +2356,13 @@ const AiGuidance: React.FC = () => {
                           Stage {step.num}
                         </span>
                       </div>
-                      <h3 className="font-display text-sm font-extrabold text-foreground">
+                      <h3 className="font-display text-sm font-extrabold text-slate-950">
                         {step.title}
                       </h3>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
+                      <p className="text-xs text-slate-600 leading-relaxed">
                         {step.desc}
                       </p>
-                      <div className="rounded-xl bg-muted/40 p-2.5 text-[11px] font-semibold text-[#002C66] border border-border/60">
+                      <div className="rounded-xl bg-white p-2.5 text-[11px] font-semibold text-[#002C66] border border-slate-200">
                         {step.liveNote}
                       </div>
                     </div>
@@ -2398,7 +2370,7 @@ const AiGuidance: React.FC = () => {
                     <button
                       type="button"
                       onClick={step.onClick}
-                      className="w-full inline-flex items-center justify-between rounded-xl border border-border bg-card hover:bg-[#002C66] hover:text-white px-3 py-2 text-xs font-bold text-foreground transition-colors cursor-pointer"
+                      className="w-full inline-flex items-center justify-between rounded-xl border border-slate-200 bg-white hover:bg-[#002C66] hover:text-white px-3 py-2 text-xs font-bold text-slate-900 transition-colors cursor-pointer"
                     >
                       <span>{step.actionLabel}</span>
                       <ChevronRight className="h-3.5 w-3.5" />
@@ -2413,56 +2385,56 @@ const AiGuidance: React.FC = () => {
               09. UNDERSTAND THE FUTURE OF YOUR CAREER — "Choose a Career That's Ready for Tomorrow."
           ===================================================================== */}
           <section id="section-future" className="scroll-mt-36 space-y-6">
-            <div className="rounded-3xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-6">
-              <div className="space-y-1.5 border-b border-border pb-5">
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-md space-y-6">
+              <div className="space-y-1.5 border-b border-slate-200 pb-5">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-[#002C66]/10 px-3 py-1 text-xs font-extrabold text-[#002C66]">
                   09. Understand the Future of Your Career
                 </span>
-                <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-foreground">
+                <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-slate-950">
                   Choose a Career That&apos;s Ready for Tomorrow: {activeRole.title}
                 </h2>
-                <p className="text-sm text-muted-foreground max-w-3xl">
+                <p className="text-sm text-slate-600 max-w-3xl">
                   Explore how your selected role is evolving with technology, AI adoption, industry changes and emerging business needs.
                 </p>
               </div>
 
               <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
                 {/* 1. Current Industry Demand & Source */}
-                <div className="rounded-2xl border border-border bg-background p-5 space-y-3">
-                  <div className="flex items-center gap-2 text-sm font-extrabold text-foreground">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-5 space-y-3">
+                  <div className="flex items-center gap-2 text-sm font-extrabold text-slate-950">
                     <TrendingUp className="h-4 w-4 text-emerald-600" />
                     Current Industry Demand
                   </div>
-                  <p className="text-xs text-foreground/90 leading-relaxed">
+                  <p className="text-xs text-slate-700 leading-relaxed">
                     {activeRole.futureOutlook.demandTrend}
                   </p>
-                  <div className="rounded-xl bg-muted/40 p-3 text-[11px] text-muted-foreground border border-border/60">
-                    <strong className="text-foreground block">Evidence-Based Source:</strong>
+                  <div className="rounded-xl bg-white p-3 text-[11px] text-slate-600 border border-slate-200">
+                    <strong className="text-slate-900 block">Evidence-Based Source:</strong>
                     {activeRole.futureOutlook.demandSource}
                   </div>
                 </div>
 
                 {/* 2. Emerging Technologies & Future Skills */}
-                <div className="rounded-2xl border border-border bg-background p-5 space-y-3">
-                  <div className="flex items-center gap-2 text-sm font-extrabold text-foreground">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-5 space-y-3">
+                  <div className="flex items-center gap-2 text-sm font-extrabold text-slate-950">
                     <Brain className="h-4 w-4 text-[#002C66]" />
                     Emerging Tech &amp; Future Skills
                   </div>
                   <div className="space-y-2">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
                       Emerging Technologies Affecting the Role
                     </span>
                     {activeRole.futureOutlook.emergingTech.map((tech) => (
                       <div
                         key={tech}
-                        className="rounded-lg bg-[#002C66]/8 px-3 py-1.5 text-xs font-semibold text-[#002C66]"
+                        className="rounded-lg bg-white border border-slate-200 px-3 py-1.5 text-xs font-semibold text-[#002C66]"
                       >
                         • {tech}
                       </div>
                     ))}
                   </div>
                   <div className="space-y-1.5 pt-1">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
                       Future Skills Employers Value
                     </span>
                     <div className="flex flex-wrap gap-1.5">
@@ -2479,17 +2451,17 @@ const AiGuidance: React.FC = () => {
                 </div>
 
                 {/* 3. Career Advancement Pathways & Alternative Roles */}
-                <div className="rounded-2xl border border-border bg-background p-5 space-y-3">
-                  <div className="flex items-center gap-2 text-sm font-extrabold text-foreground">
-                    <Layers className="h-4 w-4 text-[#FB923C]" />
+                <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-5 space-y-3">
+                  <div className="flex items-center gap-2 text-sm font-extrabold text-slate-950">
+                    <Layers className="h-4 w-4 text-[#EA580C]" />
                     Advancement &amp; Alternative Career Options
                   </div>
                   <div className="space-y-1.5">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
                       Career Advancement Pathway
                     </span>
                     {activeRole.futureOutlook.advancementPath.map((step, i) => (
-                      <div key={step} className="flex items-center gap-2 text-xs font-semibold">
+                      <div key={step} className="flex items-center gap-2 text-xs font-semibold text-slate-800">
                         <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#002C66] text-[10px] font-bold text-white">
                           {i + 1}
                         </span>
@@ -2497,15 +2469,15 @@ const AiGuidance: React.FC = () => {
                       </div>
                     ))}
                   </div>
-                  <div className="space-y-1.5 pt-2 border-t border-border">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
+                  <div className="space-y-1.5 pt-2 border-t border-slate-200">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
                       Related &amp; Alternative Career Options
                     </span>
                     <div className="flex flex-wrap gap-1.5">
                       {activeRole.futureOutlook.alternativeRoles.map((alt) => (
                         <span
                           key={alt}
-                          className="rounded-md border border-border bg-card px-2.5 py-1 text-[11px] font-semibold text-foreground"
+                          className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-800"
                         >
                           {alt}
                         </span>
@@ -2525,10 +2497,10 @@ const AiGuidance: React.FC = () => {
               <span className="inline-flex items-center gap-1.5 rounded-full bg-[#002C66]/10 px-3.5 py-1 text-xs font-extrabold text-[#002C66]">
                 10. Connect Career Discovery to Learning &amp; Jobs
               </span>
-              <h2 className="font-display text-2xl sm:text-4xl font-extrabold text-foreground">
+              <h2 className="font-display text-2xl sm:text-4xl font-extrabold text-slate-950">
                 Discover It. Learn It. Make It Happen.
               </h2>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-slate-600">
                 Move seamlessly from AI career discovery into skill mastery, verified CIR assessment, profile building, and direct job applications.
               </p>
             </div>
@@ -2573,7 +2545,7 @@ const AiGuidance: React.FC = () => {
                   <Link
                     key={card.title}
                     to={card.href}
-                    className="group rounded-2xl border border-border bg-card overflow-hidden shadow-sm hover:shadow-md hover:border-[#002C66]/40 transition-all flex flex-col justify-between"
+                    className="group rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm hover:shadow-md hover:border-[#002C66]/50 transition-all flex flex-col justify-between"
                   >
                     <div>
                       <div className={cn("h-1.5 w-full", card.accent)} />
@@ -2581,16 +2553,16 @@ const AiGuidance: React.FC = () => {
                         <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#002C66]/10 text-[#002C66] group-hover:bg-[#002C66] group-hover:text-white transition-colors">
                           <Icon className="h-6 w-6" />
                         </span>
-                        <h3 className="font-display text-lg font-extrabold text-foreground">
+                        <h3 className="font-display text-lg font-extrabold text-slate-950">
                           {card.title}
                         </h3>
-                        <p className="text-xs text-muted-foreground leading-relaxed">
+                        <p className="text-xs text-slate-600 leading-relaxed">
                           {card.desc}
                         </p>
                       </div>
                     </div>
                     <div className="px-6 pb-5 pt-2">
-                      <span className="inline-flex items-center gap-1 text-xs font-extrabold text-[#002C66] group-hover:text-[#FB923C] transition-colors">
+                      <span className="inline-flex items-center gap-1 text-xs font-extrabold text-[#002C66] group-hover:text-[#EA580C] transition-colors">
                         {card.cta}
                       </span>
                     </div>
@@ -2603,7 +2575,7 @@ const AiGuidance: React.FC = () => {
           {/* =====================================================================
               11. FINAL CTA SECTION — "Your Degree Is Just the Beginning."
           ===================================================================== */}
-          <section className="rounded-3xl bg-[#002C66] text-white p-8 sm:p-12 lg:p-14 shadow-xl">
+          <div className="pro-hero rounded-3xl bg-[#002C66] text-white p-8 sm:p-12 lg:p-14 shadow-xl">
             <div className="max-w-3xl mx-auto text-center space-y-5">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-1 text-xs font-extrabold uppercase tracking-wider text-[#FB923C]">
                 <Sparkles className="h-3.5 w-3.5" />
@@ -2612,14 +2584,14 @@ const AiGuidance: React.FC = () => {
               <h2 className="font-display text-3xl sm:text-5xl font-extrabold text-white leading-tight">
                 Your Degree Is Just the Beginning.
               </h2>
-              <p className="text-base sm:text-lg text-white/85 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-base sm:text-lg text-white/90 max-w-2xl mx-auto leading-relaxed">
                 Discover your possibilities, understand your potential and find the career path that fits you.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-4 pt-3">
                 <button
                   type="button"
                   onClick={() => scrollToSection("section-profile", 0)}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-[#FB923C] hover:bg-[#F97316] px-8 py-4 text-sm font-extrabold text-white shadow-lg transition-all cursor-pointer"
+                  className="inline-flex items-center gap-2 rounded-xl bg-[#FB923C] hover:bg-[#F97316] px-8 py-4 text-sm font-extrabold text-white shadow-lg transition-all cursor-pointer"
                 >
                   <Sparkles className="h-4 w-4" />
                   Start My SI Guide
@@ -2627,13 +2599,13 @@ const AiGuidance: React.FC = () => {
                 </button>
                 <Link
                   to="/pro?view=cert"
-                  className="inline-flex items-center gap-2 rounded-2xl border border-white/25 bg-white/10 hover:bg-white/20 px-7 py-4 text-sm font-bold text-white transition-all"
+                  className="inline-flex items-center gap-2 rounded-xl border border-white/30 bg-white/10 hover:bg-white/20 px-7 py-4 text-sm font-bold text-white transition-all"
                 >
                   Open Talento Pro Workspace
                 </Link>
               </div>
             </div>
-          </section>
+          </div>
         </div>
       </div>
 
@@ -2641,8 +2613,8 @@ const AiGuidance: React.FC = () => {
           INTERACTIVE 90-DAY PERSONALISED CAREER ROADMAP MODAL
       ===================================================================== */}
       <Dialog open={roadmapModalOpen} onOpenChange={setRoadmapModalOpen}>
-        <DialogContent className="sm:max-w-2xl p-0 gap-0 rounded-2xl overflow-hidden border-border">
-          <div className="bg-[#002C66] text-white p-6">
+        <DialogContent className="sm:max-w-2xl p-0 gap-0 rounded-2xl overflow-hidden border-slate-200 bg-white">
+          <div className="pro-hero bg-[#002C66] text-white p-6">
             <DialogHeader>
               <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-white/15 px-3 py-0.5 text-[10px] font-extrabold uppercase text-[#FB923C]">
                 Personalised 90-Day Execution Plan
@@ -2650,7 +2622,7 @@ const AiGuidance: React.FC = () => {
               <DialogTitle className="text-xl font-extrabold text-white mt-1">
                 {education} ({specialisation}) → {activeRole.title}
               </DialogTitle>
-              <DialogDescription className="text-xs text-white/80">
+              <DialogDescription className="text-xs text-white/85">
                 Target Location: {preferredLocation} · Target Entry Band: {activeRole.salary.entry.range}
               </DialogDescription>
             </DialogHeader>
@@ -2680,11 +2652,11 @@ const AiGuidance: React.FC = () => {
                 ],
               },
             ].map((block) => (
-              <div key={block.phase} className="rounded-xl border border-border bg-muted/20 p-4 space-y-2">
+              <div key={block.phase} className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-2">
                 <div className="font-extrabold text-[#002C66] text-sm">{block.phase}</div>
-                <ul className="space-y-1.5 text-muted-foreground">
+                <ul className="space-y-1.5">
                   {block.items.map((it) => (
-                    <li key={it} className="flex items-start gap-2 text-foreground">
+                    <li key={it} className="flex items-start gap-2 text-slate-800">
                       <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
                       <span>{it}</span>
                     </li>
@@ -2693,7 +2665,7 @@ const AiGuidance: React.FC = () => {
               </div>
             ))}
 
-            <div className="flex flex-wrap items-center justify-end gap-2 pt-3 border-t border-border">
+            <div className="flex flex-wrap items-center justify-end gap-2 pt-3 border-t border-slate-200">
               <Button
                 variant="outline"
                 onClick={() => setRoadmapModalOpen(false)}
@@ -2707,7 +2679,7 @@ const AiGuidance: React.FC = () => {
                   setRoadmapModalOpen(false);
                   navigate("/assessments/explore");
                 }}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-[#FB923C] hover:bg-[#F97316] px-4 py-2.5 text-xs font-extrabold text-white cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-[#002C66] hover:bg-[#001F4D] px-4 py-2.5 text-xs font-extrabold text-white cursor-pointer"
               >
                 Start Step 4: Take CIR Assessment <ArrowRight className="h-3.5 w-3.5" />
               </button>
