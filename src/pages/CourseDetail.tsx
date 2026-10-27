@@ -108,7 +108,7 @@ const CourseDetail = () => {
       </Helmet>
       <Layout>
         {/* Hero */}
-        <section className="bg-[hsl(var(--cream))] pt-6 pb-10">
+        <section className="bg-[hsl(var(--cream))] pt-24 md:pt-28 pb-10">
           <div className="container px-4 md:px-6">
             <nav className="text-xs text-muted-foreground mb-6 flex gap-1.5 flex-wrap">
               <Link to="/" className="hover:text-primary">Home</Link><span>›</span>
