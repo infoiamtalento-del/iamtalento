@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { employerMenuItems, employeeMenuItems, employerLogoutIcon as LogoutIcon } from "./employerMenu";
 import type { ProView } from "./proTypes";
 import { getCandidatePhoto } from "@/data/portalAssets";
@@ -102,16 +103,16 @@ export function ProEmployerSidebar({
           </nav>
         </div>
 
-        {/* Logout */}
-        <div className="pt-3 mt-4 border-t border-white/15">
-          <button
+        {/* Logout Button */}
+        <div className="pt-3 mt-4 border-t border-white/15 px-1">
+          <Button
             type="button"
             onClick={onLogout}
-            className="group flex w-full items-center justify-center sm:justify-start gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold bg-gradient-to-br from-[#FBBF24] via-[#F59E0B] to-[#EA580C] hover:from-[#F59E0B] hover:via-[#EA580C] hover:to-[#C2410C] text-white shadow-md transition-all cursor-pointer"
+            className="w-full h-10 rounded-xl px-4 py-2.5 text-xs font-bold flex items-center justify-center gap-2 bg-[#FB923C] hover:bg-[#F97316] active:bg-[#EA580C] text-white border border-orange-200/40 shadow-md transition-all cursor-pointer"
           >
-            <LogoutIcon className="h-4 w-4 shrink-0 text-white transition-colors" />
-            <span className="text-white">Logout</span>
-          </button>
+            <LogoutIcon className="h-4 w-4 shrink-0 text-white" />
+            <span className="text-white font-bold">Logout</span>
+          </Button>
         </div>
       </div>
     </aside>

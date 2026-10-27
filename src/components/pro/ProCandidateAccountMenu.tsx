@@ -55,7 +55,16 @@ export function ProCandidateAccountMenu({ name, avatarSrc, activeView, unreadCou
         ))}
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={onToggleTheme} className="min-h-11 cursor-pointer gap-3 px-3 text-sm font-semibold">{isDarkMode ? <Sun className="h-[18px] w-[18px] text-primary" /> : <Moon className="h-[18px] w-[18px] text-primary" />}Light / Dark</DropdownMenuItem>
-        <DropdownMenuItem onSelect={onSignOut} className="min-h-11 mt-1 cursor-pointer gap-3 rounded-lg px-3 text-sm font-bold bg-gradient-to-br from-[#FBBF24] via-[#F59E0B] to-[#EA580C] hover:from-[#F59E0B] hover:via-[#EA580C] hover:to-[#C2410C] text-white focus:text-white shadow-sm"><LogOut className="h-[18px] w-[18px] text-white" />Sign Out</DropdownMenuItem>
+        <div className="pt-1">
+          <Button
+            type="button"
+            onClick={onSignOut}
+            className="w-full h-10 flex items-center justify-center gap-2 rounded-lg px-3 text-xs font-bold bg-[#FB923C] hover:bg-[#F97316] text-white border border-orange-200/40 shadow-sm cursor-pointer"
+          >
+            <LogOut className="h-4 w-4 text-white" />
+            <span>Sign Out</span>
+          </Button>
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );

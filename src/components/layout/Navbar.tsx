@@ -389,13 +389,13 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
                       </div>
 
                       <div className="pt-2 border-t border-border/80">
-                        <button
+                        <Button
                           type="button"
                           onClick={handleSignOut}
-                          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold bg-gradient-to-br from-[#FBBF24] via-[#F59E0B] to-[#EA580C] hover:from-[#F59E0B] hover:via-[#EA580C] hover:to-[#C2410C] text-white shadow-sm transition-all text-left cursor-pointer"
+                          className="w-full h-9 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-bold bg-[#FB923C] hover:bg-[#F97316] text-white border border-orange-200/40 shadow-sm transition-all cursor-pointer"
                         >
                           <LogOut className="h-4 w-4 text-white" /> Sign Out
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   )}
@@ -530,12 +530,13 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
                   >
                     <User className="h-4 w-4 text-muted-foreground" /> My Profile
                   </Link>
-                  <button
+                  <Button
+                    type="button"
                     onClick={handleSignOut}
-                    className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold bg-gradient-to-br from-[#FBBF24] via-[#F59E0B] to-[#EA580C] hover:from-[#F59E0B] hover:via-[#EA580C] hover:to-[#C2410C] text-white shadow-sm transition-all text-left cursor-pointer"
+                    className="w-full h-10 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold bg-[#FB923C] hover:bg-[#F97316] text-white border border-orange-200/40 shadow-sm transition-all cursor-pointer"
                   >
                     <LogOut className="h-4 w-4 text-white" /> Sign Out
-                  </button>
+                  </Button>
                 </div>
               )}
             </div>
