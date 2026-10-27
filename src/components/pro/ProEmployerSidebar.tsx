@@ -94,9 +94,9 @@ export function ProEmployerSidebar({
           <button
             type="button"
             onClick={onLogout}
-            className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold text-white/90 hover:text-white hover:bg-red-500/20 transition-colors cursor-pointer"
+            className="group flex w-full items-center justify-center sm:justify-start gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold bg-[#F97316] hover:bg-[#EA580C] text-white shadow-sm transition-all cursor-pointer"
           >
-            <LogoutIcon className="h-4 w-4 shrink-0 text-red-300 group-hover:text-red-200 transition-colors" />
+            <LogoutIcon className="h-4 w-4 shrink-0 text-white transition-colors" />
             <span className="text-white">Logout</span>
           </button>
         </div>
