@@ -39,6 +39,7 @@ const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Assessments = lazy(() => import("./pages/Assessments"));
 const Jobs = lazy(() => import("./pages/Jobs"));
 const Learning = lazy(() => import("./pages/Learning"));
+const CourseDetail = lazy(() => import("./pages/CourseDetail"));
 const Resources = lazy(() => import("./pages/Resources"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const ForEmployers = lazy(() => import("./pages/ForEmployers"));

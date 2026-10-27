@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import SectionBadge from "@/components/ui/section-badge";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import expertImg1 from "@/assets/expert-course-1.jpg";
 import expertImg2 from "@/assets/expert-course-2.jpg";
@@ -92,6 +93,7 @@ const allFeaturedCourses = [
 
 const ExpertCoursesSection = () => {
   const [active, setActive] = useState("All");
+  const navigate = useNavigate();
   // "All" shows 8 top expert profiles (two rows of 4); individual tabs show all 8 for that category
   const filtered = active === "All"
     ? allFeaturedCourses
@@ -138,6 +140,7 @@ const ExpertCoursesSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.08 }}
+            onClick={() => c === expertCourses[0] && navigate("/learning/courses/ai-engineer-agentic-track")}
             className="rounded-xl border bg-card overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
           >
             {/* Thumbnail */}
