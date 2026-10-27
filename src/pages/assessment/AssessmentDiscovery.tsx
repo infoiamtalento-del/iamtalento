@@ -34,7 +34,6 @@ import VideoTestimonialsSection from "@/components/assessments/VideoTestimonials
 import CredibilityTrustSection from "@/components/assessments/CredibilityTrustSection";
 import AssessmentExpertsSection from "@/components/assessments/AssessmentExpertsSection";
 import SuccessStoriesCarousel from "@/components/assessments/SuccessStoriesCarousel";
-import WhoIsItForSection from "@/components/landing/WhoIsItForSection";
 import PhoneMockupSection from "@/components/assessments/PhoneMockupSection";
 import AssessmentFAQ from "@/components/assessments/AssessmentFAQ";
 import AssessmentFinalCTA from "@/components/assessments/AssessmentFinalCTA";
@@ -376,7 +375,6 @@ const AssessmentDiscovery = () => {
 
         {/* Success Stories & Audience */}
         <SuccessStoriesCarousel />
-        <WhoIsItForSection />
 
         {/* App Mockup, FAQ, Final CTA & Compliance */}
         <PhoneMockupSection />
