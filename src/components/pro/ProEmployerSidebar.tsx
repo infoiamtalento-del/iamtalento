@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { employerMenuItems, employeeMenuItems, employerLogoutIcon as LogoutIcon } from "./employerMenu";
 import type { ProView } from "./proTypes";
-import { LayoutDashboard } from "lucide-react";
+import { getCandidatePhoto } from "@/data/portalAssets";
 
 interface Props {
   activeView: ProView;
@@ -9,6 +9,7 @@ interface Props {
   onLogout: () => void;
   unreadCount: number;
   userName?: string;
+  userAvatar?: string;
   userRole?: string;
   isEmployer?: boolean;
 }
@@ -19,10 +20,12 @@ export function ProEmployerSidebar({
   onLogout,
   unreadCount,
   userName,
+  userAvatar,
   userRole = "Workspace",
   isEmployer = false,
 }: Props) {
   const menuItems = isEmployer ? employerMenuItems : employeeMenuItems;
+  const photoUrl = userAvatar || getCandidatePhoto(userName || "Yogesh");
 
   return (
     <aside className="w-full lg:w-64 xl:w-72 shrink-0 lg:fixed lg:top-16 lg:bottom-0 lg:left-0 z-30 lg:border-r border-[#001D44] bg-[#002C66] text-white overflow-y-auto shadow-md">
@@ -30,10 +33,20 @@ export function ProEmployerSidebar({
         <div>
           {/* Header */}
           <div className="px-3 py-2.5 mb-2 border-b border-white/15">
-            <div className="flex items-center gap-2.5">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/15 text-white border border-white/20 shadow-2xs">
-                <LayoutDashboard className="h-4 w-4 text-white" />
-              </span>
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full overflow-hidden border-2 border-white/30 bg-white/15 shrink-0 shadow-sm flex items-center justify-center">
+                {photoUrl ? (
+                  <img
+                    src={photoUrl}
+                    alt={userName || "User"}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <span className="text-xs font-bold text-white">
+                    {(userName?.charAt(0) || "U").toUpperCase()}
+                  </span>
+                )}
+              </div>
               <div className="min-w-0 flex-1">
                 <p className="text-[11px] font-bold uppercase tracking-wider text-blue-200/90 truncate">
                   Dashboard Menu
@@ -94,7 +107,7 @@ export function ProEmployerSidebar({
           <button
             type="button"
             onClick={onLogout}
-            className="group flex w-full items-center justify-center sm:justify-start gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold bg-[#F97316] hover:bg-[#EA580C] text-white shadow-sm transition-all cursor-pointer"
+            className="group flex w-full items-center justify-center sm:justify-start gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold bg-gradient-to-br from-[#FBBF24] via-[#F59E0B] to-[#EA580C] hover:from-[#F59E0B] hover:via-[#EA580C] hover:to-[#C2410C] text-white shadow-md transition-all cursor-pointer"
           >
             <LogoutIcon className="h-4 w-4 shrink-0 text-white transition-colors" />
             <span className="text-white">Logout</span>

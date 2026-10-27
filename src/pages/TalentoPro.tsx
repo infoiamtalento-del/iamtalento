@@ -700,26 +700,27 @@ const TalentoPro: React.FC = () => {
         userProfile={{
           name: currentUser.name,
           email: currentUser.email,
-          avatarSrc: getCandidatePhoto(currentUser.name),
+          avatarSrc: currentUser.avatar || getCandidatePhoto(currentUser.name),
           role: currentRole,
         }}
         onSignOut={() => localStorage.removeItem("tq_sess")}
-        accountMenu={() => (
-          <div className="flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full border border-border bg-card shadow-2xs select-none">
-            <div className="h-7 w-7 rounded-full bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center shrink-0 overflow-hidden">
-              {currentRole === "employer" ? (
-                <Building2 className="h-4 w-4" />
-              ) : getCandidatePhoto(currentUser.name) ? (
-                <img src={getCandidatePhoto(currentUser.name)} alt={currentUser.name} className="h-full w-full object-cover" />
-              ) : (
-                (currentUser.name?.charAt(0) || "U").toUpperCase()
-              )}
+        accountMenu={() => {
+          const userPhoto = currentUser.avatar || getCandidatePhoto(currentUser.name);
+          return (
+            <div className="flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full border border-border bg-card shadow-2xs select-none">
+              <div className="h-7 w-7 rounded-full bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center shrink-0 overflow-hidden">
+                {userPhoto ? (
+                  <img src={userPhoto} alt={currentUser.name} className="h-full w-full object-cover" />
+                ) : (
+                  (currentUser.name?.charAt(0) || "U").toUpperCase()
+                )}
+              </div>
+              <span className="text-xs font-bold text-foreground max-w-[110px] truncate">
+                {currentUser.name}
+              </span>
             </div>
-            <span className="text-xs font-bold text-foreground max-w-[110px] truncate">
-              {currentUser.name}
-            </span>
-          </div>
-        )}
+          );
+        }}
       />
 
       {/* Main Content View Switcher */}
@@ -729,6 +730,7 @@ const TalentoPro: React.FC = () => {
           activeView={effectiveView}
           unreadCount={unreadCount}
           userName={currentUser.name}
+          userAvatar={currentUser.avatar || getCandidatePhoto(currentUser.name)}
           userRole={currentRole === "employer" ? "Employer Workspace" : "Employee Workspace"}
           isEmployer={currentRole === "employer"}
           onNavigate={(view) => {
