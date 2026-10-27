@@ -244,6 +244,7 @@ const TalentoPro: React.FC = () => {
     "dash",
     "profile",
     "cert",
+    "my-certifications",
     "learning-mentors",
     "freelancing",
     "port",
@@ -986,9 +987,10 @@ const TalentoPro: React.FC = () => {
               />
             )}
 
-            {effectiveView === "cert" && (
+            {(effectiveView === "cert" || effectiveView === "my-certifications") && (
               <ProCertificationsView
                 user={currentUser}
+                mode={effectiveView === "my-certifications" ? "certifications" : "assessments"}
                 onAddCertification={(certStr) => {
                   const current = currentUser.ce || [];
                   handleUpdateUser({ ...currentUser, ce: [...current, certStr] });
@@ -1001,6 +1003,13 @@ const TalentoPro: React.FC = () => {
                 }}
                 onOpenDrawer={openDrawer}
                 onNavigateToQuiz={() => { window.location.href = "/assessments/explore"; }}
+                onNavigate={(v) => {
+                  setSearchParams({ view: v });
+                  setActiveView(v);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                onUpdateUser={handleUpdateUser}
+                onToast={addToast}
               />
             )}
 
