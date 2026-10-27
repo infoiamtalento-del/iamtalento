@@ -34,7 +34,7 @@ const candidateProducts: ProductItem[] = [
   { label: "AI Tools Courses", desc: "Master the AI stack employers now expect", href: "/learning", icon: Bot, badge: "Free" },
   { label: "AI Video Resume Builder", desc: "Stand out with a 60-second video pitch", href: "/resources", icon: Video, badge: "Free" },
   { label: "AI Skill Upgrade Alerts", desc: "Get nudged before your skills go stale", href: "/learning", icon: BellRing, badge: "Free" },
-  { label: "AI Guidance", desc: "Personalized AI career and interview guidance", href: "/learning", icon: Sparkles, badge: "Free" },
+  { label: "AI Guidance", desc: "Personalized AI career and interview guidance", href: "/ai-guidance", icon: Sparkles, badge: "Free" },
 ];
 
 const employerProducts: ProductItem[] = [
