@@ -84,6 +84,16 @@ export interface ProUser {
   seen?: number;
   ph?: string;
   phv?: boolean;
+  phone?: string;
+  twoFactor?: boolean;
+  twoFactorMethod?: "authenticator" | "sms";
+  twoFactorPhone?: string;
+  privacyVisibility?: "public" | "applied_only" | "private";
+  emailAlerts?: boolean;
+  smsAlerts?: boolean;
+  marketingEmails?: boolean;
+  loginAlerts?: boolean;
+  passwordLastChanged?: number;
   gst?: string;
   vr?: { at: number; id: string };
   ver?: { id: boolean; test: boolean; exp: boolean };
@@ -237,11 +247,29 @@ export const DEFAULT_USERS: Record<string, ProUser> = {
     },
     ver: { id: true, test: true, exp: true },
     views: 148,
+    phone: "+91 98765 43210",
+    twoFactor: false,
+    twoFactorMethod: "authenticator",
+    privacyVisibility: "public",
+    emailAlerts: true,
+    smsAlerts: true,
+    marketingEmails: false,
+    loginAlerts: true,
+    passwordLastChanged: Date.now() - 86400000 * 18,
   },
   "demo.employer@talento.app": {
     email: "demo.employer@talento.app",
     role: "employer",
     name: "Super30",
+    phone: "+91 98450 12345",
+    twoFactor: true,
+    twoFactorMethod: "authenticator",
+    privacyVisibility: "public",
+    emailAlerts: true,
+    smsAlerts: true,
+    marketingEmails: false,
+    loginAlerts: true,
+    passwordLastChanged: Date.now() - 86400000 * 30,
     cp: {
       name: "Super30 Technologies",
       about: "Building next-generation AI agents and developer tooling for global engineering teams.",
