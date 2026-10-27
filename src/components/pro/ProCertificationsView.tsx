@@ -52,17 +52,19 @@ import { cn } from "@/lib/utils";
 import { ProUser, POPULAR_CERTS } from "@/data/proData";
 import { ProHero } from "./ProHero";
 import { MatchRing } from "./ProMatchRing";
-import { ProDrawerState } from "./proTypes";
+import { ProDrawerState, ProView } from "./proTypes";
 import logoAws from "@/assets/logo-aws.svg";
 import logoGoogle from "@/assets/logo-google.svg";
 import logoMeta from "@/assets/logo-meta.svg";
 
 interface ProCertificationsViewProps {
   user: ProUser;
+  mode?: "assessments" | "certifications";
   onAddCertification: (certStr: string) => void;
   onRemoveCertification: (index: number) => void;
   onOpenDrawer: (drawer: ProDrawerState) => void;
   onNavigateToQuiz?: (skill: string) => void;
+  onNavigate?: (view: ProView) => void;
   onUpdateUser?: (updated: ProUser) => void;
   onToast?: (msg: string) => void;
 }
@@ -442,12 +444,15 @@ const WORKFLOW_STEPS = [
 
 export const ProCertificationsView: React.FC<ProCertificationsViewProps> = ({
   user,
+  mode = "assessments",
   onAddCertification,
   onRemoveCertification,
   onOpenDrawer,
+  onNavigate,
   onUpdateUser,
   onToast,
 }) => {
+  const isCertificationsMode = mode === "certifications";
   const [showAddForm, setShowAddForm] = useState(false);
   const [certName, setCertName] = useState("");
   const [certIssuer, setCertIssuer] = useState("");
@@ -606,773 +611,992 @@ export const ProCertificationsView: React.FC<ProCertificationsViewProps> = ({
   return (
     <div className="space-y-6">
       {/* ================= HERO BANNER ================= */}
-      <ProHero
-        icon={<Award />}
-        title="Skill Assessments & Verified Certifications"
-        subtitle="Take AI-proctored technical assessments, generate your Career Intelligence Report (CIR), and sync verified skill scores directly to 500+ hiring partners."
-        aside={
-          <div className="flex flex-col gap-2 lg:w-76">
-            <button
-              type="button"
-              onClick={() => startAssessmentWorkflow(ASSESSMENT_CATALOG[0])}
-              className="flex w-full items-center gap-3 rounded-2xl bg-[#FB923C] hover:bg-[#F97316] px-4 py-3 text-left text-white shadow-md transition-all cursor-pointer"
-            >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/20">
-                <Play className="h-5 w-5 text-white fill-white" />
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block text-sm font-bold text-white">Start Live Assessment</span>
-                <span className="block text-[11px] text-white/90">AI-Proctored · 15-45 mins · Instant CIR</span>
-              </span>
-              <ChevronRight className="h-4 w-4 shrink-0 text-white" />
-            </button>
-          </div>
-        }
-      >
-        <div className="flex flex-wrap items-center gap-2 pt-1">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/30">
-            <TrendingUp className="h-3.5 w-3.5" /> Readiness Score: {avgScore}% (Top 8%)
-          </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/30">
-            <ShieldCheck className="h-3.5 w-3.5" /> Proctoring Integrity: 99.6%
-          </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/30">
-            <BadgeCheck className="h-3.5 w-3.5" /> {passedCount} Skills Verified
-          </span>
-        </div>
-      </ProHero>
-
-      {/* ================= REAL-TIME KPI SUMMARY CARDS ================= */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-2xl border border-border bg-card p-4 shadow-sm flex items-start gap-3.5">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-            <Target className="h-5 w-5" />
-          </span>
-          <div>
-            <span className="text-xs font-medium text-muted-foreground">Industry Readiness (IRS)</span>
-            <div className="text-2xl font-bold text-primary font-display mt-0.5">{avgScore} / 100</div>
-            <span className="text-[11px] text-emerald-600 font-semibold mt-0.5 block">
-              Top 8% among Frontend Engineers
-            </span>
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-border bg-card p-4 shadow-sm flex items-start gap-3.5">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600">
-            <ShieldCheck className="h-5 w-5" />
-          </span>
-          <div>
-            <span className="text-xs font-medium text-muted-foreground">Passed Assessments</span>
-            <div className="text-2xl font-bold text-foreground font-display mt-0.5">
-              {passedCount} / {assessmentEntries.length}
-            </div>
-            <span className="text-[11px] text-muted-foreground mt-0.5 block">
-              99.6% AI Proctoring Trust Score
-            </span>
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-border bg-card p-4 shadow-sm flex items-start gap-3.5">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600">
-            <Building2 className="h-5 w-5" />
-          </span>
-          <div>
-            <span className="text-xs font-medium text-muted-foreground">Employer Invites Unlocked</span>
-            <div className="text-2xl font-bold text-foreground font-display mt-0.5">14 Companies</div>
-            <span className="text-[11px] text-muted-foreground mt-0.5 block">
-              2 priority employer tests pending
-            </span>
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-border bg-card p-4 shadow-sm flex items-start gap-3.5">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-            <Award className="h-5 w-5" />
-          </span>
-          <div>
-            <span className="text-xs font-medium text-muted-foreground">Active Credentials</span>
-            <div className="text-2xl font-bold text-foreground font-display mt-0.5">
-              {certItems.length + passedCount}
-            </div>
-            <span className="text-[11px] text-muted-foreground mt-0.5 block">
-              Verifiable via QR & public portfolio
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* ================= END-TO-END ASSESSMENT WORKFLOW ("HOW IT WORKS") ================= */}
-      <div className="rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-sm space-y-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-4">
-          <div className="flex items-center gap-3">
-            <span className={tile}>
-              <Layers className="h-4 w-4" />
-            </span>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="font-display text-base font-bold text-foreground">
-                  How Employee Skill Assessment Works (End-to-End Workflow)
-                </h3>
-                <Badge variant="outline" className="bg-emerald-500/10 text-emerald-700 border-emerald-500/30 text-[10px]">
-                  Real-Time Pipeline
-                </Badge>
-              </div>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Complete any assessment in 5 automated steps to unlock instant recruiter shortlisting and verified CIR credentials.
-              </p>
-            </div>
-          </div>
-          <Button
-            size="sm"
-            onClick={() => startAssessmentWorkflow(ASSESSMENT_CATALOG[0])}
-            className="gap-1.5 rounded-xl text-xs font-bold cursor-pointer shrink-0"
-          >
-            <Play className="h-3.5 w-3.5" /> Try Live Assessment Demo
-          </Button>
-        </div>
-
-        <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-5">
-          {WORKFLOW_STEPS.map((item, idx) => {
-            const StepIcon = item.icon;
-            return (
-              <div
-                key={item.step}
-                onClick={() => startAssessmentWorkflow(ASSESSMENT_CATALOG[idx % ASSESSMENT_CATALOG.length])}
-                className="group relative flex flex-col justify-between rounded-xl border border-border bg-background p-4 hover:border-primary/50 hover:shadow-sm transition-all cursor-pointer"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="inline-flex items-center justify-center h-8 w-8 rounded-lg bg-primary text-primary-foreground text-xs font-bold">
-                      {item.step}
-                    </span>
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary">
-                      {item.status}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <StepIcon className="h-4 w-4 text-primary shrink-0" />
-                    <h4 className="font-display text-xs font-bold text-foreground group-hover:text-primary transition-colors">
-                      {item.title}
-                    </h4>
-                  </div>
-                  <p className="text-[11px] leading-relaxed text-muted-foreground">{item.desc}</p>
-                </div>
-                <div className="mt-3 pt-2.5 border-t border-border/60 flex items-center justify-between text-[11px] font-semibold text-primary">
-                  <span>Launch step</span>
-                  <ChevronRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ================= EMPLOYER-ASSIGNED ASSESSMENTS (REAL-TIME INVITES) ================= */}
-      <div className="rounded-2xl border border-primary/25 bg-card p-5 sm:p-6 shadow-sm space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <span className={tile}>
-              <Building2 className="h-4 w-4" />
-            </span>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="font-display text-sm font-bold text-foreground">
-                  Employer-Assigned Assessment Invitations (2 Pending)
-                </h3>
-                <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-bold text-amber-700">
-                  <Clock className="h-3 w-3" /> Action Required
-                </span>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Hiring teams invited you to complete these role-specific assessments to fast-track your interview round.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-3.5 lg:grid-cols-2">
-          {EMPLOYER_INVITED_TESTS.map((inv) => {
-            const matchedMeta =
-              ASSESSMENT_CATALOG.find((a) => a.skill === inv.skill) || ASSESSMENT_CATALOG[0];
-            return (
-              <div
-                key={inv.id}
-                className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-border bg-background p-4 hover:border-primary/40 transition-all"
-              >
-                <div className="space-y-1.5 min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="px-2 py-0.5 rounded bg-primary text-primary-foreground text-[10px] font-bold uppercase">
-                      {inv.company}
-                    </span>
-                    <span className="text-xs font-bold text-foreground truncate">{inv.role}</span>
-                  </div>
-                  <p className="text-xs font-medium text-foreground/90">{inv.assessmentName}</p>
-                  <div className="flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <Timer className="h-3 w-3 text-primary" /> {inv.duration}
-                    </span>
-                    <span className="flex items-center gap-1 text-amber-600 font-semibold">
-                      <Clock className="h-3 w-3" /> {inv.deadline}
-                    </span>
-                    <span className="flex items-center gap-1 text-emerald-600 font-semibold">
-                      <TrendingUp className="h-3 w-3" /> {inv.matchBoost}
-                    </span>
-                  </div>
-                </div>
-                <Button
-                  size="sm"
-                  onClick={() => startAssessmentWorkflow(matchedMeta)}
-                  className="shrink-0 gap-1.5 rounded-xl text-xs font-bold cursor-pointer"
-                >
-                  <Play className="h-3.5 w-3.5" /> Start Employer Test
-                </Button>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ================= VERIFIED SKILL TEST RESULTS & SUB-SKILL BREAKDOWN ================= */}
-      <div className="space-y-4 rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
-          <div className="flex items-center gap-3">
-            <span className={tile}>
-              <ShieldCheck className="h-4 w-4" />
-            </span>
-            <div>
-              <h3 className="font-display text-base font-bold text-foreground">
-                Your Verified Skill Assessment Scores & CIR Breakdown ({assessmentEntries.length})
-              </h3>
-              <p className="text-xs text-muted-foreground">
-                Pass mark is 60%. Verified scores include sub-skill analytics, proctoring logs, and downloadable certificates.
-              </p>
-            </div>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-9 rounded-xl border-primary/30 text-xs font-semibold text-primary hover:bg-primary/5 cursor-pointer gap-1.5"
-            onClick={() => startAssessmentWorkflow(ASSESSMENT_CATALOG[4])}
-          >
-            <RefreshCw className="h-3.5 w-3.5" /> Improve Lowest Score (SQL)
-          </Button>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {assessmentEntries.map(([skill, score]) => {
-            const passed = score >= 60;
-            const meta =
-              ASSESSMENT_CATALOG.find((a) => a.skill.toLowerCase() === skill.toLowerCase()) ||
-              ASSESSMENT_CATALOG[0];
-
-            return (
-              <div
-                key={skill}
-                className="flex flex-col justify-between rounded-xl border border-border bg-background p-4 space-y-4 hover:border-primary/30 transition-all"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-3.5">
-                    <MatchRing percent={score} size={52} />
-                    <div>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <h4 className="font-display text-sm font-bold text-foreground">{skill}</h4>
-                        <Badge
-                          variant="outline"
-                          className={cn(
-                            "text-[10px]",
-                            passed
-                              ? "bg-emerald-500/10 text-emerald-700 border-emerald-500/30"
-                              : "bg-amber-500/10 text-amber-700 border-amber-500/30"
-                          )}
-                        >
-                          {passed ? `Verified · ${meta.percentile}` : "Needs Retake (<60%)"}
-                        </Badge>
-                      </div>
-                      <p className="text-[11px] text-muted-foreground mt-0.5">
-                        Attempted {meta.attemptedAt} · Proctoring Integrity:{" "}
-                        <strong className="text-foreground">{meta.integrityScore}</strong>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Sub-skill real-time competency bars */}
-                <div className="space-y-2 rounded-lg bg-muted/30 p-3 border border-border/60">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                    Sub-Skill Competency Breakdown
-                  </div>
-                  {meta.subSkills.map((sub) => (
-                    <div key={sub.name} className="space-y-1">
-                      <div className="flex items-center justify-between text-[11px]">
-                        <span className="text-foreground/90 font-medium">{sub.name}</span>
-                        <span className="font-bold text-primary">{sub.score}%</span>
-                      </div>
-                      <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
-                        <div
-                          className="h-full rounded-full bg-primary transition-all"
-                          style={{ width: `${sub.score}%` }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-border/60">
-                  <div className="flex items-center gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="h-8 gap-1.5 rounded-lg text-xs font-semibold cursor-pointer"
-                      onClick={() => setInspectCirSkill(meta)}
-                    >
-                      <Eye className="h-3.5 w-3.5 text-primary" /> CIR Report
-                    </Button>
-                    {passed && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="h-8 gap-1.5 rounded-lg text-xs font-semibold cursor-pointer"
-                        onClick={() => onOpenDrawer({ type: "certificate", key: `skill:${skill}` })}
-                      >
-                        <Download className="h-3.5 w-3.5 text-primary" /> Certificate
-                      </Button>
-                    )}
-                  </div>
-                  <Button
-                    size="sm"
-                    onClick={() => startAssessmentWorkflow(meta)}
-                    className="h-8 gap-1.5 rounded-lg px-3 text-xs font-semibold cursor-pointer"
-                  >
-                    <Play className="h-3 w-3" /> {passed ? "Retake to Improve" : "Retake Now"}
-                  </Button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ================= AVAILABLE SKILL ASSESSMENTS CATALOG ================= */}
-      <div className="space-y-4 rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-4">
-          <div className="flex items-center gap-3">
-            <span className={tile}>
-              <Code2 className="h-4 w-4" />
-            </span>
-            <div>
-              <h3 className="font-display text-base font-bold text-foreground">
-                Explore Proctored Skill Assessments Library
-              </h3>
-              <p className="text-xs text-muted-foreground">
-                Take role-mapped assessments with AI Cheating Prevention to prove your hands-on engineering capability.
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-wrap items-center gap-1.5">
-            {["All", "Frontend", "Data & SQL", "Architecture"].map((cat) => (
+      {!isCertificationsMode ? (
+        <ProHero
+          icon={<GraduationCap />}
+          title="Employee Skill Assessments & CIR Workflow"
+          subtitle="Take AI-proctored technical assessments, generate your Career Intelligence Report (CIR), and sync verified skill scores directly to 500+ hiring partners."
+          aside={
+            <div className="flex flex-col gap-2 lg:w-76">
               <button
-                key={cat}
                 type="button"
-                onClick={() => setSelectedCategory(cat)}
-                className={cn(
-                  "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer",
-                  selectedCategory === cat
-                    ? "bg-primary text-primary-foreground shadow-xs"
-                    : "bg-muted/60 text-muted-foreground hover:text-foreground"
-                )}
+                onClick={() => startAssessmentWorkflow(ASSESSMENT_CATALOG[0])}
+                className="flex w-full items-center gap-3 rounded-2xl bg-[#FB923C] hover:bg-[#F97316] px-4 py-3 text-left text-white shadow-md transition-all cursor-pointer"
               >
-                {cat}
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/20">
+                  <Play className="h-5 w-5 text-white fill-white" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-bold text-white">Start Live Assessment</span>
+                  <span className="block text-[11px] text-white/90">AI-Proctored · 15-45 mins · Instant CIR</span>
+                </span>
+                <ChevronRight className="h-4 w-4 shrink-0 text-white" />
               </button>
-            ))}
+              {onNavigate && (
+                <button
+                  type="button"
+                  onClick={() => onNavigate("my-certifications")}
+                  className="flex w-full items-center justify-between rounded-xl bg-white/15 hover:bg-white/25 px-3.5 py-2 text-xs font-semibold text-white transition-all cursor-pointer"
+                >
+                  <span className="flex items-center gap-1.5">
+                    <Award className="h-3.5 w-3.5" /> View My Certifications ({certItems.length + passedCount})
+                  </span>
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
+          }
+        >
+          <div className="flex flex-wrap items-center gap-2 pt-1">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/30">
+              <TrendingUp className="h-3.5 w-3.5" /> Readiness Score: {avgScore}% (Top 8%)
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/30">
+              <ShieldCheck className="h-3.5 w-3.5" /> Proctoring Integrity: 99.6%
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/30">
+              <BadgeCheck className="h-3.5 w-3.5" /> {passedCount} Skills Verified
+            </span>
           </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredCatalog.map((item) => {
-            const existingScore = userScores[item.skill];
-            return (
-              <div
-                key={item.skill}
-                className="flex flex-col justify-between rounded-xl border border-border bg-background p-4 space-y-4 hover:border-primary/40 transition-all"
+        </ProHero>
+      ) : (
+        <ProHero
+          icon={<Award />}
+          title="My Certifications & Verifiable Credentials"
+          subtitle="Manage your earned industry certifications, download verified skill assessment certificates, and share tamper-proof credentials on your public portfolio."
+          aside={
+            <div className="flex flex-col gap-2 lg:w-76">
+              <button
+                type="button"
+                onClick={() => setShowAddForm(true)}
+                className="flex w-full items-center gap-3 rounded-2xl bg-[#FB923C] hover:bg-[#F97316] px-4 py-3 text-left text-white shadow-md transition-all cursor-pointer"
               >
-                <div className="space-y-2.5">
-                  <div className="flex items-center justify-between gap-2">
-                    <Badge variant="outline" className="text-[10px] font-semibold">
-                      {item.category} · {item.level}
-                    </Badge>
-                    {existingScore !== undefined ? (
-                      <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">
-                        <CheckCircle2 className="h-3.5 w-3.5" /> Scored {existingScore}%
-                      </span>
-                    ) : (
-                      <span className="text-[11px] font-semibold text-primary">New Track</span>
-                    )}
-                  </div>
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/20">
+                  <Plus className="h-5 w-5 text-white" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-bold text-white">Add New Certification</span>
+                  <span className="block text-[11px] text-white/90">AWS, Google, Meta, Microsoft & more</span>
+                </span>
+                <ChevronRight className="h-4 w-4 shrink-0 text-white" />
+              </button>
+              {onNavigate && (
+                <button
+                  type="button"
+                  onClick={() => onNavigate("cert")}
+                  className="flex w-full items-center justify-between rounded-xl bg-white/15 hover:bg-white/25 px-3.5 py-2 text-xs font-semibold text-white transition-all cursor-pointer"
+                >
+                  <span className="flex items-center gap-1.5">
+                    <GraduationCap className="h-3.5 w-3.5" /> Take Skill Assessment to Earn Certificate
+                  </span>
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
+          }
+        >
+          <div className="flex flex-wrap items-center gap-2 pt-1">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/30">
+              <Award className="h-3.5 w-3.5" /> {certItems.length} External Certifications
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/30">
+              <BadgeCheck className="h-3.5 w-3.5" /> {passedCount} Skill Assessment Certificates
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/30">
+              <ShieldCheck className="h-3.5 w-3.5" /> 100% Verifiable Credentials
+            </span>
+          </div>
+        </ProHero>
+      )}
 
-                  <div>
-                    <h4 className="font-display text-sm font-bold text-foreground">
-                      {item.skill} Engineering Assessment
-                    </h4>
-                    <p className="text-[11px] text-muted-foreground mt-1">
-                      Covers {item.subSkills.map((s) => s.name).join(", ")}.
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-2 pt-1 text-[11px] text-muted-foreground">
-                    <div className="rounded-lg bg-muted/40 p-2 text-center">
-                      <b className="block text-foreground">{item.duration}</b>
-                      Duration
-                    </div>
-                    <div className="rounded-lg bg-muted/40 p-2 text-center">
-                      <b className="block text-foreground">{item.questionsCount} Qs</b>
-                      + {item.codingTasks} Coding
-                    </div>
-                    <div className="rounded-lg bg-muted/40 p-2 text-center">
-                      <b className="block text-primary">{item.hiringPartners}+</b>
-                      Employers
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 pt-2 border-t border-border/60">
-                  <Button
-                    size="sm"
-                    onClick={() => startAssessmentWorkflow(item)}
-                    className="w-full h-9 gap-1.5 rounded-xl text-xs font-bold cursor-pointer"
-                  >
-                    <Play className="h-3.5 w-3.5" />
-                    {existingScore !== undefined ? "Retake Assessment" : "Start Assessment"}
-                  </Button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ================= EXTERNAL & EARNED CERTIFICATIONS SECTION ================= */}
-      <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[3fr_2fr]">
-        {/* My certifications list */}
-        <div className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <span className={tile}>
-                <Award className="h-4 w-4" />
+      {!isCertificationsMode ? (
+        <>
+          {/* ================= REAL-TIME KPI SUMMARY CARDS ================= */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="rounded-2xl border border-border bg-card p-4 shadow-sm flex items-start gap-3.5">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <Target className="h-5 w-5" />
               </span>
               <div>
-                <h3 className="font-display text-sm font-semibold text-foreground">
-                  My Certifications ({certItems.length})
-                </h3>
-                <p className="text-xs text-muted-foreground">Your earned certifications and completed skill credentials</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                Live / Updated{" "}
-                {refreshedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-              </span>
-              <button
-                type="button"
-                aria-label="Refresh"
-                onClick={() => setRefreshedAt(new Date())}
-                className="flex h-7 w-7 items-center justify-center rounded-lg text-muted-foreground hover:bg-primary/10 hover:text-primary cursor-pointer"
-              >
-                <RefreshCw className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          </div>
-
-          {showAddForm && (
-            <form onSubmit={handleAdd} className="space-y-3 rounded-xl border border-primary/30 bg-primary/5 p-4">
-              <div className="flex items-center justify-between">
-                <h4 className="flex items-center gap-2 font-display text-sm font-semibold text-foreground">
-                  <Plus className="h-4 w-4 text-primary" /> Add new certification
-                </h4>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowAddForm(false)}
-                  className="h-7 text-xs text-muted-foreground"
-                >
-                  Cancel
-                </Button>
-              </div>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <div>
-                  <label className="mb-1 block text-[11px] font-medium text-muted-foreground">Certification name</label>
-                  <Input
-                    placeholder="e.g. AWS Certified Solutions Architect"
-                    value={certName}
-                    onChange={(e) => setCertName(e.target.value)}
-                    className={inputCls}
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-[11px] font-medium text-muted-foreground">
-                    Issuing organization
-                  </label>
-                  <Input
-                    placeholder="e.g. Amazon Web Services"
-                    value={certIssuer}
-                    onChange={(e) => setCertIssuer(e.target.value)}
-                    className={inputCls}
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-[11px] font-medium text-muted-foreground">Date issued</label>
-                  <Input
-                    type="date"
-                    value={certDate}
-                    onChange={(e) => setCertDate(e.target.value)}
-                    className={inputCls}
-                  />
-                </div>
-              </div>
-              <div className="flex justify-end gap-2">
-                <Button type="button" variant="outline" onClick={() => setShowAddForm(false)} className="rounded-xl text-xs">
-                  Cancel
-                </Button>
-                <Button type="submit" className="rounded-xl text-xs">
-                  Save certification
-                </Button>
-              </div>
-            </form>
-          )}
-
-          <div className="space-y-2.5">
-            {certItems.length === 0 ? (
-              <p className="py-6 text-center text-xs text-muted-foreground">
-                No certifications listed yet. Use &quot;Add Certification&quot; to showcase your credentials.
-              </p>
-            ) : (
-              certItems.map((item) => (
-                <div
-                  key={item.index}
-                  className="flex flex-col gap-3 rounded-xl border border-border bg-background p-3 sm:flex-row sm:items-center sm:justify-between"
-                >
-                  <div className="flex min-w-0 items-center gap-3">
-                    <IssuerMark name={item.issuer} />
-                    <div className="min-w-0">
-                      <div className="truncate font-display text-sm font-semibold text-foreground">{item.title}</div>
-                      <div className="truncate text-[11px] text-muted-foreground">{item.issuer}</div>
-                      <div className="mt-0.5 flex items-center gap-1 text-[11px] text-muted-foreground">
-                        <Calendar className="h-3 w-3" /> Issued on {item.year} · Valid till {item.validTill}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-2">
-                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:text-emerald-400">
-                      <Check className="h-3 w-3" /> Verified
-                    </span>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="h-8 rounded-lg border-primary/30 px-3 text-xs font-semibold text-primary hover:bg-primary/5 hover:text-primary cursor-pointer"
-                      onClick={() => onOpenDrawer({ type: "certificate", key: `ce:${item.index}` })}
-                    >
-                      View Certificate
-                    </Button>
-                    <button
-                      type="button"
-                      aria-label={`Remove ${item.title}`}
-                      onClick={() => onRemoveCertification(item.index)}
-                      className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-primary/10 hover:text-primary cursor-pointer"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setShowAddForm(true)}
-            className="flex w-full items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-primary/40 py-2.5 text-xs font-semibold text-primary transition-colors hover:bg-primary/5 cursor-pointer"
-          >
-            <Plus className="h-4 w-4" /> Add External Certification
-          </button>
-        </div>
-
-        {/* Latest earned certificate + stats */}
-        <div className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
-          <h3 className="flex items-center gap-3 font-display text-sm font-semibold text-foreground">
-            <span className={tile}>
-              <BadgeCheck className="h-4 w-4" />
-            </span>
-            Latest Earned Certificate
-          </h3>
-
-          {latest ? (
-            <div className="space-y-3 rounded-xl border border-border bg-muted/20 p-4">
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex min-w-0 items-center gap-2">
-                  <IssuerMark name={latest.issuer} size="sm" />
-                  <span className="truncate font-display text-sm font-bold text-foreground">{latest.issuer}</span>
-                </div>
-                <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:text-emerald-400">
-                  <Check className="h-3 w-3" /> Earned recently
+                <span className="text-xs font-medium text-muted-foreground">Industry Readiness (IRS)</span>
+                <div className="text-2xl font-bold text-primary font-display mt-0.5">{avgScore} / 100</div>
+                <span className="text-[11px] text-emerald-600 font-semibold mt-0.5 block">
+                  Top 8% among Frontend Engineers
                 </span>
               </div>
+            </div>
 
-              <div className="grid grid-cols-[1fr_auto] items-start gap-3">
-                <div className="min-w-0">
-                  <h4 className="font-display text-base font-bold leading-snug text-foreground">{latest.title}</h4>
-                  <div className="text-xs text-muted-foreground">{latest.issuer}</div>
-                  <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">
-                    Demonstrated proficiency in {latest.title}, issued by {latest.issuer}.
+            <div className="rounded-2xl border border-border bg-card p-4 shadow-sm flex items-start gap-3.5">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600">
+                <ShieldCheck className="h-5 w-5" />
+              </span>
+              <div>
+                <span className="text-xs font-medium text-muted-foreground">Passed Assessments</span>
+                <div className="text-2xl font-bold text-foreground font-display mt-0.5">
+                  {passedCount} / {assessmentEntries.length}
+                </div>
+                <span className="text-[11px] text-muted-foreground mt-0.5 block">
+                  99.6% AI Proctoring Trust Score
+                </span>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-border bg-card p-4 shadow-sm flex items-start gap-3.5">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600">
+                <Building2 className="h-5 w-5" />
+              </span>
+              <div>
+                <span className="text-xs font-medium text-muted-foreground">Employer Invites Unlocked</span>
+                <div className="text-2xl font-bold text-foreground font-display mt-0.5">14 Companies</div>
+                <span className="text-[11px] text-muted-foreground mt-0.5 block">
+                  2 priority employer tests pending
+                </span>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-border bg-card p-4 shadow-sm flex items-start gap-3.5">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <Award className="h-5 w-5" />
+              </span>
+              <div>
+                <span className="text-xs font-medium text-muted-foreground">Active Credentials</span>
+                <div className="text-2xl font-bold text-foreground font-display mt-0.5">
+                  {certItems.length + passedCount}
+                </div>
+                <span className="text-[11px] text-muted-foreground mt-0.5 block">
+                  Verifiable via QR & public portfolio
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* ================= END-TO-END ASSESSMENT WORKFLOW ("HOW IT WORKS") ================= */}
+          <div className="rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-sm space-y-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-4">
+              <div className="flex items-center gap-3">
+                <span className={tile}>
+                  <Layers className="h-4 w-4" />
+                </span>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-display text-base font-bold text-foreground">
+                      How Employee Skill Assessment Works (End-to-End Workflow)
+                    </h3>
+                    <Badge variant="outline" className="bg-emerald-500/10 text-emerald-700 border-emerald-500/30 text-[10px]">
+                      Real-Time Pipeline
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Complete any assessment in 5 automated steps to unlock instant recruiter shortlisting and verified CIR credentials.
                   </p>
                 </div>
-                <div className="hidden w-24 shrink-0 rounded-lg border border-border bg-background p-2 text-center shadow-sm sm:block">
-                  <Award className="mx-auto h-4 w-4 text-primary" />
-                  <div className="mt-1 text-[8px] font-semibold uppercase tracking-wide text-muted-foreground">
-                    Certificate
+              </div>
+              <Button
+                size="sm"
+                onClick={() => startAssessmentWorkflow(ASSESSMENT_CATALOG[0])}
+                className="gap-1.5 rounded-xl text-xs font-bold cursor-pointer shrink-0"
+              >
+                <Play className="h-3.5 w-3.5" /> Try Live Assessment Demo
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-5">
+              {WORKFLOW_STEPS.map((item, idx) => {
+                const StepIcon = item.icon;
+                return (
+                  <div
+                    key={item.step}
+                    onClick={() => startAssessmentWorkflow(ASSESSMENT_CATALOG[idx % ASSESSMENT_CATALOG.length])}
+                    className="group relative flex flex-col justify-between rounded-xl border border-border bg-background p-4 hover:border-primary/50 hover:shadow-sm transition-all cursor-pointer"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="inline-flex items-center justify-center h-8 w-8 rounded-lg bg-primary text-primary-foreground text-xs font-bold">
+                          {item.step}
+                        </span>
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+                          {item.status}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <StepIcon className="h-4 w-4 text-primary shrink-0" />
+                        <h4 className="font-display text-xs font-bold text-foreground group-hover:text-primary transition-colors">
+                          {item.title}
+                        </h4>
+                      </div>
+                      <p className="text-[11px] leading-relaxed text-muted-foreground">{item.desc}</p>
+                    </div>
+                    <div className="mt-3 pt-2.5 border-t border-border/60 flex items-center justify-between text-[11px] font-semibold text-primary">
+                      <span>Launch step</span>
+                      <ChevronRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                    </div>
                   </div>
-                  <div className="truncate font-display text-[11px] font-bold text-foreground">{user.name}</div>
-                  <div className="mx-auto mt-1 h-px w-10 bg-border" />
-                  <div className="mt-1 truncate text-[8px] text-primary">{latest.title}</div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-2 border-t border-border pt-3 text-[11px]">
-                <div className="flex items-center gap-1.5 text-muted-foreground">
-                  <Calendar className="h-3.5 w-3.5 text-primary" />
-                  <span>
-                    Issued on
-                    <b className="block text-foreground">{latest.year}</b>
-                  </span>
-                </div>
-                <div className="flex items-center gap-1.5 text-muted-foreground">
-                  <Clock className="h-3.5 w-3.5 text-primary" />
-                  <span>
-                    Valid till
-                    <b className="block text-foreground">{latest.validTill}</b>
-                  </span>
-                </div>
-                <div className="flex items-center gap-1.5 text-muted-foreground">
-                  <ShieldCheck className="h-3.5 w-3.5 text-primary" />
-                  <span>
-                    Verified
-                    <b className="block text-foreground">Yes</b>
-                  </span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2">
-                <Button
-                  className="h-9 gap-1.5 rounded-lg text-xs font-semibold cursor-pointer"
-                  onClick={() => onOpenDrawer({ type: "certificate", key: `ce:${latest.index}` })}
-                >
-                  <Download className="h-3.5 w-3.5" /> Download Certificate
-                </Button>
-                <Button
-                  variant="outline"
-                  className="h-9 gap-1.5 rounded-lg border-primary/30 text-xs font-semibold text-primary hover:bg-primary/5 hover:text-primary cursor-pointer"
-                  onClick={handleShare}
-                >
-                  {linkCopied ? <Link2 className="h-3.5 w-3.5" /> : <Share2 className="h-3.5 w-3.5" />}
-                  {linkCopied ? "Copied" : "Share Certificate"}
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <p className="rounded-xl border border-dashed border-border py-8 text-center text-xs text-muted-foreground">
-              Add your first certification to feature it here.
-            </p>
-          )}
-
-          <div className="grid grid-cols-3 gap-2">
-            {[
-              { label: "Total Certificates", value: certItems.length, icon: <Award className="h-4 w-4" /> },
-              { label: "Verified", value: certItems.length, icon: <CheckCircle2 className="h-4 w-4" /> },
-              { label: "Active Credentials", value: activeCount, icon: <Calendar className="h-4 w-4" /> },
-            ].map((s) => (
-              <div key={s.label} className="flex items-center gap-2 rounded-xl border border-border bg-background p-3">
-                <span className={tile}>{s.icon}</span>
-                <div className="min-w-0">
-                  <div className="font-display text-lg font-bold leading-none text-foreground">{s.value}</div>
-                  <div className="mt-0.5 text-[10px] leading-tight text-muted-foreground">{s.label}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ================= POPULAR CERTIFICATIONS ================= */}
-      <div className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <span className={tile}>
-              <Sparkles className="h-4 w-4" />
-            </span>
-            <div>
-              <h3 className="font-display text-sm font-semibold text-foreground">Popular certifications to add next</h3>
-              <p className="text-xs text-muted-foreground">Boost your skills with industry-recognized certifications</p>
+                );
+              })}
             </div>
           </div>
-          {POPULAR_CERTS.length > 5 && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-8 rounded-lg border-primary/30 text-xs font-semibold text-primary hover:bg-primary/5 hover:text-primary cursor-pointer"
-              onClick={() => setShowAllPopular((v) => !v)}
-            >
-              {showAllPopular ? "Show fewer" : "View All Certifications"}
-            </Button>
-          )}
-        </div>
 
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          {popular.map((cert, idx) => (
-            <div
-              key={cert[0]}
-              className="flex flex-col justify-between gap-3 rounded-xl border border-border bg-background p-3.5"
-            >
-              <div className="flex items-start gap-2.5">
-                <IssuerMark name={cert[1]} size="sm" />
-                <div className="min-w-0">
-                  <div className="font-display text-xs font-semibold leading-snug text-foreground">{cert[0]}</div>
-                  <div className="text-[11px] text-muted-foreground">{cert[1]}</div>
-                </div>
-              </div>
-              <div className="flex items-center justify-between gap-2 border-t border-border pt-2.5">
-                <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
-                  <Clock className="h-3 w-3" /> {COURSE_WEEKS[idx % COURSE_WEEKS.length]}
+          {/* ================= EMPLOYER-ASSIGNED ASSESSMENTS (REAL-TIME INVITES) ================= */}
+          <div className="rounded-2xl border border-primary/25 bg-card p-5 sm:p-6 shadow-sm space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <span className={tile}>
+                  <Building2 className="h-4 w-4" />
                 </span>
-                <div className="flex items-center gap-1.5">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-display text-sm font-bold text-foreground">
+                      Employer-Assigned Assessment Invitations (2 Pending)
+                    </h3>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-bold text-amber-700">
+                      <Clock className="h-3 w-3" /> Action Required
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Hiring teams invited you to complete these role-specific assessments to fast-track your interview round.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3.5 lg:grid-cols-2">
+              {EMPLOYER_INVITED_TESTS.map((inv) => {
+                const matchedMeta =
+                  ASSESSMENT_CATALOG.find((a) => a.skill === inv.skill) || ASSESSMENT_CATALOG[0];
+                return (
+                  <div
+                    key={inv.id}
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-border bg-background p-4 hover:border-primary/40 transition-all"
+                  >
+                    <div className="space-y-1.5 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="px-2 py-0.5 rounded bg-primary text-primary-foreground text-[10px] font-bold uppercase">
+                          {inv.company}
+                        </span>
+                        <span className="text-xs font-bold text-foreground truncate">{inv.role}</span>
+                      </div>
+                      <p className="text-xs font-medium text-foreground/90">{inv.assessmentName}</p>
+                      <div className="flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          <Timer className="h-3 w-3 text-primary" /> {inv.duration}
+                        </span>
+                        <span className="flex items-center gap-1 text-amber-600 font-semibold">
+                          <Clock className="h-3 w-3" /> {inv.deadline}
+                        </span>
+                        <span className="flex items-center gap-1 text-emerald-600 font-semibold">
+                          <TrendingUp className="h-3 w-3" /> {inv.matchBoost}
+                        </span>
+                      </div>
+                    </div>
+                    <Button
+                      size="sm"
+                      onClick={() => startAssessmentWorkflow(matchedMeta)}
+                      className="shrink-0 gap-1.5 rounded-xl text-xs font-bold cursor-pointer"
+                    >
+                      <Play className="h-3.5 w-3.5" /> Start Employer Test
+                    </Button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* ================= VERIFIED SKILL TEST RESULTS & SUB-SKILL BREAKDOWN ================= */}
+          <div className="space-y-4 rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-sm">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
+              <div className="flex items-center gap-3">
+                <span className={tile}>
+                  <ShieldCheck className="h-4 w-4" />
+                </span>
+                <div>
+                  <h3 className="font-display text-base font-bold text-foreground">
+                    Your Verified Skill Assessment Scores & CIR Breakdown ({assessmentEntries.length})
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    Pass mark is 60%. Verified scores include sub-skill analytics, proctoring logs, and downloadable certificates.
+                  </p>
+                </div>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-9 rounded-xl border-primary/30 text-xs font-semibold text-primary hover:bg-primary/5 cursor-pointer gap-1.5"
+                onClick={() => startAssessmentWorkflow(ASSESSMENT_CATALOG[4])}
+              >
+                <RefreshCw className="h-3.5 w-3.5" /> Improve Lowest Score (SQL)
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {assessmentEntries.map(([skill, score]) => {
+                const passed = score >= 60;
+                const meta =
+                  ASSESSMENT_CATALOG.find((a) => a.skill.toLowerCase() === skill.toLowerCase()) ||
+                  ASSESSMENT_CATALOG[0];
+
+                return (
+                  <div
+                    key={skill}
+                    className="flex flex-col justify-between rounded-xl border border-border bg-background p-4 space-y-4 hover:border-primary/30 transition-all"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-3.5">
+                        <MatchRing percent={score} size={52} />
+                        <div>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h4 className="font-display text-sm font-bold text-foreground">{skill}</h4>
+                            <Badge
+                              variant="outline"
+                              className={cn(
+                                "text-[10px]",
+                                passed
+                                  ? "bg-emerald-500/10 text-emerald-700 border-emerald-500/30"
+                                  : "bg-amber-500/10 text-amber-700 border-amber-500/30"
+                              )}
+                            >
+                              {passed ? `Verified · ${meta.percentile}` : "Needs Retake (<60%)"}
+                            </Badge>
+                          </div>
+                          <p className="text-[11px] text-muted-foreground mt-0.5">
+                            Attempted {meta.attemptedAt} · Proctoring Integrity:{" "}
+                            <strong className="text-foreground">{meta.integrityScore}</strong>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Sub-skill real-time competency bars */}
+                    <div className="space-y-2 rounded-lg bg-muted/30 p-3 border border-border/60">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                        Sub-Skill Competency Breakdown
+                      </div>
+                      {meta.subSkills.map((sub) => (
+                        <div key={sub.name} className="space-y-1">
+                          <div className="flex items-center justify-between text-[11px]">
+                            <span className="text-foreground/90 font-medium">{sub.name}</span>
+                            <span className="font-bold text-primary">{sub.score}%</span>
+                          </div>
+                          <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
+                            <div
+                              className="h-full rounded-full bg-primary transition-all"
+                              style={{ width: `${sub.score}%` }}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-border/60">
+                      <div className="flex items-center gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-8 gap-1.5 rounded-lg text-xs font-semibold cursor-pointer"
+                          onClick={() => setInspectCirSkill(meta)}
+                        >
+                          <Eye className="h-3.5 w-3.5 text-primary" /> CIR Report
+                        </Button>
+                        {passed && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-8 gap-1.5 rounded-lg text-xs font-semibold cursor-pointer"
+                            onClick={() => onOpenDrawer({ type: "certificate", key: `skill:${skill}` })}
+                          >
+                            <Download className="h-3.5 w-3.5 text-primary" /> Certificate
+                          </Button>
+                        )}
+                      </div>
+                      <Button
+                        size="sm"
+                        onClick={() => startAssessmentWorkflow(meta)}
+                        className="h-8 gap-1.5 rounded-lg px-3 text-xs font-semibold cursor-pointer"
+                      >
+                        <Play className="h-3 w-3" /> {passed ? "Retake to Improve" : "Retake Now"}
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* ================= AVAILABLE SKILL ASSESSMENTS CATALOG ================= */}
+          <div className="space-y-4 rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-4">
+              <div className="flex items-center gap-3">
+                <span className={tile}>
+                  <Code2 className="h-4 w-4" />
+                </span>
+                <div>
+                  <h3 className="font-display text-base font-bold text-foreground">
+                    Explore Proctored Skill Assessments Library
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    Take role-mapped assessments with AI Cheating Prevention to prove your hands-on engineering capability.
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-1.5">
+                {["All", "Frontend", "Data & SQL", "Architecture"].map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setSelectedCategory(cat)}
+                    className={cn(
+                      "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer",
+                      selectedCategory === cat
+                        ? "bg-primary text-primary-foreground shadow-xs"
+                        : "bg-muted/60 text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {filteredCatalog.map((item) => {
+                const existingScore = userScores[item.skill];
+                return (
+                  <div
+                    key={item.skill}
+                    className="flex flex-col justify-between rounded-xl border border-border bg-background p-4 space-y-4 hover:border-primary/40 transition-all"
+                  >
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <Badge variant="outline" className="text-[10px] font-semibold">
+                          {item.category} · {item.level}
+                        </Badge>
+                        {existingScore !== undefined ? (
+                          <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">
+                            <CheckCircle2 className="h-3.5 w-3.5" /> Scored {existingScore}%
+                          </span>
+                        ) : (
+                          <span className="text-[11px] font-semibold text-primary">New Track</span>
+                        )}
+                      </div>
+
+                      <div>
+                        <h4 className="font-display text-sm font-bold text-foreground">
+                          {item.skill} Engineering Assessment
+                        </h4>
+                        <p className="text-[11px] text-muted-foreground mt-1">
+                          Covers {item.subSkills.map((s) => s.name).join(", ")}.
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2 pt-1 text-[11px] text-muted-foreground">
+                        <div className="rounded-lg bg-muted/40 p-2 text-center">
+                          <b className="block text-foreground">{item.duration}</b>
+                          Duration
+                        </div>
+                        <div className="rounded-lg bg-muted/40 p-2 text-center">
+                          <b className="block text-foreground">{item.questionsCount} Qs</b>
+                          + {item.codingTasks} Coding
+                        </div>
+                        <div className="rounded-lg bg-muted/40 p-2 text-center">
+                          <b className="block text-primary">{item.hiringPartners}+</b>
+                          Employers
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-2 border-t border-border/60">
+                      <Button
+                        size="sm"
+                        onClick={() => startAssessmentWorkflow(item)}
+                        className="w-full h-9 gap-1.5 rounded-xl text-xs font-bold cursor-pointer"
+                      >
+                        <Play className="h-3.5 w-3.5" />
+                        {existingScore !== undefined ? "Retake Assessment" : "Start Assessment"}
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          {/* ================= MY CERTIFICATIONS KPI SUMMARY CARDS ================= */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="rounded-2xl border border-border bg-card p-4 shadow-sm flex items-start gap-3.5">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <Award className="h-5 w-5" />
+              </span>
+              <div>
+                <span className="text-xs font-medium text-muted-foreground">Total Certifications</span>
+                <div className="text-2xl font-bold text-primary font-display mt-0.5">
+                  {certItems.length + passedCount}
+                </div>
+                <span className="text-[11px] text-emerald-600 font-semibold mt-0.5 block">
+                  {certItems.length} External + {passedCount} Skill Tests
+                </span>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-border bg-card p-4 shadow-sm flex items-start gap-3.5">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600">
+                <BadgeCheck className="h-5 w-5" />
+              </span>
+              <div>
+                <span className="text-xs font-medium text-muted-foreground">Skill Test Certificates</span>
+                <div className="text-2xl font-bold text-foreground font-display mt-0.5">{passedCount} Earned</div>
+                <span className="text-[11px] text-muted-foreground mt-0.5 block">
+                  AI-Proctored & QR Verifiable
+                </span>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-border bg-card p-4 shadow-sm flex items-start gap-3.5">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <Calendar className="h-5 w-5" />
+              </span>
+              <div>
+                <span className="text-xs font-medium text-muted-foreground">Active Credentials</span>
+                <div className="text-2xl font-bold text-foreground font-display mt-0.5">
+                  {activeCount + passedCount}
+                </div>
+                <span className="text-[11px] text-muted-foreground mt-0.5 block">
+                  Valid through {thisYear + VALID_YEARS}
+                </span>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-border bg-card p-4 shadow-sm flex items-start gap-3.5">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600">
+                <ShieldCheck className="h-5 w-5" />
+              </span>
+              <div>
+                <span className="text-xs font-medium text-muted-foreground">Portfolio Sync Status</span>
+                <div className="text-2xl font-bold text-foreground font-display mt-0.5">100% Live</div>
+                <span className="text-[11px] text-muted-foreground mt-0.5 block">
+                  Visible to 500+ Hiring Partners
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* ================= EXTERNAL & EARNED CERTIFICATIONS SECTION ================= */}
+          <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[3fr_2fr]">
+            {/* My certifications list */}
+            <div className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <span className={tile}>
+                    <Award className="h-4 w-4" />
+                  </span>
+                  <div>
+                    <h3 className="font-display text-sm font-semibold text-foreground">
+                      My Certifications ({certItems.length})
+                    </h3>
+                    <p className="text-xs text-muted-foreground">
+                      Your earned certifications and completed skill credentials
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                    Live / Updated{" "}
+                    {refreshedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                  </span>
                   <button
                     type="button"
-                    aria-label={`Add ${cert[0]} to profile`}
-                    onClick={() => {
-                      setCertName(cert[0]);
-                      setCertIssuer(cert[1]);
-                      setShowAddForm(true);
-                      window.scrollTo({ top: 0, behavior: "smooth" });
-                    }}
-                    className="flex h-7 w-7 items-center justify-center rounded-lg border border-border text-primary hover:bg-primary/10 cursor-pointer"
+                    aria-label="Refresh"
+                    onClick={() => setRefreshedAt(new Date())}
+                    className="flex h-7 w-7 items-center justify-center rounded-lg text-muted-foreground hover:bg-primary/10 hover:text-primary cursor-pointer"
                   >
-                    <Plus className="h-3.5 w-3.5" />
+                    <RefreshCw className="h-3.5 w-3.5" />
                   </button>
-                  <a
-                    href={`https://www.google.com/search?q=${encodeURIComponent(cert[0] + " " + cert[1] + " course")}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex h-7 items-center gap-1 rounded-lg bg-primary px-2.5 text-[11px] font-semibold text-primary-foreground hover:bg-primary/90"
-                  >
-                    Find course <ExternalLink className="h-3 w-3" />
-                  </a>
                 </div>
               </div>
+
+              {showAddForm && (
+                <form onSubmit={handleAdd} className="space-y-3 rounded-xl border border-primary/30 bg-primary/5 p-4">
+                  <div className="flex items-center justify-between">
+                    <h4 className="flex items-center gap-2 font-display text-sm font-semibold text-foreground">
+                      <Plus className="h-4 w-4 text-primary" /> Add new certification
+                    </h4>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowAddForm(false)}
+                      className="h-7 text-xs text-muted-foreground"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <div>
+                      <label className="mb-1 block text-[11px] font-medium text-muted-foreground">
+                        Certification name
+                      </label>
+                      <Input
+                        placeholder="e.g. AWS Certified Solutions Architect"
+                        value={certName}
+                        onChange={(e) => setCertName(e.target.value)}
+                        className={inputCls}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-[11px] font-medium text-muted-foreground">
+                        Issuing organization
+                      </label>
+                      <Input
+                        placeholder="e.g. Amazon Web Services"
+                        value={certIssuer}
+                        onChange={(e) => setCertIssuer(e.target.value)}
+                        className={inputCls}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-[11px] font-medium text-muted-foreground">Date issued</label>
+                      <Input
+                        type="date"
+                        value={certDate}
+                        onChange={(e) => setCertDate(e.target.value)}
+                        className={inputCls}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowAddForm(false)}
+                      className="rounded-xl text-xs"
+                    >
+                      Cancel
+                    </Button>
+                    <Button type="submit" className="rounded-xl text-xs">
+                      Save certification
+                    </Button>
+                  </div>
+                </form>
+              )}
+
+              <div className="space-y-2.5">
+                {certItems.length === 0 ? (
+                  <p className="py-6 text-center text-xs text-muted-foreground">
+                    No certifications listed yet. Use &quot;Add Certification&quot; to showcase your credentials.
+                  </p>
+                ) : (
+                  certItems.map((item) => (
+                    <div
+                      key={item.index}
+                      className="flex flex-col gap-3 rounded-xl border border-border bg-background p-3 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                      <div className="flex min-w-0 items-center gap-3">
+                        <IssuerMark name={item.issuer} />
+                        <div className="min-w-0">
+                          <div className="truncate font-display text-sm font-semibold text-foreground">{item.title}</div>
+                          <div className="truncate text-[11px] text-muted-foreground">{item.issuer}</div>
+                          <div className="mt-0.5 flex items-center gap-1 text-[11px] text-muted-foreground">
+                            <Calendar className="h-3 w-3" /> Issued on {item.year} · Valid till {item.validTill}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex shrink-0 items-center gap-2">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:text-emerald-400">
+                          <Check className="h-3 w-3" /> Verified
+                        </span>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-8 rounded-lg border-primary/30 px-3 text-xs font-semibold text-primary hover:bg-primary/5 hover:text-primary cursor-pointer"
+                          onClick={() => onOpenDrawer({ type: "certificate", key: `ce:${item.index}` })}
+                        >
+                          View Certificate
+                        </Button>
+                        <button
+                          type="button"
+                          aria-label={`Remove ${item.title}`}
+                          onClick={() => onRemoveCertification(item.index)}
+                          className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-primary/10 hover:text-primary cursor-pointer"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowAddForm(true)}
+                className="flex w-full items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-primary/40 py-2.5 text-xs font-semibold text-primary transition-colors hover:bg-primary/5 cursor-pointer"
+              >
+                <Plus className="h-4 w-4" /> Add External Certification
+              </button>
             </div>
-          ))}
-        </div>
-      </div>
+
+            {/* Latest earned certificate + stats */}
+            <div className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
+              <h3 className="flex items-center gap-3 font-display text-sm font-semibold text-foreground">
+                <span className={tile}>
+                  <BadgeCheck className="h-4 w-4" />
+                </span>
+                Latest Earned Certificate
+              </h3>
+
+              {latest ? (
+                <div className="space-y-3 rounded-xl border border-border bg-muted/20 p-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex min-w-0 items-center gap-2">
+                      <IssuerMark name={latest.issuer} size="sm" />
+                      <span className="truncate font-display text-sm font-bold text-foreground">{latest.issuer}</span>
+                    </div>
+                    <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:text-emerald-400">
+                      <Check className="h-3 w-3" /> Earned recently
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-[1fr_auto] items-start gap-3">
+                    <div className="min-w-0">
+                      <h4 className="font-display text-base font-bold leading-snug text-foreground">{latest.title}</h4>
+                      <div className="text-xs text-muted-foreground">{latest.issuer}</div>
+                      <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">
+                        Demonstrated proficiency in {latest.title}, issued by {latest.issuer}.
+                      </p>
+                    </div>
+                    <div className="hidden w-24 shrink-0 rounded-lg border border-border bg-background p-2 text-center shadow-sm sm:block">
+                      <Award className="mx-auto h-4 w-4 text-primary" />
+                      <div className="mt-1 text-[8px] font-semibold uppercase tracking-wide text-muted-foreground">
+                        Certificate
+                      </div>
+                      <div className="truncate font-display text-[11px] font-bold text-foreground">{user.name}</div>
+                      <div className="mx-auto mt-1 h-px w-10 bg-border" />
+                      <div className="mt-1 truncate text-[8px] text-primary">{latest.title}</div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2 border-t border-border pt-3 text-[11px]">
+                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                      <Calendar className="h-3.5 w-3.5 text-primary" />
+                      <span>
+                        Issued on
+                        <b className="block text-foreground">{latest.year}</b>
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                      <Clock className="h-3.5 w-3.5 text-primary" />
+                      <span>
+                        Valid till
+                        <b className="block text-foreground">{latest.validTill}</b>
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                      <ShieldCheck className="h-3.5 w-3.5 text-primary" />
+                      <span>
+                        Verified
+                        <b className="block text-foreground">Yes</b>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      className="h-9 gap-1.5 rounded-lg text-xs font-semibold cursor-pointer"
+                      onClick={() => onOpenDrawer({ type: "certificate", key: `ce:${latest.index}` })}
+                    >
+                      <Download className="h-3.5 w-3.5" /> Download Certificate
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="h-9 gap-1.5 rounded-lg border-primary/30 text-xs font-semibold text-primary hover:bg-primary/5 hover:text-primary cursor-pointer"
+                      onClick={handleShare}
+                    >
+                      {linkCopied ? <Link2 className="h-3.5 w-3.5" /> : <Share2 className="h-3.5 w-3.5" />}
+                      {linkCopied ? "Copied" : "Share Certificate"}
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <p className="rounded-xl border border-dashed border-border py-8 text-center text-xs text-muted-foreground">
+                  Add your first certification to feature it here.
+                </p>
+              )}
+
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { label: "Total Certificates", value: certItems.length, icon: <Award className="h-4 w-4" /> },
+                  { label: "Verified", value: certItems.length, icon: <CheckCircle2 className="h-4 w-4" /> },
+                  { label: "Active Credentials", value: activeCount, icon: <Calendar className="h-4 w-4" /> },
+                ].map((s) => (
+                  <div key={s.label} className="flex items-center gap-2 rounded-xl border border-border bg-background p-3">
+                    <span className={tile}>{s.icon}</span>
+                    <div className="min-w-0">
+                      <div className="font-display text-lg font-bold leading-none text-foreground">{s.value}</div>
+                      <div className="mt-0.5 text-[10px] leading-tight text-muted-foreground">{s.label}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* ================= EARNED SKILL ASSESSMENT CERTIFICATES ================= */}
+          <div className="space-y-4 rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-sm">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
+              <div className="flex items-center gap-3">
+                <span className={tile}>
+                  <ShieldCheck className="h-4 w-4" />
+                </span>
+                <div>
+                  <h3 className="font-display text-base font-bold text-foreground">
+                    Earned Skill Assessment Certificates ({passedCount})
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    Certificates automatically issued from your AI-proctored IAmTalento skill assessments (60%+ pass score).
+                  </p>
+                </div>
+              </div>
+              {onNavigate && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 rounded-lg border-primary/30 text-xs font-semibold text-primary hover:bg-primary/5 cursor-pointer gap-1.5"
+                  onClick={() => onNavigate("cert")}
+                >
+                  <GraduationCap className="h-3.5 w-3.5" /> Go to Assessments
+                </Button>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+              {assessmentEntries
+                .filter(([, score]) => score >= 60)
+                .map(([skill, score]) => {
+                  const meta =
+                    ASSESSMENT_CATALOG.find((a) => a.skill.toLowerCase() === skill.toLowerCase()) ||
+                    ASSESSMENT_CATALOG[0];
+                  return (
+                    <div
+                      key={skill}
+                      className="flex flex-col justify-between gap-3 rounded-xl border border-border bg-background p-4 hover:border-primary/40 transition-all"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <MatchRing percent={score} size={46} />
+                          <div>
+                            <h4 className="font-display text-sm font-bold text-foreground">
+                              {skill} Verified Certificate
+                            </h4>
+                            <p className="text-[11px] text-muted-foreground">
+                              IAmTalento AI Proctored · {meta.percentile}
+                            </p>
+                            <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
+                              <Check className="h-3 w-3" /> Integrity {meta.integrityScore}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between gap-2 border-t border-border/60 pt-2.5">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-8 flex-1 gap-1.5 rounded-lg text-xs font-semibold cursor-pointer"
+                          onClick={() => setInspectCirSkill(meta)}
+                        >
+                          <Eye className="h-3.5 w-3.5 text-primary" /> CIR Report
+                        </Button>
+                        <Button
+                          size="sm"
+                          className="h-8 flex-1 gap-1.5 rounded-lg text-xs font-semibold cursor-pointer"
+                          onClick={() => onOpenDrawer({ type: "certificate", key: `skill:${skill}` })}
+                        >
+                          <Download className="h-3.5 w-3.5" /> Certificate
+                        </Button>
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+
+          {/* ================= POPULAR CERTIFICATIONS ================= */}
+          <div className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <span className={tile}>
+                  <Sparkles className="h-4 w-4" />
+                </span>
+                <div>
+                  <h3 className="font-display text-sm font-semibold text-foreground">
+                    Popular certifications to add next
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    Boost your skills with industry-recognized certifications
+                  </p>
+                </div>
+              </div>
+              {POPULAR_CERTS.length > 5 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 rounded-lg border-primary/30 text-xs font-semibold text-primary hover:bg-primary/5 hover:text-primary cursor-pointer"
+                  onClick={() => setShowAllPopular((v) => !v)}
+                >
+                  {showAllPopular ? "Show fewer" : "View All Certifications"}
+                </Button>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+              {popular.map((cert, idx) => (
+                <div
+                  key={cert[0]}
+                  className="flex flex-col justify-between gap-3 rounded-xl border border-border bg-background p-3.5"
+                >
+                  <div className="flex items-start gap-2.5">
+                    <IssuerMark name={cert[1]} size="sm" />
+                    <div className="min-w-0">
+                      <div className="font-display text-xs font-semibold leading-snug text-foreground">{cert[0]}</div>
+                      <div className="text-[11px] text-muted-foreground">{cert[1]}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 border-t border-border pt-2.5">
+                    <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
+                      <Clock className="h-3 w-3" /> {COURSE_WEEKS[idx % COURSE_WEEKS.length]}
+                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        aria-label={`Add ${cert[0]} to profile`}
+                        onClick={() => {
+                          setCertName(cert[0]);
+                          setCertIssuer(cert[1]);
+                          setShowAddForm(true);
+                          window.scrollTo({ top: 0, behavior: "smooth" });
+                        }}
+                        className="flex h-7 w-7 items-center justify-center rounded-lg border border-border text-primary hover:bg-primary/10 cursor-pointer"
+                      >
+                        <Plus className="h-3.5 w-3.5" />
+                      </button>
+                      <a
+                        href={`https://www.google.com/search?q=${encodeURIComponent(cert[0] + " " + cert[1] + " course")}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex h-7 items-center gap-1 rounded-lg bg-primary px-2.5 text-[11px] font-semibold text-primary-foreground hover:bg-primary/90"
+                      >
+                        Find course <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
 
       {/* ================= INTERACTIVE LIVE ASSESSMENT WORKFLOW MODAL ================= */}
       <Dialog open={Boolean(activeAssessment)} onOpenChange={(open) => !open && setActiveAssessment(null)}>

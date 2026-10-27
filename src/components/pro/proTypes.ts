@@ -11,6 +11,7 @@ export type ProView =
   | "saved"
   | "applied"
   | "cert"
+  | "my-certifications"
   | "resume"
   | "ver"
   | "wallet"
