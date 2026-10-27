@@ -93,6 +93,7 @@ const AnimatedRoutes = () => {
           <Route path="/assessments/:assessmentId/result" element={<PageTransition><AssessmentResult /></PageTransition>} />
           <Route path="/jobs" element={<PageTransition><Jobs /></PageTransition>} />
           <Route path="/learning" element={<PageTransition><Learning /></PageTransition>} />
+          <Route path="/learning/courses/ai-engineer-agentic-track" element={<PageTransition><CourseDetail /></PageTransition>} />
           <Route path="/meetups" element={<PageTransition><Hackathons /></PageTransition>} />
           <Route path="/hackathons" element={<PageTransition><Hackathons /></PageTransition>} />
           <Route path="/hackathon2" element={<PageTransition><Hackathon2 /></PageTransition>} />
