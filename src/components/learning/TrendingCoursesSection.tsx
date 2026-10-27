@@ -30,6 +30,7 @@ const courses = [
 ];
 
 const TrendingCoursesSection = () => {
+  const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState("All");
   const filtered = activeCategory === "All" ? courses : courses.filter((c) => c.category === activeCategory);
 
@@ -74,7 +75,8 @@ const TrendingCoursesSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.08 }}
-              className="rounded-xl border bg-card overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              onClick={() => c.slug && navigate(c.slug)}
+              className={cn("rounded-xl border bg-card overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1", c.slug && "cursor-pointer")}
             >
               {/* Thumbnail */}
               <div className="relative aspect-[5/4] overflow-hidden bg-slate-100">
