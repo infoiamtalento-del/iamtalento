@@ -53,6 +53,11 @@ import { ProUser, POPULAR_CERTS } from "@/data/proData";
 import { ProHero } from "./ProHero";
 import { MatchRing } from "./ProMatchRing";
 import { ProDrawerState, ProView } from "./proTypes";
+import {
+  downloadCertificatePdf,
+  downloadCirReportPdf,
+  type RealTimeCertificateData,
+} from "@/utils/credentialPdf";
 import logoAws from "@/assets/logo-aws.svg";
 import logoGoogle from "@/assets/logo-google.svg";
 import logoMeta from "@/assets/logo-meta.svg";
@@ -602,11 +607,47 @@ export const ProCertificationsView: React.FC<ProCertificationsViewProps> = ({
     preCheckProgress.network &&
     preCheckProgress.browserLock;
 
+  const [selectedLiveCirSkill, setSelectedLiveCirSkill] = useState<string>("React");
+
   const formatTimer = (sec: number) => {
     const m = Math.floor(sec / 60);
     const s = sec % 60;
     return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
   };
+
+  const buildRealTimeCredential = (meta: AssessmentMetadata): RealTimeCertificateData => {
+    const sc = userScores[meta.skill] ?? 86;
+    const credId = `TLN-2026-${meta.skill.replace(/[^A-Za-z]/g, "").slice(0, 4).toUpperCase()}-${800 + sc}`;
+    return {
+      credentialId: credId,
+      candidateName: user.name,
+      candidateEmail: user.email,
+      candidateRole: user.head || "Senior Full-Stack Engineer",
+      title: `${meta.skill} (${meta.level}) Engineering Assessment`,
+      issuer: "IAmTalento AI Proctoring & Career Intelligence Authority",
+      issuedDate: meta.attemptedAt,
+      validUntil: "Oct 2028",
+      score: sc,
+      percentile: meta.percentile,
+      integrityScore: meta.integrityScore,
+      timeTaken: meta.skill === "React" ? "34m 18s / 45m" : meta.skill === "JavaScript" ? "31m 42s / 40m" : "27m 10s / 35m",
+      codingTestCases: meta.codingTasks === 2 ? "18 / 20 Passed (90%)" : "12 / 12 Passed (100%)",
+      peerAverage: meta.skill === "SQL" ? 58 : 62,
+      partnerCutoff: 60,
+      salaryBand: sc >= 85 ? "INR 20.0 - 30.0 LPA" : sc >= 75 ? "INR 15.0 - 24.0 LPA" : "INR 10.0 - 16.0 LPA",
+      verificationHash: `0x8A4F...${sc}C91E`,
+      subSkills: meta.subSkills.map((s, idx) => ({
+        name: s.name,
+        score: s.score,
+        benchmark: 58 + idx * 3,
+      })),
+      recruiterSummary: `${user.name} demonstrated verified production mastery in ${meta.skill} (${meta.level}), achieving ${sc}% (${meta.percentile} nationally) with ${meta.integrityScore} proctoring integrity and zero environment flags.`,
+    };
+  };
+
+  const liveSelectedMeta =
+    ASSESSMENT_CATALOG.find((a) => a.skill === selectedLiveCirSkill) || ASSESSMENT_CATALOG[0];
+  const liveCredData = buildRealTimeCredential(liveSelectedMeta);
 
   return (
     <div className="space-y-6">
@@ -1598,6 +1639,264 @@ export const ProCertificationsView: React.FC<ProCertificationsViewProps> = ({
         </>
       )}
 
+      {/* ================= REAL-TIME CIR REPORT & VERIFIED CERTIFICATE LIVE PREVIEW ================= */}
+      <div className="rounded-2xl border border-primary/30 bg-card p-5 sm:p-6 shadow-sm space-y-5">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-border pb-4">
+          <div className="flex items-center gap-3">
+            <span className={tile}>
+              <BarChart3 className="h-5 w-5" />
+            </span>
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <h3 className="font-display text-base font-bold text-foreground">
+                  Real-Time Career Intelligence Report (CIR) &amp; Verified Certificate Data
+                </h3>
+                <Badge variant="outline" className="bg-emerald-500/10 text-emerald-700 border-emerald-500/30 text-[10px]">
+                  Live Proctored Telemetry
+                </Badge>
+              </div>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Inspect your live sub-skill competency rubric, AI proctoring telemetry, national peer benchmarks, and download official PDF reports.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-1.5">
+            {ASSESSMENT_CATALOG.map((item) => (
+              <button
+                key={item.skill}
+                type="button"
+                onClick={() => setSelectedLiveCirSkill(item.skill)}
+                className={cn(
+                  "px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer",
+                  selectedLiveCirSkill === item.skill
+                    ? "bg-[#002C66] text-white shadow-xs"
+                    : "bg-muted/60 text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {item.skill} ({userScores[item.skill] ?? 85}%)
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 2-Column Real-Time CIR Telemetry + Live Certificate Preview */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+          {/* Left: Real-Time CIR Telemetry Card */}
+          <div className="rounded-2xl border border-border bg-background overflow-hidden shadow-xs">
+            <div className="bg-[#002C66] text-white p-4 sm:p-5 flex items-center justify-between gap-3">
+              <div>
+                <div className="text-[10px] font-bold uppercase tracking-widest text-[#FB923C]">
+                  Career Intelligence Report (CIR)
+                </div>
+                <h4 className="text-base font-extrabold mt-0.5">{liveCredData.title}</h4>
+                <div className="text-[11px] text-white/80 font-mono mt-0.5">
+                  Session ID: CIR-{liveCredData.credentialId} · Attempted {liveCredData.issuedDate}
+                </div>
+              </div>
+              <div className="text-right shrink-0 rounded-xl bg-white/10 px-3.5 py-2 border border-white/20">
+                <span className="text-[10px] uppercase tracking-wider text-white/80 block">IRS Score</span>
+                <strong className="text-lg font-extrabold text-[#FB923C]">
+                  {liveCredData.score}/100
+                </strong>
+                <span className="block text-[10px] text-emerald-300 font-semibold">
+                  {liveCredData.percentile}
+                </span>
+              </div>
+            </div>
+
+            <div className="p-4 sm:p-5 space-y-4 text-xs">
+              {/* Session & Proctoring Telemetry Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                <div className="rounded-xl border border-border bg-muted/20 p-2.5">
+                  <span className="text-[10px] text-muted-foreground block">Proctoring Integrity</span>
+                  <strong className="text-sm font-bold text-emerald-600">{liveCredData.integrityScore}</strong>
+                  <span className="text-[10px] text-muted-foreground block">0 Tab Switches / Flags</span>
+                </div>
+                <div className="rounded-xl border border-border bg-muted/20 p-2.5">
+                  <span className="text-[10px] text-muted-foreground block">Completion Time</span>
+                  <strong className="text-sm font-bold text-foreground">{liveCredData.timeTaken}</strong>
+                  <span className="text-[10px] text-emerald-600 font-semibold block">Optimal Pacing</span>
+                </div>
+                <div className="rounded-xl border border-border bg-muted/20 p-2.5">
+                  <span className="text-[10px] text-muted-foreground block">Coding Sandbox</span>
+                  <strong className="text-sm font-bold text-foreground">{liveCredData.codingTestCases}</strong>
+                  <span className="text-[10px] text-muted-foreground block">O(n) Time Complexity</span>
+                </div>
+                <div className="rounded-xl border border-border bg-muted/20 p-2.5">
+                  <span className="text-[10px] text-muted-foreground block">Peer Benchmark</span>
+                  <strong className="text-sm font-bold text-primary">
+                    +{liveCredData.score - liveCredData.peerAverage}% vs Avg
+                  </strong>
+                  <span className="text-[10px] text-muted-foreground block">
+                    National Avg: {liveCredData.peerAverage}%
+                  </span>
+                </div>
+                <div className="rounded-xl border border-border bg-muted/20 p-2.5">
+                  <span className="text-[10px] text-muted-foreground block">Salary Band Fit</span>
+                  <strong className="text-sm font-bold text-foreground">{liveCredData.salaryBand}</strong>
+                  <span className="text-[10px] text-emerald-600 font-semibold block">Verified Readiness</span>
+                </div>
+                <div className="rounded-xl border border-border bg-muted/20 p-2.5">
+                  <span className="text-[10px] text-muted-foreground block">Hardware &amp; ID Lock</span>
+                  <strong className="text-sm font-bold text-emerald-600">100% Verified</strong>
+                  <span className="text-[10px] text-muted-foreground block">Cam · Mic · Browser</span>
+                </div>
+              </div>
+
+              {/* Sub-Skill vs Peer Benchmark */}
+              <div className="space-y-2.5 rounded-xl border border-border bg-muted/15 p-3.5">
+                <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                  <span>Sub-Domain Competency Rubric</span>
+                  <span>Candidate vs Peer Median</span>
+                </div>
+                {liveCredData.subSkills.map((sub) => (
+                  <div key={sub.name} className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-semibold text-foreground">{sub.name}</span>
+                      <span className="font-bold text-primary">
+                        {sub.score}%{" "}
+                        <span className="text-[10px] font-normal text-muted-foreground">
+                          (Peer Median: {sub.benchmark}%)
+                        </span>
+                      </span>
+                    </div>
+                    <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-primary transition-all"
+                        style={{ width: `${sub.score}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* AI Recruiter Executive Note */}
+              <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-3.5 space-y-1">
+                <div className="font-bold text-emerald-700 flex items-center justify-between">
+                  <span>AI Technical Recruiter Recommendation: STRONG HIRE</span>
+                  <span className="text-[10px] font-mono">24h SLA Priority</span>
+                </div>
+                <p className="text-muted-foreground leading-relaxed">{liveCredData.recruiterSummary}</p>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setInspectCirSkill(liveSelectedMeta)}
+                  className="gap-1.5 rounded-xl text-xs font-semibold cursor-pointer"
+                >
+                  <Eye className="h-3.5 w-3.5 text-primary" /> Open Full CIR Modal
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    downloadCirReportPdf(liveCredData);
+                    onToast(`Downloaded CIR Report PDF: IAmTalento-CIR-Report-${liveCredData.credentialId}.pdf`);
+                  }}
+                  className="gap-1.5 rounded-xl bg-[#FB923C] hover:bg-[#F97316] text-white text-xs font-bold cursor-pointer"
+                >
+                  <Download className="h-3.5 w-3.5" /> Download CIR Report (.pdf)
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Live Verifiable Certificate Preview Card */}
+          <div className="rounded-2xl border-2 border-[#002C66] bg-white text-slate-900 overflow-hidden shadow-md">
+            <div className="bg-[#002C66] text-white p-4 sm:p-5 flex items-center justify-between gap-3">
+              <div>
+                <div className="text-[10px] font-bold uppercase tracking-widest text-[#FB923C]">
+                  Official Verifiable Certificate
+                </div>
+                <h4 className="text-base font-extrabold mt-0.5">
+                  CERTIFICATE OF ENGINEERING PROFICIENCY
+                </h4>
+                <div className="text-[11px] text-white/80 font-mono mt-0.5">
+                  Credential ID: {liveCredData.credentialId} · Hash: {liveCredData.verificationHash}
+                </div>
+              </div>
+              <span className="shrink-0 rounded-xl bg-[#FB923C] px-3 py-1.5 text-[11px] font-extrabold text-white uppercase">
+                Verified
+              </span>
+            </div>
+
+            <div className="p-5 sm:p-6 space-y-4">
+              <div className="text-center space-y-1.5 border-b border-slate-200 pb-4">
+                <div className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">
+                  Presented To
+                </div>
+                <div className="text-2xl font-extrabold font-display text-[#002C66]">
+                  {liveCredData.candidateName}
+                </div>
+                <div className="text-xs text-slate-600">
+                  {liveCredData.candidateRole} · {liveCredData.candidateEmail}
+                </div>
+                <p className="text-xs text-slate-500 pt-1">
+                  For successfully passing the AI-proctored engineering assessment and verification standards in:
+                </p>
+                <div className="inline-block mt-1 rounded-xl bg-slate-100 border border-slate-200 px-4 py-2">
+                  <div className="text-sm font-bold text-[#002C66]">{liveCredData.title}</div>
+                  <div className="text-[11px] text-slate-500">{liveCredData.issuer}</div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2.5 text-center text-xs">
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-2.5">
+                  <span className="text-[10px] text-slate-500 uppercase font-bold block">Verified Score</span>
+                  <strong className="text-base font-extrabold text-[#002C66]">{liveCredData.score}%</strong>
+                </div>
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-2.5">
+                  <span className="text-[10px] text-slate-500 uppercase font-bold block">Percentile</span>
+                  <strong className="text-base font-extrabold text-emerald-700">{liveCredData.percentile}</strong>
+                </div>
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-2.5">
+                  <span className="text-[10px] text-slate-500 uppercase font-bold block">Integrity</span>
+                  <strong className="text-base font-extrabold text-[#002C66]">{liveCredData.integrityScore}</strong>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-600 border-t border-slate-200 pt-3">
+                <div>
+                  Issued Date: <strong className="text-slate-900">{liveCredData.issuedDate}</strong>
+                </div>
+                <div className="text-right">
+                  Valid Until: <strong className="text-slate-900">{liveCredData.validUntil}</strong>
+                </div>
+                <div className="col-span-2 text-[10px] text-slate-500">
+                  Public Verification URL:{" "}
+                  <strong className="text-[#002C66]">
+                    https://iamtalento.com/verify/{liveCredData.credentialId}
+                  </strong>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-200">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => onOpenDrawer({ type: "certificate", key: `skill:${liveSelectedMeta.skill}` })}
+                  className="gap-1.5 rounded-xl text-xs font-semibold border-slate-300 text-slate-800 hover:bg-slate-100 cursor-pointer"
+                >
+                  <Award className="h-3.5 w-3.5 text-[#002C66]" /> Full Screen Certificate
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    downloadCertificatePdf(liveCredData);
+                    onToast(`Downloaded Certificate PDF: IAmTalento-Certificate-${liveCredData.credentialId}.pdf`);
+                  }}
+                  className="gap-1.5 rounded-xl bg-[#002C66] hover:bg-[#002C66]/90 text-white text-xs font-bold cursor-pointer"
+                >
+                  <Download className="h-3.5 w-3.5" /> Download Certificate (.pdf)
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* ================= INTERACTIVE LIVE ASSESSMENT WORKFLOW MODAL ================= */}
       <Dialog open={Boolean(activeAssessment)} onOpenChange={(open) => !open && setActiveAssessment(null)}>
         <DialogContent className="sm:max-w-2xl max-h-[90dvh] overflow-y-auto">
@@ -1838,13 +2137,24 @@ export const ProCertificationsView: React.FC<ProCertificationsViewProps> = ({
                     <Button
                       variant="outline"
                       onClick={() => {
-                        const skillKey = activeAssessment.skill;
-                        setActiveAssessment(null);
-                        onOpenDrawer({ type: "certificate", key: `skill:${skillKey}` });
+                        const cred = buildRealTimeCredential(activeAssessment);
+                        downloadCirReportPdf({ ...cred, score: computedScore });
+                        onToast(`Downloaded CIR Report PDF for ${activeAssessment.skill}`);
                       }}
                       className="gap-1.5 cursor-pointer"
                     >
-                      <Download className="h-4 w-4" /> View & Download Certificate
+                      <Download className="h-4 w-4" /> Download CIR PDF
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        const cred = buildRealTimeCredential(activeAssessment);
+                        downloadCertificatePdf({ ...cred, score: computedScore });
+                        onToast(`Downloaded Certificate PDF for ${activeAssessment.skill}`);
+                      }}
+                      className="gap-1.5 cursor-pointer"
+                    >
+                      <Download className="h-4 w-4" /> Download Certificate PDF
                     </Button>
                     <Button onClick={() => setActiveAssessment(null)} className="cursor-pointer">
                       Done
@@ -1859,83 +2169,102 @@ export const ProCertificationsView: React.FC<ProCertificationsViewProps> = ({
 
       {/* ================= CIR REPORT INSPECTION MODAL ================= */}
       <Dialog open={Boolean(inspectCirSkill)} onOpenChange={(open) => !open && setInspectCirSkill(null)}>
-        <DialogContent className="sm:max-w-lg">
-          {inspectCirSkill && (
-            <>
-              <DialogHeader>
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="bg-emerald-500/10 text-emerald-700 border-emerald-500/30 text-xs">
-                    Verified CIR Report
-                  </Badge>
-                  <span className="text-xs text-muted-foreground">
-                    Integrity: {inspectCirSkill.integrityScore}
-                  </span>
-                </div>
-                <DialogTitle className="mt-1">
-                  {inspectCirSkill.skill} — Career Intelligence Report
-                </DialogTitle>
-                <DialogDescription className="text-xs">
-                  Attempted on {inspectCirSkill.attemptedAt} · {inspectCirSkill.percentile} National Percentile
-                </DialogDescription>
-              </DialogHeader>
-
-              <div className="space-y-4 py-2 text-xs">
-                <div className="flex items-center justify-between rounded-xl border border-border bg-muted/30 p-3.5">
-                  <div>
-                    <span className="text-muted-foreground block">Overall Verified Score</span>
-                    <strong className="text-lg font-bold text-primary">
-                      {userScores[inspectCirSkill.skill] ?? 85}%
-                    </strong>
+        <DialogContent className="sm:max-w-xl max-h-[90dvh] overflow-y-auto">
+          {inspectCirSkill && (() => {
+            const modalCred = buildRealTimeCredential(inspectCirSkill);
+            return (
+              <>
+                <DialogHeader>
+                  <div className="flex items-center justify-between gap-2">
+                    <Badge variant="outline" className="bg-emerald-500/10 text-emerald-700 border-emerald-500/30 text-xs">
+                      Verified CIR Report · {modalCred.credentialId}
+                    </Badge>
+                    <span className="text-xs font-semibold text-emerald-600">
+                      Proctoring Integrity: {inspectCirSkill.integrityScore}
+                    </span>
                   </div>
-                  <div className="text-right">
-                    <span className="text-muted-foreground block">Proctoring Status</span>
-                    <strong className="text-emerald-600 flex items-center gap-1 justify-end">
-                      <ShieldCheck className="h-4 w-4" /> Zero Flags
-                    </strong>
-                  </div>
-                </div>
+                  <DialogTitle className="mt-1">
+                    {inspectCirSkill.skill} — Real-Time Career Intelligence Report (CIR)
+                  </DialogTitle>
+                  <DialogDescription className="text-xs">
+                    Attempted on {inspectCirSkill.attemptedAt} · {inspectCirSkill.percentile} National Percentile · Hash: {modalCred.verificationHash}
+                  </DialogDescription>
+                </DialogHeader>
 
-                <div className="space-y-2.5">
-                  <strong className="text-foreground block">Sub-Domain Competency Scores:</strong>
-                  {inspectCirSkill.subSkills.map((s) => (
-                    <div key={s.name} className="space-y-1">
-                      <div className="flex justify-between">
-                        <span>{s.name}</span>
-                        <strong className="text-primary">{s.score}%</strong>
-                      </div>
-                      <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
-                        <div className="h-full rounded-full bg-primary" style={{ width: `${s.score}%` }} />
-                      </div>
+                <div className="space-y-4 py-2 text-xs">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                    <div className="rounded-xl border border-border bg-muted/30 p-3">
+                      <span className="text-[10px] text-muted-foreground block">Verified Score</span>
+                      <strong className="text-base font-extrabold text-primary">{modalCred.score}%</strong>
+                      <span className="text-[10px] text-emerald-600 font-semibold block">{modalCred.percentile}</span>
                     </div>
-                  ))}
+                    <div className="rounded-xl border border-border bg-muted/30 p-3">
+                      <span className="text-[10px] text-muted-foreground block">Time &amp; Pacing</span>
+                      <strong className="text-sm font-bold text-foreground">{modalCred.timeTaken}</strong>
+                      <span className="text-[10px] text-muted-foreground block">Optimal Speed</span>
+                    </div>
+                    <div className="rounded-xl border border-border bg-muted/30 p-3">
+                      <span className="text-[10px] text-muted-foreground block">Coding Cases</span>
+                      <strong className="text-sm font-bold text-foreground">{modalCred.codingTestCases}</strong>
+                      <span className="text-[10px] text-emerald-600 font-semibold block">Zero Warnings</span>
+                    </div>
+                    <div className="rounded-xl border border-border bg-muted/30 p-3">
+                      <span className="text-[10px] text-muted-foreground block">Salary Band Fit</span>
+                      <strong className="text-sm font-bold text-foreground">{modalCred.salaryBand}</strong>
+                      <span className="text-[10px] text-muted-foreground block">500+ Partners</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2.5 rounded-xl border border-border bg-muted/15 p-3.5">
+                    <strong className="text-foreground block">Sub-Domain Competency vs Peer Median:</strong>
+                    {modalCred.subSkills.map((s) => (
+                      <div key={s.name} className="space-y-1">
+                        <div className="flex justify-between">
+                          <span className="font-medium text-foreground">{s.name}</span>
+                          <strong className="text-primary">
+                            {s.score}% <span className="text-[10px] font-normal text-muted-foreground">(Peer: {s.benchmark}%)</span>
+                          </strong>
+                        </div>
+                        <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+                          <div className="h-full rounded-full bg-primary" style={{ width: `${s.score}%` }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="rounded-xl border border-border bg-card p-3.5 space-y-1">
+                    <strong className="text-foreground block">AI Recruiter Evaluation Summary:</strong>
+                    <p className="text-muted-foreground leading-relaxed">{modalCred.recruiterSummary}</p>
+                  </div>
                 </div>
 
-                <div className="rounded-xl border border-border bg-card p-3.5 space-y-1">
-                  <strong className="text-foreground block">AI Recruiter Summary:</strong>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {user.name} demonstrated strong production-level command of {inspectCirSkill.skill}, scoring in the{" "}
-                    {inspectCirSkill.percentile} of assessed engineers with {inspectCirSkill.integrityScore} proctoring integrity.
-                  </p>
-                </div>
-              </div>
-
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setInspectCirSkill(null)}>
-                  Close
-                </Button>
-                <Button
-                  onClick={() => {
-                    const item = inspectCirSkill;
-                    setInspectCirSkill(null);
-                    startAssessmentWorkflow(item);
-                  }}
-                  className="gap-1.5 cursor-pointer"
-                >
-                  <Play className="h-3.5 w-3.5" /> Retake Assessment
-                </Button>
-              </DialogFooter>
-            </>
-          )}
+                <DialogFooter className="flex-wrap gap-2">
+                  <Button variant="outline" onClick={() => setInspectCirSkill(null)}>
+                    Close
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      downloadCertificatePdf(modalCred);
+                      onToast(`Downloaded Certificate PDF: IAmTalento-Certificate-${modalCred.credentialId}.pdf`);
+                    }}
+                    className="gap-1.5 cursor-pointer"
+                  >
+                    <Download className="h-3.5 w-3.5" /> Certificate (.pdf)
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      downloadCirReportPdf(modalCred);
+                      onToast(`Downloaded CIR Report PDF: IAmTalento-CIR-Report-${modalCred.credentialId}.pdf`);
+                    }}
+                    className="gap-1.5 bg-[#FB923C] hover:bg-[#F97316] text-white cursor-pointer"
+                  >
+                    <Download className="h-3.5 w-3.5" /> Download CIR Report (.pdf)
+                  </Button>
+                </DialogFooter>
+              </>
+            );
+          })()}
         </DialogContent>
       </Dialog>
     </div>

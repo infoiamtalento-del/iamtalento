@@ -41,6 +41,11 @@ import {
 import { getCompanyLogo, getCandidatePhoto } from "@/data/portalAssets";
 import { ProDrawerState } from "./proTypes";
 import { buildDetailedInvoicesForUser, downloadDetailedInvoicePdf } from "@/utils/invoicePdf";
+import {
+  downloadCertificatePdf,
+  downloadCirReportPdf,
+  type RealTimeCertificateData,
+} from "@/utils/credentialPdf";
 
 interface ProDrawersProps {
   drawerState: ProDrawerState;
@@ -726,48 +731,209 @@ export const ProDrawers: React.FC<ProDrawersProps> = ({
     );
   }
 
-  // 6. CERTIFICATE MODAL
+  // 6. CERTIFICATE MODAL (REAL-TIME VERIFIED CREDENTIAL & CIR TELEMETRY)
   if (drawerState.type === "certificate") {
+    const key = drawerState.key || "skill:React";
+    let certTitle = "React Advanced Engineering Assessment";
+    let certIssuer = "IAmTalento AI Proctoring & Certification Authority";
+    let certYear = "Oct 2026";
+    let validTill = "Oct 2028";
+    let scoreVal = 86;
+    let skillName = "React";
+
+    if (key.startsWith("ce:")) {
+      const idx = parseInt(key.slice(3), 10) || 0;
+      const raw = (user.ce || [])[idx] || "AWS Certified Solutions Architect · Amazon Web Services · 2026";
+      const parts = String(raw).split(" · ");
+      certTitle = parts[0] || raw;
+      certIssuer = parts[1] || "Accredited Certification Partner";
+      certYear = parts[2] || "2026";
+      validTill = String((parseInt(certYear, 10) || 2026) + 2);
+      scoreVal = 92;
+      skillName = certTitle.split(" ")[0] || "Cloud";
+    } else if (key.startsWith("skill:")) {
+      skillName = key.slice(6) || "React";
+      scoreVal = (user.as || {})[skillName] || (skillName === "HTML/CSS" ? 90 : skillName === "JavaScript" ? 82 : 86);
+      certTitle = `${skillName} Verified Engineering Proficiency Assessment`;
+      certIssuer = "IAmTalento AI-Proctored Skill Authority";
+    } else if (key === "verified") {
+      certTitle =
+        user.role === "employer"
+          ? "Verified Enterprise Employer & 24h SLA Partner"
+          : "Talento Pro Verified Engineering Professional";
+      certIssuer = "IAmTalento Identity & Competency Assurance Board";
+      scoreVal = 94;
+      skillName = "Architecture";
+    }
+
+    const credId = `TLN-CERT-2026-${skillName.slice(0, 3).toUpperCase()}-${840 + scoreVal}`;
+    const certData: RealTimeCertificateData = {
+      credentialId: credId,
+      candidateName: user.name,
+      candidateEmail: user.email,
+      candidateRole: user.head || "Senior Full-Stack Engineer",
+      title: certTitle,
+      issuer: certIssuer,
+      issuedDate: certYear,
+      validUntil: validTill,
+      score: scoreVal,
+      percentile: scoreVal >= 90 ? "Top 4%" : scoreVal >= 82 ? "Top 8%" : "Top 14%",
+      integrityScore: "99.8%",
+      timeTaken: "34m 18s / 45m",
+      codingTestCases: "12 / 12 Passed",
+      peerAverage: 62,
+      partnerCutoff: 60,
+      salaryBand: "INR 18.0 - 28.0 LPA",
+      verificationHash: `0x94F8...${scoreVal}E2B1`,
+      subSkills: [
+        { name: `${skillName} Core Architecture & Patterns`, score: Math.min(98, scoreVal + 4), benchmark: 64 },
+        { name: "Production Performance & Optimization", score: scoreVal, benchmark: 60 },
+        { name: "Security, Edge Cases & Debugging", score: Math.max(70, scoreVal - 3), benchmark: 58 },
+      ],
+      recruiterSummary: `${user.name} demonstrated production-grade mastery in ${certTitle}, scoring ${scoreVal}% with 99.8% proctoring integrity (0 flags) and outperforming ${scoreVal >= 85 ? "92%" : "86%"} of assessed peers.`,
+    };
+
     return (
       <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-        <div className="bg-card border border-border rounded-2xl max-w-xl w-full p-6 space-y-5 shadow-2xl">
+        <div className="bg-card border border-border rounded-2xl max-w-2xl w-full max-h-[92vh] overflow-y-auto p-6 space-y-5 shadow-2xl">
           <div className="flex items-center justify-between">
             <h3 className="font-bold text-foreground text-base flex items-center gap-2">
-              <Award className="w-5 h-5 text-primary" /> Verified Credential
+              <Award className="w-5 h-5 text-primary" /> Official Verified Certificate &amp; Live Telemetry
             </h3>
             <Button size="sm" variant="ghost" onClick={onClose} className="rounded-full w-8 h-8 p-0">
               <X className="w-4 h-4" />
             </Button>
           </div>
 
-          {/* Certificate Paper */}
-          <div className="border-2 border-primary/40 rounded-xl p-8 bg-white text-neutral-900 text-center space-y-3 shadow-inner">
-            <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto">
-              <Award className="w-6 h-6" />
+          {/* Certificate A4 Preview Card */}
+          <div className="border-2 border-[#002C66] rounded-2xl overflow-hidden bg-white text-slate-900 shadow-lg">
+            {/* Top Navy Header */}
+            <div className="bg-[#002C66] text-white p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <div className="text-[10px] font-bold uppercase tracking-widest text-[#FB923C]">
+                  IAmTalento Verified Credential Authority
+                </div>
+                <div className="text-base font-extrabold tracking-tight mt-0.5">
+                  CERTIFICATE OF VERIFIED PROFICIENCY
+                </div>
+                <div className="text-[11px] text-white/80 font-mono mt-0.5">
+                  ID: {certData.credentialId} · Hash: {certData.verificationHash}
+                </div>
+              </div>
+              <div className="shrink-0 rounded-xl bg-emerald-500/20 border border-emerald-400/40 px-3 py-1.5 text-right">
+                <div className="text-[10px] uppercase tracking-wider text-emerald-200 font-semibold">
+                  Verified Score
+                </div>
+                <div className="text-lg font-extrabold text-white">
+                  {certData.score}% ({certData.percentile})
+                </div>
+              </div>
             </div>
-            <div className="text-[11px] uppercase tracking-widest text-neutral-500 font-bold">
-              Talento Proctored Credential
-            </div>
-            <h2 className="text-xl font-bold font-display text-neutral-900">{user.name}</h2>
-            <p className="text-xs text-neutral-600 max-w-sm mx-auto">
-              Has demonstrated verified competency and successfully fulfilled all proctoring standards.
-            </p>
-            <div className="text-[11px] text-neutral-500 pt-2 border-t border-neutral-200">
-              Credential ID: <b>TLN-948194</b> • Verified on <b>{new Date().toLocaleDateString()}</b>
+
+            {/* Body */}
+            <div className="p-6 space-y-5">
+              <div className="text-center space-y-1.5 border-b border-slate-200 pb-5">
+                <div className="text-xs text-slate-500">This is to certify that</div>
+                <h2 className="text-2xl font-extrabold font-display text-[#002C66]">{certData.candidateName}</h2>
+                <div className="text-xs font-medium text-slate-600">
+                  {certData.candidateRole} · {certData.candidateEmail}
+                </div>
+                <p className="text-xs text-slate-600 pt-2 max-w-lg mx-auto">
+                  has successfully passed the AI-proctored engineering assessment and met all verification standards for:
+                </p>
+                <div className="inline-block mt-2 rounded-xl bg-slate-100 border border-slate-200 px-4 py-2">
+                  <div className="text-sm font-bold text-[#002C66]">{certData.title}</div>
+                  <div className="text-[11px] text-slate-500">Issued by {certData.issuer}</div>
+                </div>
+              </div>
+
+              {/* Real-Time Telemetry Metrics Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-2.5">
+                  <span className="text-[10px] font-bold uppercase text-slate-400 block">Proctoring Integrity</span>
+                  <strong className="text-emerald-700 font-bold text-sm">{certData.integrityScore}</strong>
+                  <span className="text-[10px] text-slate-500 block">0 Tab Switches</span>
+                </div>
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-2.5">
+                  <span className="text-[10px] font-bold uppercase text-slate-400 block">Percentile Rank</span>
+                  <strong className="text-[#002C66] font-bold text-sm">{certData.percentile}</strong>
+                  <span className="text-[10px] text-slate-500 block">Peer Median: {certData.peerAverage}%</span>
+                </div>
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-2.5">
+                  <span className="text-[10px] font-bold uppercase text-slate-400 block">Coding &amp; Rubric</span>
+                  <strong className="text-slate-900 font-bold text-sm">{certData.codingTestCases}</strong>
+                  <span className="text-[10px] text-slate-500 block">Time: {certData.timeTaken}</span>
+                </div>
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-2.5">
+                  <span className="text-[10px] font-bold uppercase text-slate-400 block">Validity Window</span>
+                  <strong className="text-slate-900 font-bold text-sm">
+                    {certData.issuedDate} – {certData.validUntil}
+                  </strong>
+                  <span className="text-[10px] text-emerald-600 font-semibold block">● Live Synced</span>
+                </div>
+              </div>
+
+              {/* Sub-Skill Bars */}
+              <div className="rounded-xl border border-slate-200 p-3.5 space-y-2 bg-slate-50/60">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-[#002C66]">
+                  Verified Sub-Domain Competency Breakdown
+                </div>
+                {certData.subSkills.map((s) => (
+                  <div key={s.name} className="space-y-1 text-xs">
+                    <div className="flex justify-between">
+                      <span className="font-semibold text-slate-800">{s.name}</span>
+                      <span className="font-bold text-[#002C66]">
+                        {s.score}% <span className="text-[10px] font-normal text-slate-500">(Peer Avg: {s.benchmark}%)</span>
+                      </span>
+                    </div>
+                    <div className="h-1.5 w-full rounded-full bg-slate-200 overflow-hidden">
+                      <div className="h-full rounded-full bg-[#002C66]" style={{ width: `${s.score}%` }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Footer */}
+              <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-200 text-[11px] text-slate-500">
+                <div>
+                  Verify URL: <b className="text-[#002C66]">iamtalento.com/verify/{certData.credentialId}</b>
+                </div>
+                <div className="font-semibold text-slate-700">
+                  Authorized Digital Signatory · IAmTalento
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="flex justify-end gap-2 pt-2">
+          <div className="flex flex-wrap justify-end gap-2 pt-1">
             <Button
               size="sm"
               variant="outline"
               onClick={() => window.print()}
-              className="rounded-xl text-xs gap-1.5"
+              className="rounded-xl text-xs gap-1.5 cursor-pointer"
             >
-              <Printer className="w-3.5 h-3.5" /> Print / Save PDF
+              <Printer className="w-3.5 h-3.5" /> Print
             </Button>
-            <Button size="sm" onClick={onClose} className="rounded-xl text-xs">
-              Close
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                downloadCirReportPdf(certData);
+                onToast(`Downloaded CIR Report PDF: IAmTalento-CIR-Report-${certData.credentialId}.pdf`);
+              }}
+              className="rounded-xl border-primary/40 text-primary text-xs font-bold gap-1.5 cursor-pointer"
+            >
+              <Download className="w-3.5 h-3.5" /> Download CIR Report (.pdf)
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => {
+                downloadCertificatePdf(certData);
+                onToast(`Downloaded Certificate PDF: IAmTalento-Certificate-${certData.credentialId}.pdf`);
+              }}
+              className="rounded-xl bg-[#FB923C] hover:bg-[#F97316] text-white text-xs font-bold gap-1.5 cursor-pointer"
+            >
+              <Download className="w-3.5 h-3.5" /> Download Certificate (.pdf)
             </Button>
           </div>
         </div>
