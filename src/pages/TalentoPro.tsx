@@ -1001,6 +1001,8 @@ const TalentoPro: React.FC = () => {
                 }}
                 onOpenDrawer={openDrawer}
                 onNavigateToQuiz={() => { window.location.href = "/assessments/explore"; }}
+                onUpdateUser={handleUpdateUser}
+                onToast={addToast}
               />
             )}
 
