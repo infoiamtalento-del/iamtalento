@@ -119,42 +119,34 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
     return (
       <div className="space-y-6">
         {/* Header Banner */}
-        <div className="bg-card border border-border/80 rounded-2xl p-6 relative overflow-hidden shadow-sm">
-          <div className="absolute top-0 right-0 w-72 h-72 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
-            <div>
-              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold mb-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                Live Recruiter Hub
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground font-display">
-                {user.cp?.name || user.name} Analytics
-              </h1>
-              <p className="text-muted-foreground text-sm mt-1">
-                Real-time applicant pipeline, 24-hour review SLA monitoring, and talent insights.
-              </p>
-            </div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <Button onClick={() => onNavigate("post")} className="rounded-xl gap-2 font-medium shadow-sm">
-                <Plus className="w-4 h-4" /> Post New Job
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => onNavigate("pipe")}
-                className="rounded-xl gap-2 font-medium bg-background"
-              >
-                <Layers className="w-4 h-4" /> Pipeline Board
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => onNavigate("talent")}
-                className="rounded-xl gap-2 font-medium bg-background"
-              >
-                <Users className="w-4 h-4" /> Find Talent
-              </Button>
-            </div>
+        <ProHero
+          title={`${user.cp?.name || user.name} Analytics`}
+          subtitle="Real-time applicant pipeline, 24-hour review SLA monitoring, and talent insights."
+        >
+          <div className="flex flex-wrap items-center gap-2 pt-1">
+            <button
+              type="button"
+              onClick={() => onNavigate("post")}
+              className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/30 backdrop-blur-sm transition-colors hover:bg-white/25 cursor-pointer"
+            >
+              <Plus className="h-3.5 w-3.5" /> Post New Job
+            </button>
+            <button
+              type="button"
+              onClick={() => onNavigate("pipe")}
+              className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/30 backdrop-blur-sm transition-colors hover:bg-white/25 cursor-pointer"
+            >
+              <Layers className="h-3.5 w-3.5" /> Pipeline Board
+            </button>
+            <button
+              type="button"
+              onClick={() => onNavigate("talent")}
+              className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/30 backdrop-blur-sm transition-colors hover:bg-white/25 cursor-pointer"
+            >
+              <Users className="h-3.5 w-3.5" /> Find Talent
+            </button>
           </div>
-        </div>
+        </ProHero>
 
         {/* Stat Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">

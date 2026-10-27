@@ -153,8 +153,10 @@ const TalentoPro: React.FC = () => {
     const roleParam = searchParams.get("role");
     if (roleParam === "employer" && sessionEmail !== "demo.employer@talento.app") {
       setSessionEmail("demo.employer@talento.app");
+      saveStorage("sess", "demo.employer@talento.app");
     } else if ((roleParam === "employee" || roleParam === "candidate") && sessionEmail !== "demo.candidate@talento.app") {
       setSessionEmail("demo.candidate@talento.app");
+      saveStorage("sess", "demo.candidate@talento.app");
     }
   }, [searchParams, sessionEmail]);
 
@@ -681,7 +683,7 @@ const TalentoPro: React.FC = () => {
   const selectedCandidate = candidatePage?.type === "candidate" ? CANDIDATES_SEED.find(c => c.n === candidatePage.name) : undefined;
   return (
     <div
-      className={cn("min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-primary/20 selection:text-primary", currentRole === "employer" && (candidatePage || effectiveView === "employer-assessments") && "employer-reference-shell")}
+      className="min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-primary/20 selection:text-primary"
     >
       <Helmet>
         <title>
@@ -735,7 +737,7 @@ const TalentoPro: React.FC = () => {
           isEmployer={currentRole === "employer"}
           onNavigate={(view) => {
             setDrawerState(null);
-            setSearchParams({ view });
+            setSearchParams(currentRole === "employer" ? { view, role: "employer" } : { view });
             setEditingCp(false);
             setActiveView(view);
             window.scrollTo({ top: 0 });

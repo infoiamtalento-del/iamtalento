@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { getCandidatePhoto } from "@/data/portalAssets";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from "recharts";
 
 const pipelineData = [
@@ -63,40 +64,51 @@ const Dashboard = () => {
       </Helmet>
       <div className="flex h-screen bg-background">
         {/* Sidebar */}
-        <aside className={cn("flex flex-col border-r border-border bg-card transition-all duration-300", collapsed ? "w-16" : "w-60")}>
-          <div className="flex items-center justify-between p-4 border-b border-border">
+        <aside className={cn("flex flex-col border-r border-[#001D44] bg-[#002C66] text-white transition-all duration-300 shadow-md", collapsed ? "w-16" : "w-64")}>
+          <div className="flex items-center justify-between p-4 border-b border-white/15">
             {!collapsed && (
-              <Link to="/" className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-lg gradient-primary flex items-center justify-center">
-                  <Zap className="h-4 w-4 text-primary-foreground" />
+              <Link to="/" className="flex items-center gap-3 min-w-0">
+                <div className="h-10 w-10 rounded-full overflow-hidden border-2 border-white/30 bg-white/15 shrink-0 flex items-center justify-center">
+                  <img src={getCandidatePhoto("Super30 Hiring Team")} alt="Employer" className="h-full w-full object-cover" />
                 </div>
-                <span className="font-bold font-display text-sm">Talento</span>
+                <div className="min-w-0">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-blue-200/90 truncate">Dashboard Menu</p>
+                  <p className="font-bold text-xs text-white truncate">Employer Workspace</p>
+                </div>
               </Link>
             )}
-            <button onClick={() => setCollapsed(!collapsed)} className="p-1.5 rounded-lg hover:bg-accent transition-colors">
-              <ChevronLeft className={cn("h-4 w-4 transition-transform", collapsed && "rotate-180")} />
+            <button onClick={() => setCollapsed(!collapsed)} className="p-1.5 rounded-lg text-white hover:bg-white/10 transition-colors cursor-pointer">
+              <ChevronLeft className={cn("h-4 w-4 text-white transition-transform", collapsed && "rotate-180")} />
             </button>
           </div>
-          <nav className="flex-1 p-2 space-y-1">
+          <nav className="flex-1 p-3 space-y-1">
             {sidebarItems.map(({ icon: Icon, label }) => (
               <button
                 key={label}
+                type="button"
                 onClick={() => setActiveItem(label)}
                 className={cn(
-                  "flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm transition-colors",
-                  activeItem === label ? "bg-accent text-accent-foreground font-medium" : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                  "flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer",
+                  activeItem === label
+                    ? "bg-white/20 text-white shadow-xs border border-white/30"
+                    : "text-white/85 hover:text-white hover:bg-white/10"
                 )}
               >
-                <Icon className="h-4 w-4 shrink-0" />
-                {!collapsed && label}
+                <Icon className="h-4 w-4 shrink-0 text-white" />
+                {!collapsed && <span className="text-white truncate">{label}</span>}
               </button>
             ))}
           </nav>
-          <div className="p-2 border-t border-border">
-            <Link to="/" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors">
-              <LogOut className="h-4 w-4 shrink-0" />
-              {!collapsed && "Back to Site"}
-            </Link>
+          <div className="p-3 border-t border-white/15">
+            <Button
+              asChild
+              className="w-full h-10 rounded-xl px-4 py-2.5 text-xs font-bold flex items-center justify-center gap-2 bg-[#FB923C] hover:bg-[#F97316] active:bg-[#EA580C] text-white border border-orange-200/40 shadow-md transition-all cursor-pointer"
+            >
+              <Link to="/auth">
+                <LogOut className="h-4 w-4 shrink-0 text-white" />
+                {!collapsed && <span className="text-white font-bold">Logout</span>}
+              </Link>
+            </Button>
           </div>
         </aside>
 

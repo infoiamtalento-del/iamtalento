@@ -261,7 +261,7 @@ const Auth = () => {
                     <p className="mb-3 text-xs font-semibold uppercase text-muted-foreground">Demo account</p>
                     <Button type="button" variant="outline" onClick={openDemoProfile} className="h-auto w-full justify-start gap-3 whitespace-normal border-primary/30 bg-primary/5 p-4 text-left hover:bg-primary/10">
                       <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary text-primary-foreground">
-                        {role === "employee" ? <img src={getCandidatePhoto(demoUser.name)} alt={demoUser.name} className="h-full w-full object-cover" /> : <Building2 className="h-5 w-5" />}
+                        <img src={getCandidatePhoto(demoUser.name)} alt={demoUser.name} className="h-full w-full object-cover" />
                       </span>
                       <span className="min-w-0 flex-1"><span className="block text-sm font-semibold text-primary">Quick login as {demoUser.name}</span><span className="mt-1 block text-xs text-muted-foreground">{role === "employer" ? "Employer company profile" : "Employee profile"}</span></span>
                       <ArrowRight className="text-primary" />
