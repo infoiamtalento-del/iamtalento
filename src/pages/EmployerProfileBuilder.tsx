@@ -13,6 +13,7 @@ import {
   Briefcase, DollarSign, FileText, ChevronLeft, ChevronRight,
   Check, LogOut, Save, Shield, Plus, Trash2, Factory,
 } from "lucide-react";
+import { getCandidatePhoto } from "@/data/portalAssets";
 
 const STEPS = [
   { num: 1, label: "Sign Up", icon: User, desc: "Account created" },
@@ -200,7 +201,9 @@ const EmployerProfileBuilder = () => {
         <header className="sticky top-0 z-50 bg-card border-b border-border">
           <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Building2 className="h-6 w-6 text-primary" />
+              <div className="h-9 w-9 rounded-full overflow-hidden border border-primary/20 shrink-0">
+                <img src={logoUrl || getCandidatePhoto(contactName || companyName || "Employer")} alt={companyName || "Employer"} className="h-full w-full object-cover" />
+              </div>
               <div>
                 <h1 className="text-lg font-bold font-display">Employer Profile</h1>
                 <p className="text-xs text-muted-foreground">{companyName || "Setup your company"} · {talentaId}</p>
@@ -211,8 +214,14 @@ const EmployerProfileBuilder = () => {
               <Button size="sm" variant="outline" onClick={handleSave} disabled={saving}>
                 <Save className="h-4 w-4 mr-1" />{saving ? "Saving…" : "Save"}
               </Button>
-              <Button size="sm" variant="ghost" onClick={handleSignOut}>
-                <LogOut className="h-4 w-4" />
+              <Button
+                type="button"
+                size="sm"
+                onClick={handleSignOut}
+                className="h-9 rounded-xl px-3.5 text-xs font-bold flex items-center justify-center gap-1.5 bg-[#FB923C] hover:bg-[#F97316] active:bg-[#EA580C] text-white border border-orange-200/40 shadow-sm cursor-pointer"
+              >
+                <LogOut className="h-4 w-4 text-white" />
+                <span className="text-white font-bold">Logout</span>
               </Button>
             </div>
           </div>
@@ -220,29 +229,52 @@ const EmployerProfileBuilder = () => {
 
         <div className="max-w-6xl mx-auto px-4 py-8 flex gap-8">
           {/* Stepper sidebar */}
-          <aside className="hidden lg:block w-56 shrink-0">
-            <nav className="space-y-1 sticky top-24">
-              {STEPS.map((s) => (
-                <button key={s.num} onClick={() => s.num !== 1 && setStep(s.num)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all ${
-                    step === s.num ? "bg-accent text-primary" :
-                    s.num === 1 ? "text-muted-foreground/50 cursor-default" :
-                    "text-muted-foreground hover:bg-secondary"
-                  }`}>
-                  <div className={`h-8 w-8 rounded-lg flex items-center justify-center text-sm font-bold shrink-0 ${
-                    step === s.num ? "bg-primary text-primary-foreground" :
-                    s.num === 1 ? "bg-muted text-muted-foreground" :
-                    "bg-secondary text-foreground"
-                  }`}>
-                    {s.num === 1 ? <Check className="h-4 w-4" /> : s.num}
+          <aside className="hidden lg:block w-64 shrink-0">
+            <div className="sticky top-24 rounded-2xl border border-[#001D44] bg-[#002C66] text-white p-4 shadow-md flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-3 pb-3 mb-3 border-b border-white/15">
+                  <div className="h-10 w-10 rounded-full overflow-hidden border-2 border-white/30 bg-white/15 shrink-0 flex items-center justify-center">
+                    <img src={logoUrl || getCandidatePhoto(contactName || companyName || "Employer")} alt={companyName || "Employer"} className="h-full w-full object-cover" />
                   </div>
-                  <div>
-                    <p className="text-sm font-medium leading-tight">{s.label}</p>
-                    <p className="text-[10px] text-muted-foreground">{s.desc}</p>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-blue-200/90 truncate">Dashboard Menu</p>
+                    <p className="text-xs font-bold text-white truncate">{companyName || contactName || "Employer Workspace"}</p>
                   </div>
-                </button>
-              ))}
-            </nav>
+                </div>
+                <nav className="space-y-1">
+                  {STEPS.map((s) => (
+                    <button key={s.num} type="button" onClick={() => s.num !== 1 && setStep(s.num)}
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all cursor-pointer ${
+                        step === s.num ? "bg-white/20 text-white border border-white/30 shadow-xs" :
+                        s.num === 1 ? "text-white/60 cursor-default" :
+                        "text-white/85 hover:text-white hover:bg-white/10"
+                      }`}>
+                      <div className={`h-8 w-8 rounded-lg flex items-center justify-center text-sm font-bold shrink-0 ${
+                        step === s.num ? "bg-white text-[#002C66]" :
+                        s.num === 1 ? "bg-white/15 text-white" :
+                        "bg-white/10 text-white"
+                      }`}>
+                        {s.num === 1 ? <Check className="h-4 w-4 text-white" /> : s.num}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold leading-tight text-white truncate">{s.label}</p>
+                        <p className="text-[10px] text-blue-200/80 truncate">{s.desc}</p>
+                      </div>
+                    </button>
+                  ))}
+                </nav>
+              </div>
+              <div className="pt-3 mt-4 border-t border-white/15">
+                <Button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="w-full h-10 rounded-xl px-4 py-2.5 text-xs font-bold flex items-center justify-center gap-2 bg-[#FB923C] hover:bg-[#F97316] active:bg-[#EA580C] text-white border border-orange-200/40 shadow-md transition-all cursor-pointer"
+                >
+                  <LogOut className="h-4 w-4 shrink-0 text-white" />
+                  <span className="text-white font-bold">Logout</span>
+                </Button>
+              </div>
+            </div>
           </aside>
 
           {/* Content */}

@@ -37,6 +37,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { type ProUser, type ProJob, type ProApplication } from "@/data/proData";
+import { getCandidatePhoto } from "@/data/portalAssets";
 import type { ProView } from "./proTypes";
 import "./employer-workspace.css";
 
@@ -224,9 +225,13 @@ export function ProEmployerMyAccount({
         <section className="rounded-xl border border-border bg-card p-6 shadow-xs space-y-6">
           <div className="flex items-center justify-between border-b border-border pb-5">
             <div className="flex items-center gap-4">
-              <span className="h-16 w-16 rounded-full bg-primary/10 text-primary flex items-center justify-center border-2 border-primary/20 shrink-0">
-                <Building2 size={30} />
-              </span>
+              <div className="h-16 w-16 rounded-full bg-primary/10 text-primary flex items-center justify-center border-2 border-primary/20 shrink-0 overflow-hidden shadow-xs">
+                <img
+                  src={user.avatar || getCandidatePhoto(user.name)}
+                  alt={user.name}
+                  className="h-full w-full object-cover"
+                />
+              </div>
               <div>
                 <h2 className="text-xl font-bold text-foreground">{user.name}</h2>
                 <p className="mt-1 text-xs text-muted-foreground flex items-center gap-1.5">
