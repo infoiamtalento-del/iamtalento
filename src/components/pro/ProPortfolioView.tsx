@@ -29,6 +29,7 @@ import {
   CheckCircle2,
   Calendar,
   Languages,
+  Video,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -310,6 +311,9 @@ const CandidatePortfolio: React.FC<{
     m: "",
   });
 
+  const [isOpenToWork, setIsOpenToWork] = useState(true);
+  const [isOpenForFreelance, setIsOpenForFreelance] = useState(true);
+  const [isVideoResumeOpen, setIsVideoResumeOpen] = useState(false);
   const [copiedShare, setCopiedShare] = useState(false);
   const avatarUrl = getCandidatePhoto(user.name);
 
@@ -442,11 +446,21 @@ const CandidatePortfolio: React.FC<{
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Button variant="outline" onClick={() => setIsShareModalOpen(true)} className="cursor-pointer gap-1.5">
+          {/* Video Resume button before Share button */}
+          <Button
+            variant="outline"
+            onClick={() => setIsVideoResumeOpen(true)}
+            className="cursor-pointer gap-1.5 border-primary/40 bg-primary/5 text-primary hover:bg-primary/10 font-semibold text-xs"
+          >
+            <Video className="h-4 w-4 text-primary" />
+            Video Resume
+          </Button>
+
+          <Button variant="outline" onClick={() => setIsShareModalOpen(true)} className="cursor-pointer gap-1.5 text-xs">
             <Share2 className="h-4 w-4 text-primary" />
             Share Portfolio
           </Button>
-          <Button onClick={() => setIsAddProjOpen(true)} className="cursor-pointer gap-1.5">
+          <Button onClick={() => setIsAddProjOpen(true)} className="cursor-pointer gap-1.5 text-xs">
             <Plus className="h-4 w-4" />
             Add Project
           </Button>
@@ -473,9 +487,46 @@ const CandidatePortfolio: React.FC<{
                   <BadgeCheck className="h-3.5 w-3.5" />
                   Verified Engineer
                 </Badge>
-                <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30 text-xs">
-                  {user.st || "Open to offers"}
-                </Badge>
+
+                {/* Separate Open to Work button/badge */}
+                {isOpenToWork && (
+                  <button
+                    type="button"
+                    onClick={() => { setIsOpenToWork(false); onToast("Removed 'Open to Work' status"); }}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-700 border border-emerald-500/30 hover:bg-emerald-500/20 cursor-pointer transition-colors"
+                    title="Click to remove status"
+                  >
+                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                    Open to Work
+                    <X className="h-3 w-3 opacity-60 ml-0.5" />
+                  </button>
+                )}
+
+                {/* Separate Open for Freelancing button/badge */}
+                {isOpenForFreelance && (
+                  <button
+                    type="button"
+                    onClick={() => { setIsOpenForFreelance(false); onToast("Removed 'Open for Freelancing' status"); }}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-700 border border-sky-500/30 hover:bg-sky-500/20 cursor-pointer transition-colors"
+                    title="Click to remove status"
+                  >
+                    <span className="h-2 w-2 rounded-full bg-sky-500" />
+                    Open for Freelancing
+                    <X className="h-3 w-3 opacity-60 ml-0.5" />
+                  </button>
+                )}
+
+                {/* If neither is active, allow enabling */}
+                {!isOpenToWork && !isOpenForFreelance && (
+                  <button
+                    type="button"
+                    onClick={() => { setIsOpenToWork(true); onToast("Enabled 'Open to Work'"); }}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold border border-dashed border-muted-foreground/50 text-muted-foreground hover:text-foreground cursor-pointer"
+                  >
+                    <Plus className="h-3 w-3" />
+                    Set Availability
+                  </button>
+                )}
               </div>
 
               <p className="text-sm font-medium text-foreground/80">
@@ -1128,6 +1179,136 @@ const CandidatePortfolio: React.FC<{
           )}
         </DialogContent>
       </Dialog>
+
+      {/* ================= FULL PAGE VIDEO RESUME MODAL ================= */}
+      {isVideoResumeOpen && (
+        <div className="fixed inset-0 z-[100] bg-slate-950 text-white flex flex-col overflow-y-auto animate-fade-in">
+          <header className="h-16 px-6 border-b border-white/10 flex items-center justify-between shrink-0 bg-slate-950/90 backdrop-blur-md sticky top-0 z-20">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full overflow-hidden border border-white/20 shrink-0">
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt={user.name} className="h-full w-full object-cover" />
+                ) : (
+                  <span className="flex h-full w-full items-center justify-center bg-primary/20 text-white font-bold text-sm">
+                    {(user.name?.charAt(0) || "Y").toUpperCase()}
+                  </span>
+                )}
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-base font-bold text-white">{user.name}</h2>
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/20 text-blue-300 border border-blue-400/30">
+                    <Sparkles className="h-3 w-3" /> 60s Video Resume
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400">{user.head || "Frontend Developer · React · 2.5 yrs"}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2.5">
+              {onNavigate && (
+                <Button
+                  size="sm"
+                  onClick={() => { setIsVideoResumeOpen(false); onNavigate("resume"); }}
+                  className="cursor-pointer gap-1.5 bg-primary text-white hover:bg-primary/90 text-xs"
+                >
+                  <Sparkles className="h-3.5 w-3.5" />
+                  View AI Resume
+                </Button>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsVideoResumeOpen(false)}
+                className="cursor-pointer gap-1 text-slate-300 hover:text-white hover:bg-white/10 text-xs"
+              >
+                <X className="h-4 w-4" />
+                Close Fullscreen
+              </Button>
+            </div>
+          </header>
+
+          <div className="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-[1.8fr_1.2fr] gap-6 items-start">
+            <div className="space-y-4">
+              <div className="relative aspect-video rounded-2xl overflow-hidden bg-black border border-white/15 shadow-2xl">
+                <video
+                  src="/product-in-60-sec.mp4"
+                  controls
+                  autoPlay
+                  playsInline
+                  className="w-full h-full object-contain"
+                />
+              </div>
+
+              <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                    <Video className="h-4 w-4 text-primary" />
+                    Verified Video Elevator Pitch
+                  </h3>
+                  <span className="text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
+                    <CheckCircle2 className="h-3.5 w-3.5" /> AI Proctored & Verified
+                  </span>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  "Hello! I'm {user.name}. In this 60-second video introduction, I walk you through my core engineering competencies, recent projects, and production architecture. I specialize in building responsive, high-performance web applications using React, TypeScript, and modern backend services."
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-3">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Pitch Chapters & Timestamps</h3>
+                <div className="space-y-2">
+                  {[
+                    { time: "0:00", title: "Introduction & Engineering Background", desc: "Core stack and product domain expertise." },
+                    { time: "0:18", title: "Production Projects & Architecture", desc: "Performance tuning, bundle optimization, and REST APIs." },
+                    { time: "0:35", title: "Technical Assessments & Scores", desc: "Proctored tests in React, SQL, and System Design." },
+                    { time: "0:50", title: "Availability & Work Preferences", desc: "Notice period, work modes, and culture alignment." },
+                  ].map((chap) => (
+                    <div key={chap.time} className="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-start gap-3">
+                      <span className="font-mono text-xs font-bold text-primary px-2 py-0.5 rounded bg-primary/20 shrink-0">
+                        {chap.time}
+                      </span>
+                      <div className="space-y-0.5 text-xs">
+                        <strong className="text-white font-semibold block">{chap.title}</strong>
+                        <p className="text-slate-400 text-[11px]">{chap.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-3">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Key Skills Walked Through</h3>
+                <div className="flex flex-wrap gap-1.5">
+                  {skills.slice(0, 8).map((s) => (
+                    <span key={s} className="px-2.5 py-1 rounded-lg bg-white/10 border border-white/15 text-xs font-medium text-slate-200">
+                      {s}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between text-xs">
+                <span className="text-slate-300">Availability:</span>
+                <div className="flex gap-2">
+                  {isOpenToWork && (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                      <span className="h-2 w-2 rounded-full bg-emerald-500" /> Open to Work
+                    </span>
+                  )}
+                  {isOpenForFreelance && (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-sky-500/20 text-sky-400 border border-sky-500/30">
+                      <span className="h-2 w-2 rounded-full bg-sky-500" /> Open for Freelancing
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

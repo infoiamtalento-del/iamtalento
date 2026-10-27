@@ -65,13 +65,16 @@ export function ProEmployerAccountMenu({
           </DropdownMenuItem>
         ))}
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onSelect={onSignOut}
-          className="min-h-10 cursor-pointer gap-3 px-3 text-xs font-semibold text-destructive hover:bg-destructive/10"
-        >
-          <LogoutIcon className="h-4 w-4 text-destructive" />
-          <span>Logout</span>
-        </DropdownMenuItem>
+        <div className="pt-1">
+          <Button
+            type="button"
+            onClick={onSignOut}
+            className="w-full h-10 flex items-center justify-center gap-2 rounded-lg px-3 text-xs font-bold bg-[#FB923C] hover:bg-[#F97316] text-white border border-orange-200/40 shadow-sm cursor-pointer"
+          >
+            <LogoutIcon className="h-4 w-4 text-white" />
+            <span>Logout</span>
+          </Button>
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );
