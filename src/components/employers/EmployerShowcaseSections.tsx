@@ -207,7 +207,7 @@ const Point = ({ icon: Icon, title, text, align }: { icon: typeof Mic; title: st
 /* ---------- One platform: the 6 requested points ---------- */
 const platformPoints = [
   { title: "Skill Assessment Library", text: "Ready-made, proctored tests for every role, with detailed reports that let you shortlist on demonstrated ability instead of resumes." },
-  { title: "20 Layers of Cheating Prevention", text: "AI proctoring across the entire test journey, from identity checks to browser controls, so every score can be trusted." },
+  { title: "Cheating Prevention", text: "AI proctoring across the entire test journey, from identity checks to browser controls, so every score can be trusted." },
   { title: "Custom AI Assessment Creation", text: "Build role-specific tests in minutes. Paste a job description and get questions mapped to what the role actually demands." },
   { title: "White-Label Branding", text: "Your brand on every assessment touchpoint, from invites and test screens to the reports your candidates receive." },
   { title: "Bulk Campus Hiring & Screening", text: "Screen thousands of candidates at once, with ranked shortlists ready for your team the moment the drive ends." },

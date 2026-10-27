@@ -34,11 +34,12 @@ const candidateProducts: ProductItem[] = [
   { label: "AI Tools Courses", desc: "Master the AI stack employers now expect", href: "/learning", icon: Bot, badge: "Free" },
   { label: "AI Video Resume Builder", desc: "Stand out with a 60-second video pitch", href: "/resources", icon: Video, badge: "Free" },
   { label: "AI Skill Upgrade Alerts", desc: "Get nudged before your skills go stale", href: "/learning", icon: BellRing, badge: "Free" },
+  { label: "AI Guidance", desc: "Personalized AI career and interview guidance", href: "/learning", icon: Sparkles, badge: "Free" },
 ];
 
 const employerProducts: ProductItem[] = [
   { label: "Skill Assessment Library", desc: "Ready-made, proctored tests for every role", href: "/employers-page-2", icon: Library },
-  { label: "20 Layers of Cheating Prevention", desc: "AI proctoring across the entire test journey", href: "/employers-page-2", icon: ShieldCheck },
+  { label: "Cheating Prevention", desc: "AI proctoring across the entire test journey", href: "/employers-page-2", icon: ShieldCheck },
   { label: "Custom AI Assessment Creation", desc: "Build role-specific tests in minutes", href: "/employers-page-2", icon: Wand2 },
   { label: "White-Label Branding", desc: "Your brand on every assessment touchpoint", href: "/employers-page-2", icon: Palette },
   { label: "Bulk Campus Hiring & Screening", desc: "Screen thousands of candidates at once", href: "/employers-page-2", icon: Users },
