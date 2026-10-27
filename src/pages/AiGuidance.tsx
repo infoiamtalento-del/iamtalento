@@ -11,7 +11,6 @@ import {
   GraduationCap,
   Compass,
   Briefcase,
-  TrendingUp,
   Award,
   CheckCircle2,
   ArrowRight,
@@ -23,22 +22,23 @@ import {
   FileCheck2,
   UserCheck,
   Target,
-  BarChart3,
   Layers,
-  ShieldCheck,
   Zap,
   Globe2,
-  Wrench,
-  BadgeCheck,
   SlidersHorizontal,
   RefreshCw,
   Check,
   Calendar,
-  Building2,
-  Wallet,
 } from "lucide-react";
 
 type DiscoveryPath = "degree" | "beyond" | "all";
+type RoleDomain =
+  | "Finance"
+  | "Marketing"
+  | "Business"
+  | "Human Resources"
+  | "Technology"
+  | "Operations";
 type DetailTab =
   | "overview"
   | "responsibilities"
@@ -50,14 +50,16 @@ type DetailTab =
 interface CareerRole {
   id: string;
   title: string;
+  domain: RoleDomain;
   categoryTags: string[];
   badgeNote: string;
   pathway: "degree" | "beyond" | "both";
   matchScore: number;
   industry: string;
-  experienceLevel: "Fresher" | "Experienced" | "Career Switcher" | "All Levels";
+  experienceLevel: "Fresher" | "Experienced" | "Career Switcher";
   locations: string[];
   eligibleDegrees: string[];
+  eligibleSpecialisations: string[];
   degreeEligibilityNote: string;
   overview: string;
   orgFit: string;
@@ -91,17 +93,362 @@ interface CareerRole {
 }
 
 const CAREER_ROLES: CareerRole[] = [
+  // ===========================================================================
+  // FINANCE & BANKING ROLES (domain: "Finance")
+  // ===========================================================================
+  {
+    id: "fpa",
+    title: "Financial Analyst & FP&A Executive",
+    domain: "Finance",
+    categoryTags: ["Finance", "FP&A", "Corporate Finance"],
+    badgeNote: "Core role for Finance, B.Com, BBA & MBA graduates",
+    pathway: "degree",
+    matchScore: 97,
+    industry: "Finance, Banking (BFSI) & Corporate Treasury",
+    experienceLevel: "Fresher",
+    locations: ["Mumbai", "Bengaluru", "Delhi NCR", "Hyderabad", "Chennai"],
+    eligibleDegrees: ["B.Com", "BBA", "MBA", "BA", "B.Sc."],
+    eligibleSpecialisations: ["Finance", "Economics & Analytics", "General Management"],
+    degreeEligibilityNote: "Direct fit for B.Com / BBA / MBA (Finance) & Economics graduates",
+    overview:
+      "Analyses financial statements, builds budgeting and forecasting models, tracks P&L variance, and delivers actionable valuation and cost-optimisation insights to CFOs and business heads.",
+    orgFit:
+      "Sits within Corporate Finance, Financial Planning & Analysis (FP&A), or Strategic Finance—partnering with business unit leaders, accounting teams, and executive management.",
+    responsibilities: [
+      "Build monthly and quarterly financial models, cash-flow forecasts, and annual operating budgets.",
+      "Perform P&L variance analysis (Actual vs. Budget) and highlight margin improvement levers.",
+      "Prepare board-ready financial decks, unit economics trackers, and capital allocation models.",
+      "Evaluate investment proposals, pricing models, and working capital efficiency.",
+      "Collaborate with accounting and ERP teams to ensure accurate financial reporting under Ind AS / IFRS.",
+    ],
+    deliverables: [
+      "Monthly MIS & P&L variance analysis packs",
+      "3-Statement financial models & DCF valuation workbooks",
+      "Departmental budget forecasts & cash-flow runway dashboards",
+    ],
+    acceptedDegrees: [
+      "B.Com / M.Com (Accounting, Taxation, Financial Markets)",
+      "BBA / BMS / MBA / PGDM in Finance",
+      "BA / B.Sc. in Economics, Statistics, or Mathematics",
+      "CA Inter / CFA Level 1 / CMA aspirants",
+    ],
+    entryRoutes: [
+      "Campus hiring for Corporate Finance / FP&A Analyst roles",
+      "6-month Financial Modelling & Valuation internship",
+      "Talent CIR Verified Financial Analysis & Excel Modelling Assessment",
+    ],
+    essentialSkills: [
+      "Financial Statement Analysis (P&L, Balance Sheet, Cash Flow)",
+      "Advanced Excel & 3-Statement Financial Modelling",
+      "Budgeting, Forecasting & Variance Analysis",
+      "Corporate Finance & Valuation Basics (DCF, Multiples)",
+      "Accounting Principles (Ind AS / GAAP)",
+    ],
+    preferredSkills: [
+      "Power BI / Tableau for Financial Dashboards",
+      "ERP Systems (SAP FICO, Oracle NetSuite, Tally Prime)",
+      "Unit Economics & SaaS / Retail Financial Metrics",
+      "SQL Basics for Financial Data Extraction",
+    ],
+    toolsRequired: [
+      "Microsoft Excel (PivotTables, XLOOKUP, Macros)",
+      "SAP FICO / Oracle NetSuite / Tally Prime",
+      "Power BI / Tableau",
+      "Bloomberg / Capital IQ / Screener",
+    ],
+    certifications: [
+      "Talent CIR Certified Financial Analyst & FP&A Specialist",
+      "CFA Level 1 / NISM Financial Markets Certification",
+      "FMVA (Financial Modeling & Valuation Analyst)",
+    ],
+    projectProof: [
+      "3-Statement Financial Model & DCF Valuation of a Listed Indian Company",
+      "Monthly MIS & P&L Variance Dashboard in Excel + Power BI",
+      "Working Capital & Cost-Optimisation Case Study",
+    ],
+    salaryIndia: {
+      entry: "₹4.8 LPA – ₹8.5 LPA",
+      entryRange: [4.8, 8.5],
+      mid: "₹10.0 LPA – ₹18.0 LPA",
+      midRange: [10.0, 18.0],
+    senior: "₹22.0 LPA – ₹40.0 LPA+",
+      seniorRange: [22.0, 40.0],
+    },
+    futureDemand: {
+      demandLevel: "High Growth",
+      trendSummary:
+        "Global Capability Centres (GCCs), Indian conglomerates, FinTechs, and funded startups are rapidly expanding FP&A and strategic finance teams to drive profitable growth.",
+      aiImpact:
+        "AI automates routine bookkeeping and data reconciliation, making strategic scenario modelling, capital allocation advice, and business partnering more valuable than ever.",
+      emergingTech: [
+        "AI-Assisted Financial Forecasting & Anomaly Detection",
+        "Automated ERP Reconciliation & Real-Time Treasury Dashboards",
+        "Predictive Cash-Flow & Risk Simulation Models",
+      ],
+      futureSkills: [
+        "Strategic Business Partnering (FP&A)",
+        "Automated BI & SQL Financial Reporting",
+        "ESG & Sustainability Financial Reporting",
+      ],
+      advancementPath: [
+        "Financial Analyst / FP&A Executive (0–2 yrs)",
+        "Senior Financial Analyst (2–5 yrs)",
+        "FP&A Manager / Finance Controller (5–8 yrs)",
+        "VP of Finance / Chief Financial Officer (8+ yrs)",
+      ],
+      relatedRoles: [
+        "Investment Banking Analyst",
+        "Corporate Treasury Associate",
+        "Credit & Risk Analyst",
+        "Audit & Taxation Specialist",
+      ],
+      sourceCitation:
+        "Deloitte India CFO Survey & NASSCOM GCC Finance Talent Report (Q1 2026)",
+    },
+  },
+  {
+    id: "audit-tax",
+    title: "Audit, Tax & Corporate Accounting Associate",
+    domain: "Finance",
+    categoryTags: ["Finance", "Accounting", "Audit & Tax"],
+    badgeNote: "High demand across Big 4, GCCs & Corporate Finance",
+    pathway: "degree",
+    matchScore: 94,
+    industry: "Finance, Accounting, Audit Firms & BFSI",
+    experienceLevel: "Fresher",
+    locations: ["Mumbai", "Delhi NCR", "Bengaluru", "Chennai", "Hyderabad", "Pune"],
+    eligibleDegrees: ["B.Com", "BBA", "MBA"],
+    eligibleSpecialisations: ["Finance", "General Management"],
+    degreeEligibilityNote: "Ideal for B.Com, BBA (Finance), MBA (Finance) & CA/ACCA/CMA candidates",
+    overview:
+      "Ensures statutory compliance, executes internal and external financial audits, manages direct/indirect tax filings (GST & Income Tax), and maintains accurate general ledger operations.",
+    orgFit:
+      "Operates within the Controllership, Internal Audit, Taxation, or Assurance practice—working closely with statutory auditors, CFOs, and legal compliance teams.",
+    responsibilities: [
+      "Prepare and verify financial statements, trial balances, and general ledger reconciliations.",
+      "Assist in statutory audits, internal risk controls testing (IFC), and SOX compliance reviews.",
+      "Compute and file monthly/quarterly GST returns, TDS reconciliations, and corporate tax schedules.",
+      "Identify revenue leakage or control gaps and draft audit recommendation reports.",
+      "Coordinate with external auditors, banks, and regulatory authorities during financial close.",
+    ],
+    deliverables: [
+      "Statutory-compliant financial schedules & audit workpapers",
+      "Timely GST, TDS, and corporate income tax compliance filings",
+      "Month-end book closure & balance sheet reconciliation reports",
+    ],
+    acceptedDegrees: [
+      "B.Com / M.Com (Honours / Accounting & Finance)",
+      "BBA / MBA (Finance)",
+      "CA Inter / ACCA / CMA / CPA pursuing candidates",
+    ],
+    entryRoutes: [
+      "Big 4 / Global Assurance & Tax campus recruitment",
+      "Corporate Finance & Accounts Executive trainee program",
+      "Talent CIR Verified Corporate Accounting, GST & Audit Assessment",
+    ],
+    essentialSkills: [
+      "Corporate Accounting & Bookkeeping (Ind AS / IFRS)",
+      "Internal Audit & Risk Control Testing",
+      "Direct & Indirect Taxation (GST, TDS, Income Tax)",
+      "Balance Sheet & Bank Reconciliation",
+      "MS Excel for Audit Sampling & VLOOKUP/Pivot Analysis",
+    ],
+    preferredSkills: [
+      "SAP FICO / Oracle Financials / Tally Prime",
+      "US GAAP / IFRS Reporting for Global Capability Centres",
+      "Forensic Accounting & Compliance Analytics",
+    ],
+    toolsRequired: [
+      "SAP FICO / Tally Prime / Zoho Books",
+      "Advanced MS Excel",
+      "ClearTax / Government GST & Income Tax Portals",
+      "CaseWare / Audit Analytics Tools",
+    ],
+    certifications: [
+      "Talent CIR Certified Corporate Accounting & Tax Professional",
+      "ACCA Diploma in IFRS / ICAI GST Certification",
+      "Certified Internal Auditor (CIA) Foundation",
+    ],
+    projectProof: [
+      "End-to-End Month-End Financial Close & GST Reconciliation Case Study",
+      "Internal Audit Risk Control Matrix (RCM) for Procure-to-Pay Cycle",
+      "Annual Report Financial Ratio & Compliance Audit Analysis",
+    ],
+    salaryIndia: {
+      entry: "₹4.0 LPA – ₹7.2 LPA",
+      entryRange: [4.0, 7.2],
+      mid: "₹8.5 LPA – ₹15.5 LPA",
+      midRange: [8.5, 15.5],
+      senior: "₹18.0 LPA – ₹34.0 LPA+",
+      seniorRange: [18.0, 34.0],
+    },
+    futureDemand: {
+      demandLevel: "Strong & Steady",
+      trendSummary:
+        "Stricter regulatory governance, automated e-invoicing, and global accounting hubs in India keep skilled audit, tax, and compliance professionals in year-round demand.",
+      aiImpact:
+        "AI flags invoice anomalies across 100% of transactions rather than manual samples, elevating associates into regulatory interpreters and internal control advisors.",
+      emergingTech: [
+        "Continuous AI Audit & Automated Transaction Anomaly Detection",
+        "Cloud ERP & Automated GST/E-Invoice Reconciliation",
+        "RegTech Compliance Monitoring Dashboards",
+      ],
+      futureSkills: [
+        "IT General Controls (ITGC) & Systems Audit",
+        "International Tax & Transfer Pricing",
+        "Data-Driven Forensic Auditing",
+      ],
+      advancementPath: [
+        "Audit & Tax Associate (0–2 yrs)",
+        "Senior Audit Executive / Tax Consultant (2–5 yrs)",
+        "Audit Manager / Financial Controller (5–8 yrs)",
+        "Partner / Director of Finance & Compliance (8+ yrs)",
+      ],
+      relatedRoles: [
+        "Financial Analyst (FP&A)",
+        "Risk & Compliance Officer",
+        "Corporate Treasury Executive",
+        "Forensic Audit Specialist",
+      ],
+      sourceCitation:
+        "ICAI & EY India Assurance & Tax Talent Outlook (2026)",
+    },
+  },
+  {
+    id: "wealth-banking",
+    title: "Wealth Management & FinTech Credit Analyst",
+    domain: "Finance",
+    categoryTags: ["Finance", "Banking", "Wealth & Credit"],
+    badgeNote: "Open to Finance graduates & analytical cross-degree candidates",
+    pathway: "both",
+    matchScore: 93,
+    industry: "Banking, FinTech, Wealth Tech & Capital Markets",
+    experienceLevel: "Fresher",
+    locations: ["Mumbai", "Bengaluru", "Delhi NCR", "Pune", "Hyderabad"],
+    eligibleDegrees: ["BBA", "B.Com", "MBA", "BA", "B.Sc.", "B.Tech"],
+    eligibleSpecialisations: [
+      "Finance",
+      "Economics & Analytics",
+      "International Business",
+      "Marketing",
+    ],
+    degreeEligibilityNote: "Open to B.Com / BBA / MBA (Finance) and analytical graduates with NISM badges",
+    overview:
+      "Evaluates credit risk and investment portfolios, advises HNI and retail/corporate clients on wealth products, and leverages FinTech analytics to structure lending and investment solutions.",
+    orgFit:
+      "Part of Wealth Advisory, Credit Underwriting, or Retail/Commercial Banking—bridging financial product teams, risk committees, and client portfolios.",
+    responsibilities: [
+      "Analyse borrower financial health, CIBIL/bureau scores, cash flows, and DSCR for credit underwriting.",
+      "Construct diversified mutual fund, equity, and fixed-income portfolios aligned with client risk profiles.",
+      "Monitor macroeconomic indicators, RBI policy updates, and sector credit trends.",
+      "Partner with relationship managers to onboard corporate and HNI wealth clients.",
+      "Ensure strict KYC, AML, and SEBI/RBI regulatory compliance across all transactions.",
+    ],
+    deliverables: [
+      "Credit appraisal memos (CAM) & risk rating scorecards",
+      "Client portfolio asset-allocation & wealth review reports",
+      "AUM growth, portfolio yield, and NPA/risk control benchmarks",
+    ],
+    acceptedDegrees: [
+      "BBA / B.Com / MBA (Finance, Banking & Insurance)",
+      "BA / B.Sc. (Economics, Statistics)",
+      "B.Tech graduates interested in FinTech Credit Risk & Quantitative Wealth Tech",
+    ],
+    entryRoutes: [
+      "Private Bank / Wealth Tech Management Trainee program",
+      "FinTech Credit & Risk Operations Analyst fellowship",
+      "Talent CIR Verified Banking, Credit & Wealth Advisory Assessment",
+    ],
+    essentialSkills: [
+      "Credit Risk Appraisal & Ratio Analysis",
+      "Asset Allocation (Equities, Debt, Mutual Funds)",
+      "Financial Markets & Macroeconomic Fundamentals",
+      "Client Advisory & Consultative Communication",
+      "Regulatory Compliance (RBI / SEBI / KYC-AML)",
+    ],
+    preferredSkills: [
+      "FinTech Digital Lending & Bureau Analytics",
+      "Portfolio Performance & Risk Metrics (Sharpe Ratio, Beta, IRR)",
+      "Excel Financial Calculators & CRM Management",
+    ],
+    toolsRequired: [
+      "MS Excel & Financial Calculators",
+      "Bloomberg / Morningstar / Value Research",
+      "Core Banking & FinTech LOS/LMS Platforms",
+      "Salesforce Financial Services Cloud",
+    ],
+    certifications: [
+      "Talent CIR Certified Banking & Wealth Specialist",
+      "NISM Series V-A (Mutual Fund) & Series VIII / XV (Research Analyst)",
+      "Certified Financial Planner (CFP) / CIBP",
+    ],
+    projectProof: [
+      "Comprehensive Credit Appraisal Memo (CAM) for an SME Lending Case",
+      "Model HNI Investment Portfolio with Risk-Adjusted Return Backtesting",
+      "Indian FinTech Digital Lending & NPA Risk Analysis Report",
+    ],
+    salaryIndia: {
+      entry: "₹4.5 LPA – ₹7.8 LPA",
+      entryRange: [4.5, 7.8],
+      mid: "₹9.0 LPA – ₹16.5 LPA",
+      midRange: [9.0, 16.5],
+      senior: "₹20.0 LPA – ₹38.0 LPA+",
+      seniorRange: [20.0, 38.0],
+    },
+    futureDemand: {
+      demandLevel: "High Growth",
+      trendSummary:
+        "India's booming retail participation in capital markets, expanding HNI wealth base, and digital MSME lending are driving strong hiring across banks, AMC firms, and FinTechs.",
+      aiImpact:
+        "Robo-advisory and AI credit models score routine applications in seconds, increasing demand for human analysts who can evaluate complex cash flows and build high-trust wealth relationships.",
+      emergingTech: [
+        "Account Aggregator (AA) Cash-Flow Underwriting",
+        "AI Portfolio Rebalancing & Wealth Copilots",
+        "Alternative Data Credit Scoring Engines",
+      ],
+      futureSkills: [
+        "Cash-Flow Based Digital Underwriting",
+        "Behavioral Wealth Advisory",
+        "FinTech Product & Regulatory Strategy",
+      ],
+      advancementPath: [
+        "Credit / Wealth Analyst (0–2 yrs)",
+        "Senior Credit Manager / Wealth Advisor (2–5 yrs)",
+        "Vice President – Private Wealth / Credit Risk (5–8 yrs)",
+        "Head of Wealth / Chief Risk Officer (8+ yrs)",
+      ],
+      relatedRoles: [
+        "Financial Analyst (FP&A)",
+        "Equity Research Associate",
+        "Relationship Manager – Corporate Banking",
+        "FinTech Risk Analyst",
+      ],
+      sourceCitation:
+        "AMFI – Crisil India Wealth Report & RBI FinTech Sector Review (2026)",
+    },
+  },
+
+  // ===========================================================================
+  // SALES & BUSINESS DEVELOPMENT ROLES (domain: "Business")
+  // ===========================================================================
   {
     id: "bde",
     title: "Business Development Executive",
+    domain: "Business",
     categoryTags: ["Sales", "Business", "Client Relations"],
     badgeNote: "Example role for a BBA graduate",
     pathway: "both",
     matchScore: 96,
-    industry: "B2B SaaS, IT Services & Consulting",
+    industry: "B2B SaaS, IT Services & Commercial Consulting",
     experienceLevel: "Fresher",
     locations: ["Bengaluru", "Mumbai", "Delhi NCR", "Hyderabad", "Remote / Hybrid"],
     eligibleDegrees: ["BBA", "B.Com", "MBA", "BA", "B.Tech", "B.Sc."],
+    eligibleSpecialisations: [
+      "Marketing",
+      "International Business",
+      "General Management",
+      "Finance",
+    ],
     degreeEligibilityNote: "Direct fit for BBA / MBA / B.Com; open to all analytical graduates",
     overview:
       "Drives revenue growth by identifying new business opportunities, qualifying enterprise leads, building client relationships, and collaborating with product and account teams to close strategic deals.",
@@ -201,16 +548,133 @@ const CAREER_ROLES: CareerRole[] = [
     },
   },
   {
+    id: "csm",
+    title: "Customer Success & Account Specialist",
+    domain: "Business",
+    categoryTags: ["Client Relations", "Business", "SaaS"],
+    badgeNote: "Accepts candidates across all educational backgrounds",
+    pathway: "beyond",
+    matchScore: 91,
+    industry: "Global SaaS, Cloud Platforms & Enterprise Accounts",
+    experienceLevel: "Fresher",
+    locations: ["Bengaluru", "Chennai", "Pune", "Hyderabad", "Remote / Hybrid"],
+    eligibleDegrees: ["BBA", "BA", "B.Com", "B.Sc.", "B.Tech", "MBA"],
+    eligibleSpecialisations: [
+      "General Management",
+      "International Business",
+      "Marketing",
+      "Operations & Supply Chain",
+    ],
+    degreeEligibilityNote: "Degree-agnostic; prioritises empathy, problem solving, and product fluency",
+    overview:
+      "Ensures B2B customers achieve measurable value after purchasing a software product—driving smooth onboarding, high product adoption, contract renewals, and account expansion.",
+    orgFit:
+      "Sits in Post-Sales Revenue / Customer Experience—acting as the trusted advisor to customers and the voice of the customer inside product teams.",
+    responsibilities: [
+      "Lead structured onboarding and training sessions for new enterprise and SMB customers.",
+      "Monitor customer health scores, feature adoption metrics, and usage milestones.",
+      "Conduct Quarterly Business Reviews (QBRs) showcasing ROI delivered to client executives.",
+      "Proactively identify churn risks and collaborate with support/engineering to resolve blockers.",
+      "Spot upsell and cross-sell expansion opportunities within healthy customer accounts.",
+    ],
+    deliverables: [
+      "Net Revenue Retention (NRR) & Gross Renewal Rate targets",
+      "Customer onboarding time-to-value (TTV) & CSAT / NPS scores",
+      "Quarterly Business Review (QBR) decks & account health logs",
+    ],
+    acceptedDegrees: [
+      "Open to all Bachelor's & Master's degrees (BBA, BA, B.Com, B.Sc., B.Tech, MBA)",
+    ],
+    entryRoutes: [
+      "Customer Onboarding Associate or Junior CSM role at SaaS companies",
+      "Transition from BDE, Account Management, or Technical Support",
+      "Talent CIR Client Communication & SaaS Readiness Assessment",
+    ],
+    essentialSkills: [
+      "Relationship Management & Executive Presence",
+      "Product Onboarding & Walkthrough Delivery",
+      "Customer Health & Retention Analysis",
+      "De-escalation & Problem Resolution",
+      "Cross-Functional Collaboration",
+    ],
+    preferredSkills: [
+      "SaaS Metrics (NRR, Churn, Expansion MRR)",
+      "Technical Troubleshooting Basics (APIs / Webhooks)",
+      "QBR Storytelling & ROI Calculation",
+    ],
+    toolsRequired: [
+      "Gainsight / ChurnZero / HubSpot Service Hub",
+      "Zendesk / Intercom",
+      "Loom & Notion",
+      "Excel / Google Sheets",
+    ],
+    certifications: [
+      "Talent CIR Certified Customer Success Professional",
+      "SuccessHACKER Certified Customer Success Manager (CCSM) Level 1",
+      "HubSpot Service Hub Software Certification",
+    ],
+    projectProof: [
+      "30-60-90 Day Enterprise SaaS Onboarding Blueprint",
+      "Mock Quarterly Business Review (QBR) Deck & Churn Mitigation Plan",
+      "Recorded Product Walkthrough & Objection Handling Demo",
+    ],
+    salaryIndia: {
+      entry: "₹4.5 LPA – ₹7.0 LPA",
+      entryRange: [4.5, 7.0],
+      mid: "₹8.5 LPA – ₹15.0 LPA",
+      midRange: [8.5, 15.0],
+      senior: "₹18.0 LPA – ₹30.0 LPA+",
+      seniorRange: [18.0, 30.0],
+    },
+    futureDemand: {
+      demandLevel: "High Growth",
+      trendSummary:
+        "Subscription businesses win on retention. Indian SaaS companies serving global markets actively hire Customer Success teams to protect and expand recurring revenue.",
+      aiImpact:
+        "AI handles Tier-1 ticket answers automatically, making CSMs strategic account consultants focused on executive alignment, workflow adoption, and business outcomes.",
+      emergingTech: [
+        "Predictive Churn & Usage Telemetry AI",
+        "Automated In-App Digital Adoption Platforms (Whatfix, Pendo)",
+        "Conversational AI Support Copilots",
+      ],
+      futureSkills: [
+        "Commercial Account Expansion (CS-Led Growth)",
+        "Digital Adoption Architecture",
+        "Executive ROI Advisory",
+      ],
+      advancementPath: [
+        "Customer Success Associate (0–2 yrs)",
+        "Customer Success Manager – Mid-Market (2–5 yrs)",
+        "Enterprise CSM / Team Lead (5–8 yrs)",
+        "VP of Customer Success / Chief Customer Officer (8+ yrs)",
+      ],
+      relatedRoles: [
+        "Account Manager",
+        "Implementation & Onboarding Consultant",
+        "Solutions Specialist",
+        "Product Operations Associate",
+      ],
+      sourceCitation:
+        "SaaSBOOMi & McKinsey India SaaS Report (2026)",
+    },
+  },
+
+  // ===========================================================================
+  // MARKETING & DIGITAL GROWTH ROLES (domain: "Marketing")
+  // ===========================================================================
+  {
     id: "dme",
     title: "Digital Marketing Executive",
+    domain: "Marketing",
     categoryTags: ["Marketing", "Content", "Campaigns"],
     badgeNote: "May require relevant skills or portfolio",
     pathway: "both",
-    matchScore: 94,
-    industry: "E-Commerce, D2C Brands, Media & Tech",
+    matchScore: 95,
+    industry: "Marketing, E-Commerce, D2C Brands & Digital Media",
     experienceLevel: "Fresher",
     locations: ["Mumbai", "Bengaluru", "Delhi NCR", "Chennai", "Remote / Hybrid"],
     eligibleDegrees: ["BBA", "BA", "B.Com", "MBA", "B.Sc.", "B.Tech"],
+    eligibleSpecialisations: ["Marketing", "General Management", "International Business"],
     degreeEligibilityNote: "Open to BBA / Media / Arts & any degree with a verified campaign portfolio",
     overview:
       "Plans, executes, and optimises multi-channel digital campaigns across search, social, content, and performance channels to grow brand visibility, user acquisition, and measurable ROI.",
@@ -308,17 +772,23 @@ const CAREER_ROLES: CareerRole[] = [
         "IAMAI – Kantar Digital India Report & Dentsu India Digital Ad Spend Outlook (2026)",
     },
   },
+
+  // ===========================================================================
+  // HUMAN RESOURCES & TALENT ROLES (domain: "Human Resources")
+  // ===========================================================================
   {
     id: "hre",
     title: "HR & Recruitment Executive",
-    categoryTags: ["Human Resources", "Talent Acquisition"],
+    domain: "Human Resources",
+    categoryTags: ["Human Resources", "Talent Acquisition", "People Ops"],
     badgeNote: "Requirements vary by employer",
     pathway: "both",
-    matchScore: 91,
-    industry: "IT Services, BFSI, Healthcare & Enterprise GCCs",
+    matchScore: 94,
+    industry: "Human Resources, Talent Acquisition & People Advisory",
     experienceLevel: "Fresher",
     locations: ["Bengaluru", "Hyderabad", "Pune", "Mumbai", "Chennai"],
     eligibleDegrees: ["BBA", "MBA", "BA", "B.Com", "B.Sc."],
+    eligibleSpecialisations: ["Human Resources (HR)", "General Management"],
     degreeEligibilityNote: "Preferred for BBA / MBA (HR) & Psychology; open to strong communicators across degrees",
     overview:
       "Manages end-to-end talent acquisition, structured candidate screening, employer branding, and onboarding experiences to help organisations build high-performing teams.",
@@ -415,41 +885,52 @@ const CAREER_ROLES: CareerRole[] = [
         "Deloitte Global Human Capital Trends – India Perspective & SHRM India Talent Report (2026)",
     },
   },
+
+  // ===========================================================================
+  // OPERATIONS, ANALYTICS & STRATEGY ROLES (domain: "Operations")
+  // ===========================================================================
   {
     id: "ba",
     title: "Product Operations & Business Analyst",
-    categoryTags: ["Business", "Analytics", "Operations"],
-    badgeNote: "High-growth bridge role between Business & Tech",
-    pathway: "beyond",
-    matchScore: 92,
-    industry: "FinTech, SaaS, E-Commerce & Consulting",
+    domain: "Operations",
+    categoryTags: ["Operations", "Business Analytics", "Strategy"],
+    badgeNote: "High-growth bridge role between Business, Operations & Tech",
+    pathway: "both",
+    matchScore: 93,
+    industry: "Operations, Supply Chain, Strategy & Business Analytics",
     experienceLevel: "Fresher",
     locations: ["Bengaluru", "Mumbai", "Hyderabad", "Gurugram", "Remote / Hybrid"],
     eligibleDegrees: ["B.Tech", "BBA", "B.Com", "MBA", "B.Sc.", "BA"],
+    eligibleSpecialisations: [
+      "Operations & Supply Chain",
+      "Economics & Analytics",
+      "General Management",
+      "Finance",
+    ],
     degreeEligibilityNote: "Accepts any degree with strong SQL, Excel, and structured problem-solving skills",
     overview:
-      "Translates business problems into data-backed insights, process workflows, and product requirements—helping leadership make faster, evidence-based operational and product decisions.",
+      "Translates business problems into data-backed insights, process workflows, and operational improvements—helping leadership make faster, evidence-based decisions.",
     orgFit:
-      "Embedded within Product, Strategy, or Central Operations—collaborating daily with engineers, finance, customer support, and executive leadership.",
+      "Embedded within Central Operations, Supply Chain Strategy, or Product Operations—collaborating daily with engineering, finance, logistics, and executive leadership.",
     responsibilities: [
-      "Gather, clean, and analyse operational and customer data using SQL, Excel, and BI tools.",
-      "Document business requirements (BRDs), user stories, and process flowcharts for engineering teams.",
-      "Build live KPI dashboards tracking revenue leakage, funnel drop-offs, and SLA adherence.",
+      "Gather, clean, and analyse operational and supply-chain data using SQL, Excel, and BI tools.",
+      "Document business requirements (BRDs), SOP workflows, and process maps.",
+      "Build live KPI dashboards tracking SLA adherence, turnaround times, and cost efficiency.",
       "Conduct root-cause analysis on operational bottlenecks and recommend automation solutions.",
-      "Coordinate UAT (User Acceptance Testing) and rollout training for new product features.",
+      "Coordinate cross-functional process rollouts across city operations and vendor teams.",
     ],
     deliverables: [
       "Automated weekly KPI dashboards in Power BI / Tableau",
-      "Business Requirement Documents (BRDs) & workflow maps",
+      "Business Requirement Documents (BRDs) & SOP workflow maps",
       "Process efficiency & cost-saving impact reports",
     ],
     acceptedDegrees: [
-      "B.Tech / B.E. (All branches)",
-      "BBA / B.Com / MBA (Finance, Operations, Business Analytics)",
-      "B.Sc. / BA in Economics, Mathematics, or Statistics",
+      "BBA / MBA / PGDM (Operations, Supply Chain, Business Analytics)",
+      "B.Tech / B.E. (Mechanical, Industrial, CS, or allied branches)",
+      "B.Com / B.Sc. / BA in Economics, Mathematics, or Statistics",
     ],
     entryRoutes: [
-      "Direct campus or off-campus Business Analyst hiring track",
+      "Direct campus or off-campus Business / Operations Analyst hiring track",
       "Operations Executive to Business Analyst internal transition",
       "Talent CIR Analytical Reasoning, SQL & Case Study Certification",
     ],
@@ -458,34 +939,33 @@ const CAREER_ROLES: CareerRole[] = [
       "SQL Querying & Data Extraction",
       "Data Visualisation (Power BI / Tableau)",
       "Structured Problem Solving & Root-Cause Analysis",
-      "Requirement Gathering & Documentation (BRD/FRD)",
+      "Process Mapping & SOP Documentation",
     ],
     preferredSkills: [
-      "Python Basics for Data Analysis (Pandas)",
+      "Lean Six Sigma & Supply Chain Fundamentals",
       "Agile / Scrum Workflow Management",
-      "A/B Experimentation & Funnel Metrics",
-      "Financial & Unit Economics Modelling",
+      "Python Basics for Data Analysis (Pandas)",
+      "Unit Economics & SLA Optimisation",
     ],
     toolsRequired: [
       "SQL (PostgreSQL / MySQL / BigQuery)",
       "Microsoft Power BI / Tableau",
       "Advanced MS Excel",
-      "Jira & Confluence",
-      "Figma / Miro (Process Mapping)",
+      "Jira, Confluence & Miro",
     ],
     certifications: [
-      "Talent CIR Verified Business & Data Analyst (Level 2)",
+      "Talent CIR Verified Business & Operations Analyst (Level 2)",
+      "Lean Six Sigma Green Belt Certification",
       "Microsoft Certified: Power BI Data Analyst Associate",
-      "Google Data Analytics Professional Certificate",
     ],
     projectProof: [
-      "End-to-End SQL + Power BI E-Commerce Profitability Dashboard",
-      "Product Requirement Document (PRD) & Funnel Drop-Off Case Study",
-      "Operational Bottleneck Root-Cause Analysis Report",
+      "End-to-End SQL + Power BI Supply Chain & SLA Efficiency Dashboard",
+      "Process Bottleneck Root-Cause Analysis & SOP Redesign Case Study",
+      "Product Requirement Document (PRD) & Funnel Drop-Off Report",
     ],
     salaryIndia: {
-      entry: "₹5.5 LPA – ₹8.5 LPA",
-      entryRange: [5.5, 8.5],
+      entry: "₹5.0 LPA – ₹8.5 LPA",
+      entryRange: [5.0, 8.5],
       mid: "₹10.0 LPA – ₹17.5 LPA",
       midRange: [10.0, 17.5],
       senior: "₹20.0 LPA – ₹36.0 LPA+",
@@ -494,151 +974,53 @@ const CAREER_ROLES: CareerRole[] = [
     futureDemand: {
       demandLevel: "Emerging Rapidly",
       trendSummary:
-        "Indian FinTechs, GCCs, and quick-commerce leaders rely heavily on Business and Product Operations Analysts to turn real-time data into profitable operational execution.",
+        "Quick-commerce, e-commerce logistics, manufacturing GCCs, and SaaS platforms rely heavily on Operations and Business Analysts to optimise unit economics and speed.",
       aiImpact:
-        "Natural-language BI tools speed up basic chart creation, making domain context, root-cause questioning, and cross-team execution the top differentiators.",
+        "Natural-language BI tools speed up chart creation, making operational domain context, root-cause questioning, and cross-team execution the top differentiators.",
       emergingTech: [
         "AI-Copilot BI & Automated SQL Generation",
         "Process Mining & Workflow Automation (n8n, Zapier)",
-        "Real-Time Predictive Operations Telemetry",
+        "Real-Time Predictive Supply Chain Telemetry",
       ],
       futureSkills: [
         "AI Workflow Automation Design",
-        "Product Growth Telemetry",
+        "Supply Chain & Operations Telemetry",
         "Strategic Commercial Modelling",
       ],
       advancementPath: [
-        "Business / Product Ops Analyst (0–2 yrs)",
-        "Senior Business Analyst / Associate PM (2–5 yrs)",
-        "Product Manager / Strategy & Ops Lead (5–8 yrs)",
-        "VP of Product / Chief Operating Officer (8+ yrs)",
+        "Operations / Business Analyst (0–2 yrs)",
+        "Senior Business Analyst / Ops Manager (2–5 yrs)",
+        "Head of Strategy & Operations / PM (5–8 yrs)",
+        "VP of Operations / Chief Operating Officer (8+ yrs)",
       ],
       relatedRoles: [
-        "Data Analyst",
-        "Associate Product Manager (APM)",
+        "Supply Chain Planner",
         "Strategy & Operations Associate",
-        "Financial Planning & Analysis (FP&A) Analyst",
+        "Associate Product Manager (APM)",
+        "Data Analyst",
       ],
       sourceCitation:
         "World Economic Forum Future of Jobs Report & AIM India Analytics Study (2026)",
     },
   },
-  {
-    id: "csm",
-    title: "Customer Success & Account Specialist",
-    categoryTags: ["Client Relations", "Business", "SaaS"],
-    badgeNote: "Accepts candidates across all educational backgrounds",
-    pathway: "beyond",
-    matchScore: 90,
-    industry: "Global SaaS, Cloud Platforms & EdTech",
-    experienceLevel: "Fresher",
-    locations: ["Bengaluru", "Chennai", "Pune", "Hyderabad", "Remote / Hybrid"],
-    eligibleDegrees: ["BBA", "BA", "B.Com", "B.Sc.", "B.Tech", "MBA"],
-    degreeEligibilityNote: "Degree-agnostic; prioritises empathy, problem solving, and product fluency",
-    overview:
-      "Ensures B2B customers achieve measurable value after purchasing a software product—driving smooth onboarding, high product adoption, contract renewals, and account expansion.",
-    orgFit:
-      "Sits in Post-Sales Revenue / Customer Experience—acting as the trusted advisor to customers and the voice of the customer inside product teams.",
-    responsibilities: [
-      "Lead structured onboarding and training sessions for new enterprise and SMB customers.",
-      "Monitor customer health scores, feature adoption metrics, and usage milestones.",
-      "Conduct Quarterly Business Reviews (QBRs) showcasing ROI delivered to client executives.",
-      "Proactively identify churn risks and collaborate with support/engineering to resolve blockers.",
-      "Spot upsell and cross-sell expansion opportunities within healthy customer accounts.",
-    ],
-    deliverables: [
-      "Net Revenue Retention (NRR) & Gross Renewal Rate targets",
-      "Customer onboarding time-to-value (TTV) & CSAT / NPS scores",
-      "Quarterly Business Review (QBR) decks & account health logs",
-    ],
-    acceptedDegrees: [
-      "Open to all Bachelor's & Master's degrees (BBA, BA, B.Com, B.Sc., B.Tech, MBA)",
-    ],
-    entryRoutes: [
-      "Customer Onboarding Associate or Junior CSM role at SaaS companies",
-      "Transition from BDE, Account Management, or Technical Support",
-      "Talent CIR Client Communication & SaaS Readiness Assessment",
-    ],
-    essentialSkills: [
-      "Relationship Management & Executive Presence",
-      "Product Onboarding & Walkthrough Delivery",
-      "Customer Health & Retention Analysis",
-      "De-escalation & Problem Resolution",
-      "Cross-Functional Collaboration",
-    ],
-    preferredSkills: [
-      "SaaS Metrics (NRR, Churn, Expansion MRR)",
-      "Technical Troubleshooting Basics (APIs / Webhooks)",
-      "QBR Storytelling & ROI Calculation",
-    ],
-    toolsRequired: [
-      "Gainsight / ChurnZero / HubSpot Service Hub",
-      "Zendesk / Intercom",
-      "Loom & Notion",
-      "Excel / Google Sheets",
-    ],
-    certifications: [
-      "Talent CIR Certified Customer Success Professional",
-      "SuccessHACKER Certified Customer Success Manager (CCSM) Level 1",
-      "HubSpot Service Hub Software Certification",
-    ],
-    projectProof: [
-      "30-60-90 Day Enterprise SaaS Onboarding Blueprint",
-      "Mock Quarterly Business Review (QBR) Deck & Churn Mitigation Plan",
-      "Recorded Product Walkthrough & Objection Handling Demo",
-    ],
-    salaryIndia: {
-      entry: "₹4.5 LPA – ₹7.0 LPA",
-      entryRange: [4.5, 7.0],
-      mid: "₹8.5 LPA – ₹15.0 LPA",
-      midRange: [8.5, 15.0],
-      senior: "₹18.0 LPA – ₹30.0 LPA+",
-      seniorRange: [18.0, 30.0],
-    },
-    futureDemand: {
-      demandLevel: "High Growth",
-      trendSummary:
-        "Subscription businesses win on retention. Indian SaaS companies serving global markets actively hire Customer Success teams to protect and expand recurring revenue.",
-      aiImpact:
-        "AI handles Tier-1 ticket answers automatically, making CSMs strategic account consultants focused on executive alignment, workflow adoption, and business outcomes.",
-      emergingTech: [
-        "Predictive Churn & Usage Telemetry AI",
-        "Automated In-App Digital Adoption Platforms (Whatfix, Pendo)",
-        "Conversational AI Support Copilots",
-      ],
-      futureSkills: [
-        "Commercial Account Expansion (CS-Led Growth)",
-        "Digital Adoption Architecture",
-        "Executive ROI Advisory",
-      ],
-      advancementPath: [
-        "Customer Success Associate (0–2 yrs)",
-        "Customer Success Manager – Mid-Market (2–5 yrs)",
-        "Enterprise CSM / Team Lead (5–8 yrs)",
-        "VP of Customer Success / Chief Customer Officer (8+ yrs)",
-      ],
-      relatedRoles: [
-        "Account Manager",
-        "Implementation & Onboarding Consultant",
-        "Solutions Specialist",
-        "Product Operations Associate",
-      ],
-      sourceCitation:
-        "SaaSBOOMi & McKinsey India SaaS Report (2026)",
-    },
-  },
+
+  // ===========================================================================
+  // TECHNOLOGY, SOFTWARE & DATA ROLES (domain: "Technology")
+  // ===========================================================================
   {
     id: "fsd",
     title: "Full-Stack / AI Associate Engineer",
+    domain: "Technology",
     categoryTags: ["Technology", "Software", "AI Engineering"],
     badgeNote: "Eligible for B.Tech / BCA / B.Sc. or verified coding portfolio",
     pathway: "both",
-    matchScore: 89,
-    industry: "Software Product, FinTech, AI Startups & GCCs",
+    matchScore: 95,
+    industry: "Technology, Software Products, AI Startups & IT Services",
     experienceLevel: "Fresher",
     locations: ["Bengaluru", "Hyderabad", "Pune", "Chennai", "Remote / Hybrid"],
-    eligibleDegrees: ["B.Tech", "B.Sc.", "BCA", "MCA", "BBA"],
-    degreeEligibilityNote: "Primary fit for B.Tech / B.Sc. (CS); open to non-CS via verified GitHub + CIR Coding score",
+    eligibleDegrees: ["B.Tech", "B.Sc.", "BCA / MCA"],
+    eligibleSpecialisations: ["Computer Science & IT", "Economics & Analytics"],
+    degreeEligibilityNote: "Primary fit for B.Tech / BCA / MCA / B.Sc. (CS); open via verified CIR Coding score",
     overview:
       "Builds, tests, and deploys responsive web applications, backend APIs, and AI-integrated product features that power modern digital platforms.",
     orgFit:
@@ -734,6 +1116,61 @@ const CAREER_ROLES: CareerRole[] = [
     },
   },
 ];
+
+// Map each Specialisation to its primary RoleDomain and default Role ID
+const SPECIALISATION_TO_DOMAIN: Record<string, { domain: RoleDomain; defaultRoleId: string }> = {
+  Finance: { domain: "Finance", defaultRoleId: "fpa" },
+  Marketing: { domain: "Marketing", defaultRoleId: "dme" },
+  "Human Resources (HR)": { domain: "Human Resources", defaultRoleId: "hre" },
+  "Computer Science & IT": { domain: "Technology", defaultRoleId: "fsd" },
+  "Operations & Supply Chain": { domain: "Operations", defaultRoleId: "ba" },
+  "Economics & Analytics": { domain: "Finance", defaultRoleId: "fpa" },
+  "International Business": { domain: "Business", defaultRoleId: "bde" },
+  "General Management": { domain: "Business", defaultRoleId: "bde" },
+};
+
+// Dynamic Pathway Examples based on candidate's chosen Specialisation
+const DOMAIN_PATHWAY_EXAMPLES: Record<
+  RoleDomain,
+  { path1Example: string; path2Example: string }
+> = {
+  Finance: {
+    path1Example:
+      "Financial Analyst & FP&A, Audit & Tax Associate, Corporate Accounting, and Wealth & Credit roles.",
+    path2Example:
+      "FinTech Product & Business Analyst, Revenue Operations, Client Advisory, and Data Analytics roles.",
+  },
+  Marketing: {
+    path1Example:
+      "Digital Marketing Executive, Brand Strategy, Content Marketing, and Business Development roles.",
+    path2Example:
+      "Customer Success Specialist, Product Operations, E-Commerce Growth, and Marketing Analytics roles.",
+  },
+  Business: {
+    path1Example:
+      "Business Development, Marketing, HR and Operations roles.",
+    path2Example:
+      "Digital Marketing, Customer Success, Sales, Recruitment and eligible entry-level tech roles.",
+  },
+  "Human Resources": {
+    path1Example:
+      "HR & Recruitment Executive, Talent Acquisition, People Operations, and L&D Coordinator roles.",
+    path2Example:
+      "Customer Success, Employer Branding, Corporate Communications, and Business Operations roles.",
+  },
+  Technology: {
+    path1Example:
+      "Full-Stack / AI Associate Engineer, Software Developer, Data Analyst, and QA Automation roles.",
+    path2Example:
+      "Product Operations & Business Analyst, Technical Customer Success, and Pre-Sales Solutions roles.",
+  },
+  Operations: {
+    path1Example:
+      "Product Operations & Business Analyst, Supply Chain Executive, Process Excellence, and Logistics roles.",
+    path2Example:
+      "Business Development, Customer Success, FinTech Operations, and Data Analytics roles.",
+  },
+};
 
 const EDUCATION_OPTIONS = ["BBA", "B.Com", "B.Tech", "MBA", "BA", "B.Sc.", "BCA / MCA"];
 const SPECIALISATION_OPTIONS = [
@@ -868,8 +1305,8 @@ const AiGuidance = () => {
   // 03. Pathway State
   const [selectedPath, setSelectedPath] = useState<DiscoveryPath>("all");
 
-  // 04. Filters State
-  const [industryFilter, setIndustryFilter] = useState("All");
+  // 04. Filters State (Strict Domain / Industry Filter)
+  const [industryFilter, setIndustryFilter] = useState<string>("All");
   const [salaryFilter, setSalaryFilter] = useState("All");
   const [experienceFilter, setExperienceFilter] = useState("All");
   const [locationFilter, setLocationFilter] = useState("All");
@@ -887,6 +1324,28 @@ const AiGuidance = () => {
     }
   }, [roleParam]);
 
+  // Whenever Specialisation changes in Step 1, sync the active domain filter & default role
+  const handleSpecialisationChange = (newSpec: string) => {
+    setSpecialisation(newSpec);
+    const mapping = SPECIALISATION_TO_DOMAIN[newSpec];
+    if (mapping) {
+      setSelectedRoleId(mapping.defaultRoleId);
+      // Pre-set the industry filter so Step 3 immediately shows relevant roles for their chosen specialisation
+      setIndustryFilter(mapping.domain);
+    }
+  };
+
+  // When Industry Filter changes in Step 3, keep selectedRoleId synced to a matching role
+  const handleIndustryFilterChange = (newDomain: string) => {
+    setIndustryFilter(newDomain);
+    if (newDomain !== "All") {
+      const firstMatch = CAREER_ROLES.find((r) => r.domain === newDomain);
+      if (firstMatch) {
+        setSelectedRoleId(firstMatch.id);
+      }
+    }
+  };
+
   // 06. Salary Insights Multiplier State
   const [salaryCityTier, setSalaryCityTier] = useState<"tier1" | "tier2" | "global">("tier1");
 
@@ -899,6 +1358,10 @@ const AiGuidance = () => {
     "Advanced Excel & Spreadsheet Modelling",
     "Relationship Management & Executive Presence",
     "JavaScript / TypeScript & React",
+    "Financial Statement Analysis (P&L, Balance Sheet, Cash Flow)",
+    "Budgeting, Forecasting & Variance Analysis",
+    "Corporate Accounting & Bookkeeping (Ind AS / IFRS)",
+    "Credit Risk Appraisal & Ratio Analysis",
   ]);
   const [showSkillGapReport, setShowSkillGapReport] = useState(false);
 
@@ -909,6 +1372,16 @@ const AiGuidance = () => {
   const selectedRole = useMemo(
     () => CAREER_ROLES.find((r) => r.id === selectedRoleId) || CAREER_ROLES[0],
     [selectedRoleId]
+  );
+
+  const activeCandidateDomain: RoleDomain = useMemo(
+    () => SPECIALISATION_TO_DOMAIN[specialisation]?.domain || "Business",
+    [specialisation]
+  );
+
+  const pathwayExamples = useMemo(
+    () => DOMAIN_PATHWAY_EXAMPLES[activeCandidateDomain] || DOMAIN_PATHWAY_EXAMPLES.Business,
+    [activeCandidateDomain]
   );
 
   const toggleInterest = (interest: string) => {
@@ -925,6 +1398,10 @@ const AiGuidance = () => {
 
   const handleGenerateOptions = () => {
     setIsGenerating(true);
+    const mapping = SPECIALISATION_TO_DOMAIN[specialisation];
+    if (mapping) {
+      setSelectedRoleId(mapping.defaultRoleId);
+    }
     setTimeout(() => {
       setIsGenerating(false);
       goToStep(2);
@@ -933,6 +1410,15 @@ const AiGuidance = () => {
 
   const handleSelectPathway = (path: DiscoveryPath) => {
     setSelectedPath(path);
+    if (path === "degree") {
+      // Path 01: Strictly filter to the candidate's specialisation domain
+      setIndustryFilter(activeCandidateDomain);
+      const firstDomainRole = CAREER_ROLES.find((r) => r.domain === activeCandidateDomain);
+      if (firstDomainRole) setSelectedRoleId(firstDomainRole.id);
+    } else {
+      // Path 02 or All: Show cross-industry options while keeping domain filter easy to switch
+      setIndustryFilter("All");
+    }
     goToStep(3);
   };
 
@@ -942,52 +1428,76 @@ const AiGuidance = () => {
     goToStep(4, roleId);
   };
 
-  // Filtered roles for Step 3
+  // Strictly filtered roles for Step 3
   const filteredRoles = useMemo(() => {
-    return CAREER_ROLES.filter((role) => {
-      if (selectedPath === "degree" && !role.eligibleDegrees.includes(education.split(" ")[0])) {
+    const strictMatches = CAREER_ROLES.filter((role) => {
+      // 1. Strict Industry / Domain Filter (Finance ONLY shows Finance, HR ONLY shows HR, etc.)
+      if (industryFilter !== "All" && role.domain !== industryFilter) {
         return false;
       }
-      if (selectedPath === "beyond" && role.pathway === "degree") {
-        return false;
+
+      // 2. Pathway Filter when Industry is "All"
+      if (industryFilter === "All" && selectedPath === "degree") {
+        const matchesSpec =
+          role.domain === activeCandidateDomain ||
+          role.eligibleSpecialisations.includes(specialisation);
+        if (!matchesSpec) return false;
       }
-      if (
-        industryFilter !== "All" &&
-        !role.industry.toLowerCase().includes(industryFilter.toLowerCase())
-      ) {
-        return false;
-      }
+
+      // 3. Salary Filter
       if (salaryFilter === "4to7" && role.salaryIndia.entryRange[1] < 4) return false;
-      if (salaryFilter === "7plus" && role.salaryIndia.entryRange[1] < 6.5) return false;
+      if (salaryFilter === "7plus" && role.salaryIndia.entryRange[1] < 7.0) return false;
+
+      // 4. Experience Filter
       if (experienceFilter !== "All" && role.experienceLevel !== experienceFilter) {
         return false;
       }
+
+      // 5. Location Filter
       if (
         locationFilter !== "All" &&
         !role.locations.some((l) => l.toLowerCase().includes(locationFilter.toLowerCase()))
       ) {
         return false;
       }
+
+      // 6. Degree Eligibility Filter
       if (
         degreeFilter !== "All" &&
         !role.eligibleDegrees.some((d) => d.toLowerCase().includes(degreeFilter.toLowerCase()))
       ) {
         return false;
       }
+
+      // 7. Skill / Keyword Search
       if (skillSearch.trim() !== "") {
         const q = skillSearch.toLowerCase();
         const inTitle = role.title.toLowerCase().includes(q);
-        const inSkills = [...role.essentialSkills, ...role.preferredSkills, ...role.toolsRequired].some(
-          (s) => s.toLowerCase().includes(q)
-        );
-        if (!inTitle && !inSkills) return false;
+        const inDomain = role.domain.toLowerCase().includes(q);
+        const inSkills = [
+          ...role.essentialSkills,
+          ...role.preferredSkills,
+          ...role.toolsRequired,
+          ...role.categoryTags,
+        ].some((s) => s.toLowerCase().includes(q));
+        if (!inTitle && !inDomain && !inSkills) return false;
       }
+
       return true;
     });
+
+    // Sort so roles matching the candidate's specialisation domain appear first when "All" is selected
+    return [...strictMatches].sort((a, b) => {
+      const aDomainMatch = a.domain === activeCandidateDomain ? 1 : 0;
+      const bDomainMatch = b.domain === activeCandidateDomain ? 1 : 0;
+      if (aDomainMatch !== bDomainMatch) return bDomainMatch - aDomainMatch;
+      return b.matchScore - a.matchScore;
+    });
   }, [
-    selectedPath,
-    education,
     industryFilter,
+    selectedPath,
+    activeCandidateDomain,
+    specialisation,
     salaryFilter,
     experienceFilter,
     locationFilter,
@@ -1393,7 +1903,7 @@ const AiGuidance = () => {
                         </label>
                         <select
                           value={specialisation}
-                          onChange={(e) => setSpecialisation(e.target.value)}
+                          onChange={(e) => handleSpecialisationChange(e.target.value)}
                           className="w-full rounded-xl bg-white border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#002C66]"
                         >
                           {SPECIALISATION_OPTIONS.map((opt) => (
@@ -1574,6 +2084,12 @@ const AiGuidance = () => {
                           </span>
                         </div>
                         <div className="p-3 rounded-xl bg-white/10 border border-white/10">
+                          <span className="text-slate-300 block mb-0.5">Primary Matched Domain</span>
+                          <span className="text-sm font-bold text-sky-300">
+                            {activeCandidateDomain} ({selectedRole.title})
+                          </span>
+                        </div>
+                        <div className="p-3 rounded-xl bg-white/10 border border-white/10">
                           <span className="text-slate-300 block mb-0.5">Experience & Geography</span>
                           <span className="text-sm font-bold text-white">
                             {experience} • {country}
@@ -1582,19 +2098,6 @@ const AiGuidance = () => {
                         <div className="p-3 rounded-xl bg-white/10 border border-white/10">
                           <span className="text-slate-300 block mb-0.5">Preferred Work Mode</span>
                           <span className="text-sm font-bold text-white">{workLocation}</span>
-                        </div>
-                        <div className="p-3 rounded-xl bg-white/10 border border-white/10">
-                          <span className="text-slate-300 block mb-1">Selected Interests</span>
-                          <div className="flex flex-wrap gap-1.5">
-                            {interests.map((i) => (
-                              <span
-                                key={i}
-                                className="px-2 py-0.5 rounded bg-white/15 text-white text-[11px] font-semibold"
-                              >
-                                {i}
-                              </span>
-                            ))}
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -1664,14 +2167,14 @@ const AiGuidance = () => {
                         qualifications.
                       </p>
 
-                      <div className="p-4 rounded-2xl bg-[#FBF4EB] border border-slate-200 mb-2">
-                        <div className="text-[11px] font-bold uppercase tracking-wider text-[#002C66] mb-1">
-                          Example Pathway Mapping
+                      <div className="p-4 rounded-2xl bg-[#FBF4EB] border border-slate-200 mb-2 space-y-1.5">
+                        <div className="text-[11px] font-bold uppercase tracking-wider text-[#002C66]">
+                          Matched to Your {education} ({specialisation}) Profile
                         </div>
                         <p className="text-xs sm:text-sm font-semibold text-slate-800 leading-relaxed">
-                          Example: BBA graduate in India →{" "}
+                          {education} ({specialisation}) in {country} →{" "}
                           <span className="text-[#002C66] font-bold">
-                            Business Development, Marketing, HR and Operations roles.
+                            {pathwayExamples.path1Example}
                           </span>
                         </p>
                       </div>
@@ -1684,7 +2187,7 @@ const AiGuidance = () => {
                       onClick={() => handleSelectPathway("degree")}
                       className="w-full inline-flex items-center justify-center gap-2 py-4 px-5 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white font-bold text-sm transition cursor-pointer shadow-sm"
                     >
-                      Explore My Degree-Based Careers
+                      Explore My Degree-Based Careers ({activeCandidateDomain})
                       <ArrowRight className="w-4 h-4" />
                     </button>
                   </div>
@@ -1715,15 +2218,14 @@ const AiGuidance = () => {
                         candidates from different educational backgrounds.
                       </p>
 
-                      <div className="p-4 rounded-2xl bg-[#FBF4EB] border border-slate-200 mb-2">
-                        <div className="text-[11px] font-bold uppercase tracking-wider text-[#002C66] mb-1">
-                          Example Cross-Industry Mapping
+                      <div className="p-4 rounded-2xl bg-[#FBF4EB] border border-slate-200 mb-2 space-y-1.5">
+                        <div className="text-[11px] font-bold uppercase tracking-wider text-[#002C66]">
+                          Cross-Industry Options for {education} ({specialisation})
                         </div>
                         <p className="text-xs sm:text-sm font-semibold text-slate-800 leading-relaxed">
-                          Example: BBA graduate →{" "}
+                          {education} graduate →{" "}
                           <span className="text-[#002C66] font-bold">
-                            Digital Marketing, Customer Success, Sales, Recruitment and eligible
-                            entry-level tech roles.
+                            {pathwayExamples.path2Example}
                           </span>
                         </p>
                       </div>
@@ -1772,7 +2274,7 @@ const AiGuidance = () => {
           <section className="py-10 lg:py-14">
             <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
               <div className="bg-white rounded-3xl border border-slate-200 shadow-md p-6 sm:p-10">
-                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8">
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-6">
                   <div>
                     <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-bold uppercase tracking-wider mb-3">
                       <Briefcase className="w-3.5 h-3.5" />
@@ -1783,8 +2285,8 @@ const AiGuidance = () => {
                     </h1>
                     <p className="text-slate-600 text-base mt-2 max-w-2xl">
                       Based on your selected pathway, education and preferences, SI Guide presents a
-                      personalised list of relevant job roles. Click any role to open its{" "}
-                      <strong>Individual Career Details Page (Step 4)</strong>.
+                      personalised list of relevant job roles. Select any industry/domain below to
+                      filter strictly by that field.
                     </p>
                   </div>
 
@@ -1792,38 +2294,78 @@ const AiGuidance = () => {
                   <div className="inline-flex rounded-xl bg-slate-100 p-1.5 border border-slate-200 self-start shrink-0">
                     <button
                       type="button"
-                      onClick={() => setSelectedPath("all")}
+                      onClick={() => {
+                        setSelectedPath("all");
+                        setIndustryFilter("All");
+                      }}
                       className={`px-3.5 py-2 rounded-lg text-xs font-bold transition cursor-pointer ${
-                        selectedPath === "all"
+                        selectedPath === "all" && industryFilter === "All"
                           ? "bg-[#002C66] text-white shadow-xs"
                           : "text-slate-600 hover:text-slate-900"
                       }`}
                     >
-                      All Matched Roles
+                      All Domains ({CAREER_ROLES.length})
                     </button>
                     <button
                       type="button"
-                      onClick={() => setSelectedPath("degree")}
+                      onClick={() => {
+                        setSelectedPath("degree");
+                        handleIndustryFilterChange(activeCandidateDomain);
+                      }}
                       className={`px-3.5 py-2 rounded-lg text-xs font-bold transition cursor-pointer ${
-                        selectedPath === "degree"
+                        selectedPath === "degree" || industryFilter === activeCandidateDomain
                           ? "bg-[#002C66] text-white shadow-xs"
                           : "text-slate-600 hover:text-slate-900"
                       }`}
                     >
-                      Path 01: Degree-Based
+                      My Track: {activeCandidateDomain}
                     </button>
                     <button
                       type="button"
-                      onClick={() => setSelectedPath("beyond")}
+                      onClick={() => {
+                        setSelectedPath("beyond");
+                        setIndustryFilter("All");
+                      }}
                       className={`px-3.5 py-2 rounded-lg text-xs font-bold transition cursor-pointer ${
-                        selectedPath === "beyond"
+                        selectedPath === "beyond" && industryFilter === "All"
                           ? "bg-[#002C66] text-white shadow-xs"
                           : "text-slate-600 hover:text-slate-900"
                       }`}
                     >
-                      Path 02: Beyond Degree
+                      Path 02: Cross-Industry
                     </button>
                   </div>
+                </div>
+
+                {/* Quick Domain Selector Pills (Strict 1-Click Domain Filtering) */}
+                <div className="flex flex-wrap items-center gap-2 mb-5">
+                  <span className="text-xs font-bold text-slate-600 mr-1">
+                    Filter by Career Domain:
+                  </span>
+                  {(
+                    [
+                      { id: "All", label: "All Domains" },
+                      { id: "Finance", label: "Finance & Banking" },
+                      { id: "Marketing", label: "Marketing & Digital" },
+                      { id: "Business", label: "Sales & Business Dev" },
+                      { id: "Human Resources", label: "HR & Recruitment" },
+                      { id: "Operations", label: "Operations & Analytics" },
+                      { id: "Technology", label: "Technology & Software" },
+                    ] as const
+                  ).map((dom) => (
+                    <button
+                      key={dom.id}
+                      type="button"
+                      onClick={() => handleIndustryFilterChange(dom.id)}
+                      className={`px-3.5 py-1.5 rounded-full text-xs font-bold border transition cursor-pointer ${
+                        industryFilter === dom.id
+                          ? "bg-[#002C66] text-white border-[#002C66] shadow-xs"
+                          : "bg-white text-slate-700 border-slate-300 hover:border-[#002C66]"
+                      }`}
+                    >
+                      {dom.label}
+                    </button>
+                  ))}
                 </div>
 
                 {/* Useful Filters Bar (All 6 Filters from PDF Page 5) */}
@@ -1847,21 +2389,23 @@ const AiGuidance = () => {
                       }}
                       className="text-xs font-bold text-[#002C66] hover:underline cursor-pointer"
                     >
-                      Reset Filters
+                      Reset All Filters
                     </button>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
                     <select
                       value={industryFilter}
-                      onChange={(e) => setIndustryFilter(e.target.value)}
+                      onChange={(e) => handleIndustryFilterChange(e.target.value)}
                       className="rounded-xl bg-white border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-800"
                     >
-                      <option value="All">Industry: All</option>
-                      <option value="SaaS">B2B SaaS & Tech</option>
-                      <option value="E-Commerce">E-Commerce & D2C</option>
-                      <option value="BFSI">BFSI & Consulting</option>
-                      <option value="FinTech">FinTech & Analytics</option>
+                      <option value="All">Industry: All Domains</option>
+                      <option value="Finance">Finance, Banking & Audit</option>
+                      <option value="Marketing">Marketing, Brand & Digital</option>
+                      <option value="Business">Sales, Business & SaaS</option>
+                      <option value="Human Resources">Human Resources (HR)</option>
+                      <option value="Operations">Operations & Analytics</option>
+                      <option value="Technology">Technology & Software</option>
                     </select>
 
                     <select
@@ -1871,7 +2415,7 @@ const AiGuidance = () => {
                     >
                       <option value="All">Salary Range: All</option>
                       <option value="4to7">Entry ₹4 LPA – ₹7 LPA+</option>
-                      <option value="7plus">Entry ₹6.5 LPA – ₹12 LPA+</option>
+                      <option value="7plus">Entry ₹7 LPA – ₹12 LPA+</option>
                     </select>
 
                     <select
@@ -1893,6 +2437,7 @@ const AiGuidance = () => {
                       <option value="Mumbai">Mumbai</option>
                       <option value="Delhi">Delhi NCR</option>
                       <option value="Hyderabad">Hyderabad</option>
+                      <option value="Chennai">Chennai / Pune</option>
                       <option value="Remote">Remote / Hybrid</option>
                     </select>
 
@@ -1915,7 +2460,7 @@ const AiGuidance = () => {
                         type="text"
                         value={skillSearch}
                         onChange={(e) => setSkillSearch(e.target.value)}
-                        placeholder="Skills (e.g. SQL, SEO, CRM)"
+                        placeholder="Skills (e.g. Excel, GST, SQL)"
                         className="w-full rounded-xl bg-white border border-slate-300 pl-8 pr-3 py-2 text-xs font-semibold text-slate-800"
                       />
                     </div>
@@ -1923,62 +2468,94 @@ const AiGuidance = () => {
                 </div>
 
                 {/* Role Cards Grid */}
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredRoles.map((role) => (
-                    <div
-                      key={role.id}
-                      className="rounded-2xl border-2 border-slate-200 bg-white hover:border-[#002C66] p-6 transition flex flex-col justify-between shadow-xs hover:shadow-md"
+                {filteredRoles.length === 0 ? (
+                  <div className="rounded-2xl border border-slate-200 bg-[#FBF4EB]/40 p-10 text-center">
+                    <p className="text-base font-bold text-slate-800 mb-2">
+                      No roles match that exact combination of filters.
+                    </p>
+                    <p className="text-xs text-slate-600 mb-4">
+                      Try resetting the degree or location filter to view all roles in{" "}
+                      <strong>{industryFilter === "All" ? "all domains" : industryFilter}</strong>.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSalaryFilter("All");
+                        setExperienceFilter("All");
+                        setLocationFilter("All");
+                        setDegreeFilter("All");
+                        setSkillSearch("");
+                      }}
+                      className="px-4 py-2 rounded-xl bg-[#002C66] text-white text-xs font-bold cursor-pointer"
                     >
-                      <div>
-                        <div className="flex items-center justify-between gap-2 mb-3">
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-extrabold">
-                            <Sparkles className="w-3 h-3" />
-                            {role.matchScore}% SI Match
-                          </span>
-                          <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-md">
-                            Entry: {role.salaryIndia.entry}
-                          </span>
-                        </div>
-
-                        <h3 className="font-display text-xl font-extrabold text-slate-950 mb-1.5">
-                          {role.title}
-                        </h3>
-
-                        <p className="text-xs font-bold text-[#002C66] mb-3">
-                          {role.categoryTags.join(" · ")}
-                        </p>
-
-                        <div className="inline-block px-3 py-1 rounded-lg bg-[#FBF4EB] border border-slate-200 text-slate-800 text-xs font-semibold mb-4">
-                          {role.badgeNote}
-                        </div>
-
-                        <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                          {role.overview}
-                        </p>
-
-                        <div className="space-y-1.5 text-xs text-slate-600 border-t border-slate-200/80 pt-3 mb-5">
-                          <div className="flex items-center gap-1.5">
-                            <GraduationCap className="w-3.5 h-3.5 text-[#002C66] shrink-0" />
-                            <span className="truncate">{role.degreeEligibilityNote}</span>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <MapPin className="w-3.5 h-3.5 text-[#002C66] shrink-0" />
-                            <span className="truncate">{role.locations.slice(0, 3).join(", ")}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={() => handleOpenRoleDetail(role.id, "overview")}
-                        className="w-full inline-flex items-center justify-center gap-1.5 py-3 px-4 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white text-xs font-bold transition cursor-pointer"
+                      Clear Secondary Filters
+                    </button>
+                  </div>
+                ) : (
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {filteredRoles.map((role) => (
+                      <div
+                        key={role.id}
+                        className="rounded-2xl border-2 border-slate-200 bg-white hover:border-[#002C66] p-6 transition flex flex-col justify-between shadow-xs hover:shadow-md"
                       >
-                        Explore Job Role in Detail (Step 4)
-                        <ChevronRight className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
+                        <div>
+                          <div className="flex items-center justify-between gap-2 mb-3">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-extrabold">
+                              <Sparkles className="w-3 h-3" />
+                              {role.matchScore}% SI Match
+                            </span>
+                            <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-md">
+                              Entry: {role.salaryIndia.entry}
+                            </span>
+                          </div>
+
+                          <div className="mb-1.5">
+                            <span className="inline-block text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 text-[#002C66] mb-1">
+                              Domain: {role.domain}
+                            </span>
+                            <h3 className="font-display text-xl font-extrabold text-slate-950">
+                              {role.title}
+                            </h3>
+                          </div>
+
+                          <p className="text-xs font-bold text-[#002C66] mb-3">
+                            {role.categoryTags.join(" · ")}
+                          </p>
+
+                          <div className="inline-block px-3 py-1 rounded-lg bg-[#FBF4EB] border border-slate-200 text-slate-800 text-xs font-semibold mb-4">
+                            {role.badgeNote}
+                          </div>
+
+                          <p className="text-xs text-slate-600 leading-relaxed mb-4">
+                            {role.overview}
+                          </p>
+
+                          <div className="space-y-1.5 text-xs text-slate-600 border-t border-slate-200/80 pt-3 mb-5">
+                            <div className="flex items-center gap-1.5">
+                              <GraduationCap className="w-3.5 h-3.5 text-[#002C66] shrink-0" />
+                              <span className="truncate">{role.degreeEligibilityNote}</span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                              <MapPin className="w-3.5 h-3.5 text-[#002C66] shrink-0" />
+                              <span className="truncate">
+                                {role.locations.slice(0, 3).join(", ")}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => handleOpenRoleDetail(role.id, "overview")}
+                          className="w-full inline-flex items-center justify-center gap-1.5 py-3 px-4 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white text-xs font-bold transition cursor-pointer"
+                        >
+                          Explore Job Role in Detail (Step 4)
+                          <ChevronRight className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
 
                 <p className="text-xs text-slate-500 italic mt-6 text-center">
                   * Illustrative roles only. Actual recommendations are generated from the
@@ -2024,14 +2601,14 @@ const AiGuidance = () => {
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-800 cursor-pointer"
                   >
                     <ArrowLeft className="w-3.5 h-3.5" />
-                    All Recommended Roles
+                    Back to Filtered Roles ({industryFilter})
                   </button>
                   <span className="text-xs font-bold text-slate-500 hidden sm:inline">
                     Switch Role:
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
-                  {CAREER_ROLES.map((r) => (
+                  {(filteredRoles.length > 0 ? filteredRoles : CAREER_ROLES).map((r) => (
                     <button
                       key={r.id}
                       type="button"
@@ -2054,7 +2631,7 @@ const AiGuidance = () => {
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                     <div>
                       <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-sky-300 text-xs font-bold uppercase tracking-wider mb-2">
-                        STEP 4 OF 7 • 05. Explore Every Job Role in Detail
+                        STEP 4 OF 7 • 05. Explore Every Job Role in Detail • {selectedRole.domain}
                       </div>
                       <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-white">
                         Know the Role Before You Choose the Career: {selectedRole.title}
@@ -2477,7 +3054,7 @@ const AiGuidance = () => {
                             }`}
                           >
                             <span>{skill}</span>
-                            <span className="text-[10px] uppercase">
+                            <span className="text-[10px] uppercase shrink-0 ml-2">
                               {checked ? "✓ Ready" : "+ Gap"}
                             </span>
                           </button>
@@ -2506,7 +3083,7 @@ const AiGuidance = () => {
                             }`}
                           >
                             <span>{skill}</span>
-                            <span className="text-[10px] uppercase">
+                            <span className="text-[10px] uppercase shrink-0 ml-2">
                               {checked ? "✓ Ready" : "+ Gap"}
                             </span>
                           </button>
