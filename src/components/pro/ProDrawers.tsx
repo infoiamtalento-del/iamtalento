@@ -40,6 +40,7 @@ import {
 } from "@/data/proData";
 import { getCompanyLogo, getCandidatePhoto } from "@/data/portalAssets";
 import { ProDrawerState } from "./proTypes";
+import { buildDetailedInvoicesForUser, downloadDetailedInvoicePdf } from "@/utils/invoicePdf";
 
 interface ProDrawersProps {
   drawerState: ProDrawerState;
@@ -629,40 +630,92 @@ export const ProDrawers: React.FC<ProDrawersProps> = ({
 
   // 5. RECEIPT MODAL
   if (drawerState.type === "receipt") {
+    const sampleInv = buildDetailedInvoicesForUser(user)[0];
+    const matchedTx = (user.wal?.hist || []).find((t: any) => t.id === drawerState.txId);
+    const baseAmt = matchedTx?.amt ? Math.round(matchedTx.amt / 1.18) : sampleInv.baseAmount;
+    const cgst = Math.round(baseAmt * 0.09);
+    const sgst = Math.round(baseAmt * 0.09);
+    const totalAmt = matchedTx?.amt || sampleInv.totalAmount;
+
+    const modalInvoice = {
+      ...sampleInv,
+      invoiceNo: drawerState.txId || sampleInv.invoiceNo,
+      title: matchedTx?.desc || sampleInv.title,
+      baseAmount: baseAmt,
+      cgstAmount: cgst,
+      sgstAmount: sgst,
+      totalAmount: totalAmt,
+    };
+
     return (
       <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-        <div className="bg-card border border-border rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+        <div className="bg-card border border-border rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
           <div className="flex items-center justify-between">
             <h3 className="font-bold text-foreground text-base flex items-center gap-2">
-              <ShieldCheck className="w-5 h-5 text-emerald-500" /> Transaction Receipt
+              <ShieldCheck className="w-5 h-5 text-emerald-500" /> Detailed Tax Invoice &amp; Receipt
             </h3>
             <Button size="sm" variant="ghost" onClick={onClose} className="rounded-full w-8 h-8 p-0">
               <X className="w-4 h-4" />
             </Button>
           </div>
 
-          <div className="border border-border/80 rounded-xl p-4 bg-muted/20 space-y-3 text-xs">
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Reference ID</span>
-              <span className="font-mono font-bold text-foreground">{drawerState.txId}</span>
+          <div className="border border-border/80 rounded-xl overflow-hidden bg-muted/20 text-xs">
+            <div className="bg-[#002C66] text-white p-3.5 flex items-center justify-between">
+              <div>
+                <div className="font-bold text-xs">IAmTalento Technologies Pvt. Ltd.</div>
+                <div className="text-[10px] text-white/80">GSTIN: 29AABCI9482K1Z5 · SAC: {sampleInv.sacCode}</div>
+              </div>
+              <span className="rounded bg-[#FB923C] px-2 py-0.5 text-[10px] font-bold text-white uppercase">
+                Tax Invoice
+              </span>
             </div>
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Date & Time</span>
-              <span className="font-medium text-foreground">{new Date().toLocaleString()}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Payment Status</span>
-              <span className="font-bold text-emerald-600 dark:text-emerald-400">Success</span>
-            </div>
-            <div className="pt-2 border-t border-border/60 flex items-center justify-between font-bold text-sm">
-              <span>Total Amount</span>
-              <span className="text-primary">₹1,000.00</span>
+            <div className="p-4 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Invoice / Ref ID</span>
+                <span className="font-mono font-bold text-foreground">{modalInvoice.invoiceNo}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Billed To</span>
+                <span className="font-semibold text-foreground">
+                  {modalInvoice.billedTo.organization || user.name}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Description</span>
+                <span className="font-medium text-foreground text-right max-w-[15rem] truncate">
+                  {modalInvoice.title}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Taxable Base Amount</span>
+                <span className="font-medium text-foreground">{formatINR(modalInvoice.baseAmount)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">GST (9% CGST + 9% SGST)</span>
+                <span className="font-medium text-foreground">
+                  {formatINR(modalInvoice.cgstAmount + modalInvoice.sgstAmount)}
+                </span>
+              </div>
+              <div className="pt-2 border-t border-border/60 flex items-center justify-between font-bold text-sm">
+                <span>Total Invoice Amount</span>
+                <span className="text-primary">{formatINR(modalInvoice.totalAmount)}</span>
+              </div>
             </div>
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
             <Button size="sm" variant="outline" onClick={() => window.print()} className="rounded-xl text-xs gap-1.5">
               <Printer className="w-3.5 h-3.5" /> Print
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => {
+                downloadDetailedInvoicePdf(modalInvoice);
+                onToast(`Downloaded ${modalInvoice.invoiceNo}.pdf`);
+              }}
+              className="rounded-xl bg-[#FB923C] hover:bg-[#F97316] text-white text-xs font-bold gap-1.5 cursor-pointer"
+            >
+              <Download className="w-3.5 h-3.5" /> Download PDF (.pdf)
             </Button>
             <Button size="sm" onClick={onClose} className="rounded-xl text-xs">
               Done
