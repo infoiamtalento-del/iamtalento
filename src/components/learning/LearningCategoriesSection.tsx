@@ -122,7 +122,7 @@ const LearningCategoriesSection = () => (
               transition={{ duration: 0.35, delay: index * 0.03 }}
             >
               <Link
-                to="/learning#courses"
+                to="/learning/courses/ai-engineer-agentic-track"
                 className="group flex items-center gap-3.5 rounded-xl bg-white border border-slate-200/90 px-4 py-4 h-[78px] shadow-2xs hover:shadow-sm hover:border-[#002C66]/45 transition-all duration-200"
               >
                 <div className="h-11 w-11 rounded-lg bg-[#002C66]/[0.07] border border-[#002C66]/15 text-[#002C66] group-hover:bg-[#002C66] group-hover:text-white flex items-center justify-center shrink-0 transition-colors duration-200">

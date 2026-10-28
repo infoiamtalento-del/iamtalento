@@ -140,7 +140,7 @@ const ExpertCoursesSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.08 }}
-            onClick={() => c === expertCourses[0] && navigate("/learning/courses/ai-engineer-agentic-track")}
+            onClick={() => navigate("/learning/courses/ai-engineer-agentic-track")}
             className="rounded-xl border bg-card overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
           >
             {/* Thumbnail */}

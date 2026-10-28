@@ -102,7 +102,7 @@ const HackathonSpotlightSection = () => {
           className="mt-10 flex flex-col items-center text-center"
         >
           <Button
-            onClick={() => navigate("/hackathons")}
+            onClick={() => navigate("/hackathon3")}
             size="lg"
             className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2 font-bold h-12 px-8 shadow-xl rounded-xl text-base"
           >
