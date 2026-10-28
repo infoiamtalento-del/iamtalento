@@ -1,5 +1,7 @@
 # Project Rules
 
+- Keep /hackathon2 in its own editorial presentation with isolated styles and reference content data; use the shared navigation container on every section to keep header alignment consistent, leaving /hackathons and shared navigation unchanged so the redesign remains independently reviewable.
+
 - Keep employer account side navigation and the profile dropdown sourced from one shared menu, with role-specific views in the Pro shell, so labels and destinations stay consistent without changing candidate navigation.
 
 - Render Pro job descriptions in a dedicated full-page detail component within the Pro shell, sharing the selected job, match calculations, and application/save handlers with all job-card entry points.
@@ -30,3 +32,7 @@
 - Keep employer action banners in one reusable presentation component and send onboarding CTAs to the existing company-profile flow, so marketing never silently enters a demo account.
 - Keep networking calendar city and topic selection within its dedicated presentation, using existing sample events and registration destinations, so browsing does not change other page filters.
 - Keep the numbered employer benefits list in one shared presentation component whose items, eyebrow and headline arrive as props, so each employer page supplies its own benefits without a second copy of the layout.
+
+- Site-wide CSS forces `background-image: none !important` on every element (index.css "zero gradients sitewide"), so `bg-gradient-*` utilities and CSS gradients never paint; build edge fades, soft wipes and similar effects with `mask-image` instead.
+
+- Keep the hackathon featured-event card ("Code Arena · Season 4") in one shared component (src/components/landing/FeaturedEventCard.tsx) used by both the homepage spotlight and /hackathon3, with the register destination and palette-restricted accents passed as props, so the card stays identical across pages without changing homepage behaviour.

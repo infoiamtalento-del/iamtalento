@@ -1,5 +1,13 @@
 # Roadmap
 
+## Hackathon 2 — spacing corrections
+- Review every section and correct uneven section gaps, image heights, heading gaps, logo-strip padding and card alignment — done; consistent 56px desktop / 40px phone section spacing, restored logo strip vertical padding, bounded editorial photos, removed doubled FAQ heading gaps, aligned track-card actions and compact event rows.
+- Check the complete page at desktop, tablet and phone widths and preserve existing interactions — done; all 16 sections visually reviewed at 1797, 820 and 390 widths, no overflow or missing images, status/track filters and event/story controls work, no browser errors; build OK. Original hackathon page unchanged.
+
+## Hackathon 2 — reference redesign
+- Create /hackathon2 without changing /hackathons; carry all sections from image 1 into image 2's editorial summit layout — done; includes challenges, company proof, five steps, featured event, seasons, tickets, benefits, tracks, judging, partners, stories, community, FAQ and closing actions. Small screenshot copy reconstructed from existing hackathon content; existing sample dates retained.
+- Verify section coverage, event filters, carousel, registration links and desktop/mobile presentation — done; desktop and phone checked, all images load, no horizontal overflow or browser errors, status and track filters work, event/story controls and FAQ work, registration reaches /auth with selected event. Original /hackathons unchanged; build OK. Event registration itself is not implemented.
+
 ## Employer page — plan video flush and aligned
 - Remove the space on all four sides of the plan section video and set it to a 4:5 shape so the left and right columns look aligned — done; the video now measures 479x599 (ratio 0.800) with zero gap on all four sides and both columns at 599px, verified in the browser with no page errors.
 
@@ -314,3 +322,52 @@
 
 ## Employer page v2 — remove pricing and promise sections
 - Remove "Pay for Candidates Assessed. Not for Seats That Sit Empty." and "Our Promise: A Better Shortlist, or Your Money Back." — done; both headlines absent from the live page, Premium Solutions, questions and closing call to action render unchanged, no overflow, build OK
+
+## Hackathon3 — why participate section
+- Add "Why Participate" as section 3 with the six supplied points and a designed layout — done; navy featured tile with ₹7,50,000 plus five bordered tiles, 3x2 grid, verified desktop and phone, build OK
+- Verify the six points, prize figure and desktop/phone layout — done; all six titles and descriptions render, no overflow, phone layout checked
+- Add section 4 using the industries design with the nine supplied industries, new heading copy and Find Your Hackathon CTA — done; moved directly after Why Participate, 3x3 grid of icon tiles, old six-card version and "Also coming" pills removed
+- Verify the nine industries, CTA destination and desktop/phone layout — done; nine titles in supplied order, CTA scrolls to upcoming events, no overflow, build OK
+
+## Hackathon3 — prize & rewards section
+- Move the prizes section up to position 5 (after industries) and rebuild it as a five-card reward row per the reference image — implemented
+- Verify card content, navy featured card, responsive layout and section order — pending
+- Move "How It Works" up to position 6, directly after the prize cards, keeping the six supplied steps — done; order and content verified in the browser, build OK.
+
+## Hackathon3 — how it works alignment
+- Make steps 1-3 and steps 4-6 use one consistent presentation in the How It Works section — pending
+
+## Hackathon3 — why participate photo cards
+- Add the six photo-led "Why Participate in a TalentCIR Hackathon?" cards above "Big Ideas Deserve Bigger Rewards." — done; six photo cards with blue icon badges and the supplied copy render in a 3x2 grid, verified in the browser with no overflow and build OK
+
+## Hackathon3 — replace the duplicate why-participate section
+- Replace "One Hackathon. Unlimited Possibilities." with the "Why Participate in a TalentCIR Hackathon?" photo-card section — done; the old section and its unused data were removed and the photo-card section now sits directly after the partners strip, six cards verified in the browser with no overflow and build OK.
+
+## Hackathon3 — featured event section
+- Replace the "MORE THAN A HACKATHON / Where Skills Meet Opportunity." navy section with the homepage featured-event card ("Code Arena · Season 4") — done; the card now lives in one shared component used by the homepage spotlight and /hackathon3, the old navy section and its unused data were removed, and Register Now opens the sign-up route
+- Verify badges, metadata pills, countdown, register action, partner card and image carousel on desktop and phone — done; desktop and 390px phone checked in the browser (two status pills, four detail pills, countdown, Register Now → /auth?mode=signup, channel-partner card, photo carousel loading, no horizontal overflow), homepage card unchanged, build OK. The countdown still reads 00 because the card's Aug 15–17, 2025 deadline has passed — awaiting the real event date.
+- Give the card's photo column a real height on phones so the image shows there too — done; the shared card's photo box now measures 250px at 390 width and 476px at 1280 width, screenshot inspected, no horizontal overflow, build OK.
+- Give the section an eyebrow, headline and description — done; eyebrow "Featured Event", headline "Code Arena · Season 4" / "Registration Is Open." and a two-line description now sit above the card in the page's shared heading style, verified in the browser (heading present, card unchanged, no horizontal overflow) and build OK. Copy is assistant-written; awaiting the client's own wording.
+
+## Hackathon3 — hero copy refresh
+- Set the hero headline to "Compete with the Best. Get Recognised." / "Get Hired." with the supplied description, and remove the "Prize amounts vary by event..." note — done; verified in the browser (two headline lines, black then brand blue, description reads back, note absent, no horizontal overflow) and build OK.
+- Add the proof line "Leading brands. Real business challenges. Exceptional talent." below the hero buttons in the homepage pattern — done; sits between the buttons and the three prize items in the same muted-with-blue-spans style as the homepage hero, verified in the browser with no horizontal overflow and build OK.
+- Remove the "Your Skills Could Win You ₹5 Lakhs & a Career Breakthrough." sub-line from the hero — done; sub-line absent from the live page, headline still two lines, no horizontal overflow, build OK.
+- Set the hero headline to "Compete with the Best." on line one and "Get Recognised. Get Hired." on line two, with both phrases brand blue — — done; verified in the browser (headline two lines, second line fully brand blue; logos one row, 16 images all loading, continuous scroll with faded ends, no horizontal overflow) and build OK.
+- Turn the Top Companies logos into a single-row continuous moving carousel like the employer page 2 strip — done; verified in the browser (headline two lines, second line fully brand blue; logos one row, 16 images all loading, continuous scroll with faded ends, no horizontal overflow) and build OK.
+- Make "Get Recognised." and "Get Hired." the same brand blue on the hero's second line — done; verified in the browser (headline two lines, second line fully brand blue; logos one row, 16 images all loading, continuous scroll with faded ends, no horizontal overflow) and build OK.
+
+## Hackathon3 — remove employer and judge sections
+- Delete the "Hire Proven Performers, Not Just Resumes." and "Evaluated by People Who Understand the Industry." sections — done; both headings absent from the live page, unused employerBenefits/judgeProfile data and the BarChart3 icon removed, sponsors and FAQ sections still render, no horizontal overflow, build OK.
+
+## Hackathon3 — upcoming event dates
+- Add date and time to each card in "Your Next Big Opportunity Starts Here." — done; every row now shows a calendar-icon date and a clock-icon time under the industry/city/format line, three rows verified in the browser with no horizontal overflow and build OK. Dates and times are assistant placeholders awaiting the real schedule.
+
+## Hackathon3 — winners filter box colours
+- Make the text inside the navy filter box white and the dropdown fields clean white — done; the five labels now render at full white (was 70% opacity), the five fields are solid white with dark text, and Reset is a solid white pill with navy text instead of a faded grey one; verified in the browser (label colour rgb(255,255,255) at opacity 1, fields rgb(255,255,255), Reset opacity 1), no horizontal overflow, no page errors, build OK.
+
+## Hackathon3 — hero headline enlarged
+- Increase the size of the hero headline — done; `.ht3-hero-copy h1` raised from clamp(26px,4.8cqw,40px) to clamp(30px,6.8cqw,52px), so it renders 43.8px at 1719 width (was 30.9px), 39.7px at 1280 and 52px at 890, still exactly two lines with no horizontal overflow; phone stays 42px.
+
+## Hackathon3 — winners filter dropdown arrows
+- Make the dropdown arrows clearly visible and responsive — done; each field now uses appearance-none with its own brand-blue chevron drawn at the right edge (pointer-events-none so clicks reach the field), verified in the browser: five chevrons render, the element under the arrow is the select itself, picking a value filters 4 cards to 1, Reset restores 4, no horizontal overflow, no page errors, build OK.

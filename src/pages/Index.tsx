@@ -44,6 +44,7 @@ const Index = () => (
       {/* <JobsSocialProof /> */}
 
       <TalentCirAdvantageSection />
+      <WhoIsItForSection />
 
       {/* <JobProfileAssessmentSection /> */}
       <FeaturedCompanies />

@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   ArrowRight,
+  ArrowUpRight,
   Briefcase,
-  CheckCircle2,
+  Check,
   GraduationCap,
   Layers,
   Play,
@@ -11,7 +12,6 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import SectionBadge from "@/components/ui/section-badge";
-import { cn } from "@/lib/utils";
 
 import video1 from "@/assets/product-in-60-sec.mp4.asset.json";
 import video2 from "@/assets/plan-assessment.mp4.asset.json";
@@ -21,18 +21,12 @@ import poster1 from "@/assets/hands-on-project-thumb.jpg";
 import poster2 from "@/assets/step-proctoring.jpg";
 import poster3 from "@/assets/step-opportunities.jpg";
 
-import avatar1 from "@/assets/learner-ananya.jpg";
-import avatar2 from "@/assets/learner-rahul.jpg";
-import avatar3 from "@/assets/learner-priya.jpg";
-
 const engines = [
   {
     id: "learn",
     step: "01",
-    engineBadge: "ENGINE 01",
     title: "LEARN",
-    tabLabel: "01 · LEARN",
-    headline: "Learn Smarter. Level Up Faster.",
+    headline: "Learn. Grow. Excel.",
     icon: GraduationCap,
     points: [
       "Learn from the Experts",
@@ -50,10 +44,8 @@ const engines = [
   {
     id: "assess",
     step: "02",
-    engineBadge: "ENGINE 02",
     title: "SKILL ASSESSMENT",
-    tabLabel: "02 · SKILL ASSESSMENT",
-    headline: "Know Your Skills. Prove Your Worth.",
+    headline: "Test Skills. Know Your Worth.",
     icon: ShieldCheck,
     points: [
       "AI-Powered Skill Tests",
@@ -71,10 +63,8 @@ const engines = [
   {
     id: "hire",
     step: "03",
-    engineBadge: "ENGINE 03",
     title: "GET HIRED",
-    tabLabel: "03 · GET HIRED",
-    headline: "Get Discovered. Get Shortlisted. Get Hired.",
+    headline: "Get Seen. Get Hired.",
     icon: Briefcase,
     points: [
       "Find Jobs That Fit You",
@@ -92,27 +82,18 @@ const engines = [
 ];
 
 const TalentCirAdvantageSection = () => {
-  const [activeTab, setActiveTab] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const activeEngine = engines[activeTab];
-  const ActiveIcon = activeEngine.icon;
-
-  const handleSelectTab = (idx: number) => {
-    setActiveTab(idx);
-    setIsPlaying(false);
-  };
+  const [playingId, setPlayingId] = useState<string | null>(null);
 
   return (
     <section className="py-20 md:py-28 bg-[#FBF4EB] text-slate-950 border-t border-slate-900/10">
       <div className="container">
-        {/* ── Top Centered Heading (Matching Other Home Page Section Headings) ── */}
+        {/* ── Minimal Centered Section Heading ── */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.55 }}
-          className="text-center max-w-2xl mx-auto mb-10 md:mb-12"
+          transition={{ duration: 0.5 }}
+          className="text-center max-w-2xl mx-auto mb-12 md:mb-14"
         >
           <SectionBadge label="The Talent CIR Advantage" icon={Layers} />
 
@@ -126,155 +107,52 @@ const TalentCirAdvantageSection = () => {
           </p>
         </motion.div>
 
-        {/* ── Highlighted 3-Engine Selector Cards + Connected Showcase ── */}
-        <div className="w-full">
-          {/* 3 Prominent Engine Pillar Cards */}
-          <div
-            role="tablist"
-            aria-label="Talent CIR Engines"
-            className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 mb-6"
-          >
-            {engines.map((engine, index) => {
-              const isSelected = activeTab === index;
-              const Icon = engine.icon;
-              return (
-                <button
-                  key={engine.id}
-                  role="tab"
-                  type="button"
-                  aria-selected={isSelected}
-                  onClick={() => handleSelectTab(index)}
-                  className={cn(
-                    "group relative rounded-2xl p-5 sm:p-6 text-left transition-all duration-300 cursor-pointer border",
-                    isSelected
-                      ? "bg-[#002C66] text-white border-[#002C66] shadow-[0_20px_45px_-12px_rgba(0,44,102,0.38)] -translate-y-1"
-                      : "bg-white text-slate-900 border-slate-200/90 hover:border-[#002C66]/40 hover:shadow-md hover:-translate-y-0.5"
-                  )}
-                >
-                  <div className="flex items-center justify-between gap-3 mb-4">
+        {/* ── Clean White 3-Card Corporate Grid with Gap ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-7">
+          {engines.map((engine, index) => {
+            const Icon = engine.icon;
+            const isPlaying = playingId === engine.id;
+
+            return (
+              <motion.article
+                key={engine.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.45, delay: index * 0.08 }}
+                className="group relative flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white text-slate-950 p-7 sm:p-8 shadow-[0_18px_50px_-24px_rgba(0,44,102,0.12)] hover:border-[#002C66]/35 hover:shadow-[0_24px_60px_-20px_rgba(0,44,102,0.18)] transition-all duration-300 overflow-hidden"
+              >
+                {/* Top Brand Navy Accent Line */}
+                <span className="absolute top-0 left-0 right-0 h-1 bg-[#002C66]" />
+
+                <div>
+                  {/* Top Architectural Index Bar */}
+                  <div className="flex items-center justify-between pb-5 mb-6 border-b border-slate-200/80">
                     <div className="flex items-center gap-3">
-                      <span
-                        className={cn(
-                          "h-11 w-11 rounded-xl flex items-center justify-center transition-colors",
-                          isSelected
-                            ? "bg-white text-[#002C66] shadow-sm"
-                            : "bg-[#FBF4EB] text-[#002C66] group-hover:bg-[#002C66] group-hover:text-white"
-                        )}
-                      >
-                        <Icon className="h-5 w-5" />
+                      <span className="font-mono text-xs font-bold tracking-[0.2em] px-2.5 py-1 rounded bg-[#002C66] text-white">
+                        {engine.step}
                       </span>
-                      <div>
-                        <span
-                          className={cn(
-                            "block text-[11px] font-bold uppercase tracking-[0.2em]",
-                            isSelected ? "text-white/75" : "text-[#002C66]"
-                          )}
-                        >
-                          {engine.engineBadge}
-                        </span>
-                        <span
-                          className={cn(
-                            "block font-display text-lg sm:text-xl font-bold tracking-tight",
-                            isSelected ? "text-white" : "text-slate-950"
-                          )}
-                        >
-                          {engine.title}
-                        </span>
-                      </div>
+                      <span className="text-xs font-bold uppercase tracking-[0.18em] text-[#002C66]">
+                        {engine.title}
+                      </span>
                     </div>
 
-                    <span
-                      className={cn(
-                        "font-display text-2xl sm:text-3xl font-extrabold leading-none select-none",
-                        isSelected
-                          ? "text-white/25"
-                          : "text-slate-200 group-hover:text-[#002C66]/25"
-                      )}
-                    >
-                      {engine.step}
+                    <span className="h-9 w-9 rounded-lg border border-slate-200 bg-[#FBF4EB] text-[#002C66] flex items-center justify-center">
+                      <Icon className="h-4 w-4" />
                     </span>
                   </div>
 
-                  <p
-                    className={cn(
-                      "text-xs sm:text-sm font-medium line-clamp-1",
-                      isSelected ? "text-white/90" : "text-slate-600"
-                    )}
-                  >
+                  {/* Headline */}
+                  <h3 className="font-display text-xl sm:text-2xl font-bold tracking-tight leading-[1.2] text-slate-950 mb-5">
                     {engine.headline}
-                  </p>
-
-                  {/* Active pointer notch */}
-                  {isSelected && (
-                    <span className="hidden md:block absolute -bottom-2 left-10 h-4 w-4 rotate-45 bg-[#002C66]" />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* ── Large Rounded Showcase Card (Copy Left + Video Right) ── */}
-          <div className="rounded-[28px] bg-white border border-slate-200/90 p-7 sm:p-10 md:p-14 shadow-[0_22px_60px_-20px_rgba(0,44,102,0.14)]">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeEngine.id}
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -14 }}
-                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
-              >
-                {/* Left Column — Highlighted Engine Header + 5 Feature Pills */}
-                <div className="lg:col-span-6 text-left space-y-5">
-                  <div className="inline-flex items-center gap-2.5 rounded-full bg-[#FBF4EB] border border-[#002C66]/15 px-3.5 py-1.5">
-                    <span className="h-6 w-6 rounded-full bg-[#002C66] text-white text-[11px] font-bold flex items-center justify-center">
-                      {activeEngine.step}
-                    </span>
-                    <ActiveIcon className="h-3.5 w-3.5 text-[#002C66]" />
-                    <span className="text-xs font-bold uppercase tracking-[0.16em] text-[#002C66]">
-                      {activeEngine.title}
-                    </span>
-                  </div>
-
-                  <h3 className="text-2xl sm:text-3xl md:text-[36px] font-bold font-display text-slate-950 leading-[1.15] tracking-tight">
-                    {activeEngine.headline}
                   </h3>
 
-                  <ul className="grid grid-cols-1 gap-2.5 pt-1">
-                    {activeEngine.points.map((point) => (
-                      <li
-                        key={point}
-                        className="flex items-center gap-3 rounded-xl bg-[#FBF4EB]/70 border border-slate-200/80 px-4 py-2.5 text-sm sm:text-base font-bold text-slate-900"
-                      >
-                        <CheckCircle2 className="h-5 w-5 text-[#002C66] shrink-0" />
-                        <span>{point}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <p className="font-display text-base sm:text-lg font-bold text-[#002C66] pt-1">
-                    {activeEngine.tagline}
-                  </p>
-
-                  <div className="pt-1">
-                    <Link
-                      to={activeEngine.href}
-                      className="inline-flex items-center gap-2.5 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white px-6 py-3 text-sm font-bold shadow-sm transition-all"
-                    >
-                      <span>{activeEngine.cta}</span>
-                      <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  </div>
-                </div>
-
-                {/* Right Column — Video Player with Play Button Overlay */}
-                <div className="lg:col-span-6">
-                  <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden bg-slate-900 border border-slate-200/80 shadow-lg">
+                  {/* Minimal Corporate Video Frame */}
+                  <div className="relative aspect-[16/10] w-full rounded-xl overflow-hidden mb-6 border border-slate-200 bg-slate-900">
                     {isPlaying ? (
                       <video
-                        key={activeEngine.videoUrl}
-                        src={activeEngine.videoUrl}
-                        poster={activeEngine.poster}
+                        src={engine.videoUrl}
+                        poster={engine.poster}
                         controls
                         autoPlay
                         playsInline
@@ -283,84 +161,77 @@ const TalentCirAdvantageSection = () => {
                     ) : (
                       <button
                         type="button"
-                        onClick={() => setIsPlaying(true)}
-                        aria-label={`Play ${activeEngine.headline} video`}
-                        className="group relative block w-full h-full cursor-pointer"
+                        onClick={() => setPlayingId(engine.id)}
+                        aria-label={`Play ${engine.title} video`}
+                        className="group/vid relative block w-full h-full cursor-pointer"
                       >
                         <img
-                          src={activeEngine.poster}
-                          alt={activeEngine.headline}
-                          className="w-full h-full object-cover object-center group-hover:scale-[1.03] transition-transform duration-500"
+                          src={engine.poster}
+                          alt={engine.headline}
+                          className="w-full h-full object-cover object-center group-hover/vid:scale-[1.03] transition-transform duration-500"
                         />
-                        <span className="absolute inset-0 flex items-center justify-center bg-black/15 group-hover:bg-black/25 transition-colors">
-                          <span className="h-16 w-16 rounded-full bg-white/95 text-[#002C66] group-hover:bg-[#002C66] group-hover:text-white flex items-center justify-center shadow-xl ring-4 ring-white/30 group-hover:scale-110 transition-all duration-300">
-                            <Play className="h-6 w-6 fill-current ml-0.5" />
+                        <span className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover/vid:bg-black/30 transition-colors">
+                          <span className="h-12 w-12 rounded-full bg-white text-[#002C66] flex items-center justify-center shadow-lg ring-4 ring-white/25 group-hover/vid:scale-105 transition-transform">
+                            <Play className="h-4 w-4 fill-current ml-0.5" />
                           </span>
                         </span>
                       </button>
                     )}
                   </div>
+
+                  {/* Minimal 5-Point Ledger */}
+                  <ul className="space-y-2.5 mb-7">
+                    {engine.points.map((point) => (
+                      <li
+                        key={point}
+                        className="flex items-center gap-2.5 text-sm font-medium text-slate-700"
+                      >
+                        <Check className="h-4 w-4 shrink-0 text-[#002C66]" />
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
+
+                {/* Bottom Tagline + Minimal Corporate Link */}
+                <div className="pt-5 border-t border-slate-200/80 flex items-center justify-between gap-3">
+                  <p className="text-xs font-semibold text-slate-500">
+                    {engine.tagline}
+                  </p>
+
+                  <Link
+                    to={engine.href}
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-[#002C66] text-white hover:bg-[#00204d] px-3.5 py-2 text-xs font-bold whitespace-nowrap transition-all shrink-0"
+                  >
+                    <span>{engine.cta}</span>
+                    <ArrowUpRight className="h-3.5 w-3.5" />
+                  </Link>
+                </div>
+              </motion.article>
+            );
+          })}
         </div>
 
-        {/* ── Centered Bottom Ecosystem Callout ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.55, delay: 0.15 }}
-          className="mt-14 max-w-2xl mx-auto text-center"
-        >
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#002C66] mb-2">
-            Better Skills. Verified Potential. Smarter Hiring.
-          </p>
-          <h3 className="font-display text-2xl sm:text-3xl font-bold text-slate-950 mb-2">
-            One Ecosystem. Every Step Forward.
-          </h3>
-          <p className="text-sm font-semibold text-slate-800 mb-2">
-            More than learning. More than assessment. More than a job portal.
-          </p>
-          <p className="text-sm sm:text-base text-slate-600 leading-relaxed mb-6">
-            Talent CIR connects the dots between what you learn, what you can
-            prove, and where you can go next.
-          </p>
-
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <Link
-              to="/assessments/explore"
-              className="group inline-flex items-center gap-4 rounded-full bg-[#002C66] hover:bg-[#00204d] text-white pl-6 pr-2 py-2 text-sm font-bold shadow-md transition-all"
-            >
-              <span>Talent CIR: Where Skills Meet Opportunity</span>
-              <span className="h-9 w-9 rounded-full bg-white text-[#002C66] flex items-center justify-center transition-transform group-hover:translate-x-0.5">
-                <ArrowRight className="h-4 w-4" />
-              </span>
-            </Link>
-
-            <div className="flex items-center -space-x-2.5">
-              <img
-                src={avatar1}
-                alt="Verified candidate"
-                className="h-10 w-10 rounded-full object-cover ring-2 ring-[#FBF4EB]"
-              />
-              <img
-                src={avatar2}
-                alt="Verified candidate"
-                className="h-10 w-10 rounded-full object-cover ring-2 ring-[#FBF4EB]"
-              />
-              <img
-                src={avatar3}
-                alt="Verified candidate"
-                className="h-10 w-10 rounded-full object-cover ring-2 ring-[#FBF4EB]"
-              />
-              <span className="h-10 px-3 rounded-full bg-white border border-slate-200/90 text-[11px] font-bold text-[#002C66] flex items-center justify-center ring-2 ring-[#FBF4EB] shadow-xs">
-                +10K
-              </span>
-            </div>
+        {/* ── Minimal Corporate Bottom Bar ── */}
+        <div className="mt-6 rounded-2xl border border-slate-200/90 bg-white px-7 py-5 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-3 gap-y-1 text-center sm:text-left">
+            <span className="font-display text-sm sm:text-base font-bold text-slate-950">
+              One Ecosystem. Every Step Forward.
+            </span>
+            <span className="hidden sm:inline text-slate-300">|</span>
+            <span className="text-xs sm:text-sm font-medium text-slate-600">
+              Better Skills. Verified Potential. Smarter Hiring.
+            </span>
           </div>
-        </motion.div>
+
+          <Link
+            to="/assessments/explore"
+            className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-[#002C66] hover:underline shrink-0"
+          >
+            <span>Talent CIR: Where Skills Meet Opportunity</span>
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
       </div>
     </section>
   );

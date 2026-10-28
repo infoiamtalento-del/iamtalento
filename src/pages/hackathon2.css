@@ -1,0 +1,86 @@
+.hackathon2 {
+  --background: var(--cream);
+  --secondary: var(--cream);
+  --secondary-foreground: var(--primary);
+  --accent: 33.8 55% 92.5%;
+  --ht2-beige: 33.8 55% 92.5%;
+  background: hsl(var(--cream));
+  letter-spacing: 0;
+}
+.hackathon2 h1,.hackathon2 h2,.hackathon2 h3 { letter-spacing: 0; }
+.hackathon2 .ht2-wrap { margin-inline: auto; }
+.hackathon2 .ht2-band { padding: 56px 0; }
+.hackathon2 .ht2-heading { margin-bottom: 28px; }
+.hackathon2 .ht2-wrap.grid > .ht2-heading { margin-bottom: 0; }
+.hackathon2 .ht2-wrap.grid { column-gap: 40px; row-gap: 28px; }
+.hackathon2 .ht2-wrap.grid > * { min-width: 0; }
+.hackathon2 .ht2-eyebrow { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 14px; color: hsl(var(--primary)); }
+.hackathon2 .ht2-title { font-size: 36px; line-height: 1.16; font-weight: 700; }
+.hackathon2 .ht2-copy { margin-top: 16px; max-width: 620px; font-size: 15px; line-height: 1.8; color: hsl(var(--muted-foreground)); }
+#root .hackathon2 .ht2-surface { background-color: hsl(var(--card)) !important; }
+#root .hackathon2 .ht2-tint { background-color: hsl(var(--ht2-beige)) !important; }
+#root .hackathon2 .ht2-soft { background-color: hsl(var(--ht2-beige)) !important; }
+#root .hackathon2 .ht2-dark { background-color: hsl(var(--primary)) !important; color: hsl(var(--hackathon-on-dark)); }
+.hackathon2 .ht2-dark h2,.hackathon2 .ht2-dark h3 { color: hsl(var(--hackathon-on-dark)); }
+.hackathon2 .ht2-dark .ht2-copy { color: hsl(var(--hackathon-on-dark) / .75); }
+.hackathon2 .ht2-dark .ht2-eyebrow { color: hsl(var(--hackathon-on-dark) / .65); }
+.hackathon2 .ht2-hero { padding: 120px 0 56px; }
+.hackathon2 .ht2-hero h1 { font-size: 64px; line-height: 1.05; font-weight: 700; }
+/* Hackathon3 hero reuses the home2 hero type scale; cap the headline so the
+   blue second line fits on one line inside the narrower two-column grid. */
+.hackathon2 .ht3-hero-copy h1 { font-size: clamp(30px, 6.8cqw, 52px); }
+.hackathon2 .ht2-hero-image { width: 100%; aspect-ratio: 1.28; object-fit: cover; border-radius: 8px; }
+.hackathon2 .ht2-photo { display: block; width: 100%; height: 400px; min-height: 0; object-fit: cover; border-radius: 8px; }
+.hackathon2 .ht2-feature-grid { column-gap: 40px; row-gap: 28px; }
+.hackathon2 .ht2-track-card { display: flex; flex-direction: column; align-items: flex-start; }
+.hackathon2 .ht2-track-card > p { flex: 1; }
+.hackathon2 .ht2-event-row { column-gap: 24px; row-gap: 12px; grid-template-columns: 100px minmax(0, 1fr) 100px 150px; }
+.hackathon2 .ht2-event-row > img { width: 100px; }
+.hackathon2 .ht2-line { border-bottom: 1px solid hsl(var(--border)); }
+.hackathon2 .ht2-pill { border-radius: 999px; }
+.hackathon2 .ht2-ribbon { padding: 19px 0; overflow: hidden; border-block: 1px solid hsl(var(--border)); }
+.hackathon2 .ht2-marquee { display: flex; width: max-content; gap: 48px; animation: ht2-scroll 40s linear infinite; }
+.hackathon2 .ht2-ribbon:hover .ht2-marquee { animation-play-state: paused; }
+@keyframes ht2-scroll { to { transform: translateX(-50%); } }
+@media (min-width:768px) and (max-width:1023px) {
+  .hackathon2 .ht2-photo { height: 360px; }
+  .hackathon2 .ht2-event-row { grid-template-columns: 80px minmax(0, 1fr) 140px; column-gap: 16px; }
+  .hackathon2 .ht2-event-row > img { width: 80px; }
+  .hackathon2 .ht2-event-row > p { grid-column: 2; }
+  .hackathon2 .ht2-event-row > a { grid-column: 3; grid-row: 1 / span 2; }
+}
+@media(max-width:767px) {
+  .hackathon2 .ht2-band { padding: 40px 0; }
+  .hackathon2 .ht2-heading { margin-bottom: 24px; }
+  .hackathon2 .ht2-hero { padding: 110px 0 40px; }
+  .hackathon2 .ht2-hero > .ht2-wrap > .grid:first-child { gap: 28px; }
+  .hackathon2 .ht2-hero h1 { font-size: 42px; }
+  .hackathon2 .ht2-title { font-size: 28px; }
+  .hackathon2 .ht2-photo { height: 280px; }
+  .hackathon2 .ht2-event-row { grid-template-columns: 72px minmax(0, 1fr); column-gap: 16px; padding-block: 24px; }
+  .hackathon2 .ht2-event-row > img { width: 72px; height: 72px; align-self: start; }
+  .hackathon2 .ht2-event-row > p { grid-column: 2; }
+  .hackathon2 .ht2-event-row > a { grid-column: 1 / -1; margin-top: 4px; }
+}
+@media(prefers-reduced-motion:reduce) { .hackathon2 .ht2-marquee { animation: none; } .hackathon2 * { scroll-behavior: auto; } }
+
+/* Hackathon3 hiring partners: single-row continuous logo carousel. */
+.hackathon2 .ht3-logo-strip { position: relative; overflow: hidden; margin-top: 40px; padding-block: 6px; }
+.hackathon2 .ht3-logo-marquee { gap: 56px; animation-duration: 35s; }
+.hackathon2 .ht3-logo-strip:hover .ht2-marquee { animation-play-state: paused; }
+.hackathon2 .ht3-logo { flex: 0 0 auto; height: 40px; width: auto; max-width: 170px; object-fit: contain; }
+@media (max-width: 767px) {
+  .hackathon2 .ht3-logo { height: 30px; max-width: 120px; }
+  .hackathon2 .ht3-logo-marquee { gap: 36px; }
+}
+/* Hackathon3 hiring partners: faded ends on the continuous logo row.
+   background-image is forced off sitewide (index.css), so the fade is a mask. */
+.hackathon2 .ht3-logo-strip { -webkit-mask-image: linear-gradient(to right, transparent 0, hsl(var(--cream)) 96px, hsl(var(--cream)) calc(100% - 96px), transparent 100%); mask-image: linear-gradient(to right, transparent 0, hsl(var(--cream)) 96px, hsl(var(--cream)) calc(100% - 96px), transparent 100%); -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
+@media (max-width: 767px) {
+  .hackathon2 .ht3-logo-strip { -webkit-mask-image: linear-gradient(to right, transparent 0, hsl(var(--cream)) 40px, hsl(var(--cream)) calc(100% - 40px), transparent 100%); mask-image: linear-gradient(to right, transparent 0, hsl(var(--cream)) 40px, hsl(var(--cream)) calc(100% - 40px), transparent 100%); }
+}
+/* /hackathon3: every non-navy section sits on the page beige */
+#root .hackathon2.ht3-page section.ht2-surface,
+#root .hackathon2.ht3-page section.ht2-tint,
+#root .hackathon2.ht3-page section.ht2-soft,
+#root .hackathon2.ht3-page section.ht2-hero { background-color: hsl(var(--cream)) !important; }
