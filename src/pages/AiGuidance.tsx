@@ -1314,6 +1314,65 @@ const AiGuidance = () => {
   const [workLocation, setWorkLocation] = useState("Bengaluru (City / Hybrid)");
   const [salaryExpectation, setSalaryExpectation] = useState("₹4.5 LPA – ₹8.0 LPA");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generationStage, setGenerationStage] = useState<number>(0);
+
+  // Quick-Load Sample Persona Presets for 1-Click Testing
+  const SAMPLE_PERSONAS = [
+    {
+      label: "B.Com • Finance",
+      edu: "B.Com",
+      spec: "Finance",
+      exp: "Fresher" as const,
+      loc: "Mumbai (City / On-Site)",
+      ctc: "₹5.0 LPA – ₹8.5 LPA",
+      ints: ["Finance", "Analytics & Data", "Business"],
+    },
+    {
+      label: "BBA • Marketing",
+      edu: "BBA",
+      spec: "Marketing",
+      exp: "Fresher" as const,
+      loc: "Bengaluru (City / Hybrid)",
+      ctc: "₹4.5 LPA – ₹7.5 LPA",
+      ints: ["Marketing", "Business", "Creative & Content"],
+    },
+    {
+      label: "B.Tech • Computer Science",
+      edu: "B.Tech / B.E.",
+      spec: "Computer Science / IT",
+      exp: "Fresher" as const,
+      loc: "Hyderabad (City / Hybrid)",
+      ctc: "₹6.5 LPA – ₹12.0 LPA",
+      ints: ["Technology", "Product & Strategy", "Analytics & Data"],
+    },
+    {
+      label: "MBA • HR",
+      edu: "MBA / PGDM",
+      spec: "Human Resources (HR)",
+      exp: "Experienced" as const,
+      loc: "Delhi NCR (City / Hybrid)",
+      ctc: "₹6.0 LPA – ₹10.0 LPA",
+      ints: ["Human Resources", "Operations", "Client Relations"],
+    },
+    {
+      label: "B.Sc. • Data & Analytics",
+      edu: "B.Sc.",
+      spec: "Data Science & AI",
+      exp: "Career Switcher" as const,
+      loc: "Remote (India / Global)",
+      ctc: "₹5.5 LPA – ₹9.5 LPA",
+      ints: ["Analytics & Data", "Operations", "Technology"],
+    },
+  ];
+
+  const applyPersonaPreset = (preset: (typeof SAMPLE_PERSONAS)[number]) => {
+    setEducation(preset.edu);
+    handleSpecialisationChange(preset.spec);
+    setExperience(preset.exp);
+    setWorkLocation(preset.loc);
+    setSalaryExpectation(preset.ctc);
+    setInterests(preset.ints);
+  };
 
   // 03. Pathway State
   const [selectedPath, setSelectedPath] = useState<DiscoveryPath>("all");
@@ -1411,14 +1470,18 @@ const AiGuidance = () => {
 
   const handleGenerateOptions = () => {
     setIsGenerating(true);
+    setGenerationStage(1);
     const mapping = SPECIALISATION_TO_DOMAIN[specialisation];
     if (mapping) {
       setSelectedRoleId(mapping.defaultRoleId);
     }
+    setTimeout(() => setGenerationStage(2), 240);
+    setTimeout(() => setGenerationStage(3), 480);
     setTimeout(() => {
       setIsGenerating(false);
+      setGenerationStage(0);
       goToStep(2);
-    }, 300);
+    }, 750);
   };
 
   const handleSelectPathway = (path: DiscoveryPath) => {
@@ -1642,6 +1705,41 @@ const AiGuidance = () => {
                         <Compass className="w-4 h-4" />
                       </button>
                     </div>
+
+                    {/* Guided 4-Stage AI Process Strip */}
+                    <div className="pt-3 max-w-2xl">
+                      <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 mb-2.5">
+                        Guided AI Career Discovery Process
+                      </p>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                        {[
+                          { step: "01", title: "Profile Setup", desc: "Degree & Location", target: "profile" },
+                          { step: "02", title: "Dual Pathways", desc: "Degree vs Beyond", target: 2 },
+                          { step: "03", title: "Role & CTC Audit", desc: "Salary & Skill Gap", target: 3 },
+                          { step: "04", title: "90-Day Roadmap", desc: "CIR Action Plan", target: 5 },
+                        ].map((item) => (
+                          <button
+                            key={item.step}
+                            type="button"
+                            onClick={() =>
+                              item.target === "profile"
+                                ? scrollToProfileSection()
+                                : goToStep(item.target as number)
+                            }
+                            className="text-left p-3 rounded-xl bg-white/90 hover:bg-white border border-slate-200/90 hover:border-[#002C66]/50 transition shadow-2xs cursor-pointer group"
+                          >
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-[#002C66]/10 text-[#002C66]">
+                                STEP {item.step}
+                              </span>
+                              <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#002C66] transition" />
+                            </div>
+                            <p className="text-xs font-extrabold text-slate-900">{item.title}</p>
+                            <p className="text-[10px] text-slate-500 font-medium">{item.desc}</p>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
 
                   {/* Right Column: Uncropped Hero Showcase Card */}
@@ -1733,16 +1831,55 @@ const AiGuidance = () => {
 
                   <div className="grid lg:grid-cols-12 gap-8 xl:gap-10 items-stretch">
                     {/* Left Column: Clean, Executive Profile Form */}
-                    <div className="lg:col-span-8 bg-[#FBF4EB]/45 rounded-2xl border border-slate-200/90 p-6 sm:p-8 flex flex-col justify-between space-y-7">
+                    <div className="lg:col-span-8 bg-[#FBF4EB]/45 rounded-2xl border border-slate-200/90 p-6 sm:p-8 flex flex-col justify-between space-y-6">
                       <div className="space-y-6">
+                        {/* Quick 1-Click Sample Persona Presets Bar */}
+                        <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs">
+                          <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+                            <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#002C66] flex items-center gap-1.5">
+                              <Sparkles className="w-3.5 h-3.5 text-[#002C66]" />
+                              Quick-Start Demo Personas (1-Click Auto-Fill)
+                            </span>
+                            <span className="text-[11px] font-medium text-slate-500">
+                              Click a profile to test instant AI domain calibration
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {SAMPLE_PERSONAS.map((preset) => {
+                              const isSelected =
+                                education === preset.education &&
+                                specialisation === preset.specialisation;
+                              return (
+                                <button
+                                  key={preset.label}
+                                  type="button"
+                                  onClick={() => applyPersonaPreset(preset)}
+                                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition cursor-pointer ${
+                                    isSelected
+                                      ? "bg-[#002C66] text-white border-[#002C66] shadow-2xs"
+                                      : "bg-slate-50 text-slate-700 border-slate-200 hover:border-[#002C66]/40 hover:bg-white"
+                                  }`}
+                                >
+                                  {preset.label}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+
                         {/* Group 1: Academic & Geographic Profile (6 Clean Uniform Fields) */}
                         <div>
-                          <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66]">
-                              Academic & Career Preferences
-                            </h3>
+                          <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+                            <div className="flex items-center gap-2">
+                              <span className="w-5 h-5 rounded-full bg-[#002C66] text-white text-[10px] font-extrabold inline-flex items-center justify-center">
+                                1
+                              </span>
+                              <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66]">
+                                Academic Qualification & Work Preferences
+                              </h3>
+                            </div>
                             <span className="text-[11px] font-semibold text-slate-500">
-                              Instant AI recalibration
+                              All 6 parameters sync live with the AI engine
                             </span>
                           </div>
 
@@ -1877,8 +2014,10 @@ const AiGuidance = () => {
                         {/* Group 2: Core Career Interests */}
                         <div className="bg-white p-5 rounded-xl border border-slate-200/90 shadow-2xs">
                           <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                            <label className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-[#002C66]">
-                              <Sparkles className="w-3.5 h-3.5 text-[#002C66]" />
+                            <label className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#002C66]">
+                              <span className="w-5 h-5 rounded-full bg-[#002C66] text-white text-[10px] font-extrabold inline-flex items-center justify-center">
+                                2
+                              </span>
                               Core Career Interests & Domains
                             </label>
                             <span className="text-[11px] font-semibold text-slate-500">
@@ -1908,6 +2047,30 @@ const AiGuidance = () => {
                         </div>
                       </div>
 
+                      {/* Animated 3-Stage AI Generation Progress Bar (shown when clicking Generate) */}
+                      {isGenerating && (
+                        <div className="bg-[#002C66] text-white rounded-xl p-4 shadow-sm">
+                          <div className="flex items-center justify-between text-xs font-bold mb-2">
+                            <span className="flex items-center gap-2">
+                              <RefreshCw className="w-3.5 h-3.5 animate-spin text-sky-300" />
+                              {generationStage === 1 &&
+                                `Stage 1/3: Calibrating ${education} (${specialisation}) domain fit...`}
+                              {generationStage === 2 &&
+                                `Stage 2/3: Benchmarking ${country} entry & mid-career CTC bands...`}
+                              {generationStage >= 3 &&
+                                "Stage 3/3: Preparing Dual Career Discovery Pathways..."}
+                            </span>
+                            <span className="text-sky-300">{generationStage * 33}%</span>
+                          </div>
+                          <div className="w-full h-1.5 rounded-full bg-white/15 overflow-hidden">
+                            <div
+                              className="h-full bg-emerald-400 transition-all duration-200"
+                              style={{ width: `${Math.min(100, generationStage * 34)}%` }}
+                            />
+                          </div>
+                        </div>
+                      )}
+
                       {/* Clean Bottom Action Bar */}
                       <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-slate-200/90">
                         <div className="flex items-center gap-3">
@@ -1930,7 +2093,7 @@ const AiGuidance = () => {
                           {isGenerating ? (
                             <>
                               <RefreshCw className="w-4 h-4 animate-spin" />
-                              Generating Career Options...
+                              Calibrating Career Pathways...
                             </>
                           ) : (
                             <>
@@ -1980,7 +2143,7 @@ const AiGuidance = () => {
                             </div>
                           </div>
 
-                          {/* Top Matched Roles Preview for Chosen Specialisation */}
+                          {/* Top Matched Roles Preview for Chosen Specialisation (Interactive) */}
                           <div>
                             <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-sky-300 mb-2.5">
                               <span>Top Matched Roles ({activeCandidateDomain})</span>
@@ -1992,22 +2155,24 @@ const AiGuidance = () => {
                               )
                                 .slice(0, 3)
                                 .map((role) => (
-                                  <div
+                                  <button
                                     key={role.id}
-                                    className="p-3 rounded-xl bg-white/10 border border-white/15 flex items-center justify-between gap-2"
+                                    type="button"
+                                    onClick={() => handleOpenRoleDetail(role.id, "overview")}
+                                    className="w-full text-left p-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 flex items-center justify-between gap-2 transition cursor-pointer group"
                                   >
                                     <div className="min-w-0">
-                                      <p className="text-xs font-bold text-white truncate">
+                                      <p className="text-xs font-bold text-white truncate group-hover:text-sky-200">
                                         {role.title}
                                       </p>
                                       <span className="text-[10px] text-sky-300 font-semibold">
-                                        {role.matchScore}% Profile Match
+                                        {role.matchScore}% Profile Match • Click to inspect
                                       </span>
                                     </div>
                                     <span className="px-2 py-1 rounded-md bg-emerald-500/20 text-emerald-200 text-[11px] font-extrabold shrink-0">
                                       {role.salaryIndia.entry}
                                     </span>
-                                  </div>
+                                  </button>
                                 ))}
                             </div>
                           </div>
@@ -2024,7 +2189,7 @@ const AiGuidance = () => {
                       {/* Clean Deliverable Summary Card */}
                       <div className="bg-[#FBF4EB]/60 rounded-2xl border border-slate-200 p-5">
                         <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-3">
-                          What Your Personalised Report Includes
+                          Your 4-Stage Personalised Deliverable
                         </h4>
                         <div className="grid grid-cols-2 gap-2.5 text-xs">
                           <div className="p-2.5 rounded-xl bg-white border border-slate-200/90 font-bold text-slate-800 flex items-center gap-2">
@@ -2050,6 +2215,83 @@ const AiGuidance = () => {
                 </div>
               </div>
             </section>
+          </div>
+        )}
+
+        {/* =====================================================================
+            EXECUTIVE STEP-BY-STEP PROCESS PIPELINE BAR (SHOWN ON STEPS 2 TO 7)
+        ===================================================================== */}
+        {currentStep >= 2 && (
+          <div className="w-full bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-[72px] z-30 shadow-2xs">
+            <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 py-3 flex flex-col xl:flex-row xl:items-center justify-between gap-3">
+              {/* Active Candidate Context Pill */}
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => goToStep(1)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#FBF4EB] hover:bg-[#002C66]/10 border border-slate-200 text-xs font-extrabold text-[#002C66] transition cursor-pointer"
+                >
+                  <GraduationCap className="w-3.5 h-3.5" />
+                  {education} ({specialisation})
+                  <span className="text-slate-400">•</span>
+                  <span>{experience}</span>
+                  <span className="underline ml-1 text-[11px]">Edit Profile</span>
+                </button>
+                <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold">
+                  <Sparkles className="w-3 h-3 text-emerald-600" />
+                  Active Role: {selectedRole.title}
+                </span>
+              </div>
+
+              {/* Interactive 7-Step Process Pipeline */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 xl:pb-0 no-scrollbar">
+                {[
+                  { id: 1, num: "01", label: "Profile Setup" },
+                  { id: 2, num: "02", label: "Discovery Paths" },
+                  { id: 3, num: "03", label: "Matched Roles" },
+                  { id: 4, num: "04", label: "Role & Salary" },
+                  { id: 5, num: "05", label: "90-Day Roadmap" },
+                  { id: 6, num: "06", label: "Future Outlook" },
+                  { id: 7, num: "07", label: "Take Action" },
+                ].map((s, idx, arr) => {
+                  const isActive = currentStep === s.id;
+                  const isCompleted = currentStep > s.id;
+                  return (
+                    <div key={s.id} className="flex items-center gap-1.5 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => goToStep(s.id)}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                          isActive
+                            ? "bg-[#002C66] text-white shadow-2xs"
+                            : isCompleted
+                            ? "bg-emerald-50 text-emerald-900 border border-emerald-200 hover:bg-emerald-100"
+                            : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                        }`}
+                      >
+                        {isCompleted ? (
+                          <Check className="w-3.5 h-3.5 text-emerald-600" />
+                        ) : (
+                          <span
+                            className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded ${
+                              isActive
+                                ? "bg-white/20 text-white"
+                                : "bg-white text-slate-700"
+                            }`}
+                          >
+                            {s.num}
+                          </span>
+                        )}
+                        <span>{s.label}</span>
+                      </button>
+                      {idx < arr.length - 1 && (
+                        <ChevronRight className="w-3.5 h-3.5 text-slate-300 shrink-0" />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         )}
 
@@ -2104,6 +2346,34 @@ const AiGuidance = () => {
                           academic qualification, specialisation, and core subject strengths.
                         </p>
 
+                        {/* 3-Metric Executive Comparison Strip */}
+                        <div className="grid grid-cols-3 gap-2.5 mb-5">
+                          <div className="p-3 rounded-xl bg-white border border-slate-200 text-center">
+                            <span className="text-[10px] font-bold uppercase text-slate-500 block">
+                              SI Fit Score
+                            </span>
+                            <span className="text-sm font-extrabold text-[#002C66]">
+                              92% – 96%
+                            </span>
+                          </div>
+                          <div className="p-3 rounded-xl bg-white border border-slate-200 text-center">
+                            <span className="text-[10px] font-bold uppercase text-slate-500 block">
+                              Entry CTC Band
+                            </span>
+                            <span className="text-sm font-extrabold text-emerald-700">
+                              ₹4.5 – ₹8.5 LPA
+                            </span>
+                          </div>
+                          <div className="p-3 rounded-xl bg-white border border-slate-200 text-center">
+                            <span className="text-[10px] font-bold uppercase text-slate-500 block">
+                              Ramp-Up Time
+                            </span>
+                            <span className="text-sm font-extrabold text-slate-900">
+                              30 – 60 Days
+                            </span>
+                          </div>
+                        </div>
+
                         <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-1.5">
                           <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#002C66]">
                             Recommended Roles for {education} ({specialisation})
@@ -2154,6 +2424,34 @@ const AiGuidance = () => {
                           Explore high-growth opportunities across modern industries that welcome
                           graduates from diverse academic backgrounds with transferable skills.
                         </p>
+
+                        {/* 3-Metric Executive Comparison Strip */}
+                        <div className="grid grid-cols-3 gap-2.5 mb-5">
+                          <div className="p-3 rounded-xl bg-white border border-slate-200 text-center">
+                            <span className="text-[10px] font-bold uppercase text-slate-500 block">
+                              SI Fit Score
+                            </span>
+                            <span className="text-sm font-extrabold text-[#002C66]">
+                              85% – 92%
+                            </span>
+                          </div>
+                          <div className="p-3 rounded-xl bg-white border border-slate-200 text-center">
+                            <span className="text-[10px] font-bold uppercase text-slate-500 block">
+                              Entry CTC Band
+                            </span>
+                            <span className="text-sm font-extrabold text-emerald-700">
+                              ₹4.0 – ₹9.0 LPA
+                            </span>
+                          </div>
+                          <div className="p-3 rounded-xl bg-white border border-slate-200 text-center">
+                            <span className="text-[10px] font-bold uppercase text-slate-500 block">
+                              Ramp-Up Time
+                            </span>
+                            <span className="text-sm font-extrabold text-slate-900">
+                              60 – 90 Days
+                            </span>
+                          </div>
+                        </div>
 
                         <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-1.5">
                           <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#002C66]">
@@ -2440,7 +2738,7 @@ const AiGuidance = () => {
                           className="rounded-2xl border-2 border-slate-200 bg-white hover:border-[#002C66] p-6 transition flex flex-col justify-between shadow-xs hover:shadow-md"
                         >
                           <div>
-                            <div className="flex items-center justify-between gap-2 mb-3">
+                            <div className="flex items-center justify-between gap-2 mb-2.5">
                               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-extrabold">
                                 <Sparkles className="w-3 h-3" />
                                 {role.matchScore}% SI Match
@@ -2448,6 +2746,14 @@ const AiGuidance = () => {
                               <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-md">
                                 Entry: {role.salaryIndia.entry}
                               </span>
+                            </div>
+
+                            {/* Visual AI Match Progress Bar */}
+                            <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden mb-3.5">
+                              <div
+                                className="h-full bg-[#002C66] rounded-full"
+                                style={{ width: `${role.matchScore}%` }}
+                              />
                             </div>
 
                             <div className="mb-1.5">
@@ -2463,13 +2769,25 @@ const AiGuidance = () => {
                               {role.categoryTags.join(" · ")}
                             </p>
 
-                            <div className="inline-block px-3 py-1 rounded-lg bg-[#FBF4EB] border border-slate-200 text-slate-800 text-xs font-semibold mb-4">
+                            <div className="inline-block px-3 py-1 rounded-lg bg-[#FBF4EB] border border-slate-200 text-slate-800 text-xs font-semibold mb-3.5">
                               {role.badgeNote}
                             </div>
 
-                            <p className="text-xs text-slate-600 leading-relaxed mb-4">
+                            <p className="text-xs text-slate-600 leading-relaxed mb-3.5">
                               {role.overview}
                             </p>
+
+                            {/* Core Tools Pills */}
+                            <div className="flex flex-wrap gap-1.5 mb-4">
+                              {role.toolsRequired.slice(0, 3).map((tool) => (
+                                <span
+                                  key={tool}
+                                  className="px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-[10px] font-bold text-slate-700"
+                                >
+                                  {tool}
+                                </span>
+                              ))}
+                            </div>
 
                             <div className="space-y-1.5 text-xs text-slate-600 border-t border-slate-200/80 pt-3 mb-5">
                               <div className="flex items-center gap-1.5">
