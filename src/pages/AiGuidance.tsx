@@ -1581,6 +1581,13 @@ const AiGuidance = () => {
     skillSearch,
   ]);
 
+  // Keep selectedRoleId synced to the top filtered role whenever domain/filters change
+  useEffect(() => {
+    if (filteredRoles.length > 0 && !filteredRoles.some((r) => r.id === selectedRoleId)) {
+      setSelectedRoleId(filteredRoles[0].id);
+    }
+  }, [filteredRoles, selectedRoleId]);
+
   // Skill readiness calculation for selectedRole
   const roleAllCoreSkills = useMemo(
     () => [...selectedRole.essentialSkills, ...selectedRole.preferredSkills],
@@ -1705,41 +1712,6 @@ const AiGuidance = () => {
                         <Compass className="w-4 h-4" />
                       </button>
                     </div>
-
-                    {/* Guided 4-Stage AI Process Strip */}
-                    <div className="pt-3 max-w-2xl">
-                      <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 mb-2.5">
-                        Guided AI Career Discovery Process
-                      </p>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                        {[
-                          { step: "01", title: "Profile Setup", desc: "Degree & Location", target: "profile" },
-                          { step: "02", title: "Dual Pathways", desc: "Degree vs Beyond", target: 2 },
-                          { step: "03", title: "Role & CTC Audit", desc: "Salary & Skill Gap", target: 3 },
-                          { step: "04", title: "90-Day Roadmap", desc: "CIR Action Plan", target: 5 },
-                        ].map((item) => (
-                          <button
-                            key={item.step}
-                            type="button"
-                            onClick={() =>
-                              item.target === "profile"
-                                ? scrollToProfileSection()
-                                : goToStep(item.target as number)
-                            }
-                            className="text-left p-3 rounded-xl bg-white/90 hover:bg-white border border-slate-200/90 hover:border-[#002C66]/50 transition shadow-2xs cursor-pointer group"
-                          >
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-[#002C66]/10 text-[#002C66]">
-                                STEP {item.step}
-                              </span>
-                              <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#002C66] transition" />
-                            </div>
-                            <p className="text-xs font-extrabold text-slate-900">{item.title}</p>
-                            <p className="text-[10px] text-slate-500 font-medium">{item.desc}</p>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
                   </div>
 
                   {/* Right Column: Uncropped Hero Showcase Card */}
@@ -1763,7 +1735,7 @@ const AiGuidance = () => {
                         <img
                           src={heroImg}
                           alt="Super Intelligence Career Guide - Top Courses, Best Colleges, and Career Suggestions"
-                          className="w-full h-auto max-h-[500px] block object-contain mx-auto"
+                          className="w-full h-auto max-h-[480px] block object-contain mx-auto"
                         />
                       </div>
 
@@ -1796,97 +1768,73 @@ const AiGuidance = () => {
             {/* CANDIDATE PROFILE SETUP — Tell Us About Yourself (Second on AI Guidance Page, Full-Page Fit) */}
             <section
               id="tell-us-about-yourself"
-              className="min-h-[calc(100vh-72px)] w-full flex items-center py-8 lg:py-12 scroll-mt-[72px]"
+              className="min-h-[calc(100vh-72px)] w-full flex items-center py-6 lg:py-10 scroll-mt-[72px]"
             >
               <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
-                <div className="w-full bg-white rounded-3xl border border-slate-200 shadow-lg p-6 sm:p-10 xl:p-12">
-                  {/* Top Section Header */}
-                  <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 pb-6 mb-8 border-b border-slate-200">
-                    <div className="max-w-3xl">
-                      <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-extrabold uppercase tracking-wider mb-3">
+                <div className="w-full bg-white rounded-3xl border border-slate-200 shadow-lg p-6 sm:p-8 xl:p-10">
+                  {/* Top Section Header with Quick Persona Pills */}
+                  <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-4 pb-5 mb-6 border-b border-slate-200">
+                    <div className="max-w-2xl">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-extrabold uppercase tracking-wider mb-2">
                         <UserCheck className="w-3.5 h-3.5" />
                         Step 01 • Candidate Profile Assessment
                       </div>
-                      <h2 className="font-display text-3xl sm:text-4xl xl:text-[42px] font-extrabold text-slate-950 tracking-tight">
+                      <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-slate-950 tracking-tight">
                         Tell Us About <span className="text-[#002C66]">Yourself.</span>
                       </h2>
-                      <p className="text-slate-600 text-sm sm:text-base mt-1.5 leading-relaxed">
-                        Configure your academic background, experience stage, and location
-                        preferences so our AI engine can calibrate high-match roles and realistic
-                        salary benchmarks.
+                      <p className="text-slate-600 text-sm mt-1 leading-relaxed">
+                        Configure your qualification, experience stage, and location preferences so
+                        our AI engine can calibrate high-match roles and realistic salary bands.
                       </p>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-2.5 self-start lg:self-auto shrink-0">
-                      <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#FBF4EB] border border-slate-200 text-slate-800 text-xs font-bold">
-                        <GraduationCap className="w-3.5 h-3.5 text-[#002C66]" />
-                        {education} • {specialisation}
+                    {/* Compact Quick-Fill Persona Presets */}
+                    <div className="flex flex-col items-start xl:items-end gap-1.5 shrink-0">
+                      <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
+                        Quick-Fill Sample Profiles:
                       </span>
-                      <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-bold">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                        Primary Track: {activeCandidateDomain}
-                      </span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {SAMPLE_PERSONAS.map((preset) => {
+                          const isSelected =
+                            education === preset.edu && specialisation === preset.spec;
+                          return (
+                            <button
+                              key={preset.label}
+                              type="button"
+                              onClick={() => applyPersonaPreset(preset)}
+                              className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition cursor-pointer ${
+                                isSelected
+                                  ? "bg-[#002C66] text-white border-[#002C66] shadow-2xs"
+                                  : "bg-[#FBF4EB]/70 text-slate-700 border-slate-200 hover:border-[#002C66]/40 hover:bg-white"
+                              }`}
+                            >
+                              {preset.label}
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
 
-                  <div className="grid lg:grid-cols-12 gap-8 xl:gap-10 items-stretch">
+                  <div className="grid lg:grid-cols-12 gap-6 xl:gap-8 items-stretch">
                     {/* Left Column: Clean, Executive Profile Form */}
-                    <div className="lg:col-span-8 bg-[#FBF4EB]/45 rounded-2xl border border-slate-200/90 p-6 sm:p-8 flex flex-col justify-between space-y-6">
-                      <div className="space-y-6">
-                        {/* Quick 1-Click Sample Persona Presets Bar */}
-                        <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs">
-                          <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5">
-                            <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#002C66] flex items-center gap-1.5">
-                              <Sparkles className="w-3.5 h-3.5 text-[#002C66]" />
-                              Quick-Start Demo Personas (1-Click Auto-Fill)
-                            </span>
-                            <span className="text-[11px] font-medium text-slate-500">
-                              Click a profile to test instant AI domain calibration
-                            </span>
-                          </div>
-                          <div className="flex flex-wrap gap-2">
-                            {SAMPLE_PERSONAS.map((preset) => {
-                              const isSelected =
-                                education === preset.education &&
-                                specialisation === preset.specialisation;
-                              return (
-                                <button
-                                  key={preset.label}
-                                  type="button"
-                                  onClick={() => applyPersonaPreset(preset)}
-                                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition cursor-pointer ${
-                                    isSelected
-                                      ? "bg-[#002C66] text-white border-[#002C66] shadow-2xs"
-                                      : "bg-slate-50 text-slate-700 border-slate-200 hover:border-[#002C66]/40 hover:bg-white"
-                                  }`}
-                                >
-                                  {preset.label}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </div>
-
+                    <div className="lg:col-span-8 bg-[#FBF4EB]/45 rounded-2xl border border-slate-200/90 p-5 sm:p-7 flex flex-col justify-between space-y-5">
+                      <div className="space-y-5">
                         {/* Group 1: Academic & Geographic Profile (6 Clean Uniform Fields) */}
                         <div>
-                          <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
-                            <div className="flex items-center gap-2">
-                              <span className="w-5 h-5 rounded-full bg-[#002C66] text-white text-[10px] font-extrabold inline-flex items-center justify-center">
-                                1
-                              </span>
-                              <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66]">
-                                Academic Qualification & Work Preferences
-                              </h3>
-                            </div>
+                          <div className="flex items-center justify-between mb-3">
+                            <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66]">
+                              Academic Qualification & Work Preferences
+                            </h3>
                             <span className="text-[11px] font-semibold text-slate-500">
-                              All 6 parameters sync live with the AI engine
+                              Live AI domain calibration
                             </span>
                           </div>
 
-                          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             {/* Field 1: Highest Education */}
-                            <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs">
-                              <label className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-2">
+                            <div className="bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-2xs">
+                              <label className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-1.5">
                                 <GraduationCap className="w-3.5 h-3.5 text-[#002C66]" />
                                 Highest Qualification
                               </label>
@@ -1904,8 +1852,8 @@ const AiGuidance = () => {
                             </div>
 
                             {/* Field 2: Specialisation */}
-                            <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs">
-                              <label className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-2">
+                            <div className="bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-2xs">
+                              <label className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-1.5">
                                 <BookOpen className="w-3.5 h-3.5 text-[#002C66]" />
                                 Academic Specialisation
                               </label>
@@ -1923,8 +1871,8 @@ const AiGuidance = () => {
                             </div>
 
                             {/* Field 3: Country */}
-                            <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs">
-                              <label className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-2">
+                            <div className="bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-2xs">
+                              <label className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-1.5">
                                 <Globe2 className="w-3.5 h-3.5 text-[#002C66]" />
                                 Preferred Country
                               </label>
@@ -1942,8 +1890,8 @@ const AiGuidance = () => {
                             </div>
 
                             {/* Field 4: Preferred Work Location */}
-                            <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs">
-                              <label className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-2">
+                            <div className="bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-2xs">
+                              <label className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-1.5">
                                 <MapPin className="w-3.5 h-3.5 text-[#002C66]" />
                                 Preferred Work Mode & City
                               </label>
@@ -1961,8 +1909,8 @@ const AiGuidance = () => {
                             </div>
 
                             {/* Field 5: Salary Expectations */}
-                            <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs">
-                              <label className="flex items-center justify-between text-xs font-bold text-slate-700 mb-2">
+                            <div className="bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-2xs">
+                              <label className="flex items-center justify-between text-xs font-bold text-slate-700 mb-1.5">
                                 <span className="flex items-center gap-1.5">
                                   <IndianRupee className="w-3.5 h-3.5 text-[#002C66]" />
                                   Target Annual CTC
@@ -1981,8 +1929,8 @@ const AiGuidance = () => {
                             </div>
 
                             {/* Field 6: Career Experience Stage (Single-line segmented control) */}
-                            <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs">
-                              <label className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-2">
+                            <div className="bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-2xs">
+                              <label className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-1.5">
                                 <Briefcase className="w-3.5 h-3.5 text-[#002C66]" />
                                 Experience Stage
                               </label>
@@ -2012,12 +1960,10 @@ const AiGuidance = () => {
                         </div>
 
                         {/* Group 2: Core Career Interests */}
-                        <div className="bg-white p-5 rounded-xl border border-slate-200/90 shadow-2xs">
-                          <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                            <label className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#002C66]">
-                              <span className="w-5 h-5 rounded-full bg-[#002C66] text-white text-[10px] font-extrabold inline-flex items-center justify-center">
-                                2
-                              </span>
+                        <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs">
+                          <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+                            <label className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-[#002C66]">
+                              <Sparkles className="w-3.5 h-3.5 text-[#002C66]" />
                               Core Career Interests & Domains
                             </label>
                             <span className="text-[11px] font-semibold text-slate-500">
@@ -2032,7 +1978,7 @@ const AiGuidance = () => {
                                   key={interest}
                                   type="button"
                                   onClick={() => toggleInterest(interest)}
-                                  className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold border transition cursor-pointer ${
+                                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition cursor-pointer ${
                                     active
                                       ? "bg-[#002C66] text-white border-[#002C66] shadow-2xs"
                                       : "bg-slate-50/80 text-slate-700 border-slate-200 hover:border-[#002C66]/40 hover:bg-white"
@@ -2046,30 +1992,6 @@ const AiGuidance = () => {
                           </div>
                         </div>
                       </div>
-
-                      {/* Animated 3-Stage AI Generation Progress Bar (shown when clicking Generate) */}
-                      {isGenerating && (
-                        <div className="bg-[#002C66] text-white rounded-xl p-4 shadow-sm">
-                          <div className="flex items-center justify-between text-xs font-bold mb-2">
-                            <span className="flex items-center gap-2">
-                              <RefreshCw className="w-3.5 h-3.5 animate-spin text-sky-300" />
-                              {generationStage === 1 &&
-                                `Stage 1/3: Calibrating ${education} (${specialisation}) domain fit...`}
-                              {generationStage === 2 &&
-                                `Stage 2/3: Benchmarking ${country} entry & mid-career CTC bands...`}
-                              {generationStage >= 3 &&
-                                "Stage 3/3: Preparing Dual Career Discovery Pathways..."}
-                            </span>
-                            <span className="text-sky-300">{generationStage * 33}%</span>
-                          </div>
-                          <div className="w-full h-1.5 rounded-full bg-white/15 overflow-hidden">
-                            <div
-                              className="h-full bg-emerald-400 transition-all duration-200"
-                              style={{ width: `${Math.min(100, generationStage * 34)}%` }}
-                            />
-                          </div>
-                        </div>
-                      )}
 
                       {/* Clean Bottom Action Bar */}
                       <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-slate-200/90">
@@ -2088,7 +2010,7 @@ const AiGuidance = () => {
                         <button
                           type="button"
                           onClick={handleGenerateOptions}
-                          className="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white font-bold text-sm sm:text-base shadow-md transition cursor-pointer shrink-0"
+                          className="inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white font-bold text-sm sm:text-base shadow-md transition cursor-pointer shrink-0"
                         >
                           {isGenerating ? (
                             <>
@@ -2106,11 +2028,11 @@ const AiGuidance = () => {
                     </div>
 
                     {/* Right Column: Executive AI Career Intelligence Preview */}
-                    <div className="lg:col-span-4 flex flex-col justify-between gap-5">
+                    <div className="lg:col-span-4 flex flex-col justify-between gap-4">
                       {/* Navy Intelligence Snapshot Card */}
-                      <div className="pro-hero bg-[#002C66] text-white rounded-2xl p-6 sm:p-7 shadow-md flex-1 flex flex-col justify-between">
+                      <div className="pro-hero bg-[#002C66] text-white rounded-2xl p-6 shadow-md flex-1 flex flex-col justify-between">
                         <div>
-                          <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/15">
+                          <div className="flex items-center justify-between pb-3.5 mb-3.5 border-b border-white/15">
                             <div>
                               <span className="text-[11px] font-extrabold uppercase tracking-widest text-sky-300 block">
                                 Live Career Intelligence
@@ -2124,17 +2046,17 @@ const AiGuidance = () => {
                             </span>
                           </div>
 
-                          <div className="grid grid-cols-2 gap-2.5 text-xs mb-5">
-                            <div className="p-3 rounded-xl bg-white/10 border border-white/10">
-                              <span className="text-slate-300 text-[11px] block">
+                          <div className="grid grid-cols-2 gap-2.5 text-xs mb-4">
+                            <div className="p-2.5 rounded-xl bg-white/10 border border-white/10">
+                              <span className="text-slate-300 text-[10px] block">
                                 Qualification
                               </span>
                               <span className="text-xs font-extrabold text-white mt-0.5 block truncate">
                                 {education} • {specialisation}
                               </span>
                             </div>
-                            <div className="p-3 rounded-xl bg-white/10 border border-white/10">
-                              <span className="text-slate-300 text-[11px] block">
+                            <div className="p-2.5 rounded-xl bg-white/10 border border-white/10">
+                              <span className="text-slate-300 text-[10px] block">
                                 Stage & Location
                               </span>
                               <span className="text-xs font-extrabold text-white mt-0.5 block truncate">
@@ -2145,7 +2067,7 @@ const AiGuidance = () => {
 
                           {/* Top Matched Roles Preview for Chosen Specialisation (Interactive) */}
                           <div>
-                            <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-sky-300 mb-2.5">
+                            <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-sky-300 mb-2">
                               <span>Top Matched Roles ({activeCandidateDomain})</span>
                               <span>India Entry CTC</span>
                             </div>
@@ -2159,14 +2081,14 @@ const AiGuidance = () => {
                                     key={role.id}
                                     type="button"
                                     onClick={() => handleOpenRoleDetail(role.id, "overview")}
-                                    className="w-full text-left p-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 flex items-center justify-between gap-2 transition cursor-pointer group"
+                                    className="w-full text-left p-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 flex items-center justify-between gap-2 transition cursor-pointer group"
                                   >
                                     <div className="min-w-0">
                                       <p className="text-xs font-bold text-white truncate group-hover:text-sky-200">
                                         {role.title}
                                       </p>
                                       <span className="text-[10px] text-sky-300 font-semibold">
-                                        {role.matchScore}% Profile Match • Click to inspect
+                                        {role.matchScore}% Profile Match
                                       </span>
                                     </div>
                                     <span className="px-2 py-1 rounded-md bg-emerald-500/20 text-emerald-200 text-[11px] font-extrabold shrink-0">
@@ -2178,7 +2100,7 @@ const AiGuidance = () => {
                           </div>
                         </div>
 
-                        <div className="mt-5 pt-4 border-t border-white/15 flex items-center justify-between text-xs text-slate-200">
+                        <div className="mt-4 pt-3.5 border-t border-white/15 flex items-center justify-between text-xs text-slate-200">
                           <span>Target Salary Band:</span>
                           <strong className="text-white font-extrabold">
                             {salaryExpectation || selectedRole.salaryIndia.entry}
@@ -2187,24 +2109,24 @@ const AiGuidance = () => {
                       </div>
 
                       {/* Clean Deliverable Summary Card */}
-                      <div className="bg-[#FBF4EB]/60 rounded-2xl border border-slate-200 p-5">
-                        <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-3">
-                          Your 4-Stage Personalised Deliverable
+                      <div className="bg-[#FBF4EB]/60 rounded-2xl border border-slate-200 p-4">
+                        <h4 className="text-[11px] font-extrabold uppercase tracking-wider text-[#002C66] mb-2.5">
+                          Included in Your Guided Assessment
                         </h4>
-                        <div className="grid grid-cols-2 gap-2.5 text-xs">
-                          <div className="p-2.5 rounded-xl bg-white border border-slate-200/90 font-bold text-slate-800 flex items-center gap-2">
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          <div className="p-2 rounded-xl bg-white border border-slate-200/90 font-bold text-slate-800 flex items-center gap-2">
                             <Compass className="w-3.5 h-3.5 text-[#002C66] shrink-0" />
                             <span>Dual Career Paths</span>
                           </div>
-                          <div className="p-2.5 rounded-xl bg-white border border-slate-200/90 font-bold text-slate-800 flex items-center gap-2">
+                          <div className="p-2 rounded-xl bg-white border border-slate-200/90 font-bold text-slate-800 flex items-center gap-2">
                             <IndianRupee className="w-3.5 h-3.5 text-[#002C66] shrink-0" />
                             <span>Salary Insights</span>
                           </div>
-                          <div className="p-2.5 rounded-xl bg-white border border-slate-200/90 font-bold text-slate-800 flex items-center gap-2">
+                          <div className="p-2 rounded-xl bg-white border border-slate-200/90 font-bold text-slate-800 flex items-center gap-2">
                             <Target className="w-3.5 h-3.5 text-[#002C66] shrink-0" />
                             <span>Skill Gap Audit</span>
                           </div>
-                          <div className="p-2.5 rounded-xl bg-white border border-slate-200/90 font-bold text-slate-800 flex items-center gap-2">
+                          <div className="p-2 rounded-xl bg-white border border-slate-200/90 font-bold text-slate-800 flex items-center gap-2">
                             <Layers className="w-3.5 h-3.5 text-[#002C66] shrink-0" />
                             <span>90-Day Roadmap</span>
                           </div>
@@ -2219,167 +2141,101 @@ const AiGuidance = () => {
         )}
 
         {/* =====================================================================
-            EXECUTIVE STEP-BY-STEP PROCESS PIPELINE BAR (SHOWN ON STEPS 2 TO 7)
-        ===================================================================== */}
-        {currentStep >= 2 && (
-          <div className="w-full bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-[72px] z-30 shadow-2xs">
-            <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 py-3 flex flex-col xl:flex-row xl:items-center justify-between gap-3">
-              {/* Active Candidate Context Pill */}
-              <div className="flex flex-wrap items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => goToStep(1)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#FBF4EB] hover:bg-[#002C66]/10 border border-slate-200 text-xs font-extrabold text-[#002C66] transition cursor-pointer"
-                >
-                  <GraduationCap className="w-3.5 h-3.5" />
-                  {education} ({specialisation})
-                  <span className="text-slate-400">•</span>
-                  <span>{experience}</span>
-                  <span className="underline ml-1 text-[11px]">Edit Profile</span>
-                </button>
-                <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold">
-                  <Sparkles className="w-3 h-3 text-emerald-600" />
-                  Active Role: {selectedRole.title}
-                </span>
-              </div>
-
-              {/* Interactive 7-Step Process Pipeline */}
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 xl:pb-0 no-scrollbar">
-                {[
-                  { id: 1, num: "01", label: "Profile Setup" },
-                  { id: 2, num: "02", label: "Discovery Paths" },
-                  { id: 3, num: "03", label: "Matched Roles" },
-                  { id: 4, num: "04", label: "Role & Salary" },
-                  { id: 5, num: "05", label: "90-Day Roadmap" },
-                  { id: 6, num: "06", label: "Future Outlook" },
-                  { id: 7, num: "07", label: "Take Action" },
-                ].map((s, idx, arr) => {
-                  const isActive = currentStep === s.id;
-                  const isCompleted = currentStep > s.id;
-                  return (
-                    <div key={s.id} className="flex items-center gap-1.5 shrink-0">
-                      <button
-                        type="button"
-                        onClick={() => goToStep(s.id)}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
-                          isActive
-                            ? "bg-[#002C66] text-white shadow-2xs"
-                            : isCompleted
-                            ? "bg-emerald-50 text-emerald-900 border border-emerald-200 hover:bg-emerald-100"
-                            : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                        }`}
-                      >
-                        {isCompleted ? (
-                          <Check className="w-3.5 h-3.5 text-emerald-600" />
-                        ) : (
-                          <span
-                            className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded ${
-                              isActive
-                                ? "bg-white/20 text-white"
-                                : "bg-white text-slate-700"
-                            }`}
-                          >
-                            {s.num}
-                          </span>
-                        )}
-                        <span>{s.label}</span>
-                      </button>
-                      {idx < arr.length - 1 && (
-                        <ChevronRight className="w-3.5 h-3.5 text-slate-300 shrink-0" />
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* =====================================================================
             PAGE 2 (STEP 2): CHOOSE YOUR CAREER DISCOVERY PATH (Full-Page Fit)
         ===================================================================== */}
         {currentStep === 2 && (
-          <section className="min-h-[calc(100vh-72px)] w-full flex flex-col justify-center py-6 lg:py-10">
-            <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 flex-1 flex flex-col justify-between">
-              <div className="w-full bg-white rounded-3xl border border-slate-200 shadow-lg p-6 sm:p-10 xl:p-12 flex-1 flex flex-col justify-between">
-                <div className="text-center max-w-4xl mx-auto mb-8">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-extrabold uppercase tracking-wider mb-3">
-                    <Compass className="w-3.5 h-3.5" />
-                    Step 02 of 07 • Choose Your Career Discovery Path
+          <section className="min-h-[calc(100vh-72px)] w-full flex items-center py-6 lg:py-8">
+            <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
+              <div className="w-full bg-white rounded-3xl border border-slate-200 shadow-lg p-6 sm:p-8 xl:p-10 flex flex-col justify-between">
+                {/* Compact Header */}
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 pb-5 mb-6 border-b border-slate-200">
+                  <div>
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-extrabold uppercase tracking-wider mb-2">
+                      <Compass className="w-3.5 h-3.5" />
+                      Step 02 of 07 • Career Discovery Pathways
+                    </div>
+                    <h1 className="font-display text-2xl sm:text-3xl xl:text-4xl font-extrabold text-slate-950 tracking-tight">
+                      Two Ways to Discover <span className="text-[#002C66]">Your Future.</span>
+                    </h1>
+                    <p className="text-slate-600 text-sm sm:text-base mt-1">
+                      Select how you want Super Intelligence to map career roles for your{" "}
+                      <strong className="text-slate-900">
+                        {education} ({specialisation})
+                      </strong>{" "}
+                      profile in <strong className="text-slate-900">{country}</strong>:
+                    </p>
                   </div>
-                  <h1 className="font-display text-3xl sm:text-4xl xl:text-5xl font-extrabold text-slate-950 tracking-tight mb-3">
-                    Two Ways to Discover <span className="text-[#002C66]">Your Future.</span>
-                  </h1>
-                  <p className="text-slate-600 text-base sm:text-lg">
-                    Profile calibrated for{" "}
-                    <strong className="text-slate-900">
-                      {education} ({specialisation})
-                    </strong>{" "}
-                    in <strong className="text-slate-900">{country}</strong>. Select how you want
-                    Super Intelligence to map your career opportunities:
-                  </p>
+
+                  <button
+                    type="button"
+                    onClick={() => goToStep(1)}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#FBF4EB] hover:bg-slate-100 border border-slate-200 text-xs font-bold text-[#002C66] self-start lg:self-auto shrink-0 cursor-pointer"
+                  >
+                    <GraduationCap className="w-3.5 h-3.5" />
+                    {education} • {specialisation} • {experience} (Edit)
+                  </button>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-8 xl:gap-10 items-stretch my-auto">
+                {/* Dual Pathway Cards — Balanced Height for Full-Page Fit */}
+                <div className="grid md:grid-cols-2 gap-6 xl:gap-8 items-stretch">
                   {/* PATH 01 CARD */}
-                  <div className="rounded-3xl border-2 border-slate-200 bg-[#FBF4EB]/40 hover:bg-white hover:border-[#002C66] shadow-sm hover:shadow-md overflow-hidden flex flex-col justify-between transition">
+                  <div className="rounded-2xl border-2 border-slate-200 bg-[#FBF4EB]/40 hover:bg-white hover:border-[#002C66] shadow-xs hover:shadow-md overflow-hidden flex flex-col justify-between transition">
                     <div>
-                      <div className="relative aspect-[16/9] max-h-[340px] w-full bg-slate-100 border-b border-slate-200 overflow-hidden">
+                      <div className="relative h-44 sm:h-48 w-full bg-slate-100 border-b border-slate-200 overflow-hidden">
                         <img
                           src={path1Img}
                           alt="Path 01 - Careers Based on My Education"
                           className="w-full h-full object-cover object-center"
                         />
-                        <div className="absolute top-4 left-4">
-                          <span className="px-3.5 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-[#002C66] text-white shadow-md">
+                        <div className="absolute top-3.5 left-3.5">
+                          <span className="px-3 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wider bg-[#002C66] text-white shadow-md">
                             Pathway 01 • Direct Degree Alignment
                           </span>
                         </div>
                       </div>
 
-                      <div className="p-6 sm:p-8">
-                        <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-slate-950 mb-2">
+                      <div className="p-5 sm:p-6">
+                        <h2 className="font-display text-xl sm:text-2xl font-extrabold text-slate-950 mb-1.5">
                           Careers Based on <span className="text-[#002C66]">My Education</span>
                         </h2>
-                        <p className="text-slate-600 text-sm sm:text-base leading-relaxed mb-5">
-                          Discover high-match career opportunities directly aligned with your
-                          academic qualification, specialisation, and core subject strengths.
+                        <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mb-4">
+                          High-match roles directly aligned with your academic qualification,
+                          specialisation, and core domain strengths.
                         </p>
 
-                        {/* 3-Metric Executive Comparison Strip */}
-                        <div className="grid grid-cols-3 gap-2.5 mb-5">
-                          <div className="p-3 rounded-xl bg-white border border-slate-200 text-center">
+                        <div className="grid grid-cols-3 gap-2 mb-4">
+                          <div className="p-2.5 rounded-xl bg-white border border-slate-200 text-center">
                             <span className="text-[10px] font-bold uppercase text-slate-500 block">
                               SI Fit Score
                             </span>
-                            <span className="text-sm font-extrabold text-[#002C66]">
+                            <span className="text-xs sm:text-sm font-extrabold text-[#002C66]">
                               92% – 96%
                             </span>
                           </div>
-                          <div className="p-3 rounded-xl bg-white border border-slate-200 text-center">
+                          <div className="p-2.5 rounded-xl bg-white border border-slate-200 text-center">
                             <span className="text-[10px] font-bold uppercase text-slate-500 block">
                               Entry CTC Band
                             </span>
-                            <span className="text-sm font-extrabold text-emerald-700">
+                            <span className="text-xs sm:text-sm font-extrabold text-emerald-700">
                               ₹4.5 – ₹8.5 LPA
                             </span>
                           </div>
-                          <div className="p-3 rounded-xl bg-white border border-slate-200 text-center">
+                          <div className="p-2.5 rounded-xl bg-white border border-slate-200 text-center">
                             <span className="text-[10px] font-bold uppercase text-slate-500 block">
                               Ramp-Up Time
                             </span>
-                            <span className="text-sm font-extrabold text-slate-900">
+                            <span className="text-xs sm:text-sm font-extrabold text-slate-900">
                               30 – 60 Days
                             </span>
                           </div>
                         </div>
 
-                        <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-1.5">
-                          <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#002C66]">
-                            Recommended Roles for {education} ({specialisation})
+                        <div className="p-3.5 rounded-xl bg-white border border-slate-200">
+                          <div className="text-[10px] font-extrabold uppercase tracking-wider text-[#002C66] mb-0.5">
+                            Matched Roles for {education} ({specialisation})
                           </div>
-                          <p className="text-xs sm:text-sm font-semibold text-slate-800 leading-relaxed">
-                            {education} ({specialisation}) in {country} →{" "}
+                          <p className="text-xs font-semibold text-slate-800 leading-relaxed">
+                            {education} ({specialisation}) →{" "}
                             <span className="text-[#002C66] font-bold">
                               {pathwayExamples.path1Example}
                             </span>
@@ -2388,11 +2244,11 @@ const AiGuidance = () => {
                       </div>
                     </div>
 
-                    <div className="px-6 pb-6 sm:px-8 sm:pb-8">
+                    <div className="px-5 pb-5 sm:px-6 sm:pb-6">
                       <button
                         type="button"
                         onClick={() => handleSelectPathway("degree")}
-                        className="w-full inline-flex items-center justify-center gap-2 py-4 px-5 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white font-bold text-sm sm:text-base transition cursor-pointer shadow-sm"
+                        className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-5 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white font-bold text-xs sm:text-sm transition cursor-pointer shadow-sm"
                       >
                         Explore My Degree-Based Careers ({activeCandidateDomain})
                         <ArrowRight className="w-4 h-4" />
@@ -2401,63 +2257,62 @@ const AiGuidance = () => {
                   </div>
 
                   {/* PATH 02 CARD */}
-                  <div className="rounded-3xl border-2 border-slate-200 bg-[#FBF4EB]/40 hover:bg-white hover:border-[#002C66] shadow-sm hover:shadow-md overflow-hidden flex flex-col justify-between transition">
+                  <div className="rounded-2xl border-2 border-slate-200 bg-[#FBF4EB]/40 hover:bg-white hover:border-[#002C66] shadow-xs hover:shadow-md overflow-hidden flex flex-col justify-between transition">
                     <div>
-                      <div className="relative aspect-[16/9] max-h-[340px] w-full bg-slate-100 border-b border-slate-200 overflow-hidden">
+                      <div className="relative h-44 sm:h-48 w-full bg-slate-100 border-b border-slate-200 overflow-hidden">
                         <img
                           src={path2Img}
                           alt="Path 02 - Careers Beyond My Degree"
                           className="w-full h-full object-cover object-[center_20%]"
                         />
-                        <div className="absolute top-4 left-4">
-                          <span className="px-3.5 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-[#002C66] text-white shadow-md">
+                        <div className="absolute top-3.5 left-3.5">
+                          <span className="px-3 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wider bg-[#002C66] text-white shadow-md">
                             Pathway 02 • Cross-Industry Pivot
                           </span>
                         </div>
                       </div>
 
-                      <div className="p-6 sm:p-8">
-                        <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-slate-950 mb-2">
+                      <div className="p-5 sm:p-6">
+                        <h2 className="font-display text-xl sm:text-2xl font-extrabold text-slate-950 mb-1.5">
                           Careers Beyond <span className="text-[#002C66]">My Degree</span>
                         </h2>
-                        <p className="text-slate-600 text-sm sm:text-base leading-relaxed mb-5">
-                          Explore high-growth opportunities across modern industries that welcome
-                          graduates from diverse academic backgrounds with transferable skills.
+                        <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mb-4">
+                          High-growth opportunities across modern industries that welcome graduates
+                          from diverse academic backgrounds with transferable skills.
                         </p>
 
-                        {/* 3-Metric Executive Comparison Strip */}
-                        <div className="grid grid-cols-3 gap-2.5 mb-5">
-                          <div className="p-3 rounded-xl bg-white border border-slate-200 text-center">
+                        <div className="grid grid-cols-3 gap-2 mb-4">
+                          <div className="p-2.5 rounded-xl bg-white border border-slate-200 text-center">
                             <span className="text-[10px] font-bold uppercase text-slate-500 block">
                               SI Fit Score
                             </span>
-                            <span className="text-sm font-extrabold text-[#002C66]">
+                            <span className="text-xs sm:text-sm font-extrabold text-[#002C66]">
                               85% – 92%
                             </span>
                           </div>
-                          <div className="p-3 rounded-xl bg-white border border-slate-200 text-center">
+                          <div className="p-2.5 rounded-xl bg-white border border-slate-200 text-center">
                             <span className="text-[10px] font-bold uppercase text-slate-500 block">
                               Entry CTC Band
                             </span>
-                            <span className="text-sm font-extrabold text-emerald-700">
+                            <span className="text-xs sm:text-sm font-extrabold text-emerald-700">
                               ₹4.0 – ₹9.0 LPA
                             </span>
                           </div>
-                          <div className="p-3 rounded-xl bg-white border border-slate-200 text-center">
+                          <div className="p-2.5 rounded-xl bg-white border border-slate-200 text-center">
                             <span className="text-[10px] font-bold uppercase text-slate-500 block">
                               Ramp-Up Time
                             </span>
-                            <span className="text-sm font-extrabold text-slate-900">
+                            <span className="text-xs sm:text-sm font-extrabold text-slate-900">
                               60 – 90 Days
                             </span>
                           </div>
                         </div>
 
-                        <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-1.5">
-                          <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#002C66]">
+                        <div className="p-3.5 rounded-xl bg-white border border-slate-200">
+                          <div className="text-[10px] font-extrabold uppercase tracking-wider text-[#002C66] mb-0.5">
                             Cross-Industry Pathways for {education} Graduates
                           </div>
-                          <p className="text-xs sm:text-sm font-semibold text-slate-800 leading-relaxed">
+                          <p className="text-xs font-semibold text-slate-800 leading-relaxed">
                             {education} graduate →{" "}
                             <span className="text-[#002C66] font-bold">
                               {pathwayExamples.path2Example}
@@ -2467,11 +2322,11 @@ const AiGuidance = () => {
                       </div>
                     </div>
 
-                    <div className="px-6 pb-6 sm:px-8 sm:pb-8">
+                    <div className="px-5 pb-5 sm:px-6 sm:pb-6">
                       <button
                         type="button"
                         onClick={() => handleSelectPathway("beyond")}
-                        className="w-full inline-flex items-center justify-center gap-2 py-4 px-5 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white font-bold text-sm sm:text-base transition cursor-pointer shadow-sm"
+                        className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-5 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white font-bold text-xs sm:text-sm transition cursor-pointer shadow-sm"
                       >
                         Explore Cross-Industry Career Options
                         <ArrowRight className="w-4 h-4" />
@@ -2480,7 +2335,8 @@ const AiGuidance = () => {
                   </div>
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
+                {/* Footer Navigation */}
+                <div className="mt-6 pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
                   <button
                     type="button"
                     onClick={() => goToStep(1)}
@@ -2492,7 +2348,7 @@ const AiGuidance = () => {
                   <button
                     type="button"
                     onClick={() => handleSelectPathway("all")}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white text-xs sm:text-sm font-bold shadow-xs cursor-pointer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white text-xs sm:text-sm font-bold shadow-xs cursor-pointer"
                   >
                     View Combined Roles from Both Pathways
                     <ArrowRight className="w-4 h-4" />
@@ -2507,52 +2363,35 @@ const AiGuidance = () => {
             PAGE 3 (STEP 3): YOUR PERSONALISED CAREER OPPORTUNITIES (Full-Page Fit)
         ===================================================================== */}
         {currentStep === 3 && (
-          <section className="min-h-[calc(100vh-72px)] w-full flex flex-col justify-center py-6 lg:py-10">
-            <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 flex-1 flex flex-col justify-between">
-              <div className="w-full bg-white rounded-3xl border border-slate-200 shadow-lg p-6 sm:p-10 xl:p-12 flex-1 flex flex-col justify-between">
+          <section className="min-h-[calc(100vh-72px)] w-full flex items-center py-6 lg:py-8">
+            <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
+              <div className="w-full bg-white rounded-3xl border border-slate-200 shadow-lg p-6 sm:p-8 xl:p-10 flex flex-col justify-between">
                 <div>
-                  <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-6">
+                  {/* Compact Header */}
+                  <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 pb-5 mb-5 border-b border-slate-200">
                     <div>
-                      <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-extrabold uppercase tracking-wider mb-3">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-extrabold uppercase tracking-wider mb-2">
                         <Briefcase className="w-3.5 h-3.5" />
                         Step 03 of 07 • Personalised Career Opportunities
                       </div>
-                      <h1 className="font-display text-3xl sm:text-4xl xl:text-5xl font-extrabold text-slate-950 tracking-tight">
+                      <h1 className="font-display text-2xl sm:text-3xl xl:text-4xl font-extrabold text-slate-950 tracking-tight">
                         Discover Jobs You Can{" "}
                         <span className="text-[#002C66]">Actually Pursue.</span>
                       </h1>
-                      <p className="text-slate-600 text-base sm:text-lg mt-2 max-w-3xl">
-                        Curated career roles matched to your qualification, domain preference, and
-                        location. Select any career domain below to filter strictly by that industry.
-                      </p>
                     </div>
 
-                    {/* Active Pathway Switcher */}
-                    <div className="inline-flex rounded-xl bg-slate-100 p-1.5 border border-slate-200 self-start shrink-0">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSelectedPath("all");
-                          setIndustryFilter("All");
-                        }}
-                        className={`px-3.5 py-2 rounded-lg text-xs font-bold transition cursor-pointer ${
-                          selectedPath === "all" && industryFilter === "All"
-                            ? "bg-[#002C66] text-white shadow-xs"
-                            : "text-slate-600 hover:text-slate-900"
-                        }`}
-                      >
-                        All Domains ({CAREER_ROLES.length})
-                      </button>
+                    {/* Active Profile & Track Switcher */}
+                    <div className="flex flex-wrap items-center gap-2 self-start lg:self-auto shrink-0">
                       <button
                         type="button"
                         onClick={() => {
                           setSelectedPath("degree");
                           handleIndustryFilterChange(activeCandidateDomain);
                         }}
-                        className={`px-3.5 py-2 rounded-lg text-xs font-bold transition cursor-pointer ${
-                          selectedPath === "degree" || industryFilter === activeCandidateDomain
-                            ? "bg-[#002C66] text-white shadow-xs"
-                            : "text-slate-600 hover:text-slate-900"
+                        className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition cursor-pointer ${
+                          industryFilter === activeCandidateDomain
+                            ? "bg-[#002C66] text-white border-[#002C66]"
+                            : "bg-[#FBF4EB] text-[#002C66] border-slate-200 hover:border-[#002C66]"
                         }`}
                       >
                         My Track: {activeCandidateDomain}
@@ -2560,58 +2399,54 @@ const AiGuidance = () => {
                       <button
                         type="button"
                         onClick={() => {
-                          setSelectedPath("beyond");
+                          setSelectedPath("all");
                           setIndustryFilter("All");
                         }}
-                        className={`px-3.5 py-2 rounded-lg text-xs font-bold transition cursor-pointer ${
-                          selectedPath === "beyond" && industryFilter === "All"
-                            ? "bg-[#002C66] text-white shadow-xs"
-                            : "text-slate-600 hover:text-slate-900"
+                        className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition cursor-pointer ${
+                          industryFilter === "All"
+                            ? "bg-[#002C66] text-white border-[#002C66]"
+                            : "bg-white text-slate-700 border-slate-200 hover:border-[#002C66]"
                         }`}
                       >
-                        Cross-Industry Roles
+                        All Domains ({CAREER_ROLES.length})
                       </button>
                     </div>
                   </div>
 
-                  {/* Quick Domain Selector Pills (Strict 1-Click Domain Filtering) */}
-                  <div className="flex flex-wrap items-center gap-2 mb-5">
-                    <span className="text-xs font-bold text-slate-600 mr-1">
-                      Career Domain:
-                    </span>
-                    {(
-                      [
-                        { id: "All", label: "All Domains" },
-                        { id: "Finance", label: "Finance & Banking" },
-                        { id: "Marketing", label: "Marketing & Digital" },
-                        { id: "Business", label: "Sales & Business Dev" },
-                        { id: "Human Resources", label: "HR & Recruitment" },
-                        { id: "Operations", label: "Operations & Analytics" },
-                        { id: "Technology", label: "Technology & Software" },
-                      ] as const
-                    ).map((dom) => (
-                      <button
-                        key={dom.id}
-                        type="button"
-                        onClick={() => handleIndustryFilterChange(dom.id)}
-                        className={`px-3.5 py-1.5 rounded-full text-xs font-bold border transition cursor-pointer ${
-                          industryFilter === dom.id
-                            ? "bg-[#002C66] text-white border-[#002C66] shadow-xs"
-                            : "bg-white text-slate-700 border-slate-300 hover:border-[#002C66]"
-                        }`}
-                      >
-                        {dom.label}
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Multi-Parameter Filter Bar */}
-                  <div className="bg-[#FBF4EB]/55 rounded-2xl border border-slate-200 p-4 sm:p-5 mb-8">
-                    <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                      <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#002C66]">
-                        <SlidersHorizontal className="w-3.5 h-3.5" />
-                        Refine by Industry, Salary Band, Experience, City, Degree & Skills
+                  {/* Single Unified Executive Filter Bar (Domain Pills + 5 Secondary Filters) */}
+                  <div className="bg-[#FBF4EB]/55 rounded-2xl border border-slate-200 p-4 mb-6 space-y-3.5">
+                    {/* Row 1: Strict Domain Pills */}
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <span className="text-xs font-extrabold text-[#002C66] mr-1">
+                          Domain:
+                        </span>
+                        {(
+                          [
+                            { id: "All", label: "All Domains" },
+                            { id: "Finance", label: "Finance & Banking" },
+                            { id: "Marketing", label: "Marketing & Digital" },
+                            { id: "Business", label: "Sales & Business" },
+                            { id: "Human Resources", label: "HR & Recruitment" },
+                            { id: "Operations", label: "Operations & Analytics" },
+                            { id: "Technology", label: "Technology & Software" },
+                          ] as const
+                        ).map((dom) => (
+                          <button
+                            key={dom.id}
+                            type="button"
+                            onClick={() => handleIndustryFilterChange(dom.id)}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition cursor-pointer ${
+                              industryFilter === dom.id
+                                ? "bg-[#002C66] text-white border-[#002C66] shadow-2xs"
+                                : "bg-white text-slate-700 border-slate-200 hover:border-[#002C66]"
+                            }`}
+                          >
+                            {dom.label}
+                          </button>
+                        ))}
                       </div>
+
                       <button
                         type="button"
                         onClick={() => {
@@ -2623,33 +2458,20 @@ const AiGuidance = () => {
                           setSkillSearch("");
                           setSelectedPath("all");
                         }}
-                        className="text-xs font-bold text-[#002C66] hover:underline cursor-pointer"
+                        className="text-xs font-bold text-[#002C66] hover:underline cursor-pointer shrink-0"
                       >
-                        Reset All Filters
+                        Reset Filters
                       </button>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
-                      <select
-                        value={industryFilter}
-                        onChange={(e) => handleIndustryFilterChange(e.target.value)}
-                        className="h-10 rounded-xl bg-white border border-slate-300 px-3 text-xs font-semibold text-slate-800"
-                      >
-                        <option value="All">Industry: All Domains</option>
-                        <option value="Finance">Finance, Banking & Audit</option>
-                        <option value="Marketing">Marketing, Brand & Digital</option>
-                        <option value="Business">Sales, Business & SaaS</option>
-                        <option value="Human Resources">Human Resources (HR)</option>
-                        <option value="Operations">Operations & Analytics</option>
-                        <option value="Technology">Technology & Software</option>
-                      </select>
-
+                    {/* Row 2: 5 Secondary Refinement Controls */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 pt-2 border-t border-slate-200/80">
                       <select
                         value={salaryFilter}
                         onChange={(e) => setSalaryFilter(e.target.value)}
-                        className="h-10 rounded-xl bg-white border border-slate-300 px-3 text-xs font-semibold text-slate-800"
+                        className="h-9 rounded-lg bg-white border border-slate-300 px-3 text-xs font-semibold text-slate-800"
                       >
-                        <option value="All">Salary Range: All</option>
+                        <option value="All">Salary Band: All</option>
                         <option value="4to7">Entry ₹4 LPA – ₹7 LPA+</option>
                         <option value="7plus">Entry ₹7 LPA – ₹12 LPA+</option>
                       </select>
@@ -2657,7 +2479,7 @@ const AiGuidance = () => {
                       <select
                         value={experienceFilter}
                         onChange={(e) => setExperienceFilter(e.target.value)}
-                        className="h-10 rounded-xl bg-white border border-slate-300 px-3 text-xs font-semibold text-slate-800"
+                        className="h-9 rounded-lg bg-white border border-slate-300 px-3 text-xs font-semibold text-slate-800"
                       >
                         <option value="All">Experience: All Levels</option>
                         <option value="Fresher">Fresher Friendly</option>
@@ -2666,7 +2488,7 @@ const AiGuidance = () => {
                       <select
                         value={locationFilter}
                         onChange={(e) => setLocationFilter(e.target.value)}
-                        className="h-10 rounded-xl bg-white border border-slate-300 px-3 text-xs font-semibold text-slate-800"
+                        className="h-9 rounded-lg bg-white border border-slate-300 px-3 text-xs font-semibold text-slate-800"
                       >
                         <option value="All">Location: All Cities</option>
                         <option value="Bengaluru">Bengaluru</option>
@@ -2680,7 +2502,7 @@ const AiGuidance = () => {
                       <select
                         value={degreeFilter}
                         onChange={(e) => setDegreeFilter(e.target.value)}
-                        className="h-10 rounded-xl bg-white border border-slate-300 px-3 text-xs font-semibold text-slate-800"
+                        className="h-9 rounded-lg bg-white border border-slate-300 px-3 text-xs font-semibold text-slate-800"
                       >
                         <option value="All">Degree Eligibility: All</option>
                         <option value="BBA">BBA Eligible</option>
@@ -2696,8 +2518,8 @@ const AiGuidance = () => {
                           type="text"
                           value={skillSearch}
                           onChange={(e) => setSkillSearch(e.target.value)}
-                          placeholder="Skills (e.g. Excel, GST, SQL)"
-                          className="w-full h-10 rounded-xl bg-white border border-slate-300 pl-8 pr-3 text-xs font-semibold text-slate-800"
+                          placeholder="Search skills (e.g. Excel, GST, SQL)"
+                          className="w-full h-9 rounded-lg bg-white border border-slate-300 pl-8 pr-3 text-xs font-semibold text-slate-800"
                         />
                       </div>
                     </div>
@@ -2844,61 +2666,70 @@ const AiGuidance = () => {
 
         {/* =====================================================================
             PAGE 4 (STEP 4): INDIVIDUAL CAREER DETAILS PAGE (Full-Page Fit)
-            Role Deep-Dive + Salary Insights + Skills & Gap Diagnostic
+            Unified Role Deep-Dive, Salary Insights & Skill Readiness Workspace
         ===================================================================== */}
         {currentStep === 4 && (
-          <section className="min-h-[calc(100vh-72px)] w-full flex flex-col justify-center py-6 lg:py-10">
-            <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 space-y-8">
-              {/* Role Switcher Bar at top of Step 4 */}
-              <div className="bg-white rounded-2xl border border-slate-200 p-4 flex flex-wrap items-center justify-between gap-3 shadow-xs">
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => goToStep(3)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-800 cursor-pointer"
-                  >
-                    <ArrowLeft className="w-3.5 h-3.5" />
-                    Back to Filtered Roles ({industryFilter})
-                  </button>
-                  <span className="text-xs font-bold text-slate-500 hidden sm:inline">
-                    Switch Role:
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {(filteredRoles.length > 0 ? filteredRoles : CAREER_ROLES).map((r) => (
+          <section className="min-h-[calc(100vh-72px)] w-full flex items-center py-6 lg:py-8">
+            <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
+              <div className="bg-white rounded-3xl border border-slate-200 shadow-lg overflow-hidden flex flex-col justify-between">
+                {/* Top Role Switcher Strip */}
+                <div className="bg-[#FBF4EB]/70 border-b border-slate-200 px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
                     <button
-                      key={r.id}
                       type="button"
-                      onClick={() => setSelectedRoleId(r.id)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
-                        selectedRole.id === r.id
-                          ? "bg-[#002C66] text-white shadow-xs"
-                          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                      }`}
+                      onClick={() => goToStep(3)}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer"
                     >
-                      {r.title}
+                      <ArrowLeft className="w-3.5 h-3.5" />
+                      Back to Roles ({industryFilter})
                     </button>
-                  ))}
+                    <span className="text-xs font-bold text-slate-500 hidden sm:inline ml-1">
+                      Switch Role:
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {(filteredRoles.length > 0 ? filteredRoles : CAREER_ROLES).map((r) => (
+                      <button
+                        key={r.id}
+                        type="button"
+                        onClick={() => setSelectedRoleId(r.id)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                          selectedRole.id === r.id
+                            ? "bg-[#002C66] text-white shadow-2xs"
+                            : "bg-white border border-slate-200 text-slate-700 hover:border-[#002C66]"
+                        }`}
+                      >
+                        {r.title}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              {/* ROLE DEEP-DIVE CARD */}
-              <div className="bg-white rounded-3xl border border-slate-200 shadow-lg overflow-hidden">
-                <div className="pro-hero bg-[#002C66] text-white p-6 sm:p-8">
+                {/* Executive Navy Role Header + 4 Unified Workspace Tabs */}
+                <div className="pro-hero bg-[#002C66] text-white px-6 py-5 sm:px-8 sm:py-6">
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                     <div>
-                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-sky-300 text-xs font-extrabold uppercase tracking-wider mb-2">
-                        Step 04 of 07 • Role Deep-Dive • {selectedRole.domain}
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-sky-300 text-xs font-extrabold uppercase tracking-wider mb-1.5">
+                        Step 04 of 07 • Role Intelligence, Salary & Skill Audit • {selectedRole.domain}
                       </div>
                       <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-white">
                         {selectedRole.title}
                       </h1>
-                      <p className="text-xs sm:text-sm text-slate-200 mt-1">
+                      <p className="text-xs sm:text-sm text-slate-200 mt-0.5">
                         {selectedRole.categoryTags.join(" · ")} — {selectedRole.industry}
                       </p>
                     </div>
-                    <div className="flex items-center gap-3 shrink-0">
-                      <div className="px-4 py-2.5 rounded-xl bg-white/10 border border-white/15 text-right">
+
+                    <div className="flex flex-wrap items-center gap-3 shrink-0">
+                      <div className="px-3.5 py-2 rounded-xl bg-white/10 border border-white/15 text-right">
+                        <span className="text-[10px] uppercase tracking-wider text-slate-300 block">
+                          SI Profile Fit
+                        </span>
+                        <span className="text-sm font-extrabold text-sky-300">
+                          {selectedRole.matchScore}% Match
+                        </span>
+                      </div>
+                      <div className="px-3.5 py-2 rounded-xl bg-white/10 border border-white/15 text-right">
                         <span className="text-[10px] uppercase tracking-wider text-slate-300 block">
                           India Entry CTC
                         </span>
@@ -2906,26 +2737,32 @@ const AiGuidance = () => {
                           {selectedRole.salaryIndia.entry}
                         </span>
                       </div>
+                      <div className="px-3.5 py-2 rounded-xl bg-white/10 border border-white/15 text-right">
+                        <span className="text-[10px] uppercase tracking-wider text-slate-300 block">
+                          Skill Readiness
+                        </span>
+                        <span className="text-sm font-extrabold text-white">
+                          {skillReadinessPercent}% ({matchedSkillCount}/{roleAllCoreSkills.length})
+                        </span>
+                      </div>
                     </div>
                   </div>
 
-                  {/* 6 Section Sub-Tabs */}
-                  <div className="flex flex-wrap gap-2 mt-6 pt-5 border-t border-white/15">
+                  {/* 4 Comprehensive Workspace Tabs */}
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 mt-5 pt-4 border-t border-white/15">
                     {(
                       [
-                        { id: "overview", label: "Role Overview" },
-                        { id: "responsibilities", label: "Responsibilities & Deliverables" },
-                        { id: "eligibility", label: "Education & Eligibility" },
-                        { id: "skills", label: "Skills & Tools" },
-                        { id: "salary", label: "Salary Progression" },
-                        { id: "outlook", label: "Growth & Outlook" },
+                        { id: "overview", label: "01. Overview & Responsibilities" },
+                        { id: "eligibility", label: "02. Eligibility, Tools & Certs" },
+                        { id: "salary", label: "03. Salary & City Calculator" },
+                        { id: "skills", label: "04. Skill Audit & Gap Check" },
                       ] as { id: DetailTab; label: string }[]
                     ).map((tab) => (
                       <button
                         key={tab.id}
                         type="button"
                         onClick={() => setActiveDetailTab(tab.id)}
-                        className={`px-3.5 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                        className={`px-3.5 py-2.5 rounded-xl text-xs font-extrabold transition cursor-pointer text-center ${
                           activeDetailTab === tab.id
                             ? "bg-white text-[#002C66] shadow-xs"
                             : "bg-white/10 text-slate-200 hover:bg-white/20"
@@ -2937,130 +2774,118 @@ const AiGuidance = () => {
                   </div>
                 </div>
 
+                {/* Tab Content Area (Fits Full Screen Cleanly) */}
                 <div className="p-6 sm:p-8">
-                  {activeDetailTab === "overview" && (
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="p-6 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
-                        <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#002C66] mb-2">
-                          Role Overview & Core Purpose
-                        </h3>
-                        <p className="text-xs text-slate-500 mb-3">
-                          Understand what the role entails and the business value it delivers.
-                        </p>
-                        <p className="text-sm text-slate-800 leading-relaxed font-medium">
-                          {selectedRole.overview}
-                        </p>
+                  {(activeDetailTab === "overview" || activeDetailTab === "responsibilities" || activeDetailTab === "outlook") && (
+                    <div className="grid lg:grid-cols-12 gap-6">
+                      {/* Left 5 Cols: Role Overview & Hiring Hubs */}
+                      <div className="lg:col-span-5 space-y-4">
+                        <div className="p-5 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
+                          <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-2">
+                            Role Overview & Core Purpose
+                          </h3>
+                          <p className="text-xs sm:text-sm text-slate-800 leading-relaxed font-medium">
+                            {selectedRole.overview}
+                          </p>
+                        </div>
+
+                        <div className="p-5 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
+                          <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-2">
+                            Organisational Fit & Hiring Hubs
+                          </h3>
+                          <p className="text-xs sm:text-sm text-slate-700 leading-relaxed mb-3">
+                            {selectedRole.orgFit}
+                          </p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {selectedRole.locations.map((loc) => (
+                              <span
+                                key={loc}
+                                className="px-2.5 py-1 rounded-md bg-white border border-slate-200 text-xs font-semibold text-slate-700"
+                              >
+                                {loc}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
                       </div>
-                      <div className="p-6 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
-                        <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#002C66] mb-2">
-                          Organisational Fit & Hiring Hubs
-                        </h3>
-                        <p className="text-sm text-slate-800 leading-relaxed mb-4">
-                          {selectedRole.orgFit}
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          {selectedRole.locations.map((loc) => (
-                            <span
-                              key={loc}
-                              className="px-2.5 py-1 rounded-md bg-white border border-slate-200 text-xs font-semibold text-slate-700"
-                            >
-                              {loc}
-                            </span>
-                          ))}
+
+                      {/* Right 7 Cols: Responsibilities & Key Deliverables */}
+                      <div className="lg:col-span-7 grid sm:grid-cols-12 gap-5">
+                        <div className="sm:col-span-7 p-5 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
+                          <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-3">
+                            Day-to-Day Responsibilities
+                          </h3>
+                          <ul className="space-y-2.5">
+                            {selectedRole.responsibilities.map((item, i) => (
+                              <li key={i} className="flex items-start gap-2 text-xs sm:text-sm text-slate-800">
+                                <CheckCircle2 className="w-4 h-4 text-[#002C66] shrink-0 mt-0.5" />
+                                <span>{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        <div className="sm:col-span-5 p-5 rounded-2xl bg-emerald-50/60 border border-emerald-200 flex flex-col justify-between">
+                          <div>
+                            <h3 className="text-xs font-extrabold uppercase tracking-wider text-emerald-950 mb-3">
+                              Key Deliverables & Outcomes
+                            </h3>
+                            <ul className="space-y-2">
+                              {selectedRole.deliverables.map((d, i) => (
+                                <li
+                                  key={i}
+                                  className="p-2.5 rounded-xl bg-white border border-emerald-200 text-xs font-bold text-slate-800"
+                                >
+                                  {d}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => setActiveDetailTab("salary")}
+                            className="mt-4 w-full py-2.5 px-3 rounded-xl bg-[#002C66] text-white text-xs font-bold cursor-pointer hover:bg-[#00204d] transition"
+                          >
+                            Check Salary & Skill Readiness →
+                          </button>
                         </div>
                       </div>
                     </div>
                   )}
 
-                  {activeDetailTab === "responsibilities" && (
-                    <div className="grid md:grid-cols-12 gap-6">
-                      <div className="md:col-span-7 p-6 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
-                        <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#002C66] mb-1">
-                          Core Responsibilities
-                        </h3>
-                        <p className="text-xs text-slate-500 mb-4">
-                          Day-to-day workflows and operational accountabilities.
-                        </p>
-                        <ul className="space-y-2.5">
-                          {selectedRole.responsibilities.map((item, i) => (
-                            <li key={i} className="flex items-start gap-2.5 text-sm text-slate-800">
-                              <CheckCircle2 className="w-4 h-4 text-[#002C66] shrink-0 mt-0.5" />
-                              <span>{item}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                      <div className="md:col-span-5 p-6 rounded-2xl bg-emerald-50/60 border border-emerald-200">
-                        <h3 className="text-sm font-extrabold uppercase tracking-wider text-emerald-950 mb-3">
-                          Key Deliverables & Outcomes
-                        </h3>
-                        <ul className="space-y-2.5">
-                          {selectedRole.deliverables.map((d, i) => (
-                            <li
-                              key={i}
-                              className="p-3 rounded-xl bg-white border border-emerald-200 text-xs font-bold text-slate-800"
-                            >
-                              {d}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  )}
-
                   {activeDetailTab === "eligibility" && (
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="p-6 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
-                        <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#002C66] mb-1">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+                      <div className="p-5 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
+                        <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-3">
                           Accepted Qualifications
                         </h3>
-                        <p className="text-xs text-slate-500 mb-4">
-                          Degrees, academic backgrounds, and eligibility criteria.
-                        </p>
                         <ul className="space-y-2">
                           {selectedRole.acceptedDegrees.map((deg, i) => (
-                            <li key={i} className="flex items-start gap-2 text-sm text-slate-800">
+                            <li key={i} className="flex items-start gap-2 text-xs sm:text-sm text-slate-800">
                               <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                               <span>{deg}</span>
                             </li>
                           ))}
                         </ul>
                       </div>
-                      <div className="p-6 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
-                        <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#002C66] mb-3">
+
+                      <div className="p-5 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
+                        <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-3">
                           Recommended Entry Routes
                         </h3>
-                        <ul className="space-y-2.5">
+                        <ul className="space-y-2">
                           {selectedRole.entryRoutes.map((route, i) => (
                             <li
                               key={i}
-                              className="p-3 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-800"
+                              className="p-2.5 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-800"
                             >
                               Route 0{i + 1}: {route}
                             </li>
                           ))}
                         </ul>
                       </div>
-                    </div>
-                  )}
 
-                  {activeDetailTab === "skills" && (
-                    <div className="grid md:grid-cols-3 gap-5">
-                      <div className="p-5 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
-                        <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-3">
-                          Essential & Technical Skills
-                        </h4>
-                        <div className="flex flex-wrap gap-1.5">
-                          {selectedRole.essentialSkills.map((s) => (
-                            <span
-                              key={s}
-                              className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-xs font-semibold text-slate-800"
-                            >
-                              {s}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
                       <div className="p-5 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
                         <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-3">
                           Industry Tools Required
@@ -3069,20 +2894,23 @@ const AiGuidance = () => {
                           {selectedRole.toolsRequired.map((t) => (
                             <span
                               key={t}
-                              className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-xs font-semibold text-slate-800"
+                              className="px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-bold text-slate-800"
                             >
                               {t}
                             </span>
                           ))}
                         </div>
                       </div>
+
                       <div className="p-5 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
                         <h4 className="text-xs font-extrabold uppercase tracking-wider text-emerald-800 mb-3">
                           Valued Certifications
                         </h4>
-                        <ul className="space-y-1.5 text-xs text-slate-700 font-medium">
+                        <ul className="space-y-2 text-xs font-semibold text-slate-800">
                           {selectedRole.certifications.map((c) => (
-                            <li key={c}>• {c}</li>
+                            <li key={c} className="p-2.5 rounded-xl bg-white border border-slate-200">
+                              • {c}
+                            </li>
                           ))}
                         </ul>
                       </div>
@@ -3090,336 +2918,235 @@ const AiGuidance = () => {
                   )}
 
                   {activeDetailTab === "salary" && (
-                    <div className="grid sm:grid-cols-3 gap-4">
-                      <div className="p-5 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
-                        <span className="text-xs font-bold uppercase text-slate-500">
-                          Entry Level
-                        </span>
-                        <div className="text-2xl font-extrabold text-[#002C66] mt-1">
-                          {selectedRole.salaryIndia.entry}
+                    <div className="space-y-5">
+                      <div className="flex flex-wrap items-center justify-between gap-4">
+                        <div>
+                          <h3 className="font-display text-xl font-extrabold text-slate-950">
+                            Compensation Benchmarks for {selectedRole.title}
+                          </h3>
+                          <p className="text-xs sm:text-sm text-slate-600">
+                            Compare annual CTC packages across Tier-1 Metros, Tier-2 Cities, and
+                            Global Remote roles.
+                          </p>
+                        </div>
+
+                        <div className="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => setSalaryCityTier("tier1")}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${
+                              salaryCityTier === "tier1" ? "bg-[#002C66] text-white" : "text-slate-600"
+                            }`}
+                          >
+                            Tier-1 Metro (India)
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setSalaryCityTier("tier2")}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${
+                              salaryCityTier === "tier2" ? "bg-[#002C66] text-white" : "text-slate-600"
+                            }`}
+                          >
+                            Tier-2 City
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setSalaryCityTier("global")}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${
+                              salaryCityTier === "global" ? "bg-[#002C66] text-white" : "text-slate-600"
+                            }`}
+                          >
+                            Global Remote
+                          </button>
                         </div>
                       </div>
-                      <div className="p-5 rounded-2xl bg-white border-2 border-[#002C66]">
-                        <span className="text-xs font-bold uppercase text-[#002C66]">
-                          Mid-Career
-                        </span>
-                        <div className="text-2xl font-extrabold text-slate-950 mt-1">
-                          {selectedRole.salaryIndia.mid}
+
+                      <div className="grid lg:grid-cols-12 gap-6 items-stretch">
+                        <div className="lg:col-span-8 grid sm:grid-cols-3 gap-4">
+                          <div className="p-5 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200 flex flex-col justify-between">
+                            <div>
+                              <span className="text-xs font-bold uppercase text-slate-500 block">
+                                Entry Level (0 – 2 Yrs)
+                              </span>
+                              <div className="text-2xl font-extrabold text-[#002C66] mt-2">
+                                {adjustedSalary.entry}
+                              </div>
+                            </div>
+                            <span className="text-[11px] text-slate-500 mt-3 block">
+                              Fresher & campus / direct entry band
+                            </span>
+                          </div>
+
+                          <div className="p-5 rounded-2xl bg-white border-2 border-[#002C66] shadow-xs flex flex-col justify-between">
+                            <div>
+                              <span className="text-xs font-bold uppercase text-[#002C66] block">
+                                Mid-Career (2 – 5 Yrs)
+                              </span>
+                              <div className="text-2xl font-extrabold text-slate-950 mt-2">
+                                {adjustedSalary.mid}
+                              </div>
+                            </div>
+                            <span className="text-[11px] text-slate-500 mt-3 block">
+                              Specialist & independent contributor band
+                            </span>
+                          </div>
+
+                          <div className="p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200 flex flex-col justify-between">
+                            <div>
+                              <span className="text-xs font-bold uppercase text-emerald-800 block">
+                                Senior Level (5+ Yrs)
+                              </span>
+                              <div className="text-2xl font-extrabold text-emerald-700 mt-2">
+                                {adjustedSalary.senior}
+                              </div>
+                            </div>
+                            <span className="text-[11px] text-slate-600 mt-3 block">
+                              Team Lead / Manager compensation
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                      <div className="p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200">
-                        <span className="text-xs font-bold uppercase text-emerald-800">
-                          Senior Level
-                        </span>
-                        <div className="text-2xl font-extrabold text-emerald-700 mt-1">
-                          {selectedRole.salaryIndia.senior}
+
+                        <div className="lg:col-span-4 bg-[#FBF4EB]/55 rounded-2xl border border-slate-200 p-5">
+                          <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-2.5">
+                            Key Compensation Drivers
+                          </h4>
+                          <ul className="space-y-2 text-xs font-semibold text-slate-800">
+                            <li className="p-2.5 rounded-xl bg-white border border-slate-200">
+                              • Qualification & domain specialisation ({education} • {specialisation})
+                            </li>
+                            <li className="p-2.5 rounded-xl bg-white border border-slate-200">
+                              • Employer tier (GCC, Enterprise, FinTech, High-Growth SaaS)
+                            </li>
+                            <li className="p-2.5 rounded-xl bg-white border border-slate-200">
+                              • Verified tool proficiency & Talent CIR assessment score
+                            </li>
+                          </ul>
                         </div>
                       </div>
                     </div>
                   )}
 
-                  {activeDetailTab === "outlook" && (
-                    <div className="p-5 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
-                      <h4 className="text-sm font-extrabold text-slate-900 mb-2">
-                        Career Growth & Future Outlook
-                      </h4>
-                      <p className="text-sm text-slate-700 mb-4">
-                        {selectedRole.futureDemand.trendSummary}
-                      </p>
-                      <div className="grid sm:grid-cols-4 gap-3">
-                        {selectedRole.futureDemand.advancementPath.map((stage, idx) => (
+                  {activeDetailTab === "skills" && (
+                    <div className="grid lg:grid-cols-12 gap-6 items-start">
+                      {/* Essential Skills */}
+                      <div className="lg:col-span-4 p-5 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
+                        <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-3">
+                          Core Technical & Domain Skills (Click to Verify)
+                        </h4>
+                        <div className="space-y-2">
+                          {selectedRole.essentialSkills.map((skill) => {
+                            const checked = checkedSkills.includes(skill);
+                            return (
+                              <button
+                                key={skill}
+                                type="button"
+                                onClick={() => toggleSkillCheck(skill)}
+                                className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-left text-xs font-bold transition cursor-pointer ${
+                                  checked
+                                    ? "bg-emerald-50 border-emerald-300 text-emerald-950"
+                                    : "bg-white border-slate-200 text-slate-700"
+                                }`}
+                              >
+                                <span>{skill}</span>
+                                <span className="text-[10px] uppercase shrink-0 ml-2">
+                                  {checked ? "✓ Have" : "+ Add"}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Employability Skills */}
+                      <div className="lg:col-span-4 p-5 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
+                        <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-3">
+                          Employability & Execution Skills (Click to Verify)
+                        </h4>
+                        <div className="space-y-2">
+                          {selectedRole.preferredSkills.map((skill) => {
+                            const checked = checkedSkills.includes(skill);
+                            return (
+                              <button
+                                key={skill}
+                                type="button"
+                                onClick={() => toggleSkillCheck(skill)}
+                                className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-left text-xs font-bold transition cursor-pointer ${
+                                  checked
+                                    ? "bg-emerald-50 border-emerald-300 text-emerald-950"
+                                    : "bg-white border-slate-200 text-slate-700"
+                                }`}
+                              >
+                                <span>{skill}</span>
+                                <span className="text-[10px] uppercase shrink-0 ml-2">
+                                  {checked ? "✓ Have" : "+ Add"}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Live Skill Readiness & Gap Summary */}
+                      <div className="lg:col-span-4 p-5 rounded-2xl bg-[#002C66] text-white space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-extrabold uppercase tracking-wider text-sky-300">
+                            Live Employer Readiness
+                          </span>
+                          <span className="text-lg font-extrabold text-emerald-300">
+                            {skillReadinessPercent}%
+                          </span>
+                        </div>
+                        <div className="w-full h-2 rounded-full bg-white/15 overflow-hidden">
                           <div
-                            key={stage}
-                            className="p-3 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-800"
-                          >
-                            <span className="text-[#002C66] block text-[10px]">
-                              STAGE 0{idx + 1}
-                            </span>
-                            {stage}
+                            className="h-full bg-emerald-400 transition-all"
+                            style={{ width: `${skillReadinessPercent}%` }}
+                          />
+                        </div>
+                        <div>
+                          <p className="text-xs font-bold text-slate-200 mb-2">
+                            Priority Skill Gaps to Close Next:
+                          </p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {missingRoleSkills.length === 0 ? (
+                              <span className="text-xs font-bold text-emerald-300">
+                                All core skills verified! Ready for Talent CIR Assessment.
+                              </span>
+                            ) : (
+                              missingRoleSkills.map((gap) => (
+                                <span
+                                  key={gap}
+                                  className="px-2.5 py-1 rounded-lg bg-white/10 border border-white/15 text-[11px] font-semibold text-white"
+                                >
+                                  {gap}
+                                </span>
+                              ))
+                            )}
                           </div>
-                        ))}
+                        </div>
                       </div>
                     </div>
                   )}
-                </div>
-              </div>
 
-              {/* SALARY INSIGHTS — KNOW YOUR EARNING POTENTIAL */}
-              <div className="bg-white rounded-3xl border border-slate-200 shadow-lg p-6 sm:p-8">
-                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-6">
-                  <div>
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-extrabold uppercase tracking-wider mb-2">
-                      Compensation Benchmarks • India & Global
-                    </div>
-                    <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-slate-950">
-                      Know Your <span className="text-[#002C66]">Earning Potential.</span>
-                    </h2>
-                    <p className="text-sm text-slate-600 mt-1">
-                      Explore how annual compensation scales with experience, city tier, and
-                      specialised skill credentials.
-                    </p>
-                  </div>
-
-                  <div className="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200 self-start shrink-0">
+                  {/* Footer Navigation inside Step 4 Card */}
+                  <div className="mt-6 pt-5 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
                     <button
                       type="button"
-                      onClick={() => setSalaryCityTier("tier1")}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${
-                        salaryCityTier === "tier1" ? "bg-[#002C66] text-white" : "text-slate-600"
-                      }`}
+                      onClick={() => goToStep(3)}
+                      className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 cursor-pointer"
                     >
-                      Tier-1 Metro (India)
+                      <ArrowLeft className="w-4 h-4" />
+                      Back to Career Opportunities
                     </button>
+
                     <button
                       type="button"
-                      onClick={() => setSalaryCityTier("tier2")}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${
-                        salaryCityTier === "tier2" ? "bg-[#002C66] text-white" : "text-slate-600"
-                      }`}
+                      onClick={() => goToStep(5)}
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white text-xs sm:text-sm font-bold shadow-xs cursor-pointer"
                     >
-                      Tier-2 City
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setSalaryCityTier("global")}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${
-                        salaryCityTier === "global" ? "bg-[#002C66] text-white" : "text-slate-600"
-                      }`}
-                    >
-                      Global Remote
+                      Continue: Your 90-Day Career Roadmap
+                      <ArrowRight className="w-4 h-4" />
                     </button>
                   </div>
-                </div>
-
-                <div className="grid lg:grid-cols-12 gap-6 items-stretch">
-                  <div className="lg:col-span-8 bg-[#FBF4EB]/55 rounded-2xl border border-slate-200 p-6 flex flex-col justify-between">
-                    <div>
-                      <h3 className="font-display text-xl font-extrabold text-slate-950 mb-4">
-                        {selectedRole.title}
-                      </h3>
-                      <div className="grid sm:grid-cols-3 gap-4">
-                        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs">
-                          <div className="text-xs font-bold uppercase text-slate-500 mb-1">
-                            Entry Level
-                          </div>
-                          <div className="text-xl font-extrabold text-[#002C66]">
-                            {adjustedSalary.entry}
-                          </div>
-                          <div className="text-[11px] text-slate-500 mt-1">
-                            Annual CTC · 0 – 2 Years
-                          </div>
-                        </div>
-                        <div className="p-5 rounded-2xl bg-white border-2 border-[#002C66] shadow-xs">
-                          <div className="text-xs font-bold uppercase text-[#002C66] mb-1">
-                            Mid-Career
-                          </div>
-                          <div className="text-xl font-extrabold text-slate-950">
-                            {adjustedSalary.mid}
-                          </div>
-                          <div className="text-[11px] text-slate-500 mt-1">
-                            Annual CTC · 2 – 5 Years
-                          </div>
-                        </div>
-                        <div className="p-5 rounded-2xl bg-white border border-emerald-300 shadow-xs">
-                          <div className="text-xs font-bold uppercase text-emerald-800 mb-1">
-                            Senior Level
-                          </div>
-                          <div className="text-xl font-extrabold text-emerald-700">
-                            {adjustedSalary.senior}
-                          </div>
-                          <div className="text-[11px] text-slate-500 mt-1">
-                            Annual CTC · 5+ Years
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <p className="text-[11px] text-slate-500 mt-4">
-                      Data Source Reference: {selectedRole.futureDemand.sourceCitation}
-                    </p>
-                  </div>
-
-                  <div className="lg:col-span-4 bg-[#FBF4EB]/55 rounded-2xl border border-slate-200 p-6">
-                    <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-3">
-                      Key Compensation Drivers
-                    </h4>
-                    <ul className="space-y-2.5 text-xs font-semibold text-slate-800">
-                      <li className="p-3 rounded-xl bg-white border border-slate-200">
-                        • Academic qualification & domain specialisation
-                      </li>
-                      <li className="p-3 rounded-xl bg-white border border-slate-200">
-                        • Employment hub & Tier-1/Tier-2 market demand
-                      </li>
-                      <li className="p-3 rounded-xl bg-white border border-slate-200">
-                        • Employer tier (GCC, Enterprise, FinTech, SaaS)
-                      </li>
-                      <li className="p-3 rounded-xl bg-white border border-slate-200">
-                        • Verified tool proficiency & CIR assessment score
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              {/* SKILLS YOU NEED TO SUCCEED — FIND OUT WHAT EMPLOYERS EXPECT */}
-              <div className="bg-white rounded-3xl border border-slate-200 shadow-lg p-6 sm:p-8">
-                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-6">
-                  <div>
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-extrabold uppercase tracking-wider mb-2">
-                      Skill Readiness & Gap Diagnostic
-                    </div>
-                    <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-slate-950">
-                      Find Out What <span className="text-[#002C66]">Employers Expect.</span>
-                    </h2>
-                    <p className="text-sm text-slate-600 mt-1">
-                      Select the skills you already possess to calculate your live employer
-                      readiness score for <strong>{selectedRole.title}</strong>:
-                    </p>
-                  </div>
-                  <div className="px-4 py-2.5 rounded-2xl bg-[#002C66] text-white text-right shrink-0">
-                    <span className="text-[10px] font-bold uppercase text-sky-300 block">
-                      Your Readiness Score
-                    </span>
-                    <span className="text-lg font-extrabold">
-                      {skillReadinessPercent}% ({matchedSkillCount}/{roleAllCoreSkills.length} Skills)
-                    </span>
-                  </div>
-                </div>
-
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mb-6">
-                  {/* Essential Skills */}
-                  <div className="p-5 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
-                    <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-3">
-                      Core Technical & Domain Skills
-                    </h4>
-                    <div className="space-y-2">
-                      {selectedRole.essentialSkills.map((skill) => {
-                        const checked = checkedSkills.includes(skill);
-                        return (
-                          <button
-                            key={skill}
-                            type="button"
-                            onClick={() => toggleSkillCheck(skill)}
-                            className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-left text-xs font-bold transition cursor-pointer ${
-                              checked
-                                ? "bg-emerald-50 border-emerald-300 text-emerald-950"
-                                : "bg-white border-slate-200 text-slate-700"
-                            }`}
-                          >
-                            <span>{skill}</span>
-                            <span className="text-[10px] uppercase shrink-0 ml-2">
-                              {checked ? "✓ Verified" : "+ Add Skill"}
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Preferred Skills */}
-                  <div className="p-5 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
-                    <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-3">
-                      High-Value Employability Skills
-                    </h4>
-                    <div className="space-y-2">
-                      {selectedRole.preferredSkills.map((skill) => {
-                        const checked = checkedSkills.includes(skill);
-                        return (
-                          <button
-                            key={skill}
-                            type="button"
-                            onClick={() => toggleSkillCheck(skill)}
-                            className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-left text-xs font-bold transition cursor-pointer ${
-                              checked
-                                ? "bg-emerald-50 border-emerald-300 text-emerald-950"
-                                : "bg-white border-slate-200 text-slate-700"
-                            }`}
-                          >
-                            <span>{skill}</span>
-                            <span className="text-[10px] uppercase shrink-0 ml-2">
-                              {checked ? "✓ Verified" : "+ Add Skill"}
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Tools & Certifications */}
-                  <div className="space-y-4">
-                    <div className="p-4 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
-                      <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-2">
-                        Software & Industry Tools
-                      </h4>
-                      <div className="flex flex-wrap gap-1.5">
-                        {selectedRole.toolsRequired.map((tool) => (
-                          <span
-                            key={tool}
-                            className="px-2.5 py-1 rounded-md bg-white border border-slate-200 text-xs font-semibold text-slate-800"
-                          >
-                            {tool}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="p-4 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
-                      <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-2">
-                        Recommended Certifications & Proof
-                      </h4>
-                      <ul className="space-y-1 text-xs text-slate-700 font-medium">
-                        {selectedRole.certifications.map((c) => (
-                          <li key={c}>• {c}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                {showSkillGapReport && (
-                  <div className="p-5 rounded-2xl bg-[#002C66]/5 border border-[#002C66]/20 mb-6">
-                    <h4 className="text-sm font-extrabold text-[#002C66] mb-1">
-                      Personalised Skill Gap Diagnostic for {selectedRole.title}
-                    </h4>
-                    <p className="text-xs text-slate-600 mb-3">
-                      Priority skills to acquire next to reach 100% employer readiness:
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {missingRoleSkills.length === 0 ? (
-                        <span className="text-xs font-bold text-emerald-800">
-                          All core skills verified! You are ready for Talent CIR assessment.
-                        </span>
-                      ) : (
-                        missingRoleSkills.map((gap) => (
-                          <span
-                            key={gap}
-                            className="px-3 py-1 rounded-lg bg-white border border-[#002C66]/30 text-xs font-bold text-[#002C66]"
-                          >
-                            Priority Focus: {gap}
-                          </span>
-                        ))
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-slate-200">
-                  <button
-                    type="button"
-                    onClick={() => setShowSkillGapReport((prev) => !prev)}
-                    className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white border-2 border-[#002C66] text-[#002C66] hover:bg-[#002C66]/5 text-xs sm:text-sm font-bold cursor-pointer"
-                  >
-                    Discover My Skill Gaps
-                    <Target className="w-4 h-4" />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => goToStep(5)}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white text-xs sm:text-sm font-bold shadow-xs cursor-pointer"
-                  >
-                    Continue: Your Personalised Career Roadmap
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
                 </div>
               </div>
             </div>
@@ -3780,44 +3507,56 @@ const AiGuidance = () => {
             + FINAL CTA SECTION (Full-Page Fit)
         ===================================================================== */}
         {currentStep === 7 && (
-          <section className="min-h-[calc(100vh-72px)] w-full flex flex-col justify-between py-6 lg:py-10">
-            <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 flex-1 flex flex-col justify-between space-y-8">
-              {/* Connect Career Discovery to Learning & Jobs */}
-              <div className="bg-white rounded-3xl border border-slate-200 shadow-lg p-6 sm:p-10 xl:p-12">
-                <div className="text-center max-w-4xl mx-auto mb-8">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-extrabold uppercase tracking-wider mb-3">
-                    <Zap className="w-3.5 h-3.5" />
-                    Step 07 of 07 • Turn Career Discovery Into Action
+          <section className="min-h-[calc(100vh-72px)] w-full flex items-center py-6 lg:py-8">
+            <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
+              <div className="bg-white rounded-3xl border border-slate-200 shadow-lg p-6 sm:p-8 xl:p-10 flex flex-col justify-between space-y-6">
+                {/* Compact Header */}
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 pb-5 border-b border-slate-200">
+                  <div>
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-extrabold uppercase tracking-wider mb-2">
+                      <Zap className="w-3.5 h-3.5" />
+                      Step 07 of 07 • Turn Career Discovery Into Action
+                    </div>
+                    <h1 className="font-display text-2xl sm:text-3xl xl:text-4xl font-extrabold text-slate-950 tracking-tight">
+                      Discover It. Learn It.{" "}
+                      <span className="text-[#002C66]">Make It Happen.</span>
+                    </h1>
+                    <p className="text-slate-600 text-sm sm:text-base mt-1">
+                      Execute your personalised career plan for{" "}
+                      <strong className="text-slate-900">{selectedRole.title}</strong> through
+                      courses, proctored CIR assessments, portfolio building, and verified jobs.
+                    </p>
                   </div>
-                  <h1 className="font-display text-3xl sm:text-4xl xl:text-5xl font-extrabold text-slate-950 tracking-tight mb-3">
-                    Discover It. Learn It.{" "}
-                    <span className="text-[#002C66]">Make It Happen.</span>
-                  </h1>
-                  <p className="text-slate-600 text-base sm:text-lg">
-                    Execute your personalised career plan for <strong>{selectedRole.title}</strong>{" "}
-                    through industry-aligned courses, proctored CIR assessments, portfolio building,
-                    and verified job opportunities.
-                  </p>
+
+                  <button
+                    type="button"
+                    onClick={() => goToStep(1)}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#FBF4EB] hover:bg-slate-100 border border-slate-200 text-xs font-bold text-[#002C66] self-start lg:self-auto shrink-0 cursor-pointer"
+                  >
+                    <GraduationCap className="w-3.5 h-3.5" />
+                    {education} • {specialisation} • {selectedRole.title}
+                  </button>
                 </div>
 
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* 4 Action Cards */}
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
                   {/* 1. Learn the Skills */}
-                  <div className="rounded-2xl border border-slate-200 bg-[#FBF4EB]/50 p-6 xl:p-7 flex flex-col justify-between hover:border-[#002C66] hover:bg-white transition shadow-xs">
+                  <div className="rounded-2xl border border-slate-200 bg-[#FBF4EB]/50 p-5 flex flex-col justify-between hover:border-[#002C66] hover:bg-white transition shadow-2xs">
                     <div>
-                      <div className="w-12 h-12 rounded-2xl bg-[#002C66]/10 text-[#002C66] flex items-center justify-center mb-4">
-                        <BookOpen className="w-6 h-6" />
+                      <div className="w-10 h-10 rounded-xl bg-[#002C66]/10 text-[#002C66] flex items-center justify-center mb-3">
+                        <BookOpen className="w-5 h-5" />
                       </div>
-                      <h3 className="font-display text-lg font-extrabold text-slate-900 mb-2">
+                      <h3 className="font-display text-base font-extrabold text-slate-900 mb-1.5">
                         Learn the Skills
                       </h3>
-                      <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6">
+                      <p className="text-xs text-slate-600 leading-relaxed mb-4">
                         Explore structured courses and expert-led learning pathways tailored to{" "}
                         {selectedRole.title}.
                       </p>
                     </div>
                     <Link
                       to="/learning"
-                      className="inline-flex items-center justify-between w-full px-4 py-3 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white text-xs font-bold transition"
+                      className="inline-flex items-center justify-between w-full px-4 py-2.5 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white text-xs font-bold transition"
                     >
                       <span>Explore Learning</span>
                       <ArrowRight className="w-4 h-4" />
@@ -3825,22 +3564,22 @@ const AiGuidance = () => {
                   </div>
 
                   {/* 2. Assess Your Readiness */}
-                  <div className="rounded-2xl border border-slate-200 bg-[#FBF4EB]/50 p-6 xl:p-7 flex flex-col justify-between hover:border-[#002C66] hover:bg-white transition shadow-xs">
+                  <div className="rounded-2xl border border-slate-200 bg-[#FBF4EB]/50 p-5 flex flex-col justify-between hover:border-[#002C66] hover:bg-white transition shadow-2xs">
                     <div>
-                      <div className="w-12 h-12 rounded-2xl bg-[#002C66]/10 text-[#002C66] flex items-center justify-center mb-4">
-                        <FileCheck2 className="w-6 h-6" />
+                      <div className="w-10 h-10 rounded-xl bg-[#002C66]/10 text-[#002C66] flex items-center justify-center mb-3">
+                        <FileCheck2 className="w-5 h-5" />
                       </div>
-                      <h3 className="font-display text-lg font-extrabold text-slate-900 mb-2">
+                      <h3 className="font-display text-base font-extrabold text-slate-900 mb-1.5">
                         Assess Your Readiness
                       </h3>
-                      <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6">
+                      <p className="text-xs text-slate-600 leading-relaxed mb-4">
                         Benchmark your current skills against employer standards with proctored
                         Talent CIR assessments.
                       </p>
                     </div>
                     <Link
                       to="/assessments"
-                      className="inline-flex items-center justify-between w-full px-4 py-3 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white text-xs font-bold transition"
+                      className="inline-flex items-center justify-between w-full px-4 py-2.5 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white text-xs font-bold transition"
                     >
                       <span>Take an Assessment</span>
                       <ArrowRight className="w-4 h-4" />
@@ -3848,22 +3587,22 @@ const AiGuidance = () => {
                   </div>
 
                   {/* 3. Prepare Your Profile */}
-                  <div className="rounded-2xl border border-slate-200 bg-[#FBF4EB]/50 p-6 xl:p-7 flex flex-col justify-between hover:border-[#002C66] hover:bg-white transition shadow-xs">
+                  <div className="rounded-2xl border border-slate-200 bg-[#FBF4EB]/50 p-5 flex flex-col justify-between hover:border-[#002C66] hover:bg-white transition shadow-2xs">
                     <div>
-                      <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-700 flex items-center justify-center mb-4">
-                        <UserCheck className="w-6 h-6" />
+                      <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-700 flex items-center justify-center mb-3">
+                        <UserCheck className="w-5 h-5" />
                       </div>
-                      <h3 className="font-display text-lg font-extrabold text-slate-900 mb-2">
+                      <h3 className="font-display text-base font-extrabold text-slate-900 mb-1.5">
                         Prepare Your Profile
                       </h3>
-                      <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6">
+                      <p className="text-xs text-slate-600 leading-relaxed mb-4">
                         Build an employer-ready resume showcasing verified projects and CIR
                         competency credentials.
                       </p>
                     </div>
                     <Link
                       to="/profile"
-                      className="inline-flex items-center justify-between w-full px-4 py-3 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white text-xs font-bold transition"
+                      className="inline-flex items-center justify-between w-full px-4 py-2.5 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white text-xs font-bold transition"
                     >
                       <span>Build My Profile</span>
                       <ArrowRight className="w-4 h-4" />
@@ -3871,22 +3610,22 @@ const AiGuidance = () => {
                   </div>
 
                   {/* 4. Find Relevant Jobs */}
-                  <div className="rounded-2xl border border-slate-200 bg-[#FBF4EB]/50 p-6 xl:p-7 flex flex-col justify-between hover:border-[#002C66] hover:bg-white transition shadow-xs">
+                  <div className="rounded-2xl border border-slate-200 bg-[#FBF4EB]/50 p-5 flex flex-col justify-between hover:border-[#002C66] hover:bg-white transition shadow-2xs">
                     <div>
-                      <div className="w-12 h-12 rounded-2xl bg-[#002C66]/10 text-[#002C66] flex items-center justify-center mb-4">
-                        <Briefcase className="w-6 h-6" />
+                      <div className="w-10 h-10 rounded-xl bg-[#002C66]/10 text-[#002C66] flex items-center justify-center mb-3">
+                        <Briefcase className="w-5 h-5" />
                       </div>
-                      <h3 className="font-display text-lg font-extrabold text-slate-900 mb-2">
+                      <h3 className="font-display text-base font-extrabold text-slate-900 mb-1.5">
                         Find Relevant Jobs
                       </h3>
-                      <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6">
+                      <p className="text-xs text-slate-600 leading-relaxed mb-4">
                         Apply directly to verified openings aligned with {selectedRole.title} and
                         your qualification.
                       </p>
                     </div>
                     <Link
                       to="/jobs"
-                      className="inline-flex items-center justify-between w-full px-4 py-3 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white text-xs font-bold transition"
+                      className="inline-flex items-center justify-between w-full px-4 py-2.5 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white text-xs font-bold transition"
                     >
                       <span>Browse Jobs</span>
                       <ArrowRight className="w-4 h-4" />
@@ -3894,7 +3633,45 @@ const AiGuidance = () => {
                   </div>
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
+                {/* Integrated Executive CTA Banner */}
+                <div className="pro-hero rounded-2xl bg-[#002C66] text-white p-6 sm:p-8 shadow-md">
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                    <div className="space-y-2 max-w-2xl">
+                      <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-sky-300 text-[11px] font-bold uppercase tracking-wider">
+                        <Sparkles className="w-3.5 h-3.5" />
+                        Super Intelligence Career Co-Pilot
+                      </span>
+                      <h2 className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                        Your Degree Is Just <span className="text-sky-300">the Beginning.</span>
+                      </h2>
+                      <p className="text-slate-200 text-xs sm:text-sm leading-relaxed">
+                        Discover your possibilities, validate your potential with Talent CIR, and
+                        accelerate into the career path built for you.
+                      </p>
+                    </div>
+
+                    <div className="flex flex-wrap gap-3 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => goToStep(1)}
+                        className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#FBF4EB] hover:bg-white text-[#002C66] font-extrabold text-xs sm:text-sm shadow-md transition cursor-pointer"
+                      >
+                        Recalibrate My Career Profile
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => navigate("/assessments")}
+                        className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm border border-white/20 transition cursor-pointer"
+                      >
+                        Launch Talent CIR Assessment
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer Navigation */}
+                <div className="pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
                   <button
                     type="button"
                     onClick={() => goToStep(6)}
@@ -3910,67 +3687,6 @@ const AiGuidance = () => {
                   >
                     Back to AI Guidance Home
                   </button>
-                </div>
-              </div>
-
-              {/* Final Executive CTA Banner & Interactive Journey Recap */}
-              <div className="pro-hero rounded-3xl bg-[#002C66] text-white p-8 sm:p-12 shadow-xl">
-                <div className="grid lg:grid-cols-12 gap-8 items-center">
-                  <div className="lg:col-span-7 space-y-4">
-                    <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 border border-white/15 text-sky-300 text-xs font-bold uppercase tracking-wider">
-                      <Sparkles className="w-3.5 h-3.5" />
-                      Super Intelligence Career Co-Pilot
-                    </span>
-                    <h2 className="font-display text-3xl sm:text-4xl xl:text-5xl font-extrabold tracking-tight text-white">
-                      Your Degree Is Just <span className="text-sky-300">the Beginning.</span>
-                    </h2>
-                    <p className="text-slate-200 text-base sm:text-lg leading-relaxed">
-                      Discover your possibilities, validate your potential, and accelerate into the
-                      career path built for you.
-                    </p>
-                    <div className="flex flex-wrap gap-3 pt-2">
-                      <button
-                        type="button"
-                        onClick={() => goToStep(1)}
-                        className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#FBF4EB] hover:bg-white text-[#002C66] font-extrabold text-sm shadow-lg transition cursor-pointer"
-                      >
-                        Recalibrate My Career Profile
-                        <ArrowRight className="w-4 h-4" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => navigate("/assessments")}
-                        className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/20 transition cursor-pointer"
-                      >
-                        Launch Talent CIR Assessment
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Interactive 7-Step Journey Navigator */}
-                  <div className="lg:col-span-5 bg-white/10 rounded-2xl p-5 border border-white/15">
-                    <div className="text-xs font-extrabold uppercase tracking-wider text-sky-300 mb-3">
-                      Complete SI Career Guide Journey
-                    </div>
-                    <div className="space-y-2">
-                      {JOURNEY_STEPS.slice(1).map((s) => (
-                        <button
-                          key={s.step}
-                          type="button"
-                          onClick={() => goToStep(s.step)}
-                          className="w-full flex items-center justify-between p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-left text-xs transition cursor-pointer"
-                        >
-                          <div className="flex items-center gap-2.5">
-                            <span className="px-2 py-0.5 rounded bg-white text-[#002C66] text-[10px] font-extrabold">
-                              {s.badge}
-                            </span>
-                            <span className="font-bold text-white">{s.title}</span>
-                          </div>
-                          <CheckCircle2 className="w-4 h-4 text-emerald-300 shrink-0" />
-                        </button>
-                      ))}
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
