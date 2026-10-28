@@ -9,7 +9,7 @@ import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { siteLogo } from "@/assets/logo";
 
 const eventsDropdownItems = [
-  { label: "Hackathons", href: "/hackathons" },
+  { label: "Hackathons", href: "/hackathon3" },
   { label: "Podcasts", href: "/podcasts" },
   { label: "Networking", href: "/networking" },
 ];
