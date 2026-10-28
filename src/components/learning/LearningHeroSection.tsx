@@ -54,7 +54,7 @@ const LearningHeroSection = () => {
                   size="lg"
                   className="h-12 px-7 rounded-xl bg-[#002C66] text-white hover:bg-[#00204d] font-bold gap-2 shadow-sm cursor-pointer"
                 >
-                  <Link to="/learning#courses">
+                  <Link to="/learning/courses/ai-engineer-agentic-track">
                     Explore Courses <ArrowRight className="h-4 w-4" />
                   </Link>
                 </Button>
