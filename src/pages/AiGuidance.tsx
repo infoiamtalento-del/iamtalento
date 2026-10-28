@@ -1314,6 +1314,65 @@ const AiGuidance = () => {
   const [workLocation, setWorkLocation] = useState("Bengaluru (City / Hybrid)");
   const [salaryExpectation, setSalaryExpectation] = useState("₹4.5 LPA – ₹8.0 LPA");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generationStage, setGenerationStage] = useState<number>(0);
+
+  // Quick-Load Sample Persona Presets for 1-Click Testing
+  const SAMPLE_PERSONAS = [
+    {
+      label: "B.Com • Finance",
+      edu: "B.Com",
+      spec: "Finance",
+      exp: "Fresher" as const,
+      loc: "Mumbai (City / On-Site)",
+      ctc: "₹5.0 LPA – ₹8.5 LPA",
+      ints: ["Finance", "Analytics & Data", "Business"],
+    },
+    {
+      label: "BBA • Marketing",
+      edu: "BBA",
+      spec: "Marketing",
+      exp: "Fresher" as const,
+      loc: "Bengaluru (City / Hybrid)",
+      ctc: "₹4.5 LPA – ₹7.5 LPA",
+      ints: ["Marketing", "Business", "Creative & Content"],
+    },
+    {
+      label: "B.Tech • Computer Science",
+      edu: "B.Tech / B.E.",
+      spec: "Computer Science / IT",
+      exp: "Fresher" as const,
+      loc: "Hyderabad (City / Hybrid)",
+      ctc: "₹6.5 LPA – ₹12.0 LPA",
+      ints: ["Technology", "Product & Strategy", "Analytics & Data"],
+    },
+    {
+      label: "MBA • HR",
+      edu: "MBA / PGDM",
+      spec: "Human Resources (HR)",
+      exp: "Experienced" as const,
+      loc: "Delhi NCR (City / Hybrid)",
+      ctc: "₹6.0 LPA – ₹10.0 LPA",
+      ints: ["Human Resources", "Operations", "Client Relations"],
+    },
+    {
+      label: "B.Sc. • Data & Analytics",
+      edu: "B.Sc.",
+      spec: "Data Science & AI",
+      exp: "Career Switcher" as const,
+      loc: "Remote (India / Global)",
+      ctc: "₹5.5 LPA – ₹9.5 LPA",
+      ints: ["Analytics & Data", "Operations", "Technology"],
+    },
+  ];
+
+  const applyPersonaPreset = (preset: (typeof SAMPLE_PERSONAS)[number]) => {
+    setEducation(preset.edu);
+    handleSpecialisationChange(preset.spec);
+    setExperience(preset.exp);
+    setWorkLocation(preset.loc);
+    setSalaryExpectation(preset.ctc);
+    setInterests(preset.ints);
+  };
 
   // 03. Pathway State
   const [selectedPath, setSelectedPath] = useState<DiscoveryPath>("all");
@@ -1411,14 +1470,18 @@ const AiGuidance = () => {
 
   const handleGenerateOptions = () => {
     setIsGenerating(true);
+    setGenerationStage(1);
     const mapping = SPECIALISATION_TO_DOMAIN[specialisation];
     if (mapping) {
       setSelectedRoleId(mapping.defaultRoleId);
     }
+    setTimeout(() => setGenerationStage(2), 240);
+    setTimeout(() => setGenerationStage(3), 480);
     setTimeout(() => {
       setIsGenerating(false);
+      setGenerationStage(0);
       goToStep(2);
-    }, 300);
+    }, 750);
   };
 
   const handleSelectPathway = (path: DiscoveryPath) => {
@@ -1563,30 +1626,26 @@ const AiGuidance = () => {
       <main className="flex-1 pt-[72px] flex flex-col">
         {/* =====================================================================
             MAIN AI GUIDANCE PAGE (STEP 0 & STEP 1):
-            FIRST: 01. HERO SECTION (Full-Page Fit)
-            SECOND: 02. CANDIDATE PROFILE SETUP — Tell Us About Yourself (Full-Page Fit)
+            FIRST: HERO SECTION (Full-Page Fit)
+            SECOND: CANDIDATE PROFILE SETUP — Tell Us About Yourself (Full-Page Fit)
         ===================================================================== */}
         {(currentStep === 0 || currentStep === 1) && (
           <div className="w-full flex flex-col">
-            {/* 01. HERO SECTION — FIRST ON AI GUIDANCE PAGE (Full Viewport Fit) */}
+            {/* HERO SECTION — FIRST ON AI GUIDANCE PAGE (Full Viewport Fit) */}
             <section className="min-h-[calc(100vh-72px)] w-full flex items-center py-8 lg:py-12 border-b border-slate-200/80">
               <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
                 <div className="grid lg:grid-cols-12 gap-10 xl:gap-14 items-center">
-                  {/* Left Column: Hero Copy */}
+                  {/* Left Column: Executive Hero Copy */}
                   <div className="lg:col-span-6 space-y-6">
-                    <div className="inline-flex flex-wrap items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 shadow-xs">
-                      <Sparkles className="w-4 h-4 text-[#002C66]" />
-                      <span className="text-xs font-bold uppercase tracking-widest text-[#002C66]">
-                        careeryatraa.com
+                    <div className="inline-flex flex-wrap items-center gap-2.5 px-4 py-1.5 rounded-full bg-white border border-slate-200 shadow-xs">
+                      <span className="w-2 h-2 rounded-full bg-[#002C66]" />
+                      <span className="text-xs font-extrabold uppercase tracking-wider text-[#002C66]">
+                        Super Intelligence Career Guide
                       </span>
                       <span className="text-slate-300">•</span>
-                      <span className="text-xs font-extrabold uppercase tracking-wider text-slate-700">
-                        SUPER INTELLIGENCE GUIDE
+                      <span className="text-xs font-semibold text-slate-600">
+                        AI-Powered Career Co-Pilot
                       </span>
-                    </div>
-
-                    <div className="inline-block px-3 py-1 rounded-md bg-[#002C66]/10 text-[#002C66] text-xs font-bold uppercase tracking-wider">
-                      01. Hero Section
                     </div>
 
                     <h1 className="font-display text-4xl sm:text-5xl xl:text-6xl font-extrabold tracking-tight leading-[1.08] text-slate-950">
@@ -1595,15 +1654,37 @@ const AiGuidance = () => {
                     </h1>
 
                     <p className="text-base sm:text-lg xl:text-xl text-slate-700 leading-relaxed font-medium max-w-2xl">
-                      Discover the careers you can pursue, the skills you need, the salary you could
-                      earn and the opportunities waiting for you — powered by AI.
+                      Discover the careers you can pursue, the skills employers expect, the salary
+                      you can earn across India, and a step-by-step roadmap tailored to your
+                      qualification.
                     </p>
 
-                    <div className="bg-white border-l-4 border-[#002C66] px-5 py-4 rounded-r-2xl shadow-xs max-w-2xl">
-                      <p className="text-sm sm:text-base text-slate-700 font-medium leading-relaxed">
-                        Personalised career guidance based on your education, interests and career
-                        preferences.
-                      </p>
+                    {/* Executive Value Highlights */}
+                    <div className="grid sm:grid-cols-3 gap-3.5 max-w-2xl pt-1">
+                      <div className="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-xs">
+                        <div className="text-lg sm:text-xl font-extrabold text-[#002C66]">
+                          Dual Pathways
+                        </div>
+                        <p className="text-xs text-slate-600 font-medium mt-0.5">
+                          Degree-aligned & cross-industry roles
+                        </p>
+                      </div>
+                      <div className="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-xs">
+                        <div className="text-lg sm:text-xl font-extrabold text-[#002C66]">
+                          India CTC Bands
+                        </div>
+                        <p className="text-xs text-slate-600 font-medium mt-0.5">
+                          Entry, mid-career & senior benchmarks
+                        </p>
+                      </div>
+                      <div className="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-xs">
+                        <div className="text-lg sm:text-xl font-extrabold text-[#002C66]">
+                          90-Day Roadmap
+                        </div>
+                        <p className="text-xs text-slate-600 font-medium mt-0.5">
+                          Skill gap diagnostic & CIR readiness
+                        </p>
+                      </div>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-4 pt-2">
@@ -1612,7 +1693,7 @@ const AiGuidance = () => {
                         onClick={scrollToProfileSection}
                         className="inline-flex items-center gap-2.5 px-7 py-4 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white font-bold text-sm sm:text-base shadow-lg transition cursor-pointer"
                       >
-                        Discover My Career Path
+                        Build My Career Profile
                         <ArrowRight className="w-5 h-5" />
                       </button>
                       <button
@@ -1620,13 +1701,48 @@ const AiGuidance = () => {
                         onClick={() => goToStep(3)}
                         className="inline-flex items-center gap-2 px-6 py-4 rounded-xl bg-white hover:bg-slate-50 text-[#002C66] border border-[#002C66]/30 font-bold text-sm sm:text-base shadow-xs transition cursor-pointer"
                       >
-                        Explore Career Roles
+                        Browse All Career Roles
                         <Compass className="w-4 h-4" />
                       </button>
                     </div>
+
+                    {/* Guided 4-Stage AI Process Strip */}
+                    <div className="pt-3 max-w-2xl">
+                      <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 mb-2.5">
+                        Guided AI Career Discovery Process
+                      </p>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                        {[
+                          { step: "01", title: "Profile Setup", desc: "Degree & Location", target: "profile" },
+                          { step: "02", title: "Dual Pathways", desc: "Degree vs Beyond", target: 2 },
+                          { step: "03", title: "Role & CTC Audit", desc: "Salary & Skill Gap", target: 3 },
+                          { step: "04", title: "90-Day Roadmap", desc: "CIR Action Plan", target: 5 },
+                        ].map((item) => (
+                          <button
+                            key={item.step}
+                            type="button"
+                            onClick={() =>
+                              item.target === "profile"
+                                ? scrollToProfileSection()
+                                : goToStep(item.target as number)
+                            }
+                            className="text-left p-3 rounded-xl bg-white/90 hover:bg-white border border-slate-200/90 hover:border-[#002C66]/50 transition shadow-2xs cursor-pointer group"
+                          >
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-[#002C66]/10 text-[#002C66]">
+                                STEP {item.step}
+                              </span>
+                              <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#002C66] transition" />
+                            </div>
+                            <p className="text-xs font-extrabold text-slate-900">{item.title}</p>
+                            <p className="text-[10px] text-slate-500 font-medium">{item.desc}</p>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Right Column: Uncropped Hero PDF Image 1 */}
+                  {/* Right Column: Uncropped Hero Showcase Card */}
                   <div className="lg:col-span-6">
                     <div className="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
                       <div className="bg-[#002C66] px-5 py-3.5 flex items-center justify-between">
@@ -1635,11 +1751,11 @@ const AiGuidance = () => {
                           <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
                           <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
                           <span className="text-xs font-bold text-white ml-2 tracking-wide uppercase">
-                            SI Guide • AI Career Co-Pilot
+                            SI Career Intelligence • Interactive Preview
                           </span>
                         </div>
                         <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-200 text-[11px] font-semibold">
-                          Interactive AI Flow
+                          Personalised Engine
                         </span>
                       </div>
 
@@ -1647,7 +1763,7 @@ const AiGuidance = () => {
                         <img
                           src={heroImg}
                           alt="Super Intelligence Career Guide - Top Courses, Best Colleges, and Career Suggestions"
-                          className="w-full h-auto max-h-[520px] block object-contain mx-auto"
+                          className="w-full h-auto max-h-[500px] block object-contain mx-auto"
                         />
                       </div>
 
@@ -1660,13 +1776,13 @@ const AiGuidance = () => {
                         </div>
                         <div className="py-3.5 px-2">
                           <p className="text-xs sm:text-sm font-extrabold text-[#002C66]">
-                            Best Colleges
+                            Qualification Fit
                           </p>
-                          <p className="text-[11px] text-slate-500">Qualification Mapping</p>
+                          <p className="text-[11px] text-slate-500">Degree & Domain Mapping</p>
                         </div>
                         <div className="py-3.5 px-2">
                           <p className="text-xs sm:text-sm font-extrabold text-[#002C66]">
-                            Career Suggestions
+                            Career Pathways
                           </p>
                           <p className="text-[11px] text-slate-500">Role, Salary & Roadmap</p>
                         </div>
@@ -1677,183 +1793,237 @@ const AiGuidance = () => {
               </div>
             </section>
 
-            {/* 02. CANDIDATE PROFILE SETUP — Tell Us About Yourself (Second on AI Guidance Page, Full-Page Fit) */}
+            {/* CANDIDATE PROFILE SETUP — Tell Us About Yourself (Second on AI Guidance Page, Full-Page Fit) */}
             <section
               id="tell-us-about-yourself"
               className="min-h-[calc(100vh-72px)] w-full flex items-center py-8 lg:py-12 scroll-mt-[72px]"
             >
               <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20">
-                <div className="w-full bg-white rounded-3xl border border-slate-200 shadow-md p-6 sm:p-10 xl:p-12">
-                  <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-8">
+                <div className="w-full bg-white rounded-3xl border border-slate-200 shadow-lg p-6 sm:p-10 xl:p-12">
+                  {/* Top Section Header */}
+                  <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 pb-6 mb-8 border-b border-slate-200">
                     <div className="max-w-3xl">
-                      <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-bold uppercase tracking-wider mb-3">
+                      <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-extrabold uppercase tracking-wider mb-3">
                         <UserCheck className="w-3.5 h-3.5" />
-                        STEP 1 • 02. Candidate Profile Setup
+                        Step 01 • Candidate Profile Assessment
                       </div>
-                      <h2 className="font-display text-3xl sm:text-4xl xl:text-5xl font-extrabold text-slate-950 tracking-tight mb-2">
+                      <h2 className="font-display text-3xl sm:text-4xl xl:text-[42px] font-extrabold text-slate-950 tracking-tight">
                         Tell Us About <span className="text-[#002C66]">Yourself.</span>
                       </h2>
-                      <p className="text-slate-600 text-base sm:text-lg leading-relaxed">
-                        Your career journey starts with understanding where you are today. Provide a
-                        few details to receive relevant career recommendations.
+                      <p className="text-slate-600 text-sm sm:text-base mt-1.5 leading-relaxed">
+                        Configure your academic background, experience stage, and location
+                        preferences so our AI engine can calibrate high-match roles and realistic
+                        salary benchmarks.
                       </p>
                     </div>
-                    <span className="self-start lg:self-auto px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold shrink-0">
-                      7 / 7 Profile Signals Active
-                    </span>
+
+                    <div className="flex flex-wrap items-center gap-2.5 self-start lg:self-auto shrink-0">
+                      <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#FBF4EB] border border-slate-200 text-slate-800 text-xs font-bold">
+                        <GraduationCap className="w-3.5 h-3.5 text-[#002C66]" />
+                        {education} • {specialisation}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-bold">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                        Primary Track: {activeCandidateDomain}
+                      </span>
+                    </div>
                   </div>
 
                   <div className="grid lg:grid-cols-12 gap-8 xl:gap-10 items-stretch">
-                    {/* Profile Setup Form (All 7 Suggested Fields from PDF Page 2) */}
-                    <div className="lg:col-span-8 bg-[#FBF4EB]/60 rounded-2xl border border-slate-200 p-6 sm:p-8 flex flex-col justify-between space-y-6">
+                    {/* Left Column: Clean, Executive Profile Form */}
+                    <div className="lg:col-span-8 bg-[#FBF4EB]/45 rounded-2xl border border-slate-200/90 p-6 sm:p-8 flex flex-col justify-between space-y-6">
                       <div className="space-y-6">
-                        <div className="flex items-center justify-between border-b border-slate-200 pb-4">
-                          <div>
-                            <h3 className="font-display text-lg font-extrabold text-slate-900">
-                              Candidate Profile Parameters
-                            </h3>
-                            <p className="text-xs text-slate-500 mt-0.5">
-                              All 7 profile signals calibrate your degree-based and cross-industry
-                              career options
-                            </p>
+                        {/* Quick 1-Click Sample Persona Presets Bar */}
+                        <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs">
+                          <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+                            <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#002C66] flex items-center gap-1.5">
+                              <Sparkles className="w-3.5 h-3.5 text-[#002C66]" />
+                              Quick-Start Demo Personas (1-Click Auto-Fill)
+                            </span>
+                            <span className="text-[11px] font-medium text-slate-500">
+                              Click a profile to test instant AI domain calibration
+                            </span>
                           </div>
-                        </div>
-
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                          {/* 1. Highest Education */}
-                          <div>
-                            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
-                              1. Highest Education
-                            </label>
-                            <select
-                              value={education}
-                              onChange={(e) => setEducation(e.target.value)}
-                              className="w-full rounded-xl bg-white border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#002C66]"
-                            >
-                              {EDUCATION_OPTIONS.map((opt) => (
-                                <option key={opt} value={opt}>
-                                  {opt}
-                                </option>
-                              ))}
-                            </select>
-                            <p className="text-[11px] text-slate-500 mt-1">
-                              BBA, B.Com, B.Tech, MBA, BA, B.Sc. and more
-                            </p>
-                          </div>
-
-                          {/* 2. Specialisation */}
-                          <div>
-                            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
-                              2. Specialisation
-                            </label>
-                            <select
-                              value={specialisation}
-                              onChange={(e) => handleSpecialisationChange(e.target.value)}
-                              className="w-full rounded-xl bg-white border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#002C66]"
-                            >
-                              {SPECIALISATION_OPTIONS.map((opt) => (
-                                <option key={opt} value={opt}>
-                                  {opt}
-                                </option>
-                              ))}
-                            </select>
-                            <p className="text-[11px] text-slate-500 mt-1">
-                              Marketing, Finance, HR, Computer Science, etc.
-                            </p>
-                          </div>
-
-                          {/* 3. Country */}
-                          <div>
-                            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
-                              3. Country
-                            </label>
-                            <select
-                              value={country}
-                              onChange={(e) => setCountry(e.target.value)}
-                              className="w-full rounded-xl bg-white border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#002C66]"
-                            >
-                              {COUNTRY_OPTIONS.map((opt) => (
-                                <option key={opt} value={opt}>
-                                  {opt}
-                                </option>
-                              ))}
-                            </select>
-                            <p className="text-[11px] text-slate-500 mt-1">
-                              India or another preferred country
-                            </p>
-                          </div>
-
-                          {/* 4. Career Experience */}
-                          <div>
-                            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
-                              4. Career Experience
-                            </label>
-                            <div className="grid grid-cols-3 gap-2">
-                              {EXPERIENCE_OPTIONS.map((exp) => (
+                          <div className="flex flex-wrap gap-2">
+                            {SAMPLE_PERSONAS.map((preset) => {
+                              const isSelected =
+                                education === preset.education &&
+                                specialisation === preset.specialisation;
+                              return (
                                 <button
-                                  key={exp}
+                                  key={preset.label}
                                   type="button"
-                                  onClick={() => setExperience(exp)}
-                                  className={`py-2.5 px-2 rounded-xl text-xs font-bold border transition cursor-pointer ${
-                                    experience === exp
-                                      ? "bg-[#002C66] text-white border-[#002C66] shadow-xs"
-                                      : "bg-white text-slate-700 border-slate-300 hover:bg-slate-100"
+                                  onClick={() => applyPersonaPreset(preset)}
+                                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition cursor-pointer ${
+                                    isSelected
+                                      ? "bg-[#002C66] text-white border-[#002C66] shadow-2xs"
+                                      : "bg-slate-50 text-slate-700 border-slate-200 hover:border-[#002C66]/40 hover:bg-white"
                                   }`}
                                 >
-                                  {exp}
+                                  {preset.label}
                                 </button>
-                              ))}
-                            </div>
-                            <p className="text-[11px] text-slate-500 mt-1">
-                              Fresher, Experienced or Career Switcher
-                            </p>
-                          </div>
-
-                          {/* 6. Preferred Work Location */}
-                          <div>
-                            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
-                              6. Preferred Work Location
-                            </label>
-                            <select
-                              value={workLocation}
-                              onChange={(e) => setWorkLocation(e.target.value)}
-                              className="w-full rounded-xl bg-white border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#002C66]"
-                            >
-                              {LOCATION_OPTIONS.map((opt) => (
-                                <option key={opt} value={opt}>
-                                  {opt}
-                                </option>
-                              ))}
-                            </select>
-                            <p className="text-[11px] text-slate-500 mt-1">
-                              City, country, remote or hybrid
-                            </p>
-                          </div>
-
-                          {/* 7. Salary Expectations (Optional) */}
-                          <div>
-                            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
-                              7. Salary Expectations{" "}
-                              <span className="text-slate-400 font-normal">(Optional)</span>
-                            </label>
-                            <input
-                              type="text"
-                              value={salaryExpectation}
-                              onChange={(e) => setSalaryExpectation(e.target.value)}
-                              placeholder="e.g., ₹4.5 LPA – ₹8.0 LPA"
-                              className="w-full rounded-xl bg-white border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#002C66]"
-                            />
-                            <p className="text-[11px] text-slate-500 mt-1">
-                              Calibrates entry, mid-career & senior bands
-                            </p>
+                              );
+                            })}
                           </div>
                         </div>
 
-                        {/* 5. Career Interests */}
+                        {/* Group 1: Academic & Geographic Profile (6 Clean Uniform Fields) */}
                         <div>
-                          <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
-                            5. Career Interests (Select one or more)
-                          </label>
+                          <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+                            <div className="flex items-center gap-2">
+                              <span className="w-5 h-5 rounded-full bg-[#002C66] text-white text-[10px] font-extrabold inline-flex items-center justify-center">
+                                1
+                              </span>
+                              <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66]">
+                                Academic Qualification & Work Preferences
+                              </h3>
+                            </div>
+                            <span className="text-[11px] font-semibold text-slate-500">
+                              All 6 parameters sync live with the AI engine
+                            </span>
+                          </div>
+
+                          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                            {/* Field 1: Highest Education */}
+                            <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs">
+                              <label className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-2">
+                                <GraduationCap className="w-3.5 h-3.5 text-[#002C66]" />
+                                Highest Qualification
+                              </label>
+                              <select
+                                value={education}
+                                onChange={(e) => setEducation(e.target.value)}
+                                className="w-full h-11 rounded-lg bg-slate-50/80 border border-slate-300 px-3 text-sm font-bold text-slate-900 focus:outline-none focus:bg-white focus:border-[#002C66] transition"
+                              >
+                                {EDUCATION_OPTIONS.map((opt) => (
+                                  <option key={opt} value={opt}>
+                                    {opt}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+
+                            {/* Field 2: Specialisation */}
+                            <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs">
+                              <label className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-2">
+                                <BookOpen className="w-3.5 h-3.5 text-[#002C66]" />
+                                Academic Specialisation
+                              </label>
+                              <select
+                                value={specialisation}
+                                onChange={(e) => handleSpecialisationChange(e.target.value)}
+                                className="w-full h-11 rounded-lg bg-slate-50/80 border border-slate-300 px-3 text-sm font-bold text-slate-900 focus:outline-none focus:bg-white focus:border-[#002C66] transition"
+                              >
+                                {SPECIALISATION_OPTIONS.map((opt) => (
+                                  <option key={opt} value={opt}>
+                                    {opt}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+
+                            {/* Field 3: Country */}
+                            <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs">
+                              <label className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-2">
+                                <Globe2 className="w-3.5 h-3.5 text-[#002C66]" />
+                                Preferred Country
+                              </label>
+                              <select
+                                value={country}
+                                onChange={(e) => setCountry(e.target.value)}
+                                className="w-full h-11 rounded-lg bg-slate-50/80 border border-slate-300 px-3 text-sm font-bold text-slate-900 focus:outline-none focus:bg-white focus:border-[#002C66] transition"
+                              >
+                                {COUNTRY_OPTIONS.map((opt) => (
+                                  <option key={opt} value={opt}>
+                                    {opt}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+
+                            {/* Field 4: Preferred Work Location */}
+                            <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs">
+                              <label className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-2">
+                                <MapPin className="w-3.5 h-3.5 text-[#002C66]" />
+                                Preferred Work Mode & City
+                              </label>
+                              <select
+                                value={workLocation}
+                                onChange={(e) => setWorkLocation(e.target.value)}
+                                className="w-full h-11 rounded-lg bg-slate-50/80 border border-slate-300 px-3 text-sm font-bold text-slate-900 focus:outline-none focus:bg-white focus:border-[#002C66] transition"
+                              >
+                                {LOCATION_OPTIONS.map((opt) => (
+                                  <option key={opt} value={opt}>
+                                    {opt}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+
+                            {/* Field 5: Salary Expectations */}
+                            <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs">
+                              <label className="flex items-center justify-between text-xs font-bold text-slate-700 mb-2">
+                                <span className="flex items-center gap-1.5">
+                                  <IndianRupee className="w-3.5 h-3.5 text-[#002C66]" />
+                                  Target Annual CTC
+                                </span>
+                                <span className="text-[10px] font-medium text-slate-400">
+                                  Optional
+                                </span>
+                              </label>
+                              <input
+                                type="text"
+                                value={salaryExpectation}
+                                onChange={(e) => setSalaryExpectation(e.target.value)}
+                                placeholder="e.g., ₹4.5 LPA – ₹8.0 LPA"
+                                className="w-full h-11 rounded-lg bg-slate-50/80 border border-slate-300 px-3 text-sm font-bold text-slate-900 focus:outline-none focus:bg-white focus:border-[#002C66] transition"
+                              />
+                            </div>
+
+                            {/* Field 6: Career Experience Stage (Single-line segmented control) */}
+                            <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs">
+                              <label className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-2">
+                                <Briefcase className="w-3.5 h-3.5 text-[#002C66]" />
+                                Experience Stage
+                              </label>
+                              <div className="grid grid-cols-3 gap-1.5 h-11 bg-slate-100 p-1 rounded-lg border border-slate-200">
+                                {EXPERIENCE_OPTIONS.map((exp) => {
+                                  const shortLabel =
+                                    exp === "Career Switcher" ? "Switcher" : exp;
+                                  return (
+                                    <button
+                                      key={exp}
+                                      type="button"
+                                      onClick={() => setExperience(exp)}
+                                      title={exp}
+                                      className={`h-full rounded-md text-[11px] font-extrabold whitespace-nowrap transition cursor-pointer ${
+                                        experience === exp
+                                          ? "bg-[#002C66] text-white shadow-2xs"
+                                          : "text-slate-700 hover:bg-white/70"
+                                      }`}
+                                    >
+                                      {shortLabel}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Group 2: Core Career Interests */}
+                        <div className="bg-white p-5 rounded-xl border border-slate-200/90 shadow-2xs">
+                          <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                            <label className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#002C66]">
+                              <span className="w-5 h-5 rounded-full bg-[#002C66] text-white text-[10px] font-extrabold inline-flex items-center justify-center">
+                                2
+                              </span>
+                              Core Career Interests & Domains
+                            </label>
+                            <span className="text-[11px] font-semibold text-slate-500">
+                              {interests.length} selected (Select one or more)
+                            </span>
+                          </div>
                           <div className="flex flex-wrap gap-2">
                             {INTEREST_OPTIONS.map((interest) => {
                               const active = interests.includes(interest);
@@ -1862,10 +2032,10 @@ const AiGuidance = () => {
                                   key={interest}
                                   type="button"
                                   onClick={() => toggleInterest(interest)}
-                                  className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold border transition cursor-pointer ${
+                                  className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold border transition cursor-pointer ${
                                     active
-                                      ? "bg-[#002C66] text-white border-[#002C66] shadow-xs"
-                                      : "bg-white text-slate-700 border-slate-300 hover:bg-slate-100"
+                                      ? "bg-[#002C66] text-white border-[#002C66] shadow-2xs"
+                                      : "bg-slate-50/80 text-slate-700 border-slate-200 hover:border-[#002C66]/40 hover:bg-white"
                                   }`}
                                 >
                                   {active && <Check className="w-3.5 h-3.5 text-sky-300" />}
@@ -1874,31 +2044,56 @@ const AiGuidance = () => {
                               );
                             })}
                           </div>
-                          <p className="text-[11px] text-slate-500 mt-1.5">
-                            Technology, Business, Marketing, Finance and more
-                          </p>
                         </div>
                       </div>
 
-                      <div className="pt-4 flex flex-wrap items-center justify-between gap-4 border-t border-slate-200">
-                        <button
-                          type="button"
-                          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 cursor-pointer"
-                        >
-                          <ArrowLeft className="w-4 h-4" />
-                          Back to Top (01. Hero Section)
-                        </button>
+                      {/* Animated 3-Stage AI Generation Progress Bar (shown when clicking Generate) */}
+                      {isGenerating && (
+                        <div className="bg-[#002C66] text-white rounded-xl p-4 shadow-sm">
+                          <div className="flex items-center justify-between text-xs font-bold mb-2">
+                            <span className="flex items-center gap-2">
+                              <RefreshCw className="w-3.5 h-3.5 animate-spin text-sky-300" />
+                              {generationStage === 1 &&
+                                `Stage 1/3: Calibrating ${education} (${specialisation}) domain fit...`}
+                              {generationStage === 2 &&
+                                `Stage 2/3: Benchmarking ${country} entry & mid-career CTC bands...`}
+                              {generationStage >= 3 &&
+                                "Stage 3/3: Preparing Dual Career Discovery Pathways..."}
+                            </span>
+                            <span className="text-sky-300">{generationStage * 33}%</span>
+                          </div>
+                          <div className="w-full h-1.5 rounded-full bg-white/15 overflow-hidden">
+                            <div
+                              className="h-full bg-emerald-400 transition-all duration-200"
+                              style={{ width: `${Math.min(100, generationStage * 34)}%` }}
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Clean Bottom Action Bar */}
+                      <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-slate-200/90">
+                        <div className="flex items-center gap-3">
+                          <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
+                          <p className="text-xs font-semibold text-slate-600">
+                            Calibrated for{" "}
+                            <strong className="text-slate-900">
+                              {education} ({specialisation})
+                            </strong>{" "}
+                            • <strong className="text-[#002C66]">{experience}</strong> in{" "}
+                            <strong className="text-slate-900">{workLocation}</strong>
+                          </p>
+                        </div>
 
                         <button
                           type="button"
                           onClick={handleGenerateOptions}
-                          className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white font-bold text-sm sm:text-base shadow-md transition cursor-pointer"
+                          className="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white font-bold text-sm sm:text-base shadow-md transition cursor-pointer shrink-0"
                         >
                           {isGenerating ? (
                             <>
                               <RefreshCw className="w-4 h-4 animate-spin" />
-                              Generating Career Options...
+                              Calibrating Career Pathways...
                             </>
                           ) : (
                             <>
@@ -1910,64 +2105,110 @@ const AiGuidance = () => {
                       </div>
                     </div>
 
-                    {/* Right Live Profile Summary Card */}
-                    <div className="lg:col-span-4 flex flex-col justify-between gap-4">
+                    {/* Right Column: Executive AI Career Intelligence Preview */}
+                    <div className="lg:col-span-4 flex flex-col justify-between gap-5">
+                      {/* Navy Intelligence Snapshot Card */}
                       <div className="pro-hero bg-[#002C66] text-white rounded-2xl p-6 sm:p-7 shadow-md flex-1 flex flex-col justify-between">
                         <div>
-                          <div className="flex items-center justify-between mb-4">
-                            <span className="text-[11px] font-bold uppercase tracking-widest text-sky-300">
-                              Live SI Profile Snapshot
-                            </span>
-                            <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[11px] font-semibold">
-                              Ready
+                          <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/15">
+                            <div>
+                              <span className="text-[11px] font-extrabold uppercase tracking-widest text-sky-300 block">
+                                Live Career Intelligence
+                              </span>
+                              <h3 className="font-display text-lg font-extrabold text-white mt-0.5">
+                                {activeCandidateDomain} Track
+                              </h3>
+                            </div>
+                            <span className="px-2.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-[11px] font-bold">
+                              AI Calibrated
                             </span>
                           </div>
 
-                          <div className="space-y-3 text-xs">
-                            <div className="p-3.5 rounded-xl bg-white/10 border border-white/10">
-                              <span className="text-slate-300 block mb-0.5">
-                                Qualification & Track
+                          <div className="grid grid-cols-2 gap-2.5 text-xs mb-5">
+                            <div className="p-3 rounded-xl bg-white/10 border border-white/10">
+                              <span className="text-slate-300 text-[11px] block">
+                                Qualification
                               </span>
-                              <span className="text-sm font-bold text-white">
-                                {education} — {specialisation}
-                              </span>
-                            </div>
-                            <div className="p-3.5 rounded-xl bg-white/10 border border-white/10">
-                              <span className="text-slate-300 block mb-0.5">
-                                Primary Matched Domain
-                              </span>
-                              <span className="text-sm font-bold text-sky-300">
-                                {activeCandidateDomain} ({selectedRole.title})
+                              <span className="text-xs font-extrabold text-white mt-0.5 block truncate">
+                                {education} • {specialisation}
                               </span>
                             </div>
-                            <div className="p-3.5 rounded-xl bg-white/10 border border-white/10">
-                              <span className="text-slate-300 block mb-0.5">
-                                Experience & Geography
+                            <div className="p-3 rounded-xl bg-white/10 border border-white/10">
+                              <span className="text-slate-300 text-[11px] block">
+                                Stage & Location
                               </span>
-                              <span className="text-sm font-bold text-white">
+                              <span className="text-xs font-extrabold text-white mt-0.5 block truncate">
                                 {experience} • {country}
                               </span>
                             </div>
-                            <div className="p-3.5 rounded-xl bg-white/10 border border-white/10">
-                              <span className="text-slate-300 block mb-0.5">
-                                Preferred Work Mode
-                              </span>
-                              <span className="text-sm font-bold text-white">{workLocation}</span>
+                          </div>
+
+                          {/* Top Matched Roles Preview for Chosen Specialisation (Interactive) */}
+                          <div>
+                            <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-sky-300 mb-2.5">
+                              <span>Top Matched Roles ({activeCandidateDomain})</span>
+                              <span>India Entry CTC</span>
+                            </div>
+                            <div className="space-y-2">
+                              {CAREER_ROLES.filter(
+                                (r) => r.domain === activeCandidateDomain
+                              )
+                                .slice(0, 3)
+                                .map((role) => (
+                                  <button
+                                    key={role.id}
+                                    type="button"
+                                    onClick={() => handleOpenRoleDetail(role.id, "overview")}
+                                    className="w-full text-left p-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 flex items-center justify-between gap-2 transition cursor-pointer group"
+                                  >
+                                    <div className="min-w-0">
+                                      <p className="text-xs font-bold text-white truncate group-hover:text-sky-200">
+                                        {role.title}
+                                      </p>
+                                      <span className="text-[10px] text-sky-300 font-semibold">
+                                        {role.matchScore}% Profile Match • Click to inspect
+                                      </span>
+                                    </div>
+                                    <span className="px-2 py-1 rounded-md bg-emerald-500/20 text-emerald-200 text-[11px] font-extrabold shrink-0">
+                                      {role.salaryIndia.entry}
+                                    </span>
+                                  </button>
+                                ))}
                             </div>
                           </div>
                         </div>
+
+                        <div className="mt-5 pt-4 border-t border-white/15 flex items-center justify-between text-xs text-slate-200">
+                          <span>Target Salary Band:</span>
+                          <strong className="text-white font-extrabold">
+                            {salaryExpectation || selectedRole.salaryIndia.entry}
+                          </strong>
+                        </div>
                       </div>
 
-                      <div className="bg-[#FBF4EB]/70 rounded-2xl border border-slate-200 p-5">
-                        <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-1.5">
-                          Next Step in Flow
+                      {/* Clean Deliverable Summary Card */}
+                      <div className="bg-[#FBF4EB]/60 rounded-2xl border border-slate-200 p-5">
+                        <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-3">
+                          Your 4-Stage Personalised Deliverable
                         </h4>
-                        <p className="text-xs text-slate-600 leading-relaxed">
-                          Clicking <strong>Generate My Career Options</strong> takes you to{" "}
-                          <strong>03. Choose Your Career Discovery Path</strong> where you can
-                          choose between Degree-Based Careers (Path 01) or Careers Beyond Your
-                          Degree (Path 02).
-                        </p>
+                        <div className="grid grid-cols-2 gap-2.5 text-xs">
+                          <div className="p-2.5 rounded-xl bg-white border border-slate-200/90 font-bold text-slate-800 flex items-center gap-2">
+                            <Compass className="w-3.5 h-3.5 text-[#002C66] shrink-0" />
+                            <span>Dual Career Paths</span>
+                          </div>
+                          <div className="p-2.5 rounded-xl bg-white border border-slate-200/90 font-bold text-slate-800 flex items-center gap-2">
+                            <IndianRupee className="w-3.5 h-3.5 text-[#002C66] shrink-0" />
+                            <span>Salary Insights</span>
+                          </div>
+                          <div className="p-2.5 rounded-xl bg-white border border-slate-200/90 font-bold text-slate-800 flex items-center gap-2">
+                            <Target className="w-3.5 h-3.5 text-[#002C66] shrink-0" />
+                            <span>Skill Gap Audit</span>
+                          </div>
+                          <div className="p-2.5 rounded-xl bg-white border border-slate-200/90 font-bold text-slate-800 flex items-center gap-2">
+                            <Layers className="w-3.5 h-3.5 text-[#002C66] shrink-0" />
+                            <span>90-Day Roadmap</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1978,40 +2219,120 @@ const AiGuidance = () => {
         )}
 
         {/* =====================================================================
-            PAGE 2 (STEP 2): 03. CHOOSE YOUR CAREER DISCOVERY PATH (Full-Page Fit)
+            EXECUTIVE STEP-BY-STEP PROCESS PIPELINE BAR (SHOWN ON STEPS 2 TO 7)
+        ===================================================================== */}
+        {currentStep >= 2 && (
+          <div className="w-full bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-[72px] z-30 shadow-2xs">
+            <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 py-3 flex flex-col xl:flex-row xl:items-center justify-between gap-3">
+              {/* Active Candidate Context Pill */}
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => goToStep(1)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#FBF4EB] hover:bg-[#002C66]/10 border border-slate-200 text-xs font-extrabold text-[#002C66] transition cursor-pointer"
+                >
+                  <GraduationCap className="w-3.5 h-3.5" />
+                  {education} ({specialisation})
+                  <span className="text-slate-400">•</span>
+                  <span>{experience}</span>
+                  <span className="underline ml-1 text-[11px]">Edit Profile</span>
+                </button>
+                <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold">
+                  <Sparkles className="w-3 h-3 text-emerald-600" />
+                  Active Role: {selectedRole.title}
+                </span>
+              </div>
+
+              {/* Interactive 7-Step Process Pipeline */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 xl:pb-0 no-scrollbar">
+                {[
+                  { id: 1, num: "01", label: "Profile Setup" },
+                  { id: 2, num: "02", label: "Discovery Paths" },
+                  { id: 3, num: "03", label: "Matched Roles" },
+                  { id: 4, num: "04", label: "Role & Salary" },
+                  { id: 5, num: "05", label: "90-Day Roadmap" },
+                  { id: 6, num: "06", label: "Future Outlook" },
+                  { id: 7, num: "07", label: "Take Action" },
+                ].map((s, idx, arr) => {
+                  const isActive = currentStep === s.id;
+                  const isCompleted = currentStep > s.id;
+                  return (
+                    <div key={s.id} className="flex items-center gap-1.5 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => goToStep(s.id)}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                          isActive
+                            ? "bg-[#002C66] text-white shadow-2xs"
+                            : isCompleted
+                            ? "bg-emerald-50 text-emerald-900 border border-emerald-200 hover:bg-emerald-100"
+                            : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                        }`}
+                      >
+                        {isCompleted ? (
+                          <Check className="w-3.5 h-3.5 text-emerald-600" />
+                        ) : (
+                          <span
+                            className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded ${
+                              isActive
+                                ? "bg-white/20 text-white"
+                                : "bg-white text-slate-700"
+                            }`}
+                          >
+                            {s.num}
+                          </span>
+                        )}
+                        <span>{s.label}</span>
+                      </button>
+                      {idx < arr.length - 1 && (
+                        <ChevronRight className="w-3.5 h-3.5 text-slate-300 shrink-0" />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* =====================================================================
+            PAGE 2 (STEP 2): CHOOSE YOUR CAREER DISCOVERY PATH (Full-Page Fit)
         ===================================================================== */}
         {currentStep === 2 && (
           <section className="min-h-[calc(100vh-72px)] w-full flex flex-col justify-center py-6 lg:py-10">
             <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 flex-1 flex flex-col justify-between">
-              <div className="w-full bg-white rounded-3xl border border-slate-200 shadow-md p-6 sm:p-10 xl:p-12 flex-1 flex flex-col justify-between">
+              <div className="w-full bg-white rounded-3xl border border-slate-200 shadow-lg p-6 sm:p-10 xl:p-12 flex-1 flex flex-col justify-between">
                 <div className="text-center max-w-4xl mx-auto mb-8">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-bold uppercase tracking-wider mb-3">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-extrabold uppercase tracking-wider mb-3">
                     <Compass className="w-3.5 h-3.5" />
-                    STEP 2 • 03. Choose Your Career Discovery Path
+                    Step 02 of 07 • Choose Your Career Discovery Path
                   </div>
                   <h1 className="font-display text-3xl sm:text-4xl xl:text-5xl font-extrabold text-slate-950 tracking-tight mb-3">
                     Two Ways to Discover <span className="text-[#002C66]">Your Future.</span>
                   </h1>
                   <p className="text-slate-600 text-base sm:text-lg">
-                    Profile configured for <strong>{education} ({specialisation})</strong> in{" "}
-                    <strong>{country}</strong>. Select how you want Super Intelligence to map your
-                    career opportunities:
+                    Profile calibrated for{" "}
+                    <strong className="text-slate-900">
+                      {education} ({specialisation})
+                    </strong>{" "}
+                    in <strong className="text-slate-900">{country}</strong>. Select how you want
+                    Super Intelligence to map your career opportunities:
                   </p>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-8 xl:gap-10 items-stretch my-auto">
-                  {/* PATH 01 CARD — With PDF Image 2 */}
+                  {/* PATH 01 CARD */}
                   <div className="rounded-3xl border-2 border-slate-200 bg-[#FBF4EB]/40 hover:bg-white hover:border-[#002C66] shadow-sm hover:shadow-md overflow-hidden flex flex-col justify-between transition">
                     <div>
                       <div className="relative aspect-[16/9] max-h-[340px] w-full bg-slate-100 border-b border-slate-200 overflow-hidden">
                         <img
                           src={path1Img}
-                          alt="PATH 01 - Careers Based on My Education"
+                          alt="Path 01 - Careers Based on My Education"
                           className="w-full h-full object-cover object-center"
                         />
                         <div className="absolute top-4 left-4">
                           <span className="px-3.5 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-[#002C66] text-white shadow-md">
-                            PATH 01
+                            Pathway 01 • Direct Degree Alignment
                           </span>
                         </div>
                       </div>
@@ -2021,13 +2342,41 @@ const AiGuidance = () => {
                           Careers Based on <span className="text-[#002C66]">My Education</span>
                         </h2>
                         <p className="text-slate-600 text-sm sm:text-base leading-relaxed mb-5">
-                          Discover career opportunities aligned with your degree, specialisation and
-                          qualifications.
+                          Discover high-match career opportunities directly aligned with your
+                          academic qualification, specialisation, and core subject strengths.
                         </p>
 
+                        {/* 3-Metric Executive Comparison Strip */}
+                        <div className="grid grid-cols-3 gap-2.5 mb-5">
+                          <div className="p-3 rounded-xl bg-white border border-slate-200 text-center">
+                            <span className="text-[10px] font-bold uppercase text-slate-500 block">
+                              SI Fit Score
+                            </span>
+                            <span className="text-sm font-extrabold text-[#002C66]">
+                              92% – 96%
+                            </span>
+                          </div>
+                          <div className="p-3 rounded-xl bg-white border border-slate-200 text-center">
+                            <span className="text-[10px] font-bold uppercase text-slate-500 block">
+                              Entry CTC Band
+                            </span>
+                            <span className="text-sm font-extrabold text-emerald-700">
+                              ₹4.5 – ₹8.5 LPA
+                            </span>
+                          </div>
+                          <div className="p-3 rounded-xl bg-white border border-slate-200 text-center">
+                            <span className="text-[10px] font-bold uppercase text-slate-500 block">
+                              Ramp-Up Time
+                            </span>
+                            <span className="text-sm font-extrabold text-slate-900">
+                              30 – 60 Days
+                            </span>
+                          </div>
+                        </div>
+
                         <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-1.5">
-                          <div className="text-[11px] font-bold uppercase tracking-wider text-[#002C66]">
-                            Matched to Your {education} ({specialisation}) Profile
+                          <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#002C66]">
+                            Recommended Roles for {education} ({specialisation})
                           </div>
                           <p className="text-xs sm:text-sm font-semibold text-slate-800 leading-relaxed">
                             {education} ({specialisation}) in {country} →{" "}
@@ -2051,18 +2400,18 @@ const AiGuidance = () => {
                     </div>
                   </div>
 
-                  {/* PATH 02 CARD — With PDF Image 3 */}
+                  {/* PATH 02 CARD */}
                   <div className="rounded-3xl border-2 border-slate-200 bg-[#FBF4EB]/40 hover:bg-white hover:border-[#002C66] shadow-sm hover:shadow-md overflow-hidden flex flex-col justify-between transition">
                     <div>
                       <div className="relative aspect-[16/9] max-h-[340px] w-full bg-slate-100 border-b border-slate-200 overflow-hidden">
                         <img
                           src={path2Img}
-                          alt="PATH 02 - Careers Beyond My Degree"
+                          alt="Path 02 - Careers Beyond My Degree"
                           className="w-full h-full object-cover object-[center_20%]"
                         />
                         <div className="absolute top-4 left-4">
                           <span className="px-3.5 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-[#002C66] text-white shadow-md">
-                            PATH 02
+                            Pathway 02 • Cross-Industry Pivot
                           </span>
                         </div>
                       </div>
@@ -2072,13 +2421,41 @@ const AiGuidance = () => {
                           Careers Beyond <span className="text-[#002C66]">My Degree</span>
                         </h2>
                         <p className="text-slate-600 text-sm sm:text-base leading-relaxed mb-5">
-                          Explore opportunities across industries, including roles that accept
-                          candidates from different educational backgrounds.
+                          Explore high-growth opportunities across modern industries that welcome
+                          graduates from diverse academic backgrounds with transferable skills.
                         </p>
 
+                        {/* 3-Metric Executive Comparison Strip */}
+                        <div className="grid grid-cols-3 gap-2.5 mb-5">
+                          <div className="p-3 rounded-xl bg-white border border-slate-200 text-center">
+                            <span className="text-[10px] font-bold uppercase text-slate-500 block">
+                              SI Fit Score
+                            </span>
+                            <span className="text-sm font-extrabold text-[#002C66]">
+                              85% – 92%
+                            </span>
+                          </div>
+                          <div className="p-3 rounded-xl bg-white border border-slate-200 text-center">
+                            <span className="text-[10px] font-bold uppercase text-slate-500 block">
+                              Entry CTC Band
+                            </span>
+                            <span className="text-sm font-extrabold text-emerald-700">
+                              ₹4.0 – ₹9.0 LPA
+                            </span>
+                          </div>
+                          <div className="p-3 rounded-xl bg-white border border-slate-200 text-center">
+                            <span className="text-[10px] font-bold uppercase text-slate-500 block">
+                              Ramp-Up Time
+                            </span>
+                            <span className="text-sm font-extrabold text-slate-900">
+                              60 – 90 Days
+                            </span>
+                          </div>
+                        </div>
+
                         <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-1.5">
-                          <div className="text-[11px] font-bold uppercase tracking-wider text-[#002C66]">
-                            Cross-Industry Options for {education} ({specialisation})
+                          <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#002C66]">
+                            Cross-Industry Pathways for {education} Graduates
                           </div>
                           <p className="text-xs sm:text-sm font-semibold text-slate-800 leading-relaxed">
                             {education} graduate →{" "}
@@ -2096,7 +2473,7 @@ const AiGuidance = () => {
                         onClick={() => handleSelectPathway("beyond")}
                         className="w-full inline-flex items-center justify-center gap-2 py-4 px-5 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white font-bold text-sm sm:text-base transition cursor-pointer shadow-sm"
                       >
-                        Explore All Career Options
+                        Explore Cross-Industry Career Options
                         <ArrowRight className="w-4 h-4" />
                       </button>
                     </div>
@@ -2110,7 +2487,7 @@ const AiGuidance = () => {
                     className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 cursor-pointer"
                   >
                     <ArrowLeft className="w-4 h-4" />
-                    Back to Tell Us About Yourself (Profile Setup)
+                    Back to Candidate Profile Setup
                   </button>
                   <button
                     type="button"
@@ -2127,27 +2504,26 @@ const AiGuidance = () => {
         )}
 
         {/* =====================================================================
-            PAGE 3 (STEP 3): 04. YOUR PERSONALISED CAREER OPPORTUNITIES (Full-Page Fit)
+            PAGE 3 (STEP 3): YOUR PERSONALISED CAREER OPPORTUNITIES (Full-Page Fit)
         ===================================================================== */}
         {currentStep === 3 && (
           <section className="min-h-[calc(100vh-72px)] w-full flex flex-col justify-center py-6 lg:py-10">
             <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 flex-1 flex flex-col justify-between">
-              <div className="w-full bg-white rounded-3xl border border-slate-200 shadow-md p-6 sm:p-10 xl:p-12 flex-1 flex flex-col justify-between">
+              <div className="w-full bg-white rounded-3xl border border-slate-200 shadow-lg p-6 sm:p-10 xl:p-12 flex-1 flex flex-col justify-between">
                 <div>
                   <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-6">
                     <div>
-                      <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-bold uppercase tracking-wider mb-3">
+                      <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-extrabold uppercase tracking-wider mb-3">
                         <Briefcase className="w-3.5 h-3.5" />
-                        STEP 3 • 04. Your Personalised Career Opportunities
+                        Step 03 of 07 • Personalised Career Opportunities
                       </div>
                       <h1 className="font-display text-3xl sm:text-4xl xl:text-5xl font-extrabold text-slate-950 tracking-tight">
                         Discover Jobs You Can{" "}
                         <span className="text-[#002C66]">Actually Pursue.</span>
                       </h1>
                       <p className="text-slate-600 text-base sm:text-lg mt-2 max-w-3xl">
-                        Based on your selected pathway, education and preferences, SI Guide presents
-                        a personalised list of relevant job roles. Select any industry/domain below
-                        to filter strictly by that field.
+                        Curated career roles matched to your qualification, domain preference, and
+                        location. Select any career domain below to filter strictly by that industry.
                       </p>
                     </div>
 
@@ -2193,7 +2569,7 @@ const AiGuidance = () => {
                             : "text-slate-600 hover:text-slate-900"
                         }`}
                       >
-                        Path 02: Cross-Industry
+                        Cross-Industry Roles
                       </button>
                     </div>
                   </div>
@@ -2201,7 +2577,7 @@ const AiGuidance = () => {
                   {/* Quick Domain Selector Pills (Strict 1-Click Domain Filtering) */}
                   <div className="flex flex-wrap items-center gap-2 mb-5">
                     <span className="text-xs font-bold text-slate-600 mr-1">
-                      Filter by Career Domain:
+                      Career Domain:
                     </span>
                     {(
                       [
@@ -2229,13 +2605,12 @@ const AiGuidance = () => {
                     ))}
                   </div>
 
-                  {/* Useful Filters Bar (All 6 Filters from PDF Page 5) */}
-                  <div className="bg-[#FBF4EB]/60 rounded-2xl border border-slate-200 p-4 sm:p-5 mb-8">
+                  {/* Multi-Parameter Filter Bar */}
+                  <div className="bg-[#FBF4EB]/55 rounded-2xl border border-slate-200 p-4 sm:p-5 mb-8">
                     <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#002C66]">
+                      <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#002C66]">
                         <SlidersHorizontal className="w-3.5 h-3.5" />
-                        Useful Filters: Industry · Salary Range · Experience Level · Location ·
-                        Degree Eligibility · Skills Required
+                        Refine by Industry, Salary Band, Experience, City, Degree & Skills
                       </div>
                       <button
                         type="button"
@@ -2258,7 +2633,7 @@ const AiGuidance = () => {
                       <select
                         value={industryFilter}
                         onChange={(e) => handleIndustryFilterChange(e.target.value)}
-                        className="rounded-xl bg-white border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-800"
+                        className="h-10 rounded-xl bg-white border border-slate-300 px-3 text-xs font-semibold text-slate-800"
                       >
                         <option value="All">Industry: All Domains</option>
                         <option value="Finance">Finance, Banking & Audit</option>
@@ -2272,7 +2647,7 @@ const AiGuidance = () => {
                       <select
                         value={salaryFilter}
                         onChange={(e) => setSalaryFilter(e.target.value)}
-                        className="rounded-xl bg-white border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-800"
+                        className="h-10 rounded-xl bg-white border border-slate-300 px-3 text-xs font-semibold text-slate-800"
                       >
                         <option value="All">Salary Range: All</option>
                         <option value="4to7">Entry ₹4 LPA – ₹7 LPA+</option>
@@ -2282,7 +2657,7 @@ const AiGuidance = () => {
                       <select
                         value={experienceFilter}
                         onChange={(e) => setExperienceFilter(e.target.value)}
-                        className="rounded-xl bg-white border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-800"
+                        className="h-10 rounded-xl bg-white border border-slate-300 px-3 text-xs font-semibold text-slate-800"
                       >
                         <option value="All">Experience: All Levels</option>
                         <option value="Fresher">Fresher Friendly</option>
@@ -2291,7 +2666,7 @@ const AiGuidance = () => {
                       <select
                         value={locationFilter}
                         onChange={(e) => setLocationFilter(e.target.value)}
-                        className="rounded-xl bg-white border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-800"
+                        className="h-10 rounded-xl bg-white border border-slate-300 px-3 text-xs font-semibold text-slate-800"
                       >
                         <option value="All">Location: All Cities</option>
                         <option value="Bengaluru">Bengaluru</option>
@@ -2305,7 +2680,7 @@ const AiGuidance = () => {
                       <select
                         value={degreeFilter}
                         onChange={(e) => setDegreeFilter(e.target.value)}
-                        className="rounded-xl bg-white border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-800"
+                        className="h-10 rounded-xl bg-white border border-slate-300 px-3 text-xs font-semibold text-slate-800"
                       >
                         <option value="All">Degree Eligibility: All</option>
                         <option value="BBA">BBA Eligible</option>
@@ -2322,7 +2697,7 @@ const AiGuidance = () => {
                           value={skillSearch}
                           onChange={(e) => setSkillSearch(e.target.value)}
                           placeholder="Skills (e.g. Excel, GST, SQL)"
-                          className="w-full rounded-xl bg-white border border-slate-300 pl-8 pr-3 py-2 text-xs font-semibold text-slate-800"
+                          className="w-full h-10 rounded-xl bg-white border border-slate-300 pl-8 pr-3 text-xs font-semibold text-slate-800"
                         />
                       </div>
                     </div>
@@ -2363,7 +2738,7 @@ const AiGuidance = () => {
                           className="rounded-2xl border-2 border-slate-200 bg-white hover:border-[#002C66] p-6 transition flex flex-col justify-between shadow-xs hover:shadow-md"
                         >
                           <div>
-                            <div className="flex items-center justify-between gap-2 mb-3">
+                            <div className="flex items-center justify-between gap-2 mb-2.5">
                               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-extrabold">
                                 <Sparkles className="w-3 h-3" />
                                 {role.matchScore}% SI Match
@@ -2373,9 +2748,17 @@ const AiGuidance = () => {
                               </span>
                             </div>
 
+                            {/* Visual AI Match Progress Bar */}
+                            <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden mb-3.5">
+                              <div
+                                className="h-full bg-[#002C66] rounded-full"
+                                style={{ width: `${role.matchScore}%` }}
+                              />
+                            </div>
+
                             <div className="mb-1.5">
                               <span className="inline-block text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 text-[#002C66] mb-1">
-                                Domain: {role.domain}
+                                {role.domain}
                               </span>
                               <h3 className="font-display text-xl font-extrabold text-slate-950">
                                 {role.title}
@@ -2386,13 +2769,25 @@ const AiGuidance = () => {
                               {role.categoryTags.join(" · ")}
                             </p>
 
-                            <div className="inline-block px-3 py-1 rounded-lg bg-[#FBF4EB] border border-slate-200 text-slate-800 text-xs font-semibold mb-4">
+                            <div className="inline-block px-3 py-1 rounded-lg bg-[#FBF4EB] border border-slate-200 text-slate-800 text-xs font-semibold mb-3.5">
                               {role.badgeNote}
                             </div>
 
-                            <p className="text-xs text-slate-600 leading-relaxed mb-4">
+                            <p className="text-xs text-slate-600 leading-relaxed mb-3.5">
                               {role.overview}
                             </p>
+
+                            {/* Core Tools Pills */}
+                            <div className="flex flex-wrap gap-1.5 mb-4">
+                              {role.toolsRequired.slice(0, 3).map((tool) => (
+                                <span
+                                  key={tool}
+                                  className="px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-[10px] font-bold text-slate-700"
+                                >
+                                  {tool}
+                                </span>
+                              ))}
+                            </div>
 
                             <div className="space-y-1.5 text-xs text-slate-600 border-t border-slate-200/80 pt-3 mb-5">
                               <div className="flex items-center gap-1.5">
@@ -2413,7 +2808,7 @@ const AiGuidance = () => {
                             onClick={() => handleOpenRoleDetail(role.id, "overview")}
                             className="w-full inline-flex items-center justify-center gap-1.5 py-3 px-4 rounded-xl bg-[#002C66] hover:bg-[#00204d] text-white text-xs font-bold transition cursor-pointer"
                           >
-                            Explore Job Role in Detail
+                            Explore Role, Salary & Skills
                             <ChevronRight className="w-4 h-4" />
                           </button>
                         </div>
@@ -2423,19 +2818,14 @@ const AiGuidance = () => {
                 </div>
 
                 <div>
-                  <p className="text-xs text-slate-500 italic mt-6 text-center">
-                    * Illustrative roles only. Actual recommendations are generated from the
-                    candidate&apos;s profile and the eligibility requirements of each role.
-                  </p>
-
-                  <div className="mt-6 pt-6 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
+                  <div className="mt-8 pt-6 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
                     <button
                       type="button"
                       onClick={() => goToStep(2)}
                       className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 cursor-pointer"
                     >
                       <ArrowLeft className="w-4 h-4" />
-                      Back to Choose Career Pathway
+                      Back to Career Discovery Pathways
                     </button>
                     <button
                       type="button"
@@ -2454,7 +2844,7 @@ const AiGuidance = () => {
 
         {/* =====================================================================
             PAGE 4 (STEP 4): INDIVIDUAL CAREER DETAILS PAGE (Full-Page Fit)
-            05. Explore Every Job Role in Detail + 06. Salary Insights + 07. Skills
+            Role Deep-Dive + Salary Insights + Skills & Gap Diagnostic
         ===================================================================== */}
         {currentStep === 4 && (
           <section className="min-h-[calc(100vh-72px)] w-full flex flex-col justify-center py-6 lg:py-10">
@@ -2492,16 +2882,16 @@ const AiGuidance = () => {
                 </div>
               </div>
 
-              {/* 05. EXPLORE EVERY JOB ROLE IN DETAIL */}
-              <div className="bg-white rounded-3xl border border-slate-200 shadow-md overflow-hidden">
+              {/* ROLE DEEP-DIVE CARD */}
+              <div className="bg-white rounded-3xl border border-slate-200 shadow-lg overflow-hidden">
                 <div className="pro-hero bg-[#002C66] text-white p-6 sm:p-8">
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                     <div>
-                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-sky-300 text-xs font-bold uppercase tracking-wider mb-2">
-                        STEP 4 OF 7 • 05. Explore Every Job Role in Detail • {selectedRole.domain}
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-sky-300 text-xs font-extrabold uppercase tracking-wider mb-2">
+                        Step 04 of 07 • Role Deep-Dive • {selectedRole.domain}
                       </div>
                       <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-white">
-                        Know the Role Before You Choose the Career: {selectedRole.title}
+                        {selectedRole.title}
                       </h1>
                       <p className="text-xs sm:text-sm text-slate-200 mt-1">
                         {selectedRole.categoryTags.join(" · ")} — {selectedRole.industry}
@@ -2510,7 +2900,7 @@ const AiGuidance = () => {
                     <div className="flex items-center gap-3 shrink-0">
                       <div className="px-4 py-2.5 rounded-xl bg-white/10 border border-white/15 text-right">
                         <span className="text-[10px] uppercase tracking-wider text-slate-300 block">
-                          India Entry Salary
+                          India Entry CTC
                         </span>
                         <span className="text-sm font-extrabold text-emerald-300">
                           {selectedRole.salaryIndia.entry}
@@ -2519,16 +2909,16 @@ const AiGuidance = () => {
                     </div>
                   </div>
 
-                  {/* 6 Section Sub-Tabs from PDF Pages 5-6 */}
+                  {/* 6 Section Sub-Tabs */}
                   <div className="flex flex-wrap gap-2 mt-6 pt-5 border-t border-white/15">
                     {(
                       [
-                        { id: "overview", label: "1. Role Overview" },
-                        { id: "responsibilities", label: "2. Roles & Responsibilities" },
-                        { id: "eligibility", label: "3. Education & Eligibility" },
-                        { id: "skills", label: "4. Skills & Tools Required" },
-                        { id: "salary", label: "5. Salary & Earning Potential" },
-                        { id: "outlook", label: "6. Career Growth & Future Outlook" },
+                        { id: "overview", label: "Role Overview" },
+                        { id: "responsibilities", label: "Responsibilities & Deliverables" },
+                        { id: "eligibility", label: "Education & Eligibility" },
+                        { id: "skills", label: "Skills & Tools" },
+                        { id: "salary", label: "Salary Progression" },
+                        { id: "outlook", label: "Growth & Outlook" },
                       ] as { id: DetailTab; label: string }[]
                     ).map((tab) => (
                       <button
@@ -2550,21 +2940,20 @@ const AiGuidance = () => {
                 <div className="p-6 sm:p-8">
                   {activeDetailTab === "overview" && (
                     <div className="grid md:grid-cols-2 gap-6">
-                      <div className="p-6 rounded-2xl bg-[#FBF4EB]/60 border border-slate-200">
+                      <div className="p-6 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
                         <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#002C66] mb-2">
-                          Role Overview
+                          Role Overview & Core Purpose
                         </h3>
                         <p className="text-xs text-slate-500 mb-3">
-                          Understand what the job involves, its purpose and where it fits within an
-                          organisation.
+                          Understand what the role entails and the business value it delivers.
                         </p>
                         <p className="text-sm text-slate-800 leading-relaxed font-medium">
                           {selectedRole.overview}
                         </p>
                       </div>
-                      <div className="p-6 rounded-2xl bg-[#FBF4EB]/60 border border-slate-200">
+                      <div className="p-6 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
                         <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#002C66] mb-2">
-                          Where It Fits Within an Organisation
+                          Organisational Fit & Hiring Hubs
                         </h3>
                         <p className="text-sm text-slate-800 leading-relaxed mb-4">
                           {selectedRole.orgFit}
@@ -2585,13 +2974,12 @@ const AiGuidance = () => {
 
                   {activeDetailTab === "responsibilities" && (
                     <div className="grid md:grid-cols-12 gap-6">
-                      <div className="md:col-span-7 p-6 rounded-2xl bg-[#FBF4EB]/60 border border-slate-200">
+                      <div className="md:col-span-7 p-6 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
                         <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#002C66] mb-1">
-                          Roles & Responsibilities
+                          Core Responsibilities
                         </h3>
                         <p className="text-xs text-slate-500 mb-4">
-                          Explore daily tasks, core responsibilities, deliverables and expected
-                          outcomes.
+                          Day-to-day workflows and operational accountabilities.
                         </p>
                         <ul className="space-y-2.5">
                           {selectedRole.responsibilities.map((item, i) => (
@@ -2604,7 +2992,7 @@ const AiGuidance = () => {
                       </div>
                       <div className="md:col-span-5 p-6 rounded-2xl bg-emerald-50/60 border border-emerald-200">
                         <h3 className="text-sm font-extrabold uppercase tracking-wider text-emerald-950 mb-3">
-                          Deliverables & Expected Outcomes
+                          Key Deliverables & Outcomes
                         </h3>
                         <ul className="space-y-2.5">
                           {selectedRole.deliverables.map((d, i) => (
@@ -2622,13 +3010,12 @@ const AiGuidance = () => {
 
                   {activeDetailTab === "eligibility" && (
                     <div className="grid md:grid-cols-2 gap-6">
-                      <div className="p-6 rounded-2xl bg-[#FBF4EB]/60 border border-slate-200">
+                      <div className="p-6 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
                         <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#002C66] mb-1">
-                          Education & Eligibility
+                          Accepted Qualifications
                         </h3>
                         <p className="text-xs text-slate-500 mb-4">
-                          Check accepted degrees, qualifications, experience requirements and entry
-                          routes.
+                          Degrees, academic backgrounds, and eligibility criteria.
                         </p>
                         <ul className="space-y-2">
                           {selectedRole.acceptedDegrees.map((deg, i) => (
@@ -2639,7 +3026,7 @@ const AiGuidance = () => {
                           ))}
                         </ul>
                       </div>
-                      <div className="p-6 rounded-2xl bg-[#FBF4EB]/60 border border-slate-200">
+                      <div className="p-6 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
                         <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#002C66] mb-3">
                           Recommended Entry Routes
                         </h3>
@@ -2659,7 +3046,7 @@ const AiGuidance = () => {
 
                   {activeDetailTab === "skills" && (
                     <div className="grid md:grid-cols-3 gap-5">
-                      <div className="p-5 rounded-2xl bg-[#FBF4EB]/60 border border-slate-200">
+                      <div className="p-5 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
                         <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-3">
                           Essential & Technical Skills
                         </h4>
@@ -2674,7 +3061,7 @@ const AiGuidance = () => {
                           ))}
                         </div>
                       </div>
-                      <div className="p-5 rounded-2xl bg-[#FBF4EB]/60 border border-slate-200">
+                      <div className="p-5 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
                         <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-3">
                           Industry Tools Required
                         </h4>
@@ -2689,7 +3076,7 @@ const AiGuidance = () => {
                           ))}
                         </div>
                       </div>
-                      <div className="p-5 rounded-2xl bg-[#FBF4EB]/60 border border-slate-200">
+                      <div className="p-5 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
                         <h4 className="text-xs font-extrabold uppercase tracking-wider text-emerald-800 mb-3">
                           Valued Certifications
                         </h4>
@@ -2704,7 +3091,7 @@ const AiGuidance = () => {
 
                   {activeDetailTab === "salary" && (
                     <div className="grid sm:grid-cols-3 gap-4">
-                      <div className="p-5 rounded-2xl bg-[#FBF4EB]/60 border border-slate-200">
+                      <div className="p-5 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
                         <span className="text-xs font-bold uppercase text-slate-500">
                           Entry Level
                         </span>
@@ -2732,7 +3119,7 @@ const AiGuidance = () => {
                   )}
 
                   {activeDetailTab === "outlook" && (
-                    <div className="p-5 rounded-2xl bg-[#FBF4EB]/60 border border-slate-200">
+                    <div className="p-5 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
                       <h4 className="text-sm font-extrabold text-slate-900 mb-2">
                         Career Growth & Future Outlook
                       </h4>
@@ -2757,20 +3144,19 @@ const AiGuidance = () => {
                 </div>
               </div>
 
-              {/* 06. SALARY INSIGHTS — KNOW YOUR EARNING POTENTIAL */}
-              <div className="bg-white rounded-3xl border border-slate-200 shadow-md p-6 sm:p-8">
+              {/* SALARY INSIGHTS — KNOW YOUR EARNING POTENTIAL */}
+              <div className="bg-white rounded-3xl border border-slate-200 shadow-lg p-6 sm:p-8">
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-6">
                   <div>
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-bold uppercase tracking-wider mb-2">
-                      06. Salary Insights
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-extrabold uppercase tracking-wider mb-2">
+                      Compensation Benchmarks • India & Global
                     </div>
                     <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-slate-950">
                       Know Your <span className="text-[#002C66]">Earning Potential.</span>
                     </h2>
                     <p className="text-sm text-slate-600 mt-1">
-                      Understand how compensation may change with experience, skills, location and
-                      industry. Illustrative salary display for India — actual figures populated from
-                      reliable, current salary data.
+                      Explore how annual compensation scales with experience, city tier, and
+                      specialised skill credentials.
                     </p>
                   </div>
 
@@ -2806,7 +3192,7 @@ const AiGuidance = () => {
                 </div>
 
                 <div className="grid lg:grid-cols-12 gap-6 items-stretch">
-                  <div className="lg:col-span-8 bg-[#FBF4EB]/60 rounded-2xl border border-slate-200 p-6 flex flex-col justify-between">
+                  <div className="lg:col-span-8 bg-[#FBF4EB]/55 rounded-2xl border border-slate-200 p-6 flex flex-col justify-between">
                     <div>
                       <h3 className="font-display text-xl font-extrabold text-slate-950 mb-4">
                         {selectedRole.title}
@@ -2820,7 +3206,7 @@ const AiGuidance = () => {
                             {adjustedSalary.entry}
                           </div>
                           <div className="text-[11px] text-slate-500 mt-1">
-                            ₹ Salary · 0 – 2 Years
+                            Annual CTC · 0 – 2 Years
                           </div>
                         </div>
                         <div className="p-5 rounded-2xl bg-white border-2 border-[#002C66] shadow-xs">
@@ -2831,7 +3217,7 @@ const AiGuidance = () => {
                             {adjustedSalary.mid}
                           </div>
                           <div className="text-[11px] text-slate-500 mt-1">
-                            ₹ Salary · 2 – 5 Years
+                            Annual CTC · 2 – 5 Years
                           </div>
                         </div>
                         <div className="p-5 rounded-2xl bg-white border border-emerald-300 shadow-xs">
@@ -2842,52 +3228,51 @@ const AiGuidance = () => {
                             {adjustedSalary.senior}
                           </div>
                           <div className="text-[11px] text-slate-500 mt-1">
-                            ₹ Salary · 5+ Years
+                            Annual CTC · 5+ Years
                           </div>
                         </div>
                       </div>
                     </div>
                     <p className="text-[11px] text-slate-500 mt-4">
-                      Benchmark Reference: {selectedRole.futureDemand.sourceCitation}
+                      Data Source Reference: {selectedRole.futureDemand.sourceCitation}
                     </p>
                   </div>
 
-                  <div className="lg:col-span-4 bg-[#FBF4EB]/60 rounded-2xl border border-slate-200 p-6">
+                  <div className="lg:col-span-4 bg-[#FBF4EB]/55 rounded-2xl border border-slate-200 p-6">
                     <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-3">
-                      Key Salary Factors
+                      Key Compensation Drivers
                     </h4>
                     <ul className="space-y-2.5 text-xs font-semibold text-slate-800">
                       <li className="p-3 rounded-xl bg-white border border-slate-200">
-                        • Experience and qualifications
+                        • Academic qualification & domain specialisation
                       </li>
                       <li className="p-3 rounded-xl bg-white border border-slate-200">
-                        • City and cost of living
+                        • Employment hub & Tier-1/Tier-2 market demand
                       </li>
                       <li className="p-3 rounded-xl bg-white border border-slate-200">
-                        • Industry and employer size
+                        • Employer tier (GCC, Enterprise, FinTech, SaaS)
                       </li>
                       <li className="p-3 rounded-xl bg-white border border-slate-200">
-                        • Performance, specialisation and skills
+                        • Verified tool proficiency & CIR assessment score
                       </li>
                     </ul>
                   </div>
                 </div>
               </div>
 
-              {/* 07. SKILLS YOU NEED TO SUCCEED — FIND OUT WHAT EMPLOYERS EXPECT */}
-              <div className="bg-white rounded-3xl border border-slate-200 shadow-md p-6 sm:p-8">
+              {/* SKILLS YOU NEED TO SUCCEED — FIND OUT WHAT EMPLOYERS EXPECT */}
+              <div className="bg-white rounded-3xl border border-slate-200 shadow-lg p-6 sm:p-8">
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-6">
                   <div>
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-bold uppercase tracking-wider mb-2">
-                      07. Skills You Need to Succeed
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-extrabold uppercase tracking-wider mb-2">
+                      Skill Readiness & Gap Diagnostic
                     </div>
                     <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-slate-950">
                       Find Out What <span className="text-[#002C66]">Employers Expect.</span>
                     </h2>
                     <p className="text-sm text-slate-600 mt-1">
-                      Every career requires a combination of technical knowledge, practical
-                      capabilities and interpersonal skills. Click the skills you already have to
-                      calculate your readiness:
+                      Select the skills you already possess to calculate your live employer
+                      readiness score for <strong>{selectedRole.title}</strong>:
                     </p>
                   </div>
                   <div className="px-4 py-2.5 rounded-2xl bg-[#002C66] text-white text-right shrink-0">
@@ -2901,10 +3286,10 @@ const AiGuidance = () => {
                 </div>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mb-6">
-                  {/* 1. Essential Skills */}
-                  <div className="p-5 rounded-2xl bg-[#FBF4EB]/60 border border-slate-200">
+                  {/* Essential Skills */}
+                  <div className="p-5 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
                     <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-3">
-                      1. Essential Skills Required to Enter
+                      Core Technical & Domain Skills
                     </h4>
                     <div className="space-y-2">
                       {selectedRole.essentialSkills.map((skill) => {
@@ -2922,7 +3307,7 @@ const AiGuidance = () => {
                           >
                             <span>{skill}</span>
                             <span className="text-[10px] uppercase shrink-0 ml-2">
-                              {checked ? "✓ Ready" : "+ Gap"}
+                              {checked ? "✓ Verified" : "+ Add Skill"}
                             </span>
                           </button>
                         );
@@ -2930,10 +3315,10 @@ const AiGuidance = () => {
                     </div>
                   </div>
 
-                  {/* 2. Preferred Skills */}
-                  <div className="p-5 rounded-2xl bg-[#FBF4EB]/60 border border-slate-200">
+                  {/* Preferred Skills */}
+                  <div className="p-5 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
                     <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-3">
-                      2. Preferred Skills That Improve Employability
+                      High-Value Employability Skills
                     </h4>
                     <div className="space-y-2">
                       {selectedRole.preferredSkills.map((skill) => {
@@ -2951,7 +3336,7 @@ const AiGuidance = () => {
                           >
                             <span>{skill}</span>
                             <span className="text-[10px] uppercase shrink-0 ml-2">
-                              {checked ? "✓ Ready" : "+ Gap"}
+                              {checked ? "✓ Verified" : "+ Add Skill"}
                             </span>
                           </button>
                         );
@@ -2959,11 +3344,11 @@ const AiGuidance = () => {
                     </div>
                   </div>
 
-                  {/* 3, 4, 5: Tools, Certifications, Projects */}
+                  {/* Tools & Certifications */}
                   <div className="space-y-4">
-                    <div className="p-4 rounded-2xl bg-[#FBF4EB]/60 border border-slate-200">
+                    <div className="p-4 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
                       <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-2">
-                        3. Software & Industry Tools to Learn
+                        Software & Industry Tools
                       </h4>
                       <div className="flex flex-wrap gap-1.5">
                         {selectedRole.toolsRequired.map((tool) => (
@@ -2977,9 +3362,9 @@ const AiGuidance = () => {
                       </div>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-[#FBF4EB]/60 border border-slate-200">
+                    <div className="p-4 rounded-2xl bg-[#FBF4EB]/55 border border-slate-200">
                       <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-2">
-                        4. Certifications & 5. Assessment Proof
+                        Recommended Certifications & Proof
                       </h4>
                       <ul className="space-y-1 text-xs text-slate-700 font-medium">
                         {selectedRole.certifications.map((c) => (
@@ -2996,12 +3381,12 @@ const AiGuidance = () => {
                       Personalised Skill Gap Diagnostic for {selectedRole.title}
                     </h4>
                     <p className="text-xs text-slate-600 mb-3">
-                      Priority skills to learn next to reach 100% employer readiness:
+                      Priority skills to acquire next to reach 100% employer readiness:
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {missingRoleSkills.length === 0 ? (
                         <span className="text-xs font-bold text-emerald-800">
-                          All core skills checked! You are ready for Talent CIR verification.
+                          All core skills verified! You are ready for Talent CIR assessment.
                         </span>
                       ) : (
                         missingRoleSkills.map((gap) => (
@@ -3009,7 +3394,7 @@ const AiGuidance = () => {
                             key={gap}
                             className="px-3 py-1 rounded-lg bg-white border border-[#002C66]/30 text-xs font-bold text-[#002C66]"
                           >
-                            Needs Practice: {gap}
+                            Priority Focus: {gap}
                           </span>
                         ))
                       )}
@@ -3042,53 +3427,52 @@ const AiGuidance = () => {
         )}
 
         {/* =====================================================================
-            PAGE 5 (STEP 5): 08. YOUR PERSONALISED CAREER ROADMAP (Full-Page Fit)
+            PAGE 5 (STEP 5): YOUR PERSONALISED CAREER ROADMAP (Full-Page Fit)
         ===================================================================== */}
         {currentStep === 5 && (
           <section className="min-h-[calc(100vh-72px)] w-full flex flex-col justify-center py-6 lg:py-10">
             <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 flex-1 flex flex-col justify-between">
-              <div className="w-full bg-white rounded-3xl border border-slate-200 shadow-md p-6 sm:p-10 xl:p-12 flex-1 flex flex-col justify-between">
+              <div className="w-full bg-white rounded-3xl border border-slate-200 shadow-lg p-6 sm:p-10 xl:p-12 flex-1 flex flex-col justify-between">
                 <div className="text-center max-w-4xl mx-auto mb-8">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-bold uppercase tracking-wider mb-3">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-extrabold uppercase tracking-wider mb-3">
                     <Layers className="w-3.5 h-3.5" />
-                    STEP 5 • 08. Your Personalised Career Roadmap
+                    Step 05 of 07 • Personalised Career Roadmap
                   </div>
                   <h1 className="font-display text-3xl sm:text-4xl xl:text-5xl font-extrabold text-slate-950 tracking-tight mb-3">
                     From Where You Are to{" "}
                     <span className="text-[#002C66]">Where You Want to Be.</span>
                   </h1>
                   <p className="text-slate-600 text-base sm:text-lg">
-                    SI Guide translates career recommendations into an actionable 5-stage plan
-                    tailored to your current profile (
+                    A structured 5-stage execution plan connecting your{" "}
                     <strong>
-                      {education} • {specialisation}
-                    </strong>
-                    ) and target role (<strong>{selectedRole.title}</strong>).
+                      {education} ({specialisation})
+                    </strong>{" "}
+                    profile to <strong>{selectedRole.title}</strong>.
                   </p>
                 </div>
 
-                {/* 5-Stage Interactive Roadmap Cards from PDF Pages 7-8 */}
+                {/* 5-Stage Interactive Roadmap Cards */}
                 <div className="grid md:grid-cols-5 gap-4 xl:gap-5 mb-8">
                   {[
                     {
                       num: 1,
                       code: "01",
                       title: "Understand Your Starting Point",
-                      desc: "Review your education, experience, existing skills and interests.",
+                      desc: "Review your education, experience, existing skills and career interests.",
                       liveDetail: `${education} (${specialisation}) • ${experience} • ${country}`,
                     },
                     {
                       num: 2,
                       code: "02",
                       title: "Choose a Target Role",
-                      desc: "Compare recommended careers and select a realistic goal.",
+                      desc: "Compare recommended careers and lock a high-match target role.",
                       liveDetail: `Target: ${selectedRole.title} (${selectedRole.matchScore}% Match)`,
                     },
                     {
                       num: 3,
                       code: "03",
                       title: "Close Your Skill Gaps",
-                      desc: "Identify the skills, courses and certifications that can help.",
+                      desc: "Complete focused modules and hands-on tools training.",
                       liveDetail:
                         missingRoleSkills.length > 0
                           ? `Focus: ${missingRoleSkills.slice(0, 2).join(", ")}`
@@ -3098,14 +3482,14 @@ const AiGuidance = () => {
                       num: 4,
                       code: "04",
                       title: "Prove Your Readiness",
-                      desc: "Use Talent CIR assessments to measure progress.",
+                      desc: "Validate domain competency through Talent CIR assessments.",
                       liveDetail: selectedRole.certifications[0],
                     },
                     {
                       num: 5,
                       code: "05",
                       title: "Prepare for Opportunities",
-                      desc: "Improve your resume, practise interviews and explore relevant jobs.",
+                      desc: "Sharpen your portfolio, practise interviews and apply to verified roles.",
                       liveDetail: `Target Band: ${selectedRole.salaryIndia.entry}`,
                     },
                   ].map((stage) => {
@@ -3151,10 +3535,10 @@ const AiGuidance = () => {
                 </div>
 
                 {/* Actionable 90-Day Execution Blueprint */}
-                <div className="bg-[#FBF4EB]/60 rounded-2xl border border-slate-200 p-6 sm:p-8">
+                <div className="bg-[#FBF4EB]/55 rounded-2xl border border-slate-200 p-6 sm:p-8">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
-                      <span className="text-xs font-bold uppercase tracking-wider text-[#002C66]">
+                      <span className="text-xs font-extrabold uppercase tracking-wider text-[#002C66]">
                         Personalised 90-Day Action Plan
                       </span>
                       <h3 className="font-display text-xl sm:text-2xl font-extrabold text-slate-950">
@@ -3241,30 +3625,30 @@ const AiGuidance = () => {
         )}
 
         {/* =====================================================================
-            PAGE 6 (STEP 6): 09. UNDERSTAND THE FUTURE OF YOUR CAREER (Full-Page Fit)
+            PAGE 6 (STEP 6): UNDERSTAND THE FUTURE OF YOUR CAREER (Full-Page Fit)
         ===================================================================== */}
         {currentStep === 6 && (
           <section className="min-h-[calc(100vh-72px)] w-full flex flex-col justify-center py-6 lg:py-10">
             <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 flex-1 flex flex-col justify-between">
-              <div className="w-full bg-white rounded-3xl border border-slate-200 shadow-md p-6 sm:p-10 xl:p-12 flex-1 flex flex-col justify-between">
+              <div className="w-full bg-white rounded-3xl border border-slate-200 shadow-lg p-6 sm:p-10 xl:p-12 flex-1 flex flex-col justify-between">
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-8">
                   <div>
-                    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-bold uppercase tracking-wider mb-3">
+                    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-extrabold uppercase tracking-wider mb-3">
                       <Globe2 className="w-3.5 h-3.5" />
-                      STEP 6 • 09. Understand the Future of Your Career
+                      Step 06 of 07 • Future Career Outlook & AI Impact
                     </div>
                     <h1 className="font-display text-3xl sm:text-4xl xl:text-5xl font-extrabold text-slate-950 tracking-tight">
                       Choose a Career That&apos;s{" "}
                       <span className="text-[#002C66]">Ready for Tomorrow.</span>
                     </h1>
                     <p className="text-slate-600 text-base sm:text-lg mt-2 max-w-3xl">
-                      Explore how <strong>{selectedRole.title}</strong> is evolving with technology,
-                      AI adoption, industry changes and emerging business needs.
+                      Explore how <strong>{selectedRole.title}</strong> is evolving with AI
+                      co-pilots, industry automation, and long-term market demand.
                     </p>
                   </div>
 
                   <div className="px-4 py-2.5 rounded-xl bg-[#FBF4EB] border border-slate-200 text-xs font-semibold text-slate-700">
-                    Evidence-Based Source:{" "}
+                    Market Benchmark:{" "}
                     <strong className="text-[#002C66]">
                       {selectedRole.futureDemand.sourceCitation}
                     </strong>
@@ -3272,11 +3656,11 @@ const AiGuidance = () => {
                 </div>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 xl:gap-8 my-auto">
-                  {/* 1. Current Industry Demand */}
-                  <div className="rounded-2xl bg-[#FBF4EB]/60 border border-slate-200 p-6 xl:p-8 flex flex-col justify-between">
+                  {/* Card 1: Current Industry Demand */}
+                  <div className="rounded-2xl bg-[#FBF4EB]/55 border border-slate-200 p-6 xl:p-8 flex flex-col justify-between">
                     <div>
                       <span className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold mb-3">
-                        1. Current Industry Demand • {selectedRole.futureDemand.demandLevel}
+                        Industry Demand • {selectedRole.futureDemand.demandLevel}
                       </span>
                       <h3 className="font-display text-lg sm:text-xl font-extrabold text-slate-900 mb-2">
                         Market Demand & AI Co-Pilot Impact
@@ -3293,11 +3677,11 @@ const AiGuidance = () => {
                     </div>
                   </div>
 
-                  {/* 2. Emerging Technologies & 3. Future Skills */}
-                  <div className="rounded-2xl bg-[#FBF4EB]/60 border border-slate-200 p-6 xl:p-8 space-y-6">
+                  {/* Card 2: Emerging Technologies & Future Skills */}
+                  <div className="rounded-2xl bg-[#FBF4EB]/55 border border-slate-200 p-6 xl:p-8 space-y-6">
                     <div>
                       <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-3">
-                        2. Emerging Technologies Affecting the Role
+                        Emerging Technologies Shaping the Role
                       </h3>
                       <div className="space-y-2.5">
                         {selectedRole.futureDemand.emergingTech.map((tech) => (
@@ -3313,7 +3697,7 @@ const AiGuidance = () => {
 
                     <div>
                       <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-3">
-                        3. Future Skills Employers May Value
+                        Future-Proof Skills Employers Value
                       </h3>
                       <div className="space-y-2.5">
                         {selectedRole.futureDemand.futureSkills.map((fSkill) => (
@@ -3328,11 +3712,11 @@ const AiGuidance = () => {
                     </div>
                   </div>
 
-                  {/* 4. Career Advancement Pathways & 5. Related Roles */}
-                  <div className="rounded-2xl bg-[#FBF4EB]/60 border border-slate-200 p-6 xl:p-8 space-y-6">
+                  {/* Card 3: Career Advancement Pathways & Related Roles */}
+                  <div className="rounded-2xl bg-[#FBF4EB]/55 border border-slate-200 p-6 xl:p-8 space-y-6">
                     <div>
                       <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-3">
-                        4. Career Advancement Pathways
+                        Multi-Year Career Progression
                       </h3>
                       <div className="space-y-2.5">
                         {selectedRole.futureDemand.advancementPath.map((stage, i) => (
@@ -3351,7 +3735,7 @@ const AiGuidance = () => {
 
                     <div>
                       <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#002C66] mb-2.5">
-                        5. Related Roles & Alternative Career Options
+                        Adjacent & Alternative Career Roles
                       </h3>
                       <div className="flex flex-wrap gap-2">
                         {selectedRole.futureDemand.relatedRoles.map((rel) => (
@@ -3392,27 +3776,27 @@ const AiGuidance = () => {
         )}
 
         {/* =====================================================================
-            PAGE 7 (STEP 7): 10. CONNECT CAREER DISCOVERY TO LEARNING & JOBS
-            + 11. FINAL CTA SECTION (Full-Page Fit)
+            PAGE 7 (STEP 7): CONNECT CAREER DISCOVERY TO LEARNING & JOBS
+            + FINAL CTA SECTION (Full-Page Fit)
         ===================================================================== */}
         {currentStep === 7 && (
           <section className="min-h-[calc(100vh-72px)] w-full flex flex-col justify-between py-6 lg:py-10">
             <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 flex-1 flex flex-col justify-between space-y-8">
-              {/* 10. Connect Career Discovery to Learning & Jobs */}
-              <div className="bg-white rounded-3xl border border-slate-200 shadow-md p-6 sm:p-10 xl:p-12">
+              {/* Connect Career Discovery to Learning & Jobs */}
+              <div className="bg-white rounded-3xl border border-slate-200 shadow-lg p-6 sm:p-10 xl:p-12">
                 <div className="text-center max-w-4xl mx-auto mb-8">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-bold uppercase tracking-wider mb-3">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#002C66]/10 text-[#002C66] text-xs font-extrabold uppercase tracking-wider mb-3">
                     <Zap className="w-3.5 h-3.5" />
-                    STEP 7 • 10. Connect Career Discovery to Learning & Jobs
+                    Step 07 of 07 • Turn Career Discovery Into Action
                   </div>
                   <h1 className="font-display text-3xl sm:text-4xl xl:text-5xl font-extrabold text-slate-950 tracking-tight mb-3">
                     Discover It. Learn It.{" "}
                     <span className="text-[#002C66]">Make It Happen.</span>
                   </h1>
                   <p className="text-slate-600 text-base sm:text-lg">
-                    Turn your personalised career plan for <strong>{selectedRole.title}</strong>{" "}
-                    into real-world action across courses, proctored CIR assessments, profile
-                    building, and verified job openings.
+                    Execute your personalised career plan for <strong>{selectedRole.title}</strong>{" "}
+                    through industry-aligned courses, proctored CIR assessments, portfolio building,
+                    and verified job opportunities.
                   </p>
                 </div>
 
@@ -3427,7 +3811,7 @@ const AiGuidance = () => {
                         Learn the Skills
                       </h3>
                       <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6">
-                        Explore relevant courses and expert-led learning pathways tailored to{" "}
+                        Explore structured courses and expert-led learning pathways tailored to{" "}
                         {selectedRole.title}.
                       </p>
                     </div>
@@ -3450,8 +3834,8 @@ const AiGuidance = () => {
                         Assess Your Readiness
                       </h3>
                       <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6">
-                        Measure your current skills against your target career with proctored Talent
-                        CIR assessments.
+                        Benchmark your current skills against employer standards with proctored
+                        Talent CIR assessments.
                       </p>
                     </div>
                     <Link
@@ -3473,8 +3857,8 @@ const AiGuidance = () => {
                         Prepare Your Profile
                       </h3>
                       <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6">
-                        Build a resume and showcase relevant achievements, projects, and verified CIR
-                        reports.
+                        Build an employer-ready resume showcasing verified projects and CIR
+                        competency credentials.
                       </p>
                     </div>
                     <Link
@@ -3496,8 +3880,8 @@ const AiGuidance = () => {
                         Find Relevant Jobs
                       </h3>
                       <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6">
-                        Explore openings aligned with your target role ({selectedRole.title}) and
-                        qualifications.
+                        Apply directly to verified openings aligned with {selectedRole.title} and
+                        your qualification.
                       </p>
                     </div>
                     <Link
@@ -3517,7 +3901,7 @@ const AiGuidance = () => {
                     className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 cursor-pointer"
                   >
                     <ArrowLeft className="w-4 h-4" />
-                    Back to Understand the Future of Your Career
+                    Back to Future Career Outlook
                   </button>
                   <button
                     type="button"
@@ -3529,20 +3913,20 @@ const AiGuidance = () => {
                 </div>
               </div>
 
-              {/* 11. Final CTA Section & Complete 7-Step Journey Summary */}
+              {/* Final Executive CTA Banner & Interactive Journey Recap */}
               <div className="pro-hero rounded-3xl bg-[#002C66] text-white p-8 sm:p-12 shadow-xl">
                 <div className="grid lg:grid-cols-12 gap-8 items-center">
                   <div className="lg:col-span-7 space-y-4">
                     <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 border border-white/15 text-sky-300 text-xs font-bold uppercase tracking-wider">
                       <Sparkles className="w-3.5 h-3.5" />
-                      11. Final CTA Section
+                      Super Intelligence Career Co-Pilot
                     </span>
                     <h2 className="font-display text-3xl sm:text-4xl xl:text-5xl font-extrabold tracking-tight text-white">
                       Your Degree Is Just <span className="text-sky-300">the Beginning.</span>
                     </h2>
                     <p className="text-slate-200 text-base sm:text-lg leading-relaxed">
-                      Discover your possibilities, understand your potential and find the career
-                      path that fits you.
+                      Discover your possibilities, validate your potential, and accelerate into the
+                      career path built for you.
                     </p>
                     <div className="flex flex-wrap gap-3 pt-2">
                       <button
@@ -3550,7 +3934,7 @@ const AiGuidance = () => {
                         onClick={() => goToStep(1)}
                         className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#FBF4EB] hover:bg-white text-[#002C66] font-extrabold text-sm shadow-lg transition cursor-pointer"
                       >
-                        Start My SI Guide
+                        Recalibrate My Career Profile
                         <ArrowRight className="w-4 h-4" />
                       </button>
                       <button
@@ -3563,10 +3947,10 @@ const AiGuidance = () => {
                     </div>
                   </div>
 
-                  {/* Recommended SI Guide User Journey (7 Steps Checklist from PDF Pages 9-10) */}
+                  {/* Interactive 7-Step Journey Navigator */}
                   <div className="lg:col-span-5 bg-white/10 rounded-2xl p-5 border border-white/15">
                     <div className="text-xs font-extrabold uppercase tracking-wider text-sky-300 mb-3">
-                      Recommended SI Guide User Journey
+                      Complete SI Career Guide Journey
                     </div>
                     <div className="space-y-2">
                       {JOURNEY_STEPS.slice(1).map((s) => (
