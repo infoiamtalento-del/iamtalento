@@ -1534,8 +1534,6 @@ const AiGuidance = () => {
     };
   }, [selectedRole, salaryCityTier]);
 
-  const activeJourneyMeta = JOURNEY_STEPS[currentStep] || JOURNEY_STEPS[0];
-
   return (
     <div className="min-h-screen flex flex-col bg-[#FBF4EB] text-slate-900">
       <Helmet>
@@ -1550,107 +1548,6 @@ const AiGuidance = () => {
 
       {/* Main container with pt-[72px] to clear fixed Navbar cleanly */}
       <main className="flex-1 pt-[72px]">
-        {/* =====================================================================
-            PERSISTENT MULTI-PAGE STEPPER NAVIGATION BAR (STEPS 0 TO 7)
-        ===================================================================== */}
-        <div className="sticky top-[64px] z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
-          <div className="container mx-auto px-4 lg:px-8 py-3">
-            {/* Top Status & Prev/Next Row */}
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-2.5">
-              <div className="flex items-center gap-2.5 min-w-0">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#002C66] text-white text-[11px] font-bold uppercase tracking-wider shrink-0">
-                  <Sparkles className="w-3.5 h-3.5 text-sky-300" />
-                  SI Career Guide
-                </span>
-                <span className="text-xs sm:text-sm font-extrabold text-slate-900 truncate">
-                  {activeJourneyMeta.badge}: {activeJourneyMeta.title}
-                </span>
-                <span className="hidden lg:inline-block text-xs text-slate-500 truncate">
-                  — {activeJourneyMeta.subtitle}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-2.5 shrink-0">
-                <div className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FBF4EB] border border-slate-200 text-xs font-semibold text-slate-700">
-                  <GraduationCap className="w-3.5 h-3.5 text-[#002C66]" />
-                  <span className="font-bold text-slate-900">{education}</span>
-                  <span>•</span>
-                  <span>{specialisation}</span>
-                  <span>•</span>
-                  <span className="text-[#002C66] font-bold">{selectedRole.title}</span>
-                </div>
-
-                <div className="flex items-center gap-1.5">
-                  <button
-                    type="button"
-                    disabled={currentStep === 0}
-                    onClick={() => goToStep(Math.max(0, currentStep - 1))}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none text-xs font-bold text-slate-800 transition cursor-pointer"
-                  >
-                    <ArrowLeft className="w-3.5 h-3.5" />
-                    Prev
-                  </button>
-                  <button
-                    type="button"
-                    disabled={currentStep === 7}
-                    onClick={() => goToStep(Math.min(7, currentStep + 1))}
-                    className="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-lg bg-[#002C66] hover:bg-[#00204d] disabled:opacity-40 disabled:pointer-events-none text-xs font-bold text-white transition cursor-pointer"
-                  >
-                    Next Step
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Interactive 8-Tab Step Switcher Bar */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-1.5">
-              {JOURNEY_STEPS.map((item) => {
-                const isActive = currentStep === item.step;
-                const isCompleted = currentStep > item.step;
-                return (
-                  <button
-                    key={item.step}
-                    type="button"
-                    onClick={() => goToStep(item.step)}
-                    className={`group flex flex-col items-start px-3 py-2 rounded-xl border text-left transition cursor-pointer ${
-                      isActive
-                        ? "bg-[#002C66] border-[#002C66] text-white shadow-sm"
-                        : isCompleted
-                        ? "bg-emerald-50/80 border-emerald-200 text-slate-900 hover:bg-emerald-50"
-                        : "bg-[#FBF4EB]/60 border-slate-200 text-slate-600 hover:bg-white hover:border-slate-300"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between w-full mb-0.5">
-                      <span
-                        className={`text-[10px] font-extrabold uppercase tracking-wider ${
-                          isActive
-                            ? "text-sky-300"
-                            : isCompleted
-                            ? "text-emerald-700"
-                            : "text-slate-400"
-                        }`}
-                      >
-                        {item.badge}
-                      </span>
-                      {isCompleted && (
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                      )}
-                    </div>
-                    <span
-                      className={`text-xs font-bold truncate w-full ${
-                        isActive ? "text-white" : "text-slate-800"
-                      }`}
-                    >
-                      {item.shortTitle}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
         {/* =====================================================================
             PAGE 0: 01. HERO SECTION & RECOMMENDED 7-STEP JOURNEY OVERVIEW
         ===================================================================== */}
@@ -1766,8 +1663,8 @@ const AiGuidance = () => {
                       Step-by-Step Career Discovery Flow (Steps 1 to 7)
                     </h2>
                     <p className="text-sm text-slate-600 mt-1">
-                      Click any step below or use the top progress bar to move through each dedicated
-                      stage.
+                      Click any step below or start at Step 1 to move through each stage of your
+                      personalised career guide.
                     </p>
                   </div>
                   <button
@@ -3637,6 +3534,24 @@ const AiGuidance = () => {
                       <ArrowRight className="w-4 h-4" />
                     </Link>
                   </div>
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
+                  <button
+                    type="button"
+                    onClick={() => goToStep(6)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 cursor-pointer"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    Back to Step 6 (Personalised Career Roadmap)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => goToStep(0)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-xs font-bold text-[#002C66] cursor-pointer"
+                  >
+                    Back to Hero Overview
+                  </button>
                 </div>
               </div>
 
