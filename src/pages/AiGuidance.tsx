@@ -29,6 +29,7 @@ import {
   RefreshCw,
   Check,
   Calendar,
+  IndianRupee,
 } from "lucide-react";
 
 type DiscoveryPath = "degree" | "beyond" | "all";
