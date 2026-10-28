@@ -13,6 +13,7 @@ import JobsEventsSection from "@/components/jobs/JobsEventsSection";
 import JobAlertsBanner from "@/components/jobs/JobAlertsBanner";
 import JobsSuccessStoriesSection from "@/components/jobs/JobsSuccessStoriesSection";
 import ResumeToolkitSection from "@/components/jobs/ResumeToolkitSection";
+import AICareerSuiteSection from "@/components/jobs/AICareerSuiteSection";
 
 const Jobs = () => {
   return (
@@ -27,6 +28,9 @@ const Jobs = () => {
 
         {/* Trusted by companies marquee */}
         <JobsSocialProof />
+
+        {/* Comprehensive AI Career Tools Carousel */}
+        <AICareerSuiteSection />
 
         {/* Unlock 8 FREE Career Benefits */}
         <FreeFeaturesSection />
