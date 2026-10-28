@@ -66,6 +66,7 @@ const AssessmentResult = lazy(() => import("./pages/assessment/AssessmentResult"
 const TalentoPro = lazy(() => import("./pages/TalentoPro"));
 const Home2 = lazy(() => import("./pages/Home2"));
 const Home3 = lazy(() => import("./pages/Home3"));
+const AiGuidance = lazy(() => import("./pages/AiGuidance"));
 
 const queryClient = new QueryClient();
 
@@ -95,6 +96,8 @@ const AnimatedRoutes = () => {
           <Route path="/jobs" element={<PageTransition><Jobs /></PageTransition>} />
           <Route path="/learning" element={<PageTransition><Learning /></PageTransition>} />
           <Route path="/learning/courses/ai-engineer-agentic-track" element={<PageTransition><CourseDetail /></PageTransition>} />
+          <Route path="/ai-guidance" element={<PageTransition><AiGuidance /></PageTransition>} />
+          <Route path="/si-guidance" element={<PageTransition><AiGuidance /></PageTransition>} />
           <Route path="/meetups" element={<PageTransition><Hackathons /></PageTransition>} />
           <Route path="/hackathons" element={<PageTransition><Hackathons /></PageTransition>} />
           <Route path="/hackathon2" element={<PageTransition><Hackathon2 /></PageTransition>} />
