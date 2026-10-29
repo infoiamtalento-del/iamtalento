@@ -1,0 +1,234 @@
+.assessment-library,
+.assessment-library h1,
+.assessment-library h2,
+.assessment-library h3 {
+  letter-spacing: 0;
+}
+
+.sal-hero {
+  padding: 68px 0 76px;
+}
+
+.sal-hero-grid {
+  display: block;
+}
+
+.sal-hero-copy {
+  max-width: 880px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.sal-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 28px;
+  padding: 8px 18px;
+  border: 1px solid hsl(var(--primary) / 0.3);
+  border-radius: 999px;
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.sal-eyebrow-dot {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: hsl(var(--primary));
+}
+
+.sal-heading {
+  font-size: 58px;
+  line-height: 1.06;
+  font-weight: 700;
+}
+
+.sal-hero-description {
+  margin: 26px auto 0;
+  max-width: 760px;
+  font-size: 17px;
+  line-height: 28px;
+}
+
+.sal-hero-actions {
+  margin-top: 38px;
+  justify-content: center;
+}
+
+.sal-hero-actions a,
+.sal-hero-actions button {
+  height: 48px;
+  border-radius: 999px;
+  padding: 0 28px;
+  font-size: 13px;
+}
+
+.sal-hero-proof {
+  margin-top: 26px;
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+.sal-section-heading {
+  font-size: 40px;
+  line-height: 1.15;
+  font-weight: 700;
+}
+
+.sal-catalogue-heading {
+  margin-bottom: 56px;
+}
+
+.sal-catalogue-title {
+  font-size: 54px;
+  line-height: 1.12;
+  font-weight: 700;
+}
+
+.sal-filter-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.sal-test-card {
+  min-height: 310px;
+  box-shadow: 0 6px 16px hsl(var(--foreground) / 0.05);
+}
+
+.sal-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  color: hsl(var(--warning));
+}
+
+.sal-stars svg {
+  width: 13px;
+  height: 13px;
+}
+
+.sal-explore-label {
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  transition: max-width 0.32s ease, opacity 0.24s ease;
+}
+
+.sal-test-card:hover .sal-explore-label,
+.sal-test-card:focus-within .sal-explore-label {
+  max-width: 92px;
+  opacity: 1;
+}
+
+.sal-explore-arrow {
+  transform: rotate(-45deg);
+  transition: transform 0.32s ease;
+}
+
+.sal-test-card:hover .sal-explore-arrow,
+.sal-test-card:focus-within .sal-explore-arrow {
+  transform: rotate(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sal-explore-label,
+  .sal-explore-arrow {
+    transition: none;
+  }
+}
+
+.sal-score {
+  width: 132px;
+  height: 132px;
+  border: 9px solid hsl(var(--primary) / 0.15);
+  border-top-color: hsl(var(--primary));
+  border-right-color: hsl(var(--primary));
+  border-bottom-color: hsl(var(--primary));
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.sal-bars {
+  display: grid;
+  grid-template-columns: repeat(20, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.sal-bars span {
+  height: 14px;
+  border-radius: 2px;
+  background: hsl(var(--primary) / 0.12);
+}
+
+.sal-bars span[data-filled="true"] {
+  background: hsl(var(--primary));
+}
+
+@media (max-width: 1023px) {
+  .sal-filter-bar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sal-heading {
+    font-size: 44px;
+  }
+
+  .sal-hero-description {
+    font-size: 16px;
+    line-height: 26px;
+  }
+}
+
+@media (max-width: 639px) {
+  .sal-catalogue-title {
+    font-size: 34px;
+  }
+
+  .sal-catalogue-heading {
+    margin-bottom: 32px;
+  }
+
+  .sal-filter-bar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sal-heading {
+    font-size: 32px;
+  }
+
+  .sal-hero-description {
+    font-size: 15px;
+    line-height: 24px;
+  }
+
+  .sal-section-heading {
+    font-size: 30px;
+  }
+
+  .sal-hero {
+    padding-top: 32px;
+    padding-bottom: 40px;
+  }
+
+  .sal-hero-actions {
+    margin-top: 28px;
+    gap: 12px;
+  }
+}

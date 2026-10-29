@@ -55,6 +55,7 @@ const EmployerProfileBuilder = lazy(() => import("./pages/EmployerProfileBuilder
 const MyProfile = lazy(() => import("./pages/MyProfile"));
 const DemoProfile = lazy(() => import("./pages/DemoProfile"));
 const SkillAssessment = lazy(() => import("./pages/SkillAssessment"));
+const SkillAssessmentLibrary = lazy(() => import("./pages/SkillAssessmentLibrary"));
 const Podcasts = lazy(() => import("./pages/Podcasts"));
 const Hackathons = lazy(() => import("./pages/Hackathons"));
 const Hackathon2 = lazy(() => import("./pages/Hackathon2"));
@@ -160,6 +161,7 @@ const AnimatedRoutes = () => {
           <Route path="/employer-profile" element={<PageTransition><EmployerProfileBuilder /></PageTransition>} />
           <Route path="/demo-profile" element={<PageTransition><DemoProfile /></PageTransition>} />
           <Route path="/skill-assessment" element={<PageTransition><SkillAssessment /></PageTransition>} />
+          <Route path="/skill-assessment-library" element={<PageTransition><SkillAssessmentLibrary /></PageTransition>} />
           <Route path="/networking" element={<PageTransition><Networking /></PageTransition>} />
           <Route path="/pro" element={<PageTransition><TalentoPro /></PageTransition>} />
           <Route path="/talento-pro" element={<PageTransition><TalentoPro /></PageTransition>} />

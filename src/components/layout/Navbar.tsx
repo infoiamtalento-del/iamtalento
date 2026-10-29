@@ -39,7 +39,7 @@ const candidateProducts: ProductItem[] = [
 ];
 
 const employerProducts: ProductItem[] = [
-  { label: "Skill Assessment Library", desc: "Ready-made, proctored tests for every role", href: "/employers-page-2", icon: Library },
+  { label: "Skill Assessment Library", desc: "Ready-made, proctored tests for every role", href: "/skill-assessment-library", icon: Library },
   { label: "Cheating Prevention", desc: "AI proctoring across the entire test journey", href: "/employers-page-2", icon: ShieldCheck },
   { label: "Custom AI Assessment Creation", desc: "Build role-specific tests in minutes", href: "/employers-page-2", icon: Wand2 },
   { label: "White-Label Branding", desc: "Your brand on every assessment touchpoint", href: "/employers-page-2", icon: Palette },

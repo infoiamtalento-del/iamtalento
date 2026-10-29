@@ -1,16 +1,46 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import {
+  ArrowRight,
+  Award,
+  BarChart3,
+  Bot,
+  CalendarClock,
+  ChevronDown,
+  CirclePlay,
+  ClipboardCheck,
+  Clock,
+  Crown,
+  FileText,
+  LayoutTemplate,
+  Loader2,
+  MessageCircle,
+  NotebookPen,
+  Play,
+  Route,
+  ShoppingCart,
+  Star,
+  Users,
+  Video,
+  Wrench,
+  type LucideIcon,
+} from "lucide-react";
+import { toast } from "sonner";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
+import { defaultCourseImage, findLearningCourse } from "@/data/learningCourses";
+import { CourseCurriculum, CoursePreviewDialog } from "@/components/learning/CourseCurriculum";
+import { ExpertBookingSection } from "@/components/learning/ExpertBookingSection";
 import {
-  Star, Users, BarChart3, Play, Clock, ShoppingCart, Infinity as InfinityIcon, Award, FolderKanban,
-  Download, Smartphone, ShieldCheck, PlayCircle, Sparkles, CheckCircle2, ChevronDown, UserRound, ArrowRight, Crown, Loader2, Lock,
-} from "lucide-react";
-import { toast } from "sonner";
-import expertImg from "@/assets/expert-course-1.jpg";
+  courseToolIconMap,
+  defaultAiTrackTools,
+  type CourseToolBadge,
+} from "@/components/learning/CourseToolIcons";
+import previewVideoUrl from "@/assets/ai-course-preview.webm";
+import NotFound from "./NotFound";
 import { useSupabaseUser } from "@/hooks/useSupabaseUser";
 import {
   completeModule,
@@ -22,93 +52,272 @@ import {
 import { createOrder, fetchWallet, payOrderWithWallet, payWithRazorpay } from "@/services/candidate/wallet";
 import { backendErrorMessage } from "@/hooks/useCandidateBackend";
 
-const defaultCourse = {
+const defaultAiTrackCourse = {
   title: "AI Engineer Agentic Track",
   subtitle: "The Complete Agent & MCP Course",
-  description: "Design, build and ship autonomous AI agents. Learn LLM tool use, the Model Context Protocol, multi-agent orchestration and production deployment through hands-on projects.",
+  description:
+    "Design, build and ship autonomous AI agents. Learn LLM tool use, the Model Context Protocol, multi-agent orchestration and production deployment through hands-on projects.",
   instructor: "Dr. Neha Sharma",
   role: "AI Engineer & Applied ML Researcher",
   rating: 4.7,
   ratings: "32,408",
   learners: "1,20,000+",
-  price: "Free",
-  originalPrice: "₹3,999",
-  discount: "100% OFF",
-  category: "AI & ML",
-  level: "Intermediate",
+  price: "₹529",
+  originalPrice: "₹799",
+  discount: "34% OFF",
   tags: ["AI Agents", "MCP", "LLMs", "Python", "LangGraph", "RAG"],
 };
 
-const highlights = [
-  { icon: PlayCircle, title: "45+ Video Lessons", sub: "14+ hours of content" },
-  { icon: FolderKanban, title: "12 Real Projects", sub: "Build your portfolio" },
-  { icon: Sparkles, title: "AI Tools Included", sub: "Learn with the latest stack" },
-  { icon: Award, title: "Certificate", sub: "Verified on your profile" },
-  { icon: Clock, title: "Lifetime Access", sub: "Learn at your pace" },
+const defaultHeroStats: { icon: LucideIcon; value: string; label: string }[] = [
+  { icon: Clock, value: "40+ Hours", label: "Course Duration" },
+  { icon: LayoutTemplate, value: "10+ Level", label: "Advanced Modules" },
+  { icon: Wrench, value: "12+ Tools", label: "Industry Tools" },
 ];
 
-const includes = [
-  { icon: InfinityIcon, label: "Lifetime access" },
-  { icon: Award, label: "Verified certificate of completion" },
-  { icon: FolderKanban, label: "Hands-on real-world projects" },
-  { icon: Download, label: "Downloadable resources" },
-  { icon: Smartphone, label: "Access on mobile & desktop" },
-  { icon: ShieldCheck, label: "30-day money back guarantee" },
+interface CourseResourceCard {
+  icon: LucideIcon;
+  title: string;
+  sub: string;
+  eyebrow: string;
+  category: string;
+  detail: string;
+  advantage: string;
+  points: string[];
+}
+
+const defaultCourseResources: CourseResourceCard[] = [
+  {
+    icon: Video,
+    title: "Mock Interview Videos",
+    sub: "Learn how to answer real-world interview questions.",
+    eyebrow: "Interview Prep",
+    category: "Interview Practice",
+    detail: "Watch real AI-engineer interviews and learn exactly how strong candidates answer.",
+    advantage: "Interview Ready",
+    points: [
+      "Walkthroughs of real AI-engineer interviews",
+      "Model answers for the toughest questions",
+      "Tips straight from hiring managers",
+    ],
+  },
+  {
+    icon: FileText,
+    title: "Interview Q&A PDF",
+    sub: "Access curated questions and expert answers.",
+    eyebrow: "Interview Prep",
+    category: "Curated Question Bank",
+    detail: "A downloadable bank of the questions this role actually gets asked.",
+    advantage: "200+ Questions, Answered",
+    points: [
+      "Curated by working AI engineers",
+      "Expert answers you can adapt",
+      "Download, print and revise anywhere",
+    ],
+  },
+  {
+    icon: LayoutTemplate,
+    title: "Blueprints & Templates",
+    sub: "Use ready-to-apply professional resources.",
+    eyebrow: "Resources",
+    category: "Ready-to-Use Assets",
+    detail: "Skip the blank page with blueprints and templates used in real projects.",
+    advantage: "Ship Faster",
+    points: [
+      "Project blueprints with starter code",
+      "Resume and portfolio templates",
+      "Module-by-module checklists",
+    ],
+  },
+  {
+    icon: ClipboardCheck,
+    title: "Practice Tests",
+    sub: "Test your knowledge and identify weak areas.",
+    eyebrow: "Assessment",
+    category: "Know Where You Stand",
+    detail: "Quizzes and mock tests after every module keep your learning honest.",
+    advantage: "Test Yourself",
+    points: [
+      "A quiz after every module",
+      "Full mock tests with scoring",
+      "Instant weakness detection",
+    ],
+  },
+  {
+    icon: Users,
+    title: "Community & Peers",
+    sub: "Connect, collaborate, and learn with others.",
+    eyebrow: "Network",
+    category: "Never Learn Alone",
+    detail: "Join a private community of learners building agents alongside you.",
+    advantage: "Learn Together",
+    points: [
+      "Private learner community",
+      "Peer reviews on your projects",
+      "Group study and build channels",
+    ],
+  },
+  {
+    icon: MessageCircle,
+    title: "Doubt Resolution",
+    sub: "Get answers to your learning questions.",
+    eyebrow: "Support",
+    category: "Answers When You're Stuck",
+    detail: "No question waits days for an answer — help is always close.",
+    advantage: "Never Stuck",
+    points: [
+      "Answers within 24 hours",
+      "Weekly live doubt sessions",
+      "Searchable doubt archive",
+    ],
+  },
+  {
+    icon: Bot,
+    title: "AI Learning Assistant",
+    sub: "Ask questions and get instant answers as you learn.",
+    eyebrow: "Co-Pilot",
+    category: "Always-On AI Tutor",
+    detail: "Ask questions and get instant explanations while you learn.",
+    advantage: "24/7 Co-Pilot",
+    points: [
+      "Explains complex concepts in simple, relatable analogies",
+      "Generates custom practice problems on the spot",
+      "Supports multilingual queries in 5+ Indian languages",
+    ],
+  },
+  {
+    icon: NotebookPen,
+    title: "Smart Notes & Summaries",
+    sub: "Revise key concepts with AI-generated notes.",
+    eyebrow: "AI Toolkit",
+    category: "Notes That Write Themselves",
+    detail: "Every lesson comes with clean AI notes so revision takes minutes, not hours.",
+    advantage: "Revise in Minutes",
+    points: [
+      "AI-generated notes for every lesson",
+      "Key-concept summaries",
+      "Export to PDF for offline revision",
+    ],
+  },
+  {
+    icon: BarChart3,
+    title: "Skill Gap Analysis",
+    sub: "Discover areas where you need improvement.",
+    eyebrow: "Insights",
+    category: "See Your Gaps Clearly",
+    detail: "A readiness score shows exactly which skills need work before you apply.",
+    advantage: "Know Your Score",
+    points: [
+      "Benchmark against industry expectations",
+      "Per-skill readiness scores",
+      "A targeted plan to close each gap",
+    ],
+  },
+  {
+    icon: Route,
+    title: "Personalised Learning Path",
+    sub: "Follow a learning journey aligned with your goals.",
+    eyebrow: "AI Toolkit",
+    category: "Your Custom Route",
+    detail: "A path built around your goal — skip what you know, focus on what you don't.",
+    advantage: "Your Route",
+    points: [
+      "Path aligned to your career goal",
+      "Skip lessons you already know",
+      "Milestones to keep you on track",
+    ],
+  },
+  {
+    icon: CalendarClock,
+    title: "Expert Office Hours",
+    sub: "Get personalised guidance from industry professionals.",
+    eyebrow: "Mentorship",
+    category: "1:1 Mentor Access",
+    detail: "Regular live sessions with your instructor and industry mentors.",
+    advantage: "Talk to Experts",
+    points: [
+      "Live sessions with the instructor",
+      "Priority queue for your doubts",
+      "Career guidance from people who hire",
+    ],
+  },
+  {
+    icon: Award,
+    title: "Completion Certificate",
+    sub: "Showcase your completion and the skills you gained.",
+    eyebrow: "Credential",
+    category: "Proof of Your Skills",
+    detail: "A verified certificate that hiring partners can actually trust.",
+    advantage: "Verified Proof",
+    points: [
+      "Verified TalentCIR certificate",
+      "Shareable on LinkedIn in one click",
+      "Recognised by hiring partners",
+    ],
+  },
 ];
 
-const outcomes = [
-  "Understand how LLM agents plan, reason and act",
-  "Build tools and servers with the Model Context Protocol",
-  "Orchestrate multi-agent workflows with LangGraph",
-  "Add memory and retrieval (RAG) to your agents",
-  "Evaluate, monitor and debug agent behaviour",
-  "Deploy agents to production with guardrails",
-  "Build a real-world portfolio of agent projects",
-  "Get career guidance and interview preparation",
+const defaultReviews = [
+  {
+    n: "Ananya Gupta",
+    a: "https://randomuser.me/api/portraits/women/12.jpg",
+    w: "2 weeks ago",
+    t: "The MCP module alone was worth it. I shipped my first internal agent at work within a month.",
+  },
+  {
+    n: "Rahul Mehta",
+    a: "https://randomuser.me/api/portraits/men/14.jpg",
+    w: "1 month ago",
+    t: "Very well structured. Projects build on each other, so by the capstone everything clicks.",
+  },
+  {
+    n: "Sneha Iyer",
+    a: "https://randomuser.me/api/portraits/women/65.jpg",
+    w: "2 months ago",
+    t: "Clear explanations and up-to-date content. The evaluation section is rare in other courses.",
+  },
 ];
 
-const audience = [
-  "Developers who want to move into AI engineering",
-  "ML engineers looking to build agentic systems",
-  "Product builders shipping AI features",
-  "Freelancers who want to offer AI automation",
-  "Students looking for practical AI skills",
+const defaultFaqs = [
+  {
+    q: "Do I need prior AI experience?",
+    a: "Basic Python is enough. We cover LLM fundamentals from the start.",
+  },
+  {
+    q: "Are the projects included in the course?",
+    a: "Yes, all 12 projects come with starter code and walkthroughs.",
+  },
+  {
+    q: "Will I get a certificate?",
+    a: "Yes, a verified TalentCIR certificate on completion.",
+  },
+  {
+    q: "Can I ask doubts during the course?",
+    a: "Yes, through the Q&A section and live doubt sessions.",
+  },
+  {
+    q: "How long will I have access?",
+    a: "You get lifetime access, including future updates.",
+  },
+  {
+    q: "Is the course updated with the latest tools?",
+    a: "Content is refreshed regularly as the agent ecosystem evolves.",
+  },
 ];
 
-const fallbackModules = [
-  { t: "Introduction to AI Agents", l: 3, d: "45 mins", items: ["What makes an agent", "Agents vs. chatbots", "Course setup"] },
-  { t: "LLM Fundamentals for Engineers", l: 4, d: "1 hr 20 mins", items: ["Tokens & context", "Prompting patterns", "Structured outputs", "Model selection"] },
-  { t: "Tool Use & Function Calling", l: 5, d: "1 hr 30 mins", items: ["Defining tools", "Error handling", "Parallel calls", "Tool design", "Mini project"] },
-  { t: "Model Context Protocol (MCP)", l: 5, d: "1 hr 45 mins", items: ["MCP architecture", "Building an MCP server", "Resources & prompts", "Auth", "Project"] },
-  { t: "Memory & Retrieval (RAG)", l: 4, d: "1 hr 15 mins", items: ["Embeddings", "Vector stores", "Long-term memory", "Project"] },
-  { t: "Multi-Agent Orchestration", l: 5, d: "1 hr 40 mins", items: ["Planner–executor", "LangGraph", "Handoffs", "State", "Project"] },
-  { t: "Evaluation & Observability", l: 4, d: "1 hr 10 mins", items: ["Eval sets", "Tracing", "Cost & latency", "Regression tests"] },
-  { t: "Deploying Agents to Production", l: 4, d: "1 hr 15 mins", items: ["APIs & queues", "Guardrails", "Scaling", "Security"] },
-  { t: "Capstone: Build Your Own Agent", l: 4, d: "1 hr 30 mins", items: ["Scoping", "Build", "Evaluate", "Present"] },
-  { t: "Bonus: Career & Interview Guidance", l: 3, d: "45 mins", items: ["Portfolio", "Interview prep", "Freelancing"] },
-];
-
-const tools = ["OpenAI", "Claude", "Gemini", "LangChain", "LangGraph", "MCP", "Pinecone", "Hugging Face", "Python", "FastAPI", "Docker", "GitHub"];
-
-const reviews = [
-  { n: "Ananya Gupta", a: "https://randomuser.me/api/portraits/women/12.jpg", w: "2 weeks ago", t: "The MCP module alone was worth it. I shipped my first internal agent at work within a month." },
-  { n: "Rahul Mehta", a: "https://randomuser.me/api/portraits/men/14.jpg", w: "1 month ago", t: "Very well structured. Projects build on each other, so by the capstone everything clicks." },
-  { n: "Sneha Iyer", a: "https://randomuser.me/api/portraits/women/65.jpg", w: "2 months ago", t: "Clear explanations and up-to-date content. The evaluation section is rare in other courses." },
-];
-
-const faqs = [
-  { q: "Do I need prior AI experience?", a: "Basic Python is enough. We cover LLM fundamentals from the start." },
-  { q: "Are the projects included in the course?", a: "Yes, all hands-on projects come with starter code and walkthroughs." },
-  { q: "Will I get a certificate?", a: "Yes, completing 100% of modules issues a verified TalentCIR certificate directly onto your profile." },
-  { q: "Can I ask doubts during the course?", a: "Yes, through the Q&A section and live mentor sessions." },
-  { q: "How long will I have access?", a: "You get lifetime access, including future updates." },
-  { q: "Is the course updated with the latest tools?", a: "Content is refreshed regularly as the ecosystem evolves." },
-];
+const languageLabels: Record<string, string> = {
+  EN: "English",
+  HI: "Hindi",
+  TA: "Tamil",
+  TE: "Telugu",
+};
 
 const Stars = ({ v, size = "h-4 w-4" }: { v: number; size?: string }) => (
-  <div className="flex items-center gap-0.5">
+  <div className="flex items-center gap-0.5" aria-hidden="true">
     {Array.from({ length: 5 }).map((_, i) => (
-      <Star key={i} className={cn(size, i < Math.round(v) ? "fill-[hsl(33,100%,50%)] text-[hsl(33,100%,50%)]" : "text-muted")} />
+      <Star
+        key={i}
+        className={cn(size, i < Math.round(v) ? "fill-warning text-warning" : "text-muted")}
+      />
     ))}
   </div>
 );
@@ -116,23 +325,32 @@ const Stars = ({ v, size = "h-4 w-4" }: { v: number; size?: string }) => (
 type LiveCourseDetail = Awaited<ReturnType<typeof fetchCourseBySlug>>;
 
 const CourseDetail = () => {
-  const { slug = "ai-engineer-agentic-track" } = useParams<{ slug?: string }>();
+  const { slug, courseId } = useParams<{ slug?: string; courseId?: string }>();
+  const activeSlug = slug ?? courseId ?? "ai-engineer-agentic-track";
+  const catalogueCourse = findLearningCourse(activeSlug);
   const navigate = useNavigate();
   const { user } = useSupabaseUser();
-  const [open, setOpen] = useState<number | null>(0);
-  const [faq, setFaq] = useState<number | null>(null);
-  const [allOpen, setAllOpen] = useState(false);
+
+  const [previewTitle, setPreviewTitle] = useState<string | null>(null);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const [liveCourse, setLiveCourse] = useState<LiveCourseDetail>(null);
   const [enrollment, setEnrollment] = useState<Enrollment | null>(null);
   const [walletBalance, setWalletBalance] = useState(0);
   const [busyAction, setBusyAction] = useState<string | null>(null);
 
+  const dbSlug =
+    activeSlug === "digital-marketing-with-ai-tools" ? "digital-marketing-with-ai" : activeSlug;
+
   const loadCourseState = useCallback(async () => {
+    if (!user) {
+      setEnrollment(null);
+      return;
+    }
     try {
-      const c = await fetchCourseBySlug(slug);
+      const c = await fetchCourseBySlug(dbSlug);
       setLiveCourse(c);
-      if (user && c) {
+      if (c) {
         const [enrs, wal] = await Promise.all([
           fetchMyEnrollments().catch(() => [] as Enrollment[]),
           fetchWallet().catch(() => null),
@@ -143,37 +361,121 @@ const CourseDetail = () => {
         setEnrollment(null);
       }
     } catch {
-      // Keep static fallback if offline
+      // Keep static catalogue fallback if offline
     }
-  }, [slug, user]);
+  }, [dbSlug, user]);
 
   useEffect(() => {
     void loadCourseState();
   }, [loadCourseState]);
 
-  const priceNum = liveCourse ? Number(liveCourse.price_inr) : 0;
-  const origPriceNum = liveCourse?.original_price_inr ? Number(liveCourse.original_price_inr) : 3999;
-  const discountPct =
-    origPriceNum > priceNum && origPriceNum > 0
-      ? `${Math.round(((origPriceNum - priceNum) / origPriceNum) * 100)}% OFF`
-      : defaultCourse.discount;
+  if (!catalogueCourse && activeSlug !== "ai-engineer-agentic-track") {
+    return <NotFound />;
+  }
 
-  const course = {
-    title: liveCourse?.title ?? defaultCourse.title,
-    subtitle: liveCourse?.subtitle ?? defaultCourse.subtitle,
-    description: defaultCourse.description,
-    instructor: liveCourse?.instructor_name ?? defaultCourse.instructor,
-    role: defaultCourse.role,
-    rating: liveCourse?.rating ? Number(liveCourse.rating) : defaultCourse.rating,
-    ratings: defaultCourse.ratings,
-    learners: liveCourse?.learners_count ? Number(liveCourse.learners_count).toLocaleString("en-IN") : defaultCourse.learners,
-    price: liveCourse ? (priceNum === 0 ? "Free" : `₹${priceNum.toLocaleString("en-IN")}`) : defaultCourse.price,
-    originalPrice: `₹${origPriceNum.toLocaleString("en-IN")}`,
-    discount: discountPct,
-    category: liveCourse?.category ?? defaultCourse.category,
-    level: liveCourse?.level ?? defaultCourse.level,
-    tags: liveCourse?.skills && liveCourse.skills.length > 0 ? liveCourse.skills : defaultCourse.tags,
-  };
+  const course = catalogueCourse
+    ? {
+        ...catalogueCourse,
+        ratings: catalogueCourse.learners,
+        discount:
+          catalogueCourse.price === "Free"
+            ? "Free Course"
+            : `${Math.round(
+                (1 -
+                  Number(catalogueCourse.price.replace(/[^0-9]/g, "")) /
+                    Number(catalogueCourse.originalPrice.replace(/[^0-9]/g, ""))) *
+                  100,
+              )}% OFF`,
+      }
+    : defaultAiTrackCourse;
+
+  const heroImage = catalogueCourse?.image ?? defaultCourseImage;
+
+  const heroStats = catalogueCourse
+    ? [
+        {
+          icon: Clock,
+          label: "Course Duration",
+          value: catalogueCourse.duration.replace("hrs", "Hours"),
+        },
+        {
+          icon: LayoutTemplate,
+          label: "Advanced Modules",
+          value: `${catalogueCourse.modules.length} Modules`,
+        },
+        {
+          icon: Wrench,
+          label: "Industry Tools",
+          value: `${catalogueCourse.toolNames.length} Tools`,
+        },
+      ]
+    : defaultHeroStats;
+
+  const tools: CourseToolBadge[] = catalogueCourse
+    ? catalogueCourse.toolNames.map((name) => ({
+        name,
+        ...(courseToolIconMap[name] ?? {}),
+      }))
+    : defaultAiTrackTools;
+
+  const resources = catalogueCourse
+    ? defaultCourseResources.map((item) => ({
+        ...item,
+        sub:
+          item.title === "Mock Interview Videos"
+            ? `Practise interview questions for ${catalogueCourse.subject}.`
+            : item.title === "Blueprints & Templates"
+              ? `Apply templates to build ${catalogueCourse.project}.`
+              : item.title === "Practice Tests"
+                ? `Check your understanding of ${catalogueCourse.tags.slice(0, 3).join(", ")}.`
+                : item.title === "Expert Office Hours"
+                  ? `Discuss your ${catalogueCourse.subject} questions with mentors.`
+                  : item.sub,
+      }))
+    : defaultCourseResources;
+
+  const faqs = catalogueCourse
+    ? [
+        { q: "What do I need before starting?", a: catalogueCourse.prerequisites },
+        {
+          q: "What will I build during this course?",
+          a: `The course exercises lead to ${catalogueCourse.project}. You will document your approach and review your work against the learning goals.`,
+        },
+        {
+          q: "Which tools will I practise with?",
+          a: `You will work with ${catalogueCourse.toolNames.join(", ")}. Some optional services may require their own accounts or paid plans.`,
+        },
+        {
+          q: "How long is the course?",
+          a: `The planned course duration is ${catalogueCourse.duration}, organised into ${catalogueCourse.modules.length} modules. Allow additional time for exercises and your project.`,
+        },
+        {
+          q: "Which languages are offered?",
+          a: `The listing includes ${catalogueCourse.languages.map((lang) => languageLabels[lang] ?? lang).join(", ")}. Recordings and availability will be confirmed before launch.`,
+        },
+        {
+          q: "Can I book a private expert session?",
+          a: `Use Available Slots to explore the sample ${catalogueCourse.subject} mentoring calendar. Live sessions are not yet bookable.`,
+        },
+      ]
+    : defaultFaqs;
+
+  const reviews = catalogueCourse
+    ? [
+        {
+          ...defaultReviews[0],
+          t: `The exercises helped me connect ${catalogueCourse.tags[0]} with ${catalogueCourse.tags[1]} and approach my project with more confidence.`,
+        },
+        {
+          ...defaultReviews[1],
+          t: `Building ${catalogueCourse.project} made the lessons feel practical. The step-by-step structure helped me organise my work.`,
+        },
+        {
+          ...defaultReviews[2],
+          t: `I liked the clear explanations of ${catalogueCourse.tags[2]} and the opportunities to practise before moving to the next module.`,
+        },
+      ]
+    : defaultReviews;
 
   const sortedLiveModules = liveCourse?.lms_modules
     ? liveCourse.lms_modules.slice().sort((a, b) => a.position - b.position)
@@ -189,10 +491,12 @@ const CourseDetail = () => {
       return;
     }
     if (!liveCourse) {
+      toast.info(`${course.title} enrolment is opening soon. Explore your active courses in Talento Pro.`);
       navigate("/talento-pro");
       return;
     }
 
+    const priceNum = Number(liveCourse.price_inr);
     setBusyAction("enroll");
     try {
       let orderId: string | undefined;
@@ -236,7 +540,7 @@ const CourseDetail = () => {
       toast.success(
         updated.status === "completed"
           ? "Course completed! Verified certificate added to your profile."
-          : `Module completed (${Math.round(Number(updated.progress_pct))}% progress).`
+          : `Module completed (${Math.round(Number(updated.progress_pct))}% progress).`,
       );
     } catch (err) {
       toast.error(backendErrorMessage(err));
@@ -245,355 +549,445 @@ const CourseDetail = () => {
     }
   };
 
+  const handleAddToCart = () => {
+    if (!user) {
+      navigate("/auth?mode=signup");
+      return;
+    }
+    void handleEnroll();
+  };
+
+  const handleWriteReview = () => {
+    if (!user) {
+      navigate("/auth?mode=signup");
+      return;
+    }
+    toast.info("Complete at least one module in your enrolled course to submit a verified review.");
+  };
+
   return (
     <>
       <Helmet>
         <title>{course.title} | TalentCIR Learning</title>
         <meta name="description" content={course.description} />
       </Helmet>
+
       <Layout>
-        {/* Hero */}
-        <section className="bg-[hsl(var(--cream))] pt-24 md:pt-28 pb-10">
+        <section className="bg-cream pt-24 md:pt-28 pb-10">
           <div className="container px-4 md:px-6">
-            <nav className="text-xs text-muted-foreground mb-6 flex gap-1.5 flex-wrap">
-              <Link to="/" className="hover:text-primary">Home</Link><span>›</span>
-              <Link to="/learning" className="hover:text-primary">Learning</Link><span>›</span>
-              <span>{course.category}</span><span>›</span>
+            {catalogueCourse && (
+              <p className="mb-4 text-xs text-muted-foreground">
+                Sample course outline and instructor profile. Course recordings, enrolment and mentor availability are
+                pending confirmation.
+              </p>
+            )}
+
+            <nav aria-label="Breadcrumb" className="text-xs text-muted-foreground mb-6 flex gap-1.5 flex-wrap">
+              <Link to="/" className="hover:text-primary">
+                Home
+              </Link>
+              <span aria-hidden="true">›</span>
+              <Link to="/learning" className="hover:text-primary">
+                Learning
+              </Link>
+              <span aria-hidden="true">›</span>
+              <span>{catalogueCourse?.category ?? "AI & ML"}</span>
+              <span aria-hidden="true">›</span>
               <span className="text-foreground">{course.title}</span>
             </nav>
 
-            <div className="grid lg:grid-cols-[1.15fr_0.9fr_0.85fr] gap-8 items-start">
+            <div className="grid lg:grid-cols-[1.15fr_0.9fr] gap-8 lg:items-stretch">
               <div>
                 <div className="flex items-center gap-3 mb-4">
-                  <span className="text-xs font-bold bg-primary/10 text-primary px-2.5 py-1 rounded-full">Bestseller</span>
+                  <span className="text-xs font-bold bg-primary/10 text-primary px-2.5 py-1 rounded-full">
+                    {catalogueCourse && !catalogueCourse.bestseller ? catalogueCourse.category : "Bestseller"}
+                  </span>
                   <span className="text-xs text-muted-foreground">{course.learners} learners enrolled</span>
                 </div>
+
                 <h1 className="text-4xl md:text-5xl font-bold font-display leading-[1.08] mb-2">{course.title}</h1>
                 <p className="text-xl md:text-2xl font-display font-semibold text-primary mb-4">{course.subtitle}</p>
                 <p className="text-muted-foreground mb-6 max-w-xl">{course.description}</p>
+
                 <div className="flex items-center gap-3 mb-5">
-                  <img src={expertImg} alt={course.instructor} className="h-11 w-11 rounded-full object-cover object-top" />
+                  <img
+                    src={heroImage}
+                    alt={course.instructor}
+                    className="h-11 w-11 rounded-full object-cover object-top"
+                  />
                   <div>
                     <p className="font-semibold text-sm">{course.instructor}</p>
                     <p className="text-xs text-muted-foreground">{course.role}</p>
                   </div>
                 </div>
+
                 <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm mb-5">
-                  <span className="flex items-center gap-1.5"><Stars v={course.rating} /> <b>{course.rating}</b> <span className="text-muted-foreground">({course.ratings} reviews)</span></span>
-                  <span className="flex items-center gap-1.5 text-muted-foreground"><Users className="h-4 w-4" />{course.learners} learners</span>
-                  <span className="flex items-center gap-1.5 text-muted-foreground capitalize"><BarChart3 className="h-4 w-4" />{course.level}</span>
+                  <span className="flex items-center gap-1.5">
+                    <Stars v={course.rating} /> <b>{course.rating}</b>{" "}
+                    <span className="text-muted-foreground">({course.ratings} reviews)</span>
+                  </span>
+                  <span className="flex items-center gap-1.5 text-muted-foreground">
+                    <Users className="h-4 w-4" />
+                    {course.learners} learners
+                  </span>
+                  <span className="flex items-center gap-1.5 text-muted-foreground">
+                    <BarChart3 className="h-4 w-4" />
+                    {catalogueCourse?.level ?? "Intermediate"}
+                  </span>
                 </div>
+
                 <div className="flex flex-wrap gap-2">
-                  {course.tags.map((t) => <span key={t} className="text-xs bg-card border rounded-full px-3 py-1">{t}</span>)}
+                  {course.tags.map((tag) => (
+                    <span key={tag} className="text-xs bg-card border rounded-full px-3 py-1">
+                      {tag}
+                    </span>
+                  ))}
                 </div>
-              </div>
 
-              <div className="relative rounded-2xl overflow-hidden aspect-[4/5] bg-muted shadow-lg">
-                <img src={expertImg} alt={`${course.instructor} course preview`} className="w-full h-full object-cover object-top" />
-                <button
-                  type="button"
-                  onClick={() => document.getElementById("course-curriculum")?.scrollIntoView({ behavior: "smooth" })}
-                  className="absolute inset-0 m-auto h-16 w-16 rounded-full bg-card/95 flex items-center justify-center shadow-xl hover:scale-105 transition"
-                  aria-label="Preview course curriculum"
-                >
-                  <Play className="h-6 w-6 text-primary fill-primary ml-1" />
-                </button>
-                <span className="absolute bottom-4 left-4 text-xs font-medium bg-foreground/70 text-background rounded-full px-3 py-1.5 flex items-center gap-1.5">
-                  <PlayCircle className="h-3.5 w-3.5" /> Preview Course
-                </span>
-              </div>
-
-              <div className="rounded-2xl border bg-card p-6 shadow-sm lg:sticky lg:top-24">
-                <div className="flex items-center gap-3 mb-1">
-                  <span className="text-3xl font-bold font-display">{course.price}</span>
-                  {course.price !== course.originalPrice && (
-                    <span className="text-muted-foreground line-through">{course.originalPrice}</span>
-                  )}
-                  <span className="text-xs font-bold bg-primary/10 text-primary px-2 py-1 rounded">{course.discount}</span>
-                </div>
-                <p className="text-xs text-primary flex items-center gap-1 mb-5">
-                  <Clock className="h-3.5 w-3.5" />
-                  {enrollment
-                    ? enrollment.status === "completed"
-                      ? "Completed · Verified certificate issued"
-                      : `${Math.round(Number(enrollment.progress_pct))}% completed`
-                    : priceNum === 0
-                      ? "Free instant enrollment"
-                      : "Instant lifetime access (+18% GST at checkout)"}
-                </p>
-
-                {enrollment && (
-                  <div className="mb-4">
-                    <Progress value={Number(enrollment.progress_pct)} className="h-2" />
-                  </div>
-                )}
-
-                <Button
-                  type="button"
-                  disabled={busyAction === "enroll"}
-                  onClick={handleEnroll}
-                  className="w-full mb-3 gap-2"
-                  size="lg"
-                >
-                  {busyAction === "enroll" && <Loader2 className="h-4 w-4 animate-spin" />}
-                  {enrollment
-                    ? enrollment.status === "completed"
-                      ? "Review Curriculum"
-                      : "Continue Learning"
-                    : priceNum === 0
-                      ? "Enroll for Free"
-                      : `Enroll Now (${course.price})`}
-                </Button>
-
-                {user ? (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => navigate("/talento-pro")}
-                    className="w-full gap-2 mb-6"
-                    size="lg"
-                  >
-                    <Award className="h-4 w-4" /> Open Learning Dashboard
-                  </Button>
-                ) : (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => navigate("/auth")}
-                    className="w-full gap-2 mb-6"
-                    size="lg"
-                  >
-                    <ShoppingCart className="h-4 w-4" /> Sign In to Track Progress
-                  </Button>
-                )}
-
-                <ul className="space-y-3">
-                  {includes.map(({ icon: I, label }) => (
-                    <li key={label} className="flex items-center gap-3 text-sm"><I className="h-4 w-4 text-muted-foreground" />{label}</li>
+                <ul className="mt-8 flex flex-wrap gap-x-7 gap-y-5 border-t border-border/70 pt-6" role="list">
+                  {heroStats.map(({ icon: Icon, value, label }) => (
+                    <li key={label} className="flex max-w-[190px] items-start gap-2.5">
+                      <Icon className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                      <div>
+                        <strong className="block text-sm font-semibold">{label}</strong>
+                        <span className="mt-0.5 block text-[12.5px] text-muted-foreground">{value}</span>
+                      </div>
+                    </li>
                   ))}
                 </ul>
               </div>
+
+              <div className="relative rounded-2xl overflow-hidden aspect-[4/3] lg:aspect-auto lg:h-full bg-muted shadow-lg">
+                <img
+                  src={heroImage}
+                  alt={`${course.instructor} course preview`}
+                  className="w-full h-full object-cover object-top"
+                />
+                <Button
+                  onClick={() => setPreviewTitle("Course overview")}
+                  variant="secondary"
+                  size="icon"
+                  className="absolute inset-0 m-auto h-16 w-16 rounded-full bg-card/95 flex items-center justify-center shadow-xl hover:scale-105 transition"
+                  aria-label="Preview course"
+                >
+                  <Play className="h-6 w-6 text-primary fill-primary ml-1" />
+                </Button>
+                <span className="absolute bottom-4 left-4 text-xs font-medium bg-foreground/70 text-background rounded-full px-3 py-1.5 flex items-center gap-1.5">
+                  <CirclePlay className="h-3.5 w-3.5" /> Preview Course
+                </span>
+              </div>
             </div>
 
-            <div className="mt-10 rounded-2xl border bg-card grid grid-cols-2 md:grid-cols-5 gap-6 p-6">
-              {highlights.map(({ icon: I, title, sub }) => (
-                <div key={title} className="flex items-center gap-3">
-                  <I className="h-7 w-7 text-primary shrink-0" />
-                  <div><p className="text-sm font-semibold">{title}</p><p className="text-xs text-muted-foreground">{sub}</p></div>
+            <div className="mt-10 rounded-2xl border bg-card p-6 md:p-7 shadow-sm flex flex-col gap-6 lg:flex-row lg:items-center">
+              <div className="flex flex-col sm:flex-row gap-3 shrink-0">
+                {user ? (
+                  <Button
+                    type="button"
+                    size="lg"
+                    disabled={busyAction === "enroll"}
+                    onClick={() => void handleEnroll()}
+                    className="gap-2"
+                  >
+                    {busyAction === "enroll" && <Loader2 className="h-4 w-4 animate-spin" />}
+                    {enrollment
+                      ? enrollment.status === "completed"
+                        ? "Review Curriculum"
+                        : "Continue Learning"
+                      : "Enroll Now"}
+                  </Button>
+                ) : (
+                  <Button asChild size="lg">
+                    <Link to="/auth?mode=signup">Enroll Now</Link>
+                  </Button>
+                )}
+
+                <Button variant="outline" size="lg" className="gap-2" onClick={handleAddToCart}>
+                  <ShoppingCart className="h-4 w-4" /> Add to Cart
+                </Button>
+              </div>
+
+              {enrollment && (
+                <div className="flex-1 max-w-xs">
+                  <p className="text-xs font-medium text-muted-foreground mb-1.5">
+                    {enrollment.status === "completed"
+                      ? "Completed · Verified certificate issued"
+                      : `${Math.round(Number(enrollment.progress_pct))}% completed`}
+                  </p>
+                  <Progress value={Number(enrollment.progress_pct)} className="h-2" />
                 </div>
-              ))}
+              )}
+
+              <div className="lg:text-right lg:ml-auto shrink-0">
+                <div className="flex items-center gap-3 lg:justify-end mb-1">
+                  <span className="text-3xl font-bold font-display">{course.price}</span>
+                  <span className="text-muted-foreground line-through">{course.originalPrice}</span>
+                  <span className="text-xs font-bold bg-primary/10 text-primary px-2 py-1 rounded">
+                    {course.discount}
+                  </span>
+                </div>
+                <p className="text-xs text-primary flex items-center gap-1 lg:justify-end">
+                  <Clock className="h-3.5 w-3.5" />{" "}
+                  {catalogueCourse ? "Listed course price · enrolment opening soon" : "Offer ends in 2 days"}
+                </p>
+              </div>
             </div>
           </div>
         </section>
 
         <div className="container px-4 md:px-6 py-14 space-y-16">
-          {/* What you'll learn */}
-          <section className="grid lg:grid-cols-[1.6fr_1fr] gap-8">
-            <div>
-              <h2 className="text-3xl font-bold font-display mb-2">What You'll Learn</h2>
-              <p className="text-muted-foreground mb-6">Gain in-demand skills and hands-on experience building production-ready projects.</p>
-              <ul className="grid sm:grid-cols-2 gap-4">
-                {outcomes.map((o) => <li key={o} className="flex gap-2.5 text-sm"><CheckCircle2 className="h-5 w-5 text-primary shrink-0" />{o}</li>)}
-              </ul>
+          {/* What You Get With This Course */}
+          <section>
+            <div className="text-center max-w-2xl mx-auto mb-10">
+              <h2 className="text-3xl md:text-4xl font-bold font-display">
+                What You Get With
+                <br />
+                <span className="text-primary">This Course</span>
+              </h2>
+              <p className="text-muted-foreground mt-3">
+                Every course comes packed with 12 career-accelerating resources, AI tools, and 1:1 mentor support — all
+                unlocked from day one.
+              </p>
             </div>
-            <div className="rounded-2xl bg-primary/5 border border-primary/10 p-6">
-              <h3 className="font-bold font-display mb-4">Who is this course for?</h3>
-              <ul className="space-y-4">
-                {audience.map((a) => <li key={a} className="flex gap-3 text-sm"><UserRound className="h-5 w-5 text-primary shrink-0" />{a}</li>)}
-              </ul>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {resources.map((item, idx) => (
+                <div
+                  key={item.title}
+                  className="rounded-2xl border bg-card p-5 flex flex-col gap-3 hover:border-primary/40 transition"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="h-10 w-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                      <item.icon className="h-5 w-5" />
+                    </span>
+                    <span className="text-[10px] font-semibold text-muted-foreground/70 tabular-nums">
+                      {String(idx + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary/70 mb-1">
+                      {item.eyebrow}
+                    </p>
+                    <p className="text-sm font-semibold leading-snug">{item.title}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{item.sub}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </section>
 
           {/* Curriculum */}
-          <section id="course-curriculum">
-            <div className="flex items-end justify-between mb-5 gap-4">
-              <div>
-                <h2 className="text-3xl font-bold font-display mb-1">Course Curriculum</h2>
-                <p className="text-sm text-muted-foreground">
-                  {enrollment && sortedLiveModules.length > 0
-                    ? `${sortedLiveModules.length} tracked modules • Complete all modules to earn your verified certificate`
-                    : "10 modules • 41 lessons • 14+ hours of content"}
-                </p>
-              </div>
-              {!(enrollment && sortedLiveModules.length > 0) && (
-                <button type="button" onClick={() => setAllOpen(!allOpen)} className="text-sm font-medium text-primary hover:underline">
-                  {allOpen ? "Collapse All" : "Expand All"}
-                </button>
-              )}
-            </div>
+          <CourseCurriculum
+            key={`curriculum-${activeSlug}`}
+            modules={catalogueCourse?.modules}
+            onPreview={setPreviewTitle}
+            enrollment={enrollment}
+            liveModules={sortedLiveModules}
+            busyAction={busyAction}
+            onCompleteModule={(moduleId) => void handleCompleteModule(moduleId)}
+          />
 
-            {enrollment && sortedLiveModules.length > 0 ? (
-              <div className="space-y-2.5">
-                {sortedLiveModules.map((m, i) => {
-                  const isDone = enrollment?.completed_module_ids.includes(m.id) ?? false;
-                  const isLocked = !enrollment && !m.is_preview;
-                  const mins = m.duration_sec ? Math.max(1, Math.round(m.duration_sec / 60)) : 20;
-                  return (
-                    <div
-                      key={m.id}
-                      className="rounded-xl border bg-card px-4 py-3.5 flex flex-wrap items-center justify-between gap-4"
-                    >
-                      <div className="flex items-center gap-3.5 min-w-0">
-                        <span
-                          className={cn(
-                            "text-xs font-bold rounded-md h-8 w-8 flex items-center justify-center shrink-0",
-                            isDone ? "bg-emerald-500 text-white" : "text-primary bg-primary/10"
-                          )}
-                        >
-                          {isDone ? <CheckCircle2 className="h-4 w-4" /> : String(i + 1).padStart(2, "0")}
-                        </span>
-                        <div className="min-w-0">
-                          <p className="font-semibold text-sm truncate">{m.title}</p>
-                          <p className="text-xs text-muted-foreground capitalize">
-                            {m.kind} • {mins} mins{m.is_preview ? " • Free Preview" : ""}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2 ml-auto">
-                        {isDone ? (
-                          <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-500/10 px-2.5 py-1 rounded-full">
-                            <CheckCircle2 className="h-3.5 w-3.5" /> Completed
-                          </span>
-                        ) : enrollment ? (
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="outline"
-                            disabled={busyAction === `mod-${m.id}`}
-                            onClick={() => handleCompleteModule(m.id)}
-                            className="gap-1.5"
-                          >
-                            {busyAction === `mod-${m.id}` ? (
-                              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                            ) : (
-                              <Play className="h-3.5 w-3.5" />
-                            )}
-                            Mark Complete
-                          </Button>
-                        ) : m.is_preview ? (
-                          <span className="text-xs font-semibold text-primary">Preview Unlocked</span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                            <Lock className="h-3.5 w-3.5" /> Enroll to unlock
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="space-y-2">
-                {fallbackModules.map((m, i) => {
-                  const isOpen = allOpen || open === i;
-                  return (
-                    <div key={m.t} className="rounded-xl border bg-card">
-                      <button type="button" onClick={() => setOpen(open === i ? null : i)} className="w-full flex items-center gap-4 px-4 py-3.5 text-left">
-                        <span className="text-xs font-bold text-primary bg-primary/10 rounded-md h-8 w-8 flex items-center justify-center shrink-0">{String(i + 1).padStart(2, "0")}</span>
-                        <span className="flex-1 font-semibold text-sm">{m.t}</span>
-                        <span className="hidden sm:block text-xs text-muted-foreground">{m.l} lessons • {m.d}</span>
-                        <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
-                      </button>
-                      {isOpen && (
-                        <ul className="px-4 pb-4 pl-16 space-y-2">
-                          {m.items.map((it) => <li key={it} className="flex items-center gap-2 text-sm text-muted-foreground"><PlayCircle className="h-4 w-4" />{it}</li>)}
-                        </ul>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </section>
-
-          {/* Tools */}
+          {/* Tools You'll Work With */}
           <section>
             <h2 className="text-3xl font-bold font-display mb-1">Tools You'll Work With</h2>
-            <p className="text-muted-foreground mb-6">Hands-on experience with the tools used by leading engineering and analytics teams.</p>
+            <p className="text-muted-foreground mb-6">
+              {catalogueCourse
+                ? `Build practical ${catalogueCourse.subject} skills with these industry tools.`
+                : "Hands-on experience with the tools used by leading AI teams."}
+            </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-              {tools.map((t) => <div key={t} className="rounded-xl border bg-card py-4 text-center text-sm font-semibold hover:border-primary/40 transition">{t}</div>)}
-            </div>
-          </section>
-
-          {/* Instructor */}
-          <section>
-            <h2 className="text-3xl font-bold font-display mb-6">Meet Your Instructor</h2>
-            <div className="grid lg:grid-cols-[1.7fr_1fr] gap-6">
-              <div className="flex flex-col sm:flex-row gap-6">
-                <img src={expertImg} alt={course.instructor} className="w-full sm:w-48 h-56 rounded-2xl object-cover object-top" />
-                <div>
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold bg-primary/10 text-primary px-2.5 py-1 rounded-full mb-2"><Crown className="h-3.5 w-3.5" />Top Instructor</span>
-                  <h3 className="text-2xl font-bold font-display">{course.instructor}</h3>
-                  <p className="text-sm text-muted-foreground mb-4">{course.role}</p>
-                  <div className="flex gap-8 mb-4">
-                    <div><p className="font-bold">1,20,000+</p><p className="text-xs text-muted-foreground">Students</p></div>
-                    <div><p className="font-bold">10+ Years</p><p className="text-xs text-muted-foreground">Experience</p></div>
-                    <div><p className="font-bold">{course.rating}</p><p className="text-xs text-muted-foreground">Instructor rating</p></div>
-                  </div>
-                  <p className="text-sm text-muted-foreground">Industry practitioner who has built production systems at scale and mentored over 1,20,000 learners and engineers across India.</p>
-                </div>
-              </div>
-              <div className="rounded-2xl bg-primary/5 border border-primary/10 p-5 space-y-3">
-                <h4 className="font-semibold text-sm">What students say</h4>
-                {reviews.slice(0, 2).map((r) => (
-                  <div key={r.n} className="rounded-xl bg-card p-4 text-sm">
-                    <p className="text-muted-foreground mb-2">"{r.t}"</p>
-                    <div className="flex items-center gap-2"><img src={r.a} alt="" className="h-6 w-6 rounded-full" /><span className="font-medium text-xs">{r.n}</span></div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* Reviews */}
-          <section>
-            <div className="flex items-end justify-between mb-6 gap-4">
-              <div>
-                <h2 className="text-3xl font-bold font-display mb-1">Student Reviews</h2>
-                <div className="flex items-center gap-2"><span className="text-3xl font-bold">{course.rating}</span><span className="text-sm text-muted-foreground">out of 5</span><Stars v={course.rating} /><span className="text-sm text-muted-foreground">({course.ratings} reviews)</span></div>
-              </div>
-            </div>
-            <div className="grid md:grid-cols-3 gap-4">
-              {reviews.map((r) => (
-                <div key={r.n} className="rounded-2xl border bg-card p-5">
-                  <div className="flex items-center gap-3 mb-3">
-                    <img src={r.a} alt={r.n} className="h-10 w-10 rounded-full" />
-                    <div><p className="font-semibold text-sm">{r.n}</p><div className="flex items-center gap-2"><Stars v={5} size="h-3 w-3" /><span className="text-xs text-muted-foreground">{r.w}</span></div></div>
-                  </div>
-                  <p className="text-sm text-muted-foreground">{r.t}</p>
+              {tools.map((tool) => (
+                <div
+                  key={tool.name}
+                  className="rounded-xl border bg-card py-4 px-3 flex items-center justify-center gap-2.5 hover:border-primary/40 transition"
+                >
+                  {tool.img ? (
+                    <img src={tool.img} alt={tool.name} className="h-5 w-auto shrink-0" />
+                  ) : (
+                    tool.icon && <tool.icon className="h-5 w-5 shrink-0" />
+                  )}
+                  <span className={cn("text-sm font-semibold whitespace-nowrap", tool.hideName && "sr-only")}>
+                    {tool.name}
+                  </span>
                 </div>
               ))}
             </div>
           </section>
 
-          {/* FAQ */}
+          {/* Meet Your Instructor */}
+          <section>
+            <h2 className="text-3xl font-bold font-display mb-6">Meet Your Instructor</h2>
+            <div className="grid lg:grid-cols-[minmax(0,320px)_1fr] gap-10 items-stretch">
+              <div className="relative mx-auto w-full max-w-sm lg:max-w-none">
+                <img
+                  src={heroImage}
+                  alt={course.instructor}
+                  className="relative w-full h-80 lg:h-full rounded-2xl object-cover object-top"
+                />
+                <div className="absolute top-4 left-4 rounded-full bg-card/95 border border-border shadow-sm px-3 py-1.5 inline-flex items-center gap-1.5 text-xs font-semibold">
+                  <Crown className="h-3.5 w-3.5 text-primary" /> Top Instructor
+                </div>
+                <div className="absolute bottom-4 right-4 rounded-xl bg-card/95 border border-border shadow-sm px-3 py-2 flex items-center gap-2">
+                  <Stars v={course.rating} size="h-3.5 w-3.5" />
+                  <span className="text-xs font-bold">{course.rating}</span>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-2xl font-bold font-display">{course.instructor}</h3>
+                <p className="text-sm text-primary font-semibold mb-4">{course.role}</p>
+                <p className="text-muted-foreground leading-relaxed mb-6 max-w-xl">
+                  {catalogueCourse?.bio ??
+                    "Neha has spent over a decade building ML systems and now leads applied AI work on agentic products. She has trained more than 1,20,000 students and engineers worldwide. Before teaching full time, she shipped search and recommendation systems used by millions of people, and has taken LLM-powered features from prototype to production with teams of all sizes. Her sessions are built around the mistakes she has watched real teams make, so you learn what actually holds up once your agent is live in front of users — not just what works in a demo."}
+                </p>
+
+                <div className="grid grid-cols-3 gap-3 max-w-xl">
+                  <div className="rounded-xl bg-card border border-border p-4">
+                    <Users className="h-5 w-5 text-primary mb-2" />
+                    <p className="text-lg font-bold leading-tight">{course.learners}</p>
+                    <p className="text-xs text-muted-foreground">Students taught</p>
+                  </div>
+                  <div className="rounded-xl bg-card border border-border p-4">
+                    <Clock className="h-5 w-5 text-primary mb-2" />
+                    <p className="text-lg font-bold leading-tight">{catalogueCourse ? "Practical" : "10+ Years"}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {catalogueCourse ? "Course-led guidance" : "Industry experience"}
+                    </p>
+                  </div>
+                  <div className="rounded-xl bg-card border border-border p-4">
+                    <Star className="h-5 w-5 text-primary mb-2" />
+                    <p className="text-lg font-bold leading-tight">{course.rating} / 5</p>
+                    <p className="text-xs text-muted-foreground">Instructor rating</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Book Private Sessions with an Industry Expert */}
+          <ExpertBookingSection
+            key={`experts-${activeSlug}`}
+            expertRoles={catalogueCourse?.expertRoles}
+            subject={catalogueCourse?.subject}
+          />
+
+          {/* Student Reviews */}
+          <section>
+            <div className="flex flex-wrap items-end justify-between mb-6 gap-4">
+              <div>
+                <h2 className="text-3xl font-bold font-display mb-1">Student Reviews</h2>
+                {catalogueCourse && (
+                  <p className="text-xs text-muted-foreground mb-2">
+                    Illustrative learner feedback — not verified testimonials.
+                  </p>
+                )}
+                <div className="flex items-center gap-2">
+                  <span className="text-3xl font-bold">{course.rating}</span>
+                  <span className="text-sm text-muted-foreground">out of 5</span>
+                  <Stars v={course.rating} />
+                  <span className="text-sm text-muted-foreground">({course.ratings} reviews)</span>
+                </div>
+              </div>
+              <Button variant="outline" onClick={handleWriteReview}>
+                Write a Review
+              </Button>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-4">
+              {reviews.map((rev) => (
+                <div key={rev.n} className="rounded-2xl border bg-card p-5">
+                  <div className="flex items-center gap-3 mb-3">
+                    <img src={rev.a} alt={rev.n} className="h-10 w-10 rounded-full" />
+                    <div>
+                      <p className="font-semibold text-sm">{rev.n}</p>
+                      <div className="flex items-center gap-2">
+                        <Stars v={5} size="h-3 w-3" />
+                        <span className="text-xs text-muted-foreground">{rev.w}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{rev.t}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Frequently Asked Questions */}
           <section>
             <h2 className="text-3xl font-bold font-display mb-6">Frequently Asked Questions</h2>
             <div className="grid md:grid-cols-2 gap-3">
-              {faqs.map((f, i) => (
-                <div key={f.q} className="rounded-xl border bg-card">
-                  <button type="button" onClick={() => setFaq(faq === i ? null : i)} className="w-full flex items-center justify-between px-4 py-3.5 text-left text-sm font-medium">
-                    {f.q}<ChevronDown className={cn("h-4 w-4 shrink-0 transition-transform", faq === i && "rotate-180")} />
-                  </button>
-                  {faq === i && <p className="px-4 pb-4 text-sm text-muted-foreground">{f.a}</p>}
-                </div>
-              ))}
+              {faqs.map((item, idx) => {
+                const isOpen = openFaq === idx;
+                const answerId = `course-faq-${idx}`;
+                return (
+                  <div key={item.q} className="rounded-xl border bg-card">
+                    <Button
+                      variant="ghost"
+                      aria-expanded={isOpen}
+                      aria-controls={answerId}
+                      onClick={() => setOpenFaq(isOpen ? null : idx)}
+                      className="w-full flex items-center justify-between px-4 py-3.5 h-auto whitespace-normal text-left text-sm font-medium"
+                    >
+                      {item.q}
+                      <ChevronDown
+                        className={cn(
+                          "h-4 w-4 shrink-0 transition-transform motion-reduce:transition-none",
+                          isOpen && "rotate-180",
+                        )}
+                      />
+                    </Button>
+                    {isOpen && (
+                      <p id={answerId} className="px-4 pb-4 text-sm text-muted-foreground">
+                        {item.a}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </section>
 
-          {/* CTA */}
+          {/* Bottom CTA */}
           <section className="rounded-2xl bg-primary text-primary-foreground p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold font-display mb-2">Start Your Learning Journey Today</h2>
-              <p className="text-primary-foreground/80 max-w-xl">Learn from industry experts, build real projects and earn a verified certificate on your profile.</p>
+              <h2 className="text-2xl md:text-3xl font-bold font-display mb-2">
+                {catalogueCourse
+                  ? `Start Your ${catalogueCourse.category} Journey Today`
+                  : "Start Your AI Engineering Journey Today"}
+              </h2>
+              <p className="text-primary-foreground/80 max-w-xl">
+                {catalogueCourse
+                  ? `Build ${catalogueCourse.project} and take the next step in ${catalogueCourse.subject}.`
+                  : "Learn from industry experts, build real agents and take your career to the next level."}
+              </p>
             </div>
-            <Button type="button" onClick={handleEnroll} disabled={busyAction === "enroll"} variant="secondary" size="lg" className="gap-2 shrink-0">
-              {enrollment ? "Continue Learning" : "Enroll Now"} <ArrowRight className="h-4 w-4" />
-            </Button>
+            {user ? (
+              <Button
+                type="button"
+                variant="secondary"
+                size="lg"
+                disabled={busyAction === "enroll"}
+                onClick={() => void handleEnroll()}
+                className="gap-2 shrink-0"
+              >
+                {enrollment ? "Continue Learning" : "Enroll Now"} <ArrowRight className="h-4 w-4" />
+              </Button>
+            ) : (
+              <Button asChild variant="secondary" size="lg" className="gap-2 shrink-0">
+                <Link to="/auth?mode=signup">
+                  Enroll Now <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            )}
           </section>
         </div>
       </Layout>
+
+      <CoursePreviewDialog
+        title={previewTitle}
+        onClose={() => setPreviewTitle(null)}
+        videoUrl={previewVideoUrl}
+        courseName={course.title}
+      />
     </>
   );
 };

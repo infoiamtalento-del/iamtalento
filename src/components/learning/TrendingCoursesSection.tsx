@@ -1,41 +1,24 @@
 import { motion } from "framer-motion";
 import { Star, ArrowRight, TrendingUp, Clock, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import SectionBadge from "@/components/ui/section-badge";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { learningCourses } from "@/data/learningCourses";
 import { useSupabaseUser } from "@/hooks/useSupabaseUser";
 import { fetchCourses, fetchMyEnrollments, type Course, type Enrollment } from "@/services/candidate/platform";
 
-import expertImg1 from "@/assets/expert-course-1.jpg";
-import expertImg2 from "@/assets/expert-course-2.jpg";
-import expertImg3 from "@/assets/expert-course-3.jpg";
-import expertImg4 from "@/assets/expert-course-4.jpg";
-import expertFemale1 from "@/assets/experts/female-1.jpg";
-import expertFemale3 from "@/assets/experts/female-3.jpg";
-import expertMale1 from "@/assets/experts/male-1.jpg";
-import expertMale3 from "@/assets/experts/male-3.jpg";
-
 const categories = ["All", "AI & ML", "Data Science", "Marketing", "Development", "Design", "Finance"];
 
-const courses = [
-  { title: "AI for Non-Tech Professionals", category: "AI & ML", level: "Beginner", rating: 4.8, learners: "12,400", instructor: "Dr. Neha Sharma", image: expertFemale1, languages: ["EN", "HI"], duration: "8 hrs", price: "Free", originalPrice: "₹3,999", bestseller: true, courseSlug: "ai-engineer-agentic-track", slug: "/learning/courses/ai-engineer-agentic-track" },
-  { title: "Data Analytics Masterclass", category: "Data Science", level: "Intermediate", rating: 4.7, learners: "9,800", instructor: "Arjun Patel", image: expertMale1, languages: ["EN", "TA"], duration: "12 hrs", price: "₹799", originalPrice: "₹4,999", bestseller: false, courseSlug: "data-analytics-masterclass", slug: "/learning/courses/data-analytics-masterclass" },
-  { title: "Digital Marketing with AI Tools", category: "Marketing", level: "Beginner", rating: 4.9, learners: "15,200", instructor: "Kavitha Rajan", image: expertFemale3, languages: ["EN", "HI", "TE"], duration: "6 hrs", price: "₹499", originalPrice: "₹2,999", bestseller: true, courseSlug: "digital-marketing-with-ai", slug: "/learning/courses/digital-marketing-with-ai" },
-  { title: "Python for Job-Ready Developers", category: "Development", level: "Intermediate", rating: 4.6, learners: "7,300", instructor: "Vikram Desai", image: expertMale3, languages: ["EN"], duration: "15 hrs", price: "₹999", originalPrice: "₹5,999", bestseller: false, courseSlug: "ai-engineer-agentic-track", slug: "/learning/courses/ai-engineer-agentic-track" },
-  { title: "Product UI/UX & Figma Design Systems", category: "Design", level: "Intermediate", rating: 4.9, learners: "11,600", instructor: "Tanya Verma", image: expertImg2, languages: ["EN", "HI"], duration: "10 hrs", price: "₹649", originalPrice: "₹3,499", bestseller: true, courseSlug: "data-analytics-masterclass", slug: "/learning/courses/data-analytics-masterclass" },
-  { title: "Full-Stack React, Next.js & TypeScript", category: "Development", level: "Advanced", rating: 4.8, learners: "14,900", instructor: "Rohan Malhotra", image: expertImg3, languages: ["EN", "HI"], duration: "18 hrs", price: "₹899", originalPrice: "₹4,999", bestseller: true, courseSlug: "ai-engineer-agentic-track", slug: "/learning/courses/ai-engineer-agentic-track" },
-  { title: "Financial Modeling & Valuation Bootcamp", category: "Finance", level: "Intermediate", rating: 4.7, learners: "8,450", instructor: "CA Saurabh Jain", image: expertImg1, languages: ["EN"], duration: "14 hrs", price: "₹749", originalPrice: "₹4,499", bestseller: false, courseSlug: "data-analytics-masterclass", slug: "/learning/courses/data-analytics-masterclass" },
-  { title: "Generative AI & LLM Agents in Production", category: "AI & ML", level: "Advanced", rating: 4.9, learners: "18,300", instructor: "Dr. Priya Menon", image: expertImg4, languages: ["EN", "TA", "TE"], duration: "11 hrs", price: "₹699", originalPrice: "₹3,999", bestseller: true, courseSlug: "ai-engineer-agentic-track", slug: "/learning/courses/ai-engineer-agentic-track" },
-];
-
 const TrendingCoursesSection = () => {
-  const navigate = useNavigate();
   const { user } = useSupabaseUser();
   const [activeCategory, setActiveCategory] = useState("All");
   const [enrolledSlugs, setEnrolledSlugs] = useState<Record<string, string>>({});
-  const filtered = activeCategory === "All" ? courses : courses.filter((c) => c.category === activeCategory);
+  const filtered =
+    activeCategory === "All"
+      ? learningCourses
+      : learningCourses.filter((c) => c.category === activeCategory);
 
   useEffect(() => {
     if (!user) {
@@ -62,7 +45,8 @@ const TrendingCoursesSection = () => {
         <div className="text-center mb-8">
           <SectionBadge label="Trending Now" icon={TrendingUp} />
           <h2 className="text-3xl md:text-4xl font-bold font-display leading-[1.15] mb-3">
-            Explore Top Courses<br />
+            Explore Top Courses
+            <br />
             <span className="text-primary">Trending Now</span>
           </h2>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
@@ -71,90 +55,125 @@ const TrendingCoursesSection = () => {
           </p>
         </div>
 
-        {/* Category tabs like Udemy */}
+        {/* Category tabs */}
         <div className="flex flex-wrap justify-center gap-2 mb-8">
           {categories.map((cat) => (
-            <button
+            <Button
               key={cat}
+              variant="outline"
+              aria-pressed={activeCategory === cat}
               onClick={() => setActiveCategory(cat)}
               className={cn(
                 "px-4 py-2 rounded-full text-xs font-semibold transition-all border",
                 activeCategory === cat
                   ? "bg-primary text-primary-foreground border-primary"
-                  : "bg-card text-foreground border-border hover:border-primary/40"
+                  : "bg-card text-foreground border-border hover:border-primary/40",
               )}
             >
               {cat}
-            </button>
+            </Button>
           ))}
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {filtered.map((c, i) => (
-            <motion.div
-              key={c.title}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              onClick={() => navigate(c.slug)}
-              className="rounded-xl border bg-card overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
-            >
-              {/* Thumbnail */}
-              <div className="relative aspect-[5/4] overflow-hidden bg-slate-100">
-                <img src={c.image} alt={c.title} className="w-full h-full object-cover object-[center_12%] group-hover:scale-105 transition-transform duration-500" />
-                {enrolledSlugs[c.courseSlug] ? (
-                  <span className="absolute top-2 left-2 text-[9px] font-bold bg-emerald-600 text-white px-2 py-0.5 rounded-sm uppercase tracking-wide inline-flex items-center gap-1">
-                    <CheckCircle2 className="h-2.5 w-2.5" />
-                    {enrolledSlugs[c.courseSlug] === "completed" ? "Completed" : "Enrolled"}
-                  </span>
-                ) : c.bestseller ? (
-                  <span className="absolute top-2 left-2 text-[9px] font-bold bg-[hsl(33,100%,50%)] text-white px-2 py-0.5 rounded-sm uppercase tracking-wide">Bestseller</span>
-                ) : null}
-                <div className="absolute top-2 right-2 text-[10px] bg-black/60 text-white px-2 py-0.5 rounded flex items-center gap-1">
-                  <Clock className="h-2.5 w-2.5" /> {c.duration}
-                </div>
-              </div>
+          {filtered.map((c, i) => {
+            const enrollmentStatus =
+              enrolledSlugs[c.id] ??
+              (c.id === "digital-marketing-with-ai-tools" ? enrolledSlugs["digital-marketing-with-ai"] : undefined);
 
-              {/* Content */}
-              <div className="p-4 space-y-2.5">
-                <h3 className="font-bold font-display text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors">{c.title}</h3>
-                <p className="text-[11px] text-muted-foreground">{c.instructor}</p>
-
-                {/* Rating row */}
-                <div className="flex items-center gap-1.5">
-                  <span className="text-sm font-bold text-[hsl(33,100%,50%)]">{c.rating}</span>
-                  <div className="flex items-center gap-0.5">
-                    {Array.from({ length: 5 }).map((_, j) => (
-                      <Star key={j} className={cn("h-3 w-3", j < Math.floor(c.rating) ? "fill-[hsl(33,100%,50%)] text-[hsl(33,100%,50%)]" : "text-muted")} />
-                    ))}
+            return (
+              <motion.div
+                key={c.title}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08 }}
+                className="rounded-xl border bg-card overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              >
+                <Link
+                  to={c.slug}
+                  className="block h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                >
+                  {/* Thumbnail */}
+                  <div className="relative aspect-[5/4] overflow-hidden bg-muted">
+                    <img
+                      src={c.image}
+                      alt={c.title}
+                      className="w-full h-full object-cover object-[center_12%] group-hover:scale-105 transition-transform duration-500"
+                    />
+                    {enrollmentStatus ? (
+                      <span className="absolute top-2 left-2 text-[9px] font-bold bg-emerald-600 text-white px-2 py-0.5 rounded-sm uppercase tracking-wide inline-flex items-center gap-1">
+                        <CheckCircle2 className="h-2.5 w-2.5" />
+                        {enrollmentStatus === "completed" ? "Completed" : "Enrolled"}
+                      </span>
+                    ) : c.bestseller ? (
+                      <span className="absolute top-2 left-2 text-[9px] font-bold bg-warning text-warning-foreground px-2 py-0.5 rounded-sm uppercase tracking-wide">
+                        Bestseller
+                      </span>
+                    ) : null}
+                    <div className="absolute top-2 right-2 text-[10px] bg-foreground/70 text-background px-2 py-0.5 rounded flex items-center gap-1">
+                      <Clock className="h-2.5 w-2.5" /> {c.duration}
+                    </div>
                   </div>
-                  <span className="text-[10px] text-muted-foreground">({c.learners})</span>
-                </div>
 
-                {/* Level + Language */}
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-[10px] font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded">{c.level}</span>
-                  {c.languages.map((l) => (
-                    <span key={l} className="text-[10px] font-medium text-primary/80 bg-primary/5 px-1.5 py-0.5 rounded">{l}</span>
-                  ))}
-                </div>
+                  {/* Content */}
+                  <div className="p-4 space-y-2.5">
+                    <h3 className="font-bold font-display text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                      {c.title}
+                    </h3>
+                    <p className="text-[11px] text-muted-foreground">{c.instructor}</p>
 
-                {/* Price row */}
-                <div className="flex items-center gap-2 pt-1">
-                  <span className="text-base font-bold font-display">{c.price}</span>
-                  {c.price !== c.originalPrice && (
-                    <span className="text-xs text-muted-foreground line-through">{c.originalPrice}</span>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-          ))}
+                    {/* Rating row */}
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-sm font-bold text-warning">{c.rating}</span>
+                      <div className="flex items-center gap-0.5" aria-hidden="true">
+                        {Array.from({ length: 5 }).map((_, j) => (
+                          <Star
+                            key={j}
+                            className={cn(
+                              "h-3 w-3",
+                              j < Math.floor(c.rating) ? "fill-warning text-warning" : "text-muted",
+                            )}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-[10px] text-muted-foreground">({c.learners})</span>
+                    </div>
+
+                    {/* Level + Language */}
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="text-[10px] font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded">
+                        {c.level}
+                      </span>
+                      {c.languages.map((l) => (
+                        <span
+                          key={l}
+                          className="text-[10px] font-medium text-primary/80 bg-primary/5 px-1.5 py-0.5 rounded"
+                        >
+                          {l}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Price row */}
+                    <div className="flex items-center gap-2 pt-1">
+                      <span className="text-base font-bold font-display">{c.price}</span>
+                      {c.price !== c.originalPrice && (
+                        <span className="text-xs text-muted-foreground line-through">{c.originalPrice}</span>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            );
+          })}
         </div>
 
         <div className="text-center mt-8">
           <Link to="/learning#courses">
-            <Button variant="outline" className="gap-2">Browse All Courses <ArrowRight className="h-4 w-4" /></Button>
+            <Button variant="outline" className="gap-2">
+              Browse All Courses <ArrowRight className="h-4 w-4" />
+            </Button>
           </Link>
         </div>
       </div>
