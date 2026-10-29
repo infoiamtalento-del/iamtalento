@@ -67,6 +67,8 @@ const TalentoPro = lazy(() => import("./pages/TalentoPro"));
 const Home2 = lazy(() => import("./pages/Home2"));
 const Home3 = lazy(() => import("./pages/Home3"));
 const AiGuidance = lazy(() => import("./pages/AiGuidance"));
+const VerifyCredential = lazy(() => import("./pages/VerifyCredential"));
+const PublicPortfolio = lazy(() => import("./pages/PublicPortfolio"));
 
 const queryClient = new QueryClient();
 
@@ -96,6 +98,7 @@ const AnimatedRoutes = () => {
           <Route path="/jobs" element={<PageTransition><Jobs /></PageTransition>} />
           <Route path="/learning" element={<PageTransition><Learning /></PageTransition>} />
           <Route path="/learning/courses/ai-engineer-agentic-track" element={<PageTransition><CourseDetail /></PageTransition>} />
+          <Route path="/learning/courses/:slug" element={<PageTransition><CourseDetail /></PageTransition>} />
           <Route path="/ai-guidance" element={<PageTransition><AiGuidance /></PageTransition>} />
           <Route path="/si-guidance" element={<PageTransition><AiGuidance /></PageTransition>} />
           <Route path="/meetups" element={<PageTransition><Hackathons /></PageTransition>} />
@@ -123,6 +126,8 @@ const AnimatedRoutes = () => {
           <Route path="/home2" element={<PageTransition><Home2 /></PageTransition>} />
           <Route path="/home-3" element={<PageTransition><Home3 /></PageTransition>} />
           <Route path="/home3" element={<PageTransition><Home3 /></PageTransition>} />
+          <Route path="/verify/:token" element={<PageTransition><VerifyCredential /></PageTransition>} />
+          <Route path="/u/:slug" element={<PageTransition><PublicPortfolio /></PageTransition>} />
           <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
         </Routes>
       </Suspense>

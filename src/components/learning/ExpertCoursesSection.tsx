@@ -140,7 +140,15 @@ const ExpertCoursesSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.08 }}
-            onClick={() => navigate("/learning/courses/ai-engineer-agentic-track")}
+            onClick={() =>
+              navigate(
+                c.category === "Marketing"
+                  ? "/learning/courses/digital-marketing-with-ai"
+                  : c.category === "Data Science" || c.category === "Finance"
+                    ? "/learning/courses/data-analytics-masterclass"
+                    : "/learning/courses/ai-engineer-agentic-track"
+              )
+            }
             className="rounded-xl border bg-card overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
           >
             {/* Thumbnail */}
@@ -150,7 +158,6 @@ const ExpertCoursesSection = () => {
                 alt={c.title}
                 className="w-full h-full object-cover object-[center_12%] group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
 
             {/* Content */}

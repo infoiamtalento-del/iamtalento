@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, ChevronDown, ChevronRight, ArrowRight, BadgeCheck, BellRing, Bot, Building2, CalendarClock, FileText, Library, Palette, ShieldCheck, Sparkles, UserRound, Users, Video, Wand2, User, LogOut, Briefcase, Bookmark, type LucideIcon } from "lucide-react";
+import { Menu, X, ChevronDown, ChevronRight, ArrowRight, BadgeCheck, Bell, BellRing, Bot, Building2, CalendarClock, FileText, GraduationCap, Headphones, Library, Palette, ShieldCheck, Sparkles, UserRound, Users, Video, Wallet, Wand2, User, LogOut, Briefcase, Bookmark, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/services/db";
 import { toast } from "sonner";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { siteLogo } from "@/assets/logo";
@@ -134,6 +135,7 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
   const [openDropdown, setOpenDropdown] = useState<DropdownId | null>(null);
   const [mobileOpenDropdown, setMobileOpenDropdown] = useState<DropdownId | null>(null);
   const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [liveDbProfile, setLiveDbProfile] = useState<{ name?: string; avatarSrc?: string; unread?: number } | null>(null);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const dropdownRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const profileRef = useRef<HTMLDivElement | null>(null);
@@ -161,6 +163,29 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
       subscription.unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    if (!user || userProfile) {
+      setLiveDbProfile(null);
+      return;
+    }
+    let alive = true;
+    (async () => {
+      const [{ data: prof }, { count }] = await Promise.all([
+        supabase.from("profiles").select("full_name, profile_photo_url").eq("id", user.id).maybeSingle(),
+        db.from("notifications").select("id", { count: "exact", head: true }).eq("user_id", user.id).is("read_at", null),
+      ]);
+      if (!alive) return;
+      setLiveDbProfile({
+        name: prof?.full_name || undefined,
+        avatarSrc: prof?.profile_photo_url || undefined,
+        unread: count ?? 0,
+      });
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [user, userProfile, location.pathname]);
 
   useEffect(() => {
     setMobileOpen(false);
@@ -192,9 +217,9 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
     userProfile ??
     (user
       ? {
-          name: user.user_metadata?.full_name || user.email?.split("@")[0] || "User",
+          name: liveDbProfile?.name || user.user_metadata?.full_name || user.email?.split("@")[0] || "User",
           email: user.email || "",
-          avatarSrc: user.user_metadata?.avatar_url as string | undefined,
+          avatarSrc: liveDbProfile?.avatarSrc || (user.user_metadata?.avatar_url as string | undefined),
           role: "candidate",
         }
       : isProPage
@@ -210,14 +235,21 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
   const displayName = effectiveProfile?.name || "User";
   const displayEmail = effectiveProfile?.email || "";
   const avatarSrc = effectiveProfile?.avatarSrc;
+  const unreadBadge = liveDbProfile?.unread ?? 0;
   const initials = (displayName.charAt(0) || "U").toUpperCase();
 
   const handleSignOut = async () => {
+    try {
+      localStorage.removeItem("tq_sess");
+    } catch {
+      /* ignore */
+    }
     if (onSignOut) {
       onSignOut();
     }
     await supabase.auth.signOut();
     setUser(null);
+    setLiveDbProfile(null);
     setProfileMenuOpen(false);
     toast.success("Signed out successfully");
     navigate("/");
@@ -355,23 +387,40 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
                         </div>
                       </div>
 
-                      <div className="py-2 space-y-0.5">
+                      <div className="py-2 space-y-0.5 max-h-[65dvh] overflow-y-auto">
                         <Link
-                          to="/talento-pro"
+                          to="/talento-pro?view=dash"
                           onClick={() => setProfileMenuOpen(false)}
                           className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent transition-colors"
                         >
                           <span className="flex items-center gap-2">
-                            <Sparkles className="h-4 w-4 text-primary" /> Talento Pro
+                            <Sparkles className="h-4 w-4 text-primary" /> Talento Pro Dashboard
                           </span>
                           <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary/10 text-primary">PRO</span>
+                        </Link>
+                        <Link
+                          to="/talento-pro?view=account"
+                          onClick={() => setProfileMenuOpen(false)}
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent transition-colors"
+                        >
+                          <UserRound className="h-4 w-4 text-muted-foreground" /> My Account
+                        </Link>
+                        <Link
+                          to="/my-profile"
+                          onClick={() => setProfileMenuOpen(false)}
+                          className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent transition-colors"
+                        >
+                          <span className="flex items-center gap-2">
+                            <User className="h-4 w-4 text-muted-foreground" /> My Profile
+                          </span>
+                          <span className="text-[10px] text-primary font-semibold">View</span>
                         </Link>
                         <Link
                           to="/profile"
                           onClick={() => setProfileMenuOpen(false)}
                           className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent transition-colors"
                         >
-                          <User className="h-4 w-4 text-muted-foreground" /> My Profile
+                          <FileText className="h-4 w-4 text-muted-foreground" /> Edit Profile Builder
                         </Link>
                         <Link
                           to="/talento-pro?view=applied"
@@ -386,6 +435,41 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
                           className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent transition-colors"
                         >
                           <Bookmark className="h-4 w-4 text-muted-foreground" /> Saved Jobs
+                        </Link>
+                        <Link
+                          to="/talento-pro?view=cert"
+                          onClick={() => setProfileMenuOpen(false)}
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent transition-colors"
+                        >
+                          <GraduationCap className="h-4 w-4 text-muted-foreground" /> Assessments &amp; CIR
+                        </Link>
+                        <Link
+                          to="/talento-pro?view=wallet"
+                          onClick={() => setProfileMenuOpen(false)}
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent transition-colors"
+                        >
+                          <Wallet className="h-4 w-4 text-muted-foreground" /> Wallet &amp; Referrals
+                        </Link>
+                        <Link
+                          to="/talento-pro?view=notif"
+                          onClick={() => setProfileMenuOpen(false)}
+                          className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent transition-colors"
+                        >
+                          <span className="flex items-center gap-2">
+                            <Bell className="h-4 w-4 text-muted-foreground" /> Notifications
+                          </span>
+                          {unreadBadge > 0 && (
+                            <span className="rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-bold text-primary-foreground">
+                              {unreadBadge}
+                            </span>
+                          )}
+                        </Link>
+                        <Link
+                          to="/talento-pro?view=support"
+                          onClick={() => setProfileMenuOpen(false)}
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent transition-colors"
+                        >
+                          <Headphones className="h-4 w-4 text-muted-foreground" /> Support Center
                         </Link>
                       </div>
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -22,6 +22,16 @@ import { Building2 } from "lucide-react";
 import { ProView, ProDrawerState } from "@/components/pro/proTypes";
 import Navbar from "@/components/layout/Navbar";
 import { ProEmployerSidebar } from "@/components/pro/ProEmployerSidebar";
+import { ProCandidateAccountMenu } from "@/components/pro/ProCandidateAccountMenu";
+import { ProEmployerAccountMenu } from "@/components/pro/ProEmployerAccountMenu";
+import { LiveNotifications } from "@/components/pro/live/LiveNotifications";
+import { LiveSupport } from "@/components/pro/live/LiveSupport";
+import { LiveVerification } from "@/components/pro/live/LiveVerification";
+import { LivePayments } from "@/components/pro/live/LivePayments";
+import { LiveLearning } from "@/components/pro/live/LiveLearning";
+import { LiveEventsCommunity } from "@/components/pro/live/LiveEventsCommunity";
+import { LiveFreelancing } from "@/components/pro/live/LiveFreelancing";
+import { LiveAnalytics } from "@/components/pro/live/LiveAnalytics";
 import { ProEmployeeServices } from "@/components/pro/ProEmployeeServices";
 import { ProJobsView } from "@/components/pro/ProJobsView";
 import { ProJobDetail } from "@/components/pro/ProJobDetail";
@@ -49,6 +59,10 @@ import { ProEmployerDemoServices } from "@/components/pro/ProEmployerDemoService
 import { ProEmployerCandidateDetail } from "@/components/pro/ProEmployerCandidateDetail";
 import { Button } from "@/components/ui/button";
 import { DEMO_EMPLOYER_JOBS, DEMO_EMPLOYER_APPS, INITIAL_EMPLOYER_DEMO, createDemoApplication, type EmployerDemoState } from "@/data/employerDemo";
+import { useCandidateBackend, backendErrorMessage } from "@/hooks/useCandidateBackend";
+import { createOrder, payWithRazorpay } from "@/services/candidate/wallet";
+import { rpc, db } from "@/services/db";
+import { fromProUser, loadLiveProfile, saveLiveProfile, toProUser } from "@/services/candidate/profile";
 
 interface ToastMessage {
   id: number;
@@ -215,6 +229,98 @@ const TalentoPro: React.FC = () => {
     return DEFAULT_APPS;
   });
 
+  // Supabase bridge: public jobs for everyone; applications, saved jobs, wallet and
+  // notifications only for a real signed-in candidate (demo accounts stay local).
+  const backend = useCandidateBackend({
+    email: sessionEmail,
+    name: currentUser.name,
+    isCandidate: currentRole === "candidate",
+  });
+  const liveCandidate = Boolean(backend.userId) && currentRole === "candidate";
+
+  useEffect(() => {
+    const live = backend.jobs;
+    if (!live) return;
+    setJobs((previous) => [
+      ...live,
+      ...previous.filter((job) => !job.by.startsWith("hr@") && !backend.isLiveJob(job.id)),
+    ]);
+  }, [backend.jobs]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!liveCandidate || !backend.apps) return;
+    const mirrored = backend.apps;
+    setApps((previous) => [...mirrored, ...previous.filter((a) => a.who !== sessionEmail)]);
+  }, [backend.apps, liveCandidate, sessionEmail]);
+
+  useEffect(() => {
+    if (!liveCandidate) return;
+    const { savedIds, wallet } = backend;
+    setUsers((previous) => {
+      const base = previous[sessionEmail];
+      if (!base) return previous;
+      const next: ProUser = { ...base };
+      if (savedIds) next.saved = savedIds;
+      if (wallet) next.wal = { ...(base.wal || { bal: 0 }), bal: wallet.bal, hist: wallet.hist, tx: wallet.hist };
+      return { ...previous, [sessionEmail]: next };
+    });
+  }, [backend.savedIds, backend.wallet, liveCandidate, sessionEmail]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Real signed-in candidates: load their profile from Supabase, then save edits back (debounced).
+  const [liveEmail, setLiveEmail] = useState<string | null>(null);
+  const [liveBooting, setLiveBooting] = useState(false);
+  const lastSavedProfile = useRef("");
+  const sessionEmailRef = useRef(sessionEmail);
+  sessionEmailRef.current = sessionEmail;
+  const usersRef = useRef(users);
+  usersRef.current = users;
+
+  useEffect(() => {
+    if (!backend.userId) { setLiveEmail(null); setLiveBooting(false); return; }
+    let alive = true;
+    setLiveBooting(true);
+    (async () => {
+      try {
+        const { data: roles } = await db.from("user_roles").select("role").eq("user_id", backend.userId);
+        const isEmployer = (roles ?? []).some((r: { role: string }) => r.role === "employer") && !(roles ?? []).some((r: { role: string }) => r.role === "employee");
+        if (isEmployer) return;
+        const live = await loadLiveProfile();
+        if (!alive || !live) return;
+        const email = live.profile.email || `${backend.userId}@live.local`;
+        const user = toProUser(live, usersRef.current[email]);
+        lastSavedProfile.current = JSON.stringify(fromProUser(user));
+        setUsers((prev) => ({ ...prev, [email]: user }));
+        setLiveEmail(email);
+        const current = sessionEmailRef.current;
+        if (current === "demo.candidate@talento.app" || current === email) {
+          setSessionEmail(email);
+          saveStorage("sess", email);
+        }
+      } catch {
+        /* Backend unavailable: the shell keeps working with local demo data. */
+      } finally {
+        if (alive) setLiveBooting(false);
+      }
+    })();
+    return () => { alive = false; };
+  }, [backend.userId]);
+
+  useEffect(() => {
+    if (!liveEmail || sessionEmail !== liveEmail) return;
+    const user = users[liveEmail];
+    if (!user) return;
+    const payload = JSON.stringify(fromProUser(user));
+    if (payload === lastSavedProfile.current) return;
+    const timer = setTimeout(() => {
+      lastSavedProfile.current = payload;
+      saveLiveProfile(user).catch((e) => {
+        lastSavedProfile.current = "";
+        addToast(backendErrorMessage(e));
+      });
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [users, liveEmail, sessionEmail]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const [employerDemo, setEmployerDemo] = useState<EmployerDemoState>(() => loadStorage("employer_demo", INITIAL_EMPLOYER_DEMO));
   const [simulateLive, setSimulateLive] = useState(false);
   useEffect(() => { saveStorage("employer_demo", employerDemo); }, [employerDemo]);
@@ -354,16 +460,22 @@ const TalentoPro: React.FC = () => {
   }, [sessionEmail]);
 
   useEffect(() => {
-    saveStorage("users", users);
-  }, [users]);
+    // Signed-in candidates live in the database; keep their personal data out of localStorage.
+    if (liveEmail) {
+      const { [liveEmail]: _omit, ...rest } = users;
+      saveStorage("users", rest);
+    } else {
+      saveStorage("users", users);
+    }
+  }, [users, liveEmail]);
 
   useEffect(() => {
     saveStorage("jobs", jobs);
   }, [jobs]);
 
   useEffect(() => {
-    saveStorage("apps", apps);
-  }, [apps]);
+    saveStorage("apps", liveEmail ? apps.filter((a) => a.who !== liveEmail) : apps);
+  }, [apps, liveEmail]);
 
   // Dark mode toggle
   useEffect(() => {
@@ -411,7 +523,9 @@ const TalentoPro: React.FC = () => {
   };
 
   // User Profile updater
-  const handleUpdateUser = (updatedUser: ProUser) => {
+  const handleUpdateUser = (incoming: ProUser) => {
+    // A signed-in candidate's email belongs to their auth account and cannot be edited here.
+    const updatedUser = liveEmail && sessionEmail === liveEmail ? { ...incoming, email: sessionEmail } : incoming;
     if (updatedUser.email && updatedUser.email !== sessionEmail) {
       setUsers((prev) => {
         const next = { ...prev };
@@ -442,6 +556,14 @@ const TalentoPro: React.FC = () => {
       return;
     }
 
+    if (liveCandidate && backend.isLiveJob(jobId)) {
+      backend
+        .apply(jobId, coverNote)
+        .then(() => addToast("Application submitted! 24h review SLA active."))
+        .catch((e) => addToast(backendErrorMessage(e)));
+      return;
+    }
+
     const newApp: ProApplication = {
       id: Date.now(),
       jid: jobId,
@@ -468,11 +590,25 @@ const TalentoPro: React.FC = () => {
   };
 
   const handleWithdrawApplication = (appId: number) => {
+    if (liveCandidate && backend.apps?.some((a) => a.id === appId)) {
+      backend
+        .withdraw(appId)
+        .then(() => addToast("Application withdrawn successfully."))
+        .catch((e) => addToast(backendErrorMessage(e)));
+      return;
+    }
     setApps((prev) => prev.filter((a) => a.id !== appId));
     addToast("Application withdrawn successfully.");
   };
 
   const handleSaveJob = (jobId: number) => {
+    if (liveCandidate && backend.isLiveJob(jobId)) {
+      backend
+        .toggleSave(jobId)
+        .then((saved) => addToast(saved ? "Job bookmarked to saved!" : "Job removed from saved."))
+        .catch((e) => addToast(backendErrorMessage(e)));
+      return;
+    }
     const saved = currentUser.saved || [];
     const isSaved = saved.includes(jobId);
     const newSaved = isSaved ? saved.filter((id) => id !== jobId) : [...saved, jobId];
@@ -662,8 +798,31 @@ const TalentoPro: React.FC = () => {
     handleUpdateUser(updatedUser);
   };
 
+  // Live wallet: real Razorpay checkout + server-side ledger (signed-in candidates only)
+  const handleLiveTopUp = async (amount: number) => {
+    try {
+      const order = await createOrder({ itemType: "wallet_topup", amount, gateway: "razorpay" });
+      await payWithRazorpay(order, { name: currentUser.name, email: currentUser.email });
+      await backend.refreshWallet();
+      addToast(`Added ?${amount} to your wallet.`);
+    } catch (e) {
+      addToast(backendErrorMessage(e));
+    }
+  };
+
+  const handleLiveSpend = async (serviceKey: string, title: string) => {
+    try {
+      await rpc("purchase_service", { p_key: serviceKey });
+      await backend.refreshWallet();
+      addToast(`Purchased "${title}".`);
+    } catch (e) {
+      addToast(backendErrorMessage(e));
+    }
+  };
+
   // Unread badge count
   const unreadCount = useMemo(() => {
+    if (liveCandidate) return backend.unread;
     const lastSeen = currentUser.seen || 0;
     if (currentRole === "employer") {
       const myJobs = jobs.filter((j) => j.by === sessionEmail);
@@ -673,7 +832,7 @@ const TalentoPro: React.FC = () => {
       .filter((a) => a.who === sessionEmail)
       .flatMap((a) => a.upd || [])
       .filter((u) => u.at > lastSeen).length;
-  }, [apps, jobs, sessionEmail, currentRole, currentUser.seen]);
+  }, [apps, jobs, sessionEmail, currentRole, currentUser.seen, liveCandidate, backend.unread]);
 
   // Saved count
   const savedCount = (currentUser.saved || []).length;
@@ -703,25 +862,44 @@ const TalentoPro: React.FC = () => {
         userProfile={{
           name: currentUser.name,
           email: currentUser.email,
-          avatarSrc: currentUser.avatar || getCandidatePhoto(currentUser.name),
+          avatarSrc: currentUser.avatar || (liveCandidate ? undefined : getCandidatePhoto(currentUser.name)),
           role: currentRole,
         }}
-        onSignOut={() => localStorage.removeItem("tq_sess")}
-        accountMenu={() => {
-          const userPhoto = currentUser.avatar || getCandidatePhoto(currentUser.name);
+        onSignOut={() => { localStorage.removeItem("tq_sess"); localStorage.removeItem("tq_users"); localStorage.removeItem("tq_apps"); }}
+        accountMenu={(onNavbarSignOut) => {
+          const userPhoto = currentUser.avatar || (liveCandidate ? undefined : getCandidatePhoto(currentUser.name));
+          const navView = (view: ProView) => {
+            setDrawerState(null);
+            setSearchParams(currentRole === "employer" ? { view, role: "employer" } : { view });
+            setEditingCp(false);
+            setActiveView(view);
+            window.scrollTo({ top: 0 });
+          };
+          if (currentRole === "employer") {
+            return (
+              <ProEmployerAccountMenu
+                name={currentUser.name}
+                avatarSrc={userPhoto}
+                roleLabel="Employer Workspace"
+                activeView={effectiveView}
+                unreadCount={unreadCount}
+                onNavigate={navView}
+                onSignOut={onNavbarSignOut}
+              />
+            );
+          }
           return (
-            <div className="flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full border border-border bg-card shadow-2xs select-none">
-              <div className="h-7 w-7 rounded-full bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center shrink-0 overflow-hidden">
-                {userPhoto ? (
-                  <img src={userPhoto} alt={currentUser.name} className="h-full w-full object-cover" />
-                ) : (
-                  (currentUser.name?.charAt(0) || "U").toUpperCase()
-                )}
-              </div>
-              <span className="text-xs font-bold text-foreground max-w-[110px] truncate">
-                {currentUser.name}
-              </span>
-            </div>
+            <ProCandidateAccountMenu
+              name={currentUser.name}
+              avatarSrc={userPhoto}
+              activeView={effectiveView}
+              unreadCount={unreadCount}
+              isDarkMode={isDarkMode}
+              onNavigate={navView}
+              onCertificate={() => navView("my-certifications")}
+              onToggleTheme={() => setIsDarkMode((d) => !d)}
+              onSignOut={onNavbarSignOut}
+            />
           );
         }}
       />
@@ -733,7 +911,7 @@ const TalentoPro: React.FC = () => {
           activeView={effectiveView}
           unreadCount={unreadCount}
           userName={currentUser.name}
-          userAvatar={currentUser.avatar || getCandidatePhoto(currentUser.name)}
+          userAvatar={currentUser.avatar || (liveCandidate ? undefined : getCandidatePhoto(currentUser.name))}
           userRole={currentRole === "employer" ? "Employer Workspace" : "Employee Workspace"}
           isEmployer={currentRole === "employer"}
           onNavigate={(view) => {
@@ -743,8 +921,9 @@ const TalentoPro: React.FC = () => {
             setActiveView(view);
             window.scrollTo({ top: 0 });
           }}
-          onLogout={() => {
+          onLogout={async () => {
             localStorage.removeItem("tq_sess");
+            await db.auth.signOut().catch(() => {});
             window.location.href = "/auth";
           }}
         />
@@ -781,6 +960,7 @@ const TalentoPro: React.FC = () => {
                   user={currentUser}
                   jobs={jobs}
                   applications={apps}
+                  isLive={liveCandidate}
                   onNavigate={setActiveView}
                   onUpdateUser={handleUpdateUser}
                   onToast={addToast}
@@ -845,7 +1025,8 @@ const TalentoPro: React.FC = () => {
               />
             )}
 
-            {["employer-assessments", "interviews", "advertise", "subscription", "corporate-learning", "settings", "payment-history"].includes(effectiveView) && (
+            {(["employer-assessments", "interviews", "advertise", "subscription", "corporate-learning", "settings"].includes(effectiveView) ||
+              (effectiveView === "payment-history" && currentRole === "employer")) && (
               <ProEmployerDemoServices
                 view={effectiveView}
                 user={currentUser}
@@ -878,7 +1059,20 @@ const TalentoPro: React.FC = () => {
               />
             )}
 
-            {effectiveView === "notif" && (
+            {effectiveView === "payment-history" && currentRole === "candidate" && (
+              liveCandidate ? (
+                <LivePayments />
+              ) : (
+                <ProWalletView
+                  user={currentUser}
+                  onUpdateWallet={handleUpdateWallet}
+                  onOpenDrawer={openDrawer}
+                  onToast={addToast}
+                />
+              )
+            )}
+
+            {effectiveView === "notif" && currentRole === "employer" && (
               <ProEmployerNotifications
                 user={currentUser}
                 jobs={jobs}
@@ -892,7 +1086,11 @@ const TalentoPro: React.FC = () => {
             )}
 
             {effectiveView === "support" && (
-              <ProSupportView onToast={addToast} demoAccount={currentUser.email} />
+              liveCandidate ? (
+                <LiveSupport onToast={addToast} />
+              ) : (
+                <ProSupportView onToast={addToast} demoAccount={currentUser.email} />
+              )
             )}
 
             {effectiveView === "jobs" && (
@@ -952,19 +1150,32 @@ const TalentoPro: React.FC = () => {
               />
             )}
 
-            {effectiveView === "upd" && (
-              <ProNotificationsView
-                user={currentUser}
-                jobs={jobs}
-                applications={apps}
-                onOpenDrawer={openDrawer}
-                onMarkSeen={() => {
-                  handleUpdateUser({
-                    ...currentUser,
-                    seen: Date.now(),
-                  });
-                }}
-              />
+            {(effectiveView === "upd" || (effectiveView === "notif" && currentRole === "candidate")) && (
+              liveCandidate ? (
+                <LiveNotifications
+                  notifications={backend.notifications}
+                  onMarkRead={backend.markRead}
+                  onNavigate={(v) => {
+                    setSearchParams({ view: v });
+                    setActiveView(v);
+                    window.scrollTo({ top: 0 });
+                  }}
+                  onToast={addToast}
+                />
+              ) : (
+                <ProNotificationsView
+                  user={currentUser}
+                  jobs={jobs}
+                  applications={apps}
+                  onOpenDrawer={openDrawer}
+                  onMarkSeen={() => {
+                    handleUpdateUser({
+                      ...currentUser,
+                      seen: Date.now(),
+                    });
+                  }}
+                />
+              )
             )}
 
             {effectiveView === "disc" && (
@@ -991,6 +1202,7 @@ const TalentoPro: React.FC = () => {
               <ProCertificationsView
                 user={currentUser}
                 mode={effectiveView === "my-certifications" ? "certifications" : "assessments"}
+                isLive={liveCandidate}
                 onAddCertification={(certStr) => {
                   const current = currentUser.ce || [];
                   handleUpdateUser({ ...currentUser, ce: [...current, certStr] });
@@ -1017,6 +1229,8 @@ const TalentoPro: React.FC = () => {
               <ProWalletView
                 user={currentUser}
                 onUpdateWallet={handleUpdateWallet}
+                onLiveTopUp={liveCandidate ? handleLiveTopUp : undefined}
+                onLiveSpend={liveCandidate ? handleLiveSpend : undefined}
                 onOpenDrawer={openDrawer}
                 onToast={addToast}
               />
@@ -1034,20 +1248,60 @@ const TalentoPro: React.FC = () => {
             )}
 
             {effectiveView === "ver" && (
-              <ProVerifiedView
-                user={currentUser}
-                jobs={jobs}
-                onNavigate={(v) => setActiveView(v)}
-                onUpdateUser={handleUpdateUser}
-                onOpenDrawer={openDrawer}
+              liveCandidate ? (
+                <LiveVerification
+                  onToast={addToast}
+                  onNavigate={(v) => {
+                    setSearchParams({ view: v });
+                    setActiveView(v);
+                    window.scrollTo({ top: 0 });
+                  }}
+                />
+              ) : (
+                <ProVerifiedView
+                  user={currentUser}
+                  jobs={jobs}
+                  onNavigate={(v) => setActiveView(v)}
+                  onUpdateUser={handleUpdateUser}
+                  onOpenDrawer={openDrawer}
+                  onToast={addToast}
+                />
+              )
+            )}
+
+            {effectiveView === "learning-mentors" && liveCandidate && (
+              <LiveLearning
                 onToast={addToast}
+                walletBalance={currentUser.wal?.bal ?? 0}
+                onWalletChanged={backend.refreshWallet}
+                userName={currentUser.name}
+                userEmail={currentUser.email}
               />
             )}
 
-            {(effectiveView === "learning-mentors" ||
-              effectiveView === "freelancing" ||
-              effectiveView === "events-community" ||
-              effectiveView === "analytics") && (
+            {effectiveView === "events-community" && liveCandidate && (
+              <LiveEventsCommunity
+                onToast={addToast}
+                walletBalance={currentUser.wal?.bal ?? 0}
+                onWalletChanged={backend.refreshWallet}
+                userName={currentUser.name}
+                userEmail={currentUser.email}
+              />
+            )}
+
+            {effectiveView === "freelancing" && liveCandidate && (
+              <LiveFreelancing onToast={addToast} />
+            )}
+
+            {effectiveView === "analytics" && liveCandidate && (
+              <LiveAnalytics onToast={addToast} />
+            )}
+
+            {!liveCandidate &&
+              (effectiveView === "learning-mentors" ||
+                effectiveView === "freelancing" ||
+                effectiveView === "events-community" ||
+                effectiveView === "analytics") && (
               <ProEmployeeServices
                 view={effectiveView}
                 userName={currentUser.name}

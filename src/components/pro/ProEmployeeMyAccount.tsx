@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   UserRound,
   UserCheck,
@@ -46,6 +46,10 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { type ProUser, type ProJob, type ProApplication } from "@/data/proData";
 import { getCandidatePhoto } from "@/data/portalAssets";
+import { supabase } from "@/integrations/supabase/client";
+import { loadLiveProfile } from "@/services/candidate/profile";
+import { claimReferral } from "@/services/candidate/wallet";
+import { backendErrorMessage } from "@/hooks/useCandidateBackend";
 import type { ProView } from "./proTypes";
 import "./employer-workspace.css";
 
@@ -53,6 +57,7 @@ interface Props {
   user: ProUser;
   jobs: ProJob[];
   applications: ProApplication[];
+  isLive?: boolean;
   onNavigate: (view: ProView) => void;
   onUpdateUser?: (updated: ProUser) => void;
   onToast?: (msg: string) => void;
@@ -62,13 +67,77 @@ export function ProEmployeeMyAccount({
   user,
   jobs,
   applications,
+  isLive = false,
   onNavigate,
   onUpdateUser,
   onToast,
 }: Props) {
   const myApps = applications.filter((a) => a.who === user.email);
   const myInterviews = myApps.filter((a) => a.st === "Interview");
-  const avatarUrl = getCandidatePhoto(user.name);
+  const avatarUrl = user.avatar || (isLive ? undefined : getCandidatePhoto(user.name));
+  const [liveMeta, setLiveMeta] = useState<{ iamTalentoId: string; referralCode: string; referralClaimed: boolean } | null>(null);
+  const [referralInput, setReferralInput] = useState("");
+  const [claimingRef, setClaimingRef] = useState(false);
+  const [copiedRef, setCopiedRef] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+
+  useEffect(() => {
+    if (!isLive) { setLiveMeta(null); return; }
+    let alive = true;
+    loadLiveProfile().then((lp) => {
+      if (!alive || !lp) return;
+      setLiveMeta({
+        iamTalentoId: lp.profile.iam_talento_id,
+        referralCode: lp.profile.referral_code,
+        referralClaimed: lp.profile.referral_claimed,
+      });
+    }).catch(() => {});
+    return () => { alive = false; };
+  }, [isLive]);
+
+  const handlePhotoUpload = async (file?: File | null) => {
+    if (!file || !isLive) return;
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      onToast?.("Upload a JPG, PNG, or WEBP photo.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      onToast?.("Photo must be under 5 MB.");
+      return;
+    }
+    setUploadingPhoto(true);
+    try {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (!authUser) throw new Error("Not signed in");
+      const ext = file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
+      const path = `${authUser.id}/avatar-${Date.now()}.${ext}`;
+      const { error } = await supabase.storage.from("profile-photos").upload(path, file, { contentType: file.type, upsert: true });
+      if (error) throw error;
+      const { data: pub } = supabase.storage.from("profile-photos").getPublicUrl(path);
+      if (onUpdateUser) onUpdateUser({ ...user, avatar: pub.publicUrl });
+      onToast?.("Profile photo updated!");
+    } catch (err) {
+      onToast?.(backendErrorMessage(err));
+    } finally {
+      setUploadingPhoto(false);
+    }
+  };
+
+  const handleClaimReferral = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!referralInput.trim()) return;
+    setClaimingRef(true);
+    try {
+      const msg = await claimReferral(referralInput.trim().toUpperCase());
+      setReferralInput("");
+      setLiveMeta((prev) => (prev ? { ...prev, referralClaimed: true } : prev));
+      onToast?.(msg);
+    } catch (err) {
+      onToast?.(backendErrorMessage(err));
+    } finally {
+      setClaimingRef(false);
+    }
+  };
 
   // Active Tab
   const [activeTab, setActiveTab] = useState<"info" | "security" | "settings">("info");
@@ -178,9 +247,9 @@ export function ProEmployeeMyAccount({
   };
 
   // Save Password
-  const handleSavePassword = (e: React.FormEvent) => {
+  const handleSavePassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!currentPw) {
+    if (!isLive && !currentPw) {
       setPwError("Please enter your current password.");
       return;
     }
@@ -193,14 +262,19 @@ export function ProEmployeeMyAccount({
       return;
     }
 
-    const updated: ProUser = {
-      ...user,
-      pw: newPw,
-      passwordLastChanged: Date.now(),
-    };
-
-    if (onUpdateUser) {
-      onUpdateUser(updated);
+    if (isLive) {
+      const { error } = await supabase.auth.updateUser({ password: newPw });
+      if (error) {
+        setPwError(error.message);
+        return;
+      }
+    } else {
+      const updated: ProUser = {
+        ...user,
+        pw: newPw,
+        passwordLastChanged: Date.now(),
+      };
+      if (onUpdateUser) onUpdateUser(updated);
     }
 
     setIsPasswordModalOpen(false);
@@ -365,6 +439,19 @@ export function ProEmployeeMyAccount({
           </div>
 
           <div className="flex flex-wrap items-center gap-2 self-stretch md:self-auto justify-end border-t md:border-t-0 pt-4 md:pt-0 border-border">
+            {isLive && (
+              <label className="inline-flex">
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="sr-only"
+                  onChange={(e) => handlePhotoUpload(e.target.files?.[0])}
+                />
+                <span className="inline-flex h-9 items-center justify-center rounded-md border border-border bg-background px-3 text-xs font-medium hover:bg-accent cursor-pointer">
+                  {uploadingPhoto ? "Uploading…" : "Upload Photo"}
+                </span>
+              </label>
+            )}
             <Button variant="secondary" size="sm" onClick={() => setIsPasswordModalOpen(true)} className="cursor-pointer gap-1.5">
               <KeyRound className="h-3.5 w-3.5" />
               Change Password
@@ -375,6 +462,59 @@ export function ProEmployeeMyAccount({
             </Button>
           </div>
         </div>
+        {isLive && liveMeta && (
+          <div className="mt-5 pt-4 border-t border-border flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center gap-3 text-xs">
+              <span className="rounded-lg bg-muted px-2.5 py-1 font-mono font-semibold">
+                ID: {liveMeta.iamTalentoId}
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-lg bg-primary/10 text-primary px-2.5 py-1 font-semibold">
+                Referral Code: <strong className="font-mono">{liveMeta.referralCode}</strong>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(liveMeta.referralCode);
+                      setCopiedRef(true);
+                      setTimeout(() => setCopiedRef(false), 1800);
+                    } catch { /* ignore */ }
+                  }}
+                  className="inline-flex items-center gap-1 underline"
+                >
+                  {copiedRef ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                  {copiedRef ? "Copied" : "Copy"}
+                </button>
+              </span>
+            </div>
+            {!liveMeta.referralClaimed ? (
+              <form onSubmit={handleClaimReferral} method="post" className="flex items-center gap-2">
+                <Label htmlFor="claim-referral-input" className="sr-only">
+                  Friend referral code
+                </Label>
+                <Input
+                  id="claim-referral-input"
+                  name="referral_code"
+                  value={referralInput}
+                  onChange={(e) => setReferralInput(e.target.value.toUpperCase())}
+                  placeholder="Enter friend's referral code"
+                  autoComplete="off"
+                  autoCorrect="off"
+                  autoCapitalize="characters"
+                  spellCheck={false}
+                  maxLength={20}
+                  className="h-8 w-48 text-xs font-mono uppercase"
+                />
+                <Button type="submit" size="sm" variant="outline" disabled={claimingRef} className="h-8 text-xs">
+                  {claimingRef ? "Saving…" : "Apply Referral"}
+                </Button>
+              </form>
+            ) : (
+              <span className="text-xs font-semibold text-emerald-600 inline-flex items-center gap-1">
+                <CheckCircle2 className="h-3.5 w-3.5" /> Referral linked (₹100 unlocks on first ≥ ₹99 purchase)
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       {/* TABS NAVIGATION */}

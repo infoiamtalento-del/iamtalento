@@ -49,6 +49,7 @@ export interface ProUser {
   pw?: string;
   role: "candidate" | "employer";
   name: string;
+  avatar?: string;
   exp?: number;
   city?: string;
   state?: string;

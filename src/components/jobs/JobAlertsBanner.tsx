@@ -1,8 +1,36 @@
-import { Mail } from "lucide-react";
+import { useState } from "react";
+import { Mail, Loader2, CheckCircle2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { subscribeJobAlerts } from "@/services/candidate/jobs";
+import { backendErrorMessage } from "@/hooks/useCandidateBackend";
 
 const JobAlertsBanner = () => {
+  const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const trimmed = email.trim();
+    if (!trimmed) {
+      toast.error("Please enter your email address.");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await subscribeJobAlerts(trimmed);
+      setSubscribed(true);
+      setEmail("");
+      toast.success("Subscribed! You will receive matched job alerts in your inbox.");
+    } catch (err) {
+      toast.error(backendErrorMessage(err));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <section className="py-8">
       <div className="container px-4 md:px-6">
@@ -23,14 +51,35 @@ const JobAlertsBanner = () => {
               </p>
             </div>
           </div>
-          <form className="flex items-stretch gap-2 w-full md:w-auto">
+          <form action="/jobs" method="post" onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-stretch gap-2 w-full md:w-auto">
+            <label htmlFor="job-alert-email" className="sr-only">
+              Email address for job alerts
+            </label>
             <Input
+              id="job-alert-email"
+              name="email"
               type="email"
+              required
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (subscribed) setSubscribed(false);
+              }}
+              autoComplete="email"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck={false}
               placeholder="Enter your email"
               className="bg-card text-foreground border-0 h-11 min-w-0 md:min-w-[280px]"
             />
-            <Button type="submit" variant="secondary" className="bg-card text-primary hover:bg-card/90 h-11 px-6 font-semibold shrink-0">
-              Subscribe
+            <Button
+              type="submit"
+              disabled={submitting}
+              variant="secondary"
+              className="bg-card text-primary hover:bg-card/90 h-11 px-6 font-semibold shrink-0 gap-2"
+            >
+              {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : subscribed ? <CheckCircle2 className="h-4 w-4" /> : null}
+              {submitting ? "Subscribing..." : subscribed ? "Subscribed" : "Subscribe"}
             </Button>
           </form>
         </div>

@@ -120,22 +120,10 @@ const Auth = () => {
       toast.error(error.message);
       return;
     }
-    // Insert user role
-    if (data.user) {
-      await supabase.from("user_roles").insert({ user_id: data.user.id, role });
-      // If employer, also create employer profile stub
-      if (role === "employer") {
-        await supabase.from("employers").insert({
-          user_id: data.user.id,
-          contact_name: fullName,
-          official_email: email,
-          phone,
-          company_name: companyName,
-        });
-      }
-    }
+    // The role, profile and employer stub are created by the handle_new_user database trigger
+    // from the sign-up metadata, so they also work before the email is confirmed.
     setLoading(false);
-    toast.success("Account created! Please check your email to verify.");
+    toast.success(data.session ? "Account created. Welcome!" : "Account created! Please check your email to verify.");
   };
 
   return (

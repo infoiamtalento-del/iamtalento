@@ -114,58 +114,132 @@ const ProfileBuilder = () => {
   const handleSave = async () => {
     if (!userId) return;
     setSaving(true);
+    const cleanUrl = (v: unknown) => {
+      if (typeof v !== "string") return null;
+      const t = v.trim();
+      if (!t) return null;
+      if (/^https?:\/\//i.test(t)) return t;
+      return `https://${t}`;
+    };
     try {
       const { error: profileError } = await supabase.from("profiles").update({
         full_name: profile.full_name,
-        email: profile.email,
-        phone: profile.phone,
-        professional_headline: profile.professional_headline,
-        job_role: profile.job_role,
-        company: profile.company,
-        city: profile.city,
-        state: profile.state,
-        country: profile.country,
+        phone: profile.phone || null,
+        professional_headline: profile.professional_headline || null,
+        job_role: profile.job_role || null,
+        company: profile.company || null,
+        city: profile.city || null,
+        state: profile.state || null,
+        country: profile.country || null,
         years_of_experience: profile.years_of_experience ? Number(profile.years_of_experience) : null,
-        experience_level: profile.experience_level,
-        industry: profile.industry,
-        about_summary: profile.about_summary,
-        career_objective: profile.career_objective,
+        experience_level: profile.experience_level || null,
+        industry: profile.industry || null,
+        about_summary: profile.about_summary || null,
+        career_objective: profile.career_objective || null,
         key_achievements: profile.key_achievements,
-        linkedin_url: profile.linkedin_url,
-        github_url: profile.github_url,
-        portfolio_url: profile.portfolio_url,
-        resume_url: profile.resume_url,
-        behance_url: profile.behance_url,
-        kaggle_url: profile.kaggle_url,
-        video_intro_url: profile.video_intro_url,
-        employment_type: profile.employment_type,
-        availability_status: profile.availability_status,
-        notice_period: profile.notice_period,
-        preferred_salary_range: profile.preferred_salary_range,
+        linkedin_url: cleanUrl(profile.linkedin_url),
+        github_url: cleanUrl(profile.github_url),
+        portfolio_url: cleanUrl(profile.portfolio_url),
+        resume_url: cleanUrl(profile.resume_url),
+        behance_url: cleanUrl(profile.behance_url),
+        kaggle_url: cleanUrl(profile.kaggle_url),
+        video_intro_url: cleanUrl(profile.video_intro_url),
+        employment_type: profile.employment_type || null,
+        availability_status: profile.availability_status || null,
+        notice_period: profile.notice_period || null,
+        preferred_salary_range: profile.preferred_salary_range || null,
         open_to_work: profile.open_to_work,
         preferred_locations: profile.preferred_locations,
         areas_of_expertise: profile.areas_of_expertise,
         career_interests: profile.career_interests,
-        profile_photo_url: profile.profile_photo_url,
+        profile_photo_url: cleanUrl(profile.profile_photo_url),
         profile_completion: completion,
       }).eq("id", userId);
       if (profileError) throw profileError;
 
-      // Sync relational tables (delete+reinsert pattern)
-      const syncTable = async (table: "experiences" | "educations" | "skills" | "certifications" | "projects" | "courses" | "achievements" | "volunteer_experiences", items: any[]) => {
+      // Sync relational tables while preserving server-verified flags on skills & certifications
+      const syncTable = async (table: "experiences" | "educations" | "projects" | "courses" | "achievements" | "volunteer_experiences", items: any[]) => {
         await supabase.from(table).delete().eq("user_id", userId!);
         if (items.length > 0) {
-          const rows = items.map(({ id, created_at, ...rest }: any) => ({ ...rest, user_id: userId }));
+          const rows = items.map(({ id, created_at, project_url, url, ...rest }: any) => ({
+            ...rest,
+            ...(table === "projects" ? { project_url: cleanUrl(project_url) } : {}),
+            user_id: userId,
+          }));
           const { error } = await supabase.from(table).insert(rows as any);
           if (error) throw error;
+        }
+      };
+
+      const syncSkills = async () => {
+        const seen = new Set<string>();
+        const deduped = skills.filter((s) => {
+          const k = String(s.skill_name || "").trim().toLowerCase();
+          if (!k || seen.has(k)) return false;
+          seen.add(k);
+          return true;
+        });
+        const { data: existing } = await supabase.from("skills").select("id, skill_name").eq("user_id", userId!);
+        const existingMap = new Map((existing ?? []).map((r) => [r.skill_name.trim().toLowerCase(), r.id]));
+        const toDelete = (existing ?? []).filter((r) => !seen.has(r.skill_name.trim().toLowerCase())).map((r) => r.id);
+        if (toDelete.length > 0) await supabase.from("skills").delete().in("id", toDelete);
+        for (const s of deduped) {
+          const key = String(s.skill_name).trim().toLowerCase();
+          const rowId = existingMap.get(key);
+          const payload = {
+            skill_name: String(s.skill_name).trim().slice(0, 80),
+            category: s.category || null,
+            proficiency_level: s.proficiency_level || null,
+            years_of_experience: s.years_of_experience ? Number(s.years_of_experience) : null,
+          };
+          if (rowId) {
+            const { error } = await supabase.from("skills").update(payload).eq("id", rowId);
+            if (error) throw error;
+          } else {
+            const { error } = await supabase.from("skills").insert({ ...payload, user_id: userId });
+            if (error) throw error;
+          }
+        }
+      };
+
+      const syncCerts = async () => {
+        const seen = new Set<string>();
+        const deduped = certifications.filter((c) => {
+          const k = String(c.name || "").trim().toLowerCase();
+          if (!k || seen.has(k)) return false;
+          seen.add(k);
+          return true;
+        });
+        const { data: existing } = await supabase.from("certifications").select("id, name").eq("user_id", userId!);
+        const existingMap = new Map((existing ?? []).map((r) => [r.name.trim().toLowerCase(), r.id]));
+        const toDelete = (existing ?? []).filter((r) => !seen.has(r.name.trim().toLowerCase())).map((r) => r.id);
+        if (toDelete.length > 0) await supabase.from("certifications").delete().in("id", toDelete);
+        for (const c of deduped) {
+          const key = String(c.name).trim().toLowerCase();
+          const rowId = existingMap.get(key);
+          const payload = {
+            name: String(c.name).trim().slice(0, 200),
+            issuing_organization: c.issuing_organization || null,
+            issue_date: c.issue_date || null,
+            expiry_date: c.expiry_date || null,
+            credential_id: c.credential_id || null,
+            credential_url: cleanUrl(c.credential_url),
+          };
+          if (rowId) {
+            const { error } = await supabase.from("certifications").update(payload).eq("id", rowId);
+            if (error) throw error;
+          } else {
+            const { error } = await supabase.from("certifications").insert({ ...payload, user_id: userId });
+            if (error) throw error;
+          }
         }
       };
 
       await Promise.all([
         syncTable("experiences", experiences),
         syncTable("educations", educations),
-        syncTable("skills", skills),
-        syncTable("certifications", certifications),
+        syncSkills(),
+        syncCerts(),
         syncTable("projects", projects),
         syncTable("courses", courses),
         syncTable("achievements", achievements),

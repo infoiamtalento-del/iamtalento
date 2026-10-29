@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
-import { Star, Users, ArrowRight, TrendingUp, Clock, BarChart3 } from "lucide-react";
+import { Star, ArrowRight, TrendingUp, Clock, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
-import { Badge } from "@/components/ui/badge";
 import SectionBadge from "@/components/ui/section-badge";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { useSupabaseUser } from "@/hooks/useSupabaseUser";
+import { fetchCourses, fetchMyEnrollments, type Course, type Enrollment } from "@/services/candidate/platform";
 
 import expertImg1 from "@/assets/expert-course-1.jpg";
 import expertImg2 from "@/assets/expert-course-2.jpg";
@@ -19,20 +20,41 @@ import expertMale3 from "@/assets/experts/male-3.jpg";
 const categories = ["All", "AI & ML", "Data Science", "Marketing", "Development", "Design", "Finance"];
 
 const courses = [
-  { title: "AI for Non-Tech Professionals", category: "AI & ML", level: "Beginner", rating: 4.8, learners: "12,400", instructor: "Dr. Neha Sharma", image: expertFemale1, languages: ["EN", "HI"], duration: "8 hrs", price: "Free", originalPrice: "₹3,999", bestseller: true, slug: "/learning/courses/ai-engineer-agentic-track" },
-  { title: "Data Analytics Masterclass", category: "Data Science", level: "Intermediate", rating: 4.7, learners: "9,800", instructor: "Arjun Patel", image: expertMale1, languages: ["EN", "TA"], duration: "12 hrs", price: "₹799", originalPrice: "₹4,999", bestseller: false },
-  { title: "Digital Marketing with AI Tools", category: "Marketing", level: "Beginner", rating: 4.9, learners: "15,200", instructor: "Kavitha Rajan", image: expertFemale3, languages: ["EN", "HI", "TE"], duration: "6 hrs", price: "₹499", originalPrice: "₹2,999", bestseller: true },
-  { title: "Python for Job-Ready Developers", category: "Development", level: "Intermediate", rating: 4.6, learners: "7,300", instructor: "Vikram Desai", image: expertMale3, languages: ["EN"], duration: "15 hrs", price: "₹999", originalPrice: "₹5,999", bestseller: false },
-  { title: "Product UI/UX & Figma Design Systems", category: "Design", level: "Intermediate", rating: 4.9, learners: "11,600", instructor: "Tanya Verma", image: expertImg2, languages: ["EN", "HI"], duration: "10 hrs", price: "₹649", originalPrice: "₹3,499", bestseller: true },
-  { title: "Full-Stack React, Next.js & TypeScript", category: "Development", level: "Advanced", rating: 4.8, learners: "14,900", instructor: "Rohan Malhotra", image: expertImg3, languages: ["EN", "HI"], duration: "18 hrs", price: "₹899", originalPrice: "₹4,999", bestseller: true },
-  { title: "Financial Modeling & Valuation Bootcamp", category: "Finance", level: "Intermediate", rating: 4.7, learners: "8,450", instructor: "CA Saurabh Jain", image: expertImg1, languages: ["EN"], duration: "14 hrs", price: "₹749", originalPrice: "₹4,499", bestseller: false },
-  { title: "Generative AI & LLM Agents in Production", category: "AI & ML", level: "Advanced", rating: 4.9, learners: "18,300", instructor: "Dr. Priya Menon", image: expertImg4, languages: ["EN", "TA", "TE"], duration: "11 hrs", price: "₹699", originalPrice: "₹3,999", bestseller: true },
+  { title: "AI for Non-Tech Professionals", category: "AI & ML", level: "Beginner", rating: 4.8, learners: "12,400", instructor: "Dr. Neha Sharma", image: expertFemale1, languages: ["EN", "HI"], duration: "8 hrs", price: "Free", originalPrice: "₹3,999", bestseller: true, courseSlug: "ai-engineer-agentic-track", slug: "/learning/courses/ai-engineer-agentic-track" },
+  { title: "Data Analytics Masterclass", category: "Data Science", level: "Intermediate", rating: 4.7, learners: "9,800", instructor: "Arjun Patel", image: expertMale1, languages: ["EN", "TA"], duration: "12 hrs", price: "₹799", originalPrice: "₹4,999", bestseller: false, courseSlug: "data-analytics-masterclass", slug: "/learning/courses/data-analytics-masterclass" },
+  { title: "Digital Marketing with AI Tools", category: "Marketing", level: "Beginner", rating: 4.9, learners: "15,200", instructor: "Kavitha Rajan", image: expertFemale3, languages: ["EN", "HI", "TE"], duration: "6 hrs", price: "₹499", originalPrice: "₹2,999", bestseller: true, courseSlug: "digital-marketing-with-ai", slug: "/learning/courses/digital-marketing-with-ai" },
+  { title: "Python for Job-Ready Developers", category: "Development", level: "Intermediate", rating: 4.6, learners: "7,300", instructor: "Vikram Desai", image: expertMale3, languages: ["EN"], duration: "15 hrs", price: "₹999", originalPrice: "₹5,999", bestseller: false, courseSlug: "ai-engineer-agentic-track", slug: "/learning/courses/ai-engineer-agentic-track" },
+  { title: "Product UI/UX & Figma Design Systems", category: "Design", level: "Intermediate", rating: 4.9, learners: "11,600", instructor: "Tanya Verma", image: expertImg2, languages: ["EN", "HI"], duration: "10 hrs", price: "₹649", originalPrice: "₹3,499", bestseller: true, courseSlug: "data-analytics-masterclass", slug: "/learning/courses/data-analytics-masterclass" },
+  { title: "Full-Stack React, Next.js & TypeScript", category: "Development", level: "Advanced", rating: 4.8, learners: "14,900", instructor: "Rohan Malhotra", image: expertImg3, languages: ["EN", "HI"], duration: "18 hrs", price: "₹899", originalPrice: "₹4,999", bestseller: true, courseSlug: "ai-engineer-agentic-track", slug: "/learning/courses/ai-engineer-agentic-track" },
+  { title: "Financial Modeling & Valuation Bootcamp", category: "Finance", level: "Intermediate", rating: 4.7, learners: "8,450", instructor: "CA Saurabh Jain", image: expertImg1, languages: ["EN"], duration: "14 hrs", price: "₹749", originalPrice: "₹4,499", bestseller: false, courseSlug: "data-analytics-masterclass", slug: "/learning/courses/data-analytics-masterclass" },
+  { title: "Generative AI & LLM Agents in Production", category: "AI & ML", level: "Advanced", rating: 4.9, learners: "18,300", instructor: "Dr. Priya Menon", image: expertImg4, languages: ["EN", "TA", "TE"], duration: "11 hrs", price: "₹699", originalPrice: "₹3,999", bestseller: true, courseSlug: "ai-engineer-agentic-track", slug: "/learning/courses/ai-engineer-agentic-track" },
 ];
 
 const TrendingCoursesSection = () => {
   const navigate = useNavigate();
+  const { user } = useSupabaseUser();
   const [activeCategory, setActiveCategory] = useState("All");
+  const [enrolledSlugs, setEnrolledSlugs] = useState<Record<string, string>>({});
   const filtered = activeCategory === "All" ? courses : courses.filter((c) => c.category === activeCategory);
+
+  useEffect(() => {
+    if (!user) {
+      setEnrolledSlugs({});
+      return;
+    }
+    void Promise.all([
+      fetchCourses().catch((): Course[] => []),
+      fetchMyEnrollments().catch((): Enrollment[] => []),
+    ]).then(([liveCourses, enrs]) => {
+      const byId = new Map<string, string>(liveCourses.map((c) => [c.id, c.slug]));
+      const next: Record<string, string> = {};
+      for (const e of enrs) {
+        const s = byId.get(e.course_id);
+        if (s) next[s] = e.status;
+      }
+      setEnrolledSlugs(next);
+    });
+  }, [user]);
 
   return (
     <section className="py-16 md:py-20" id="courses">
@@ -75,16 +97,20 @@ const TrendingCoursesSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.08 }}
-              onClick={() => navigate("/learning/courses/ai-engineer-agentic-track")}
+              onClick={() => navigate(c.slug)}
               className="rounded-xl border bg-card overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
             >
               {/* Thumbnail */}
               <div className="relative aspect-[5/4] overflow-hidden bg-slate-100">
                 <img src={c.image} alt={c.title} className="w-full h-full object-cover object-[center_12%] group-hover:scale-105 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                {c.bestseller && (
+                {enrolledSlugs[c.courseSlug] ? (
+                  <span className="absolute top-2 left-2 text-[9px] font-bold bg-emerald-600 text-white px-2 py-0.5 rounded-sm uppercase tracking-wide inline-flex items-center gap-1">
+                    <CheckCircle2 className="h-2.5 w-2.5" />
+                    {enrolledSlugs[c.courseSlug] === "completed" ? "Completed" : "Enrolled"}
+                  </span>
+                ) : c.bestseller ? (
                   <span className="absolute top-2 left-2 text-[9px] font-bold bg-[hsl(33,100%,50%)] text-white px-2 py-0.5 rounded-sm uppercase tracking-wide">Bestseller</span>
-                )}
+                ) : null}
                 <div className="absolute top-2 right-2 text-[10px] bg-black/60 text-white px-2 py-0.5 rounded flex items-center gap-1">
                   <Clock className="h-2.5 w-2.5" /> {c.duration}
                 </div>

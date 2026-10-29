@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { siteLogo } from "@/assets/logo";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -114,11 +115,8 @@ const MyProfile = () => {
         {/* Sticky CTA Banner */}
         <div className="sticky top-0 z-30 bg-card/90 backdrop-blur-md border-b">
           <div className="max-w-4xl mx-auto flex items-center justify-between px-4 py-2.5 gap-3">
-            <Link to="/" className="flex items-center gap-2 shrink-0">
-              <div className="h-7 w-7 rounded-lg bg-primary flex items-center justify-center">
-                <Zap className="h-3.5 w-3.5 text-primary-foreground" />
-              </div>
-              <span className="font-bold font-display text-xs hidden sm:inline">IAm<span className="text-primary">Talento</span></span>
+            <Link to="/" className="flex items-center gap-2 shrink-0" aria-label="IAmTalento Home">
+              <img src={siteLogo.url} alt="I Am Talento" className="h-9 w-auto object-contain" />
             </Link>
 
             <div className="flex items-center gap-2">

@@ -20,18 +20,54 @@ const toolFilters = [
   "Kubernetes", "TensorFlow", "Salesforce", "Excel", "Jira", "Sketch", "Power BI", "Spark",
 ];
 
-interface JobsHeroSectionProps {
-  className?: string;
+export interface JobsHeroSearchParams {
+  query: string;
+  experience: string;
+  location: string;
+  skills: string[];
 }
 
-const JobsHeroSection = ({ className = "" }: JobsHeroSectionProps) => {
+interface JobsHeroSectionProps {
+  className?: string;
+  initialQuery?: string;
+  initialExperience?: string;
+  initialLocation?: string;
+  onSearch?: (params: JobsHeroSearchParams) => void;
+}
+
+const JobsHeroSection = ({
+  className = "",
+  initialQuery = "",
+  initialExperience = "",
+  initialLocation = "",
+  onSearch,
+}: JobsHeroSectionProps) => {
   const navigate = useNavigate();
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [query, setQuery] = useState(initialQuery);
+  const [experience, setExperience] = useState(initialExperience);
+  const [location, setLocation] = useState(initialLocation);
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
   const [selectedTools, setSelectedTools] = useState<string[]>([]);
 
   const toggleFilter = (item: string, list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>) => {
     setList(list.includes(item) ? list.filter(x => x !== item) : [...list, item]);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (onSearch) {
+      onSearch({ query, experience, location, skills: selectedTools });
+      document.getElementById("live-job-results")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    const sp = new URLSearchParams();
+    if (query.trim()) sp.set("q", query.trim());
+    if (experience) sp.set("exp", experience);
+    if (location.trim()) sp.set("loc", location.trim());
+    if (selectedTools.length > 0) sp.set("skills", selectedTools.join(","));
+    const qs = sp.toString();
+    navigate(qs ? `/jobs?${qs}#live-job-results` : "/jobs#live-job-results");
   };
 
   return (
@@ -82,7 +118,10 @@ const JobsHeroSection = ({ className = "" }: JobsHeroSectionProps) => {
           ))}
         </motion.div>
 
-        <motion.div
+        <motion.form
+          action="/jobs"
+          method="get"
+          onSubmit={handleSearchSubmit}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25 }}
@@ -93,10 +132,19 @@ const JobsHeroSection = ({ className = "" }: JobsHeroSectionProps) => {
               <Search className="h-5 w-5 text-primary" />
             </div>
             <div className="flex-1">
-              <div className="text-xs font-semibold">What</div>
+              <label htmlFor="jobs-hero-query" className="block text-xs font-semibold">
+                What
+              </label>
               <Input
+                id="jobs-hero-query"
+                name="q"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck={false}
                 placeholder="Skills, roles, designations or company"
-                className="border-0 shadow-none focus-visible:ring-0 bg-transparent h-7 px-0 text-sm text-muted-foreground"
+                className="border-0 shadow-none focus-visible:ring-0 bg-transparent h-7 px-0 text-sm text-foreground placeholder:text-muted-foreground"
               />
             </div>
           </div>
@@ -106,9 +154,11 @@ const JobsHeroSection = ({ className = "" }: JobsHeroSectionProps) => {
               <Briefcase className="h-5 w-5 text-primary" />
             </div>
             <div className="flex-1">
-              <div className="text-xs font-semibold">Experience</div>
-              <Select>
-                <SelectTrigger className="border-0 shadow-none focus:ring-0 bg-transparent h-7 px-0 text-sm text-muted-foreground">
+              <label htmlFor="jobs-hero-exp" className="block text-xs font-semibold">
+                Experience
+              </label>
+              <Select value={experience} onValueChange={setExperience}>
+                <SelectTrigger id="jobs-hero-exp" className="border-0 shadow-none focus:ring-0 bg-transparent h-7 px-0 text-sm text-muted-foreground">
                   <SelectValue placeholder="Select experience" />
                 </SelectTrigger>
                 <SelectContent>
@@ -123,17 +173,25 @@ const JobsHeroSection = ({ className = "" }: JobsHeroSectionProps) => {
               <MapPin className="h-5 w-5 text-primary" />
             </div>
             <div className="flex-1">
-              <div className="text-xs font-semibold">Location</div>
+              <label htmlFor="jobs-hero-location" className="block text-xs font-semibold">
+                Location
+              </label>
               <Input
+                id="jobs-hero-location"
+                name="loc"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                autoCorrect="off"
+                spellCheck={false}
                 placeholder="Enter location"
-                className="border-0 shadow-none focus-visible:ring-0 bg-transparent h-7 px-0 text-sm text-muted-foreground"
+                className="border-0 shadow-none focus-visible:ring-0 bg-transparent h-7 px-0 text-sm text-foreground placeholder:text-muted-foreground"
               />
             </div>
           </div>
-          <Button onClick={() => navigate("/talento-pro")} className="bg-primary text-primary-foreground hover:bg-primary/90 h-14 px-8 rounded-xl gap-2 shrink-0 text-base">
+          <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90 h-14 px-8 rounded-xl gap-2 shrink-0 text-base">
             <Search className="h-4 w-4" /> Search Jobs
           </Button>
-        </motion.div>
+        </motion.form>
 
 
         <motion.div

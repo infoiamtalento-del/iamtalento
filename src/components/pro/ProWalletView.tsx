@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Wallet,
   CreditCard,
@@ -26,6 +26,9 @@ import { ProDrawerState } from "./proTypes";
 interface ProWalletViewProps {
   user: ProUser;
   onUpdateWallet: (newBalance: number, newTx: any) => void;
+  /** Present only for signed-in candidates: real Razorpay checkout + server ledger. */
+  onLiveTopUp?: (amount: number) => Promise<void>;
+  onLiveSpend?: (serviceKey: string, title: string) => Promise<void>;
   onOpenDrawer: (drawer: ProDrawerState) => void;
   onToast: (msg: string) => void;
 }
@@ -54,12 +57,18 @@ const QUICK_AMOUNTS = [500, 1000, 2000, 5000];
 export const ProWalletView: React.FC<ProWalletViewProps> = ({
   user,
   onUpdateWallet,
+  onLiveTopUp,
+  onLiveSpend,
   onOpenDrawer,
   onToast,
 }) => {
   const isEmployer = user.role === "employer";
   const walletData = user.wal || { bal: 1500, hist: [] };
-  const [balance, setBalance] = useState(walletData.bal || 1500);
+  const [balance, setBalance] = useState(onLiveTopUp ? walletData.bal || 0 : walletData.bal || 1500);
+  const [liveBusy, setLiveBusy] = useState(false);
+  useEffect(() => {
+    if (onLiveTopUp) setBalance(walletData.bal || 0);
+  }, [onLiveTopUp, walletData.bal]);
 
   // Payment form state
   const [addAmount, setAddAmount] = useState<number>(0);
@@ -97,19 +106,28 @@ export const ProWalletView: React.FC<ProWalletViewProps> = ({
   // Sample service offerings
   const serviceOfferings = isEmployer
     ? [
-        { title: "Recruiter credits (100 pack)", price: 2499, desc: "Unlock direct candidate contact access" },
-        { title: "Job spotlight boost (7 days)", price: 999, desc: "Pin a job to the top of candidate search" },
-        { title: "AI candidate shortlisting", price: 499, desc: "Automatic ranking of incoming applicants" },
+        { key: "recruiter_pack", title: "Recruiter credits (100 pack)", price: 2499, desc: "Unlock direct candidate contact access" },
+        { key: "job_spotlight", title: "Job spotlight boost (7 days)", price: 999, desc: "Pin a job to the top of candidate search" },
+        { key: "ai_shortlisting", title: "AI candidate shortlisting", price: 499, desc: "Automatic ranking of incoming applicants" },
       ]
     : [
-        { title: "Profile boost (7 days)", price: 99, desc: "Featured in employer search" },
-        { title: "Expert resume review", price: 149, desc: "Feedback from a hiring specialist" },
+        { key: "profile_boost", title: "Profile boost (7 days)", price: 99, desc: "Featured in employer search" },
+        { key: "resume_review", title: "Expert resume review", price: 149, desc: "Feedback from a hiring specialist" },
       ];
 
   const handleStartPayment = (e: React.FormEvent) => {
     e.preventDefault();
     if (addAmount < 10) {
       onToast("Minimum amount to add is ₹10");
+      return;
+    }
+
+    if (onLiveTopUp) {
+      setLiveBusy(true);
+      onLiveTopUp(addAmount).finally(() => {
+        setLiveBusy(false);
+        setAddAmount(0);
+      });
       return;
     }
 
@@ -182,6 +200,12 @@ export const ProWalletView: React.FC<ProWalletViewProps> = ({
   const handleSpendBalance = (service: (typeof serviceOfferings)[0]) => {
     if (balance < service.price) {
       onToast(`Insufficient balance. Please add at least ₹${service.price - balance} to proceed.`);
+      return;
+    }
+
+    if (onLiveSpend) {
+      setLiveBusy(true);
+      onLiveSpend(service.key, service.title).finally(() => setLiveBusy(false));
       return;
     }
 
@@ -489,6 +513,7 @@ export const ProWalletView: React.FC<ProWalletViewProps> = ({
 
             <Button
               type="submit"
+              disabled={liveBusy}
               className="h-11 w-full gap-2 rounded-xl font-semibold shadow-md shadow-primary/30"
             >
               <Lock className="h-4 w-4" /> {addAmount >= 10 ? `Pay ${formatINR(addAmount)} securely` : "Pay securely"}

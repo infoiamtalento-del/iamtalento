@@ -4,6 +4,9 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Flag, ArrowLeft, ArrowRight, Clock, ShieldCheck, Minus, Plus, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getAssessment } from "@/data/assessments";
+import { LiveAssessmentJourney } from "@/components/assessment/LiveAssessmentJourney";
+import { currentUserId, db } from "@/services/db";
+import type { CatalogAssessment } from "@/services/candidate/assessments";
 
 const parseMinutes = (d: string) => parseInt(d, 10) || 30;
 
@@ -79,7 +82,7 @@ const PracticalTask = ({ onComplete, complete }: { onComplete: () => void; compl
   );
 };
 
-const AssessmentTest = () => {
+const StaticAssessmentTest = () => {
   const { assessmentId } = useParams();
   const navigate = useNavigate();
   const a = getAssessment(assessmentId);
@@ -306,6 +309,37 @@ const AssessmentTest = () => {
       )}
     </>
   );
+};
+
+/**
+ * Signed-in candidates take server-graded, proctored tests when the assessment exists in the
+ * database. Everyone else (guests, demo accounts, not-yet-migrated tests) keeps the local flow.
+ */
+const AssessmentTest = () => {
+  const { assessmentId } = useParams();
+  const [mode, setMode] = useState<"loading" | "live" | "static">("loading");
+  const [live, setLive] = useState<CatalogAssessment | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const uid = await currentUserId();
+        if (!uid || !assessmentId) return alive && setMode("static");
+        const { data } = await db.from("assessments_catalog").select("*")
+          .eq("slug", assessmentId).eq("kind", "domain").eq("is_active", true).maybeSingle();
+        if (!alive) return;
+        if (data) { setLive(data as CatalogAssessment); setMode("live"); } else setMode("static");
+      } catch {
+        if (alive) setMode("static");
+      }
+    })();
+    return () => { alive = false; };
+  }, [assessmentId]);
+
+  if (mode === "loading") return <div className="min-h-screen" />;
+  if (mode === "live" && live) return <LiveAssessmentJourney assessment={live} />;
+  return <StaticAssessmentTest />;
 };
 
 export default AssessmentTest;

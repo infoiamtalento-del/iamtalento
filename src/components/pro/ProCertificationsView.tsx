@@ -53,6 +53,7 @@ import { ProUser, POPULAR_CERTS } from "@/data/proData";
 import { ProHero } from "./ProHero";
 import { MatchRing } from "./ProMatchRing";
 import { ProDrawerState, ProView } from "./proTypes";
+import { LiveCirStrip } from "./live/LiveCirStrip";
 import {
   downloadCertificatePdf,
   downloadCirReportPdf,
@@ -65,6 +66,7 @@ import logoMeta from "@/assets/logo-meta.svg";
 interface ProCertificationsViewProps {
   user: ProUser;
   mode?: "assessments" | "certifications";
+  isLive?: boolean;
   onAddCertification: (certStr: string) => void;
   onRemoveCertification: (index: number) => void;
   onOpenDrawer: (drawer: ProDrawerState) => void;
@@ -450,6 +452,7 @@ const WORKFLOW_STEPS = [
 export const ProCertificationsView: React.FC<ProCertificationsViewProps> = ({
   user,
   mode = "assessments",
+  isLive = false,
   onAddCertification,
   onRemoveCertification,
   onOpenDrawer,
@@ -750,6 +753,8 @@ export const ProCertificationsView: React.FC<ProCertificationsViewProps> = ({
           </div>
         </ProHero>
       )}
+
+      {isLive && <LiveCirStrip />}
 
       {!isCertificationsMode ? (
         <>

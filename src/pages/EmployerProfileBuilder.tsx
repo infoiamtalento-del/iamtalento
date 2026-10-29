@@ -72,6 +72,7 @@ const EmployerProfileBuilder = () => {
   const [establishedYear, setEstablishedYear] = useState("");
   const [industry, setIndustry] = useState("");
   const [talentaId, setTalentaId] = useState("");
+  const [logoUrl, setLogoUrl] = useState("");
 
   // Step 5/6 — Jobs
   const [jobs, setJobs] = useState<JobOpening[]>([emptyJob()]);
@@ -102,6 +103,7 @@ const EmployerProfileBuilder = () => {
       setEstablishedYear(emp.established_year?.toString() || "");
       setIndustry(emp.industry || "");
       setTalentaId(emp.employer_id || "");
+      setLogoUrl(emp.logo_url || "");
 
       // Load job openings
       const { data: jobData } = await supabase

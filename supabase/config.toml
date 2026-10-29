@@ -1,4 +1,10 @@
-project_id = "ryrkisxfnsocrwrpnupf"
+project_id = "uoxokxgbpylfsanffsxm"
 
 [functions.generate-assessment]
+verify_jwt = false
+
+[functions.payments]
+verify_jwt = false
+
+[functions.sign-credential]
 verify_jwt = false
