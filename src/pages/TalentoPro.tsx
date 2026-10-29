@@ -18,6 +18,7 @@ import {
 } from "@/data/proData";
 
 import { getCandidatePhoto } from "@/data/portalAssets";
+import { clearDemoOnlySession, isDemoOnlySession } from "@/services/authSession";
 import { Building2 } from "lucide-react";
 import { ProView, ProDrawerState } from "@/components/pro/proTypes";
 import Navbar from "@/components/layout/Navbar";
@@ -125,18 +126,29 @@ const normalizeUsers = (raw: any): Record<string, ProUser> => {
 const TalentoPro: React.FC = () => {
   // Navigation & Shell State
   const [searchParams, setSearchParams] = useSearchParams();
-  const [sessionEmail, setSessionEmail] = useState<string>(() => {
-    const fromRole = new URLSearchParams(window.location.search).get("role");
-    if (fromRole === "employer") return "demo.employer@talento.app";
-    if (fromRole === "employee" || fromRole === "candidate") return "demo.candidate@talento.app";
-    const s = loadStorage("sess", "demo.candidate@talento.app");
-    return s && typeof s === "string" ? s : "demo.candidate@talento.app";
-  });
-
   const [users, setUsers] = useState<Record<string, ProUser>>(() => {
     const raw = loadStorage("users", DEFAULT_USERS);
     return normalizeUsers(raw);
   });
+
+  const [sessionEmail, setSessionEmail] = useState<string>(() => {
+    const stored = loadStorage("sess", "demo.candidate@talento.app");
+    const validStored = stored && typeof stored === "string" ? stored : "demo.candidate@talento.app";
+    const fromRole = new URLSearchParams(window.location.search).get("role");
+    if (fromRole === "employer") {
+      if (!isDemoOnlySession() && users[validStored]?.role === "employer") return validStored;
+      return "demo.employer@talento.app";
+    }
+    if (fromRole === "employee" || fromRole === "candidate") {
+      if (!isDemoOnlySession() && validStored !== "demo.candidate@talento.app" && users[validStored]?.role !== "employer") {
+        return validStored;
+      }
+      return "demo.candidate@talento.app";
+    }
+    return validStored;
+  });
+
+  const demoOnly = isDemoOnlySession();
 
   const currentUser: ProUser = useMemo(() => {
     if (users && users[sessionEmail]) return users[sessionEmail];
@@ -165,14 +177,14 @@ const TalentoPro: React.FC = () => {
       setActiveView(fromParam);
     }
     const roleParam = searchParams.get("role");
-    if (roleParam === "employer" && sessionEmail !== "demo.employer@talento.app") {
+    if (roleParam === "employer" && users[sessionEmail]?.role !== "employer") {
       setSessionEmail("demo.employer@talento.app");
       saveStorage("sess", "demo.employer@talento.app");
-    } else if ((roleParam === "employee" || roleParam === "candidate") && sessionEmail !== "demo.candidate@talento.app") {
+    } else if ((roleParam === "employee" || roleParam === "candidate") && users[sessionEmail]?.role === "employer") {
       setSessionEmail("demo.candidate@talento.app");
       saveStorage("sess", "demo.candidate@talento.app");
     }
-  }, [searchParams, sessionEmail]);
+  }, [searchParams, sessionEmail, users]);
 
   const [editingCp, setEditingCp] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
@@ -234,9 +246,9 @@ const TalentoPro: React.FC = () => {
   const backend = useCandidateBackend({
     email: sessionEmail,
     name: currentUser.name,
-    isCandidate: currentRole === "candidate",
+    isCandidate: currentRole === "candidate" && !demoOnly,
   });
-  const liveCandidate = Boolean(backend.userId) && currentRole === "candidate";
+  const liveCandidate = Boolean(backend.userId) && currentRole === "candidate" && !demoOnly;
 
   useEffect(() => {
     const live = backend.jobs;
@@ -276,7 +288,7 @@ const TalentoPro: React.FC = () => {
   usersRef.current = users;
 
   useEffect(() => {
-    if (!backend.userId) { setLiveEmail(null); setLiveBooting(false); return; }
+    if (!backend.userId || demoOnly) { setLiveEmail(null); setLiveBooting(false); return; }
     let alive = true;
     setLiveBooting(true);
     (async () => {
@@ -303,7 +315,7 @@ const TalentoPro: React.FC = () => {
       }
     })();
     return () => { alive = false; };
-  }, [backend.userId]);
+  }, [backend.userId, demoOnly]);
 
   useEffect(() => {
     if (!liveEmail || sessionEmail !== liveEmail) return;
@@ -865,7 +877,7 @@ const TalentoPro: React.FC = () => {
           avatarSrc: currentUser.avatar || (liveCandidate ? undefined : getCandidatePhoto(currentUser.name)),
           role: currentRole,
         }}
-        onSignOut={() => { localStorage.removeItem("tq_sess"); localStorage.removeItem("tq_users"); localStorage.removeItem("tq_apps"); }}
+        onSignOut={() => { clearDemoOnlySession(); localStorage.removeItem("tq_sess"); localStorage.removeItem("tq_users"); localStorage.removeItem("tq_apps"); }}
         accountMenu={(onNavbarSignOut) => {
           const userPhoto = currentUser.avatar || (liveCandidate ? undefined : getCandidatePhoto(currentUser.name));
           const navView = (view: ProView) => {

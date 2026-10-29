@@ -21,7 +21,53 @@ export async function createDb() {
 
   await pg.exec(`
     create schema if not exists auth; create schema if not exists extensions; create schema if not exists storage;
-    create table auth.users (id uuid primary key default gen_random_uuid(), email text, raw_user_meta_data jsonb);
+    create table auth.users (
+      instance_id uuid default '00000000-0000-0000-0000-000000000000'::uuid,
+      id uuid primary key default gen_random_uuid(),
+      aud varchar(255) default 'authenticated',
+      role varchar(255) default 'authenticated',
+      email varchar(255),
+      encrypted_password varchar(255),
+      email_confirmed_at timestamptz,
+      invited_at timestamptz,
+      confirmation_token varchar(255) default '',
+      confirmation_sent_at timestamptz,
+      recovery_token varchar(255) default '',
+      recovery_sent_at timestamptz,
+      email_change_token_new varchar(255) default '',
+      email_change varchar(255) default '',
+      email_change_sent_at timestamptz,
+      last_sign_in_at timestamptz,
+      raw_app_meta_data jsonb default '{"provider":"email","providers":["email"]}'::jsonb,
+      raw_user_meta_data jsonb default '{}'::jsonb,
+      is_super_admin boolean,
+      created_at timestamptz default now(),
+      updated_at timestamptz default now(),
+      phone text,
+      phone_confirmed_at timestamptz,
+      phone_change text default '',
+      phone_change_token varchar(255) default '',
+      phone_change_sent_at timestamptz,
+      email_change_token_current varchar(255) default '',
+      email_change_confirm_status smallint default 0,
+      banned_until timestamptz,
+      reauthentication_token varchar(255) default '',
+      reauthentication_sent_at timestamptz,
+      is_sso_user boolean not null default false,
+      deleted_at timestamptz,
+      is_anonymous boolean not null default false
+    );
+    create table auth.identities (
+      provider_id text not null,
+      user_id uuid not null references auth.users(id) on delete cascade,
+      identity_data jsonb not null default '{}'::jsonb,
+      provider text not null,
+      last_sign_in_at timestamptz,
+      created_at timestamptz default now(),
+      updated_at timestamptz default now(),
+      id uuid primary key default gen_random_uuid(),
+      unique (provider_id, provider)
+    );
     create or replace function auth.uid() returns uuid language sql stable as
       $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
     create or replace function auth.role() returns text language sql stable as

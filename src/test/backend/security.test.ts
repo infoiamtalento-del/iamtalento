@@ -95,6 +95,11 @@ describe("function exposure", () => {
     "submit_gig_proposal", "submit_hackathon_project", "submit_identity_verification", "subscribe_job_alerts", "toggle_saved_job",
     "unsubscribe_job_alert", "update_application_stage", "validate_coupon", "verify_credential", "withdraw_application",
     "withdraw_gig_proposal", "review_identity_verification",
+    // 30-layer proctoring RPCs
+    "init_proctoring_session", "verify_proctoring_mfa", "complete_proctoring_precheck", "heartbeat_proctoring_session",
+    "send_proctor_chat_message", "verify_proctoring_chain", "finalize_proctoring_audit", "get_proctoring_dossier",
+    // auth reliability & rate-limit-proof account provisioning
+    "register_user_account", "confirm_unverified_account",
     // used inside RLS policies and constraints
     "is_admin", "is_owner", "is_tenant_member", "can_manage_job", "has_role", "all_http_urls", "is_client_role", "safe_date", "_jsonb_text_array",
     "generate_talento_id", "update_updated_at",
@@ -102,6 +107,7 @@ describe("function exposure", () => {
   const ANON_ALLOWED = new Set([
     "is_admin", "is_owner", "is_tenant_member", "can_manage_job", "has_role", "all_http_urls", "is_client_role", "verify_credential",
     "get_public_portfolio", "search_jobs", "subscribe_job_alerts", "unsubscribe_job_alert",
+    "register_user_account", "confirm_unverified_account",
   ]);
 
   const callable = async (role: string) => {

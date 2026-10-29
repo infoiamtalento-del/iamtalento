@@ -1,19 +1,28 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { motion, AnimatePresence } from "framer-motion";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Zap, Mail, Lock, User, Phone, Eye, EyeOff, ArrowRight,
-  CheckCircle2, ShieldCheck, Award, Target, Sparkles, Building2, UserCircle,
+  Mail, Lock, User, Phone, Eye, EyeOff, ArrowRight,
+  CheckCircle2, ShieldCheck, Award, Target, Sparkles, Building2, UserCircle, LogOut,
 } from "lucide-react";
 import { toast } from "sonner";
 import { DEFAULT_USERS } from "@/data/proData";
 import { getCandidatePhoto } from "@/data/portalAssets";
 import { siteLogo } from "@/assets/logo";
+import {
+  establishProSessionForUser,
+  formatAuthError,
+  isDemoOnlySession,
+  openDemoWorkspace,
+  registerAndSignIn,
+  signInWithPasswordAndRecover,
+} from "@/services/authSession";
 
 type AuthMode = "login" | "signup";
 type UserRole = "employee" | "employer";
@@ -26,11 +35,18 @@ const trustItems = [
 ];
 
 const Auth = () => {
-  const [mode, setMode] = useState<AuthMode>("login");
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  const initialMode: AuthMode = searchParams.get("mode") === "signup" ? "signup" : "login";
+  const initialRole: UserRole = searchParams.get("role") === "employer" ? "employer" : "employee";
+  const redirectParam = searchParams.get("redirect") || searchParams.get("next");
+
+  const [mode, setMode] = useState<AuthMode>(initialMode);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [role, setRole] = useState<UserRole>("employee");
-  const navigate = useNavigate();
+  const [role, setRole] = useState<UserRole>(initialRole);
+  const [existingUser, setExistingUser] = useState<SupabaseUser | null>(null);
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -41,46 +57,75 @@ const Auth = () => {
   // Employer-specific
   const [companyName, setCompanyName] = useState("");
 
+  useEffect(() => {
+    const reqMode = searchParams.get("mode");
+    if (reqMode === "signup" || reqMode === "login") setMode(reqMode);
+    const reqRole = searchParams.get("role");
+    if (reqRole === "employer" || reqRole === "employee") setRole(reqRole);
+  }, [searchParams]);
+
+  useEffect(() => {
+    // Handle auth callback tokens or hash errors if an email link pointed directly to /auth
+    const hash = window.location.hash;
+    const code = searchParams.get("code");
+    if (code || /access_token=|error_code=|error_description=/.test(hash)) {
+      navigate(`/auth/callback${window.location.search}${hash}`, { replace: true });
+      return;
+    }
+
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session?.user && !isDemoOnlySession()) {
+        setExistingUser(data.session.user);
+      }
+    });
+  }, [navigate, searchParams]);
+
   const openDemoProfile = () => {
-    const demoEmail = role === "employer" ? "demo.employer@talento.app" : "demo.candidate@talento.app";
-    localStorage.setItem("tq_sess", JSON.stringify(demoEmail));
-    navigate(role === "employer" ? "/talento-pro?view=dash&role=employer" : "/talento-pro?view=dash");
+    const dest = openDemoWorkspace(role);
+    navigate(dest);
   };
   const demoUser = DEFAULT_USERS[role === "employer" ? "demo.employer@talento.app" : "demo.candidate@talento.app"];
 
+  const handleContinueExisting = async () => {
+    if (!existingUser) return;
+    setLoading(true);
+    try {
+      const target = await establishProSessionForUser(existingUser, role, redirectParam);
+      navigate(target);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSwitchAccount = async () => {
+    await supabase.auth.signOut();
+    localStorage.removeItem("tq_sess");
+    setExistingUser(null);
+    toast.success("Signed out. You can now sign in with another account.");
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim() || !password.trim()) {
-      toast.error("Please enter email and password");
+    if (!email.trim() || !password) {
+      toast.error("Please enter your email and password");
       return;
     }
     setLoading(true);
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
-    if (error) {
-      toast.error(error.message);
-      return;
-    }
-    // Check user role to redirect appropriately
-    const { data: roles } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", data.user.id);
-    
-    const isEmployer = roles?.some((r: any) => r.role === "employer") || role === "employer";
-    toast.success("Welcome back!");
-    if (isEmployer) {
-      localStorage.setItem("tq_sess", JSON.stringify("demo.employer@talento.app"));
-      navigate("/talento-pro?view=dash&role=employer");
-    } else {
-      localStorage.setItem("tq_sess", JSON.stringify("demo.candidate@talento.app"));
-      navigate("/talento-pro?view=dash");
+    try {
+      const { user } = await signInWithPasswordAndRecover(email, password);
+      const target = await establishProSessionForUser(user, role, redirectParam);
+      toast.success("Welcome back!");
+      navigate(target);
+    } catch (err) {
+      toast.error(formatAuthError(err));
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!fullName.trim() || !email.trim() || !password.trim()) {
+    if (!fullName.trim() || !email.trim() || !password) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -100,30 +145,33 @@ const Auth = () => {
       toast.error("Please accept the terms & conditions");
       return;
     }
+
     setLoading(true);
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: window.location.origin,
-        data: {
-          full_name: fullName,
-          phone,
-          experience_level: role === "employee" ? experienceLevel : undefined,
-          role,
-          company_name: role === "employer" ? companyName : undefined,
-        },
-      },
-    });
-    if (error) {
+    try {
+      const result = await registerAndSignIn({
+        email,
+        password,
+        fullName,
+        phone,
+        role,
+        experienceLevel,
+        companyName,
+      });
+
+      if (result.user && result.session) {
+        const target = await establishProSessionForUser(result.user, role, redirectParam);
+        toast.success("Account created! Welcome to IAmTalento.");
+        navigate(target);
+        return;
+      }
+
+      toast.success("Account created! You can now sign in with your email and password.");
+      setMode("login");
+    } catch (err) {
+      toast.error(formatAuthError(err));
+    } finally {
       setLoading(false);
-      toast.error(error.message);
-      return;
     }
-    // The role, profile and employer stub are created by the handle_new_user database trigger
-    // from the sign-up metadata, so they also work before the email is confirmed.
-    setLoading(false);
-    toast.success(data.session ? "Account created. Welcome!" : "Account created! Please check your email to verify.");
   };
 
   return (
@@ -159,7 +207,7 @@ const Auth = () => {
               AI-powered assessments. Industry readiness scores. Proof that speaks for itself.
             </motion.p>
             <div className="space-y-3">
-              {trustItems.map(({ icon: Icon, text }, i) => (
+              {trustItems.map(({ text }, i) => (
                 <motion.div key={text} className="flex items-center gap-3 text-primary-foreground/60"
                   initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.4, delay: 0.35 + i * 0.08 }}>
@@ -185,10 +233,29 @@ const Auth = () => {
               </Link>
             </div>
 
+            {existingUser && (
+              <div className="mb-6 rounded-xl border border-primary/25 bg-primary/5 p-4 space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-primary">Active Session</p>
+                    <p className="text-sm font-medium text-foreground truncate">{existingUser.email}</p>
+                  </div>
+                  <Button type="button" variant="ghost" size="sm" onClick={handleSwitchAccount} className="gap-1.5 text-xs shrink-0">
+                    <LogOut className="h-3.5 w-3.5" />
+                    Switch
+                  </Button>
+                </div>
+                <Button type="button" onClick={handleContinueExisting} disabled={loading} className="w-full h-10 gap-2">
+                  Continue to Workspace
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+
             {/* Mode tabs */}
             <div className="flex gap-1 bg-secondary rounded-xl p-1 mb-8">
               {(["login", "signup"] as AuthMode[]).map((m) => (
-                <button key={m} onClick={() => setMode(m)}
+                <button key={m} type="button" onClick={() => setMode(m)}
                   className={`flex-1 py-2.5 rounded-lg text-sm font-semibold font-display transition-all ${
                     mode === m ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
                   }`}>
@@ -198,7 +265,7 @@ const Auth = () => {
             </div>
 
             {mode === "login" && <div className="mb-6 grid grid-cols-2 gap-3" aria-label="Account type">
-              {(["employee", "employer"] as const).map((value) => <Button key={value} variant="outline" aria-pressed={role === value} onClick={() => setRole(value)} className={role === value ? "border-primary bg-primary/10 text-primary hover:bg-primary/15" : "text-muted-foreground"}>
+              {(["employee", "employer"] as const).map((value) => <Button key={value} type="button" variant="outline" aria-pressed={role === value} onClick={() => setRole(value)} className={role === value ? "border-primary bg-primary/10 text-primary hover:bg-primary/15" : "text-muted-foreground"}>
                 {value === "employee" ? <UserCircle /> : <Building2 />}{value === "employee" ? "Employee" : "Employer"}
               </Button>)}
             </div>}
@@ -217,8 +284,19 @@ const Auth = () => {
                       <Label htmlFor="login-email" className="text-sm font-medium">Email</Label>
                       <div className="relative mt-1.5">
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input id="login-email" type="email" placeholder="you@example.com"
-                          value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10" required />
+                        <Input
+                          id="login-email"
+                          name="email"
+                          type="email"
+                          autoComplete="username"
+                          spellCheck={false}
+                          enterKeyHint="next"
+                          placeholder="you@example.com"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="pl-10"
+                          required
+                        />
                       </div>
                     </div>
                     <div>
@@ -228,10 +306,24 @@ const Auth = () => {
                       </div>
                       <div className="relative mt-1.5">
                         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input id="login-password" type={showPassword ? "text" : "password"} placeholder="••••••••"
-                          value={password} onChange={(e) => setPassword(e.target.value)} className="pl-10 pr-10" required />
-                        <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                          onClick={() => setShowPassword(!showPassword)}>
+                        <Input
+                          id="login-password"
+                          name="password"
+                          type={showPassword ? "text" : "password"}
+                          autoComplete="current-password"
+                          enterKeyHint="done"
+                          placeholder="••••••••"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="pl-10 pr-10"
+                          required
+                        />
+                        <button
+                          type="button"
+                          aria-label={showPassword ? "Hide password" : "Show password"}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
                           {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </button>
                       </div>
@@ -291,8 +383,19 @@ const Auth = () => {
                       <Label htmlFor="signup-name" className="text-sm font-medium">Full Name *</Label>
                       <div className="relative mt-1.5">
                         <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input id="signup-name" type="text" placeholder="Your full name"
-                          value={fullName} onChange={(e) => setFullName(e.target.value)} className="pl-10" required maxLength={100} />
+                        <Input
+                          id="signup-name"
+                          name="name"
+                          type="text"
+                          autoComplete="name"
+                          enterKeyHint="next"
+                          placeholder="Your full name"
+                          value={fullName}
+                          onChange={(e) => setFullName(e.target.value)}
+                          className="pl-10"
+                          required
+                          maxLength={100}
+                        />
                       </div>
                     </div>
                     <div>
@@ -301,16 +404,39 @@ const Auth = () => {
                       </Label>
                       <div className="relative mt-1.5">
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input id="signup-email" type="email" placeholder="you@example.com"
-                          value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10" required maxLength={255} />
+                        <Input
+                          id="signup-email"
+                          name="email"
+                          type="email"
+                          autoComplete="username"
+                          spellCheck={false}
+                          enterKeyHint="next"
+                          placeholder="you@example.com"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="pl-10"
+                          required
+                          maxLength={255}
+                        />
                       </div>
                     </div>
                     <div>
                       <Label htmlFor="signup-phone" className="text-sm font-medium">Mobile Number</Label>
                       <div className="relative mt-1.5">
                         <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input id="signup-phone" type="tel" placeholder="+91 98765 43210"
-                          value={phone} onChange={(e) => setPhone(e.target.value)} className="pl-10" maxLength={15} />
+                        <Input
+                          id="signup-phone"
+                          name="tel"
+                          type="tel"
+                          inputMode="tel"
+                          autoComplete="tel"
+                          enterKeyHint="next"
+                          placeholder="+91 98765 43210"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          className="pl-10"
+                          maxLength={18}
+                        />
                       </div>
                     </div>
 
@@ -320,8 +446,19 @@ const Auth = () => {
                         <Label htmlFor="signup-company" className="text-sm font-medium">Company Name *</Label>
                         <div className="relative mt-1.5">
                           <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                          <Input id="signup-company" type="text" placeholder="Your company name"
-                            value={companyName} onChange={(e) => setCompanyName(e.target.value)} className="pl-10" required maxLength={200} />
+                          <Input
+                            id="signup-company"
+                            name="organization"
+                            type="text"
+                            autoComplete="organization"
+                            enterKeyHint="next"
+                            placeholder="Your company name"
+                            value={companyName}
+                            onChange={(e) => setCompanyName(e.target.value)}
+                            className="pl-10"
+                            required
+                            maxLength={200}
+                          />
                         </div>
                       </motion.div>
                     )}
@@ -330,10 +467,25 @@ const Auth = () => {
                       <Label htmlFor="signup-password" className="text-sm font-medium">Password *</Label>
                       <div className="relative mt-1.5">
                         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input id="signup-password" type={showPassword ? "text" : "password"} placeholder="Min 6 characters"
-                          value={password} onChange={(e) => setPassword(e.target.value)} className="pl-10 pr-10" required minLength={6} />
-                        <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                          onClick={() => setShowPassword(!showPassword)}>
+                        <Input
+                          id="signup-password"
+                          name="new-password"
+                          type={showPassword ? "text" : "password"}
+                          autoComplete="new-password"
+                          enterKeyHint="done"
+                          placeholder="Min 6 characters"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="pl-10 pr-10"
+                          required
+                          minLength={6}
+                        />
+                        <button
+                          type="button"
+                          aria-label={showPassword ? "Hide password" : "Show password"}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
                           {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </button>
                       </div>
@@ -362,8 +514,8 @@ const Auth = () => {
                       <input type="checkbox" checked={acceptTerms} onChange={(e) => setAcceptTerms(e.target.checked)}
                         className="mt-0.5 h-4 w-4 rounded border-border text-primary focus:ring-primary" />
                       <span className="text-xs text-muted-foreground leading-relaxed">
-                        I accept the{" "}<a href="#" className="text-primary hover:underline">Terms of Service</a>,{" "}
-                        <a href="#" className="text-primary hover:underline">Privacy Policy</a>
+                        I accept the{" "}<Link to="/docs" className="text-primary hover:underline">Terms of Service</Link>,{" "}
+                        <Link to="/docs" className="text-primary hover:underline">Privacy Policy</Link>
                         {role === "employee" && ", and consent to AI-proctored assessments"}.
                       </span>
                     </label>

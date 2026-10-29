@@ -2,9 +2,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
-import { lazy as reactLazy, Suspense, ComponentType } from "react";
+import { lazy as reactLazy, Suspense, ComponentType, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 // Retry once with a full reload when a page chunk is stale after a new deploy.
 const lazy = <T extends ComponentType<any>>(factory: () => Promise<{ default: T }>) =>
@@ -46,6 +47,8 @@ const ForEmployers = lazy(() => import("./pages/ForEmployers"));
 const ForEmployersV2 = lazy(() => import("./pages/ForEmployersV2"));
 const ForEmployersProof = lazy(() => import("./pages/ForEmployersProof"));
 const Auth = lazy(() => import("./pages/Auth"));
+const AuthCallback = lazy(() => import("./pages/AuthCallback"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const ProfileBuilder = lazy(() => import("./pages/ProfileBuilder"));
 const EmployerProfileBuilder = lazy(() => import("./pages/EmployerProfileBuilder"));
 const MyProfile = lazy(() => import("./pages/MyProfile"));
@@ -71,6 +74,39 @@ const VerifyCredential = lazy(() => import("./pages/VerifyCredential"));
 const PublicPortfolio = lazy(() => import("./pages/PublicPortfolio"));
 
 const queryClient = new QueryClient();
+
+const AuthRedirectListener = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    // Forward Supabase email confirmation / error fragments that land on `/` to `/auth/callback`
+    if (location.pathname !== "/auth/callback" && location.pathname !== "/reset-password") {
+      const hash = window.location.hash;
+      const params = new URLSearchParams(location.search);
+      const hasAuthHash = /access_token=|error_code=|error_description=/.test(hash);
+      const hasAuthCode = location.pathname === "/" && params.has("code");
+      if (hasAuthHash || hasAuthCode) {
+        if (/type=recovery/.test(hash)) {
+          navigate(`/reset-password${location.search}${hash}`, { replace: true });
+        } else {
+          navigate(`/auth/callback${location.search}${hash}`, { replace: true });
+        }
+      }
+    }
+  }, [location.pathname, location.search, navigate]);
+
+  useEffect(() => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") {
+        navigate("/reset-password", { replace: true });
+      }
+    });
+    return () => sub.subscription.unsubscribe();
+  }, [navigate]);
+
+  return null;
+};
 
 const AnimatedRoutes = () => {
   const location = useLocation();
@@ -114,6 +150,9 @@ const AnimatedRoutes = () => {
           <Route path="/employers-page-2" element={<PageTransition><ForEmployersProof /></PageTransition>} />
           <Route path="/for-employers-v2" element={<PageTransition><ForEmployersV2 /></PageTransition>} />
           <Route path="/auth" element={<PageTransition><Auth /></PageTransition>} />
+          <Route path="/auth/callback" element={<PageTransition><AuthCallback /></PageTransition>} />
+          <Route path="/forgot-password" element={<PageTransition><ResetPassword /></PageTransition>} />
+          <Route path="/reset-password" element={<PageTransition><ResetPassword /></PageTransition>} />
           <Route path="/profile" element={<PageTransition><ProfileBuilder /></PageTransition>} />
           <Route path="/my-profile" element={<PageTransition><MyProfile /></PageTransition>} />
           <Route path="/employer-profile" element={<PageTransition><EmployerProfileBuilder /></PageTransition>} />
@@ -143,6 +182,7 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <AuthRedirectListener />
             <AnimatedRoutes />
           </BrowserRouter>
         </TooltipProvider>
