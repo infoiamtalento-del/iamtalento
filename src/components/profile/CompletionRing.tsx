@@ -38,14 +38,14 @@ const CompletionRing = ({ percentage, size = 120, strokeWidth = 8 }: CompletionR
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <motion.span
-          className="text-2xl font-bold font-display"
+          className={`${size < 80 ? "text-xs" : size < 105 ? "text-base" : "text-2xl"} font-bold font-display`}
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.5 }}
         >
           {percentage}%
         </motion.span>
-        <span className="text-[10px] text-muted-foreground">Complete</span>
+        {size >= 80 && <span className="text-[10px] text-muted-foreground">Complete</span>}
       </div>
     </div>
   );

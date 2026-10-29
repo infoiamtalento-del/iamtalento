@@ -58,6 +58,7 @@ interface Props {
   jobs: ProJob[];
   applications: ProApplication[];
   isLive?: boolean;
+  initialTab?: "info" | "security" | "settings";
   onNavigate: (view: ProView) => void;
   onUpdateUser?: (updated: ProUser) => void;
   onToast?: (msg: string) => void;
@@ -68,6 +69,7 @@ export function ProEmployeeMyAccount({
   jobs,
   applications,
   isLive = false,
+  initialTab = "info",
   onNavigate,
   onUpdateUser,
   onToast,
@@ -140,7 +142,10 @@ export function ProEmployeeMyAccount({
   };
 
   // Active Tab
-  const [activeTab, setActiveTab] = useState<"info" | "security" | "settings">("info");
+  const [activeTab, setActiveTab] = useState<"info" | "security" | "settings">(initialTab);
+  useEffect(() => {
+    setActiveTab(initialTab);
+  }, [initialTab]);
 
   // Edit Account Modal State
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);

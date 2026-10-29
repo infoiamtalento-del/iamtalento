@@ -6,8 +6,13 @@ import { fetchOrders, type PaymentOrder } from "@/services/candidate/wallet";
 
 const inr = (n: number) => "₹" + Number(n).toLocaleString("en-IN", { maximumFractionDigits: 2 });
 const tone: Record<string, string> = {
-  entitled: "bg-emerald-100 text-emerald-800", captured: "bg-emerald-100 text-emerald-800", created: "bg-amber-100 text-amber-800",
-  authorized: "bg-blue-100 text-blue-800", failed: "bg-red-100 text-red-800", cancelled: "bg-slate-100 text-slate-700", refunded: "bg-purple-100 text-purple-800",
+  entitled: "bg-emerald-100 text-emerald-800",
+  captured: "bg-emerald-100 text-emerald-800",
+  created: "bg-amber-100 text-amber-800",
+  authorized: "bg-blue-100 text-blue-800",
+  failed: "bg-red-100 text-red-800",
+  cancelled: "bg-slate-100 text-slate-700",
+  refunded: "bg-purple-100 text-purple-800",
 };
 const label = (s: string) => (s === "entitled" ? "paid" : s);
 
@@ -30,24 +35,57 @@ export const LivePayments: React.FC = () => {
   const { data: orders, loading, error } = useAsync(fetchOrders);
   return (
     <div className="space-y-6">
-      <ProHero icon={<ReceiptText />} title="Payment history" subtitle="Every purchase with GST breakdown and a printable invoice." />
+      <ProHero
+        icon={<ReceiptText />}
+        title="Payment History & Download Invoices"
+        subtitle="Every transaction, course purchase, assessment fee, and wallet top-up with GST breakdown and downloadable tax invoices."
+      />
       {error && <p className="text-sm text-destructive">{error}</p>}
-      {loading && !orders ? <p className="text-sm text-muted-foreground">Loading…</p> : orders?.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">No purchases yet.</div>
+      {loading && !orders ? (
+        <p className="text-sm text-muted-foreground">Loading…</p>
+      ) : orders?.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
+          No purchases yet. Completed assessments, course enrollments, and wallet top-ups appear here with printable GST invoices.
+        </div>
       ) : (
         <div className="overflow-x-auto rounded-2xl border border-border bg-card">
           <table className="w-full text-sm">
-            <thead className="text-left text-xs text-muted-foreground"><tr className="border-b border-border"><th className="p-3">Date</th><th>Item</th><th>Invoice</th><th>GST</th><th>Total</th><th>Status</th><th /></tr></thead>
+            <thead className="text-left text-xs text-muted-foreground">
+              <tr className="border-b border-border">
+                <th className="p-3">Date</th>
+                <th>Item</th>
+                <th>Invoice</th>
+                <th>GST</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th className="pr-3 text-right">Download Invoice</th>
+              </tr>
+            </thead>
             <tbody>
               {orders?.map((o) => (
                 <tr key={o.id} className="border-b border-border/60 last:border-0">
                   <td className="p-3 whitespace-nowrap">{new Date(o.created_at).toLocaleDateString("en-IN")}</td>
                   <td className="max-w-[240px] truncate">{o.item_ref ?? o.item_type}</td>
-                  <td className="whitespace-nowrap text-xs">{o.invoice_number ?? "-"}</td>
+                  <td className="whitespace-nowrap text-xs font-mono">{o.invoice_number ?? "-"}</td>
                   <td className="whitespace-nowrap">{inr(Number(o.cgst) + Number(o.sgst) + Number(o.igst))}</td>
                   <td className="whitespace-nowrap font-semibold">{inr(o.total_amount)}</td>
-                  <td><span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold capitalize ${tone[o.status] ?? tone.created}`}>{label(o.status)}</span></td>
-                  <td className="pr-3 text-right">{o.status === "entitled" && o.item_type !== "wallet_topup" && <button type="button" aria-label="Print invoice" onClick={() => printReceipt(o)} className="text-primary hover:underline"><Download className="h-4 w-4" /></button>}</td>
+                  <td>
+                    <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold capitalize ${tone[o.status] ?? tone.created}`}>
+                      {label(o.status)}
+                    </span>
+                  </td>
+                  <td className="pr-3 text-right">
+                    {(o.status === "entitled" || o.status === "captured") && (
+                      <button
+                        type="button"
+                        aria-label="Download invoice"
+                        onClick={() => printReceipt(o)}
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline cursor-pointer"
+                      >
+                        <Download className="h-3.5 w-3.5" /> Invoice
+                      </button>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>

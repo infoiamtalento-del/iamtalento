@@ -501,34 +501,34 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
   // Profile readiness checklist
   const actionsList: Array<{ title: string; done: boolean; view: ProView; subtitle: string }> = [
     {
-      title: "Add headline & about",
-      done: !!(user.head && user.about),
-      view: "profile",
-      subtitle: "Tell recruiters who you are and what you specialize in",
+      title: "Upload photo, select industry & headline",
+      done: !!(user.head && (user.tag || user.about)),
+      view: "edit-profile",
+      subtitle: "Complete your Profile Setup Wizard so recruiters find you",
     },
     {
       title: "Add 3+ skills",
       done: (user.sk || []).length >= 3,
-      view: "profile",
-      subtitle: "Skills drive job matching",
+      view: "edit-profile",
+      subtitle: "Skills power your AI Job Match Score and Skill Gap Report",
     },
     {
-      title: "Add a certification",
-      done: (user.ce || []).length > 0,
-      view: "cert",
-      subtitle: "Proof of skill builds immediate trust",
+      title: "Verify account & earn CIR badge",
+      done: (user.ce || []).length > 0 || !!user.ver?.id,
+      view: "ver",
+      subtitle: "Verified identity & proctored CIR boost shortlist rates",
     },
     {
       title: "Apply to your top match",
       done: !!topJob && myApps.some((a) => a.jid === topJob.id),
       view: "jobs",
-      subtitle: "Your best-fit opening is ready for review",
+      subtitle: "One-Click Apply to your highest-scoring role",
     },
     {
-      title: "Save a search",
+      title: "Practice an AI Mock Interview",
       done: (user.ss || []).length > 0,
-      view: "jobs",
-      subtitle: "Get alerted for new jobs",
+      view: "mock-interview",
+      subtitle: "Sharpen your STAR answers & Q&A bank readiness",
     },
   ];
 
@@ -600,17 +600,29 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
       {/* Hero Welcome Banner */}
       <ProHero
         title={`Welcome back, ${user.name.split(" ")[0]}`}
-        subtitle={`${goodFitJobs.length} ${goodFitJobs.length === 1 ? "job matches" : "jobs match"} 50%+ of your skills. Finish the steps below to get noticed faster.`}
+        subtitle={`${goodFitJobs.length} ${goodFitJobs.length === 1 ? "job matches" : "jobs match"} 50%+ of your skills. Finish your profile setup, readiness check, and assessments below.`}
       >
         <div className="flex flex-wrap items-center gap-2 pt-1">
-          <button type="button" onClick={() => onNavigate("jobs")} className={heroPill}>
-            <Compass className="h-3.5 w-3.5" /> Find jobs
+          <button type="button" onClick={() => onNavigate("edit-profile")} className={heroPill}>
+            <Sparkles className="h-3.5 w-3.5" /> Profile Setup Wizard
           </button>
-          <button type="button" onClick={() => onNavigate("notif")} className={heroPill}>
-            <Bell className="h-3.5 w-3.5" /> Notifications
+          <button type="button" onClick={() => onNavigate("ver")} className={heroPill}>
+            <CheckCircle2 className="h-3.5 w-3.5" /> Verify Account
+          </button>
+          <button type="button" onClick={() => onNavigate("readiness")} className={heroPill}>
+            <BarChart3 className="h-3.5 w-3.5" /> Readiness &amp; Skill Gap
+          </button>
+          <button type="button" onClick={() => onNavigate("mock-interview")} className={heroPill}>
+            <MessageSquare className="h-3.5 w-3.5" /> Mock Interview &amp; Q&amp;A
+          </button>
+          <button type="button" onClick={() => onNavigate("my-resume")} className={heroPill}>
+            <Layers className="h-3.5 w-3.5" /> My Resume
+          </button>
+          <button type="button" onClick={() => onNavigate("jobs")} className={heroPill}>
+            <Compass className="h-3.5 w-3.5" /> Recommended Jobs
           </button>
           <button type="button" onClick={() => onNavigate("profile")} className={heroPill}>
-            <UserCircle className="h-3.5 w-3.5" /> My Profile
+            <UserCircle className="h-3.5 w-3.5" /> My Profile &amp; Badges
           </button>
         </div>
       </ProHero>

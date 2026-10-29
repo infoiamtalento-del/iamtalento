@@ -1,6 +1,39 @@
-import { Award, Bell, Bookmark, Bot, Briefcase, ChevronDown, FolderKanban, GraduationCap, Headphones, LogOut, Moon, Search, ShieldCheck, SlidersHorizontal, Sun, UserRound, Users, Wallet } from "lucide-react";
+import {
+  Award,
+  BarChart3,
+  Bell,
+  Bookmark,
+  BookOpen,
+  Bot,
+  Briefcase,
+  ChevronDown,
+  FileUp,
+  FolderKanban,
+  GraduationCap,
+  Headphones,
+  LogOut,
+  Moon,
+  Pencil,
+  Receipt,
+  Search,
+  Settings,
+  ShieldCheck,
+  SlidersHorizontal,
+  Sun,
+  Target,
+  UserRound,
+  Users,
+  Video,
+  Wallet,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import type { ProView } from "./proTypes";
 import { cn } from "@/lib/utils";
 
@@ -17,25 +50,48 @@ interface Props {
 }
 
 const entries = [
-  { id: "account", label: "My Account", icon: UserRound },
-  { id: "profile", label: "My Profile", icon: Users },
-  { id: "dash", label: "Dashboard", icon: SlidersHorizontal },
-  { id: "jobs", label: "Browse Jobs", icon: Search },
-  { id: "applied", label: "Applications", icon: Briefcase },
-  { id: "saved", label: "Saved Jobs", icon: Bookmark },
-  { id: "cert", label: "My Assessments & CIR", icon: GraduationCap },
-  { id: "ver", label: "Identity Verification", icon: ShieldCheck },
-  { id: "notif", label: "Notifications", icon: Bell },
-  { id: "port", label: "Portfolio", icon: FolderKanban },
+  { id: "dash", label: "Employee Dashboard", icon: SlidersHorizontal },
+  { id: "profile", label: "My Profile & Badges", icon: Users },
+  { id: "edit-profile", label: "Profile Setup Wizard", icon: Pencil },
+  { id: "ver", label: "Verify Account", icon: ShieldCheck },
+  { id: "readiness", label: "Readiness & Skill Gap", icon: Target },
+  { id: "my-resume", label: "My Resume", icon: FileUp },
   { id: "resume", label: "AI Resume Builder", icon: Bot },
-  { id: "certificate", label: "My Certifications", icon: Award },
+  { id: "cert", label: "Assessments & CIR", icon: GraduationCap },
+  { id: "mock-interview", label: "Mock Interview & Q&A", icon: Video },
+  { id: "jobs", label: "Recommended Jobs", icon: Search },
+  { id: "applied", label: "My Job Applications", icon: Briefcase },
+  { id: "saved", label: "Saved Jobs", icon: Bookmark },
+  { id: "learning-mentors", label: "My Courses", icon: BookOpen },
+  { id: "certificate", label: "Download Certificates", icon: Award },
+  { id: "analytics", label: "Career Growth & Views", icon: BarChart3 },
+  { id: "port", label: "Public Portfolio", icon: FolderKanban },
+  { id: "notif", label: "Notifications", icon: Bell },
   { id: "wallet", label: "Wallet & Referrals", icon: Wallet },
+  { id: "payment-history", label: "Invoices & Payments", icon: Receipt },
+  { id: "account", label: "My Account & Password", icon: UserRound },
+  { id: "settings", label: "Settings", icon: Settings },
   { id: "support", label: "Support Center", icon: Headphones },
 ] as const;
 
-export function ProCandidateAccountMenu({ name, avatarSrc, activeView, unreadCount, isDarkMode, onNavigate, onCertificate, onToggleTheme, onSignOut }: Props) {
+export function ProCandidateAccountMenu({
+  name,
+  avatarSrc,
+  activeView,
+  unreadCount,
+  isDarkMode,
+  onNavigate,
+  onCertificate,
+  onToggleTheme,
+  onSignOut,
+}: Props) {
   const avatar = (large: boolean) => (
-    <span className={cn("flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary text-primary-foreground font-bold", large ? "h-12 w-12 text-lg" : "h-7 w-7 text-xs")}>
+    <span
+      className={cn(
+        "flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary text-primary-foreground font-bold",
+        large ? "h-12 w-12 text-lg" : "h-7 w-7 text-xs"
+      )}
+    >
       {avatarSrc ? <img src={avatarSrc} alt={name} className="h-full w-full object-cover" /> : (name.charAt(0) || "U").toUpperCase()}
     </span>
   );
@@ -43,26 +99,53 @@ export function ProCandidateAccountMenu({ name, avatarSrc, activeView, unreadCou
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" aria-label="Employee account menu" className="h-10 gap-2 rounded-full px-1.5 sm:pr-3">
-          {avatar(false)}<span className="hidden max-w-28 truncate text-xs font-semibold sm:block">{name}</span><ChevronDown className="hidden h-3.5 w-3.5 sm:block" />
+          {avatar(false)}
+          <span className="hidden max-w-28 truncate text-xs font-semibold sm:block">{name}</span>
+          <ChevronDown className="hidden h-3.5 w-3.5 sm:block" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" sideOffset={10} className="z-[60] w-72 max-w-[calc(100vw-2rem)] max-h-[calc(100dvh-6rem)] overflow-y-auto rounded-xl p-3 bg-popover text-popover-foreground shadow-xl border border-border">
+      <DropdownMenuContent
+        align="end"
+        sideOffset={10}
+        className="z-[60] w-72 max-w-[calc(100vw-2rem)] max-h-[calc(100dvh-6rem)] overflow-y-auto rounded-xl p-3 bg-popover text-popover-foreground shadow-xl border border-border"
+      >
         <div className="flex items-center gap-3 px-2 py-2.5">
-          {avatar(true)}<div className="min-w-0"><p className="truncate font-display font-bold">{name}</p><p className="mt-0.5 text-xs text-muted-foreground">Candidate Workspace</p></div>
+          {avatar(true)}
+          <div className="min-w-0">
+            <p className="truncate font-display font-bold">{name}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">Candidate Workspace</p>
+          </div>
         </div>
         <DropdownMenuSeparator />
         {entries.map(({ id, label, icon: Icon }) => {
-          const isCurrent = id === activeView || (id === "notif" && activeView === "upd") || (id === "certificate" && activeView === "my-certifications");
+          const isCurrent =
+            id === activeView ||
+            (id === "notif" && activeView === "upd") ||
+            (id === "certificate" && activeView === "my-certifications");
           return (
-            <DropdownMenuItem key={id} onSelect={() => id === "certificate" ? onCertificate() : onNavigate(id)} className={cn("min-h-10 cursor-pointer gap-3 rounded-lg px-3 text-xs font-semibold", isCurrent && "bg-primary/10 text-primary")}>
-              <Icon className="h-4 w-4 shrink-0 text-primary" /><span>{label}</span>
-              {id === "profile" && <span className="ml-auto rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] text-primary">View</span>}
-              {id === "notif" && unreadCount > 0 && <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground">{unreadCount}</span>}
+            <DropdownMenuItem
+              key={id}
+              onSelect={() => (id === "certificate" ? onCertificate() : onNavigate(id as ProView))}
+              className={cn("min-h-9 cursor-pointer gap-3 rounded-lg px-3 text-xs font-semibold", isCurrent && "bg-primary/10 text-primary")}
+            >
+              <Icon className="h-4 w-4 shrink-0 text-primary" />
+              <span>{label}</span>
+              {id === "profile" && (
+                <span className="ml-auto rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] text-primary">View</span>
+              )}
+              {id === "notif" && unreadCount > 0 && (
+                <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground">
+                  {unreadCount}
+                </span>
+              )}
             </DropdownMenuItem>
           );
         })}
         <DropdownMenuSeparator />
-        <DropdownMenuItem onSelect={onToggleTheme} className="min-h-10 cursor-pointer gap-3 rounded-lg px-3 text-xs font-semibold">{isDarkMode ? <Sun className="h-4 w-4 text-primary" /> : <Moon className="h-4 w-4 text-primary" />}Light / Dark</DropdownMenuItem>
+        <DropdownMenuItem onSelect={onToggleTheme} className="min-h-9 cursor-pointer gap-3 rounded-lg px-3 text-xs font-semibold">
+          {isDarkMode ? <Sun className="h-4 w-4 text-primary" /> : <Moon className="h-4 w-4 text-primary" />}
+          Light / Dark
+        </DropdownMenuItem>
         <div className="pt-1">
           <Button
             type="button"

@@ -120,6 +120,11 @@ const MyProfile = () => {
             </Link>
 
             <div className="flex items-center gap-2">
+              <Link to="/talento-pro?view=dash">
+                <Button size="sm" variant="outline" className="h-8 text-xs">
+                  Dashboard
+                </Button>
+              </Link>
               <Link to="/assessments">
                 <Button size="sm" className="h-8 text-xs gap-1.5 bg-primary hover:bg-primary/90">
                   <ClipboardCheck className="h-3.5 w-3.5" />

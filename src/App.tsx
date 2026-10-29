@@ -49,6 +49,7 @@ const ForEmployersProof = lazy(() => import("./pages/ForEmployersProof"));
 const Auth = lazy(() => import("./pages/Auth"));
 const AuthCallback = lazy(() => import("./pages/AuthCallback"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const OnboardingWizard = lazy(() => import("./pages/OnboardingWizard"));
 const ProfileBuilder = lazy(() => import("./pages/ProfileBuilder"));
 const EmployerProfileBuilder = lazy(() => import("./pages/EmployerProfileBuilder"));
 const MyProfile = lazy(() => import("./pages/MyProfile"));
@@ -153,6 +154,7 @@ const AnimatedRoutes = () => {
           <Route path="/auth/callback" element={<PageTransition><AuthCallback /></PageTransition>} />
           <Route path="/forgot-password" element={<PageTransition><ResetPassword /></PageTransition>} />
           <Route path="/reset-password" element={<PageTransition><ResetPassword /></PageTransition>} />
+          <Route path="/onboarding" element={<PageTransition><OnboardingWizard /></PageTransition>} />
           <Route path="/profile" element={<PageTransition><ProfileBuilder /></PageTransition>} />
           <Route path="/my-profile" element={<PageTransition><MyProfile /></PageTransition>} />
           <Route path="/employer-profile" element={<PageTransition><EmployerProfileBuilder /></PageTransition>} />

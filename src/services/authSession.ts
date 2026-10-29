@@ -196,19 +196,26 @@ export async function signInWithPasswordAndRecover(
   throw new Error(formatAuthError(first.error));
 }
 
+export interface EstablishSessionOptions {
+  isNewSignup?: boolean;
+}
+
 /**
  * Hydrates the Pro workspace pointer (`tq_sess` & real employer stub if needed)
  * for an authenticated Supabase user without touching demo accounts.
+ * Routes newly created or incomplete profiles directly into their guided setup wizard.
  */
 export async function establishProSessionForUser(
   user: User,
   fallbackRole?: SelfServeRole,
-  redirectTo?: string | null
+  redirectTo?: string | null,
+  options?: EstablishSessionOptions
 ): Promise<string> {
   clearDemoOnlySession();
 
   const realEmail = normalizeEmail(user.email || `${user.id}@live.local`);
   let isEmployer = false;
+  let candidateNeedsOnboarding = false;
 
   try {
     const { data: roles } = await supabase
@@ -289,6 +296,21 @@ export async function establishProSessionForUser(
           },
         };
         localStorage.setItem("tq_users", JSON.stringify(parsedUsers));
+      } else {
+        // Check if this candidate still needs initial onboarding (Verify Account -> Photo & Industry -> Skills -> Resume)
+        try {
+          const { data: candProf } = await (supabase as any)
+            .from("profiles")
+            .select("industry, professional_headline, profile_completion, shell_state")
+            .eq("id", user.id)
+            .maybeSingle();
+          const doneFlag = Boolean(candProf?.shell_state?.onboardingCompleted);
+          const hasCoreFields = Boolean(candProf?.industry || candProf?.professional_headline);
+          const comp = Number(candProf?.profile_completion ?? 0);
+          candidateNeedsOnboarding = !doneFlag && !hasCoreFields && comp < 35;
+        } catch {
+          candidateNeedsOnboarding = Boolean(options?.isNewSignup);
+        }
       }
 
       localStorage.setItem("tq_sess", JSON.stringify(realEmail));
@@ -299,6 +321,14 @@ export async function establishProSessionForUser(
 
   if (isSafeInternalPath(redirectTo)) {
     return redirectTo;
+  }
+
+  if (options?.isNewSignup) {
+    return isEmployer ? "/employer-profile" : "/onboarding";
+  }
+
+  if (!isEmployer && candidateNeedsOnboarding) {
+    return "/onboarding";
   }
 
   return isEmployer ? "/talento-pro?view=dash&role=employer" : "/talento-pro?view=dash";

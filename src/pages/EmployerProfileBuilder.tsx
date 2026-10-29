@@ -492,9 +492,20 @@ const EmployerProfileBuilder = () => {
                   Save & Next <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
               ) : (
-                <Button onClick={handleSave} disabled={saving}>
-                  <Save className="h-4 w-4 mr-1" /> {saving ? "Saving…" : "Save Profile"}
-                </Button>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Button variant="outline" onClick={handleSave} disabled={saving}>
+                    <Save className="h-4 w-4 mr-1" /> {saving ? "Saving…" : "Save Profile"}
+                  </Button>
+                  <Button
+                    onClick={async () => {
+                      await handleSave();
+                      navigate("/talento-pro?view=dash&role=employer");
+                    }}
+                    disabled={saving}
+                  >
+                    Launch Employer Dashboard <ChevronRight className="h-4 w-4 ml-1" />
+                  </Button>
+                </div>
               )}
             </div>
           </main>

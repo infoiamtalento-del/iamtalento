@@ -298,6 +298,9 @@ const ProfileBuilder = () => {
               <span className="text-sm font-medium text-muted-foreground">Profile Builder</span>
             </div>
             <div className="flex items-center gap-2">
+              <Button asChild variant="ghost" size="sm" className="h-8 text-xs">
+                <Link to="/talento-pro?view=dash">Employee Dashboard</Link>
+              </Button>
               <Button variant="outline" size="sm" onClick={handleSave} disabled={saving} className="gap-1.5 h-8 text-xs">
                 {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
                 {saving ? "Saving..." : "Save"}

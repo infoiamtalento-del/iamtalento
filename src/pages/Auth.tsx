@@ -159,8 +159,14 @@ const Auth = () => {
       });
 
       if (result.user && result.session) {
-        const target = await establishProSessionForUser(result.user, role, redirectParam);
-        toast.success("Account created! Welcome to IAmTalento.");
+        const target = await establishProSessionForUser(result.user, role, redirectParam, {
+          isNewSignup: true,
+        });
+        toast.success(
+          role === "employee"
+            ? "Account created! Complete verification & your profile setup."
+            : "Employer account created! Complete your company profile."
+        );
         navigate(target);
         return;
       }

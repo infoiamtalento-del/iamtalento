@@ -3,6 +3,10 @@ import { ProUser, ProJob, ProCandidate, ProApplication } from "@/data/proData";
 
 export type ProView =
   | "profile"
+  | "edit-profile"
+  | "readiness"
+  | "mock-interview"
+  | "my-resume"
   | "jobs"
   | "port"
   | "upd"

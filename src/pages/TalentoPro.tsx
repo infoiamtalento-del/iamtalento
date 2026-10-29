@@ -33,6 +33,10 @@ import { LiveLearning } from "@/components/pro/live/LiveLearning";
 import { LiveEventsCommunity } from "@/components/pro/live/LiveEventsCommunity";
 import { LiveFreelancing } from "@/components/pro/live/LiveFreelancing";
 import { LiveAnalytics } from "@/components/pro/live/LiveAnalytics";
+import { LiveReadinessSkillGap } from "@/components/pro/live/LiveReadinessSkillGap";
+import { LiveMockInterviewHub } from "@/components/pro/live/LiveMockInterviewHub";
+import { LiveMyResume } from "@/components/pro/live/LiveMyResume";
+import OnboardingWizard from "@/pages/OnboardingWizard";
 import { ProEmployeeServices } from "@/components/pro/ProEmployeeServices";
 import { ProJobsView } from "@/components/pro/ProJobsView";
 import { ProJobDetail } from "@/components/pro/ProJobDetail";
@@ -317,6 +321,20 @@ const TalentoPro: React.FC = () => {
     return () => { alive = false; };
   }, [backend.userId, demoOnly]);
 
+  const reloadLiveCandidate = useCallback(async () => {
+    if (!backend.userId || demoOnly) return;
+    try {
+      const live = await loadLiveProfile();
+      if (!live) return;
+      const email = live.profile.email || `${backend.userId}@live.local`;
+      const user = toProUser(live, usersRef.current[email]);
+      lastSavedProfile.current = JSON.stringify(fromProUser(user));
+      setUsers((prev) => ({ ...prev, [email]: user }));
+    } catch {
+      /* ignore transient refresh failure */
+    }
+  }, [backend.userId, demoOnly]);
+
   useEffect(() => {
     if (!liveEmail || sessionEmail !== liveEmail) return;
     const user = users[liveEmail];
@@ -361,6 +379,11 @@ const TalentoPro: React.FC = () => {
     "account",
     "dash",
     "profile",
+    "edit-profile",
+    "readiness",
+    "mock-interview",
+    "my-resume",
+    "settings",
     "cert",
     "my-certifications",
     "learning-mentors",
@@ -853,6 +876,18 @@ const TalentoPro: React.FC = () => {
   const candidatePage = currentRole === "employer" && (drawerState?.type === "applicant" || drawerState?.type === "candidate") ? drawerState : null;
   const selectedApplicant = candidatePage?.type === "applicant" ? apps.find(a => a.id === candidatePage.id && jobs.some(j => j.id === a.jid && j.by === sessionEmail)) : undefined;
   const selectedCandidate = candidatePage?.type === "candidate" ? CANDIDATES_SEED.find(c => c.n === candidatePage.name) : undefined;
+
+  const navigateProView = useCallback(
+    (view: ProView) => {
+      setDrawerState(null);
+      setSearchParams(currentRole === "employer" ? { view, role: "employer" } : { view });
+      setEditingCp(false);
+      setActiveView(view);
+      window.scrollTo({ top: 0 });
+    },
+    [currentRole, setSearchParams]
+  );
+
   return (
     <div
       className="min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-primary/20 selection:text-primary"
@@ -957,13 +992,13 @@ const TalentoPro: React.FC = () => {
             transition={{ duration: 0.2 }}
           >
             {/* WORKSPACE & DASHBOARD VIEWS (ACCESSIBLE TO BOTH EMPLOYEE & EMPLOYER) */}
-            {effectiveView === "account" && (
+            {(effectiveView === "account" || (effectiveView === "settings" && currentRole === "candidate")) && (
               currentRole === "employer" ? (
                 <ProEmployerMyAccount
                   user={currentUser}
                   jobs={jobs}
                   applications={apps}
-                  onNavigate={setActiveView}
+                  onNavigate={navigateProView}
                   onUpdateUser={handleUpdateUser}
                   onToast={addToast}
                 />
@@ -973,7 +1008,8 @@ const TalentoPro: React.FC = () => {
                   jobs={jobs}
                   applications={apps}
                   isLive={liveCandidate}
-                  onNavigate={setActiveView}
+                  initialTab={effectiveView === "settings" ? "settings" : "info"}
+                  onNavigate={navigateProView}
                   onUpdateUser={handleUpdateUser}
                   onToast={addToast}
                 />
@@ -985,9 +1021,14 @@ const TalentoPro: React.FC = () => {
                 user={currentUser}
                 jobs={jobs}
                 applications={apps}
-                onNavigate={(v) => setActiveView(v)}
+                onNavigate={navigateProView}
                 onOpenDrawer={openDrawer}
-                onAddSkill={() => {}}
+                onAddSkill={(skill) => {
+                  if (!(currentUser.sk || []).includes(skill)) {
+                    handleUpdateUser({ ...currentUser, sk: [...(currentUser.sk || []), skill] });
+                    addToast(`Added "${skill}" to your profile!`);
+                  }
+                }}
                 onDuplicateJob={handleDuplicateJob}
                 onCloseJob={handleCloseJob}
               />
@@ -1037,7 +1078,8 @@ const TalentoPro: React.FC = () => {
               />
             )}
 
-            {(["employer-assessments", "interviews", "advertise", "subscription", "corporate-learning", "settings"].includes(effectiveView) ||
+            {(["employer-assessments", "interviews", "advertise", "subscription", "corporate-learning"].includes(effectiveView) ||
+              (effectiveView === "settings" && currentRole === "employer") ||
               (effectiveView === "payment-history" && currentRole === "employer")) && (
               <ProEmployerDemoServices
                 view={effectiveView}
@@ -1147,7 +1189,39 @@ const TalentoPro: React.FC = () => {
             {effectiveView === "profile" && (
               <ProProfileView
                 user={currentUser}
+                isLive={liveCandidate}
                 onSaveProfile={handleUpdateUser}
+                onNavigate={navigateProView}
+                onProfileReloaded={reloadLiveCandidate}
+                onToast={addToast}
+              />
+            )}
+
+            {effectiveView === "edit-profile" && (
+              <OnboardingWizard
+                embedded
+                onSaved={reloadLiveCandidate}
+                onNavigatePro={navigateProView}
+              />
+            )}
+
+            {effectiveView === "readiness" && (
+              <LiveReadinessSkillGap
+                fallbackUser={currentUser}
+                onUpdateFallbackUser={handleUpdateUser}
+                onNavigate={navigateProView}
+                onToast={addToast}
+              />
+            )}
+
+            {effectiveView === "mock-interview" && (
+              <LiveMockInterviewHub onToast={addToast} />
+            )}
+
+            {effectiveView === "my-resume" && (
+              <LiveMyResume
+                fallbackUser={currentUser}
+                onNavigate={navigateProView}
                 onToast={addToast}
               />
             )}

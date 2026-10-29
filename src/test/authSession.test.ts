@@ -7,6 +7,7 @@ import {
   normalizeEmail,
   openDemoWorkspace,
 } from "@/services/authSession";
+import { employeeMenuItems, employerMenuItems } from "@/components/pro/employerMenu";
 
 describe("authSession helpers", () => {
   it("normalizes email casing and whitespace", () => {
@@ -37,5 +38,40 @@ describe("authSession helpers", () => {
     expect(JSON.parse(localStorage.getItem("tq_sess") || '""')).toBe("demo.employer@talento.app");
     clearDemoOnlySession();
     expect(isDemoOnlySession()).toBe(false);
+  });
+
+  it("exposes all candidate onboarding, readiness, resume, interview, job, and account views in employeeMenuItems while keeping employerMenuItems separate", () => {
+    const employeeIds = employeeMenuItems.map((i) => i.id);
+    expect(employeeIds).toEqual(
+      expect.arrayContaining([
+        "dash",
+        "profile",
+        "edit-profile",
+        "ver",
+        "readiness",
+        "my-resume",
+        "resume",
+        "cert",
+        "mock-interview",
+        "jobs",
+        "applied",
+        "saved",
+        "learning-mentors",
+        "my-certifications",
+        "analytics",
+        "port",
+        "notif",
+        "payment-history",
+        "account",
+        "settings",
+        "support",
+      ])
+    );
+    const employerIds = employerMenuItems.map((i) => i.id);
+    expect(employerIds).toContain("cp");
+    expect(employerIds).toContain("post");
+    expect(employerIds).toContain("pipe");
+    expect(employerIds).not.toContain("edit-profile");
+    expect(employerIds).not.toContain("mock-interview");
   });
 });

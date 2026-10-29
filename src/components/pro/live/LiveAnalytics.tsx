@@ -65,9 +65,67 @@ export const LiveAnalytics: React.FC<{ onToast: (m: string) => void }> = ({ onTo
     <div className="space-y-6">
       <ProHero
         icon={<BarChart3 />}
-        title="Career Pipeline & Portfolio Analytics"
-        subtitle="Live server-computed conversion funnel, match score averages, assessment readiness, and public portfolio traffic."
+        title="Career Growth Tracker & Employer Profile Views"
+        subtitle="Track career milestones, employer profile visits, conversion funnel, assessment readiness, and public portfolio reach."
       />
+
+      {/* Career Growth Milestone Tracker */}
+      <div className="rounded-2xl border border-border bg-card p-5 space-y-3">
+        <div className="flex items-center justify-between gap-2">
+          <h2 className="text-sm font-bold flex items-center gap-2">
+            <TrendingUp className="h-4 w-4 text-primary" /> Career Growth Milestones
+          </h2>
+          <span className="text-xs font-semibold text-primary">
+            {[
+              Boolean(profile.data?.profile?.profile_completion && profile.data.profile.profile_completion >= 60),
+              (data?.assessments_completed ?? 0) > 0,
+              (data?.courses_completed ?? 0) > 0,
+              (data?.applications_total ?? 0) > 0,
+              (data?.profile_views_total ?? 0) > 0,
+            ].filter(Boolean).length}{" "}
+            / 5 Achieved
+          </span>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-5">
+          {[
+            {
+              step: "1. Profile Ready",
+              done: Boolean((profile.data?.profile?.profile_completion ?? 0) >= 60),
+              sub: `${profile.data?.profile?.profile_completion ?? 0}% complete`,
+            },
+            {
+              step: "2. Skill Verified",
+              done: (data?.assessments_completed ?? 0) > 0,
+              sub: `${data?.assessments_completed ?? 0} proctored tests`,
+            },
+            {
+              step: "3. Upskilled",
+              done: (data?.courses_completed ?? 0) > 0,
+              sub: `${data?.courses_completed ?? 0} courses finished`,
+            },
+            {
+              step: "4. Job Pipeline",
+              done: (data?.applications_total ?? 0) > 0,
+              sub: `${data?.applications_total ?? 0} applications`,
+            },
+            {
+              step: "5. Employer Reach",
+              done: (data?.profile_views_total ?? 0) > 0,
+              sub: `${data?.profile_views_total ?? 0} employer views`,
+            },
+          ].map((m) => (
+            <div
+              key={m.step}
+              className={`rounded-xl border p-3 text-xs ${
+                m.done ? "border-emerald-500/40 bg-emerald-500/5" : "border-border bg-background"
+              }`}
+            >
+              <p className="font-bold text-foreground">{m.step}</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">{m.sub}</p>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* KPI Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

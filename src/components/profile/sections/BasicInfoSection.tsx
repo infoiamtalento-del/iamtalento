@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { User, Mail, Phone, MapPin, Briefcase, Building2, Clock, TrendingUp } from "lucide-react";
+import { User, Mail, Phone, MapPin, Briefcase, Building2, Clock } from "lucide-react";
 
 interface BasicInfoData {
   full_name: string;
@@ -58,8 +58,42 @@ const Field = ({
   </div>
 );
 
-const experienceLevels = ["Fresher", "Junior", "Mid-Level", "Senior", "Lead", "Principal", "Executive"];
-const industries = ["Technology", "Finance", "Healthcare", "Education", "Manufacturing", "Retail", "Consulting", "Media", "Government", "Non-Profit", "Other"];
+const experienceLevels = [
+  { value: "fresher", label: "Fresher" },
+  { value: "experienced", label: "Experienced" },
+  { value: "Fresher", label: "Fresher (0 yrs)" },
+  { value: "Junior", label: "Junior (1–3 yrs)" },
+  { value: "Mid-Level", label: "Mid-Level (3–6 yrs)" },
+  { value: "Senior", label: "Senior (6+ yrs)" },
+  { value: "Lead", label: "Lead / Principal" },
+  { value: "Executive", label: "Executive" },
+];
+
+const industries = [
+  "Technology & Software",
+  "Data Science & AI",
+  "Finance & BFSI",
+  "Marketing & Growth",
+  "Product & Design",
+  "Sales & Business Dev",
+  "Operations & Supply Chain",
+  "Human Resources",
+  "Healthcare & Pharma",
+  "Education & EdTech",
+  "Core Engineering & Manufacturing",
+  "Cybersecurity & Cloud",
+  "Technology",
+  "Finance",
+  "Healthcare",
+  "Education",
+  "Manufacturing",
+  "Retail",
+  "Consulting",
+  "Media",
+  "Government",
+  "Non-Profit",
+  "Other",
+];
 
 const BasicInfoSection = ({ data, onChange }: Props) => (
   <div className="grid sm:grid-cols-2 gap-4">
@@ -75,7 +109,7 @@ const BasicInfoSection = ({ data, onChange }: Props) => (
       <Select value={data.experience_level || ""} onValueChange={(v) => onChange("experience_level", v)}>
         <SelectTrigger className="h-10 text-sm"><SelectValue placeholder="Select level" /></SelectTrigger>
         <SelectContent>
-          {experienceLevels.map((l) => <SelectItem key={l} value={l}>{l}</SelectItem>)}
+          {experienceLevels.map((l) => <SelectItem key={l.value} value={l.value}>{l.label}</SelectItem>)}
         </SelectContent>
       </Select>
     </div>
