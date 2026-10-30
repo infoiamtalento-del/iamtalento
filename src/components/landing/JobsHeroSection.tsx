@@ -58,16 +58,15 @@ const JobsHeroSection = ({
     e.preventDefault();
     if (onSearch) {
       onSearch({ query, experience, location, skills: selectedTools });
-      document.getElementById("live-job-results")?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
     const sp = new URLSearchParams();
+    sp.set("view", "jobs");
     if (query.trim()) sp.set("q", query.trim());
     if (experience) sp.set("exp", experience);
     if (location.trim()) sp.set("loc", location.trim());
     if (selectedTools.length > 0) sp.set("skills", selectedTools.join(","));
-    const qs = sp.toString();
-    navigate(qs ? `/jobs?${qs}#live-job-results` : "/jobs#live-job-results");
+    navigate(`/talento-pro?${sp.toString()}`);
   };
 
   return (
