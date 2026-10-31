@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Search, SlidersHorizontal, X, MapPin, Briefcase, ChevronDown, Code2, Building2, FileBarChart, ShieldCheck, Target, TrendingUp } from "lucide-react";
+import { Search, SlidersHorizontal, X, MapPin, Briefcase, ChevronDown, Code2, Building2, FileBarChart, ShieldCheck, Sparkles, Target, TrendingUp } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import SectionBadge from "@/components/ui/section-badge";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -76,13 +77,20 @@ const JobsHeroSection = ({
         <div className="absolute bottom-10 right-1/4 w-80 h-80 rounded-full bg-warning/5 blur-[80px]" />
       </div>
       <div className="container text-center max-w-6xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <SectionBadge label="India's Next-Generation AI-Powered Job Platform" icon={Sparkles} className="mb-5" />
+        </motion.div>
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-4xl md:text-5xl font-bold font-display mb-3"
+          transition={{ delay: 0.05 }}
+          className="text-4xl md:text-5xl font-bold font-display leading-[1.15] tracking-tight mb-4"
         >
-          Find Your Dream<br />
-          <span className="text-primary">Job Now</span>
+          The Future of Job Search Is Here.<br />
+          <span className="text-primary">It&apos;s Talent CIR.</span>
         </motion.h1>
         <motion.p
           initial={{ opacity: 0 }}
@@ -91,7 +99,7 @@ const JobsHeroSection = ({
           className="text-muted-foreground text-base md:text-lg mb-8 max-w-3xl mx-auto leading-relaxed"
           style={{ textWrap: "balance" }}
         >
-          Explore 5 lakh+ verified jobs from India's top companies, matched to your skills, benchmarked for fit, and ready for you to take the next step in your career.
+          Your complete AI-powered career ecosystem to prove your potential, discover relevant opportunities, and connect with employers.
         </motion.p>
 
         <motion.div

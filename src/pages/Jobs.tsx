@@ -18,8 +18,8 @@ const Jobs = () => {
   return (
     <>
       <Helmet>
-        <title>Jobs | I Am Talento</title>
-        <meta name="description" content="Find your dream job. AI-powered job matching based on your verified skill profile." />
+        <title>Browse Jobs | Talent CIR</title>
+        <meta name="description" content="Your complete AI-powered career ecosystem to prove your potential, discover relevant opportunities, and connect with employers." />
       </Helmet>
       <Layout>
         {/* Hero Search */}

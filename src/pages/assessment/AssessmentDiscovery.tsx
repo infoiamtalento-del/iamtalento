@@ -23,12 +23,14 @@ import {
 } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
+import SectionBadge from "@/components/ui/section-badge";
 import { ASSESSMENTS, DOMAINS, EXPERIENCE_LEVELS, INDUSTRIES, Assessment } from "@/data/assessments";
 import AssessmentIntegritySection from "@/components/landing/AssessmentIntegritySection";
 import ProctoringSection from "@/components/assessments/ProctoringSection";
 import HowItWorksSection from "@/components/assessments/HowItWorksSection";
 import AssessmentSocialProof from "@/components/assessments/AssessmentSocialProof";
 import VerifiedBadgeSection from "@/components/assessments/VerifiedBadgeSection";
+import TalentCirProBenefitsSection from "@/components/assessments/TalentCirProBenefitsSection";
 import CareerIntelligencePackageSection from "@/components/landing/CareerIntelligencePackageSection";
 import VideoTestimonialsSection from "@/components/assessments/VideoTestimonialsSection";
 import CredibilityTrustSection from "@/components/assessments/CredibilityTrustSection";
@@ -215,22 +217,26 @@ const AssessmentDiscovery = () => {
       }
     >
       <Helmet>
-        <title>Explore Skill Assessments | I Am Talento</title>
+        <title>CIR Score | Talent CIR</title>
         <meta
           name="description"
-          content="Discover proctored skill assessments by industry, domain and experience level, and get your verified CIR report."
+          content="5 Simple Steps to Discover Your Potential, Prove Your Skills, and Get Hired."
         />
       </Helmet>
       <Layout>
         {/* Hero */}
         <section className="pt-28 pb-10 md:pt-36 md:pb-12 bg-[#FBF4EB]">
-          <div className="container max-w-3xl mx-auto text-center">
+          <div className="container max-w-4xl mx-auto text-center">
+            <SectionBadge label="Take CIR Assessment" icon={Sparkles} className="mb-5" />
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-display leading-[1.15] tracking-tight text-slate-950 mb-5">
-              Prove Your Skills.<br />
-              <span className="text-primary">Show What You Can Do.</span>
+              Talent CIR – The Game Changer<br />
+              <span className="text-primary">in Your Career Journey.</span>
             </h1>
-            <p className="text-slate-600 text-base md:text-lg max-w-xl mx-auto leading-relaxed text-center">
-              Find proctored assessments matched to your industry, domain, and experience level, then turn your verified score into a recruiter-ready CIR report.
+            <p
+              className="text-slate-600 text-base md:text-lg max-w-2xl mx-auto leading-relaxed text-center"
+              style={{ textWrap: "balance" }}
+            >
+              5 Simple Steps to Discover Your Potential, Prove Your Skills, and Get Hired.
             </p>
           </div>
         </section>
@@ -357,11 +363,13 @@ const AssessmentDiscovery = () => {
         {/* Social Proof Metrics */}
         <AssessmentSocialProof />
 
-        {/* How It Works — Placed above Verified Badge Section */}
-        <HowItWorksSection />
+        {/* CIR Score Advantage */}
+
 
         {/* Verified Badge & Career Intelligence Package */}
         <VerifiedBadgeSection />
+        <TalentCirProBenefitsSection />
+        <HowItWorksSection />
         <CareerIntelligencePackageSection />
 
         {/* Video Testimonials */}

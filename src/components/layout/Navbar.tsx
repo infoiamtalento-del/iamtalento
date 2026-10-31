@@ -105,7 +105,7 @@ type DropdownId = "events" | "pricing" | "products";
 
 const navLinks: { label: string; href: string; dropdownId?: DropdownId }[] = [
   { label: "Browse Jobs", href: "/jobs" },
-  { label: "Assessments", href: "/assessments" },
+  { label: "CIR Score", href: "/assessments" },
   { label: "Learning", href: "/learning" },
   { label: "Pricing", href: "/pricing", dropdownId: "pricing" },
   { label: "Events", href: "/meetups", dropdownId: "events" },
