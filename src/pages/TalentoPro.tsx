@@ -68,6 +68,7 @@ import { useCandidateBackend, backendErrorMessage } from "@/hooks/useCandidateBa
 import { createOrder, payWithRazorpay } from "@/services/candidate/wallet";
 import { rpc, db } from "@/services/db";
 import { fromProUser, loadLiveProfile, saveLiveProfile, toProUser } from "@/services/candidate/profile";
+import { getEmployerProfile, saveEmployerProfile } from "@/services/employer/profile";
 
 interface ToastMessage {
   id: number;
@@ -303,7 +304,33 @@ const TalentoPro: React.FC = () => {
       try {
         const { data: roles } = await db.from("user_roles").select("role").eq("user_id", backend.userId);
         const isEmployer = (roles ?? []).some((r: { role: string }) => r.role === "employer") && !(roles ?? []).some((r: { role: string }) => r.role === "employee");
-        if (isEmployer) return;
+        if (isEmployer) {
+          const empProfile = await getEmployerProfile();
+          if (alive && empProfile) {
+            const email = empProfile.official_email || `${backend.userId}@employer.local`;
+            const user: ProUser = {
+              ...(usersRef.current[email] ?? usersRef.current["recruiter@acme.inc"] ?? {}),
+              email,
+              role: "employer",
+              name: empProfile.contact_name || empProfile.company_name || "Employer",
+              cp: {
+                name: empProfile.company_name,
+                about: empProfile.description || undefined,
+                mission: empProfile.mission || undefined,
+                ind: empProfile.industry || undefined,
+                size: empProfile.num_employees || undefined,
+                hq: empProfile.hq_city || empProfile.address || undefined,
+                site: empProfile.website || undefined,
+                ben: empProfile.benefits || [],
+              },
+            };
+            setUsers((prev) => ({ ...prev, [email]: user }));
+            setLiveEmail(email);
+            setSessionEmail(email);
+            saveStorage("sess", email);
+          }
+          return;
+        }
         const live = await loadLiveProfile();
         if (!alive || !live) return;
         const email = live.profile.email || `${backend.userId}@live.local`;
@@ -1054,9 +1081,23 @@ const TalentoPro: React.FC = () => {
                 user={currentUser}
                 jobs={jobs}
                 applications={apps}
-                onSaveCompanyProfile={(cp) => {
+                onSaveCompanyProfile={async (cp) => {
                   handleUpdateUser({ ...currentUser, cp });
                   setEditingCp(false);
+                  try {
+                    await saveEmployerProfile({
+                      company_name: cp.name,
+                      description: cp.about,
+                      mission: cp.mission,
+                      industry: cp.ind,
+                      num_employees: cp.size,
+                      hq_city: cp.hq,
+                      website: cp.site,
+                      benefits: cp.ben,
+                    });
+                  } catch {
+                    /* offline or local demo mode: state remains in memory */
+                  }
                 }}
                 onPublishJob={handlePublishJob}
                 onUpdateApplicantStage={handleUpdateApplicantStage}
