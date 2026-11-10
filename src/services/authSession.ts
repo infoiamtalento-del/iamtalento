@@ -59,19 +59,22 @@ export function formatAuthError(err: unknown): string {
         : "Authentication failed. Please try again.";
 
   if (/rate limit|over_email_send_rate_limit|too many requests|p0429/i.test(raw)) {
-    return "Too many email or authentication requests right now. Please wait a few minutes and try again.";
+    return "Too many authentication requests right now. Please wait a few minutes and try again.";
   }
   if (/invalid login credentials/i.test(raw)) {
     return "Incorrect email or password. Please check your credentials and try again.";
   }
   if (/email not confirmed/i.test(raw)) {
-    return "Your email address was awaiting confirmation. Please try signing in again.";
+    return "Please verify your email address to sign in. Check your inbox for the confirmation link.";
   }
   if (/user already registered|already exists/i.test(raw)) {
     return "An account with this email already exists. Please sign in instead.";
   }
   if (/otp_expired|link is invalid or has expired/i.test(raw)) {
-    return "That email verification link has expired or was already used. Sign in directly with your email and password.";
+    return "That email verification link has expired or was already used. Please request a new link.";
+  }
+  if (/password should be at least/i.test(raw) || /password/i.test(raw) && /length/i.test(raw)) {
+    return "Password must be at least 10 characters long and include upper, lower case letters and numbers.";
   }
   return raw;
 }
@@ -84,6 +87,7 @@ export interface SignUpInput {
   role: SelfServeRole;
   experienceLevel?: "fresher" | "experienced" | "";
   companyName?: string;
+  captchaToken?: string;
 }
 
 export interface SignUpResult {
@@ -93,11 +97,9 @@ export interface SignUpResult {
 }
 
 /**
- * Registers an account via the rate-limit-proof PostgreSQL RPC (`register_user_account`)
- * and immediately signs in with `signInWithPassword`, avoiding GoTrue's 2-email/hr
- * built-in SMTP bottleneck and `http://localhost:3000` redirect dead-ends.
+ * Signs up via standard Supabase Auth (GoTrue), enforcing email confirmation.
  */
-export async function registerAndSignIn(input: SignUpInput): Promise<SignUpResult> {
+export async function signUpWithEmail(input: SignUpInput): Promise<SignUpResult> {
   const email = normalizeEmail(input.email);
   const fullName = input.fullName.trim();
   const phone = input.phone?.trim() || undefined;
@@ -107,45 +109,14 @@ export async function registerAndSignIn(input: SignUpInput): Promise<SignUpResul
       ? input.experienceLevel
       : undefined;
 
-  const { error: rpcError } = await (supabase as any).rpc("register_user_account", {
-    p_email: email,
-    p_password: input.password,
-    p_full_name: fullName,
-    p_phone: phone ?? null,
-    p_role: input.role,
-    p_experience_level: experienceLevel ?? null,
-    p_company_name: companyName ?? null,
-  });
+  const siteUrl = import.meta.env.VITE_SITE_URL || (typeof window !== "undefined" ? window.location.origin : "");
+  const redirectUrl = `${siteUrl}/auth/callback`;
 
-  if (!rpcError) {
-    const { data, error: signInErr } = await supabase.auth.signInWithPassword({
-      email,
-      password: input.password,
-    });
-    if (signInErr) throw new Error(formatAuthError(signInErr));
-    return {
-      user: data.user,
-      session: data.session,
-      needsEmailVerification: false,
-    };
-  }
-
-  // Fallback only if the database migration hasn't been applied yet
-  const isMissingFn =
-    rpcError.code === "PGRST202" ||
-    rpcError.code === "42883" ||
-    /could not find the function|register_user_account/i.test(rpcError.message || "");
-
-  if (!isMissingFn) {
-    throw new Error(formatAuthError(rpcError));
-  }
-
-  const redirectOrigin = typeof window !== "undefined" ? `${window.location.origin}/auth/callback` : undefined;
   const { data, error } = await supabase.auth.signUp({
     email,
     password: input.password,
     options: {
-      emailRedirectTo: redirectOrigin,
+      emailRedirectTo: redirectUrl,
       data: {
         full_name: fullName,
         phone,
@@ -153,8 +124,10 @@ export async function registerAndSignIn(input: SignUpInput): Promise<SignUpResul
         role: input.role,
         company_name: companyName,
       },
+      captchaToken: input.captchaToken,
     },
   });
+
   if (error) throw new Error(formatAuthError(error));
 
   return {
@@ -164,36 +137,123 @@ export async function registerAndSignIn(input: SignUpInput): Promise<SignUpResul
   };
 }
 
+// Backwards-compatible alias for existing imports
+export const registerAndSignIn = signUpWithEmail;
+
 /**
- * Signs in with email & password, transparently recovering any account stuck in
- * `email_confirmed_at IS NULL` (from an earlier localhost confirmation link) by
- * verifying the password server-side via `confirm_unverified_account`.
+ * Standard Supabase Auth password sign in.
  */
-export async function signInWithPasswordAndRecover(
+export async function signInWithEmail(
   rawEmail: string,
   password: string
 ): Promise<{ user: User; session: Session }> {
   const email = normalizeEmail(rawEmail);
-  const first = await supabase.auth.signInWithPassword({ email, password });
-  if (!first.error && first.data.user && first.data.session) {
-    return { user: first.data.user, session: first.data.session };
-  }
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) throw new Error(formatAuthError(error));
+  if (!data.user || !data.session) throw new Error("No session returned from authentication");
 
-  if (first.error && /email not confirmed/i.test(first.error.message)) {
-    const { data: confirmed } = await (supabase as any).rpc("confirm_unverified_account", {
-      p_email: email,
-      p_password: password,
-    });
-    if (confirmed === true) {
-      const retry = await supabase.auth.signInWithPassword({ email, password });
-      if (!retry.error && retry.data.user && retry.data.session) {
-        return { user: retry.data.user, session: retry.data.session };
-      }
-      if (retry.error) throw new Error(formatAuthError(retry.error));
+  // Record login event in background
+  if (typeof window !== "undefined") {
+    try {
+      const deviceHash = `${navigator.userAgent}_${screen.width}x${screen.height}`;
+      await recordLoginEvent(deviceHash);
+    } catch {
+      /* ignore telemetry errors */
     }
   }
 
-  throw new Error(formatAuthError(first.error));
+  return { user: data.user, session: data.session };
+}
+
+// Backwards-compatible alias for existing imports
+export const signInWithPasswordAndRecover = signInWithEmail;
+
+/**
+ * Retrieves caller's verified context directly from Postgres via RPC get_my_context
+ */
+export async function getMyContext(): Promise<any> {
+  try {
+    const { data, error } = await (supabase as any).rpc("get_my_context");
+    if (error || !data || data.authenticated === false) return null;
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Records device login and checks for new device logins
+ */
+export async function recordLoginEvent(deviceHash: string): Promise<string> {
+  try {
+    const { data } = await (supabase as any).rpc("record_login_event", {
+      p_device_hash: deviceHash,
+      p_ua: typeof navigator !== "undefined" ? navigator.userAgent : null,
+    });
+    return (data as string) || "login";
+  } catch {
+    return "login";
+  }
+}
+
+/**
+ * Records terms / privacy consents
+ */
+export async function recordConsent(kind: string, version: string): Promise<void> {
+  try {
+    await (supabase as any).rpc("record_consent", {
+      p_kind: kind,
+      p_version: version,
+    });
+  } catch (_err) {
+    // Non-blocking consent record error
+  }
+}
+
+/**
+ * Completes onboarding/signup role assignment for OAuth users
+ */
+export async function completeSignup(
+  role: "employer" | "employee",
+  fullName: string,
+  companyName?: string,
+  phone?: string
+): Promise<any> {
+  const { data, error } = await (supabase as any).rpc("complete_signup", {
+    p_role: role,
+    p_full_name: fullName,
+    p_company_name: companyName ?? null,
+    p_phone: phone ?? null,
+  });
+  if (error) throw new Error(formatAuthError(error));
+  return data;
+}
+
+/**
+ * Requests account deletion
+ */
+export async function requestAccountDeletion(): Promise<any> {
+  const { data, error } = await (supabase as any).rpc("request_account_deletion");
+  if (error) throw new Error(formatAuthError(error));
+  return data;
+}
+
+/**
+ * Cancels account deletion
+ */
+export async function cancelAccountDeletion(): Promise<any> {
+  const { data, error } = await (supabase as any).rpc("cancel_account_deletion");
+  if (error) throw new Error(formatAuthError(error));
+  return data;
+}
+
+/**
+ * Exports user's complete data document (DPDP Act)
+ */
+export async function exportMyData(): Promise<any> {
+  const { data, error } = await (supabase as any).rpc("export_my_data");
+  if (error) throw new Error(formatAuthError(error));
+  return data;
 }
 
 export interface EstablishSessionOptions {
@@ -201,9 +261,7 @@ export interface EstablishSessionOptions {
 }
 
 /**
- * Hydrates the Pro workspace pointer (`tq_sess` & real employer stub if needed)
- * for an authenticated Supabase user without touching demo accounts.
- * Routes newly created or incomplete profiles directly into their guided setup wizard.
+ * Hydrates the Pro workspace pointer (`tq_sess`) for an authenticated Supabase user.
  */
 export async function establishProSessionForUser(
   user: User,
@@ -217,21 +275,11 @@ export async function establishProSessionForUser(
   let isEmployer = false;
   let candidateNeedsOnboarding = false;
 
-  try {
-    const { data: roles } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", user.id);
-
-    if (roles && roles.length > 0) {
-      const hasEmployer = roles.some((r: { role: string }) => r.role === "employer");
-      const hasEmployee = roles.some((r: { role: string }) => r.role === "employee");
-      isEmployer = hasEmployer && !hasEmployee;
-    } else {
-      const metaRole = (user.user_metadata?.role as string | undefined) || fallbackRole;
-      isEmployer = metaRole === "employer";
-    }
-  } catch {
+  const ctx = await getMyContext();
+  if (ctx) {
+    isEmployer = ctx.role === "employer";
+    candidateNeedsOnboarding = !ctx.onboarding_completed && ctx.profile_completion < 35;
+  } else {
     const metaRole = (user.user_metadata?.role as string | undefined) || fallbackRole;
     isEmployer = metaRole === "employer";
   }
@@ -239,21 +287,6 @@ export async function establishProSessionForUser(
   if (typeof window !== "undefined") {
     try {
       if (isEmployer) {
-        // Hydrate a dedicated employer shell entry keyed by the real employer's email
-        // so demo.employer@talento.app sample records remain completely untouched.
-        const [{ data: empRow }, { data: profRow }] = await Promise.all([
-          (supabase as any)
-            .from("employers")
-            .select("company_name, contact_name, phone, industry, company_size, headquarters, website_url, company_description")
-            .eq("user_id", user.id)
-            .maybeSingle(),
-          supabase
-            .from("profiles")
-            .select("full_name, phone")
-            .eq("id", user.id)
-            .maybeSingle(),
-        ]);
-
         let parsedUsers: Record<string, ProUser> = {};
         const rawUsers = localStorage.getItem("tq_users");
         if (rawUsers) {
@@ -266,13 +299,13 @@ export async function establishProSessionForUser(
         const existing = parsedUsers[realEmail];
         const template = DEFAULT_USERS["demo.employer@talento.app"];
         const displayName =
-          empRow?.contact_name ||
-          profRow?.full_name ||
+          ctx?.employer?.contact_name ||
+          ctx?.full_name ||
           (user.user_metadata?.full_name as string | undefined) ||
           existing?.name ||
           realEmail.split("@")[0];
         const companyName =
-          empRow?.company_name ||
+          ctx?.employer?.company_name ||
           (user.user_metadata?.company_name as string | undefined) ||
           existing?.cp?.name ||
           "My Company";
@@ -283,34 +316,19 @@ export async function establishProSessionForUser(
           email: realEmail,
           role: "employer",
           name: displayName,
-          phone: empRow?.phone || profRow?.phone || (user.user_metadata?.phone as string | undefined) || existing?.phone || "",
+          phone: ctx?.phone || (user.user_metadata?.phone as string | undefined) || existing?.phone || "",
           wal: existing?.wal || { bal: 0, hist: [], tx: [] },
           cp: {
             ...(existing?.cp || {}),
             name: companyName,
-            ind: empRow?.industry || existing?.cp?.ind || "Technology",
-            size: empRow?.company_size || existing?.cp?.size || "1-50",
-            hq: empRow?.headquarters || existing?.cp?.hq || "",
-            site: empRow?.website_url || existing?.cp?.site || "",
-            about: empRow?.company_description || existing?.cp?.about || "",
+            ind: existing?.cp?.ind || "Technology",
+            size: existing?.cp?.size || "1-50",
+            hq: existing?.cp?.hq || "",
+            site: existing?.cp?.site || "",
+            about: existing?.cp?.about || "",
           },
         };
         localStorage.setItem("tq_users", JSON.stringify(parsedUsers));
-      } else {
-        // Check if this candidate still needs initial onboarding (Verify Account -> Photo & Industry -> Skills -> Resume)
-        try {
-          const { data: candProf } = await (supabase as any)
-            .from("profiles")
-            .select("industry, professional_headline, profile_completion, shell_state")
-            .eq("id", user.id)
-            .maybeSingle();
-          const doneFlag = Boolean(candProf?.shell_state?.onboardingCompleted);
-          const hasCoreFields = Boolean(candProf?.industry || candProf?.professional_headline);
-          const comp = Number(candProf?.profile_completion ?? 0);
-          candidateNeedsOnboarding = !doneFlag && !hasCoreFields && comp < 35;
-        } catch {
-          candidateNeedsOnboarding = Boolean(options?.isNewSignup);
-        }
       }
 
       localStorage.setItem("tq_sess", JSON.stringify(realEmail));

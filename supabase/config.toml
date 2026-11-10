@@ -1,5 +1,32 @@
 project_id = "uoxokxgbpylfsanffsxm"
 
+[auth]
+site_url = "http://localhost:8080"
+additional_redirect_urls = [
+  "http://localhost:8080/auth/callback",
+  "https://quiet-entry-space.lovable.app/auth/callback"
+]
+enable_signup = true
+minimum_password_length = 10
+password_requirements = "lower_upper_letters_digits"
+
+[auth.email]
+enable_confirmations = true
+double_confirm_changes = true
+secure_password_change = true
+
+[auth.captcha]
+enabled = false
+provider = "turnstile"
+
+[auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
+
+[auth.hook.custom_access_token]
+enabled = true
+uri = "pg-functions://postgres/public/custom_access_token_hook"
+
 [functions.generate-assessment]
 verify_jwt = true
 

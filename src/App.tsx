@@ -26,6 +26,8 @@ const lazy = <T extends ComponentType<any>>(factory: () => Promise<{ default: T 
   );
 import { ThemeProvider } from "next-themes";
 import { AnimatePresence } from "framer-motion";
+import { AuthProvider } from "./providers/AuthProvider";
+import { RequireAuth } from "./components/auth/RequireAuth";
 import PageTransition from "./components/layout/PageTransition";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -123,15 +125,15 @@ const AnimatedRoutes = () => {
           <Route path="/blog" element={<PageTransition><Blog /></PageTransition>} />
           <Route path="/docs" element={<PageTransition><Docs /></PageTransition>} />
           <Route path="/changelog" element={<PageTransition><Changelog /></PageTransition>} />
-          <Route path="/dashboard" element={<PageTransition><Dashboard /></PageTransition>} />
+          <Route path="/dashboard" element={<RequireAuth><PageTransition><Dashboard /></PageTransition></RequireAuth>} />
           <Route path="/assessments" element={<PageTransition><Assessments /></PageTransition>} />
           <Route path="/assessments/explore" element={<PageTransition><AssessmentDiscovery /></PageTransition>} />
           <Route path="/digital-marketing-fundamentals" element={<PageTransition><AssessmentDetail /></PageTransition>} />
           <Route path="/assessments/:assessmentId" element={<PageTransition><AssessmentDetail /></PageTransition>} />
           <Route path="/assessments/:assessmentId/prepare" element={<AssessmentPrepare />} />
           <Route path="/assessments/:assessmentId/practice/:subId/:mode" element={<AssessmentPractice />} />
-          <Route path="/assessments/:assessmentId/pre-check" element={<AssessmentPreCheck />} />
-          <Route path="/assessments/:assessmentId/test" element={<AssessmentTest />} />
+          <Route path="/assessments/:assessmentId/pre-check" element={<RequireAuth requireVerified><AssessmentPreCheck /></RequireAuth>} />
+          <Route path="/assessments/:assessmentId/test" element={<RequireAuth requireVerified><AssessmentTest /></RequireAuth>} />
           <Route path="/assessments/:assessmentId/result" element={<PageTransition><AssessmentResult /></PageTransition>} />
           <Route path="/jobs" element={<PageTransition><Jobs /></PageTransition>} />
           <Route path="/learning" element={<PageTransition><Learning /></PageTransition>} />
@@ -155,16 +157,16 @@ const AnimatedRoutes = () => {
           <Route path="/auth/callback" element={<PageTransition><AuthCallback /></PageTransition>} />
           <Route path="/forgot-password" element={<PageTransition><ResetPassword /></PageTransition>} />
           <Route path="/reset-password" element={<PageTransition><ResetPassword /></PageTransition>} />
-          <Route path="/onboarding" element={<PageTransition><OnboardingWizard /></PageTransition>} />
-          <Route path="/profile" element={<PageTransition><ProfileBuilder /></PageTransition>} />
-          <Route path="/my-profile" element={<PageTransition><MyProfile /></PageTransition>} />
-          <Route path="/employer-profile" element={<PageTransition><EmployerProfileBuilder /></PageTransition>} />
+          <Route path="/onboarding" element={<RequireAuth><PageTransition><OnboardingWizard /></PageTransition></RequireAuth>} />
+          <Route path="/profile" element={<RequireAuth><PageTransition><ProfileBuilder /></PageTransition></RequireAuth>} />
+          <Route path="/my-profile" element={<RequireAuth><PageTransition><MyProfile /></PageTransition></RequireAuth>} />
+          <Route path="/employer-profile" element={<RequireAuth role="employer"><PageTransition><EmployerProfileBuilder /></PageTransition></RequireAuth>} />
           <Route path="/demo-profile" element={<PageTransition><DemoProfile /></PageTransition>} />
           <Route path="/skill-assessment" element={<PageTransition><SkillAssessment /></PageTransition>} />
           <Route path="/skill-assessment-library" element={<PageTransition><SkillAssessmentLibrary /></PageTransition>} />
           <Route path="/networking" element={<PageTransition><Networking /></PageTransition>} />
-          <Route path="/pro" element={<PageTransition><TalentoPro /></PageTransition>} />
-          <Route path="/talento-pro" element={<PageTransition><TalentoPro /></PageTransition>} />
+          <Route path="/pro" element={<RequireAuth><PageTransition><TalentoPro /></PageTransition></RequireAuth>} />
+          <Route path="/talento-pro" element={<RequireAuth><PageTransition><TalentoPro /></PageTransition></RequireAuth>} />
           <Route path="/home-2" element={<PageTransition><Home2 /></PageTransition>} />
           <Route path="/home2" element={<PageTransition><Home2 /></PageTransition>} />
           <Route path="/home-3" element={<PageTransition><Home3 /></PageTransition>} />
@@ -185,10 +187,12 @@ const App = () => (
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <BrowserRouter>
-            <AuthRedirectListener />
-            <AnimatedRoutes />
-          </BrowserRouter>
+          <AuthProvider>
+            <BrowserRouter>
+              <AuthRedirectListener />
+              <AnimatedRoutes />
+            </BrowserRouter>
+          </AuthProvider>
         </TooltipProvider>
       </QueryClientProvider>
     </HelmetProvider>

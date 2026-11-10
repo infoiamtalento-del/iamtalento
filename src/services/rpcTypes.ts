@@ -13,6 +13,50 @@ export interface RpcMap {
     args: Record<string, never>;
     returns: "employer" | "employee" | null;
   };
+  is_email_verified: {
+    args: Record<string, never>;
+    returns: boolean;
+  };
+  require_verified_email: {
+    args: Record<string, never>;
+    returns: void;
+  };
+  mark_email_verified: {
+    args: Record<string, never>;
+    returns: boolean;
+  };
+  require_aal2: {
+    args: Record<string, never>;
+    returns: void;
+  };
+  record_consent: {
+    args: { p_kind: string; p_version: string; p_ip_hash?: string | null; p_ua_hash?: string | null };
+    returns: void;
+  };
+  record_login_event: {
+    args: { p_device_hash: string; p_ip_hash?: string | null; p_ua?: string | null };
+    returns: string;
+  };
+  complete_signup: {
+    args: { p_role: string; p_full_name: string; p_company_name?: string | null; p_phone?: string | null };
+    returns: { success: boolean; user_id: string; role: string };
+  };
+  get_my_context: {
+    args: Record<string, never>;
+    returns: Record<string, unknown>;
+  };
+  request_account_deletion: {
+    args: Record<string, never>;
+    returns: { success: boolean; deletion_requested_at: string };
+  };
+  cancel_account_deletion: {
+    args: Record<string, never>;
+    returns: { success: boolean; deletion_cancelled: boolean };
+  };
+  export_my_data: {
+    args: Record<string, never>;
+    returns: Record<string, unknown>;
+  };
 
   // Assessment & Proctoring
   start_journey: {
