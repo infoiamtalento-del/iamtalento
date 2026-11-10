@@ -232,7 +232,7 @@ export const ProWalletView: React.FC<ProWalletViewProps> = ({
     setSavedMethods(next);
   };
 
-  const useSavedMethod = (m: SavedMethod) => {
+  const applySavedMethod = (m: SavedMethod) => {
     if (managing) return;
     if (m.kind === "upi") {
       setPaymentTab("upi");
@@ -551,7 +551,7 @@ export const ProWalletView: React.FC<ProWalletViewProps> = ({
                 <div key={m.id} className="flex items-center justify-between gap-3 py-2.5">
                   <button
                     type="button"
-                    onClick={() => useSavedMethod(m)}
+                    onClick={() => applySavedMethod(m)}
                     className="flex min-w-0 flex-1 items-center gap-3 text-left"
                   >
                     <span className={tile}>

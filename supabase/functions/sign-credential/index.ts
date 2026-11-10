@@ -2,19 +2,17 @@
 // Secrets: CREDENTIAL_SIGNING_KEY (base64 PKCS8 Ed25519 private key), CREDENTIAL_KEY_ID (optional label)
 //   generate once:  openssl genpkey -algorithm ed25519 -outform DER | base64
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
+import { getCorsHeaders, handleCors } from "../_shared/cors.ts";
 
-const cors = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
-const json = (body: unknown, status = 200) =>
-  new Response(JSON.stringify(body), { status, headers: { ...cors, "Content-Type": "application/json" } });
+const json = (body: unknown, status = 200, req?: Request) =>
+  new Response(JSON.stringify(body), { status, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } });
 
 const b64ToBytes = (b64: string) => Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
 const bytesToB64 = (b: ArrayBuffer) => btoa(String.fromCharCode(...new Uint8Array(b)));
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: cors });
+  const corsResponse = handleCors(req);
+  if (corsResponse) return corsResponse;
   try {
     const url = Deno.env.get("SUPABASE_URL")!;
     const userClient = createClient(url, Deno.env.get("SUPABASE_ANON_KEY")!, {

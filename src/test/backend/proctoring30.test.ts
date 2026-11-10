@@ -21,6 +21,7 @@ beforeAll(async () => {
   // Ensure a free domain journey can start cleanly and add one descriptive question to test ChatGPT & Plagiarism checks
   await db.q(`update public.assessments_catalog set price_inr = 0 where id = $1`, [domain.id]);
   coreAssessmentId = (await db.q(`select id from public.assessments_catalog where kind = 'core' and core_position = 1`))[0].id;
+  await db.q(`update public.assessments_catalog set question_count = 50 where id = $1`, [coreAssessmentId]);
   const [dq] = await db.q(`
     insert into public.question_bank (assessment_id, section, qtype, prompt, marks)
     values ($1, 'Written Architecture', 'descriptive', 'Explain idempotency and distributed locking in payment systems.', 5)

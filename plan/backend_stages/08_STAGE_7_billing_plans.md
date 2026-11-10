@@ -1,0 +1,22 @@
+# STAGE 7 — Employer billing: plans, entitlements, wallet, invoices, ads
+
+**Goal:** employers can pay, get entitlements, hit quotas, receive GST invoices; ad campaigns have real accounting.
+
+## Read first
+`…100050_billing_wallet.sql` (orders, wallet, ledger, coupons, `_fulfill_order`, `employer_subscriptions`), `…100600_platform_services.sql`, `functions/payments/index.ts`, `services/candidate/wallet.ts`, `utils/invoicePdf.ts`, `ProEmployerAdvertise.tsx`, `ProEmployerDemoServices.tsx`, `pages/PricingEmployers.tsx`. Check whether `wallet_accounts.owner_type` already supports tenants; extend if not.
+
+## Tasks
+1. **Plans and entitlements.** Tables: `plans(key, name, price_month, price_year, limits jsonb)` seeded `free | growth | enterprise` (limits: `active_jobs, seats, talent_searches_day, talent_unlocks_month, assessments_month, ai_interviews_month, invites_day, ad_budget_cap`), `tenant_entitlements(tenant_id, key, limit, period)` derived from plan + add-ons, `usage_counters(tenant_id, key, period_start, used)`.
+   Functions: `consume_entitlement(tenant, key, qty)` atomic (`insert … on conflict do update … where used + qty <= limit returning`), raising `P0402` "Plan limit reached"; `check_quota(tenant, key)`; `tenant_usage()` for the UI. Replace the Stage 4/6 stubs. Add-ons and credit packs are purchasable through `purchase_service` pattern against the tenant wallet.
+2. **Subscriptions.** Extend `payments` edge function with `create_subscription` (Razorpay Subscriptions API), `cancel_subscription`, `change_plan`, and webhook events `subscription.activated|charged|halted|cancelled|completed` plus `payment.failed`, `refund.processed`. Table `webhook_events(event_id unique, source, payload, processed_at)` for idempotency and replay. State machine in `employer_subscriptions.status` (`trialing → active → past_due → cancelled`), grace period 7 days, dunning notifications, automatic downgrade to `free` that pauses (not deletes) excess jobs. Proration policy documented; default = change at next cycle.
+3. **GST invoices.** `invoices(id, number unique, tenant_id, order_id, issue_date, seller jsonb, buyer jsonb, lines jsonb, taxable, cgst, sgst, igst, total, pdf_path, status)`; gapless numbering per financial year via an `invoice_sequences` table updated under `for update`; place-of-supply logic reuses the existing seller/buyer state rule; credit notes table for refunds. Edge function `invoice-pdf` generates the PDF (pdf-lib) into private bucket `invoices`; tenant members with `billing.view` fetch signed URLs. Client `utils/invoicePdf.ts` stays for demo only.
+4. **Tenant wallet.** Top-ups via `create_payment_order` (item type `wallet_topup`, owner tenant), spend through `wallet_transfer`; low-balance notification; optional auto-recharge flag (off by default, requires saved mandate, out of scope to implement mandate—stub the flag). Admin `refund_order` (AAL2) calls the Razorpay refund API and writes a balanced reversal.
+5. **Advertise.** `ad_campaigns(id, tenant_id, name, placement check in ('job_boost','featured_company','banner','email_digest'), job_id null, budget, daily_cap, bid, starts_at, ends_at, status check in ('draft','pending_review','active','paused','completed','rejected'), targeting jsonb)`, `ad_stats_daily(campaign_id, day, impressions, clicks, spend)`. RPCs: create/update/submit/pause/resume, `record_ad_event(campaign_id, kind)` (anonymous-safe, bot-filtered, deduped, batched), `settle_ad_spend()` cron debiting the wallet daily and pausing at budget exhaustion. Admin approval queue. Job search ranking uses `job_boost` as a bounded boost with an "Sponsored" flag in the payload.
+6. **Receipts and history.** `list_payments(cursor)`, `get_invoice(id)`, `list_wallet_entries(cursor)` mirroring candidate wallet service.
+7. Services: `src/services/employer/billing.ts`, `ads.ts`.
+
+## Tests
+Parallel `consume_entitlement` (no over-consumption), webhook replay → one fulfillment, amount-mismatch rejection, subscription state machine incl. downgrade pausing jobs, gapless invoice numbers under concurrency, GST CGST+SGST vs IGST, refund ledger balance (sum of debits = sum of credits), ad budget never negative, ad event dedupe, tenant isolation on all billing reads.
+
+## Acceptance
+Free tenant hits the 1-active-job limit with a clean error; after paying (Razorpay test mode) the limit lifts, an invoice with a valid sequential number is downloadable, and cancelling the subscription downgrades at period end.

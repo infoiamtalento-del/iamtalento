@@ -1,10 +1,10 @@
 project_id = "uoxokxgbpylfsanffsxm"
 
 [functions.generate-assessment]
-verify_jwt = false
+verify_jwt = true
 
 [functions.payments]
 verify_jwt = false
 
 [functions.sign-credential]
-verify_jwt = false
+verify_jwt = true
