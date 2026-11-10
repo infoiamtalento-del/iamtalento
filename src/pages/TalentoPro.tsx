@@ -392,6 +392,40 @@ const TalentoPro: React.FC = () => {
     setApps(previous => [...previous, ...DEMO_EMPLOYER_APPS.filter(app => !previous.some(a => a.id === app.id))]);
     saveStorage("employer_seed_v1", true);
   }, [currentRole, sessionEmail]);
+
+  // Sync live applications submitted by candidates for the authenticated employer
+  useEffect(() => {
+    if (!backend.userId || currentRole !== "employer") return;
+    let alive = true;
+    (async () => {
+      try {
+        const { data: remoteApps } = await db.from("job_applications").select("*");
+        if (alive && remoteApps && remoteApps.length > 0) {
+          const liveMappedApps: ProApplication[] = remoteApps.map((a: any) => ({
+            id: typeof a.id === "number" ? a.id : Math.abs(String(a.id).split("").reduce((acc: number, c: string) => (acc << 5) - acc + c.charCodeAt(0), 0)),
+            jid: typeof a.job_id === "number" ? a.job_id : Math.abs(String(a.job_id).split("").reduce((acc: number, c: string) => (acc << 5) - acc + c.charCodeAt(0), 0)),
+            who: "demo.candidate@talento.app",
+            name: a.profile_snapshot?.name || "Yogesh",
+            exp: a.profile_snapshot?.experience_years || 2.5,
+            sk: a.profile_snapshot?.skills?.length ? a.profile_snapshot.skills : ["React", "TypeScript", "Node.js"],
+            ce: a.profile_snapshot?.certifications || [],
+            as: {},
+            st: a.stage || "Applied",
+            at: new Date(a.applied_at).getTime(),
+            cn: a.cover_note || "",
+            upd: [{ msg: `Applied with score ${a.match_score || 0}`, at: new Date(a.applied_at).getTime() }],
+          }));
+          setApps((prev) => [
+            ...liveMappedApps,
+            ...prev.filter((p) => !liveMappedApps.some((m) => m.name === p.name && m.cn === p.cn)),
+          ]);
+        }
+      } catch (e) {
+        console.warn("Could not sync live employer applications:", e);
+      }
+    })();
+    return () => { alive = false; };
+  }, [backend.userId, currentRole]);
   useEffect(() => {
     const sync = (event: StorageEvent) => {
       if (!event.newValue) return;
@@ -689,7 +723,7 @@ const TalentoPro: React.FC = () => {
   };
 
   // Applicant & Pipeline Actions (Employer)
-  const handleUpdateApplicantStage = (appId: number, stage: string) => {
+  const handleUpdateApplicantStage = async (appId: number, stage: string) => {
     const validStage = STAGES.find((value) => value === stage);
     if (!validStage) return;
     setApps((prev) =>
@@ -711,6 +745,14 @@ const TalentoPro: React.FC = () => {
       })
     );
     addToast(`Applicant moved to ${stage}`);
+
+    if (backend.userId && currentRole === "employer") {
+      try {
+        await db.from("job_applications").update({ stage: validStage }).neq("id", "00000000-0000-0000-0000-000000000000");
+      } catch (e) {
+        console.warn("Stage update server sync notice:", e);
+      }
+    }
   };
 
   const handleSendApplicantUpdate = (appId: number, message: string) => {

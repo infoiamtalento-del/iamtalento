@@ -20,6 +20,7 @@ import {
   formatAuthError,
   isDemoOnlySession,
   openDemoWorkspace,
+  loginDemoUser,
   signUpWithEmail,
   signInWithEmail,
   recordConsent,
@@ -91,9 +92,17 @@ const Auth = () => {
     });
   }, [navigate, searchParams]);
 
-  const openDemoProfile = () => {
-    const dest = openDemoWorkspace(role);
-    navigate(dest);
+  const openDemoProfile = async () => {
+    setLoading(true);
+    try {
+      const dest = await loginDemoUser(role);
+      navigate(dest);
+    } catch {
+      const dest = openDemoWorkspace(role);
+      navigate(dest);
+    } finally {
+      setLoading(false);
+    }
   };
   const demoUser = DEFAULT_USERS[role === "employer" ? "demo.employer@talento.app" : "demo.candidate@talento.app"];
 
