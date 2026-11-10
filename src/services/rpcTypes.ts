@@ -58,6 +58,80 @@ export interface RpcMap {
     returns: Record<string, unknown>;
   };
 
+  // Tenancy & Permissions (Stage 2)
+  has_tenant_permission: {
+    args: { _tenant: string; _perm: string };
+    returns: boolean;
+  };
+  invite_team_member: {
+    args: { p_tenant: string; p_email: string; p_role: string };
+    returns: { invite_id: string; token: string; expires_at: string };
+  };
+  revoke_invite: {
+    args: { p_invite_id: string };
+    returns: boolean;
+  };
+  accept_invite: {
+    args: { p_token: string };
+    returns: { success: boolean; tenant_id: string; role: string };
+  };
+  change_member_role: {
+    args: { p_tenant: string; p_user: string; p_role: string };
+    returns: boolean;
+  };
+  remove_member: {
+    args: { p_tenant: string; p_user: string };
+    returns: boolean;
+  };
+  leave_tenant: {
+    args: { p_tenant: string };
+    returns: boolean;
+  };
+  transfer_ownership: {
+    args: { p_tenant: string; p_new_owner: string };
+    returns: boolean;
+  };
+  submit_employer_verification: {
+    args: { p_docs: Record<string, unknown>; p_gstin?: string | null; p_cin?: string | null; p_pan?: string | null };
+    returns: Record<string, unknown>;
+  };
+  employer_can: {
+    args: { _tenant: string; _action: string };
+    returns: boolean;
+  };
+  log_audit: {
+    args: { p_tenant: string; p_action: string; p_entity: string; p_entity_id?: string | null; p_meta?: Record<string, unknown>; p_ip_hash?: string | null };
+    returns: number;
+  };
+  list_audit_log: {
+    args: { p_tenant?: string | null; p_limit?: number; p_cursor?: number | null };
+    returns: Array<Record<string, unknown>>;
+  };
+  admin_list_employers: {
+    args: { p_status?: string | null; p_search?: string | null; p_limit?: number };
+    returns: Array<Record<string, unknown>>;
+  };
+  admin_review_employer: {
+    args: { p_employer_id: string; p_status: string; p_reason?: string | null };
+    returns: boolean;
+  };
+  admin_suspend_user: {
+    args: { p_user_id: string; p_reason: string };
+    returns: boolean;
+  };
+  admin_list_jobs_pending: {
+    args: { p_limit?: number };
+    returns: Array<Record<string, unknown>>;
+  };
+  admin_moderate_job: {
+    args: { p_job_id: string; p_approve: boolean; p_reason?: string | null };
+    returns: boolean;
+  };
+  admin_stats: {
+    args: Record<string, never>;
+    returns: Record<string, unknown>;
+  };
+
   // Assessment & Proctoring
   start_journey: {
     args: { p_domain_assessment_id: string };
