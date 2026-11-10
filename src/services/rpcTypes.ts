@@ -132,6 +132,24 @@ export interface RpcMap {
     returns: Record<string, unknown>;
   };
 
+  // Employer Profile & Dashboard (Stage 3)
+  get_employer_profile: {
+    args: Record<string, never>;
+    returns: Record<string, unknown> | null;
+  };
+  save_employer_profile: {
+    args: { p: Record<string, unknown> };
+    returns: Record<string, unknown>;
+  };
+  get_public_company: {
+    args: { p_slug: string };
+    returns: Record<string, unknown> | null;
+  };
+  employer_dashboard: {
+    args: { p_tenant?: string | null };
+    returns: Record<string, unknown>;
+  };
+
   // Assessment & Proctoring
   start_journey: {
     args: { p_domain_assessment_id: string };
