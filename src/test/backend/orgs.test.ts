@@ -55,11 +55,11 @@ beforeAll(async () => {
   const [otherEmp] = await db.q(`select tenant_id from public.employers where user_id = $1`, [OTHER_EMPLOYER]);
   otherTenantId = otherEmp.tenant_id;
 
-  // Insert a job for EMPLOYER_OWNER
-  await db.user(EMPLOYER_OWNER);
+  // Insert a job for EMPLOYER_OWNER via admin
+  await db.admin();
   const [job] = await db.q(`
-    insert into public.employer_job_openings (user_id, tenant_id, designation, salary_min, salary_max, status, is_public)
-    values ($1, $2, 'Lead Systems Engineer', 1500000, 2500000, 'active', true)
+    insert into public.employer_job_openings (user_id, tenant_id, designation, salary_min, salary_max, status, is_public, work_mode, job_location)
+    values ($1, $2, 'Lead Systems Engineer', 1500000, 2500000, 'active', true, 'Remote', 'Remote')
     returning id
   `, [EMPLOYER_OWNER, tenantId]);
   employerOpeningId = job.id;
@@ -72,7 +72,7 @@ describe("Hotfix D2: employer_job_openings RLS & Write Protection", () => {
       insert into public.employer_job_openings (user_id, designation, status)
       values ($1, 'Unauthorized Job', 'active')
     `, [CANDIDATE_USER]);
-    expect(err).toBeTruthy();
+    expect(err).toMatch(/Direct client writes|violates row-level security policy/i);
   });
 
   it("prevents employee from updating or flipping status on employer jobs", async () => {
@@ -80,28 +80,34 @@ describe("Hotfix D2: employer_job_openings RLS & Write Protection", () => {
     const err = await db.fails(`
       update public.employer_job_openings set status = 'closed' where id = $1
     `, [employerOpeningId]);
-    expect(err).toBeNull(); // update returns 0 rows due to RLS filter
+    expect(err).toMatch(/Direct client writes|violates row-level security policy/i);
     const [j] = await db.q(`select status from public.employer_job_openings where id = $1`, [employerOpeningId]);
     expect(j.status).toBe("active");
   });
 
   it("prevents employee from deleting employer jobs", async () => {
     await db.user(CANDIDATE_USER);
-    await db.q(`delete from public.employer_job_openings where id = $1`, [employerOpeningId]);
+    const err = await db.fails(`delete from public.employer_job_openings where id = $1`, [employerOpeningId]);
+    expect(err).toMatch(/Direct client writes|violates row-level security policy/i);
     const [j] = await db.q(`select count(*)::int n from public.employer_job_openings where id = $1`, [employerOpeningId]);
     expect(j.n).toBe(1);
   });
 
   it("prevents employer from updating another employer's job", async () => {
     await db.user(OTHER_EMPLOYER);
-    await db.q(`update public.employer_job_openings set status = 'closed' where id = $1`, [employerOpeningId]);
+    const err = await db.fails(`update public.employer_job_openings set status = 'closed' where id = $1`, [employerOpeningId]);
+    expect(err).toMatch(/Direct client writes|violates row-level security policy/i);
     const [j] = await db.q(`select status from public.employer_job_openings where id = $1`, [employerOpeningId]);
     expect(j.status).toBe("active");
   });
 
-  it("allows the owner employer to update their job", async () => {
+  it("allows the owner employer to update their job via update_job RPC (direct writes blocked by D2)", async () => {
     await db.user(EMPLOYER_OWNER);
-    await db.q(`update public.employer_job_openings set designation = 'Principal Engineer' where id = $1`, [employerOpeningId]);
+    const directErr = await db.fails(`update public.employer_job_openings set designation = 'Principal Engineer' where id = $1`, [employerOpeningId]);
+    expect(directErr).toMatch(/Direct client writes|violates row-level security policy/i);
+
+    // Update via authorized update_job RPC
+    await db.q(`select public.update_job($1, $2::jsonb)`, [employerOpeningId, JSON.stringify({ designation: 'Principal Engineer' })]);
     const [j] = await db.q(`select designation from public.employer_job_openings where id = $1`, [employerOpeningId]);
     expect(j.designation).toBe("Principal Engineer");
   });
@@ -112,9 +118,9 @@ describe("Hotfix D2: employer_job_openings RLS & Write Protection", () => {
 
     await db.user(EMPLOYER_OWNER);
     const err = await db.fails(`
-      update public.employer_job_openings set designation = 'Hacked' where id = $1
-    `, [employerOpeningId]);
-    expect(err).toMatch(/Suspended employer|violates row-level security/i);
+      select public.update_job($1, $2::jsonb)
+    `, [employerOpeningId, JSON.stringify({ designation: 'Hacked' })]);
+    expect(err).toMatch(/Tenant account is suspended|Suspended employer|Unauthorized/i);
 
     // Restore to verified
     await db.admin();

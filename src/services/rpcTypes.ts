@@ -150,6 +150,64 @@ export interface RpcMap {
     returns: Record<string, unknown>;
   };
 
+  // Job Posting Lifecycle (Stage 4)
+  create_job: {
+    args: { p: Record<string, unknown> };
+    returns: Record<string, unknown>;
+  };
+  update_job: {
+    args: { p_job_id: string; p: Record<string, unknown> };
+    returns: Record<string, unknown>;
+  };
+  publish_job: {
+    args: { p_job_id: string; p_closes_at?: string | null };
+    returns: Record<string, unknown>;
+  };
+  pause_job: {
+    args: { p_job_id: string };
+    returns: Record<string, unknown>;
+  };
+  resume_job: {
+    args: { p_job_id: string };
+    returns: Record<string, unknown>;
+  };
+  close_job: {
+    args: { p_job_id: string; p_reason?: string };
+    returns: Record<string, unknown>;
+  };
+  duplicate_job: {
+    args: { p_job_id: string };
+    returns: Record<string, unknown>;
+  };
+  delete_job: {
+    args: { p_job_id: string };
+    returns: boolean;
+  };
+  list_my_jobs: {
+    args: { p_status?: string[] | null; p_search?: string | null; p_cursor?: string | null; p_limit?: number };
+    returns: Array<Record<string, unknown>>;
+  };
+  get_job_for_edit: {
+    args: { p_job_id: string };
+    returns: Record<string, unknown>;
+  };
+  job_stats: {
+    args: { p_job_id: string };
+    returns: Record<string, unknown>;
+  };
+  record_job_view: {
+    args: { p_job_id: string; p_viewer_hash?: string | null };
+    returns: boolean;
+  };
+  expire_jobs: {
+    args: Record<string, never>;
+    returns: number;
+  };
+  reminder_job_expiring: {
+    args: Record<string, never>;
+    returns: number;
+  };
+
   // Assessment & Proctoring
   start_journey: {
     args: { p_domain_assessment_id: string };

@@ -13,6 +13,8 @@ beforeAll(async () => {
   await db.signUp(ADMIN, "admin@test.dev", {});
   await db.admin();
   await db.q(`insert into public.platform_admins (user_id) values ($1)`, [ADMIN]);
+  await db.q(`update public.employer_job_openings set is_demo = false where designation = 'Frontend Developer'`);
+  await db.q(`insert into public.platform_settings (key, value) values ('show_demo_jobs', 'true'::jsonb) on conflict (key) do update set value = 'true'::jsonb`);
   frontendJob = (await db.q(`select id from public.employer_job_openings where designation = 'Frontend Developer'`))[0].id;
 }, 120_000);
 
