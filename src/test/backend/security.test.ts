@@ -112,6 +112,9 @@ describe("function exposure", () => {
     "admin_list_jobs_pending", "admin_moderate_job", "admin_stats",
     // employer profile & dashboard (Stage 3)
     "save_employer_profile", "get_employer_profile", "employer_dashboard", "get_public_company",
+    // job posting lifecycle (Stage 4)
+    "create_job", "update_job", "publish_job", "pause_job", "resume_job", "close_job", "duplicate_job",
+    "delete_job", "list_my_jobs", "get_job_for_edit", "job_stats", "record_job_view", "expire_jobs", "reminder_job_expiring",
     // used inside RLS policies and constraints
     "is_admin", "is_owner", "is_tenant_member", "can_manage_job", "has_role", "all_http_urls", "is_client_role", "safe_date", "_jsonb_text_array",
     "generate_talento_id", "update_updated_at",
@@ -121,6 +124,7 @@ describe("function exposure", () => {
     "get_public_portfolio", "search_jobs", "subscribe_job_alerts", "unsubscribe_job_alert",
     "register_user_account", "confirm_unverified_account",
     "get_public_company",
+    "record_job_view",
   ]);
 
   const callable = async (role: string) => {
@@ -184,8 +188,15 @@ describe("employers cannot forge data", () => {
   let appId: string;
   it("forces source=employer and ownership on jobs", async () => {
     await db.user(EMP);
-    const [row] = await db.q(`insert into public.employer_job_openings (designation, company_name, source, user_id, job_type, work_mode, skills)
+    // Direct client writes are blocked by D2
+    const err = await db.fails(`insert into public.employer_job_openings (designation, company_name, source, user_id, job_type, work_mode, skills)
       values ('Forged Platform Job', 'Acme', 'platform', $1, 'Full-time', 'Remote', array['React']) returning id, source, user_id`, [EMP2]);
+    expect(err).toMatch(/Direct client writes|violates row-level security policy/i);
+
+    // When created via admin / RPC, source=employer and job is active
+    await db.admin();
+    const [row] = await db.q<{ id: string; source: string; user_id: string }>(`insert into public.employer_job_openings (designation, company_name, source, user_id, job_type, work_mode, skills, status, is_public)
+      values ('Platform Job', 'Acme', 'employer', $1, 'Full-time', 'Remote', array['React'], 'active', true) returning id, source, user_id`, [EMP]);
     job = row.id;
     expect(row.source).toBe("employer");
     expect(row.user_id).toBe(EMP);

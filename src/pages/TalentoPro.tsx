@@ -69,6 +69,7 @@ import { createOrder, payWithRazorpay } from "@/services/candidate/wallet";
 import { rpc, db } from "@/services/db";
 import { fromProUser, loadLiveProfile, saveLiveProfile, toProUser } from "@/services/candidate/profile";
 import { getEmployerProfile, saveEmployerProfile } from "@/services/employer/profile";
+import { createJob, publishJob } from "@/services/employer/jobs";
 
 interface ToastMessage {
   id: number;
@@ -811,7 +812,7 @@ const TalentoPro: React.FC = () => {
   };
 
   // Job Publishing & Management
-  const handlePublishJob = (jobData: Partial<ProJob>) => {
+  const handlePublishJob = async (jobData: Partial<ProJob>) => {
     const newJob: ProJob = {
       id: Date.now(),
       t: jobData.t || "Software Engineer",
@@ -830,6 +831,28 @@ const TalentoPro: React.FC = () => {
 
     setJobs((prev) => [newJob, ...prev]);
     setActiveView("dash");
+
+    // Persist to server if employer is signed in
+    if (backend.userId && currentUser.role === "employer") {
+      try {
+        const created = await createJob({
+          designation: newJob.t,
+          job_description: newJob.description || `${newJob.t} role at ${newJob.c}`,
+          job_location: newJob.l,
+          work_mode: newJob.m,
+          job_type: newJob.ty,
+          salary_min: newJob.a,
+          salary_max: newJob.b,
+          experience_min: newJob.e,
+          skills: newJob.sk,
+        });
+        await publishJob(created.id);
+        addToast("Job published and live on server!");
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        addToast(`Server sync notice: ${msg}`);
+      }
+    }
   };
 
   const handleDuplicateJob = (jobId: number) => {
