@@ -1,3 +1,12 @@
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+
+# Supabase Local Cache
+supabase/.temp
+supabase/.branches
+
 # Logs
 logs
 *.log

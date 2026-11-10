@@ -100,6 +100,16 @@ describe("function exposure", () => {
     "send_proctor_chat_message", "verify_proctoring_chain", "finalize_proctoring_audit", "get_proctoring_dossier",
     // auth reliability & rate-limit-proof account provisioning
     "register_user_account", "confirm_unverified_account",
+    // auth v2 lifecycle & consent RPCs
+    "cancel_account_deletion", "complete_signup", "export_my_data", "get_my_context",
+    "is_email_verified", "mark_email_verified", "record_consent", "record_login_event",
+    "request_account_deletion", "require_aal2", "require_verified_email",
+    // tenancy, roles & admin RPCs (Stage 2)
+    "has_tenant_permission", "invite_team_member", "revoke_invite", "accept_invite",
+    "change_member_role", "remove_member", "leave_tenant", "transfer_ownership",
+    "submit_employer_verification", "employer_can", "log_audit", "list_audit_log",
+    "admin_list_employers", "admin_review_employer", "admin_suspend_user",
+    "admin_list_jobs_pending", "admin_moderate_job", "admin_stats",
     // used inside RLS policies and constraints
     "is_admin", "is_owner", "is_tenant_member", "can_manage_job", "has_role", "all_http_urls", "is_client_role", "safe_date", "_jsonb_text_array",
     "generate_talento_id", "update_updated_at",

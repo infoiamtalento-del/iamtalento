@@ -72,6 +72,17 @@ export async function createDb() {
       $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
     create or replace function auth.role() returns text language sql stable as
       $$ select coalesce(nullif(current_setting('request.jwt.claim.role', true), ''), 'anon') $$;
+    create or replace function auth.jwt() returns jsonb language sql stable as $$
+      select coalesce(
+        nullif(current_setting('request.jwt.claims', true), '')::jsonb,
+        jsonb_build_object(
+          'sub', nullif(current_setting('request.jwt.claim.sub', true), ''),
+          'role', coalesce(nullif(current_setting('request.jwt.claim.role', true), ''), 'anon'),
+          'aal', coalesce(nullif(current_setting('request.jwt.claim.aal', true), ''), 'aal1'),
+          'amr', coalesce(nullif(current_setting('request.jwt.claim.amr', true), '')::jsonb, '[]'::jsonb)
+        )
+      );
+    $$;
     create table storage.buckets (id text primary key, name text, public boolean default false, file_size_limit bigint, allowed_mime_types text[]);
     create table storage.objects (id uuid primary key default gen_random_uuid(), bucket_id text, name text, owner uuid);
     alter table storage.objects enable row level security;
@@ -104,7 +115,17 @@ export async function createDb() {
     pg,
     /** Superuser: seeds data and plays the service role. */
     async admin() { await pg.exec(`reset role; ${claims("", "service_role")}`); },
-    async user(id: string) { await pg.exec(`reset role; ${claims(id, "authenticated")}; set role authenticated`); },
+    async user(id: string, customClaims?: { aal?: string; amr?: unknown[] }) {
+      const aal = customClaims?.aal || "aal1";
+      const amr = JSON.stringify(customClaims?.amr || []);
+      await pg.exec(`
+        reset role;
+        ${claims(id, "authenticated")};
+        select set_config('request.jwt.claim.aal', '${aal}', false),
+               set_config('request.jwt.claim.amr', '${amr}', false);
+        set role authenticated
+      `);
+    },
     async anon() { await pg.exec(`reset role; ${claims("", "anon")}; set role anon`); },
     async q<T = Record<string, any>>(sql: string, params: unknown[] = []): Promise<T[]> {
       return (await pg.query<T>(sql, params)).rows;
@@ -113,9 +134,16 @@ export async function createDb() {
     async fails(sql: string, params: unknown[] = []): Promise<string | null> {
       try { await pg.query(sql, params); return null; } catch (e) { return (e as Error).message; }
     },
-    async signUp(id: string, email: string, meta: Record<string, unknown> = {}) {
+    async signUp(id: string, email: string, meta: Record<string, unknown> = {}, confirm = true) {
       await api.admin();
-      await pg.query(`insert into auth.users (id, email, raw_user_meta_data) values ($1, $2, $3::jsonb)`, [id, email, JSON.stringify(meta)]);
+      const confirmedAt = confirm ? new Date().toISOString() : null;
+      await pg.query(
+        `insert into auth.users (id, email, raw_user_meta_data, email_confirmed_at) values ($1, $2, $3::jsonb, $4)`,
+        [id, email, JSON.stringify(meta), confirmedAt]
+      );
+      if (confirm) {
+        await pg.query(`update public.profiles set email_verified_at = now() where id = $1`, [id]);
+      }
     },
   };
   return api;

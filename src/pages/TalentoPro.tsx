@@ -229,7 +229,9 @@ const TalentoPro: React.FC = () => {
       ) {
         return parsed;
       }
-    } catch {}
+    } catch (_err) {
+      /* ignore invalid JSON in storage */
+    }
     return INITIAL_JOBS;
   });
 
@@ -241,7 +243,9 @@ const TalentoPro: React.FC = () => {
       if (Array.isArray(parsed)) {
         return parsed.filter((a) => a && a.id !== 1001 && a.id !== 1002);
       }
-    } catch {}
+    } catch (_err) {
+      /* ignore invalid JSON in storage */
+    }
     return DEFAULT_APPS;
   });
 

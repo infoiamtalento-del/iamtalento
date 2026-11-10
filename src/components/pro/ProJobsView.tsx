@@ -28,7 +28,6 @@ import {
   RefreshCw,
   Award,
   Megaphone,
-  Infinity,
   Code,
   Palette,
   BarChart3,

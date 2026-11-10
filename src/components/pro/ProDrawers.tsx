@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   X,
   Briefcase,
@@ -80,6 +80,24 @@ export const ProDrawers: React.FC<ProDrawersProps> = ({
   onSaveRecruiterNote,
   onToast,
 }) => {
+  const [coverNote, setCoverNote] = useState("");
+  const [recruiterMessage, setRecruiterMessage] = useState("");
+  const [interviewDate, setInterviewDate] = useState("");
+  const [recruiterNote, setRecruiterNote] = useState("");
+
+  useEffect(() => {
+    if (drawerState?.type === "applicant") {
+      const app = applications.find((a) => a.id === drawerState.id);
+      if (app) {
+        setInterviewDate(app.iv || "");
+        setRecruiterNote(app.note || "");
+        setRecruiterMessage("");
+      }
+    } else if (drawerState?.type === "job") {
+      setCoverNote("");
+    }
+  }, [drawerState, applications]);
+
   if (!drawerState) return null;
 
   // 1. JOB DRAWER
@@ -92,7 +110,6 @@ export const ProDrawers: React.FC<ProDrawersProps> = ({
     const userSkillsLower = (user.sk || []).map((s) => s.toLowerCase());
     const missingSkills = job.sk.filter((s) => !userSkillsLower.includes(s.toLowerCase()));
     const isSaved = (user.saved || []).includes(job.id);
-    const [coverNote, setCoverNote] = useState("");
 
     const similarJobs = jobs
       .filter((j) => j.id !== job.id && j.sk.some((k) => job.sk.includes(k)))
@@ -388,9 +405,6 @@ export const ProDrawers: React.FC<ProDrawersProps> = ({
 
     const job = jobs.find((j) => j.id === app.jid);
     const STAGES = ["Applied", "Shortlisted", "Interview", "Offer", "Rejected"];
-    const [recruiterMessage, setRecruiterMessage] = useState("");
-    const [interviewDate, setInterviewDate] = useState(app.iv || "");
-    const [recruiterNote, setRecruiterNote] = useState(app.note || "");
 
     const quickMessages = [
       "Your application is currently under review by our senior engineering team.",

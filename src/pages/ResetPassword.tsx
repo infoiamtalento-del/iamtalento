@@ -97,8 +97,8 @@ const ResetPassword = () => {
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newPassword.length < 6) {
-      toast.error("New password must be at least 6 characters");
+    if (newPassword.length < 10) {
+      toast.error("New password must be at least 10 characters and include uppercase, lowercase letters and numbers");
       return;
     }
 
