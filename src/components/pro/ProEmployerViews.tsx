@@ -25,6 +25,12 @@ import {
   Send,
   MessageSquare,
   ArrowRightLeft,
+  Lock,
+  Wallet,
+  CreditCard,
+  AlertTriangle,
+  X,
+  FileCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -62,6 +68,9 @@ interface ProEmployerViewsProps {
   onBulkSendReview: (appIds: number[]) => void;
   onOpenDrawer: (drawer: ProDrawerState) => void;
   onToast: (msg: string) => void;
+  onUpdateWallet?: (newBalance: number, newTx: any) => void;
+  onUpdateUser?: (updated: ProUser) => void;
+  onNavigate?: (view: ProView) => void;
 }
 
 export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
@@ -76,6 +85,9 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
   onBulkSendReview,
   onOpenDrawer,
   onToast,
+  onUpdateWallet,
+  onUpdateUser,
+  onNavigate,
 }) => {
   const myJobs = jobs.filter((j) => j.by === user.email);
   const myApps = applications.filter((a) => myJobs.some((j) => j.id === a.jid));
@@ -158,6 +170,12 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
   };
 
   // 3. FIND TALENT VIEW
+  const [talentOption, setTalentOption] = useState<"candidates" | "verified">("candidates");
+  const [candidateToUnlock, setCandidateToUnlock] = useState<ProCandidate | null>(null);
+  const [unlockedCandidateNames, setUnlockedCandidateNames] = useState<string[]>(() => {
+    return user.unlockedCandidates || user.tal || [];
+  });
+
   const [talentQuery, setTalentQuery] = useState("");
   const [talentSmartQuery, setTalentSmartQuery] = useState("");
   const [talentJobFilter, setTalentJobFilter] = useState<string>("");
@@ -168,6 +186,51 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
   const [talentNoticePeriod, setTalentNoticePeriod] = useState(999);
   const [talentSort, setTalentSort] = useState<"s" | "a" | "x">("s");
   const [selectedTalentToCompare, setSelectedTalentToCompare] = useState<string[]>([]);
+
+  const handleConfirmDeductAndUnlock = () => {
+    if (!candidateToUnlock) return;
+    const currentBal = user.wal?.bal || 0;
+    const unlockCost = 2999;
+
+    if (currentBal < unlockCost) {
+      onToast("Insufficient wallet balance. Please top up your wallet or view pricing plans.");
+      return;
+    }
+
+    const newBal = currentBal - unlockCost;
+    const tx = {
+      id: `TXN-VER-${Date.now()}`,
+      at: Date.now(),
+      type: "debit" as const,
+      amt: unlockCost,
+      desc: `Verified Profile Access - ${candidateToUnlock.n}`,
+      via: "Talento Wallet",
+      st: "Completed",
+      bal: newBal,
+    };
+
+    if (onUpdateWallet) {
+      onUpdateWallet(newBal, tx);
+    }
+
+    const updatedUnlocked = Array.from(new Set([...unlockedCandidateNames, candidateToUnlock.n]));
+    setUnlockedCandidateNames(updatedUnlocked);
+
+    if (onUpdateUser) {
+      onUpdateUser({
+        ...user,
+        tal: updatedUnlocked,
+        unlockedCandidates: updatedUnlocked,
+      });
+    }
+
+    onToast(`₹2,999 deducted from wallet. Verified dossier for ${candidateToUnlock.n} unlocked!`);
+    const unlockedName = candidateToUnlock.n;
+    setCandidateToUnlock(null);
+
+    // Open candidate details
+    onOpenDrawer({ type: "candidate", name: unlockedName, jobId: selectedJobObj?.id });
+  };
 
   const handleSmartTalentSearch = () => {
     const q = talentSmartQuery.toLowerCase();
@@ -220,6 +283,19 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
     talentSort,
     selectedJobObj,
   ]);
+
+  const displayCandidates = useMemo(() => {
+    return filteredCandidates.filter((cand) => {
+      if (talentOption === "verified") {
+        return cand.verified === true;
+      }
+      return true;
+    });
+  }, [filteredCandidates, talentOption]);
+
+  const verifiedCandidatesCount = useMemo(() => {
+    return CANDIDATES_SEED.filter((c) => c.verified === true).length;
+  }, []);
 
   // 4. PIPELINE VIEW
   const [pipeJobFilter, setPipeJobFilter] = useState<string>("");
@@ -610,37 +686,200 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
 
   if (view === "talent") {
     // FIND TALENT VIEW
+    const currentBalance = user.wal?.bal || 0;
+    const requiredUnlockFee = 2999;
+    const hasSufficientBalance = currentBalance >= requiredUnlockFee;
+
     return (
       <div className="space-y-6">
         {/* Header Hero */}
         <div className="bg-card border border-border/80 rounded-2xl p-6 relative overflow-hidden shadow-sm">
-          <div className="absolute top-0 right-0 w-72 h-72 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
-          <div className="relative z-10 space-y-3">
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold">
-              <Users className="w-3.5 h-3.5" /> Verified Candidate Pool
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground font-display">
-              Find Pre-Assessed Talent
-            </h1>
-            <p className="text-muted-foreground text-sm max-w-2xl">
-              Source verified engineers whose skills, GitHub projects, and proctored test scores are pre-authenticated.
-            </p>
+          <div className="absolute top-0 right-0 w-80 h-80 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="space-y-2 max-w-xl">
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold">
+                <Sparkles className="w-3.5 h-3.5" /> Talento Sourcing Studio
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground font-display">
+                Find Talent
+              </h1>
+              <p className="text-muted-foreground text-xs sm:text-sm">
+                Discover pre-screened tech talent across India. Search open candidate resumes or unlock 100% skill-verified engineers with authentic CIR assessment scores.
+              </p>
 
-            {/* Smart Search Bar */}
-            <div className="flex items-center gap-2 max-w-xl pt-1">
-              <Input
-                placeholder='Smart find: "React developer Bengaluru 3 years certified under 20 LPA"'
-                value={talentSmartQuery}
-                onChange={(e) => setTalentSmartQuery(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSmartTalentSearch()}
-                className="text-xs h-10 rounded-xl"
-              />
-              <Button onClick={handleSmartTalentSearch} className="rounded-xl h-10 text-xs gap-1.5 shrink-0">
-                <Sparkles className="w-3.5 h-3.5" /> Find
-              </Button>
+              {/* Smart Search Bar */}
+              <div className="flex items-center gap-2 max-w-xl pt-2">
+                <Input
+                  placeholder='Smart find: "React developer Bengaluru 3 years certified under 20 LPA"'
+                  value={talentSmartQuery}
+                  onChange={(e) => setTalentSmartQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSmartTalentSearch()}
+                  className="text-xs h-10 rounded-xl bg-background"
+                />
+                <Button onClick={handleSmartTalentSearch} className="rounded-xl h-10 text-xs gap-1.5 shrink-0 bg-[#002C66] hover:bg-[#00204d] text-white">
+                  <Sparkles className="w-3.5 h-3.5" /> Find
+                </Button>
+              </div>
+            </div>
+
+            {/* Wallet Summary Card */}
+            <div className="bg-background/80 border border-border/80 backdrop-blur-xs rounded-2xl p-4 sm:p-5 shrink-0 flex flex-col justify-between gap-3 min-w-[240px] shadow-xs">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
+                  <Wallet className="w-4 h-4 text-primary" /> Employer Wallet
+                </div>
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
+                  Active
+                </span>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-foreground font-display">
+                  ₹{currentBalance.toLocaleString("en-IN")}
+                </div>
+                <p className="text-[11px] text-muted-foreground mt-0.5">
+                  Verified unlock: ₹2,999 / candidate
+                </p>
+              </div>
+              <div className="flex items-center gap-2 pt-1 border-t border-border/50">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="text-xs h-8 flex-1 rounded-xl"
+                  onClick={() => onNavigate?.("payment-history")}
+                >
+                  Top Up Wallet
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-xs h-8 rounded-xl text-primary"
+                  onClick={() => window.open("/pricing?tab=employers", "_blank")}
+                >
+                  <ExternalLink className="w-3.5 h-3.5" /> Pricing
+                </Button>
+              </div>
             </div>
           </div>
         </div>
+
+        {/* TWO-OPTION SWITCHER: CANDIDATES vs VERIFIED CANDIDATES */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Option 1: Candidates */}
+          <button
+            type="button"
+            onClick={() => setTalentOption("candidates")}
+            className={cn(
+              "p-5 rounded-2xl border text-left transition-all relative overflow-hidden flex items-start gap-4 cursor-pointer",
+              talentOption === "candidates"
+                ? "bg-card border-[#002C66] ring-2 ring-[#002C66]/20 shadow-sm"
+                : "bg-card/60 border-border/70 hover:border-border hover:bg-card"
+            )}
+          >
+            <div
+              className={cn(
+                "h-12 w-12 rounded-xl flex items-center justify-center shrink-0 transition-colors",
+                talentOption === "candidates"
+                  ? "bg-[#002C66] text-white"
+                  : "bg-muted text-muted-foreground"
+              )}
+            >
+              <Users className="w-6 h-6" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="font-bold text-base text-foreground">Candidates</h3>
+                <span className="px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground text-[10px] font-bold">
+                  {CANDIDATES_SEED.length} Available
+                </span>
+                {talentOption === "candidates" && (
+                  <span className="ml-auto flex items-center gap-1 text-[11px] font-bold text-[#002C66]">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Selected
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                Browse our open talent pool, active applicants, and portfolios. Free to review, filter by skill, and invite to open jobs.
+              </p>
+            </div>
+          </button>
+
+          {/* Option 2: Verified Candidates */}
+          <button
+            type="button"
+            onClick={() => setTalentOption("verified")}
+            className={cn(
+              "p-5 rounded-2xl border text-left transition-all relative overflow-hidden flex items-start gap-4 cursor-pointer",
+              talentOption === "verified"
+                ? "bg-card border-emerald-600 ring-2 ring-emerald-600/20 shadow-sm"
+                : "bg-card/60 border-border/70 hover:border-border hover:bg-card"
+            )}
+          >
+            <div
+              className={cn(
+                "h-12 w-12 rounded-xl flex items-center justify-center shrink-0 transition-colors",
+                talentOption === "verified"
+                  ? "bg-emerald-600 text-white"
+                  : "bg-emerald-500/10 text-emerald-600"
+              )}
+            >
+              <ShieldCheck className="w-6 h-6" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="font-bold text-base text-foreground">Verified Candidates</h3>
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3" /> {verifiedCandidatesCount} CIR Verified
+                </span>
+                {talentOption === "verified" && (
+                  <span className="ml-auto flex items-center gap-1 text-[11px] font-bold text-emerald-600">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Selected
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                Candidates with authenticated identities, proctored test scores (&gt;80%), and background checks. Unlock full dossiers for ₹2,999.
+              </p>
+            </div>
+          </button>
+        </div>
+
+        {/* Informational Guidance Banner */}
+        {talentOption === "verified" ? (
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent border border-emerald-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-2.5">
+              <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
+              <div>
+                <span className="font-bold text-foreground">Talento Verified™ Candidate Guarantee: </span>
+                <span className="text-muted-foreground">
+                  Proctored coding assessments, authentic identity, and 24h recruiter review SLA. Accessing a verified profile deducts ₹2,999 from your wallet.
+                </span>
+              </div>
+            </div>
+            <span className="px-2.5 py-1 rounded-xl bg-emerald-600 text-white text-[11px] font-bold shrink-0 self-start sm:self-auto">
+              ₹2,999 / Profile Access
+            </span>
+          </div>
+        ) : (
+          <div className="p-4 rounded-2xl bg-muted/40 border border-border/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-2.5">
+              <Users className="w-5 h-5 text-primary shrink-0" />
+              <div>
+                <span className="font-bold text-foreground">General Candidate Pool: </span>
+                <span className="text-muted-foreground">
+                  Review developer skillsets, experience, and projects. Looking for guaranteed proctored test results? Switch to <strong>Verified Candidates</strong>.
+                </span>
+              </div>
+            </div>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setTalentOption("verified")}
+              className="text-xs h-7 rounded-xl text-emerald-600 border-emerald-500/30 hover:bg-emerald-50 shrink-0"
+            >
+              Switch to Verified
+            </Button>
+          </div>
+        )}
 
         {/* Compare Bar if Candidates Selected */}
         {selectedTalentToCompare.length > 0 && (
@@ -674,7 +913,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
           <div className="lg:col-span-4 bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-foreground text-sm flex items-center gap-2">
-                <Filter className="w-4 h-4 text-primary" /> Filter Candidates
+                <Filter className="w-4 h-4 text-primary" /> Filter {talentOption === "verified" ? "Verified" : "All"} Candidates
               </h3>
               <button
                 onClick={() => {
@@ -709,7 +948,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
               </div>
 
               <div>
-                <label className="font-medium text-foreground block mb-1">Search Name or Skill</label>
+                <label className="font-medium text-foreground block mb-1">Search Name, Skill or City</label>
                 <Input
                   value={talentQuery}
                   onChange={(e) => setTalentQuery(e.target.value)}
@@ -766,7 +1005,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                     onChange={(e) => setTalentOnlyCertified(e.target.checked)}
                     className="rounded text-primary focus:ring-primary"
                   />
-                  <span className="font-medium text-foreground">Certified Candidates Only</span>
+                  <span className="font-medium text-foreground">Certified Credentials Only</span>
                 </label>
               </div>
 
@@ -803,48 +1042,83 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
           {/* Right Candidate Cards: 8 cols */}
           <div className="lg:col-span-8 space-y-4">
             <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>{filteredCandidates.length} candidate profiles match your criteria</span>
+              <span>
+                Showing {displayCandidates.length} {talentOption === "verified" ? "Verified" : ""} Candidate Profiles
+              </span>
+              <span className="text-[11px]">
+                {talentOption === "verified" ? "Access fee: ₹2,999 from wallet" : "Free Profile Browsing"}
+              </span>
             </div>
 
-            <div className="space-y-3.5">
-              {filteredCandidates.map((cand) => {
+            <div className="space-y-4">
+              {displayCandidates.map((cand) => {
                 const scoreVal = calcTalentScore(cand, selectedJobObj);
                 const isCompared = selectedTalentToCompare.includes(cand.n);
+                const isVerified = cand.verified === true;
+                const isUnlocked = unlockedCandidateNames.includes(cand.n);
 
                 return (
                   <div
                     key={cand.n}
-                    className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-3 hover:border-primary/40 transition-colors"
+                    className={cn(
+                      "bg-card border rounded-2xl p-5 shadow-sm space-y-3.5 transition-all",
+                      isVerified
+                        ? "border-emerald-500/30 hover:border-emerald-500/60 bg-gradient-to-br from-emerald-500/[0.02] to-card"
+                        : "border-border/80 hover:border-primary/40"
+                    )}
                   >
                     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                       <div className="flex items-start gap-3.5">
-                        <img
-                          src={getCandidatePhoto(cand.n)}
-                          alt={cand.n}
-                          className="w-12 h-12 rounded-2xl object-cover shrink-0 border border-border/60"
-                        />
+                        <div className="relative shrink-0">
+                          <img
+                            src={getCandidatePhoto(cand.n)}
+                            alt={cand.n}
+                            className="w-13 h-13 rounded-2xl object-cover border border-border/60"
+                          />
+                          {isVerified && (
+                            <span className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-emerald-600 text-white flex items-center justify-center border-2 border-background shadow-xs">
+                              <ShieldCheck className="w-3 h-3" />
+                            </span>
+                          )}
+                        </div>
                         <div>
                           <div className="flex items-center gap-2 flex-wrap">
-                            <h4 className="font-bold text-foreground text-sm">{cand.n}</h4>
-                            <span className="inline-flex items-center gap-1 px-2 py-0.2 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-semibold">
-                              <ShieldCheck className="w-3 h-3" /> Verified
-                            </span>
+                            <h4 className="font-bold text-foreground text-sm sm:text-base">{cand.n}</h4>
+                            {isVerified ? (
+                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
+                                <ShieldCheck className="w-3 h-3" /> Talento Verified CIR
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary text-muted-foreground text-[10px] font-medium">
+                                Active Talent
+                              </span>
+                            )}
+                            {isVerified && (
+                              <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200">
+                                CIR: {cand.cirScore || 95}/100
+                              </span>
+                            )}
                           </div>
-                          <div className="text-xs text-muted-foreground mt-0.5 flex items-center gap-2 flex-wrap">
+                          {cand.headline && (
+                            <p className="text-xs text-foreground/80 font-medium mt-0.5">
+                              {cand.headline}
+                            </p>
+                          )}
+                          <div className="text-xs text-muted-foreground mt-1 flex items-center gap-2 flex-wrap">
                             <span>{cand.c}</span>
                             <span>•</span>
                             <span>{cand.x} yrs exp ({levelFromExp(cand.x)})</span>
                             <span>•</span>
                             <span>₹{cand.es} LPA exp</span>
                             <span>•</span>
-                            <span>{cand.nt ? `${cand.nt}d notice` : "Immediate"}</span>
+                            <span>{cand.nt ? `${cand.nt}d notice` : "Immediate Joiner"}</span>
                           </div>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-3 shrink-0">
+                      <div className="flex items-center gap-3 shrink-0 self-end sm:self-start">
                         <div className="text-right">
-                          <span className="text-[10px] text-muted-foreground block">Talent Score</span>
+                          <span className="text-[10px] text-muted-foreground block">Fit Match</span>
                           <span className="font-bold text-sm text-primary">{scoreVal}%</span>
                         </div>
                         <label className="flex items-center gap-1.5 text-xs text-muted-foreground cursor-pointer">
@@ -863,8 +1137,22 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                       </div>
                     </div>
 
+                    {/* Proctored assessment breakdown if verified */}
+                    {isVerified && cand.as && Object.keys(cand.as).length > 0 && (
+                      <div className="p-2.5 rounded-xl bg-muted/30 border border-border/50 flex flex-wrap items-center gap-3 text-xs">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+                          <Award className="w-3 h-3 text-emerald-600" /> Proctored Test Scores:
+                        </span>
+                        {Object.entries(cand.as).map(([testName, score]) => (
+                          <span key={testName} className="inline-flex items-center gap-1 font-semibold text-foreground text-[11px]">
+                            {testName}: <strong className="text-emerald-600">{score}%</strong>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
                     {/* Skills & Certs */}
-                    <div className="flex items-center gap-1.5 flex-wrap text-xs pt-1">
+                    <div className="flex items-center gap-1.5 flex-wrap text-xs pt-0.5">
                       {cand.sk.map((s) => (
                         <span
                           key={s}
@@ -884,23 +1172,60 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                         ))}
                     </div>
 
-                    {/* Actions */}
-                    <div className="pt-2 border-t border-border/50 flex items-center justify-between text-xs">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="rounded-xl text-xs h-8 gap-1.5 bg-background"
-                        onClick={() => onOpenDrawer({ type: "candidate", name: cand.n, jobId: selectedJobObj?.id })}
-                      >
-                        <Eye className="w-3.5 h-3.5" /> Full Candidate Profile
-                      </Button>
-                      <Button
-                        size="sm"
-                        className="rounded-xl text-xs h-8 gap-1.5"
-                        onClick={() => onToast(`Invitation to apply sent to ${cand.n}!`)}
-                      >
-                        <Send className="w-3.5 h-3.5" /> Invite to Apply
-                      </Button>
+                    {/* Actions Row */}
+                    <div className="pt-2 border-t border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                      <div className="flex items-center gap-2">
+                        {isVerified ? (
+                          isUnlocked ? (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-600 text-xs font-bold">
+                              <CheckCircle2 className="w-3.5 h-3.5" /> Full Dossier Unlocked
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-400 text-xs font-semibold">
+                              <Lock className="w-3.5 h-3.5" /> Locked Verified Profile
+                            </span>
+                          )
+                        ) : (
+                          <span className="text-muted-foreground text-xs">
+                            Standard candidate profile
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2 self-end sm:self-auto">
+                        {/* Profile action button */}
+                        {isVerified && !isUnlocked ? (
+                          <Button
+                            size="sm"
+                            className="rounded-xl text-xs h-8 gap-1.5 bg-[#002C66] hover:bg-[#00204d] text-white font-semibold shadow-xs"
+                            onClick={() => setCandidateToUnlock(cand)}
+                          >
+                            <Lock className="w-3.5 h-3.5" /> View Verified Candidate (₹2,999)
+                          </Button>
+                        ) : (
+                          <Button
+                            size="sm"
+                            variant={isVerified ? "default" : "outline"}
+                            className={cn(
+                              "rounded-xl text-xs h-8 gap-1.5",
+                              isVerified ? "bg-emerald-600 hover:bg-emerald-700 text-white" : "bg-background"
+                            )}
+                            onClick={() => onOpenDrawer({ type: "candidate", name: cand.n, jobId: selectedJobObj?.id })}
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                            {isVerified ? "View Verified Profile" : "View Candidate Profile"}
+                          </Button>
+                        )}
+
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="rounded-xl text-xs h-8 gap-1.5 text-muted-foreground hover:text-foreground"
+                          onClick={() => onToast(`Invitation to apply sent to ${cand.n}!`)}
+                        >
+                          <Send className="w-3.5 h-3.5" /> Invite
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 );
@@ -908,6 +1233,153 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
             </div>
           </div>
         </div>
+
+        {/* VERIFIED CANDIDATE ACCESS & WALLET DEDUCTION MODAL */}
+        {candidateToUnlock && (
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+            <div className="bg-card border border-border rounded-3xl max-w-lg w-full p-6 shadow-2xl relative overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+              {/* Header Accent Bar */}
+              <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#002C66] via-blue-600 to-emerald-600" />
+
+              <div className="flex items-start justify-between gap-4 pt-1 mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <img
+                      src={getCandidatePhoto(candidateToUnlock.n)}
+                      alt={candidateToUnlock.n}
+                      className="w-14 h-14 rounded-2xl object-cover border border-border"
+                    />
+                    <span className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-emerald-600 text-white flex items-center justify-center border-2 border-background">
+                      <ShieldCheck className="w-3 h-3" />
+                    </span>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-bold text-lg text-foreground font-display">{candidateToUnlock.n}</h3>
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 text-[10px] font-bold">
+                        CIR Verified
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {candidateToUnlock.headline || `${candidateToUnlock.x} yrs experience · ${candidateToUnlock.c}`}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setCandidateToUnlock(null)}
+                  className="rounded-full p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Verified Inclusions Box */}
+              <div className="p-4 rounded-2xl bg-muted/40 border border-border/70 space-y-2.5 mb-5 text-xs">
+                <div className="font-semibold text-foreground flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-muted-foreground">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" /> Verified Candidate Inclusions:
+                </div>
+                <div className="grid grid-cols-1 gap-2 pt-1">
+                  <div className="flex items-center gap-2 text-foreground/90">
+                    <CheckCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Authenticated CIR background &amp; work experience history</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-foreground/90">
+                    <CheckCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Proctored code challenge results &amp; skill test metrics</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-foreground/90">
+                    <CheckCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Direct contact info (Phone, Email, LinkedIn, GitHub)</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-foreground/90">
+                    <CheckCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Direct 24-hour SLA recruiter messaging priority</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Financial Calculation & Pricing Summary */}
+              <div className="p-4 rounded-2xl border border-border bg-card space-y-3 mb-5 text-xs">
+                <div className="flex items-center justify-between text-muted-foreground">
+                  <span>Profile Access Fee:</span>
+                  <span className="font-bold text-foreground text-sm">₹{requiredUnlockFee.toLocaleString("en-IN")}</span>
+                </div>
+                <div className="flex items-center justify-between text-muted-foreground">
+                  <span>Current Wallet Balance:</span>
+                  <span className="font-bold text-foreground text-sm">₹{currentBalance.toLocaleString("en-IN")}</span>
+                </div>
+
+                {hasSufficientBalance ? (
+                  <>
+                    <div className="pt-2 border-t border-border flex items-center justify-between text-xs font-semibold">
+                      <span>Remaining Balance after Unlock:</span>
+                      <span className="font-bold text-emerald-600 text-sm">
+                        ₹{(currentBalance - requiredUnlockFee).toLocaleString("en-IN")}
+                      </span>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-[11px] leading-relaxed">
+                      ✓ You have sufficient wallet balance. ₹2,999 will be deducted upon confirmation and the verified dossier will be unlocked immediately.
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="pt-2 border-t border-border flex items-center justify-between text-xs font-semibold text-destructive">
+                      <span>Balance Shortfall:</span>
+                      <span className="font-bold text-sm">
+                        - ₹{(requiredUnlockFee - currentBalance).toLocaleString("en-IN")}
+                      </span>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-[11px] leading-relaxed">
+                      ⚠️ Insufficient wallet balance. Your balance is ₹{currentBalance.toLocaleString("en-IN")}, but ₹2,999 is required to unlock this verified candidate.
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-2">
+                {hasSufficientBalance ? (
+                  <Button
+                    className="w-full h-11 bg-[#002C66] hover:bg-[#00204d] text-white font-bold rounded-xl gap-2 shadow-sm cursor-pointer"
+                    onClick={handleConfirmDeductAndUnlock}
+                  >
+                    <CheckCircle2 className="w-4 h-4" /> Confirm &amp; Deduct ₹2,999 from Wallet
+                  </Button>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <Button
+                      className="w-full h-10 bg-[#002C66] hover:bg-[#00204d] text-white font-bold rounded-xl gap-1.5 text-xs cursor-pointer"
+                      onClick={() => {
+                        window.location.href = "/pricing?tab=employers";
+                      }}
+                    >
+                      <CreditCard className="w-4 h-4" /> Go to Pricing Page
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full h-10 rounded-xl gap-1.5 text-xs font-semibold"
+                      onClick={() => {
+                        setCandidateToUnlock(null);
+                        onNavigate?.("payment-history");
+                      }}
+                    >
+                      <Wallet className="w-4 h-4" /> Top Up Wallet
+                    </Button>
+                  </div>
+                )}
+
+                <Button
+                  variant="ghost"
+                  className="w-full text-xs text-muted-foreground hover:text-foreground h-8"
+                  onClick={() => setCandidateToUnlock(null)}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }

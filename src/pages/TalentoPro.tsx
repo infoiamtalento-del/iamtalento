@@ -808,6 +808,7 @@ const TalentoPro: React.FC = () => {
                 onEdit={() => setEditingCp(true)}
                 onToast={addToast}
                 onOpenJob={(id) => setDrawerState({ type: "job", id })}
+                onNavigate={setActiveView}
               />
             )}
 
@@ -827,6 +828,9 @@ const TalentoPro: React.FC = () => {
                 onBulkSendReview={handleBulkSendReview}
                 onOpenDrawer={openDrawer}
                 onToast={addToast}
+                onUpdateWallet={handleUpdateWallet}
+                onUpdateUser={handleUpdateUser}
+                onNavigate={setActiveView}
               />
             )}
 

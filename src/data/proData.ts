@@ -24,6 +24,11 @@ export interface ProCandidate {
   nt: number; // notice period days
   es: number; // expected salary LPA
   wp: "Remote" | "Hybrid" | "Onsite"; // work pref
+  verified?: boolean; // verified candidate status
+  cirScore?: number; // Talento CIR index e.g. 96
+  headline?: string;
+  phone?: string;
+  email?: string;
 }
 
 export interface ProApplication {
@@ -63,6 +68,7 @@ export interface ProUser {
   skip?: number[];
   inv?: string[];
   tal?: string[];
+  unlockedCandidates?: string[];
   ss?: { n: string; f: any }[];
   ex?: { co: string; role: string; fr: string; to: string; d: string }[];
   ed?: { sc: string; dg: string; yr: string }[];
@@ -160,14 +166,16 @@ export const SEED_JOBS_RAW: [string, string, string, "Remote" | "Hybrid" | "Onsi
 ];
 
 export const CANDIDATES_SEED: ProCandidate[] = [
-  { n: "Aarav Mehta", c: "Bengaluru", x: 4, sk: ["React", "TypeScript", "Node.js"], ce: ["Meta Front-End"], as: { React: 88, TypeScript: 81, "Node.js": 74 }, nt: 15, es: 18, wp: "Hybrid" },
-  { n: "Diya Nair", c: "Chennai", x: 2, sk: ["SQL", "Python", "Tableau"], ce: ["Google Data Analytics"], as: { SQL: 91, Python: 84, Tableau: 77 }, nt: 30, es: 10, wp: "Onsite" },
-  { n: "Rohan Das", c: "Pune", x: 0, sk: ["Java", "DSA"], ce: ["Oracle Java SE"], as: { Java: 72, DSA: 80 }, nt: 0, es: 4, wp: "Onsite" },
-  { n: "Sneha Iyer", c: "Remote", x: 6, sk: ["AWS", "Kubernetes", "Terraform"], ce: ["AWS Solutions Architect", "CKA"], as: { AWS: 93, Kubernetes: 89, Terraform: 85 }, nt: 60, es: 34, wp: "Remote" },
-  { n: "Kabir Shah", c: "Hyderabad", x: 3, sk: ["Python", "PyTorch", "MLOps"], ce: ["TensorFlow Developer"], as: { Python: 90, PyTorch: 86, MLOps: 70 }, nt: 30, es: 28, wp: "Hybrid" },
-  { n: "Meera Pillai", c: "Mumbai", x: 5, sk: ["Figma", "UX Research"], ce: ["Google UX Design"], as: { Figma: 94, "UX Research": 88 }, nt: 45, es: 26, wp: "Hybrid" },
-  { n: "Arjun Rao", c: "Bengaluru", x: 8, sk: ["Node.js", "PostgreSQL", "AWS", "System Design"], ce: ["AWS Developer"], as: { "Node.js": 90, PostgreSQL: 87, AWS: 82 }, nt: 60, es: 42, wp: "Onsite" },
-  { n: "Priya Menon", c: "Chennai", x: 1, sk: ["React", "CSS", "TypeScript"], ce: [], as: { React: 76, CSS: 85, TypeScript: 68 }, nt: 15, es: 9, wp: "Remote" },
+  { n: "Aarav Mehta", c: "Bengaluru", x: 4, sk: ["React", "TypeScript", "Node.js"], ce: ["Meta Front-End"], as: { React: 88, TypeScript: 81, "Node.js": 74 }, nt: 15, es: 18, wp: "Hybrid", verified: true, cirScore: 96, headline: "Senior Frontend Engineer · React & Next.js", phone: "+91 98401 23456", email: "aarav.mehta@example.com" },
+  { n: "Diya Nair", c: "Chennai", x: 2, sk: ["SQL", "Python", "Tableau"], ce: ["Google Data Analytics"], as: { SQL: 91, Python: 84, Tableau: 77 }, nt: 30, es: 10, wp: "Onsite", verified: true, cirScore: 94, headline: "Data Analyst & BI Specialist", phone: "+91 98402 34567", email: "diya.nair@example.com" },
+  { n: "Rohan Das", c: "Pune", x: 0, sk: ["Java", "DSA"], ce: ["Oracle Java SE"], as: { Java: 72, DSA: 80 }, nt: 0, es: 4, wp: "Onsite", verified: false, cirScore: 78, headline: "Junior Java & Backend Trainee", phone: "+91 98403 45678", email: "rohan.das@example.com" },
+  { n: "Sneha Iyer", c: "Remote", x: 6, sk: ["AWS", "Kubernetes", "Terraform"], ce: ["AWS Solutions Architect", "CKA"], as: { AWS: 93, Kubernetes: 89, Terraform: 85 }, nt: 60, es: 34, wp: "Remote", verified: true, cirScore: 98, headline: "Cloud & DevOps Architect · Kubernetes & AWS", phone: "+91 98404 56789", email: "sneha.iyer@example.com" },
+  { n: "Kabir Shah", c: "Hyderabad", x: 3, sk: ["Python", "PyTorch", "MLOps"], ce: ["TensorFlow Developer"], as: { Python: 90, PyTorch: 86, MLOps: 70 }, nt: 30, es: 28, wp: "Hybrid", verified: true, cirScore: 95, headline: "Machine Learning & PyTorch Engineer", phone: "+91 98405 67890", email: "kabir.shah@example.com" },
+  { n: "Meera Pillai", c: "Mumbai", x: 5, sk: ["Figma", "UX Research"], ce: ["Google UX Design"], as: { Figma: 94, "UX Research": 88 }, nt: 45, es: 26, wp: "Hybrid", verified: true, cirScore: 93, headline: "Product Designer & UX Researcher", phone: "+91 98406 78901", email: "meera.pillai@example.com" },
+  { n: "Arjun Rao", c: "Bengaluru", x: 8, sk: ["Node.js", "PostgreSQL", "AWS", "System Design"], ce: ["AWS Developer"], as: { "Node.js": 90, PostgreSQL: 87, AWS: 82 }, nt: 60, es: 42, wp: "Onsite", verified: true, cirScore: 99, headline: "Principal Backend Engineer & System Architect", phone: "+91 98407 89012", email: "arjun.rao@example.com" },
+  { n: "Priya Menon", c: "Chennai", x: 1, sk: ["React", "CSS", "TypeScript"], ce: [], as: { React: 76, CSS: 85, TypeScript: 68 }, nt: 15, es: 9, wp: "Remote", verified: false, cirScore: 76, headline: "Frontend Trainee · React & CSS", phone: "+91 98408 90123", email: "priya.menon@example.com" },
+  { n: "Vikram Sharma", c: "Noida", x: 2, sk: ["Node.js", "Express", "MongoDB"], ce: [], as: { "Node.js": 75, MongoDB: 70 }, nt: 30, es: 12, wp: "Hybrid", verified: false, cirScore: 74, headline: "Full Stack Developer · MERN Stack", phone: "+91 98409 01234", email: "vikram.sharma@example.com" },
+  { n: "Ananya Sen", c: "Kolkata", x: 3, sk: ["Python", "Selenium", "Jest"], ce: [], as: { Python: 78, QA: 82 }, nt: 15, es: 14, wp: "Remote", verified: false, cirScore: 79, headline: "QA Automation Engineer", phone: "+91 98410 12345", email: "ananya.sen@example.com" },
 ];
 
 export const COMPANY_INFO: Record<string, [string, string]> = {

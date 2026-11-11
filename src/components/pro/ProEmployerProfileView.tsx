@@ -14,6 +14,7 @@ interface Props {
   onEdit: () => void;
   onToast: (msg: string) => void;
   onOpenJob?: (id: number) => void;
+  onNavigate?: (view: any) => void;
 }
 
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
@@ -38,7 +39,7 @@ const Chip = ({ children }: { children: React.ReactNode }) => (
  * Employer "Company Profile" inside Talento Pro — a profile page styled like the
  * candidate profile (DemoProfileBody), sourced from the company's saved profile data.
  */
-export function ProEmployerProfileView({ user, jobs, onEdit, onToast, onOpenJob }: Props) {
+export function ProEmployerProfileView({ user, jobs, onEdit, onToast, onOpenJob, onNavigate }: Props) {
   const cp = user.cp || {};
   const name = cp.name || user.name || "Your Company";
   const about = cp.about || "Tell candidates what your company builds and why it matters.";
@@ -112,12 +113,29 @@ export function ProEmployerProfileView({ user, jobs, onEdit, onToast, onOpenJob 
               ))}
             </div>
             <div className="flex flex-wrap gap-2">
-              <Button size="sm" onClick={onEdit}><Pencil className="h-3.5 w-3.5" />Edit Profile</Button>
-              <Button size="sm" variant="outline" onClick={shareProfile}><Share2 className="h-3.5 w-3.5" />Share</Button>
+              <Button size="sm" className="bg-[#002C66] hover:bg-[#00204d] text-white" onClick={() => onNavigate?.("talent")}>
+                <Users className="h-3.5 w-3.5 mr-1" /> Find Talent
+              </Button>
+              <Button size="sm" variant="outline" onClick={onEdit}><Pencil className="h-3.5 w-3.5 mr-1" />Edit Profile</Button>
+              <Button size="sm" variant="outline" onClick={shareProfile}><Share2 className="h-3.5 w-3.5 mr-1" />Share</Button>
             </div>
           </div>
         </div>
       </motion.div>
+
+      {/* ===== FIND TALENT SPOTLIGHT BANNER ===== */}
+      <div className="rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-primary/15 text-primary text-[11px] font-bold">
+            <Sparkles className="w-3.5 h-3.5" /> Sourcing Studio
+          </div>
+          <h3 className="text-base font-bold text-foreground">Discover Pre-Assessed &amp; Verified Candidates</h3>
+          <p className="text-xs text-muted-foreground">Browse open candidates or unlock 100% verified engineering talent with proctored assessment scores.</p>
+        </div>
+        <Button onClick={() => onNavigate?.("talent")} className="rounded-xl shrink-0 gap-2 font-semibold bg-[#002C66] hover:bg-[#00204d] text-white">
+          <Users className="w-4 h-4" /> Go to Find Talent
+        </Button>
+      </div>
 
       {/* ===== ABOUT ===== */}
       <Card>
