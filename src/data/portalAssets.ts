@@ -87,9 +87,13 @@ export const CANDIDATE_PHOTOS: Record<string, string> = {
   "Nikhil Kumar": expertMale4,
   "Tanvi Gupta": expertFemale4,
   "Pooja K": expertFemale5,
+  "Pooja Kulkarni": expertFemale5,
   "Devansh C": expertMale5,
+  "Devansh Chawla": expertMale5,
   "Sanya Rao": expertFemale6,
   "Harsh V": expertMale6,
+  "Harsh Vardhan": expertMale6,
+  "Ananya Sen": learnerAnanya,
 };
 
 const candidatePhotoPool = [

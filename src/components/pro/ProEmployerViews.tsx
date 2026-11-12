@@ -327,12 +327,16 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
       if (talentOption === "verified") {
         return cand.verified === true;
       }
-      return true;
+      return cand.verified !== true;
     });
   }, [filteredCandidates, talentOption]);
 
   const verifiedCandidatesCount = useMemo(() => {
     return CANDIDATES_SEED.filter((c) => c.verified === true).length;
+  }, []);
+
+  const standardCandidatesCount = useMemo(() => {
+    return CANDIDATES_SEED.filter((c) => c.verified !== true).length;
   }, []);
 
   // 4. PIPELINE VIEW
@@ -740,7 +744,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
     ];
 
     const quickFilters = [
-      { id: "all", label: "All Candidates" },
+      { id: "all", label: talentOption === "verified" ? "All Verified Candidates" : "All Candidates" },
       { id: "immediate", label: "⚡ Immediate Joiners (0–15d)" },
       { id: "high-score", label: "🏆 CIR Score 95%+" },
       { id: "tier1", label: "🏢 Tier-1 Companies (Razorpay, Swiggy, Flipkart, CRED)" },
@@ -774,12 +778,12 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
               {/* Quick Metrics Strip */}
               <div className="flex flex-wrap items-center gap-4 pt-1 text-xs text-muted-foreground">
                 <div className="flex items-center gap-1.5">
-                  <span className="font-bold text-foreground text-sm">{CANDIDATES_SEED.length}</span> Total Candidates
+                  <span className="font-bold text-foreground text-sm">{standardCandidatesCount}</span> Candidates
                 </div>
                 <span className="text-border">•</span>
                 <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
                   <ShieldCheck className="w-3.5 h-3.5" />
-                  <span className="font-bold text-sm">{verifiedCandidatesCount}</span> CIR Verified (Top 3%)
+                  <span className="font-bold text-sm">{verifiedCandidatesCount}</span> Verified Candidates (Top 3%)
                 </div>
                 <span className="text-border">•</span>
                 <div className="flex items-center gap-1.5">
@@ -863,7 +867,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
 
         {/* TWO-OPTION PRIMARY SELECTOR: CANDIDATES vs VERIFIED CANDIDATES */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Option 1: Candidates (All Candidates) */}
+          {/* Option 1: Candidates */}
           <button
             type="button"
             onClick={() => setTalentOption("candidates")}
@@ -887,9 +891,9 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="font-bold text-base text-foreground font-display">All Candidates</h3>
+                <h3 className="font-bold text-base text-foreground font-display">Candidates</h3>
                 <span className="px-2.5 py-0.5 rounded-full bg-secondary text-secondary-foreground text-[10px] font-bold">
-                  {CANDIDATES_SEED.length} Profiles
+                  {standardCandidatesCount} Candidates
                 </span>
                 <span className="text-[10px] text-muted-foreground">Free Access</span>
 
@@ -1075,7 +1079,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
           <div className="lg:col-span-4 bg-card border border-border/80 rounded-3xl p-5 shadow-xs space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-foreground text-sm flex items-center gap-2">
-                <Filter className="w-4 h-4 text-primary" /> Filter {talentOption === "verified" ? "Verified" : "All"} Talent
+                <Filter className="w-4 h-4 text-primary" /> Filter {talentOption === "verified" ? "Verified Candidates" : "Candidates"}
               </h3>
               <button
                 onClick={() => {
@@ -1223,7 +1227,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
           <div className="lg:col-span-8 space-y-4">
             <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
               <span>
-                Showing <strong className="text-foreground">{displayCandidates.length}</strong> {talentOption === "verified" ? "Verified" : ""} Engineer Profiles
+                Showing <strong className="text-foreground">{displayCandidates.length}</strong> {talentOption === "verified" ? "Verified Candidates" : "Candidates"}
               </span>
               <span className="text-[11px]">
                 {talentOption === "verified" ? "Verified dossiers: ₹2,999 / unlock" : "Free Candidate Browsing"}
