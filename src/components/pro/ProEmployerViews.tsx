@@ -64,6 +64,7 @@ import {
   getAnonymizedEducation,
   getAnonymizedHighlight,
   getAnonymizedCompanyTier,
+  generateRealtimeSearchProfiles,
 } from "@/data/proData";
 import { getCandidatePhoto, getCompanyLogo } from "@/data/portalAssets";
 import { ProView, ProDrawerState } from "./proTypes";
@@ -426,13 +427,64 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
   ]);
 
   const displayCandidates = useMemo(() => {
-    return filteredCandidates.filter((cand) => {
+    const basePool = filteredCandidates.filter((cand) => {
       if (talentOption === "verified") {
         return cand.verified === true;
       }
       return cand.verified !== true;
     });
-  }, [filteredCandidates, talentOption]);
+
+    const hasSpecificCriteria =
+      talentQuery.trim().length > 0 ||
+      talentSelectedSkills.length > 0 ||
+      talentRoleFilter !== "all" ||
+      talentCityFilter !== "all" ||
+      talentWorkModeFilter !== "all" ||
+      talentMinExpFilter > 0 ||
+      talentEduFilter !== "all" ||
+      talentMinCirFilter > 0 ||
+      talentCompanySectorFilter !== "all" ||
+      talentOnlyCertified ||
+      talentMaxSalary < 60 ||
+      talentNoticePeriod !== 999;
+
+    if (hasSpecificCriteria || basePool.length < 6) {
+      const generated = generateRealtimeSearchProfiles({
+        verified: talentOption === "verified",
+        query: talentQuery,
+        selectedSkills: talentSelectedSkills,
+        roleFilter: talentRoleFilter,
+        cityFilter: talentCityFilter,
+        workModeFilter: talentWorkModeFilter,
+        minExpFilter: talentMinExpFilter,
+        maxSalary: talentMaxSalary,
+        noticePeriod: talentNoticePeriod,
+        eduFilter: talentEduFilter,
+        minCirFilter: talentMinCirFilter,
+        companySectorFilter: talentCompanySectorFilter,
+        onlyCertified: talentOnlyCertified,
+      });
+      const existingNames = new Set(basePool.map((c) => c.n));
+      return [...basePool, ...generated.filter((g) => !existingNames.has(g.n))];
+    }
+
+    return basePool;
+  }, [
+    filteredCandidates,
+    talentOption,
+    talentQuery,
+    talentSelectedSkills,
+    talentRoleFilter,
+    talentCityFilter,
+    talentWorkModeFilter,
+    talentMinExpFilter,
+    talentEduFilter,
+    talentMinCirFilter,
+    talentCompanySectorFilter,
+    talentOnlyCertified,
+    talentMaxSalary,
+    talentNoticePeriod,
+  ]);
 
   const verifiedCandidatesCount = useMemo(() => {
     return CANDIDATES_SEED.filter((c) => c.verified === true).length;
@@ -1588,7 +1640,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                       <div>
                         <span className="font-bold text-foreground">Talento Verified™ Hiring Guarantee: </span>
                         <span className="text-muted-foreground">
-                          Every profile in this pool is authenticated against EPFO employment data and proctored coding challenges. Identity and contacts are blurred until unlocked for ₹2,999.
+                          Every profile in this pool is authenticated against EPFO employment data and proctored coding challenges. Click any verified candidate to inspect their full CIR Report.
                         </span>
                       </div>
                     </div>
@@ -1821,7 +1873,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                 const isCompared = selectedTalentToCompare.includes(cand.n);
                 const isVerified = cand.verified === true;
                 const isUnlocked = effectiveUnlockedNames.includes(cand.n);
-                const isBlurred = isVerified && !isUnlocked;
+                const isBlurred = false;
                 const maskedName = getMaskedCandidateName(cand.n);
                 const anonHeadline = getAnonymizedHeadline(cand);
                 const anonEdu = getAnonymizedEducation(cand.education);
@@ -1842,7 +1894,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                     {/* Top Header Row */}
                     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                       <div className="flex items-start gap-4">
-                        {/* Avatar (Blurred when Verified & Locked) */}
+                        {/* Avatar */}
                         <div
                           className="relative shrink-0 cursor-pointer group"
                           onClick={() =>
@@ -1852,36 +1904,16 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                           <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden border border-border/70 shadow-2xs relative bg-muted">
                             <img
                               src={getCandidatePhoto(cand.n)}
-                              alt={isBlurred ? "Protected Candidate" : cand.n}
-                              className={cn(
-                                "w-full h-full object-cover transition-all duration-300",
-                                isBlurred
-                                  ? "blur-[7px] scale-115 select-none pointer-events-none brightness-90"
-                                  : "group-hover:scale-105"
-                              )}
+                              alt={cand.n}
+                              className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
                             />
-                            {isBlurred && (
-                              <div
-                                title="Identity Protected · Unlock to reveal photo"
-                                className="absolute inset-0 bg-[#002C66]/45 backdrop-blur-[1px] flex items-center justify-center"
-                              >
-                                <Lock className="w-5 h-5 text-white drop-shadow" />
-                              </div>
-                            )}
                           </div>
                           {isVerified ? (
                             <span
-                              title={isUnlocked ? "CIR Verified & Unlocked" : "CIR Verified · Identity Locked"}
-                              className={cn(
-                                "absolute -bottom-1 -right-1 h-5 w-5 rounded-full text-white flex items-center justify-center border-2 border-background shadow-xs",
-                                isUnlocked ? "bg-emerald-600" : "bg-[#002C66]"
-                              )}
+                              title="CIR Verified Candidate"
+                              className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-emerald-600 text-white flex items-center justify-center border-2 border-background shadow-xs"
                             >
-                              {isUnlocked ? (
-                                <ShieldCheck className="w-3.5 h-3.5" />
-                              ) : (
-                                <Lock className="w-3 h-3" />
-                              )}
+                              <ShieldCheck className="w-3.5 h-3.5" />
                             </span>
                           ) : (
                             <span className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-emerald-500 border-2 border-background" />
@@ -1891,36 +1923,14 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                         {/* Name & Title */}
                         <div className="space-y-1">
                           <div className="flex items-center gap-2 flex-wrap">
-                            {isBlurred ? (
-                              <div
-                                className="flex items-center gap-2 cursor-pointer group"
-                                onClick={() =>
-                                  onOpenDrawer({ type: "candidate", name: cand.n, jobId: selectedJobObj?.id })
-                                }
-                              >
-                                <h4 className="font-bold text-foreground text-base sm:text-lg font-display group-hover:text-primary transition-colors">
-                                  {maskedName}
-                                </h4>
-                                <span
-                                  aria-hidden="true"
-                                  className="px-2 py-0.5 rounded bg-muted/80 text-foreground/70 text-xs font-bold blur-[5px] select-none pointer-events-none"
-                                >
-                                  Verified Engineer
-                                </span>
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-500/15 border border-amber-500/30 text-amber-800 dark:text-amber-300 text-[10px] font-bold">
-                                  <Lock className="w-2.5 h-2.5" /> Name &amp; Details Blurred
-                                </span>
-                              </div>
-                            ) : (
-                              <h4
-                                className="font-bold text-foreground text-base sm:text-lg font-display hover:text-primary cursor-pointer transition-colors"
-                                onClick={() =>
-                                  onOpenDrawer({ type: "candidate", name: cand.n, jobId: selectedJobObj?.id })
-                                }
-                              >
-                                {cand.n}
-                              </h4>
-                            )}
+                            <h4
+                              className="font-bold text-foreground text-base sm:text-lg font-display hover:text-primary cursor-pointer transition-colors"
+                              onClick={() =>
+                                onOpenDrawer({ type: "candidate", name: cand.n, jobId: selectedJobObj?.id })
+                              }
+                            >
+                              {cand.n}
+                            </h4>
 
                             {isVerified && (
                               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-[10px] font-extrabold tracking-wide uppercase">
@@ -1935,47 +1945,18 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                             )}
                           </div>
 
-                          {/* Headline with Current & Previous Companies (Anonymized + Blurred when Locked) */}
+                          {/* Headline with Current & Previous Companies */}
                           {cand.headline && (
                             <div className="text-xs sm:text-sm font-semibold text-foreground/90 flex items-center gap-1.5 flex-wrap">
-                              {isBlurred ? (
-                                <>
-                                  <span>{anonHeadline.roleTitle} @</span>
-                                  <span className="text-emerald-700 dark:text-emerald-300 font-bold">
-                                    {anonHeadline.companyTier}
-                                  </span>
-                                  <span
-                                    aria-hidden="true"
-                                    className="px-2 py-0.5 rounded bg-muted text-muted-foreground text-xs blur-[5px] select-none pointer-events-none"
-                                  >
-                                    Exact Company Protected
-                                  </span>
-                                </>
-                              ) : (
-                                <span>{cand.headline}</span>
-                              )}
+                              <span>{cand.headline}</span>
                             </div>
                           )}
 
-                          {/* Education (Anonymized + Blurred when Locked) */}
+                          {/* Education */}
                           {cand.education && (
                             <p className="text-[11px] text-muted-foreground flex items-center gap-1.5 flex-wrap">
                               <GraduationCap className="w-3.5 h-3.5 text-muted-foreground/80 shrink-0" />
-                              {isBlurred ? (
-                                <>
-                                  <span>
-                                    {anonEdu.instituteTier} · {anonEdu.degreePart}
-                                  </span>
-                                  <span
-                                    aria-hidden="true"
-                                    className="px-1.5 py-0.2 rounded bg-muted text-[10px] blur-[4px] select-none pointer-events-none"
-                                  >
-                                    College Hidden
-                                  </span>
-                                </>
-                              ) : (
-                                <span>{cand.education}</span>
-                              )}
+                              <span>{cand.education}</span>
                             </p>
                           )}
 
@@ -2036,14 +2017,14 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                       </div>
                     </div>
 
-                    {/* Engineering Highlight Quote (Anonymized when Locked) */}
+                    {/* Engineering Highlight Quote */}
                     {cand.highlight && (
                       <div className="p-3 rounded-2xl bg-muted/40 border border-border/70 text-xs text-foreground/90 italic leading-relaxed">
-                        "{isBlurred ? anonHighlight : cand.highlight}"
+                        "{cand.highlight}"
                       </div>
                     )}
 
-                    {/* Blurred vs Unlocked Identity & Contact Dossier Strip (For Verified Candidates) */}
+                    {/* Identity & Contact Dossier Strip (For Verified Candidates) */}
                     {isVerified && (
                       <div
                         className={cn(
@@ -2055,21 +2036,10 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                       >
                         <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5">
                           <div className="flex items-center gap-1.5 font-bold text-foreground text-xs">
-                            {isUnlocked ? (
-                              <>
-                                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                                <span className="text-emerald-800 dark:text-emerald-300">
-                                  Unlocked Identity &amp; Direct Contact Dossier
-                                </span>
-                              </>
-                            ) : (
-                              <>
-                                <Lock className="w-3.5 h-3.5 text-[#002C66] dark:text-blue-400" />
-                                <span>
-                                  Protected Candidate Identity &amp; Contact Dossier (Blurred Until Unlocked)
-                                </span>
-                              </>
-                            )}
+                            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                            <span className="text-emerald-800 dark:text-emerald-300">
+                              Verified Identity &amp; Direct Contact Dossier
+                            </span>
                           </div>
                           {!isUnlocked && (
                             <button
@@ -2077,71 +2047,37 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                               onClick={() => setCandidateToUnlock(cand)}
                               className="text-[11px] font-bold text-[#002C66] dark:text-blue-400 hover:underline flex items-center gap-1 cursor-pointer"
                             >
-                              <Lock className="w-3 h-3" /> Unlock to Unblur (₹2,999)
+                              <ShieldCheck className="w-3.5 h-3.5" /> Unlock Verified Dossier (₹2,999)
                             </button>
                           )}
                         </div>
 
-                        {isUnlocked ? (
-                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                            <div className="p-2 rounded-xl bg-background border border-emerald-500/20">
-                              <span className="text-[10px] text-muted-foreground block">Full Name &amp; Employer</span>
-                              <span className="font-bold text-foreground text-xs truncate block">
-                                {cand.n} · {cand.currentCompany}
-                              </span>
-                            </div>
-                            <div className="p-2 rounded-xl bg-background border border-emerald-500/20">
-                              <span className="text-[10px] text-muted-foreground block">Verified Mobile</span>
-                              <span className="font-bold text-emerald-700 dark:text-emerald-300 text-xs truncate block">
-                                {cand.phone || "+91 98401 23456"}
-                              </span>
-                            </div>
-                            <div className="p-2 rounded-xl bg-background border border-emerald-500/20">
-                              <span className="text-[10px] text-muted-foreground block">Direct Email</span>
-                              <span className="font-bold text-foreground text-xs truncate block" title={cand.email}>
-                                {cand.email}
-                              </span>
-                            </div>
-                            <div className="p-2 rounded-xl bg-background border border-emerald-500/20">
-                              <span className="text-[10px] text-muted-foreground block">LinkedIn &amp; GitHub</span>
-                              <span className="font-bold text-primary text-xs truncate block">
-                                {cand.linkedin || cand.github || "Verified Links"}
-                              </span>
-                            </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                          <div className="p-2 rounded-xl bg-background border border-emerald-500/20">
+                            <span className="text-[10px] text-muted-foreground block">Full Name &amp; Employer</span>
+                            <span className="font-bold text-foreground text-xs truncate block">
+                              {cand.n} · {cand.currentCompany}
+                            </span>
                           </div>
-                        ) : (
-                          <div className="relative">
-                            <div
-                              aria-hidden="true"
-                              className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 select-none pointer-events-none"
-                            >
-                              <div className="p-2 rounded-xl bg-background/80 border border-border/60">
-                                <span className="text-[10px] text-muted-foreground block">Full Legal Name</span>
-                                <span className="font-bold text-foreground text-xs blur-[5px] block">
-                                  Protected Candidate
-                                </span>
-                              </div>
-                              <div className="p-2 rounded-xl bg-background/80 border border-border/60">
-                                <span className="text-[10px] text-muted-foreground block">Exact Employer &amp; UAN</span>
-                                <span className="font-bold text-foreground text-xs blur-[5px] block">
-                                  Tier-1 Tech Corp
-                                </span>
-                              </div>
-                              <div className="p-2 rounded-xl bg-background/80 border border-border/60">
-                                <span className="text-[10px] text-muted-foreground block">Verified Mobile</span>
-                                <span className="font-bold text-foreground text-xs blur-[5px] block">
-                                  +91 98400 00000
-                                </span>
-                              </div>
-                              <div className="p-2 rounded-xl bg-background/80 border border-border/60">
-                                <span className="text-[10px] text-muted-foreground block">Email &amp; LinkedIn</span>
-                                <span className="font-bold text-foreground text-xs blur-[5px] block">
-                                  hidden@verified.io
-                                </span>
-                              </div>
-                            </div>
+                          <div className="p-2 rounded-xl bg-background border border-emerald-500/20">
+                            <span className="text-[10px] text-muted-foreground block">Verified Mobile</span>
+                            <span className="font-bold text-emerald-700 dark:text-emerald-300 text-xs truncate block">
+                              {cand.phone || "+91 98401 23456"}
+                            </span>
                           </div>
-                        )}
+                          <div className="p-2 rounded-xl bg-background border border-emerald-500/20">
+                            <span className="text-[10px] text-muted-foreground block">Direct Email</span>
+                            <span className="font-bold text-foreground text-xs truncate block" title={cand.email}>
+                              {cand.email}
+                            </span>
+                          </div>
+                          <div className="p-2 rounded-xl bg-background border border-emerald-500/20">
+                            <span className="text-[10px] text-muted-foreground block">LinkedIn &amp; GitHub</span>
+                            <span className="font-bold text-primary text-xs truncate block">
+                              {cand.linkedin || cand.github || "Verified Links"}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     )}
 
@@ -2221,15 +2157,9 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                       {/* Left Status Indicator */}
                       <div className="flex items-center gap-2">
                         {isVerified ? (
-                          isUnlocked ? (
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-xs font-bold">
-                              <CheckCircle2 className="w-3.5 h-3.5" /> Full Verified Dossier Unlocked
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 text-amber-800 dark:text-amber-300 text-xs font-semibold">
-                              <Lock className="w-3.5 h-3.5" /> Identity &amp; Contacts Blurred · Unlock for ₹2,999
-                            </span>
-                          )
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-xs font-bold">
+                            <ShieldCheck className="w-3.5 h-3.5" /> Talento Verified CIR Dossier
+                          </span>
                         ) : (
                           <span className="text-muted-foreground text-xs">
                             Standard candidate profile · Free to view
@@ -2239,51 +2169,27 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
 
                       {/* Right Action Buttons */}
                       <div className="flex items-center gap-2 flex-wrap self-end sm:self-auto">
-                        {isVerified && !isUnlocked ? (
-                          <>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="rounded-xl text-xs h-9 px-3.5 gap-1.5 font-semibold bg-background cursor-pointer"
-                              onClick={() =>
-                                onOpenDrawer({ type: "candidate", name: cand.n, jobId: selectedJobObj?.id })
-                              }
-                            >
-                              <Eye className="w-3.5 h-3.5" /> Preview Blurred CIR
-                            </Button>
-                            <Button
-                              size="sm"
-                              className="rounded-xl text-xs h-9 px-4 gap-1.5 bg-[#002C66] hover:bg-[#00204d] text-white font-bold shadow-xs cursor-pointer"
-                              onClick={() => setCandidateToUnlock(cand)}
-                            >
-                              <Lock className="w-3.5 h-3.5" /> Unlock Profile (₹2,999)
-                            </Button>
-                          </>
-                        ) : (
-                          <Button
-                            size="sm"
-                            variant={isVerified ? "default" : "outline"}
-                            className={cn(
-                              "rounded-xl text-xs h-9 px-4 gap-1.5 font-semibold cursor-pointer",
-                              isVerified ? "bg-emerald-600 hover:bg-emerald-700 text-white" : "bg-background"
-                            )}
-                            onClick={() => onOpenDrawer({ type: "candidate", name: cand.n, jobId: selectedJobObj?.id })}
-                          >
-                            <Eye className="w-3.5 h-3.5" />
-                            {isVerified ? "View Full Unlocked CIR Report" : "View Profile"}
-                          </Button>
-                        )}
+                        <Button
+                          size="sm"
+                          variant={isVerified ? "default" : "outline"}
+                          className={cn(
+                            "rounded-xl text-xs h-9 px-4 gap-1.5 font-semibold cursor-pointer",
+                            isVerified ? "bg-emerald-600 hover:bg-emerald-700 text-white" : "bg-background"
+                          )}
+                          onClick={() => onOpenDrawer({ type: "candidate", name: cand.n, jobId: selectedJobObj?.id })}
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                          {isVerified ? "View Full CIR Report" : "View Profile"}
+                        </Button>
 
-                        {(!isVerified || isUnlocked) && (
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="rounded-xl text-xs h-9 px-3 gap-1.5 text-muted-foreground hover:text-foreground cursor-pointer"
-                            onClick={() => onToast(`Invitation to interview sent to ${cand.n}!`)}
-                          >
-                            <Send className="w-3.5 h-3.5" /> Invite
-                          </Button>
-                        )}
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="rounded-xl text-xs h-9 px-3 gap-1.5 text-muted-foreground hover:text-foreground cursor-pointer"
+                          onClick={() => onToast(`Invitation to interview sent to ${cand.n}!`)}
+                        >
+                          <Send className="w-3.5 h-3.5" /> Invite
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -2310,12 +2216,9 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                     <div className="w-14 h-14 rounded-2xl overflow-hidden border border-border shadow-xs relative bg-muted">
                       <img
                         src={getCandidatePhoto(candidateToUnlock.n)}
-                        alt="Protected Candidate"
-                        className="w-full h-full object-cover blur-[6px] scale-110 select-none pointer-events-none"
+                        alt={candidateToUnlock.n}
+                        className="w-full h-full object-cover"
                       />
-                      <div className="absolute inset-0 bg-[#002C66]/45 flex items-center justify-center">
-                        <Lock className="w-4 h-4 text-white" />
-                      </div>
                     </div>
                     <span className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-emerald-600 text-white flex items-center justify-center border-2 border-background">
                       <ShieldCheck className="w-3 h-3" />
@@ -2324,21 +2227,18 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-bold text-lg text-foreground font-display">
-                        {getMaskedCandidateName(candidateToUnlock.n)}
+                        {candidateToUnlock.n}
                       </h3>
                       <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-[10px] font-extrabold uppercase">
                         CIR {candidateToUnlock.cirScore || 97}/100
                       </span>
                     </div>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      {getAnonymizedHeadline(candidateToUnlock).roleTitle} @{" "}
-                      <span className="font-semibold text-foreground/80">
-                        {getAnonymizedHeadline(candidateToUnlock).companyTier}
-                      </span>
+                      {candidateToUnlock.headline}
                     </p>
                     {candidateToUnlock.cirId && (
                       <p className="text-[10px] text-muted-foreground font-mono mt-0.5">
-                        Verification ID: {candidateToUnlock.cirId} · Identity &amp; Contacts Unblurred on Unlock
+                        Verification ID: {candidateToUnlock.cirId}
                       </p>
                     )}
                   </div>

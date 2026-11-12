@@ -34,6 +34,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
   CANDIDATES_SEED,
+  findCandidateByName,
   STAGES,
   getMaskedCandidateName,
   getAnonymizedHeadline,
@@ -77,7 +78,7 @@ export function ProEmployerCandidateDetail({
   onSave,
   onToast,
 }: Props) {
-  const person = candidate || CANDIDATES_SEED.find((c) => c.n === application?.name);
+  const person = candidate || findCandidateByName(application?.name);
   const name = application?.name || person?.n || "Candidate";
   const isVerified = Boolean(person?.verified);
   const skills = application?.sk || person?.sk || [];
@@ -92,7 +93,8 @@ export function ProEmployerCandidateDetail({
     !isVerified ||
     localUnlocked ||
     Boolean((user?.unlockedCandidates || user?.tal || []).includes(name));
-  const isBlurred = isVerified && !isUnlocked;
+  // Blur option removed per user request — all candidate details are visible clearly
+  const isBlurred = false;
 
   const currentBalance = user?.wal?.bal || 0;
   const requiredUnlockFee = 2999;

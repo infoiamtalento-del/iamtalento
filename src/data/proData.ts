@@ -555,6 +555,194 @@ export const CANDIDATES_SEED: ProCandidate[] = [
     phone: "+91 98416 78901",
     email: "pooja.kulkarni@example.com",
   },
+  {
+    n: "Siddharth Verma",
+    c: "Hyderabad",
+    x: 5.5,
+    sk: ["Java", "Spring Boot", "AWS", "Kafka", "PostgreSQL", "System Design", "Kubernetes"],
+    ce: ["AWS Solutions Architect Associate", "Oracle Java SE 17 Developer"],
+    as: { "Java & Microservices": 96, "System Design": 95, "Kafka Event Mesh": 93, "PostgreSQL": 92 },
+    nt: 15,
+    es: 36,
+    wp: "Hybrid",
+    verified: true,
+    cirScore: 98,
+    cirId: "CIR-HYD-9104",
+    headline: "Senior Backend Engineer @ Amazon · ex-Microsoft",
+    currentCompany: "Amazon",
+    previousCompany: "ex-Microsoft",
+    currentSalary: 29,
+    education: "IIT Hyderabad · B.Tech Computer Science (2019)",
+    github: "github.com/siddharthverma-dev",
+    linkedin: "linkedin.com/in/siddharthverma-sde",
+    highlight: "Owned high-throughput payment settlement microservices handling 40M+ daily transactions with sub-15ms p99 latency.",
+    statusBadge: "Actively Interviewing",
+    phone: "+91 98417 89012",
+    email: "siddharth.verma@talento-verified.io",
+    verifiedBadges: ["Identity Verified", "UAN Employment Verified", "Proctored System Design: 95%"],
+  },
+  {
+    n: "Riya Deshmukh",
+    c: "Pune",
+    x: 4.0,
+    sk: ["React", "Next.js", "TypeScript", "Node.js", "Tailwind CSS", "PostgreSQL", "Docker"],
+    ce: ["AWS Certified Developer", "Meta Frontend Professional"],
+    as: { "React & Next.js": 95, "TypeScript": 94, "Node.js API": 91 },
+    nt: 0,
+    es: 22,
+    wp: "Remote",
+    verified: true,
+    cirScore: 96,
+    cirId: "CIR-PUN-6208",
+    headline: "Senior Full Stack Engineer @ Atlassian · ex-Persistent",
+    currentCompany: "Atlassian",
+    previousCompany: "ex-Persistent",
+    currentSalary: 18,
+    education: "COEP Pune · B.Tech Information Technology (2020)",
+    github: "github.com/riyadeshmukh-fs",
+    linkedin: "linkedin.com/in/riyadeshmukh-dev",
+    highlight: "Led migration of Jira enterprise reporting modules to Next.js App Router, improving SSR page load speed by 42%.",
+    statusBadge: "Immediate Joiner · Zero Notice",
+    phone: "+91 98418 90123",
+    email: "riya.deshmukh@talento-verified.io",
+    verifiedBadges: ["Identity Verified", "UAN Employment Verified", "0% Code Plagiarism"],
+  },
+  {
+    n: "Karthik Subramanian",
+    c: "Chennai",
+    x: 4.5,
+    sk: ["Golang", "Kubernetes", "Terraform", "Docker", "AWS", "PostgreSQL", "Prometheus"],
+    ce: ["Certified Kubernetes Administrator (CKA)", "AWS DevOps Engineer Pro"],
+    as: { "Golang Systems": 96, "Kubernetes & CKA": 97, "Terraform IaC": 94 },
+    nt: 15,
+    es: 28,
+    wp: "Hybrid",
+    verified: true,
+    cirScore: 98,
+    cirId: "CIR-CHN-7419",
+    headline: "Lead Platform & SRE Engineer @ Zoho · ex-Freshworks",
+    currentCompany: "Zoho",
+    previousCompany: "ex-Freshworks",
+    currentSalary: 22,
+    education: "IIT Madras · Dual Degree CS (2019)",
+    github: "github.com/karthik-sre",
+    linkedin: "linkedin.com/in/karthiksubramanian-cloud",
+    highlight: "Automated zero-downtime multi-tenant database sharding across 600+ production PostgreSQL nodes.",
+    statusBadge: "15 Days Notice Period",
+    phone: "+91 98419 01234",
+    email: "karthik.s@talento-verified.io",
+    verifiedBadges: ["Identity Verified", "UAN Employment Verified", "CKA Proctored Lab: 97%"],
+  },
+  {
+    n: "Aditi Chatterjee",
+    c: "Kolkata",
+    x: 3.6,
+    sk: ["Python", "PyTorch", "SQL", "FastAPI", "AWS", "Docker", "LangChain"],
+    ce: ["AWS Machine Learning Specialty", "DeepLearning.AI TensorFlow Developer"],
+    as: { "AI & RAG Pipelines": 95, "Python Backend": 93, "SQL & Vector Search": 92 },
+    nt: 15,
+    es: 24,
+    wp: "Remote",
+    verified: true,
+    cirScore: 95,
+    cirId: "CIR-CCU-5190",
+    headline: "Applied AI & LLM Engineer @ Ola Krutrim · ex-TCS Research",
+    currentCompany: "Ola Krutrim",
+    previousCompany: "ex-TCS",
+    currentSalary: 19,
+    education: "Jadavpur University · B.E. Computer Science (2020)",
+    github: "github.com/aditichatterjee-ai",
+    linkedin: "linkedin.com/in/aditichatterjee-ml",
+    highlight: "Productionized enterprise RAG assistant serving 85k daily queries with sub-second retrieval latency.",
+    statusBadge: "Actively Interviewing",
+    phone: "+91 98420 12345",
+    email: "aditi.chatterjee@talento-verified.io",
+    verifiedBadges: ["Identity Verified", "UAN Employment Verified", "AI Benchmark Top 3%"],
+  },
+  {
+    n: "Manish Tiwari",
+    c: "Noida",
+    x: 3.4,
+    sk: ["React", "TypeScript", "Next.js", "Node.js", "Tailwind CSS", "GraphQL"],
+    ce: ["Meta Frontend Developer Professional"],
+    as: { React: 84, TypeScript: 82, "Next.js": 80 },
+    nt: 15,
+    es: 16,
+    wp: "Hybrid",
+    verified: false,
+    cirScore: 83,
+    headline: "Senior Frontend Developer @ Paytm · React & Next.js",
+    currentCompany: "Paytm",
+    currentSalary: 12,
+    education: "NIT Allahabad · B.Tech IT (2021)",
+    highlight: "Built merchant settlement dispute portal in React & TypeScript used by 300k+ merchants across India.",
+    statusBadge: "15 Days Notice · Open Talent Pool",
+    phone: "+91 98421 23456",
+    email: "manish.tiwari@example.com",
+  },
+  {
+    n: "Shruti Hegde",
+    c: "Mumbai",
+    x: 4.0,
+    sk: ["Node.js", "Golang", "PostgreSQL", "Kafka", "Redis", "Docker", "AWS"],
+    ce: ["AWS Certified Developer Associate"],
+    as: { "Node.js": 85, Golang: 82, PostgreSQL: 84 },
+    nt: 0,
+    es: 19,
+    wp: "Hybrid",
+    verified: false,
+    cirScore: 84,
+    headline: "Backend Software Engineer @ PharmEasy · Scalable APIs",
+    currentCompany: "PharmEasy",
+    currentSalary: 14.5,
+    education: "VJTI Mumbai · B.Tech Computer Engineering (2020)",
+    highlight: "Engineered real-time medicine inventory and cold-chain tracking microservices handling 50k orders/day.",
+    statusBadge: "Immediate Joiner · Open Talent Pool",
+    phone: "+91 98422 34567",
+    email: "shruti.hegde@example.com",
+  },
+  {
+    n: "Varun Malhotra",
+    c: "Gurugram",
+    x: 3.0,
+    sk: ["React Native", "Swift", "TypeScript", "JavaScript", "Redux", "Firebase"],
+    ce: ["Meta React Native Certified"],
+    as: { "React Native": 83, TypeScript: 80, "Mobile UI": 85 },
+    nt: 15,
+    es: 15,
+    wp: "Hybrid",
+    verified: false,
+    cirScore: 82,
+    headline: "Mobile App Developer @ MakeMyTrip · React Native & iOS",
+    currentCompany: "MakeMyTrip",
+    currentSalary: 11.5,
+    education: "DTU Delhi · B.Tech Software Engineering (2021)",
+    highlight: "Shipped offline boarding pass & live flight tracker modules for 5M+ monthly active mobile travelers.",
+    statusBadge: "15 Days Notice · Open Talent Pool",
+    phone: "+91 98423 45678",
+    email: "varun.malhotra@example.com",
+  },
+  {
+    n: "Nandini Krishnan",
+    c: "Bengaluru",
+    x: 4.5,
+    sk: ["Python", "PyTorch", "SQL", "Machine Learning", "AWS", "Snowflake"],
+    ce: ["Google Professional ML Engineer"],
+    as: { Python: 86, PyTorch: 84, SQL: 88 },
+    nt: 30,
+    es: 22,
+    wp: "Remote",
+    verified: false,
+    cirScore: 85,
+    headline: "Data Scientist @ Target India · Demand Forecasting & ML",
+    currentCompany: "Target",
+    currentSalary: 16.5,
+    education: "BMS College of Engineering · B.E. ISE (2019)",
+    highlight: "Developed seasonal pricing and demand forecasting models improving margin accuracy by 14%.",
+    statusBadge: "Open to Offers · Open Talent Pool",
+    phone: "+91 98424 56789",
+    email: "nandini.krishnan@example.com",
+  },
 ];
 
 export const COMPANY_INFO: Record<string, [string, string]> = {
@@ -991,4 +1179,329 @@ export const getAnonymizedHighlight = (cand: ProCandidate): string => {
     .replace(/PhonePe/gi, "a Digital Payments Leader")
     .replace(/Zomato/gi, "a Listed Consumer Tech App");
 };
+
+// Runtime cache for dynamically synthesized search profiles so clicking them opens their full profile / CIR report
+export const RUNTIME_CANDIDATE_CACHE = new Map<string, ProCandidate>();
+
+export const findCandidateByName = (name?: string): ProCandidate | undefined => {
+  if (!name) return undefined;
+  return CANDIDATES_SEED.find((c) => c.n === name) || RUNTIME_CANDIDATE_CACHE.get(name);
+};
+
+export interface RealtimeSearchParams {
+  verified: boolean;
+  query: string;
+  selectedSkills: string[];
+  roleFilter: string;
+  cityFilter: string;
+  workModeFilter: string;
+  minExpFilter: number;
+  maxSalary: number;
+  noticePeriod: number;
+  eduFilter: string;
+  minCirFilter: number;
+  companySectorFilter: string;
+  onlyCertified: boolean;
+}
+
+const ROLE_CONFIGS: Record<
+  string,
+  {
+    title: string;
+    skills: string[];
+    certs: string[];
+    testKeys: string[];
+    highlightTpl: (company: string, skill: string) => string;
+  }
+> = {
+  frontend: {
+    title: "Senior Frontend & UI Architect",
+    skills: ["React", "TypeScript", "Next.js", "Tailwind CSS", "Redux Toolkit", "GraphQL"],
+    certs: ["Meta Certified Frontend Engineer", "AWS Certified Developer"],
+    testKeys: ["React Architecture", "TypeScript Core", "Web Performance", "UI Systems"],
+    highlightTpl: (co, sk) =>
+      `Spearheaded ${co}'s core web platform using ${sk}, reducing Time-to-Interactive by 41% across 4M+ daily sessions.`,
+  },
+  backend: {
+    title: "Lead Backend & Distributed Systems Engineer",
+    skills: ["Golang", "Node.js", "Java", "PostgreSQL", "Kafka", "Redis", "Docker"],
+    certs: ["AWS Solutions Architect Associate", "Confluent Certified Kafka Developer"],
+    testKeys: ["Distributed Systems", "Database Concurrency", "Event Streaming", "Low-Latency APIs"],
+    highlightTpl: (co, sk) =>
+      `Architected high-throughput ${sk} microservices at ${co} sustaining 85k req/sec with 99.99% uptime SLA.`,
+  },
+  devops: {
+    title: "Staff Cloud, DevOps & SRE Architect",
+    skills: ["Kubernetes", "Terraform", "AWS", "Docker", "Golang", "Prometheus", "ArgoCD"],
+    certs: ["Certified Kubernetes Admin (CKA)", "AWS Solutions Architect Pro", "HashiCorp Terraform Associate"],
+    testKeys: ["Kubernetes Orchestration", "Cloud Architecture", "CI/CD & IaC", "Linux Security"],
+    highlightTpl: (co, sk) =>
+      `Automated multi-region ${sk} cloud infrastructure at ${co}, cutting cloud compute spend by 32% and MTTR under 4 mins.`,
+  },
+  data: {
+    title: "Senior AI, ML & PyTorch Engineer",
+    skills: ["Python", "PyTorch", "SQL", "FastAPI", "Docker", "AWS", "LLM & RAG"],
+    certs: ["AWS Machine Learning Specialty", "DeepLearning.AI Generative AI Specialist"],
+    testKeys: ["Machine Learning", "PyTorch & Transformers", "Model Serving & MLOps", "Python Algorithms"],
+    highlightTpl: (co, sk) =>
+      `Trained and deployed production ${sk} inference pipelines at ${co} with sub-40ms latency and 98.7% precision.`,
+  },
+  analytics: {
+    title: "Lead Data Analytics & BI Specialist",
+    skills: ["SQL", "Python", "Tableau", "Power BI", "Snowflake", "dbt"],
+    certs: ["Google Advanced Data Analytics", "Snowflake SnowPro Core Certified"],
+    testKeys: ["SQL Query Tuning", "Data Modeling & dbt", "BI & Dashboard UX", "Statistical Analysis"],
+    highlightTpl: (co, sk) =>
+      `Built automated ${sk} executive revenue and cohort intelligence pipelines at ${co}, saving 25+ engineering hours weekly.`,
+  },
+  mobile: {
+    title: "Senior Mobile Engineer (React Native & iOS)",
+    skills: ["React Native", "Swift", "TypeScript", "Redux", "Mobile Performance", "iOS SDK"],
+    certs: ["Apple iOS Certified Developer", "Meta React Native Specialization"],
+    testKeys: ["Mobile App Architecture", "React Native Performance", "Native Bridges"],
+    highlightTpl: (co, sk) =>
+      `Engineered ${co}'s flagship consumer mobile app in ${sk} with 99.95% crash-free sessions across 8M+ active devices.`,
+  },
+  design: {
+    title: "Principal Product UI/UX & Design Systems Lead",
+    skills: ["Figma", "Design Systems", "UX Research", "Prototyping", "Accessibility", "Interaction Design"],
+    certs: ["Google UX Design Professional", "NN/g UX Master Certification"],
+    testKeys: ["Product UX Architecture", "Visual Design Systems", "Usability & Accessibility"],
+    highlightTpl: (co, sk) =>
+      `Unified ${co}'s multi-product design system in ${sk}, lifting checkout funnel completion by 23%.`,
+  },
+  qa: {
+    title: "Lead SDET & Test Automation Architect",
+    skills: ["Python", "Playwright", "Selenium", "Cypress", "Docker", "API Automation"],
+    certs: ["ISTQB Certified Tester Advanced", "AWS Certified Developer"],
+    testKeys: ["E2E Test Automation", "API & Load Testing", "CI/CD Quality Gates"],
+    highlightTpl: (co, sk) =>
+      `Built parallelized ${sk} end-to-end regression suite at ${co}, shrinking release verification from 14h to 22 mins.`,
+  },
+};
+
+const DUMMY_NAMES_VERIFIED = [
+  "Pranav Deshpande",
+  "Ishita Banerjee",
+  "Raghavendra Iyer",
+  "Anushka Kulkarni",
+  "Kunal Rajvanshi",
+  "Ritika Choudhary",
+];
+
+const DUMMY_NAMES_STANDARD = [
+  "Saurabh Agarwal",
+  "Neha Nambiar",
+  "Abhishek Sengupta",
+  "Kritika Joshi",
+  "Yashwardhan Singh",
+  "Pallavi Reddy",
+];
+
+const SECTOR_COMPANIES: Record<string, [string, string][]> = {
+  fintech: [
+    ["Razorpay", "ex-PhonePe"],
+    ["CRED", "ex-Paytm"],
+    ["PhonePe", "ex-Groww"],
+    ["Pine Labs", "ex-Zerodha"],
+  ],
+  consumer: [
+    ["Swiggy", "ex-Flipkart"],
+    ["Zomato", "ex-Meesho"],
+    ["Flipkart", "ex-Myntra"],
+    ["Nykaa", "ex-Urban Company"],
+  ],
+  saas: [
+    ["Postman", "ex-Zoho"],
+    ["BrowserStack", "ex-Freshworks"],
+    ["Atlassian", "ex-Chargebee"],
+    ["Zoho", "ex-ThoughtWorks"],
+  ],
+  all: [
+    ["Razorpay", "ex-Zoho"],
+    ["Swiggy", "ex-Flipkart"],
+    ["Postman", "ex-Freshworks"],
+    ["PhonePe", "ex-Amazon"],
+    ["CRED", "ex-Microsoft"],
+    ["BrowserStack", "ex-Atlassian"],
+  ],
+};
+
+const TIER1_COLLEGES = [
+  "IIT Bombay · B.Tech Computer Science",
+  "BITS Pilani · B.E. Computer Science",
+  "IIT Delhi · B.Tech Information Technology",
+  "NIT Trichy · B.Tech Computer Science",
+  "IIIT Hyderabad · B.Tech CS & AI",
+  "DTU Delhi · B.Tech Software Engineering",
+];
+
+const STANDARD_COLLEGES = [
+  "VIT Vellore · B.Tech Computer Science",
+  "SRM Institute · B.Tech Information Technology",
+  "MIT Manipal · B.Tech Computer Engineering",
+  "PES University Bengaluru · B.Tech CSE",
+  "RV College of Engineering · B.E. ISE",
+  "COEP Pune · B.Tech Computer Engineering",
+];
+
+export const generateRealtimeSearchProfiles = (params: RealtimeSearchParams): ProCandidate[] => {
+  const {
+    verified,
+    query,
+    selectedSkills,
+    roleFilter,
+    cityFilter,
+    workModeFilter,
+    minExpFilter,
+    maxSalary,
+    noticePeriod,
+    eduFilter,
+    minCirFilter,
+    companySectorFilter,
+  } = params;
+
+  const qTrim = query.trim();
+  const qLower = qTrim.toLowerCase();
+
+  // Determine effective role configuration from roleFilter or query or selectedSkills
+  let roleKey = roleFilter !== "all" ? roleFilter : "frontend";
+  if (roleFilter === "all") {
+    if (/golang|java|spring|kafka|postgres|backend|node|microservice/i.test(qLower + " " + selectedSkills.join(" "))) {
+      roleKey = "backend";
+    } else if (/kubernetes|terraform|aws|docker|devops|sre|cloud/i.test(qLower + " " + selectedSkills.join(" "))) {
+      roleKey = "devops";
+    } else if (/pytorch|machine learning|ai|llm|data scien|python/i.test(qLower + " " + selectedSkills.join(" "))) {
+      roleKey = "data";
+    } else if (/sql|tableau|power bi|analytics|snowflake/i.test(qLower + " " + selectedSkills.join(" "))) {
+      roleKey = "analytics";
+    } else if (/react native|swift|ios|android|mobile|flutter/i.test(qLower + " " + selectedSkills.join(" "))) {
+      roleKey = "mobile";
+    } else if (/figma|ux|ui|design/i.test(qLower + " " + selectedSkills.join(" "))) {
+      roleKey = "design";
+    } else if (/qa|selenium|playwright|cypress|test/i.test(qLower + " " + selectedSkills.join(" "))) {
+      roleKey = "qa";
+    }
+  }
+
+  const cfg = ROLE_CONFIGS[roleKey] || ROLE_CONFIGS.frontend;
+  const namesPool = verified ? DUMMY_NAMES_VERIFIED : DUMMY_NAMES_STANDARD;
+  const companiesPool = SECTOR_COMPANIES[companySectorFilter] || SECTOR_COMPANIES.all;
+  const citiesPool =
+    cityFilter !== "all"
+      ? [cityFilter === "Delhi NCR" ? "Gurugram" : cityFilter]
+      : ["Bengaluru", "Hyderabad", "Pune", "Chennai", "Mumbai", "Remote"];
+  const workModesPool: ("Hybrid" | "Remote" | "Onsite")[] =
+    workModeFilter !== "all"
+      ? [workModeFilter as "Hybrid" | "Remote" | "Onsite"]
+      : cityFilter === "Remote"
+      ? ["Remote"]
+      : ["Hybrid", "Remote", "Onsite"];
+
+  // Extract any custom capitalized/tech token from query so it appears in skills/headline
+  const customQuerySkill =
+    qTrim.length >= 2 && qTrim.length <= 28
+      ? qTrim
+          .split(/\s+/)
+          .map((w) => (w.length <= 3 ? w.toUpperCase() : w.charAt(0).toUpperCase() + w.slice(1)))
+          .join(" ")
+      : "";
+
+  const generated: ProCandidate[] = [];
+
+  for (let i = 0; i < 4; i++) {
+    const baseName = namesPool[i % namesPool.length];
+    const [currCo, prevCo] = companiesPool[i % companiesPool.length];
+    const city = citiesPool[i % citiesPool.length];
+    const wp = workModesPool[i % workModesPool.length];
+
+    const baseExp = Math.max(minExpFilter || (verified ? 3.5 : 2.0), (verified ? 3.5 : 2.0) + i * 1.1);
+    const exp = Number(baseExp.toFixed(1));
+
+    const maxAllowedSal = Math.min(maxSalary || 60, 58);
+    const defaultSal = verified ? Math.min(maxAllowedSal, 22 + i * 5) : Math.min(maxAllowedSal, 11 + i * 3);
+    const es = Math.max(6, defaultSal);
+    const currentSalary = Math.max(4, Math.round(es * 0.78));
+
+    const nt =
+      noticePeriod < 999
+        ? noticePeriod === 0
+          ? 0
+          : Math.min(noticePeriod, i % 2 === 0 ? 0 : 15)
+        : i % 2 === 0
+        ? 0
+        : 15;
+
+    const mergedSkills = Array.from(
+      new Set([
+        ...selectedSkills,
+        ...(customQuerySkill && !citiesPool.includes(customQuerySkill) ? [customQuerySkill] : []),
+        ...cfg.skills,
+      ])
+    ).slice(0, 7);
+
+    const primarySkill = mergedSkills[0] || "React";
+    const cirScore = verified
+      ? Math.max(minCirFilter || 95, Math.min(99, 96 + (i % 4)))
+      : 78 + (i % 7);
+
+    const collegeList =
+      eduFilter === "tier1" || verified ? TIER1_COLLEGES : STANDARD_COLLEGES;
+    const education = `${collegeList[i % collegeList.length]} (${2024 - Math.round(exp)})`;
+
+    const roleHeadline =
+      customQuerySkill && customQuerySkill.length > 2 && !mergedSkills.includes(customQuerySkill)
+        ? `${cfg.title} (${customQuerySkill})`
+        : cfg.title;
+
+    const assessmentMap: Record<string, number> = {};
+    cfg.testKeys.forEach((tk, idx) => {
+      assessmentMap[tk] = verified ? Math.min(99, 93 + ((i + idx) % 6)) : 76 + ((i + idx) % 10);
+    });
+
+    const slug = baseName.toLowerCase().replace(/\s+/g, ".");
+    const candidateObj: ProCandidate = {
+      n: baseName,
+      c: city,
+      x: exp,
+      sk: mergedSkills,
+      ce: cfg.certs,
+      as: assessmentMap,
+      nt,
+      es,
+      wp,
+      verified,
+      cirScore,
+      cirId: verified ? `CIR-${city.slice(0, 3).toUpperCase()}-${8100 + i * 137}` : undefined,
+      headline: `${roleHeadline} @ ${currCo} · ${prevCo}`,
+      currentCompany: currCo,
+      previousCompany: prevCo,
+      currentSalary,
+      education,
+      github: `github.com/${slug.replace(".", "-")}`,
+      linkedin: `linkedin.com/in/${slug.replace(".", "")}`,
+      portfolio: `${slug.replace(".", "")}.dev`,
+      highlight: cfg.highlightTpl(currCo, primarySkill),
+      statusBadge:
+        nt === 0
+          ? "Immediate Joiner · Live Search Match"
+          : `${nt} Days Notice · Live Search Match`,
+      phone: `+91 9845${i} ${31000 + i * 1241}`,
+      email: `${slug}@${verified ? "talento-verified.io" : "talento-talent.in"}`,
+      verifiedBadges: verified
+        ? [
+            "Identity Verified",
+            "UAN Employment Verified",
+            "Proctored Code Check: 0% Plagiarism",
+          ]
+        : undefined,
+    };
+
+    RUNTIME_CANDIDATE_CACHE.set(candidateObj.n, candidateObj);
+    generated.push(candidateObj);
+  }
+
+  return generated;
+};
+
 

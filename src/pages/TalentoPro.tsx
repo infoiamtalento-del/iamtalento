@@ -14,6 +14,7 @@ import {
   DEFAULT_USERS,
   DEFAULT_APPS,
   CANDIDATES_SEED,
+  findCandidateByName,
   STAGES,
 } from "@/data/proData";
 
@@ -681,7 +682,7 @@ const TalentoPro: React.FC = () => {
 
   const candidatePage = currentRole === "employer" && (drawerState?.type === "applicant" || drawerState?.type === "candidate") ? drawerState : null;
   const selectedApplicant = candidatePage?.type === "applicant" ? apps.find(a => a.id === candidatePage.id && jobs.some(j => j.id === a.jid && j.by === sessionEmail)) : undefined;
-  const selectedCandidate = candidatePage?.type === "candidate" ? CANDIDATES_SEED.find(c => c.n === candidatePage.name) : undefined;
+  const selectedCandidate = candidatePage?.type === "candidate" ? findCandidateByName(candidatePage.name) : undefined;
   return (
     <div
       className="min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-primary/20 selection:text-primary"
