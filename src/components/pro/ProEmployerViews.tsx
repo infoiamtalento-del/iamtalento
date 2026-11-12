@@ -31,6 +31,13 @@ import {
   AlertTriangle,
   X,
   FileCheck,
+  CheckCircle,
+  GraduationCap,
+  IndianRupee,
+  Zap,
+  Star,
+  Bookmark,
+  Share2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -180,11 +187,13 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
   const [talentSmartQuery, setTalentSmartQuery] = useState("");
   const [talentJobFilter, setTalentJobFilter] = useState<string>("");
   const [talentExpLevels, setTalentExpLevels] = useState<string[]>([]);
+  const [talentRoleFilter, setTalentRoleFilter] = useState<string>("all");
+  const [talentQuickFilter, setTalentQuickFilter] = useState<string>("all");
   const [talentMinAssessment, setTalentMinAssessment] = useState(0);
   const [talentOnlyCertified, setTalentOnlyCertified] = useState(false);
   const [talentMaxSalary, setTalentMaxSalary] = useState(60);
   const [talentNoticePeriod, setTalentNoticePeriod] = useState(999);
-  const [talentSort, setTalentSort] = useState<"s" | "a" | "x">("s");
+  const [talentSort, setTalentSort] = useState<"cir" | "s" | "a" | "x" | "sal-asc">("cir");
   const [selectedTalentToCompare, setSelectedTalentToCompare] = useState<string[]>([]);
 
   const handleConfirmDeductAndUnlock = () => {
@@ -236,8 +245,16 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
     const q = talentSmartQuery.toLowerCase();
     if (!q) return;
 
-    if (q.includes("react")) setTalentQuery("React");
-    if (q.includes("python")) setTalentQuery("Python");
+    if (q.includes("react") || q.includes("frontend")) {
+      setTalentQuery("React");
+      setTalentRoleFilter("frontend");
+    } else if (q.includes("python") || q.includes("ml") || q.includes("ai")) {
+      setTalentRoleFilter("ml");
+    } else if (q.includes("devops") || q.includes("cloud") || q.includes("kubernetes")) {
+      setTalentRoleFilter("devops");
+    } else if (q.includes("backend") || q.includes("golang") || q.includes("java")) {
+      setTalentRoleFilter("backend");
+    }
     if (q.includes("certified")) setTalentOnlyCertified(true);
     if (q.includes("senior")) setTalentExpLevels(["Senior"]);
     if (q.includes("immediate")) setTalentNoticePeriod(0);
@@ -254,8 +271,25 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
         const matchesName = c.n.toLowerCase().includes(q);
         const matchesSkill = c.sk.some((s) => s.toLowerCase().includes(q));
         const matchesCity = c.c.toLowerCase().includes(q);
-        if (!matchesName && !matchesSkill && !matchesCity) return false;
+        const matchesHeadline = (c.headline || "").toLowerCase().includes(q);
+        const matchesCompany = (c.currentCompany || "").toLowerCase().includes(q);
+        if (!matchesName && !matchesSkill && !matchesCity && !matchesHeadline && !matchesCompany) return false;
       }
+
+      if (talentRoleFilter !== "all") {
+        const combined = `${c.headline || ""} ${c.sk.join(" ")}`.toLowerCase();
+        if (talentRoleFilter === "frontend" && !combined.includes("frontend") && !combined.includes("react")) return false;
+        if (talentRoleFilter === "backend" && !combined.includes("backend") && !combined.includes("golang") && !combined.includes("java")) return false;
+        if (talentRoleFilter === "devops" && !combined.includes("devops") && !combined.includes("cloud") && !combined.includes("kubernetes") && !combined.includes("aws")) return false;
+        if (talentRoleFilter === "ml" && !combined.includes("ml") && !combined.includes("pytorch") && !combined.includes("ai")) return false;
+        if (talentRoleFilter === "data" && !combined.includes("data") && !combined.includes("sql") && !combined.includes("analytics")) return false;
+        if (talentRoleFilter === "mobile" && !combined.includes("mobile") && !combined.includes("ios") && !combined.includes("react native")) return false;
+        if (talentRoleFilter === "design" && !combined.includes("design") && !combined.includes("ux") && !combined.includes("figma")) return false;
+      }
+
+      if (talentQuickFilter === "immediate" && (c.nt || 0) > 15) return false;
+      if (talentQuickFilter === "high-score" && (c.cirScore || 0) < 95) return false;
+      if (talentQuickFilter === "tier1" && !["Razorpay", "Swiggy", "Flipkart", "CRED", "BrowserStack", "PhonePe", "Postman", "Zomato"].includes(c.currentCompany || "")) return false;
 
       if (talentExpLevels.length > 0) {
         const lvl = levelFromExp(c.x);
@@ -269,12 +303,16 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
 
       return true;
     }).sort((a, b) => {
+      if (talentSort === "cir") return (b.cirScore || 0) - (a.cirScore || 0);
       if (talentSort === "a") return avgCandidateScore(b) - avgCandidateScore(a);
       if (talentSort === "x") return b.x - a.x;
+      if (talentSort === "sal-asc") return a.es - b.es;
       return calcTalentScore(b, selectedJobObj) - calcTalentScore(a, selectedJobObj);
     });
   }, [
     talentQuery,
+    talentRoleFilter,
+    talentQuickFilter,
     talentExpLevels,
     talentMinAssessment,
     talentOnlyCertified,
@@ -685,120 +723,185 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
   }
 
   if (view === "talent") {
-    // FIND TALENT VIEW
+    // FIND TALENT VIEW - PROFESSIONAL EXECUTIVE REDESIGN
     const currentBalance = user.wal?.bal || 0;
     const requiredUnlockFee = 2999;
     const hasSufficientBalance = currentBalance >= requiredUnlockFee;
 
+    const roleFilters = [
+      { id: "all", label: "All Roles" },
+      { id: "frontend", label: "Frontend & Full Stack" },
+      { id: "backend", label: "Backend & Systems" },
+      { id: "devops", label: "DevOps & Cloud" },
+      { id: "ml", label: "AI & Machine Learning" },
+      { id: "data", label: "Data & Analytics" },
+      { id: "mobile", label: "Mobile (iOS/Android)" },
+      { id: "design", label: "Product Design" },
+    ];
+
+    const quickFilters = [
+      { id: "all", label: "All Candidates" },
+      { id: "immediate", label: "⚡ Immediate Joiners (0–15d)" },
+      { id: "high-score", label: "🏆 CIR Score 95%+" },
+      { id: "tier1", label: "🏢 Tier-1 Companies (Razorpay, Swiggy, Flipkart, CRED)" },
+    ];
+
     return (
       <div className="space-y-6">
-        {/* Header Hero */}
-        <div className="bg-card border border-border/80 rounded-2xl p-6 relative overflow-hidden shadow-sm">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
-          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="space-y-2 max-w-xl">
-              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold">
-                <Sparkles className="w-3.5 h-3.5" /> Talento Sourcing Studio
+        {/* EXECUTIVE HEADER HERO */}
+        <div className="bg-card border border-border/80 rounded-3xl p-6 sm:p-7 relative overflow-hidden shadow-xs">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div className="space-y-3 max-w-2xl">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#002C66]/10 text-[#002C66] dark:text-blue-300 text-xs font-bold tracking-wide uppercase">
+                  <Sparkles className="w-3.5 h-3.5" /> Talento Sourcing Studio
+                </span>
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 text-xs font-semibold">
+                  <ShieldCheck className="w-3.5 h-3.5" /> 100% Pre-Authenticated Engineering Talent
+                </span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground font-display">
-                Find Talent
-              </h1>
-              <p className="text-muted-foreground text-xs sm:text-sm">
-                Discover pre-screened tech talent across India. Search open candidate resumes or unlock 100% skill-verified engineers with authentic CIR assessment scores.
-              </p>
 
-              {/* Smart Search Bar */}
-              <div className="flex items-center gap-2 max-w-xl pt-2">
-                <Input
-                  placeholder='Smart find: "React developer Bengaluru 3 years certified under 20 LPA"'
-                  value={talentSmartQuery}
-                  onChange={(e) => setTalentSmartQuery(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSmartTalentSearch()}
-                  className="text-xs h-10 rounded-xl bg-background"
-                />
-                <Button onClick={handleSmartTalentSearch} className="rounded-xl h-10 text-xs gap-1.5 shrink-0 bg-[#002C66] hover:bg-[#00204d] text-white">
-                  <Sparkles className="w-3.5 h-3.5" /> Find
-                </Button>
+              <div>
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground font-display">
+                  Find Talent
+                </h1>
+                <p className="text-muted-foreground text-xs sm:text-sm mt-1.5 leading-relaxed">
+                  Source from India's elite engineering pool. Review active candidate resumes or unlock 100% verified engineers backed by tamper-proof CIR reports, authenticated UAN work history, and proctored coding test scores.
+                </p>
+              </div>
+
+              {/* Quick Metrics Strip */}
+              <div className="flex flex-wrap items-center gap-4 pt-1 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-bold text-foreground text-sm">{CANDIDATES_SEED.length}</span> Total Candidates
+                </div>
+                <span className="text-border">•</span>
+                <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span className="font-bold text-sm">{verifiedCandidatesCount}</span> CIR Verified (Top 3%)
+                </div>
+                <span className="text-border">•</span>
+                <div className="flex items-center gap-1.5">
+                  <Zap className="w-3.5 h-3.5 text-amber-500" />
+                  <span>24-Hour SLA Guarantee</span>
+                </div>
+                <span className="text-border">•</span>
+                <div className="flex items-center gap-1.5">
+                  <CheckCircle className="w-3.5 h-3.5 text-blue-600" />
+                  <span>Zero Fake Experience</span>
+                </div>
               </div>
             </div>
 
-            {/* Wallet Summary Card */}
-            <div className="bg-background/80 border border-border/80 backdrop-blur-xs rounded-2xl p-4 sm:p-5 shrink-0 flex flex-col justify-between gap-3 min-w-[240px] shadow-xs">
+            {/* Recruiter Credit Wallet Card */}
+            <div className="bg-background/90 border border-border/80 backdrop-blur-md rounded-2xl p-5 shrink-0 flex flex-col justify-between gap-4 min-w-[280px] shadow-sm">
               <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
-                  <Wallet className="w-4 h-4 text-primary" /> Employer Wallet
+                <div className="flex items-center gap-2 text-xs font-bold text-foreground">
+                  <div className="h-7 w-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                    <Wallet className="w-4 h-4" />
+                  </div>
+                  <span>Employer Wallet</span>
                 </div>
-                <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
-                  Active
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold">
+                  Active Account
                 </span>
               </div>
+
               <div>
-                <div className="text-2xl font-bold text-foreground font-display">
+                <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block">
+                  Available Credits
+                </span>
+                <div className="text-3xl font-extrabold text-foreground font-display tracking-tight mt-0.5">
                   ₹{currentBalance.toLocaleString("en-IN")}
                 </div>
-                <p className="text-[11px] text-muted-foreground mt-0.5">
-                  Verified unlock: ₹2,999 / candidate
+                <p className="text-[11px] text-muted-foreground mt-1">
+                  Verified unlock: <strong className="text-foreground">₹2,999</strong> / candidate
                 </p>
               </div>
-              <div className="flex items-center gap-2 pt-1 border-t border-border/50">
+
+              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-border/60">
                 <Button
                   size="sm"
                   variant="outline"
-                  className="text-xs h-8 flex-1 rounded-xl"
+                  className="text-xs h-8 rounded-xl font-medium"
                   onClick={() => onNavigate?.("payment-history")}
                 >
-                  Top Up Wallet
+                  <Wallet className="w-3.5 h-3.5 mr-1" /> Top Up
                 </Button>
                 <Button
                   size="sm"
-                  variant="ghost"
-                  className="text-xs h-8 rounded-xl text-primary"
+                  className="text-xs h-8 rounded-xl font-medium bg-[#002C66] hover:bg-[#00204d] text-white"
                   onClick={() => window.open("/pricing?tab=employers", "_blank")}
                 >
-                  <ExternalLink className="w-3.5 h-3.5" /> Pricing
+                  <CreditCard className="w-3.5 h-3.5 mr-1" /> Pricing Plans
                 </Button>
               </div>
             </div>
           </div>
+
+          {/* Smart Search Bar */}
+          <div className="mt-6 pt-5 border-t border-border/60 flex flex-col sm:flex-row items-center gap-2.5">
+            <div className="relative flex-1 w-full">
+              <Search className="w-4 h-4 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Input
+                placeholder='Search by role, skill, college or company: e.g. "React developer Bengaluru ex-Razorpay", "Golang Swiggy", "Kubernetes CKA"'
+                value={talentSmartQuery}
+                onChange={(e) => setTalentSmartQuery(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSmartTalentSearch()}
+                className="text-xs sm:text-sm h-11 pl-10 pr-4 rounded-xl bg-background border-border/80"
+              />
+            </div>
+            <Button
+              onClick={handleSmartTalentSearch}
+              className="h-11 px-5 rounded-xl text-xs sm:text-sm font-semibold gap-2 shrink-0 bg-[#002C66] hover:bg-[#00204d] text-white w-full sm:w-auto"
+            >
+              <Sparkles className="w-4 h-4" /> Smart Match
+            </Button>
+          </div>
         </div>
 
-        {/* TWO-OPTION SWITCHER: CANDIDATES vs VERIFIED CANDIDATES */}
+        {/* TWO-OPTION PRIMARY SELECTOR: CANDIDATES vs VERIFIED CANDIDATES */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Option 1: Candidates */}
+          {/* Option 1: Candidates (All Candidates) */}
           <button
             type="button"
             onClick={() => setTalentOption("candidates")}
             className={cn(
-              "p-5 rounded-2xl border text-left transition-all relative overflow-hidden flex items-start gap-4 cursor-pointer",
+              "p-5 rounded-3xl border text-left transition-all relative overflow-hidden flex items-start gap-4 cursor-pointer group",
               talentOption === "candidates"
-                ? "bg-card border-[#002C66] ring-2 ring-[#002C66]/20 shadow-sm"
-                : "bg-card/60 border-border/70 hover:border-border hover:bg-card"
+                ? "bg-card border-[#002C66] ring-2 ring-[#002C66]/15 shadow-sm"
+                : "bg-card/70 border-border/80 hover:border-border hover:bg-card"
             )}
           >
             <div
               className={cn(
-                "h-12 w-12 rounded-xl flex items-center justify-center shrink-0 transition-colors",
+                "h-12 w-12 rounded-2xl flex items-center justify-center shrink-0 transition-all",
                 talentOption === "candidates"
-                  ? "bg-[#002C66] text-white"
-                  : "bg-muted text-muted-foreground"
+                  ? "bg-[#002C66] text-white shadow-xs"
+                  : "bg-muted text-muted-foreground group-hover:text-foreground"
               )}
             >
               <Users className="w-6 h-6" />
             </div>
+
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="font-bold text-base text-foreground">Candidates</h3>
-                <span className="px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground text-[10px] font-bold">
-                  {CANDIDATES_SEED.length} Available
+                <h3 className="font-bold text-base text-foreground font-display">All Candidates</h3>
+                <span className="px-2.5 py-0.5 rounded-full bg-secondary text-secondary-foreground text-[10px] font-bold">
+                  {CANDIDATES_SEED.length} Profiles
                 </span>
+                <span className="text-[10px] text-muted-foreground">Free Access</span>
+
                 {talentOption === "candidates" && (
-                  <span className="ml-auto flex items-center gap-1 text-[11px] font-bold text-[#002C66]">
-                    <CheckCircle2 className="w-3.5 h-3.5" /> Selected
+                  <span className="ml-auto inline-flex items-center gap-1 text-[11px] font-bold text-[#002C66] bg-[#002C66]/10 px-2 py-0.5 rounded-full">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Active View
                   </span>
                 )}
               </div>
-              <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                Browse our open talent pool, active applicants, and portfolios. Free to review, filter by skill, and invite to open jobs.
+
+              <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                Open candidate pool across India. Search portfolios, skillsets, and active resumes. Free to view, screen, and send direct job invitations.
               </p>
             </div>
           </button>
@@ -808,65 +911,124 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
             type="button"
             onClick={() => setTalentOption("verified")}
             className={cn(
-              "p-5 rounded-2xl border text-left transition-all relative overflow-hidden flex items-start gap-4 cursor-pointer",
+              "p-5 rounded-3xl border text-left transition-all relative overflow-hidden flex items-start gap-4 cursor-pointer group",
               talentOption === "verified"
                 ? "bg-card border-emerald-600 ring-2 ring-emerald-600/20 shadow-sm"
-                : "bg-card/60 border-border/70 hover:border-border hover:bg-card"
+                : "bg-card/70 border-border/80 hover:border-border hover:bg-card"
             )}
           >
             <div
               className={cn(
-                "h-12 w-12 rounded-xl flex items-center justify-center shrink-0 transition-colors",
+                "h-12 w-12 rounded-2xl flex items-center justify-center shrink-0 transition-all",
                 talentOption === "verified"
-                  ? "bg-emerald-600 text-white"
-                  : "bg-emerald-500/10 text-emerald-600"
+                  ? "bg-emerald-600 text-white shadow-xs"
+                  : "bg-emerald-500/10 text-emerald-600 group-hover:bg-emerald-500/20"
               )}
             >
               <ShieldCheck className="w-6 h-6" />
             </div>
+
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="font-bold text-base text-foreground">Verified Candidates</h3>
-                <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold flex items-center gap-1">
-                  <ShieldCheck className="w-3 h-3" /> {verifiedCandidatesCount} CIR Verified
+                <h3 className="font-bold text-base text-foreground font-display flex items-center gap-1.5">
+                  Verified Candidates
+                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-extrabold uppercase tracking-wide">
+                    Talento CIR™
+                  </span>
+                </h3>
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold">
+                  {verifiedCandidatesCount} Authenticated
                 </span>
+
                 {talentOption === "verified" && (
-                  <span className="ml-auto flex items-center gap-1 text-[11px] font-bold text-emerald-600">
-                    <CheckCircle2 className="w-3.5 h-3.5" /> Selected
+                  <span className="ml-auto inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 bg-emerald-500/15 px-2 py-0.5 rounded-full">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Active View
                   </span>
                 )}
               </div>
-              <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                Candidates with authenticated identities, proctored test scores (&gt;80%), and background checks. Unlock full dossiers for ₹2,999.
+
+              <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                Candidates with authenticated UAN employment, proctored code challenges (&gt;90%), and verified CIR background index. Unlock full dossiers for ₹2,999.
               </p>
             </div>
           </button>
         </div>
 
-        {/* Informational Guidance Banner */}
+        {/* DOMAIN & ROLE QUICK FILTERS */}
+        <div className="space-y-3">
+          {/* Role Filter Pills */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+            {roleFilters.map((rf) => {
+              const isSelected = talentRoleFilter === rf.id;
+              return (
+                <button
+                  key={rf.id}
+                  type="button"
+                  onClick={() => setTalentRoleFilter(rf.id)}
+                  className={cn(
+                    "px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer",
+                    isSelected
+                      ? "bg-[#002C66] text-white shadow-xs"
+                      : "bg-muted/60 text-muted-foreground hover:text-foreground hover:bg-muted"
+                  )}
+                >
+                  {rf.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Criteria Quick Filter Tags */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none text-xs">
+            {quickFilters.map((qf) => {
+              const isSelected = talentQuickFilter === qf.id;
+              return (
+                <button
+                  key={qf.id}
+                  type="button"
+                  onClick={() => setTalentQuickFilter(qf.id)}
+                  className={cn(
+                    "px-3 py-1 rounded-lg text-xs font-medium border transition-colors whitespace-nowrap cursor-pointer",
+                    isSelected
+                      ? "bg-primary/10 text-primary border-primary/40 font-bold"
+                      : "bg-card text-muted-foreground border-border/80 hover:text-foreground"
+                  )}
+                >
+                  {qf.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* INFORMATION TRUST BANNER */}
         {talentOption === "verified" ? (
           <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent border border-emerald-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-2.5">
-              <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
+            <div className="flex items-center gap-3">
+              <div className="h-9 w-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
               <div>
-                <span className="font-bold text-foreground">Talento Verified™ Candidate Guarantee: </span>
+                <span className="font-bold text-foreground">Talento Verified™ Hiring Guarantee: </span>
                 <span className="text-muted-foreground">
-                  Proctored coding assessments, authentic identity, and 24h recruiter review SLA. Accessing a verified profile deducts ₹2,999 from your wallet.
+                  Every profile in this pool is authenticated against EPFO employment data, passes proctored coding challenges, and carries a 24h recruiter review SLA. Accessing a verified profile deducts ₹2,999 from your employer wallet.
                 </span>
               </div>
             </div>
-            <span className="px-2.5 py-1 rounded-xl bg-emerald-600 text-white text-[11px] font-bold shrink-0 self-start sm:self-auto">
+            <span className="px-3 py-1.5 rounded-xl bg-emerald-600 text-white text-[11px] font-bold shrink-0 self-start sm:self-auto shadow-2xs">
               ₹2,999 / Profile Access
             </span>
           </div>
         ) : (
-          <div className="p-4 rounded-2xl bg-muted/40 border border-border/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-2.5">
-              <Users className="w-5 h-5 text-primary shrink-0" />
+          <div className="p-4 rounded-2xl bg-muted/40 border border-border/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-3">
+              <div className="h-9 w-9 rounded-xl bg-[#002C66] text-white flex items-center justify-center shrink-0">
+                <Users className="w-5 h-5" />
+              </div>
               <div>
-                <span className="font-bold text-foreground">General Candidate Pool: </span>
+                <span className="font-bold text-foreground">Browsing Standard Candidates: </span>
                 <span className="text-muted-foreground">
-                  Review developer skillsets, experience, and projects. Looking for guaranteed proctored test results? Switch to <strong>Verified Candidates</strong>.
+                  Explore developers and project resumes. Looking for pre-vetted engineers with verified test scores and authenticated experience? Switch to <strong>Verified Candidates</strong> above.
                 </span>
               </div>
             </div>
@@ -874,9 +1036,9 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
               size="sm"
               variant="outline"
               onClick={() => setTalentOption("verified")}
-              className="text-xs h-7 rounded-xl text-emerald-600 border-emerald-500/30 hover:bg-emerald-50 shrink-0"
+              className="text-xs h-8 rounded-xl text-emerald-700 border-emerald-500/30 hover:bg-emerald-50 shrink-0 font-semibold"
             >
-              Switch to Verified
+              Switch to Verified Candidates
             </Button>
           </div>
         )}
@@ -907,63 +1069,74 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
           </div>
         )}
 
-        {/* 2-Column Grid: Filter Panel & Candidate Cards */}
+        {/* 2-COLUMN GRID: FILTER PANEL & CANDIDATE CARDS */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Left Filters: 4 cols */}
-          <div className="lg:col-span-4 bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-4">
+          {/* LEFT FILTERS: 4 cols */}
+          <div className="lg:col-span-4 bg-card border border-border/80 rounded-3xl p-5 shadow-xs space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-foreground text-sm flex items-center gap-2">
-                <Filter className="w-4 h-4 text-primary" /> Filter {talentOption === "verified" ? "Verified" : "All"} Candidates
+                <Filter className="w-4 h-4 text-primary" /> Filter {talentOption === "verified" ? "Verified" : "All"} Talent
               </h3>
               <button
                 onClick={() => {
                   setTalentQuery("");
                   setTalentExpLevels([]);
+                  setTalentRoleFilter("all");
+                  setTalentQuickFilter("all");
                   setTalentMinAssessment(0);
                   setTalentOnlyCertified(false);
                   setTalentMaxSalary(60);
                   setTalentNoticePeriod(999);
+                  setTalentSort("cir");
                 }}
-                className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
+                className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors cursor-pointer"
               >
                 <RotateCcw className="w-3 h-3" /> Reset
               </button>
             </div>
 
-            <div className="space-y-3.5 text-xs">
+            <div className="space-y-4 text-xs">
               <div>
-                <label className="font-medium text-foreground block mb-1">Rank For Job Opening</label>
+                <label className="font-semibold text-foreground block mb-1.5">Rank For Open Position</label>
                 <select
                   value={talentJobFilter}
                   onChange={(e) => setTalentJobFilter(e.target.value)}
-                  className="w-full h-8 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-sm focus-visible:outline-none"
+                  className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none"
                 >
                   <option value="">Generic (All Openings)</option>
                   {myJobs.map((j) => (
                     <option key={j.id} value={j.id}>
-                      {j.t}
+                      {j.t} ({j.l})
                     </option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <label className="font-medium text-foreground block mb-1">Search Name, Skill or City</label>
+                <label className="font-semibold text-foreground block mb-1.5">Keyword Search</label>
                 <Input
                   value={talentQuery}
                   onChange={(e) => setTalentQuery(e.target.value)}
-                  placeholder="e.g. React, SQL, Bengaluru"
-                  className="text-xs h-8"
+                  placeholder="e.g. React, Razorpay, Golang, BITS..."
+                  className="text-xs h-9 rounded-xl"
                 />
               </div>
 
               <div>
-                <label className="font-medium text-foreground block mb-1">Experience Level</label>
+                <label className="font-semibold text-foreground block mb-1.5">Experience Level</label>
                 <div className="grid grid-cols-2 gap-1.5">
                   {["Fresher", "Junior", "Mid", "Senior"].map((lvl) => {
                     const isChecked = talentExpLevels.includes(lvl);
                     return (
-                      <label key={lvl} className="flex items-center gap-2 cursor-pointer py-0.5">
+                      <label
+                        key={lvl}
+                        className={cn(
+                          "flex items-center gap-2 rounded-xl px-2.5 py-1.5 border text-xs cursor-pointer transition-colors",
+                          isChecked
+                            ? "bg-primary/10 border-primary text-primary font-bold"
+                            : "bg-background border-border/70 text-muted-foreground hover:text-foreground"
+                        )}
+                      >
                         <input
                           type="checkbox"
                           checked={isChecked}
@@ -972,7 +1145,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                               isChecked ? prev.filter((x) => x !== lvl) : [...prev, lvl]
                             )
                           }
-                          className="rounded text-primary focus:ring-primary"
+                          className="rounded text-primary focus:ring-primary accent-primary"
                         />
                         <span>{lvl}</span>
                       </label>
@@ -982,9 +1155,11 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="font-medium text-foreground">Min Assessment Score</label>
-                  <span className="font-bold text-primary">{talentMinAssessment}%</span>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="font-semibold text-foreground">Min Assessment Score</label>
+                  <span className="font-bold text-primary px-2 py-0.5 rounded-md bg-primary/10">
+                    {talentMinAssessment}%
+                  </span>
                 </div>
                 <input
                   type="range"
@@ -993,62 +1168,91 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                   step="5"
                   value={talentMinAssessment}
                   onChange={(e) => setTalentMinAssessment(Number(e.target.value))}
-                  className="w-full accent-primary"
+                  className="w-full accent-primary cursor-pointer"
                 />
               </div>
 
               <div className="pt-1">
-                <label className="flex items-center gap-2 cursor-pointer">
+                <label className="flex items-center gap-2 cursor-pointer p-2 rounded-xl border border-border/70 hover:bg-muted/40 transition-colors">
                   <input
                     type="checkbox"
                     checked={talentOnlyCertified}
                     onChange={(e) => setTalentOnlyCertified(e.target.checked)}
-                    className="rounded text-primary focus:ring-primary"
+                    className="rounded text-primary focus:ring-primary accent-primary"
                   />
-                  <span className="font-medium text-foreground">Certified Credentials Only</span>
+                  <span className="font-semibold text-foreground">Certified Credentials Only (AWS, Meta, Google)</span>
                 </label>
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="font-medium text-foreground">Max Expected Salary</label>
-                  <span className="font-bold text-primary">₹{talentMaxSalary} LPA</span>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="font-semibold text-foreground">Max Expected CTC</label>
+                  <span className="font-bold text-primary px-2 py-0.5 rounded-md bg-primary/10">
+                    ₹{talentMaxSalary} LPA
+                  </span>
                 </div>
                 <input
                   type="range"
-                  min="3"
+                  min="5"
                   max="60"
+                  step="2"
                   value={talentMaxSalary}
                   onChange={(e) => setTalentMaxSalary(Number(e.target.value))}
-                  className="w-full accent-primary"
+                  className="w-full accent-primary cursor-pointer"
                 />
               </div>
 
               <div>
-                <label className="font-medium text-foreground block mb-1">Sort Candidates</label>
+                <label className="font-semibold text-foreground block mb-1.5">Sort Candidates By</label>
                 <select
                   value={talentSort}
                   onChange={(e) => setTalentSort(e.target.value as any)}
-                  className="w-full h-8 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-sm focus-visible:outline-none"
+                  className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none"
                 >
-                  <option value="s">Best Algorithm Match</option>
-                  <option value="a">Assessment Score</option>
-                  <option value="x">Years Experience</option>
+                  <option value="cir">Highest CIR Score</option>
+                  <option value="s">Best Algorithm Fit Match</option>
+                  <option value="a">Assessment Proctored Score</option>
+                  <option value="x">Experience (High to Low)</option>
+                  <option value="sal-asc">Expected Salary (Lowest First)</option>
                 </select>
               </div>
             </div>
           </div>
 
-          {/* Right Candidate Cards: 8 cols */}
+          {/* RIGHT CANDIDATE CARDS: 8 cols */}
           <div className="lg:col-span-8 space-y-4">
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
               <span>
-                Showing {displayCandidates.length} {talentOption === "verified" ? "Verified" : ""} Candidate Profiles
+                Showing <strong className="text-foreground">{displayCandidates.length}</strong> {talentOption === "verified" ? "Verified" : ""} Engineer Profiles
               </span>
               <span className="text-[11px]">
-                {talentOption === "verified" ? "Access fee: ₹2,999 from wallet" : "Free Profile Browsing"}
+                {talentOption === "verified" ? "Verified dossiers: ₹2,999 / unlock" : "Free Candidate Browsing"}
               </span>
             </div>
+
+            {displayCandidates.length === 0 && (
+              <div className="bg-card border border-border/80 rounded-3xl p-12 text-center space-y-3">
+                <Users className="w-10 h-10 text-muted-foreground mx-auto" />
+                <h4 className="font-bold text-foreground text-base">No candidates match your current filters</h4>
+                <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+                  Try adjusting your role selection, search keyword, or salary range to discover more candidates.
+                </p>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setTalentQuery("");
+                    setTalentRoleFilter("all");
+                    setTalentQuickFilter("all");
+                    setTalentExpLevels([]);
+                    setTalentMaxSalary(60);
+                  }}
+                  className="rounded-xl text-xs mt-2"
+                >
+                  Reset All Filters
+                </Button>
+              </div>
+            )}
 
             <div className="space-y-4">
               {displayCandidates.map((cand) => {
@@ -1061,67 +1265,111 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                   <div
                     key={cand.n}
                     className={cn(
-                      "bg-card border rounded-2xl p-5 shadow-sm space-y-3.5 transition-all",
+                      "bg-card border rounded-3xl p-5 sm:p-6 shadow-xs space-y-4 transition-all hover:shadow-md",
                       isVerified
-                        ? "border-emerald-500/30 hover:border-emerald-500/60 bg-gradient-to-br from-emerald-500/[0.02] to-card"
+                        ? "border-emerald-500/30 hover:border-emerald-500/60 bg-gradient-to-br from-emerald-500/[0.015] to-card"
                         : "border-border/80 hover:border-primary/40"
                     )}
                   >
-                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-                      <div className="flex items-start gap-3.5">
+                    {/* Top Header Row */}
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                      <div className="flex items-start gap-4">
+                        {/* Avatar */}
                         <div className="relative shrink-0">
                           <img
                             src={getCandidatePhoto(cand.n)}
                             alt={cand.n}
-                            className="w-13 h-13 rounded-2xl object-cover border border-border/60"
+                            className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border border-border/70 shadow-2xs"
                           />
-                          {isVerified && (
-                            <span className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-emerald-600 text-white flex items-center justify-center border-2 border-background shadow-xs">
-                              <ShieldCheck className="w-3 h-3" />
+                          {isVerified ? (
+                            <span
+                              title="CIR Verified"
+                              className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-emerald-600 text-white flex items-center justify-center border-2 border-background shadow-xs"
+                            >
+                              <ShieldCheck className="w-3.5 h-3.5" />
                             </span>
+                          ) : (
+                            <span className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-emerald-500 border-2 border-background" />
                           )}
                         </div>
-                        <div>
+
+                        {/* Name & Title */}
+                        <div className="space-y-1">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <h4 className="font-bold text-foreground text-sm sm:text-base">{cand.n}</h4>
-                            {isVerified ? (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
-                                <ShieldCheck className="w-3 h-3" /> Talento Verified CIR
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary text-muted-foreground text-[10px] font-medium">
-                                Active Talent
+                            <h4 className="font-bold text-foreground text-base sm:text-lg font-display">
+                              {cand.n}
+                            </h4>
+
+                            {isVerified && (
+                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-[10px] font-extrabold tracking-wide uppercase">
+                                <ShieldCheck className="w-3.5 h-3.5" /> Talento Verified CIR
                               </span>
                             )}
-                            {isVerified && (
-                              <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200">
-                                CIR: {cand.cirScore || 95}/100
+
+                            {cand.statusBadge && (
+                              <span className="px-2 py-0.5 rounded-md bg-secondary text-secondary-foreground text-[10px] font-bold">
+                                {cand.statusBadge}
                               </span>
                             )}
                           </div>
+
+                          {/* Headline with Current & Previous Companies */}
                           {cand.headline && (
-                            <p className="text-xs text-foreground/80 font-medium mt-0.5">
+                            <p className="text-xs sm:text-sm font-semibold text-foreground/90">
                               {cand.headline}
                             </p>
                           )}
-                          <div className="text-xs text-muted-foreground mt-1 flex items-center gap-2 flex-wrap">
-                            <span>{cand.c}</span>
+
+                          {/* Education */}
+                          {cand.education && (
+                            <p className="text-[11px] text-muted-foreground flex items-center gap-1.5">
+                              <GraduationCap className="w-3.5 h-3.5 text-muted-foreground/80" />
+                              <span>{cand.education}</span>
+                            </p>
+                          )}
+
+                          {/* Meta Specs Chips */}
+                          <div className="flex items-center gap-x-3 gap-y-1 flex-wrap text-xs text-muted-foreground pt-1">
+                            <span className="flex items-center gap-1">
+                              <MapPin className="w-3 h-3 text-muted-foreground" /> {cand.c} ({cand.wp})
+                            </span>
                             <span>•</span>
-                            <span>{cand.x} yrs exp ({levelFromExp(cand.x)})</span>
+                            <span className="flex items-center gap-1">
+                              <Briefcase className="w-3 h-3 text-muted-foreground" /> {cand.x} yrs exp ({levelFromExp(cand.x)})
+                            </span>
                             <span>•</span>
-                            <span>₹{cand.es} LPA exp</span>
+                            <span className="flex items-center gap-1 font-semibold text-foreground">
+                              <IndianRupee className="w-3 h-3 text-muted-foreground" />
+                              {cand.currentSalary ? `₹${cand.currentSalary}L ➔ ` : ""}₹{cand.es} LPA Exp
+                            </span>
                             <span>•</span>
-                            <span>{cand.nt ? `${cand.nt}d notice` : "Immediate Joiner"}</span>
+                            <span className="flex items-center gap-1">
+                              <Clock className="w-3 h-3 text-muted-foreground" /> {cand.nt ? `${cand.nt}d notice` : "Immediate Joiner"}
+                            </span>
                           </div>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-3 shrink-0 self-end sm:self-start">
-                        <div className="text-right">
-                          <span className="text-[10px] text-muted-foreground block">Fit Match</span>
-                          <span className="font-bold text-sm text-primary">{scoreVal}%</span>
-                        </div>
-                        <label className="flex items-center gap-1.5 text-xs text-muted-foreground cursor-pointer">
+                      {/* Right Score & Compare */}
+                      <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-3 shrink-0 pt-1 border-t sm:border-t-0 border-border/50">
+                        {isVerified && cand.cirScore ? (
+                          <div className="text-left sm:text-right">
+                            <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 font-extrabold text-xs">
+                              <ShieldCheck className="w-3.5 h-3.5" />
+                              <span>CIR {cand.cirScore}/100</span>
+                            </div>
+                            <span className="text-[10px] text-muted-foreground block mt-0.5">
+                              Top 3% Pan-India
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="text-left sm:text-right">
+                            <span className="text-[10px] text-muted-foreground block">Fit Match</span>
+                            <span className="font-bold text-sm text-primary">{scoreVal}%</span>
+                          </div>
+                        )}
+
+                        <label className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground cursor-pointer select-none">
                           <input
                             type="checkbox"
                             checked={isCompared}
@@ -1130,33 +1378,76 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                                 isCompared ? prev.filter((x) => x !== cand.n) : [...prev, cand.n]
                               );
                             }}
-                            className="rounded text-primary focus:ring-primary"
+                            className="rounded text-primary focus:ring-primary accent-primary"
                           />
                           <span>Compare</span>
                         </label>
                       </div>
                     </div>
 
-                    {/* Proctored assessment breakdown if verified */}
-                    {isVerified && cand.as && Object.keys(cand.as).length > 0 && (
-                      <div className="p-2.5 rounded-xl bg-muted/30 border border-border/50 flex flex-wrap items-center gap-3 text-xs">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
-                          <Award className="w-3 h-3 text-emerald-600" /> Proctored Test Scores:
-                        </span>
-                        {Object.entries(cand.as).map(([testName, score]) => (
-                          <span key={testName} className="inline-flex items-center gap-1 font-semibold text-foreground text-[11px]">
-                            {testName}: <strong className="text-emerald-600">{score}%</strong>
-                          </span>
-                        ))}
+                    {/* Engineering Highlight Quote */}
+                    {cand.highlight && (
+                      <div className="p-3 rounded-2xl bg-muted/40 border border-border/70 text-xs text-foreground/90 italic leading-relaxed">
+                        "{cand.highlight}"
                       </div>
                     )}
 
-                    {/* Skills & Certs */}
+                    {/* Talento CIR Verification Box (For Verified Candidates) */}
+                    {isVerified && (
+                      <div className="p-3.5 rounded-2xl bg-emerald-500/[0.04] border border-emerald-500/20 space-y-2.5 text-xs">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <div className="flex items-center gap-1.5 font-bold text-emerald-800 dark:text-emerald-300 text-xs">
+                            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                            <span>Proctored Assessment &amp; Verification Scorecard</span>
+                          </div>
+                          {cand.cirId && (
+                            <span className="text-[10px] font-mono font-bold text-muted-foreground bg-background px-2 py-0.5 rounded-md border border-border/60">
+                              Ledger ID: {cand.cirId}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Proctored Skill Scores */}
+                        {cand.as && Object.keys(cand.as).length > 0 && (
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-0.5">
+                            {Object.entries(cand.as).map(([testName, score]) => (
+                              <div
+                                key={testName}
+                                className="p-2 rounded-xl bg-background border border-border/60 text-center"
+                              >
+                                <div className="text-[10px] text-muted-foreground truncate" title={testName}>
+                                  {testName}
+                                </div>
+                                <div className="text-xs font-bold text-emerald-600 mt-0.5">
+                                  {score}% <span className="text-[9px] text-muted-foreground font-normal">Passed</span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Verified Badges */}
+                        {cand.verifiedBadges && (
+                          <div className="flex items-center gap-2 flex-wrap pt-1 text-[11px] text-muted-foreground">
+                            {cand.verifiedBadges.map((vb) => (
+                              <span
+                                key={vb}
+                                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-medium"
+                              >
+                                <CheckCircle className="w-3 h-3 text-emerald-600" /> {vb}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Skills & Certifications */}
                     <div className="flex items-center gap-1.5 flex-wrap text-xs pt-0.5">
                       {cand.sk.map((s) => (
                         <span
                           key={s}
-                          className="px-2 py-0.5 rounded-md bg-muted text-foreground text-[11px] font-medium"
+                          className="px-2.5 py-1 rounded-lg bg-secondary text-secondary-foreground text-xs font-medium"
                         >
                           {s}
                         </span>
@@ -1165,63 +1456,64 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                         cand.ce.map((cert) => (
                           <span
                             key={cert}
-                            className="px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-600 dark:text-purple-400 text-[11px] font-semibold"
+                            className="px-2.5 py-1 rounded-lg bg-purple-500/10 text-purple-700 dark:text-purple-300 text-xs font-semibold flex items-center gap-1"
                           >
-                            {cert}
+                            <Award className="w-3 h-3 text-purple-600" /> {cert}
                           </span>
                         ))}
                     </div>
 
-                    {/* Actions Row */}
-                    <div className="pt-2 border-t border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    {/* Action Bar */}
+                    <div className="pt-3 border-t border-border/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                      {/* Left Status Indicator */}
                       <div className="flex items-center gap-2">
                         {isVerified ? (
                           isUnlocked ? (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-600 text-xs font-bold">
-                              <CheckCircle2 className="w-3.5 h-3.5" /> Full Dossier Unlocked
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-xs font-bold">
+                              <CheckCircle2 className="w-3.5 h-3.5" /> Full Verified Dossier Unlocked
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-400 text-xs font-semibold">
-                              <Lock className="w-3.5 h-3.5" /> Locked Verified Profile
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 text-amber-800 dark:text-amber-300 text-xs font-semibold">
+                              <Lock className="w-3.5 h-3.5" /> Locked Verified Profile (Direct Contacts Protected)
                             </span>
                           )
                         ) : (
                           <span className="text-muted-foreground text-xs">
-                            Standard candidate profile
+                            Standard candidate profile · Free to view
                           </span>
                         )}
                       </div>
 
+                      {/* Right Action Buttons */}
                       <div className="flex items-center gap-2 self-end sm:self-auto">
-                        {/* Profile action button */}
                         {isVerified && !isUnlocked ? (
                           <Button
                             size="sm"
-                            className="rounded-xl text-xs h-8 gap-1.5 bg-[#002C66] hover:bg-[#00204d] text-white font-semibold shadow-xs"
+                            className="rounded-xl text-xs h-9 px-4 gap-1.5 bg-[#002C66] hover:bg-[#00204d] text-white font-bold shadow-xs cursor-pointer"
                             onClick={() => setCandidateToUnlock(cand)}
                           >
-                            <Lock className="w-3.5 h-3.5" /> View Verified Candidate (₹2,999)
+                            <Lock className="w-3.5 h-3.5" /> Unlock Verified Profile (₹2,999)
                           </Button>
                         ) : (
                           <Button
                             size="sm"
                             variant={isVerified ? "default" : "outline"}
                             className={cn(
-                              "rounded-xl text-xs h-8 gap-1.5",
+                              "rounded-xl text-xs h-9 px-4 gap-1.5 font-semibold",
                               isVerified ? "bg-emerald-600 hover:bg-emerald-700 text-white" : "bg-background"
                             )}
                             onClick={() => onOpenDrawer({ type: "candidate", name: cand.n, jobId: selectedJobObj?.id })}
                           >
                             <Eye className="w-3.5 h-3.5" />
-                            {isVerified ? "View Verified Profile" : "View Candidate Profile"}
+                            {isVerified ? "View Verified Dossier & Contacts" : "View Profile & Resume"}
                           </Button>
                         )}
 
                         <Button
                           size="sm"
                           variant="ghost"
-                          className="rounded-xl text-xs h-8 gap-1.5 text-muted-foreground hover:text-foreground"
-                          onClick={() => onToast(`Invitation to apply sent to ${cand.n}!`)}
+                          className="rounded-xl text-xs h-9 px-3 gap-1.5 text-muted-foreground hover:text-foreground"
+                          onClick={() => onToast(`Invitation to interview sent to ${cand.n}!`)}
                         >
                           <Send className="w-3.5 h-3.5" /> Invite
                         </Button>
@@ -1236,18 +1528,18 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
 
         {/* VERIFIED CANDIDATE ACCESS & WALLET DEDUCTION MODAL */}
         {candidateToUnlock && (
-          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-            <div className="bg-card border border-border rounded-3xl max-w-lg w-full p-6 shadow-2xl relative overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+          <div className="fixed inset-0 z-50 bg-black/65 backdrop-blur-xs flex items-center justify-center p-4">
+            <div className="bg-card border border-border rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl relative overflow-hidden animate-in fade-in zoom-in-95 duration-150">
               {/* Header Accent Bar */}
               <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#002C66] via-blue-600 to-emerald-600" />
 
               <div className="flex items-start justify-between gap-4 pt-1 mb-4">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3.5">
                   <div className="relative">
                     <img
                       src={getCandidatePhoto(candidateToUnlock.n)}
                       alt={candidateToUnlock.n}
-                      className="w-14 h-14 rounded-2xl object-cover border border-border"
+                      className="w-14 h-14 rounded-2xl object-cover border border-border shadow-xs"
                     />
                     <span className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-emerald-600 text-white flex items-center justify-center border-2 border-background">
                       <ShieldCheck className="w-3 h-3" />
@@ -1256,19 +1548,24 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                   <div>
                     <div className="flex items-center gap-2">
                       <h3 className="font-bold text-lg text-foreground font-display">{candidateToUnlock.n}</h3>
-                      <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 text-[10px] font-bold">
-                        CIR Verified
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-[10px] font-extrabold uppercase">
+                        CIR {candidateToUnlock.cirScore || 97}/100
                       </span>
                     </div>
                     <p className="text-xs text-muted-foreground mt-0.5">
                       {candidateToUnlock.headline || `${candidateToUnlock.x} yrs experience · ${candidateToUnlock.c}`}
                     </p>
+                    {candidateToUnlock.cirId && (
+                      <p className="text-[10px] text-muted-foreground font-mono mt-0.5">
+                        Verification ID: {candidateToUnlock.cirId}
+                      </p>
+                    )}
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setCandidateToUnlock(null)}
-                  className="rounded-full p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                  className="rounded-full p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -1277,24 +1574,24 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
               {/* Verified Inclusions Box */}
               <div className="p-4 rounded-2xl bg-muted/40 border border-border/70 space-y-2.5 mb-5 text-xs">
                 <div className="font-semibold text-foreground flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-muted-foreground">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" /> Verified Candidate Inclusions:
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" /> What's Included in This Verified Dossier:
                 </div>
                 <div className="grid grid-cols-1 gap-2 pt-1">
                   <div className="flex items-center gap-2 text-foreground/90">
                     <CheckCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span>Authenticated CIR background &amp; work experience history</span>
+                    <span>Direct contact info: <strong>Personal Email, Phone Number, LinkedIn, GitHub</strong></span>
                   </div>
                   <div className="flex items-center gap-2 text-foreground/90">
                     <CheckCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span>Proctored code challenge results &amp; skill test metrics</span>
+                    <span>Authenticated employment history verified against EPFO/UAN official records</span>
                   </div>
                   <div className="flex items-center gap-2 text-foreground/90">
                     <CheckCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span>Direct contact info (Phone, Email, LinkedIn, GitHub)</span>
+                    <span>Proctored technical test scorecard, code replay recordings &amp; diff logs</span>
                   </div>
                   <div className="flex items-center gap-2 text-foreground/90">
                     <CheckCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span>Direct 24-hour SLA recruiter messaging priority</span>
+                    <span>Guaranteed 24-hour SLA direct recruiter messaging channel</span>
                   </div>
                 </div>
               </div>
@@ -1306,7 +1603,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                   <span className="font-bold text-foreground text-sm">₹{requiredUnlockFee.toLocaleString("en-IN")}</span>
                 </div>
                 <div className="flex items-center justify-between text-muted-foreground">
-                  <span>Current Wallet Balance:</span>
+                  <span>Current Employer Wallet Balance:</span>
                   <span className="font-bold text-foreground text-sm">₹{currentBalance.toLocaleString("en-IN")}</span>
                 </div>
 
@@ -1371,7 +1668,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
 
                 <Button
                   variant="ghost"
-                  className="w-full text-xs text-muted-foreground hover:text-foreground h-8"
+                  className="w-full text-xs text-muted-foreground hover:text-foreground h-8 cursor-pointer"
                   onClick={() => setCandidateToUnlock(null)}
                 >
                   Cancel
