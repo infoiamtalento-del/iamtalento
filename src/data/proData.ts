@@ -908,3 +908,87 @@ export const parseSmartSearch = (q: string) => {
 
   return res;
 };
+
+// Anti-poaching identity masking helpers for Locked Verified Candidates
+const COMPANY_TIER_MAP: Record<string, string> = {
+  Razorpay: "Tier-1 Fintech Unicorn",
+  "ex-Zoho": "ex-Global Cloud SaaS Leader",
+  Zoho: "Global Cloud SaaS Leader",
+  BrowserStack: "Global Cloud Testing Unicorn",
+  "ex-ThoughtWorks": "ex-Tier-1 Global Engineering Consultancy",
+  ThoughtWorks: "Tier-1 Global Engineering Consultancy",
+  Swiggy: "Decacorn Consumer Tech Leader",
+  "ex-Flipkart": "ex-Tier-1 E-Commerce Decacorn",
+  Flipkart: "Tier-1 E-Commerce Decacorn",
+  PhonePe: "Tier-1 Digital Payments Decacorn",
+  "ex-InMobi": "ex-Global AdTech Unicorn",
+  "ex-Mu Sigma": "ex-Decision Sciences Leader",
+  CRED: "High-Growth Fintech Unicorn",
+  "ex-Urban Company": "ex-Consumer Services Unicorn",
+  Postman: "Global API SaaS Unicorn",
+  "ex-Freshworks": "ex-Listed Cloud SaaS Giant",
+  Zomato: "Listed Consumer Tech Giant",
+  "ex-Paytm": "ex-Fintech Pioneer",
+};
+
+export const getMaskedCandidateName = (name?: string): string => {
+  if (!name) return "V•••••• C••••••";
+  const parts = name.trim().split(/\s+/);
+  return parts
+    .map((p) => (p.length > 0 ? p.charAt(0).toUpperCase() + "••••" : "••••"))
+    .join(" ");
+};
+
+export const getAnonymizedCompanyTier = (company?: string): string => {
+  if (!company) return "Tier-1 Product Tech Company";
+  return COMPANY_TIER_MAP[company] || (company.startsWith("ex-") ? "ex-Tier-1 Tech Leader" : "Tier-1 Product Tech Company");
+};
+
+export const getAnonymizedHeadline = (cand: ProCandidate): { roleTitle: string; companyTier: string } => {
+  const raw = cand.headline || "Senior Software Engineer";
+  const [rolePart] = raw.split("@");
+  const roleTitle = (rolePart || "Senior Software Engineer").trim();
+  const currTier = getAnonymizedCompanyTier(cand.currentCompany);
+  const prevTier = cand.previousCompany ? ` · ${getAnonymizedCompanyTier(cand.previousCompany)}` : "";
+  return {
+    roleTitle,
+    companyTier: `${currTier}${prevTier}`,
+  };
+};
+
+export const getAnonymizedEducation = (education?: string): { instituteTier: string; degreePart: string } => {
+  if (!education) {
+    return {
+      instituteTier: "Tier-1 Premier Engineering Institute",
+      degreePart: "B.Tech Computer Science",
+    };
+  }
+  const parts = education.split("·").map((s) => s.trim());
+  const degreePart = parts.length > 1 ? parts.slice(1).join(" · ") : "B.Tech / B.E.";
+  const inst = parts[0] || "";
+  const isDesign = inst.toLowerCase().includes("design") || inst.toLowerCase().includes("nid");
+  return {
+    instituteTier: isDesign
+      ? "Tier-1 National Design Institute"
+      : "Tier-1 Premier Engineering Institute (IIT / BITS / NIT Tier)",
+    degreePart,
+  };
+};
+
+export const getAnonymizedHighlight = (cand: ProCandidate): string => {
+  if (!cand.highlight) return "";
+  return cand.highlight
+    .replace(/Razorpay's/gi, "a Tier-1 Fintech Unicorn's")
+    .replace(/Razorpay/gi, "a Tier-1 Fintech Unicorn")
+    .replace(/Swiggy's/gi, "a Decacorn's")
+    .replace(/Swiggy/gi, "a Decacorn")
+    .replace(/Flipkart's/gi, "a Tier-1 E-Commerce Giant's")
+    .replace(/Flipkart/gi, "a Tier-1 E-Commerce Giant")
+    .replace(/CRED's/gi, "a Fintech Unicorn's")
+    .replace(/CRED/gi, "a Fintech Unicorn")
+    .replace(/Postman/gi, "a Global API Platform")
+    .replace(/BrowserStack/gi, "a Global Cloud Platform")
+    .replace(/PhonePe/gi, "a Digital Payments Leader")
+    .replace(/Zomato/gi, "a Listed Consumer Tech App");
+};
+
