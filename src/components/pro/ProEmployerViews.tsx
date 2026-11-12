@@ -993,39 +993,102 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
 
     return (
       <div className="employer-workspace space-y-5">
-        {/* Top Header + Active Job Match Selector + Single Filter Icon + View Switcher */}
+        {/* Top Header + View Switcher */}
         <header className="workspace-header flex-wrap">
           <div>
             <span className="workspace-eyebrow">
               <Users size={14} />
-              HR Talent Intelligence &amp; Sourcing Studio
+              Talent Sourcing
             </span>
             <h1 className="workspace-heading">Find Pre-Assessed Talent</h1>
             <p className="workspace-description">
-              Match verified engineers against your active job openings, compare 6-dimension role fit, and drag candidates directly into your hiring pipeline.
+              Match verified candidates against your open roles and move top fits into your pipeline.
             </p>
           </div>
 
+          <div className="inline-flex items-center gap-1.5">
+            <Button
+              size="sm"
+              variant={talentLayout === "cards" ? "default" : "outline"}
+              onClick={() => setTalentLayout("cards")}
+            >
+              <LayoutGrid className="h-3.5 w-3.5" />
+              Cards
+            </Button>
+            <Button
+              size="sm"
+              variant={talentLayout === "kanban" ? "default" : "outline"}
+              onClick={() => setTalentLayout("kanban")}
+            >
+              <Kanban className="h-3.5 w-3.5" />
+              Kanban
+            </Button>
+            <Button
+              size="sm"
+              variant={talentLayout === "matrix" ? "default" : "outline"}
+              onClick={() => setTalentLayout("matrix")}
+            >
+              <Table2 className="h-3.5 w-3.5" />
+              Matrix
+            </Button>
+          </div>
+        </header>
+
+        {/* Differentiated HR KPI Summary Cards (Click any card to filter) */}
+        <div className="workspace-stats">
+          {kpiStats.map(({ id, label, count, icon: Icon, theme }) => {
+            const isActive = quickPreset === id && id !== "all";
+            return (
+              <Button
+                key={id}
+                variant="ghost"
+                data-stage-theme={theme}
+                className={`workspace-stat ${isActive ? "workspace-stat--active" : ""}`}
+                onClick={() => setQuickPreset((prev) => (prev === id ? "all" : id))}
+              >
+                <div className="workspace-icon">
+                  <Icon size={22} />
+                </div>
+                <div>
+                  <span>{label}</span>
+                  <strong>{count}</strong>
+                </div>
+              </Button>
+            );
+          })}
+        </div>
+
+        {/* Single Clean Search, Role Matcher & Separate Filter Icon Bar */}
+        <div className="workspace-panel !p-3">
           <div
             className="relative flex flex-wrap items-center gap-2.5"
             ref={filterPopoverRef}
           >
             {/* Active Job Opening Match Selector */}
-            <div className="flex items-center gap-2 rounded-lg border border-border bg-card px-2.5 py-1">
-              <Briefcase className="h-3.5 w-3.5 text-primary shrink-0" />
-              <select
-                aria-label="Match candidates against job opening"
-                value={talentJobFilter}
-                onChange={(e) => setTalentJobFilter(e.target.value)}
-                className="!h-7 !w-auto !border-0 !bg-transparent !px-1 text-xs font-semibold cursor-pointer focus:outline-none"
-              >
-                <option value="">Auto-Match Best Role ({myJobs.length} active)</option>
-                {myJobs.map((j) => (
-                  <option key={j.id} value={j.id}>
-                    Match for: {j.t} ({j.l} · ₹{j.a}–{j.b}L)
-                  </option>
-                ))}
-              </select>
+            <select
+              aria-label="Match candidates against job opening"
+              value={talentJobFilter}
+              onChange={(e) => setTalentJobFilter(e.target.value)}
+              className="!h-9 !w-auto min-w-[210px] text-xs font-semibold cursor-pointer"
+            >
+              <option value="">Auto-Match Best Role ({myJobs.length} active)</option>
+              {myJobs.map((j) => (
+                <option key={j.id} value={j.id}>
+                  Role: {j.t} (₹{j.a}–{j.b}L)
+                </option>
+              ))}
+            </select>
+
+            {/* Unified Search Input */}
+            <div className="relative flex-1 min-w-[220px]">
+              <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                aria-label="Search candidates by name, skill or city"
+                placeholder="Search by name, skill (React, Python, AWS), or city..."
+                value={talentQuery}
+                onChange={(e) => setTalentQuery(e.target.value)}
+                className="pl-9 h-9 text-xs"
+              />
             </div>
 
             {/* Single Clean Separate Filter Icon */}
@@ -1047,33 +1110,18 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
               )}
             </Button>
 
-            {/* View Switcher: Cards | Kanban Board | Match Matrix */}
-            <div className="inline-flex items-center gap-1.5">
+            {activeTalentFilterCount > 0 && (
               <Button
+                type="button"
+                variant="ghost"
                 size="sm"
-                variant={talentLayout === "cards" ? "default" : "outline"}
-                onClick={() => setTalentLayout("cards")}
+                onClick={resetTalentFilters}
+                className="h-9 text-xs text-muted-foreground hover:text-foreground"
               >
-                <LayoutGrid className="h-3.5 w-3.5" />
-                Cards
+                <RotateCcw className="mr-1 h-3.5 w-3.5" />
+                Reset
               </Button>
-              <Button
-                size="sm"
-                variant={talentLayout === "kanban" ? "default" : "outline"}
-                onClick={() => setTalentLayout("kanban")}
-              >
-                <Kanban className="h-3.5 w-3.5" />
-                Kanban
-              </Button>
-              <Button
-                size="sm"
-                variant={talentLayout === "matrix" ? "default" : "outline"}
-                onClick={() => setTalentLayout("matrix")}
-              >
-                <Table2 className="h-3.5 w-3.5" />
-                Match Matrix
-              </Button>
-            </div>
+            )}
 
             {/* Filter Popover Panel */}
             {filterOpen && (
@@ -1085,7 +1133,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                 <div className="flex items-center justify-between border-b border-border pb-2.5">
                   <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
                     <SlidersHorizontal size={14} className="text-primary" />
-                    HR Sourcing Filters
+                    Filters
                   </span>
                   <button
                     type="button"
@@ -1095,22 +1143,6 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                   >
                     <X size={14} />
                   </button>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-semibold text-foreground">
-                    Search Name, Skill, or City
-                  </label>
-                  <div className="relative">
-                    <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
-                    <Input
-                      aria-label="Search candidates by name, skill or city"
-                      value={talentQuery}
-                      onChange={(e) => setTalentQuery(e.target.value)}
-                      placeholder="e.g. React, SQL, Bengaluru..."
-                      className="h-9 pl-8 text-xs"
-                    />
-                  </div>
                 </div>
 
                 <div className="space-y-1.5">
@@ -1174,7 +1206,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-[11px] font-semibold text-foreground">
-                      Min Assessment{" "}
+                      Min CIR Score{" "}
                       <span className="float-right text-primary">{talentMinAssessment}%</span>
                       <input
                         type="range"
@@ -1223,7 +1255,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                   </div>
                   <div>
                     <label className="block text-[11px] font-semibold text-foreground mb-1">
-                      Sort Candidates
+                      Sort By
                     </label>
                     <select
                       value={talentSort}
@@ -1271,111 +1303,14 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
               </div>
             )}
           </div>
-        </header>
-
-        {/* Differentiated HR KPI Summary Cards */}
-        <div className="workspace-stats">
-          {kpiStats.map(({ id, label, count, icon: Icon, theme }) => {
-            const isActive = quickPreset === id && id !== "all";
-            return (
-              <Button
-                key={id}
-                variant="ghost"
-                data-stage-theme={theme}
-                className={`workspace-stat ${isActive ? "workspace-stat--active" : ""}`}
-                onClick={() => setQuickPreset((prev) => (prev === id ? "all" : id))}
-              >
-                <div className="workspace-icon">
-                  <Icon size={22} />
-                </div>
-                <div>
-                  <span>{label}</span>
-                  <strong>{count}</strong>
-                </div>
-              </Button>
-            );
-          })}
-        </div>
-
-        {/* AI Smart Search Bar + Quick HR Sourcing Presets */}
-        <div className="workspace-panel !p-4 space-y-3">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
-            <div className="relative flex-1">
-              <Sparkles className="absolute left-3 top-2.5 h-4 w-4 text-primary" />
-              <Input
-                placeholder='AI Smart Search: e.g. "React developer immediate joiner certified under 25 LPA"'
-                value={talentSmartQuery}
-                onChange={(e) => setTalentSmartQuery(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSmartTalentSearch()}
-                className="pl-9 h-9 text-xs"
-              />
-            </div>
-            <Button
-              size="sm"
-              onClick={() => handleSmartTalentSearch()}
-              className="h-9 text-xs gap-1.5 shrink-0"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              AI Match Talent
-            </Button>
-            {onNavigate && (
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => onNavigate("pipe")}
-                className="h-9 text-xs gap-1.5 shrink-0"
-              >
-                <Layers className="w-3.5 h-3.5 text-primary" />
-                In Pipeline ({inPipelineCount})
-              </Button>
-            )}
-          </div>
-
-          <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
-            <span className="font-semibold text-muted-foreground mr-1">Quick HR Filters:</span>
-            {[
-              { id: "all", label: `All (${CANDIDATES_SEED.length})` },
-              { id: "high_match", label: `75%+ Role Match (${highMatchCount})` },
-              { id: "immediate", label: `≤15d Notice (${immediateCount})` },
-              { id: "top_test", label: `85%+ CIR Score (${eliteScoreCount})` },
-              { id: "budget", label: "Within Job Budget" },
-              { id: "saved", label: `Bookmarked (${bookmarkedTalent.length})` },
-              { id: "in_pipeline", label: `In Pipeline (${inPipelineCount})` },
-            ].map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => setQuickPreset(p.id as any)}
-                className={`rounded-full px-2.5 py-1 text-[11px] font-semibold border transition-colors cursor-pointer ${
-                  quickPreset === p.id
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border bg-muted/40 text-foreground hover:border-primary/40"
-                }`}
-              >
-                {p.label}
-              </button>
-            ))}
-
-            {activeTalentFilterCount > 0 && (
-              <button
-                type="button"
-                onClick={resetTalentFilters}
-                className="ml-auto inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline cursor-pointer"
-              >
-                <RotateCcw className="h-3 w-3" />
-                Reset filters
-              </button>
-            )}
-          </div>
         </div>
 
         {/* Compare Floating Bar if Candidates Selected */}
         {selectedTalentToCompare.length > 0 && (
-          <div className="p-3.5 rounded-xl bg-primary/10 border border-primary/30 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="p-3 rounded-xl bg-primary/10 border border-primary/30 flex flex-wrap items-center justify-between gap-3 text-xs">
             <span className="font-semibold text-foreground flex items-center gap-2">
               <ArrowRightLeft className="w-4 h-4 text-primary" />
-              Comparing {selectedTalentToCompare.length} candidate
-              {selectedTalentToCompare.length === 1 ? "" : "s"}:{" "}
+              Comparing {selectedTalentToCompare.length}:{" "}
               <span className="text-primary font-bold">
                 {selectedTalentToCompare.join(", ")}
               </span>
@@ -1383,19 +1318,10 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
             <div className="flex items-center gap-2">
               <Button
                 size="sm"
-                variant="outline"
-                onClick={() => setTalentLayout("matrix")}
-                className="h-8 text-xs gap-1.5"
-              >
-                <Table2 className="w-3.5 h-3.5" /> View in Match Matrix
-              </Button>
-              <Button
-                size="sm"
                 onClick={() => onOpenDrawer({ type: "compare-candidates" })}
                 className="h-8 text-xs gap-1.5"
               >
-                <ArrowRightLeft className="w-3.5 h-3.5" /> Side-by-Side Modal (
-                {selectedTalentToCompare.length})
+                <ArrowRightLeft className="w-3.5 h-3.5" /> Compare ({selectedTalentToCompare.length})
               </Button>
               <Button
                 size="sm"
@@ -1409,33 +1335,17 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
           </div>
         )}
 
-        {/* VIEW 1: RICH HR DASHBOARD CARDS */}
+        {/* VIEW 1: CLEAN, UNCLUTTERED HR CARDS */}
         {talentLayout === "cards" && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>
-                Showing <strong className="text-foreground">{filteredCandidates.length}</strong>{" "}
-                verified candidates{" "}
-                {selectedJobObj
-                  ? `ranked for ${selectedJobObj.t} (₹${selectedJobObj.a}–${selectedJobObj.b} LPA)`
-                  : "matched across your active job openings"}
-              </span>
-              <span className="hidden sm:inline">
-                Click any card to open full profile, CIR telemetry &amp; pipeline actions
-              </span>
-            </div>
-
             {filteredCandidates.length === 0 ? (
               <div className="workspace-panel py-12 text-center space-y-3">
                 <p className="text-sm font-semibold text-foreground">
                   No candidates match your active filters.
                 </p>
-                <p className="text-xs text-muted-foreground">
-                  Try clearing a filter or adjusting minimum score and salary bounds.
-                </p>
                 <Button size="sm" variant="outline" onClick={resetTalentFilters}>
                   <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
-                  Reset All Filters
+                  Reset Filters
                 </Button>
               </div>
             ) : (
@@ -1450,36 +1360,20 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                   const existingApp = myApps.find((a) => a.name === cand.n);
                   const isExpanded = expandedFitCard === cand.n;
                   const fitRows = targetJob ? candidateFitForJob(cand, targetJob) : [];
-                  const withinBudget = !targetJob || cand.es <= targetJob.b;
 
                   const matchedSkills = targetJob
                     ? cand.sk.filter((s) =>
                         targetJob.sk.some((js) => js.toLowerCase() === s.toLowerCase())
                       )
                     : cand.sk;
-                  const missingSkills = targetJob
-                    ? targetJob.sk.filter(
-                        (js) => !cand.sk.some((s) => s.toLowerCase() === js.toLowerCase())
-                      )
-                    : [];
 
                   return (
                     <article
                       key={cand.n}
-                      data-stage-theme={
-                        currentStage === "Interview"
-                          ? "Interview"
-                          : currentStage === "Shortlisted"
-                          ? "Shortlisted"
-                          : currentStage === "Invited"
-                          ? "Offer"
-                          : "Applied"
-                      }
-                      className="workspace-panel !p-5 space-y-4 border-l-4 transition-all hover:shadow-md"
-                      style={{ borderLeftColor: "var(--stage-accent, hsl(var(--primary)))" }}
+                      className="workspace-panel !p-5 flex flex-col justify-between gap-4 transition-all hover:border-primary/40"
                     >
-                      {/* Card Top Header */}
-                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                      {/* Row 1: Identity + Match Score */}
+                      <div className="flex items-start justify-between gap-3">
                         <div className="flex items-start gap-3.5 min-w-0">
                           <img
                             src={getCandidatePhoto(cand.n)}
@@ -1491,10 +1385,10 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                                 jobId: targetJob?.id,
                               })
                             }
-                            className="w-14 h-14 rounded-2xl object-cover shrink-0 border-2 border-primary/20 cursor-pointer"
+                            className="w-12 h-12 rounded-xl object-cover shrink-0 border border-border cursor-pointer"
                           />
                           <div className="min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap">
+                            <div className="flex items-center gap-1.5 flex-wrap">
                               <button
                                 type="button"
                                 onClick={() =>
@@ -1508,163 +1402,88 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                               >
                                 {cand.n}
                               </button>
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold">
-                                <ShieldCheck className="w-3 h-3" /> Verified CIR
-                              </span>
-                              <span className="workspace-chip !px-2 !py-0.5 !text-[10px]">
-                                {existingApp ? `Pipeline: ${existingApp.st}` : currentStage}
-                              </span>
+                              <ShieldCheck
+                                className="w-4 h-4 text-emerald-600 shrink-0"
+                                aria-label="Verified CIR"
+                              />
+                              {existingApp && (
+                                <span className="workspace-chip !px-2 !py-0.5 !text-[10px]">
+                                  {existingApp.st}
+                                </span>
+                              )}
                             </div>
 
-                            <p className="text-xs font-medium text-foreground/80 mt-0.5">
-                              {levelFromExp(cand.x)} {cand.sk[0]} Engineer ·{" "}
-                              {targetJob ? `Best fit for ${targetJob.t}` : "Available for hire"}
+                            <p className="text-xs text-muted-foreground mt-0.5 truncate">
+                              {levelFromExp(cand.x)} {cand.sk[0]} Engineer
+                              {targetJob ? ` · Best fit: ${targetJob.t}` : ""}
                             </p>
 
-                            <div className="text-[11px] text-muted-foreground mt-1.5 flex items-center gap-2.5 flex-wrap">
-                              <span className="inline-flex items-center gap-1">
-                                <MapPin className="w-3 h-3 text-primary" />
-                                {cand.c} ({cand.wp})
+                            <p className="text-xs text-muted-foreground mt-1.5 flex items-center gap-2 flex-wrap">
+                              <span>{cand.c} ({cand.wp})</span>
+                              <span>·</span>
+                              <span>{cand.x} yrs</span>
+                              <span>·</span>
+                              <span className="font-semibold text-foreground">₹{cand.es} LPA</span>
+                              <span>·</span>
+                              <span className="text-primary font-medium">
+                                {cand.nt === 0 ? "Immediate" : `${cand.nt}d notice`}
                               </span>
-                              <span>•</span>
-                              <span>{cand.x} yrs exp</span>
-                              <span>•</span>
-                              <span className="font-semibold text-foreground">
-                                ₹{cand.es} LPA
-                              </span>
-                              <span
-                                className={`px-1.5 py-0.2 rounded text-[10px] font-semibold ${
-                                  withinBudget
-                                    ? "bg-emerald-500/10 text-emerald-700"
-                                    : "bg-amber-500/10 text-amber-700"
-                                }`}
-                              >
-                                {withinBudget
-                                  ? targetJob
-                                    ? `Within ₹${targetJob.b}L Budget`
-                                    : "Within Budget"
-                                  : `+₹${cand.es - (targetJob?.b || 0)}L Above Max`}
-                              </span>
-                              <span>•</span>
-                              <span className="inline-flex items-center gap-1 font-medium text-primary">
-                                <Clock className="w-3 h-3" />
-                                {cand.nt === 0 ? "Immediate Joiner" : `${cand.nt}d notice`}
-                              </span>
-                            </div>
+                            </p>
                           </div>
                         </div>
 
-                        {/* Dual Match & CIR Score Pills + Bookmark/Compare */}
-                        <div className="flex sm:flex-col items-center sm:items-end justify-between gap-2 shrink-0">
-                          <div className="flex items-center gap-2">
-                            <div className="rounded-xl border border-primary/30 bg-primary/5 px-2.5 py-1.5 text-center">
-                              <span className="block text-[9px] font-bold uppercase text-muted-foreground">
-                                Role Match
-                              </span>
-                              <strong className="text-sm font-extrabold text-primary">
-                                {roleMatch}%
-                              </strong>
-                            </div>
-                            <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 px-2.5 py-1.5 text-center">
-                              <span className="block text-[9px] font-bold uppercase text-muted-foreground">
-                                CIR Test Avg
-                              </span>
-                              <strong className="text-sm font-extrabold text-emerald-700 dark:text-emerald-400">
-                                {testAvg}%
-                              </strong>
-                            </div>
+                        {/* Right: Clean Match Pill + Bookmark Icon */}
+                        <div className="flex items-center gap-2 shrink-0">
+                          <div className="text-right">
+                            <span className="inline-flex items-center rounded-lg bg-primary/10 px-2.5 py-1 text-xs font-bold text-primary">
+                              {roleMatch}% Match
+                            </span>
+                            <span className="block text-[10px] text-muted-foreground mt-0.5">
+                              CIR Avg {testAvg}%
+                            </span>
                           </div>
 
-                          <div className="flex items-center gap-2">
-                            <button
-                              type="button"
-                              aria-label={`Bookmark ${cand.n}`}
-                              onClick={() => toggleBookmark(cand.n)}
-                              className={`inline-flex items-center gap-1 rounded-lg border px-2 py-1 text-[11px] font-semibold transition-colors cursor-pointer ${
-                                isBookmarked
-                                  ? "border-amber-500/50 bg-amber-500/10 text-amber-700"
-                                  : "border-border bg-background text-muted-foreground hover:text-foreground"
-                              }`}
-                            >
-                              <Bookmark
-                                className="w-3 h-3"
-                                fill={isBookmarked ? "currentColor" : "none"}
-                              />
-                              {isBookmarked ? "Saved" : "Save"}
-                            </button>
-
-                            <label className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2 py-1 text-[11px] font-medium text-muted-foreground hover:text-foreground cursor-pointer">
-                              <input
-                                type="checkbox"
-                                checked={isCompared}
-                                onChange={() =>
-                                  updateCompareList(
-                                    isCompared
-                                      ? selectedTalentToCompare.filter((x) => x !== cand.n)
-                                      : [...selectedTalentToCompare, cand.n]
-                                  )
-                                }
-                                className="accent-primary"
-                              />
-                              Compare
-                            </label>
-                          </div>
+                          <button
+                            type="button"
+                            aria-label={`Bookmark ${cand.n}`}
+                            title={isBookmarked ? "Saved" : "Save candidate"}
+                            onClick={() => toggleBookmark(cand.n)}
+                            className={`inline-flex h-8 w-8 items-center justify-center rounded-lg border transition-colors cursor-pointer ${
+                              isBookmarked
+                                ? "border-amber-500/40 bg-amber-500/10 text-amber-600"
+                                : "border-border bg-background text-muted-foreground hover:text-foreground"
+                            }`}
+                          >
+                            <Bookmark
+                              className="w-3.5 h-3.5"
+                              fill={isBookmarked ? "currentColor" : "none"}
+                            />
+                          </button>
                         </div>
                       </div>
 
-                      {/* Proctored Assessment Mini Bars */}
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 rounded-xl border border-border/70 bg-muted/20 p-3">
-                        {Object.entries(cand.as).map(([skillName, score]) => (
-                          <div key={skillName} className="space-y-1">
-                            <div className="flex items-center justify-between text-[11px]">
-                              <span className="font-semibold text-foreground truncate">
-                                {skillName}
-                              </span>
-                              <span className="font-bold text-primary">{score}%</span>
-                            </div>
-                            <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
-                              <div
-                                className="h-full rounded-full bg-primary"
-                                style={{ width: `${score}%` }}
-                              />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Skill Match Breakdown & Certifications */}
-                      <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                      {/* Row 2: Unified Skills with Assessment Scores (Single clean row) */}
+                      <div className="flex items-center justify-between gap-2 flex-wrap">
                         <div className="flex items-center gap-1.5 flex-wrap">
                           {cand.sk.map((s) => {
                             const isMatched = matchedSkills.includes(s);
+                            const skillScore = cand.as[s];
                             return (
                               <span
                                 key={s}
-                                className={`px-2 py-0.5 rounded-md text-[11px] font-medium border inline-flex items-center gap-1 ${
+                                className={`px-2.5 py-1 rounded-md text-[11px] font-medium border inline-flex items-center gap-1.5 ${
                                   isMatched
-                                    ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
-                                    : "border-border bg-muted text-foreground"
+                                    ? "border-primary/30 bg-primary/5 text-foreground"
+                                    : "border-border bg-muted/40 text-muted-foreground"
                                 }`}
                               >
                                 {s}
-                                {isMatched && <Check className="w-3 h-3" />}
+                                {skillScore !== undefined && (
+                                  <strong className="text-primary font-bold">{skillScore}%</strong>
+                                )}
                               </span>
                             );
                           })}
-                          {missingSkills.length > 0 && (
-                            <span className="px-2 py-0.5 rounded-md border border-dashed border-amber-500/50 bg-amber-500/5 text-[10px] font-medium text-amber-700">
-                              Missing for {targetJob?.t}: {missingSkills.join(", ")}
-                            </span>
-                          )}
-                          {(cand.ce || []).map((cert) => (
-                            <span
-                              key={cert}
-                              className="px-2 py-0.5 rounded-md bg-violet-500/10 text-violet-700 dark:text-violet-400 text-[11px] font-semibold inline-flex items-center gap-1"
-                            >
-                              <Award className="w-3 h-3" />
-                              {cert}
-                            </span>
-                          ))}
                         </div>
 
                         {targetJob && (
@@ -1673,9 +1492,9 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                             onClick={() =>
                               setExpandedFitCard((prev) => (prev === cand.n ? null : cand.n))
                             }
-                            className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary hover:underline cursor-pointer shrink-0"
+                            className="inline-flex items-center gap-1 text-[11px] font-semibold text-muted-foreground hover:text-primary cursor-pointer"
                           >
-                            6-Point Job Fit
+                            Job Fit
                             {isExpanded ? (
                               <ChevronUp className="w-3.5 h-3.5" />
                             ) : (
@@ -1685,17 +1504,14 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                         )}
                       </div>
 
-                      {/* Expandable 6-Dimension Job Fit Breakdown */}
+                      {/* Optional Expandable Job Fit Breakdown (Hidden by default) */}
                       {isExpanded && fitRows.length > 0 && (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 rounded-xl border border-primary/20 bg-primary/5 p-3 text-xs">
+                        <div className="grid grid-cols-3 gap-2 rounded-xl border border-border bg-muted/20 p-3 text-xs">
                           {fitRows.map((row) => (
-                            <div
-                              key={row.name}
-                              className="rounded-lg bg-card p-2.5 border border-border/60 space-y-1"
-                            >
+                            <div key={row.name} className="space-y-0.5">
                               <div className="flex items-center justify-between text-[11px]">
-                                <span className="font-semibold">{row.name}</span>
-                                <strong className="text-primary">{row.score}%</strong>
+                                <span className="text-muted-foreground">{row.name}</span>
+                                <strong className="text-foreground">{row.score}%</strong>
                               </div>
                               <div className="h-1 w-full rounded-full bg-muted overflow-hidden">
                                 <div
@@ -1703,21 +1519,18 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                                   style={{ width: `${Math.max(8, row.score)}%` }}
                                 />
                               </div>
-                              <p className="text-[10px] text-muted-foreground truncate">
-                                {row.note}
-                              </p>
                             </div>
                           ))}
                         </div>
                       )}
 
-                      {/* HR Action Footer */}
-                      <div className="pt-3 border-t border-border/60 flex flex-wrap items-center justify-between gap-2 text-xs">
-                        <div className="flex flex-wrap items-center gap-2">
+                      {/* Row 3: Clean Action Footer */}
+                      <div className="pt-3 border-t border-border/60 flex items-center justify-between gap-2 text-xs">
+                        <div className="flex items-center gap-2">
                           <Button
                             size="sm"
                             variant="outline"
-                            className="h-8 text-xs gap-1.5"
+                            className="h-8 text-xs"
                             onClick={() =>
                               onOpenDrawer({
                                 type: "candidate",
@@ -1726,48 +1539,51 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                               })
                             }
                           >
-                            <Eye className="w-3.5 h-3.5" /> Full Profile
+                            View Profile
                           </Button>
                           <Button
                             size="sm"
-                            variant="outline"
-                            className="h-8 text-xs gap-1.5"
+                            variant="ghost"
+                            className="h-8 text-xs text-muted-foreground hover:text-foreground gap-1"
                             onClick={() => handleDownloadCandidateCir(cand)}
                           >
-                            <Download className="w-3.5 h-3.5 text-primary" /> CIR PDF
+                            <Download className="w-3.5 h-3.5" /> CIR PDF
                           </Button>
+                          <label className="inline-flex items-center gap-1.5 px-2 py-1 text-xs text-muted-foreground hover:text-foreground cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={isCompared}
+                              onChange={() =>
+                                updateCompareList(
+                                  isCompared
+                                    ? selectedTalentToCompare.filter((x) => x !== cand.n)
+                                    : [...selectedTalentToCompare, cand.n]
+                                )
+                              }
+                              className="accent-primary"
+                            />
+                            Compare
+                          </label>
                         </div>
 
-                        <div className="flex items-center gap-2">
-                          <select
-                            aria-label={`Set sourcing stage for ${cand.n}`}
-                            value={currentStage}
-                            onChange={(e) =>
-                              handleMoveCandidateSourcing(
-                                cand,
-                                e.target.value as SourcingStage
-                              )
-                            }
-                            className="!h-8 !w-auto !rounded-lg !border-border !bg-muted/40 !px-2.5 text-xs font-semibold cursor-pointer"
-                          >
-                            {SOURCING_COLUMNS.map((col) => (
-                              <option key={col.id} value={col.id}>
-                                Stage: {col.id}
-                              </option>
-                            ))}
-                          </select>
-
-                          <Button
-                            size="sm"
-                            className="h-8 text-xs gap-1.5"
-                            onClick={() =>
-                              handleMoveCandidateSourcing(cand, "Shortlisted")
-                            }
-                          >
-                            <Send className="w-3.5 h-3.5" />
-                            {existingApp ? "In Pipeline" : "Shortlist"}
-                          </Button>
-                        </div>
+                        <Button
+                          size="sm"
+                          variant={currentStage === "Shortlisted" || existingApp ? "secondary" : "default"}
+                          className="h-8 text-xs gap-1.5"
+                          onClick={() =>
+                            handleMoveCandidateSourcing(cand, "Shortlisted")
+                          }
+                        >
+                          {existingApp || currentStage === "Shortlisted" ? (
+                            <>
+                              <Check className="w-3.5 h-3.5" /> Shortlisted
+                            </>
+                          ) : (
+                            <>
+                              <Send className="w-3.5 h-3.5" /> Shortlist
+                            </>
+                          )}
+                        </Button>
                       </div>
                     </article>
                   );
