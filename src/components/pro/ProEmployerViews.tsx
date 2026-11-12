@@ -426,7 +426,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
               Post a New Position
             </h1>
             <p className="text-muted-foreground text-sm mt-1 max-w-2xl">
-              Publish an open engineering or product vacancy. Applicants are automatically pre-screened with 24-hour review SLA tracking.
+              Publish an open engineering or product vacancy. Applicants are automatically pre-screened with review tracking.
             </p>
           </div>
         </div>
@@ -927,7 +927,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
               Candidate Pipeline Board
             </h1>
             <p className="text-muted-foreground text-sm mt-1 max-w-2xl">
-              Track applicant stages, respond before 24-hour review SLA deadlines, and schedule interview rounds.
+              Track applicant stages, keep candidates updated, and schedule interview rounds.
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -1001,7 +1001,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                 onChange={(e) => setPipeOnlyNeedingUpdate(e.target.checked)}
                 className="rounded text-primary focus:ring-primary"
               />
-              <span className="font-medium text-foreground">Needs 24h SLA Update</span>
+              <span className="font-medium text-foreground">Needs a status update</span>
             </label>
           </div>
         </div>
@@ -1097,7 +1097,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                 onClick={() => onBulkSendReview(selectedApplicants)}
                 className="rounded-xl text-xs h-7 px-2.5"
               >
-                Send "Under Review" SLA Update
+                Send "Under Review" update
               </Button>
             </div>
           </div>

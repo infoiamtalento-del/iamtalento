@@ -70,13 +70,8 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
     const STAGES = ["Applied", "Shortlisted", "Interview", "Offer", "Rejected"];
     const interviewsCount = myApps.filter((a) => a.st === "Interview").length;
     const offersCount = myApps.filter((a) => a.st === "Offer").length;
-    const updatesDueCount = myApps.filter(
-      (a) => (!a.upd || a.upd.length === 0) && a.st !== "Rejected"
-    ).length;
 
-    // SLA health calculation
-    const humanUpdated = myApps.filter((a) => (a.upd || []).some((u) => !u.auto));
-    const slaPercent = myApps.length ? Math.round((humanUpdated.length / myApps.length) * 100) : 100;
+    const pendingCount = myApps.filter((a) => a.st === "Applied").length;
     const avgMatch = myApps.length
       ? Math.round(
           myApps.reduce((t, a) => {
@@ -121,7 +116,7 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
         {/* Header Banner */}
         <ProHero
           title={`${user.cp?.name || user.name} Analytics`}
-          subtitle="Real-time applicant pipeline, 24-hour review SLA monitoring, and talent insights."
+          subtitle="Real-time applicant pipeline, review progress, and talent insights."
         >
           <div className="flex flex-wrap items-center gap-2 pt-1">
             <button
@@ -172,10 +167,10 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
           </div>
           <div className="bg-card border border-primary/30 bg-primary/5 rounded-2xl p-4 shadow-sm col-span-2 sm:col-span-1">
             <span className="text-xs font-medium text-primary block flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5" /> 24h SLA Due
+              <Clock className="w-3.5 h-3.5" /> Pending Review
             </span>
-            <div className="text-2xl font-bold text-primary mt-1 font-display">{updatesDueCount}</div>
-            <span className="text-[11px] text-muted-foreground mt-1 block">Needing candidate reply</span>
+            <div className="text-2xl font-bold text-primary mt-1 font-display">{pendingCount}</div>
+            <span className="text-[11px] text-muted-foreground mt-1 block">Awaiting a decision</span>
           </div>
         </div>
 
@@ -259,40 +254,15 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
           </div>
         </div>
 
-        {/* SLA Health Ring & Action Center */}
+        {/* Candidate fit & Action Center */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-          {/* Hiring Health SLA */}
           <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-3">
             <h4 className="font-semibold text-foreground text-sm flex items-center gap-2">
-              <HeartHandshake className="w-4 h-4 text-primary" /> Review SLA Health
+              <HeartHandshake className="w-4 h-4 text-primary" /> Candidate Fit
             </h4>
-            <div className="flex items-center gap-4 py-2">
-              <div className="relative w-16 h-16 flex items-center justify-center shrink-0">
-                <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                  <path
-                    className="text-muted/40"
-                    strokeWidth="3.5"
-                    stroke="currentColor"
-                    fill="none"
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  />
-                  <path
-                    className="text-primary transition-all duration-700"
-                    strokeDasharray={`${slaPercent}, 100`}
-                    strokeWidth="3.5"
-                    strokeLinecap="round"
-                    stroke="currentColor"
-                    fill="none"
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  />
-                </svg>
-                <span className="absolute font-bold text-sm text-foreground">{slaPercent}%</span>
-              </div>
-              <div className="text-xs space-y-1">
-                <div className="font-semibold text-foreground">{slaPercent}% SLA Adherence</div>
-                <div className="text-muted-foreground">Personal 24h updates sent</div>
-                <div className="text-primary font-medium">Avg candidate fit {avgMatch}%</div>
-              </div>
+            <div className="py-2 text-xs space-y-1">
+              <div className="text-3xl font-bold text-foreground font-display">{avgMatch}%</div>
+              <div className="text-muted-foreground">Average match across {myApps.length} applicant{myApps.length === 1 ? "" : "s"}</div>
             </div>
           </div>
 
@@ -362,7 +332,7 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
             <div className="space-y-2">
               {urgentNeeds.length === 0 ? (
                 <div className="text-xs text-muted-foreground py-3 text-center flex items-center justify-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500" /> All SLA reviews up to date!
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500" /> No candidates are waiting for a decision.
                 </div>
               ) : (
                 urgentNeeds.map((a) => {

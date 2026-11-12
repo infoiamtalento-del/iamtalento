@@ -21,6 +21,7 @@ export type ProView =
   | "wallet"
   | "cp"
   | "talent"
+  | "security"
   | "notif"
   | "pipe"
   | "post"

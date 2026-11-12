@@ -1,4 +1,4 @@
-import { rpc } from "@/services/db";
+import { db, rpc } from "@/services/db";
 
 export interface EmployerProfileData {
   id: string;
@@ -25,6 +25,9 @@ export interface EmployerProfileData {
   culture_tags: string[];
   hiring_regions: string[];
   social_links: Record<string, string>;
+  alt_emails: string[];
+  alt_phones: string[];
+  company_category: string | null;
   gstin: string | null;
   pan: string | null;
   billing_address: Record<string, unknown>;
@@ -56,6 +59,10 @@ export interface PublicCompanyData {
   social_links: Record<string, string>;
   active_jobs_count: number;
   verified: boolean;
+  company_type: string | null;
+  category: string | null;
+  locations: string[];
+  contact: { email: string | null; phone: string | null; alt_emails: string[]; alt_phones: string[] } | null;
 }
 
 /** Fetches caller's authenticated employer profile */
@@ -78,4 +85,37 @@ export async function saveEmployerProfile(
 export async function getPublicCompany(slug: string): Promise<PublicCompanyData | null> {
   const data = await rpc("get_public_company", { p_slug: slug });
   return data as unknown as PublicCompanyData | null;
+}
+
+export interface CompanyJobRow {
+  id: string;
+  title: string;
+  location: string | null;
+  mode: string | null;
+  type: string | null;
+  skills: string[];
+  postedAt: string | null;
+}
+
+/** Publicly listed, active openings for one employer (RLS only exposes active + public jobs). */
+export async function fetchCompanyJobs(employerId: string): Promise<CompanyJobRow[]> {
+  const { data, error } = await db
+    .from("employer_job_openings")
+    .select("id, designation, job_location, work_mode, job_type, skills, published_at")
+    .eq("employer_id", employerId)
+    .eq("status", "active")
+    .eq("is_public", true)
+    .is("deleted_at", null)
+    .order("published_at", { ascending: false })
+    .limit(50);
+  if (error) throw new Error(error.message);
+  return (data ?? []).map((j: Record<string, unknown>) => ({
+    id: String(j.id),
+    title: String(j.designation),
+    location: (j.job_location as string) || null,
+    mode: (j.work_mode as string) || null,
+    type: (j.job_type as string) || null,
+    skills: (j.skills as string[]) ?? [],
+    postedAt: (j.published_at as string) || null,
+  }));
 }

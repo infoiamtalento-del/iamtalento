@@ -9,6 +9,9 @@ export default defineConfig({
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
     include: ["src/**/*.{test,spec}.{ts,tsx}"],
+    // Backend suites boot PGlite and replay every migration, which exceeds the 10s defaults.
+    hookTimeout: 120000,
+    testTimeout: 60000,
   },
   resolve: {
     alias: { "@": path.resolve(__dirname, "./src") },

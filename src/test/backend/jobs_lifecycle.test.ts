@@ -43,6 +43,10 @@ beforeAll(async () => {
   unverifiedTenant = unvRows[0].tenant_id;
   await db.q(`update public.employers set verification_status = 'pending' where id = $1`, [unvRows[0].id]);
 
+  // Publishing needs a complete company profile.
+  await db.q(`update public.employers set industry = 'Software', num_employees = '11-50', hq_city = 'Pune',
+    description = 'A company that builds hiring software for growing teams across India.'`);
+
   // 4. Candidate user
   await db.signUp(CANDIDATE_D, "candidateD@test.dev", { full_name: "Candidate Dan", role: "employee" });
   await db.admin();

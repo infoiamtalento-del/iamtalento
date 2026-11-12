@@ -115,6 +115,11 @@ describe("function exposure", () => {
     // job posting lifecycle (Stage 4)
     "create_job", "update_job", "publish_job", "pause_job", "resume_job", "close_job", "duplicate_job",
     "delete_job", "list_my_jobs", "get_job_for_edit", "job_stats", "record_job_view", "expire_jobs", "reminder_job_expiring",
+    // employer ATS, Find Talent and follow-ups
+    "change_application_stage", "release_application_hold", "list_employer_applications", "get_employer_application", "save_application_note",
+    "get_employer_settings", "save_employer_settings", "mark_notification_acted", "employer_publish_readiness", "employer_overview",
+    "list_employer_activity", "get_employer_wallet", "get_talent_overview", "search_candidates", "purchase_talent_package",
+    "get_candidate_profile_for_employer", "get_candidate_cir_report", "can_employer_read_resume", "schedule_interview", "update_interview_status",
     // used inside RLS policies and constraints
     "is_admin", "is_owner", "is_tenant_member", "can_manage_job", "has_role", "all_http_urls", "is_client_role", "safe_date", "_jsonb_text_array",
     "generate_talento_id", "update_updated_at",

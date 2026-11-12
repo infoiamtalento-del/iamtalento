@@ -70,6 +70,14 @@ import { rpc, db } from "@/services/db";
 import { fromProUser, loadLiveProfile, saveLiveProfile, toProUser } from "@/services/candidate/profile";
 import { getEmployerProfile, saveEmployerProfile } from "@/services/employer/profile";
 import { createJob, publishJob } from "@/services/employer/jobs";
+import { EmployerOverview } from "@/components/pro/employer/EmployerOverview";
+import { EmployerJobs } from "@/components/pro/employer/EmployerJobs";
+import { EmployerPipeline } from "@/components/pro/employer/EmployerPipeline";
+import { EmployerFindTalent } from "@/components/pro/employer/EmployerFindTalent";
+import { EmployerNotificationsLive } from "@/components/pro/employer/EmployerNotificationsLive";
+import { EmployerSecuritySettings } from "@/components/pro/employer/EmployerSecuritySettings";
+import { EmployerCompanyManage } from "@/components/pro/employer/EmployerCompanyManage";
+import { ProEmployerSettings } from "@/components/pro/ProEmployerSettings";
 
 interface ToastMessage {
   id: number;
@@ -290,6 +298,19 @@ const TalentoPro: React.FC = () => {
 
   // Real signed-in candidates: load their profile from Supabase, then save edits back (debounced).
   const [liveEmail, setLiveEmail] = useState<string | null>(null);
+  // A real signed-in employer account: the dashboard reads and writes the backend instead of demo state.
+  const liveEmployer = Boolean(backend.userId) && !demoOnly && currentRole === "employer" && Boolean(liveEmail) && sessionEmail === liveEmail;
+  const [liveUnread, setLiveUnread] = useState(0);
+  const refreshLiveUnread = useCallback(async () => {
+    if (!liveEmployer) return;
+    const { count } = await db.from("notifications").select("id", { count: "exact", head: true }).is("read_at", null);
+    setLiveUnread(count ?? 0);
+  }, [liveEmployer]);
+  useEffect(() => {
+    void refreshLiveUnread();
+    const timer = setInterval(() => void refreshLiveUnread(), 60000);
+    return () => clearInterval(timer);
+  }, [refreshLiveUnread, activeView]);
   const [liveBooting, setLiveBooting] = useState(false);
   const lastSavedProfile = useRef("");
   const sessionEmailRef = useRef(sessionEmail);
@@ -393,39 +414,6 @@ const TalentoPro: React.FC = () => {
     saveStorage("employer_seed_v1", true);
   }, [currentRole, sessionEmail]);
 
-  // Sync live applications submitted by candidates for the authenticated employer
-  useEffect(() => {
-    if (!backend.userId || currentRole !== "employer") return;
-    let alive = true;
-    (async () => {
-      try {
-        const { data: remoteApps } = await db.from("job_applications").select("*");
-        if (alive && remoteApps && remoteApps.length > 0) {
-          const liveMappedApps: ProApplication[] = remoteApps.map((a: any) => ({
-            id: typeof a.id === "number" ? a.id : Math.abs(String(a.id).split("").reduce((acc: number, c: string) => (acc << 5) - acc + c.charCodeAt(0), 0)),
-            jid: typeof a.job_id === "number" ? a.job_id : Math.abs(String(a.job_id).split("").reduce((acc: number, c: string) => (acc << 5) - acc + c.charCodeAt(0), 0)),
-            who: "demo.candidate@talento.app",
-            name: a.profile_snapshot?.name || "Yogesh",
-            exp: a.profile_snapshot?.experience_years || 2.5,
-            sk: a.profile_snapshot?.skills?.length ? a.profile_snapshot.skills : ["React", "TypeScript", "Node.js"],
-            ce: a.profile_snapshot?.certifications || [],
-            as: {},
-            st: a.stage || "Applied",
-            at: new Date(a.applied_at).getTime(),
-            cn: a.cover_note || "",
-            upd: [{ msg: `Applied with score ${a.match_score || 0}`, at: new Date(a.applied_at).getTime() }],
-          }));
-          setApps((prev) => [
-            ...liveMappedApps,
-            ...prev.filter((p) => !liveMappedApps.some((m) => m.name === p.name && m.cn === p.cn)),
-          ]);
-        }
-      } catch (e) {
-        console.warn("Could not sync live employer applications:", e);
-      }
-    })();
-    return () => { alive = false; };
-  }, [backend.userId, currentRole]);
   useEffect(() => {
     const sync = (event: StorageEvent) => {
       if (!event.newValue) return;
@@ -489,6 +477,7 @@ const TalentoPro: React.FC = () => {
     "payment-history",
     "support",
     "talent",
+    "security",
     "interviews",
     "subscription",
     "settings",
@@ -745,14 +734,6 @@ const TalentoPro: React.FC = () => {
       })
     );
     addToast(`Applicant moved to ${stage}`);
-
-    if (backend.userId && currentRole === "employer") {
-      try {
-        await db.from("job_applications").update({ stage: validStage }).neq("id", "00000000-0000-0000-0000-000000000000");
-      } catch (e) {
-        console.warn("Stage update server sync notice:", e);
-      }
-    }
   };
 
   const handleSendApplicantUpdate = (appId: number, message: string) => {
@@ -954,6 +935,7 @@ const TalentoPro: React.FC = () => {
   // Unread badge count
   const unreadCount = useMemo(() => {
     if (liveCandidate) return backend.unread;
+    if (liveEmployer) return liveUnread;
     const lastSeen = currentUser.seen || 0;
     if (currentRole === "employer") {
       const myJobs = jobs.filter((j) => j.by === sessionEmail);
@@ -963,7 +945,7 @@ const TalentoPro: React.FC = () => {
       .filter((a) => a.who === sessionEmail)
       .flatMap((a) => a.upd || [])
       .filter((u) => u.at > lastSeen).length;
-  }, [apps, jobs, sessionEmail, currentRole, currentUser.seen, liveCandidate, backend.unread]);
+  }, [apps, jobs, sessionEmail, currentRole, currentUser.seen, liveCandidate, backend.unread, liveEmployer, liveUnread]);
 
   // Saved count
   const savedCount = (currentUser.saved || []).length;
@@ -974,9 +956,9 @@ const TalentoPro: React.FC = () => {
   const selectedCandidate = candidatePage?.type === "candidate" ? CANDIDATES_SEED.find(c => c.n === candidatePage.name) : undefined;
 
   const navigateProView = useCallback(
-    (view: ProView) => {
+    (view: ProView, query?: Record<string, string>) => {
       setDrawerState(null);
-      setSearchParams(currentRole === "employer" ? { view, role: "employer" } : { view });
+      setSearchParams(currentRole === "employer" ? { view, role: "employer", ...(query ?? {}) } : { view });
       setEditingCp(false);
       setActiveView(view);
       window.scrollTo({ top: 0 });
@@ -1112,7 +1094,37 @@ const TalentoPro: React.FC = () => {
               )
             )}
 
-            {effectiveView === "dash" && (
+            {liveEmployer && effectiveView === "dash" && (
+              <EmployerOverview companyName={currentUser.cp?.name || currentUser.name} onNavigate={navigateProView} onToast={addToast} />
+            )}
+            {liveEmployer && effectiveView === "cp" && (
+              <EmployerCompanyManage
+                searchParams={searchParams}
+                onToast={addToast}
+                onSaved={(p) => handleUpdateUser({ ...currentUser, cp: { ...(currentUser.cp ?? {}), name: p.company_name, about: p.description || undefined, mission: p.mission || undefined, ind: p.industry || undefined, size: p.num_employees || undefined, hq: p.hq_city || p.address || undefined, site: p.website || undefined, ben: p.benefits || [] } })}
+              />
+            )}
+            {liveEmployer && effectiveView === "post" && (
+              <EmployerJobs companyName={currentUser.cp?.name || currentUser.name} searchParams={searchParams} onNavigate={navigateProView} onToast={addToast} />
+            )}
+            {liveEmployer && effectiveView === "pipe" && (
+              <EmployerPipeline searchParams={searchParams} contact={{ name: currentUser.name, email: currentUser.email }} onNavigate={navigateProView} onToast={addToast} />
+            )}
+            {liveEmployer && effectiveView === "talent" && (
+              <EmployerFindTalent searchParams={searchParams} contact={{ name: currentUser.name, email: currentUser.email }} onNavigate={navigateProView} onToast={addToast} />
+            )}
+            {liveEmployer && effectiveView === "notif" && (
+              <EmployerNotificationsLive onNavigate={navigateProView} onToast={addToast} onUnreadChange={setLiveUnread} />
+            )}
+            {effectiveView === "security" && currentRole === "employer" && (
+              liveEmployer ? (
+                <EmployerSecuritySettings onToast={addToast} onSignedOut={() => { clearDemoOnlySession(); localStorage.removeItem("tq_sess"); window.location.assign("/auth"); }} />
+              ) : (
+                <ProEmployerSettings user={currentUser} state={employerDemo} onChange={setEmployerDemo} onUpdateUser={handleUpdateUser} onToast={addToast} />
+              )
+            )}
+
+            {effectiveView === "dash" && !liveEmployer && (
               <ProDashboardView
                 user={currentUser}
                 jobs={jobs}
@@ -1130,7 +1142,7 @@ const TalentoPro: React.FC = () => {
               />
             )}
 
-            {effectiveView === "cp" && !editingCp && (
+            {effectiveView === "cp" && !editingCp && !liveEmployer && (
               <ProEmployerProfileView
                 user={currentUser}
                 jobs={jobs}
@@ -1140,7 +1152,7 @@ const TalentoPro: React.FC = () => {
               />
             )}
 
-            {(effectiveView === "talent" || (effectiveView === "cp" && editingCp)) && (
+            {!liveEmployer && (effectiveView === "talent" || (effectiveView === "cp" && editingCp)) && (
               <ProEmployerViews
                 view={effectiveView}
                 user={currentUser}
@@ -1173,11 +1185,11 @@ const TalentoPro: React.FC = () => {
               />
             )}
 
-            {effectiveView === "post" && (
+            {effectiveView === "post" && !liveEmployer && (
               <ProEmployerJobPosting user={currentUser} onPublishJob={handlePublishJob} onToast={addToast} />
             )}
 
-            {effectiveView === "pipe" && (
+            {effectiveView === "pipe" && !liveEmployer && (
               <ProEmployerPipeline
                 user={currentUser}
                 jobs={jobs}
@@ -1236,7 +1248,7 @@ const TalentoPro: React.FC = () => {
               )
             )}
 
-            {effectiveView === "notif" && currentRole === "employer" && (
+            {effectiveView === "notif" && currentRole === "employer" && !liveEmployer && (
               <ProEmployerNotifications
                 user={currentUser}
                 jobs={jobs}

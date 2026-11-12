@@ -195,6 +195,9 @@ describe("learning", () => {
   });
 
   it("registers for hackathons and events idempotently", async () => {
+    await db.admin();
+    // Seed deadlines are fixed calendar dates; keep the test independent of today's date.
+    await db.q(`update public.hackathons set registration_deadline = now() + interval '30 days' where slug = 'national-ai-innovation-hackathon'`);
     await db.user(B);
     const hk = (await db.q(`select id from public.hackathons where slug = 'national-ai-innovation-hackathon'`))[0].id;
     const [r1] = await db.q(`select * from public.register_for_hackathon($1, 'Team Zero')`, [hk]);

@@ -25,6 +25,7 @@ import {
   Pencil,
   Settings,
   FileUp,
+  UserSearch,
   type LucideIcon,
 } from "lucide-react";
 import type { ProView } from "./proTypes";
@@ -32,13 +33,15 @@ import type { ProView } from "./proTypes";
 export type EmployerMenuItem = { id: ProView; label: string; icon: LucideIcon };
 
 export const employerMenuItems: EmployerMenuItem[] = [
-  { id: "account", label: "My Account", icon: UserRound },
-  { id: "dash", label: "Dashboard", icon: LayoutDashboard },
+  { id: "dash", label: "Overview", icon: LayoutDashboard },
   { id: "cp", label: "Company Profile", icon: Building2 },
-  { id: "post", label: "Create Job Posting", icon: Briefcase },
+  { id: "post", label: "Jobs", icon: Briefcase },
   { id: "pipe", label: "Job Applications", icon: FileText },
-  { id: "employer-assessments", label: "Assessments", icon: GraduationCap },
+  { id: "talent", label: "Find Talent", icon: UserSearch },
   { id: "notif", label: "Notifications", icon: Bell },
+  { id: "employer-assessments", label: "Assessments", icon: GraduationCap },
+  { id: "security", label: "Security & Settings", icon: ShieldCheck },
+  { id: "account", label: "My Account", icon: UserRound },
   { id: "advertise", label: "Advertise & Subscriptions", icon: Megaphone },
   { id: "corporate-learning", label: "Corporate Learning", icon: BookOpen },
   { id: "payment-history", label: "Payment & Invoices", icon: Receipt },
