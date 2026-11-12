@@ -828,15 +828,19 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                 <Button
                   size="sm"
                   variant="outline"
-                  className="text-xs h-8 rounded-xl font-medium"
-                  onClick={() => onNavigate?.("payment-history")}
+                  className="text-xs h-8 rounded-xl font-medium cursor-pointer hover:bg-muted"
+                  onClick={() => {
+                    window.location.href = "/pricing?tab=employers";
+                  }}
                 >
                   <Wallet className="w-3.5 h-3.5 mr-1" /> Top Up
                 </Button>
                 <Button
                   size="sm"
-                  className="text-xs h-8 rounded-xl font-medium bg-[#002C66] hover:bg-[#00204d] text-white"
-                  onClick={() => window.open("/pricing?tab=employers", "_blank")}
+                  className="text-xs h-8 rounded-xl font-medium bg-[#002C66] hover:bg-[#00204d] text-white cursor-pointer"
+                  onClick={() => {
+                    window.location.href = "/pricing?tab=employers";
+                  }}
                 >
                   <CreditCard className="w-3.5 h-3.5 mr-1" /> Pricing Plans
                 </Button>
@@ -1279,11 +1283,20 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                       <div className="flex items-start gap-4">
                         {/* Avatar */}
-                        <div className="relative shrink-0">
+                        <div
+                          className="relative shrink-0 cursor-pointer group"
+                          onClick={() => {
+                            if (!isVerified || isUnlocked) {
+                              onOpenDrawer({ type: "candidate", name: cand.n, jobId: selectedJobObj?.id });
+                            } else {
+                              setCandidateToUnlock(cand);
+                            }
+                          }}
+                        >
                           <img
                             src={getCandidatePhoto(cand.n)}
                             alt={cand.n}
-                            className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border border-border/70 shadow-2xs"
+                            className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border border-border/70 shadow-2xs group-hover:ring-2 group-hover:ring-primary/40 transition-all"
                           />
                           {isVerified ? (
                             <span
@@ -1300,7 +1313,16 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                         {/* Name & Title */}
                         <div className="space-y-1">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <h4 className="font-bold text-foreground text-base sm:text-lg font-display">
+                            <h4
+                              className="font-bold text-foreground text-base sm:text-lg font-display hover:text-primary cursor-pointer transition-colors"
+                              onClick={() => {
+                                if (!isVerified || isUnlocked) {
+                                  onOpenDrawer({ type: "candidate", name: cand.n, jobId: selectedJobObj?.id });
+                                } else {
+                                  setCandidateToUnlock(cand);
+                                }
+                              }}
+                            >
                               {cand.n}
                             </h4>
 
@@ -1496,20 +1518,20 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                             className="rounded-xl text-xs h-9 px-4 gap-1.5 bg-[#002C66] hover:bg-[#00204d] text-white font-bold shadow-xs cursor-pointer"
                             onClick={() => setCandidateToUnlock(cand)}
                           >
-                            <Lock className="w-3.5 h-3.5" /> Unlock Verified Profile (₹2,999)
+                            <Lock className="w-3.5 h-3.5" /> Unlock CIR Report (₹2,999)
                           </Button>
                         ) : (
                           <Button
                             size="sm"
                             variant={isVerified ? "default" : "outline"}
                             className={cn(
-                              "rounded-xl text-xs h-9 px-4 gap-1.5 font-semibold",
+                              "rounded-xl text-xs h-9 px-4 gap-1.5 font-semibold cursor-pointer",
                               isVerified ? "bg-emerald-600 hover:bg-emerald-700 text-white" : "bg-background"
                             )}
                             onClick={() => onOpenDrawer({ type: "candidate", name: cand.n, jobId: selectedJobObj?.id })}
                           >
                             <Eye className="w-3.5 h-3.5" />
-                            {isVerified ? "View Verified Dossier & Contacts" : "View Profile & Resume"}
+                            {isVerified ? "View CIR Report" : "View Profile"}
                           </Button>
                         )}
 
@@ -1659,10 +1681,10 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                     </Button>
                     <Button
                       variant="outline"
-                      className="w-full h-10 rounded-xl gap-1.5 text-xs font-semibold"
+                      className="w-full h-10 rounded-xl gap-1.5 text-xs font-semibold cursor-pointer"
                       onClick={() => {
                         setCandidateToUnlock(null);
-                        onNavigate?.("payment-history");
+                        window.location.href = "/pricing?tab=employers";
                       }}
                     >
                       <Wallet className="w-4 h-4" /> Top Up Wallet
