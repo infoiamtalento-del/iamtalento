@@ -34,6 +34,10 @@ import {
   ChevronUp,
   Star,
   Zap,
+  Wallet,
+  Lock,
+  Crown,
+  BadgeCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -55,6 +59,7 @@ import {
   getRemainingTime,
   candidateFitForJob,
   generateHash,
+  formatINR,
 } from "@/data/proData";
 import { getCandidatePhoto, getCompanyLogo } from "@/data/portalAssets";
 import { downloadCirReportPdf, type RealTimeCertificateData } from "@/utils/credentialPdf";
@@ -82,6 +87,10 @@ interface ProEmployerViewsProps {
   ) => void;
   selectedCompareCandidates?: string[];
   onCompareCandidatesChange?: (names: string[]) => void;
+  onUpdateWallet?: (
+    newBalance: number,
+    tx?: NonNullable<NonNullable<ProUser["wal"]>["tx"]>[number]
+  ) => void;
 }
 
 type SourcingStage = "Discovered" | "Saved" | "Invited" | "Shortlisted" | "Interview";
@@ -140,6 +149,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
   onAddCandidateToPipeline,
   selectedCompareCandidates,
   onCompareCandidatesChange,
+  onUpdateWallet,
 }) => {
   const myJobs = jobs.filter((j) => j.by === user.email);
   const myApps = applications.filter((a) => myJobs.some((j) => j.id === a.jid));
@@ -279,6 +289,102 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
   });
 
   const filterPopoverRef = useRef<HTMLDivElement | null>(null);
+
+  // Find Talent Wallet Bento & Verified Pool Pass State
+  const walletDialogRef = useRef<HTMLDialogElement | null>(null);
+  const [localWalletBal, setLocalWalletBal] = useState<number>(
+    () => user.wal?.bal ?? 12000
+  );
+  const walletBalance = user.wal?.bal ?? localWalletBal;
+  const [talentTier, setTalentTier] = useState<"standard" | "verified">("standard");
+  const [verifiedUnlocked, setVerifiedUnlocked] = useState<boolean>(false);
+  const [selectedPassKey, setSelectedPassKey] = useState<"session" | "monthly">("session");
+  const [pendingCirCandidate, setPendingCirCandidate] = useState<ProCandidate | null>(null);
+
+  const PASS_OPTIONS = {
+    session: {
+      label: "Verified Search Pass (Single Sprint)",
+      cost: 499,
+      desc: "Unlock AI-proctored CIR verified candidates, contact details & CIR PDF downloads for this hiring session.",
+    },
+    monthly: {
+      label: "Unlimited Verified Pass (30 Days)",
+      cost: 2499,
+      desc: "30 days unlimited verified candidate search, 50 direct CIR downloads & priority outreach.",
+    },
+  } as const;
+
+  const openWalletConfirmModal = (candForCir?: ProCandidate) => {
+    setPendingCirCandidate(candForCir ?? null);
+    const dlg = walletDialogRef.current;
+    if (dlg && !dlg.open) {
+      dlg.showModal();
+    }
+  };
+
+  const closeWalletConfirmModal = () => {
+    setPendingCirCandidate(null);
+    const dlg = walletDialogRef.current;
+    if (dlg?.open) {
+      dlg.close("");
+    }
+  };
+
+  const handleSelectTalentTier = (nextTier: "standard" | "verified") => {
+    if (nextTier === "standard") {
+      setTalentTier("standard");
+      return;
+    }
+    if (verifiedUnlocked) {
+      setTalentTier("verified");
+      return;
+    }
+    openWalletConfirmModal();
+  };
+
+  const handleQuickRechargeDemo = (amount: number) => {
+    const nextBal = walletBalance + amount;
+    setLocalWalletBal(nextBal);
+    onUpdateWallet?.(nextBal, {
+      id: `TOPUP-${Date.now()}`,
+      at: Date.now(),
+      type: "credit",
+      amt: amount,
+      desc: "Company Wallet Recharge (Hiring Credits)",
+      via: "Corporate UPI / Card",
+      st: "Completed",
+    });
+    onToast(`Added ${formatINR(amount)} to Company Wallet!`);
+  };
+
+  const handleConfirmVerifiedDeduction = () => {
+    const chosen = PASS_OPTIONS[selectedPassKey];
+    if (walletBalance < chosen.cost) {
+      onToast(`Insufficient wallet balance. Recharge ${formatINR(chosen.cost - walletBalance)} more.`);
+      return;
+    }
+    const nextBal = walletBalance - chosen.cost;
+    setLocalWalletBal(nextBal);
+    onUpdateWallet?.(nextBal, {
+      id: `VER-${Date.now()}`,
+      at: Date.now(),
+      type: "debit",
+      amt: chosen.cost,
+      desc: chosen.label,
+      via: "Company Wallet",
+      st: "Paid",
+    });
+    setVerifiedUnlocked(true);
+    setTalentTier("verified");
+    const pendingCand = pendingCirCandidate;
+    closeWalletConfirmModal();
+    onToast(
+      `Deducted ${formatINR(chosen.cost)} from Company Wallet · Verified Candidates unlocked!`
+    );
+    if (pendingCand) {
+      handleDownloadCandidateCir(pendingCand);
+    }
+  };
 
   useEffect(() => {
     try {
@@ -425,6 +531,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
       if (talentWorkModes.length > 0 && !talentWorkModes.includes(c.wp)) return false;
       if (testAvg < talentMinAssessment) return false;
       if (talentOnlyCertified && (!c.ce || c.ce.length === 0)) return false;
+      if (talentTier === "verified" && avgCandidateScore(c) < 75) return false;
       if (c.es > talentMaxSalary) return false;
       if (talentNoticePeriod !== 999 && (c.nt || 0) > talentNoticePeriod) return false;
 
@@ -458,6 +565,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
     bookmarkedTalent,
     myApps,
     selectedJobObj,
+    talentTier,
   ]);
 
   const handleMoveCandidateSourcing = (cand: ProCandidate, targetStage: SourcingStage) => {
@@ -1034,6 +1142,284 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
           </div>
         </header>
 
+        {/* Top Wallet Bento Box: Company Wallet + Candidates vs Verified Candidates */}
+        <section
+          aria-label="Hiring wallet and candidate pool selector"
+          className="workspace-wallet-bento"
+        >
+          {/* Bento Cell 1: Company Wallet */}
+          <article className="workspace-panel lg:col-span-4 !p-4 flex flex-col justify-between gap-3">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <span className="workspace-icon !h-10 !w-10 shrink-0">
+                  <Wallet size={18} />
+                </span>
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                    Company Wallet
+                  </p>
+                  <p className="text-xl font-bold text-foreground mt-0.5">
+                    {formatINR(walletBalance)}
+                  </p>
+                </div>
+              </div>
+
+              {verifiedUnlocked ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700">
+                  <BadgeCheck className="h-3 w-3" />
+                  Verified Active
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                  Standard Pool
+                </span>
+              )}
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border/70 pt-2.5 text-xs">
+              <div className="flex items-center gap-1.5">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="h-7 px-2.5 text-[11px] font-semibold"
+                  onClick={() => handleQuickRechargeDemo(2000)}
+                >
+                  <Plus className="h-3 w-3 mr-1" />
+                  Add ₹2,000
+                </Button>
+                {onNavigate && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 px-2 text-[11px] text-muted-foreground hover:text-foreground"
+                    onClick={() => onNavigate("payment-history")}
+                  >
+                    Ledger →
+                  </Button>
+                )}
+              </div>
+
+              {verifiedUnlocked && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setVerifiedUnlocked(false);
+                    setTalentTier("standard");
+                    onToast("Reset demo Verified Pass so you can test wallet unlock again.");
+                  }}
+                  className="text-[11px] font-medium text-muted-foreground hover:text-primary underline cursor-pointer"
+                >
+                  Relock pass
+                </button>
+              )}
+            </div>
+          </article>
+
+          {/* Bento Cell 2: Option 1 — Standard Candidates (Free) */}
+          <button
+            type="button"
+            data-selected={talentTier === "standard"}
+            onClick={() => handleSelectTalentTier("standard")}
+            className="workspace-tier-card lg:col-span-4"
+          >
+            <div className="flex items-start justify-between gap-2 w-full">
+              <div className="flex items-center gap-2.5">
+                <span className="workspace-icon !h-9 !w-9 shrink-0">
+                  <Users size={17} />
+                </span>
+                <div>
+                  <span className="block text-sm font-bold text-foreground">Candidates</span>
+                  <span className="block text-[11px] text-muted-foreground">
+                    Public talent directory
+                  </span>
+                </div>
+              </div>
+              <span className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-[10px] font-bold text-foreground">
+                Free Browse
+              </span>
+            </div>
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              Search public candidate profiles, skills, experience &amp; role match scores with zero wallet deduction.
+            </p>
+          </button>
+
+          {/* Bento Cell 3: Option 2 — Verified Candidates (Wallet Deduction Pass) */}
+          <button
+            type="button"
+            data-selected={talentTier === "verified"}
+            onClick={() => handleSelectTalentTier("verified")}
+            className="workspace-tier-card lg:col-span-4"
+          >
+            <div className="flex items-start justify-between gap-2 w-full">
+              <div className="flex items-center gap-2.5">
+                <span className="workspace-icon !h-9 !w-9 shrink-0">
+                  <BadgeCheck size={18} />
+                </span>
+                <div>
+                  <span className="flex items-center gap-1.5 text-sm font-bold text-foreground">
+                    Verified Candidates
+                    <Crown className="h-3.5 w-3.5 text-amber-500" />
+                  </span>
+                  <span className="block text-[11px] text-muted-foreground">
+                    AI-Proctored &amp; CIR Certified
+                  </span>
+                </div>
+              </div>
+              {verifiedUnlocked ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700">
+                  <Check className="h-3 w-3" />
+                  Unlocked
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold text-primary">
+                  <Lock className="h-3 w-3" />
+                  ₹499 Wallet
+                </span>
+              )}
+            </div>
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              Search 100% ID &amp; proctoring-verified talent with full CIR scorecards, direct contact details &amp; PDF reports.
+            </p>
+          </button>
+        </section>
+
+        {/* Native Modal Confirmation Dialog: "Are you sure?" Wallet Deduction */}
+        <dialog
+          ref={walletDialogRef}
+          className="workspace-native-dialog"
+          aria-labelledby="verify-wallet-dialog-title"
+          onClose={() => setPendingCirCandidate(null)}
+        >
+          <div className="p-5 sm:p-6 space-y-4">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <span className="workspace-icon !h-10 !w-10 shrink-0">
+                  <BadgeCheck size={20} />
+                </span>
+                <div>
+                  <h2 id="verify-wallet-dialog-title" className="text-base font-bold text-foreground">
+                    Are you sure you want to unlock Verified Candidates?
+                  </h2>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Searching Verified Candidates deducts the pass amount from your Company Wallet.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                aria-label="Close confirmation dialog"
+                onClick={closeWalletConfirmModal}
+                className="rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer"
+              >
+                <X size={15} />
+              </button>
+            </div>
+
+            {/* Pass Selection Options */}
+            <div className="space-y-2">
+              {(["session", "monthly"] as const).map((key) => {
+                const opt = PASS_OPTIONS[key];
+                const isChosen = selectedPassKey === key;
+                return (
+                  <label
+                    key={key}
+                    className="workspace-pass-choice"
+                  >
+                    <input
+                      type="radio"
+                      name="verified-pass-tier"
+                      checked={isChosen}
+                      onChange={() => setSelectedPassKey(key)}
+                      className="mt-1 accent-primary"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-xs font-bold text-foreground">{opt.label}</span>
+                        <strong className="text-xs font-bold text-primary">
+                          {formatINR(opt.cost)}
+                        </strong>
+                      </div>
+                      <p className="mt-0.5 text-[11px] text-muted-foreground leading-snug">
+                        {opt.desc}
+                      </p>
+                    </div>
+                  </label>
+                );
+              })}
+            </div>
+
+            {/* Wallet Balance Math Breakdown */}
+            <div className="rounded-xl border border-border bg-muted/30 p-3.5 space-y-2 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Current Company Wallet</span>
+                <span className="font-semibold text-foreground">{formatINR(walletBalance)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Wallet Deduction</span>
+                <span className="font-bold text-destructive">
+                  − {formatINR(PASS_OPTIONS[selectedPassKey].cost)}
+                </span>
+              </div>
+              <div className="flex items-center justify-between border-t border-border pt-2">
+                <span className="font-semibold text-foreground">Remaining Balance</span>
+                <strong
+                  className={`text-sm ${
+                    walletBalance >= PASS_OPTIONS[selectedPassKey].cost
+                      ? "text-emerald-700"
+                      : "text-destructive"
+                  }`}
+                >
+                  {walletBalance >= PASS_OPTIONS[selectedPassKey].cost
+                    ? formatINR(walletBalance - PASS_OPTIONS[selectedPassKey].cost)
+                    : `Short by ${formatINR(PASS_OPTIONS[selectedPassKey].cost - walletBalance)}`}
+                </strong>
+              </div>
+            </div>
+
+            {walletBalance < PASS_OPTIONS[selectedPassKey].cost && (
+              <div className="flex items-center justify-between gap-3 rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-xs">
+                <span className="text-amber-900 font-medium">
+                  Low wallet balance for this pass.
+                </span>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="h-7 text-xs shrink-0"
+                  onClick={() => handleQuickRechargeDemo(3000)}
+                >
+                  <Plus className="h-3 w-3 mr-1" />
+                  Top Up ₹3,000
+                </Button>
+              </div>
+            )}
+
+            <div className="flex items-center justify-end gap-2.5 pt-1">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                autoFocus
+                onClick={closeWalletConfirmModal}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                disabled={walletBalance < PASS_OPTIONS[selectedPassKey].cost}
+                onClick={handleConfirmVerifiedDeduction}
+                className="gap-1.5"
+              >
+                <Wallet className="h-3.5 w-3.5" />
+                Yes, Deduct {formatINR(PASS_OPTIONS[selectedPassKey].cost)} &amp; Unlock
+              </Button>
+            </div>
+          </div>
+        </dialog>
+
         {/* Differentiated HR KPI Summary Cards (Click any card to filter) */}
         <div className="workspace-stats">
           {kpiStats.map(({ id, label, count, icon: Icon, theme }) => {
@@ -1428,6 +1814,21 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                               <span className="text-primary font-medium">
                                 {cand.nt === 0 ? "Immediate" : `${cand.nt}d notice`}
                               </span>
+                              {talentTier === "verified" && verifiedUnlocked ? (
+                                <>
+                                  <span>·</span>
+                                  <span className="text-emerald-700 font-semibold">
+                                    {cand.n.toLowerCase().replace(/\s+/g, ".")}@talentcir.verified
+                                  </span>
+                                </>
+                              ) : (
+                                <>
+                                  <span>·</span>
+                                  <span className="inline-flex items-center gap-1 text-muted-foreground">
+                                    <Lock className="w-3 h-3" /> Contact locked
+                                  </span>
+                                </>
+                              )}
                             </p>
                           </div>
                         </div>
@@ -1545,9 +1946,18 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                             size="sm"
                             variant="ghost"
                             className="h-8 text-xs text-muted-foreground hover:text-foreground gap-1"
-                            onClick={() => handleDownloadCandidateCir(cand)}
+                            onClick={() =>
+                              verifiedUnlocked
+                                ? handleDownloadCandidateCir(cand)
+                                : openWalletConfirmModal(cand)
+                            }
                           >
-                            <Download className="w-3.5 h-3.5" /> CIR PDF
+                            {verifiedUnlocked ? (
+                              <Download className="w-3.5 h-3.5" />
+                            ) : (
+                              <Lock className="w-3.5 h-3.5" />
+                            )}
+                            CIR PDF
                           </Button>
                           <label className="inline-flex items-center gap-1.5 px-2 py-1 text-xs text-muted-foreground hover:text-foreground cursor-pointer">
                             <input

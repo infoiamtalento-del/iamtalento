@@ -61,6 +61,7 @@ import { ProEmployerNotifications } from "@/components/pro/ProEmployerNotificati
 import { ProEmployerMyAccount } from "@/components/pro/ProEmployerMyAccount";
 import { ProEmployeeMyAccount } from "@/components/pro/ProEmployeeMyAccount";
 import { ProEmployerDemoServices } from "@/components/pro/ProEmployerDemoServices";
+import { ProEmployerCommandCentre, type CommandCentreView } from "@/components/pro/ProEmployerCommandCentre";
 import { ProEmployerCandidateDetail } from "@/components/pro/ProEmployerCandidateDetail";
 import { Button } from "@/components/ui/button";
 import { DEMO_EMPLOYER_JOBS, DEMO_EMPLOYER_APPS, INITIAL_EMPLOYER_DEMO, createDemoApplication, type EmployerDemoState } from "@/data/employerDemo";
@@ -75,9 +76,7 @@ import { EmployerJobs } from "@/components/pro/employer/EmployerJobs";
 import { EmployerPipeline } from "@/components/pro/employer/EmployerPipeline";
 import { EmployerFindTalent } from "@/components/pro/employer/EmployerFindTalent";
 import { EmployerNotificationsLive } from "@/components/pro/employer/EmployerNotificationsLive";
-import { EmployerSecuritySettings } from "@/components/pro/employer/EmployerSecuritySettings";
 import { EmployerCompanyManage } from "@/components/pro/employer/EmployerCompanyManage";
-import { ProEmployerSettings } from "@/components/pro/ProEmployerSettings";
 
 interface ToastMessage {
   id: number;
@@ -341,7 +340,7 @@ const TalentoPro: React.FC = () => {
               return;
             }
             try {
-              await rpc("employer_dashboard_overview");
+              await rpc("employer_overview");
             } catch {
               setLiveEmail(null);
               return;
@@ -500,6 +499,11 @@ const TalentoPro: React.FC = () => {
     "wallet",
     "port",
     "ver",
+    "ai-hub",
+    "talent-pool",
+    "offers",
+    "campus-hiring",
+    "employer-analytics",
   ];
 
   const effectiveView: ProView = useMemo(() => {
@@ -1160,15 +1164,32 @@ const TalentoPro: React.FC = () => {
             transition={{ duration: 0.2 }}
           >
             {/* WORKSPACE & DASHBOARD VIEWS (ACCESSIBLE TO BOTH EMPLOYEE & EMPLOYER) */}
-            {(effectiveView === "account" || (effectiveView === "settings" && currentRole === "candidate")) && (
+            {(effectiveView === "account" ||
+              effectiveView === "settings" ||
+              (effectiveView === "security" && currentRole === "employer")) && (
               currentRole === "employer" ? (
                 <ProEmployerMyAccount
                   user={currentUser}
                   jobs={jobs}
                   applications={apps}
+                  state={employerDemo}
+                  onChange={setEmployerDemo}
+                  isLive={liveEmployer}
+                  initialTab={
+                    effectiveView === "security"
+                      ? "security"
+                      : effectiveView === "settings"
+                        ? "preferences"
+                        : "profile"
+                  }
                   onNavigate={navigateProView}
                   onUpdateUser={handleUpdateUser}
                   onToast={addToast}
+                  onSignedOut={() => {
+                    clearDemoOnlySession();
+                    localStorage.removeItem("tq_sess");
+                    window.location.assign("/auth");
+                  }}
                 />
               ) : (
                 <ProEmployeeMyAccount
@@ -1205,13 +1226,6 @@ const TalentoPro: React.FC = () => {
             )}
             {liveEmployer && effectiveView === "notif" && (
               <EmployerNotificationsLive onNavigate={navigateProView} onToast={addToast} onUnreadChange={setLiveUnread} />
-            )}
-            {effectiveView === "security" && currentRole === "employer" && (
-              liveEmployer ? (
-                <EmployerSecuritySettings onToast={addToast} onSignedOut={() => { clearDemoOnlySession(); localStorage.removeItem("tq_sess"); window.location.assign("/auth"); }} />
-              ) : (
-                <ProEmployerSettings user={currentUser} state={employerDemo} onChange={setEmployerDemo} onUpdateUser={handleUpdateUser} onToast={addToast} />
-              )
             )}
 
             {effectiveView === "dash" && !liveEmployer && (
@@ -1273,6 +1287,7 @@ const TalentoPro: React.FC = () => {
                 onOpenDrawer={openDrawer}
                 onToast={addToast}
                 onNavigate={navigateProView}
+                onUpdateWallet={handleUpdateWallet}
                 onAddCandidateToPipeline={(cand, jobId, stage, note) => handleAddCandidateToPipeline(cand, jobId, stage, note)}
                 selectedCompareCandidates={compareCandidates}
                 onCompareCandidatesChange={setCompareCandidates}
@@ -1294,8 +1309,27 @@ const TalentoPro: React.FC = () => {
               />
             )}
 
-            {(["employer-assessments", "interviews", "advertise", "subscription", "corporate-learning"].includes(effectiveView) ||
-              (effectiveView === "settings" && currentRole === "employer") ||
+            {currentRole === "employer" &&
+              (["ai-hub", "talent-pool", "interviews", "offers", "campus-hiring", "employer-analytics"] as const).includes(
+                effectiveView as CommandCentreView
+              ) && (
+                <ProEmployerCommandCentre
+                  view={effectiveView as CommandCentreView}
+                  user={currentUser}
+                  jobs={jobs}
+                  applications={apps}
+                  state={employerDemo}
+                  onChange={setEmployerDemo}
+                  onNavigate={navigateProView}
+                  onOpenDrawer={openDrawer}
+                  onPublishJob={handlePublishJob}
+                  onUpdateApplicantStage={handleUpdateApplicantStage}
+                  onScheduleInterview={handleScheduleInterview}
+                  onToast={addToast}
+                />
+              )}
+
+            {(["employer-assessments", "advertise", "subscription", "corporate-learning"].includes(effectiveView) ||
               (effectiveView === "payment-history" && currentRole === "employer")) && (
               <ProEmployerDemoServices
                 view={effectiveView}

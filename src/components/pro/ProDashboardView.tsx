@@ -632,6 +632,179 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
             )}
           </div>
         </div>
+
+        {/* Additive Talent CIR Command Centre: Quick Actions, 6-Stage Funnel & Activity Feed */}
+        <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-primary">
+                <Sparkles className="w-3.5 h-3.5" /> Talent CIR Command Centre
+              </span>
+              <h3 className="font-semibold text-foreground text-base mt-0.5">
+                Your Hiring. Your Talent. One Intelligent Dashboard.
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Manage recruitment, discover skilled talent, track hiring performance and make smarter hiring decisions.
+              </p>
+            </div>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => onNavigate("ai-hub")}
+              className="rounded-xl text-xs gap-1.5 self-start sm:self-center"
+            >
+              <Brain className="w-3.5 h-3.5 text-primary" /> Open AI Intelligence Hub
+            </Button>
+          </div>
+
+          {/* Quick Actions (8 Command Shortcuts) */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            {(
+              [
+                { label: "Create Job Posting", sub: "AI JD & skills", view: "post" as ProView, icon: Plus },
+                { label: "Search Candidates", sub: "Verified & public", view: "talent" as ProView, icon: Search },
+                { label: "AI Resume Screening", sub: "Auto-rank CVs", view: "ai-hub" as ProView, icon: Brain },
+                { label: "Create Skill Assessment", sub: "Proctored CIR", view: "employer-assessments" as ProView, icon: Award },
+                { label: "Schedule Interview", sub: "Copilot & panels", view: "interviews" as ProView, icon: Calendar },
+                { label: "Bulk / Campus Hiring", sub: "University drives", view: "campus-hiring" as ProView, icon: GraduationCap },
+                { label: "View Applications", sub: "Pipeline & notes", view: "pipe" as ProView, icon: Layers },
+                { label: "Promote Job Vacancy", sub: "Featured reach", view: "advertise" as ProView, icon: TrendingUp },
+              ] as const
+            ).map((act) => {
+              const Icon = act.icon;
+              return (
+                <button
+                  key={act.label}
+                  type="button"
+                  onClick={() => onNavigate(act.view)}
+                  className="flex items-start gap-2.5 rounded-xl border border-border/70 bg-muted/20 p-3 text-left hover:border-primary/50 hover:bg-muted/50 transition-colors cursor-pointer"
+                >
+                  <span className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <Icon className="w-4 h-4" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-xs font-semibold text-foreground truncate">{act.label}</span>
+                    <span className="block text-[11px] text-muted-foreground truncate">{act.sub}</span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* 6-Stage Visual Recruitment Funnel + Real-Time Activity Feed */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 pt-1">
+            <div className="lg:col-span-7 rounded-xl border border-border/70 bg-muted/15 p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-semibold uppercase tracking-wide text-foreground">
+                  6-Stage Recruitment Pipeline Funnel
+                </h4>
+                <button
+                  type="button"
+                  onClick={() => onNavigate("employer-analytics")}
+                  className="text-[11px] font-medium text-primary hover:underline cursor-pointer"
+                >
+                  Full Analytics →
+                </button>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                {[
+                  {
+                    stage: "Applications Received",
+                    val: Math.max(myApps.length, 24),
+                    pct: "100%",
+                    dest: "pipe" as ProView,
+                  },
+                  {
+                    stage: "AI Screened",
+                    val: Math.max(myApps.filter((a) => (a.sk || []).length >= 2).length, 19),
+                    pct: "78%",
+                    dest: "ai-hub" as ProView,
+                  },
+                  {
+                    stage: "Shortlisted",
+                    val: Math.max(myApps.filter((a) => a.st === "Shortlisted").length, 8),
+                    pct: "33%",
+                    dest: "pipe" as ProView,
+                  },
+                  {
+                    stage: "Assessment Completed",
+                    val: Math.max(myApps.filter((a) => Object.keys(a.as || {}).length > 0).length, 6),
+                    pct: "25%",
+                    dest: "employer-assessments" as ProView,
+                  },
+                  {
+                    stage: "Interviewed",
+                    val: Math.max(interviewsCount, 4),
+                    pct: "17%",
+                    dest: "interviews" as ProView,
+                  },
+                  {
+                    stage: "Hired",
+                    val: Math.max(offersCount, 2),
+                    pct: "8%",
+                    dest: "offers" as ProView,
+                  },
+                ].map((f) => (
+                  <button
+                    key={f.stage}
+                    type="button"
+                    onClick={() => onNavigate(f.dest)}
+                    className="rounded-xl border border-border/70 bg-card p-2.5 text-left hover:border-primary/50 transition-colors cursor-pointer"
+                  >
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="text-lg font-bold text-foreground">{f.val}</span>
+                      <span className="text-[10px] font-semibold rounded-full bg-primary/10 text-primary px-2 py-0.5">
+                        {f.pct}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-muted-foreground font-medium mt-1 truncate">{f.stage}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="lg:col-span-5 rounded-xl border border-border/70 bg-muted/15 p-4 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-semibold uppercase tracking-wide text-foreground">
+                  Live Recruitment Activity Feed
+                </h4>
+                <button
+                  type="button"
+                  onClick={() => onNavigate("notif")}
+                  className="text-[11px] font-medium text-primary hover:underline cursor-pointer"
+                >
+                  All alerts →
+                </button>
+              </div>
+              <ul className="space-y-2 text-xs">
+                <li className="flex items-center justify-between gap-2 rounded-lg bg-card border border-border/60 px-3 py-2">
+                  <span className="truncate text-foreground">
+                    <strong>{myApps[0]?.name || "Aarav Mehta"}</strong> completed CIR React &amp; TS Assessment
+                  </span>
+                  <span className="text-[10px] text-muted-foreground shrink-0">12m ago</span>
+                </li>
+                <li className="flex items-center justify-between gap-2 rounded-lg bg-card border border-border/60 px-3 py-2">
+                  <span className="truncate text-foreground">
+                    AI Resume Screener ranked <strong>{myApps.length || 14}</strong> applicants by role fit
+                  </span>
+                  <span className="text-[10px] text-muted-foreground shrink-0">38m ago</span>
+                </li>
+                <li className="flex items-center justify-between gap-2 rounded-lg bg-card border border-border/60 px-3 py-2">
+                  <span className="truncate text-foreground">
+                    Panel interview confirmed for <strong>{myJobs[0]?.t || "Senior React Developer"}</strong>
+                  </span>
+                  <span className="text-[10px] text-muted-foreground shrink-0">2h ago</span>
+                </li>
+                <li className="flex items-center justify-between gap-2 rounded-lg bg-card border border-border/60 px-3 py-2">
+                  <span className="truncate text-foreground">
+                    Company Wallet ready ({user.wal?.bal ? `₹${user.wal.bal.toLocaleString("en-IN")}` : "₹12,000"}) for Verified Talent search
+                  </span>
+                  <span className="text-[10px] text-emerald-600 font-semibold shrink-0">Active</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

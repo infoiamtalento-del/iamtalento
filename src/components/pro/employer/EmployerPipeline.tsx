@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   GripVertical,
@@ -9,7 +9,6 @@ import {
   MoreHorizontal,
   RotateCcw,
   Search,
-  SlidersHorizontal,
   Users,
   X,
 } from "lucide-react";
@@ -66,10 +65,8 @@ export function EmployerPipeline({ searchParams, contact, onNavigate, onToast }:
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [moving, setMoving] = useState<string | null>(null);
-  const [filterOpen, setFilterOpen] = useState(false);
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dragOverStage, setDragOverStage] = useState<string | null>(null);
-  const filterPanelRef = useRef<HTMLDivElement | null>(null);
 
   const load = useCallback(async () => {
     setError(null);
@@ -99,17 +96,6 @@ export function EmployerPipeline({ searchParams, contact, onNavigate, onToast }:
       .then((rows) => setJobs(rows.map((r) => ({ id: r.id, designation: r.designation }))))
       .catch(() => setJobs([]));
   }, []);
-
-  useEffect(() => {
-    if (!filterOpen) return;
-    const handleOutside = (event: MouseEvent) => {
-      if (filterPanelRef.current && !filterPanelRef.current.contains(event.target as Node)) {
-        setFilterOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleOutside);
-    return () => document.removeEventListener("mousedown", handleOutside);
-  }, [filterOpen]);
 
   const baseQuery = () =>
     Object.fromEntries(
@@ -272,119 +258,108 @@ export function EmployerPipeline({ searchParams, contact, onNavigate, onToast }:
       <PageHeader
         eyebrow="Job applications"
         icon={<Layers size={13} />}
-        title="Candidate pipeline"
+        title="Candidate Pipeline Board"
         description="Drag and drop applicants across stages or click any card to review. Changes are saved instantly."
         actions={
-          <div className="relative flex flex-wrap items-center gap-3" ref={filterPanelRef}>
+          <div className="inline-flex items-center gap-1.5">
             <Button
-              type="button"
-              size="icon"
-              variant={filterOpen || activeFilterCount > 0 ? "default" : "outline"}
-              aria-label="Open pipeline filters"
-              aria-expanded={filterOpen}
-              title="Filter candidates"
-              onClick={() => setFilterOpen((prev) => !prev)}
-              className="relative h-9 w-9 rounded-lg shrink-0"
+              size="sm"
+              variant={mode === "board" ? "default" : "outline"}
+              onClick={() => setMode("board")}
             >
-              <SlidersHorizontal className="h-4 w-4" />
-              {activeFilterCount > 0 && (
-                <span className="absolute -right-1.5 -top-1.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground ring-2 ring-background">
-                  {activeFilterCount}
-                </span>
-              )}
+              <Kanban className="mr-1.5 h-4 w-4" />
+              Board
             </Button>
-            <div className="inline-flex items-center gap-1.5">
-              <Button
-                size="sm"
-                variant={mode === "board" ? "default" : "outline"}
-                onClick={() => setMode("board")}
-              >
-                <Kanban className="mr-1.5 h-4 w-4" />
-                Board
-              </Button>
-              <Button
-                size="sm"
-                variant={mode === "list" ? "default" : "outline"}
-                onClick={() => setMode("list")}
-              >
-                <List className="mr-1.5 h-4 w-4" />
-                List
-              </Button>
-            </div>
-
-            {filterOpen && (
-              <div
-                role="dialog"
-                aria-label="Pipeline filters"
-                className="absolute right-0 top-full z-30 mt-2 w-[320px] rounded-xl border border-border bg-card p-4 shadow-xl space-y-3.5"
-              >
-                <div className="flex items-center justify-between border-b border-border pb-2">
-                  <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                    <SlidersHorizontal size={14} className="text-primary" />
-                    Filter &amp; Sort
-                  </span>
-                  <button
-                    type="button"
-                    aria-label="Close filters"
-                    onClick={() => setFilterOpen(false)}
-                    className="rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
-                  >
-                    <X size={14} />
-                  </button>
-                </div>
-                <div className="relative">
-                  <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    aria-label="Search applicants"
-                    className="pl-9 text-xs h-9"
-                    placeholder="Search name, role or skill"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                  />
-                </div>
-                <select
-                  aria-label="Filter by job"
-                  value={jobFilter}
-                  onChange={(e) => setParam("job", e.target.value)}
-                  className="!h-9 text-xs"
-                >
-                  <option value="">All jobs</option>
-                  {jobs.map((j) => (
-                    <option key={j.id} value={j.id}>
-                      {j.designation}
-                    </option>
-                  ))}
-                </select>
-                <select
-                  aria-label="Sort applicants"
-                  value={sort}
-                  onChange={(e) => setSort(e.target.value as "recent" | "match")}
-                  className="!h-9 text-xs"
-                >
-                  <option value="recent">Most recent</option>
-                  <option value="match">Best match</option>
-                </select>
-                <div className="flex items-center justify-between border-t border-border pt-2.5">
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => {
-                      setQuery("");
-                      onNavigate("pipe");
-                    }}
-                  >
-                    <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
-                    Reset
-                  </Button>
-                  <Button size="sm" onClick={() => setFilterOpen(false)}>
-                    Done
-                  </Button>
-                </div>
-              </div>
-            )}
+            <Button
+              size="sm"
+              variant={mode === "list" ? "default" : "outline"}
+              onClick={() => setMode("list")}
+            >
+              <List className="mr-1.5 h-4 w-4" />
+              List
+            </Button>
           </div>
         }
       />
+
+      <div
+        className="workspace-filter-bar !mb-0"
+        role="search"
+        aria-label="Search and filter applicants"
+      >
+        <div className="workspace-filter-search">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            aria-label="Search applicants"
+            className="h-9 pl-9 pr-8 text-xs"
+            placeholder="Search candidates by name, role, or skill..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          {query && (
+            <button
+              type="button"
+              aria-label="Clear search query"
+              onClick={() => setQuery("")}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded p-0.5 text-muted-foreground hover:text-foreground cursor-pointer"
+            >
+              <X size={13} />
+            </button>
+          )}
+        </div>
+
+        <select
+          aria-label="Filter by job"
+          value={jobFilter}
+          onChange={(e) => setParam("job", e.target.value)}
+        >
+          <option value="">All jobs</option>
+          {jobs.map((j) => (
+            <option key={j.id} value={j.id}>
+              {j.designation}
+            </option>
+          ))}
+        </select>
+
+        <select
+          aria-label="Filter by stage"
+          value={stageFilter}
+          onChange={(e) => setParam("stage", e.target.value)}
+        >
+          <option value="">All stages</option>
+          {APPLICATION_STAGES.map((s) => (
+            <option key={s} value={s}>
+              {STAGE_LABEL[s]}
+            </option>
+          ))}
+        </select>
+
+        <select
+          aria-label="Sort applicants"
+          value={sort}
+          onChange={(e) => setSort(e.target.value as "recent" | "match")}
+        >
+          <option value="recent">Sort: Most recent</option>
+          <option value="match">Sort: Best match</option>
+        </select>
+
+        {activeFilterCount > 0 && (
+          <Button
+            type="button"
+            size="sm"
+            variant="ghost"
+            className="h-9 px-2.5 text-xs text-muted-foreground hover:text-foreground"
+            onClick={() => {
+              setQuery("");
+              setSort("recent");
+              onNavigate("pipe");
+            }}
+          >
+            <RotateCcw className="mr-1 h-3.5 w-3.5" />
+            Reset
+          </Button>
+        )}
+      </div>
 
       <div className="workspace-stats !grid-cols-2 sm:!grid-cols-4 xl:!grid-cols-7">
         {stats.map((s) => (

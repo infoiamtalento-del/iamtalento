@@ -13,7 +13,6 @@ import {
   Clock,
   ArrowRight,
   RotateCcw,
-  SlidersHorizontal,
   GripVertical,
   X,
   XCircle,
@@ -91,11 +90,9 @@ export function ProEmployerPipeline({
   const [selected, setSelected] = useState<number[]>([]);
   const [stageFilter, setStageFilter] = useState("");
   const [focusedStage, setFocusedStage] = useState<string>(() => searchParams.get("stage") ?? "");
-  const [filterOpen, setFilterOpen] = useState(false);
   const [draggedId, setDraggedId] = useState<number | null>(null);
   const [dragOverStage, setDragOverStage] = useState<string | null>(null);
 
-  const filterPanelRef = useRef<HTMLDivElement | null>(null);
   const columnRefs = useRef<Record<string, HTMLElement | null>>({});
 
   useEffect(() => {
@@ -110,17 +107,6 @@ export function ProEmployerPipeline({
       }
     }
   }, [searchParams]);
-
-  useEffect(() => {
-    if (!filterOpen) return;
-    const handleOutside = (event: MouseEvent) => {
-      if (filterPanelRef.current && !filterPanelRef.current.contains(event.target as Node)) {
-        setFilterOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleOutside);
-    return () => document.removeEventListener("mousedown", handleOutside);
-  }, [filterOpen]);
 
   const myJobs = jobs.filter((j) => j.by === user.email);
   const apps = applications.filter((a) => myJobs.some((j) => j.id === a.jid));
@@ -341,178 +327,115 @@ export function ProEmployerPipeline({
           </p>
         </div>
 
-        {/* Single Clean Filter Icon + Board/List View Switcher */}
-        <div className="relative flex flex-wrap items-center gap-3" ref={filterPanelRef}>
+        {/* Board / List View Switcher */}
+        <div className="inline-flex items-center gap-1.5">
           <Button
-            type="button"
-            size="icon"
-            variant={filterOpen || activeFilterCount > 0 ? "default" : "outline"}
-            aria-label="Open pipeline filters"
-            aria-expanded={filterOpen}
-            title="Filter candidates"
-            onClick={() => setFilterOpen((prev) => !prev)}
-            className="relative h-9 w-9 rounded-lg shrink-0"
+            size="sm"
+            variant={mode === "board" ? "default" : "outline"}
+            onClick={() => setMode("board")}
           >
-            <SlidersHorizontal className="h-4 w-4" />
-            {activeFilterCount > 0 && (
-              <span className="absolute -right-1.5 -top-1.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground ring-2 ring-background">
-                {activeFilterCount}
-              </span>
-            )}
+            <Kanban />
+            Board
           </Button>
-
-          <div className="inline-flex items-center gap-1.5">
-            <Button
-              size="sm"
-              variant={mode === "board" ? "default" : "outline"}
-              onClick={() => setMode("board")}
-            >
-              <Kanban />
-              Board
-            </Button>
-            <Button
-              size="sm"
-              variant={mode === "list" ? "default" : "outline"}
-              onClick={() => setMode("list")}
-            >
-              <List />
-              List
-            </Button>
-          </div>
-
-          {filterOpen && (
-            <div
-              role="dialog"
-              aria-label="Pipeline filters"
-              className="absolute right-0 top-full z-30 mt-2 w-[320px] sm:w-[360px] rounded-xl border border-border bg-card p-4 shadow-xl space-y-4"
-            >
-              <div className="flex items-center justify-between border-b border-border pb-2.5">
-                <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                  <SlidersHorizontal size={14} className="text-primary" />
-                  Filter Candidates
-                </span>
-                <button
-                  type="button"
-                  aria-label="Close filters"
-                  onClick={() => setFilterOpen(false)}
-                  className="rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
-                >
-                  <X size={14} />
-                </button>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-[11px] font-semibold text-foreground">Search</label>
-                <div className="relative">
-                  <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
-                  <Input
-                    aria-label="Search candidates"
-                    className="h-9 pl-8 text-xs"
-                    placeholder="Name, role, skills, location..."
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-[11px] font-semibold text-foreground">Job Opening</label>
-                <select
-                  aria-label="Filter by job"
-                  value={jobFilter}
-                  onChange={(e) => setJobFilter(e.target.value)}
-                  className="!h-9 text-xs"
-                >
-                  <option value="">All Jobs ({myJobs.length})</option>
-                  {myJobs.map((j) => (
-                    <option key={j.id} value={j.id}>
-                      {j.t}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-[11px] font-semibold text-foreground">Stage</label>
-                <div className="flex flex-wrap gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => setStageFilter("")}
-                    className={`rounded-full px-2.5 py-1 text-[11px] font-semibold border transition-colors ${
-                      !stageFilter
-                        ? "border-primary bg-primary text-primary-foreground"
-                        : "border-border bg-muted/40 text-foreground hover:border-primary/50"
-                    }`}
-                  >
-                    All ({apps.length})
-                  </button>
-                  {STAGES.map((st) => (
-                    <button
-                      key={st}
-                      type="button"
-                      onClick={() => setStageFilter((prev) => (prev === st ? "" : st))}
-                      className={`rounded-full px-2.5 py-1 text-[11px] font-semibold border transition-colors ${
-                        stageFilter === st
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "border-border bg-muted/40 text-foreground hover:border-primary/50"
-                      }`}
-                    >
-                      {st}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="block text-[11px] font-semibold text-foreground">
-                  Min Match Score <span className="float-right text-primary">{min}%</span>
-                  <input
-                    aria-label="Minimum match"
-                    type="range"
-                    min={0}
-                    max={100}
-                    step={5}
-                    className="mt-2 w-full accent-primary"
-                    value={min}
-                    onChange={(e) => setMin(Number(e.target.value))}
-                  />
-                </label>
-              </div>
-
-              <label className="flex items-center gap-2 text-xs font-medium cursor-pointer pt-1">
-                <input
-                  type="checkbox"
-                  className="accent-primary"
-                  checked={sla}
-                  onChange={(e) => setSla(e.target.checked)}
-                />
-                Needs a status update
-              </label>
-
-              <div className="flex items-center justify-between border-t border-border pt-3">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={resetAllFilters}
-                  className="h-8 text-xs text-muted-foreground hover:text-foreground"
-                >
-                  <RotateCcw className="mr-1 h-3.5 w-3.5" />
-                  Reset all
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  onClick={() => setFilterOpen(false)}
-                  className="h-8 text-xs"
-                >
-                  Done
-                </Button>
-              </div>
-            </div>
-          )}
+          <Button
+            size="sm"
+            variant={mode === "list" ? "default" : "outline"}
+            onClick={() => setMode("list")}
+          >
+            <List />
+            List
+          </Button>
         </div>
       </header>
+
+      {/* Search Bar Below Heading + Inline Filter Controls Beside Search */}
+      <div
+        className="workspace-filter-bar"
+        role="search"
+        aria-label="Search and filter candidates"
+      >
+        <div className="workspace-filter-search">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            aria-label="Search candidates"
+            className="h-9 pl-9 pr-8 text-xs"
+            placeholder="Search candidates by name, role, skills, or location..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          {query && (
+            <button
+              type="button"
+              aria-label="Clear search query"
+              onClick={() => setQuery("")}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded p-0.5 text-muted-foreground hover:text-foreground cursor-pointer"
+            >
+              <X size={13} />
+            </button>
+          )}
+        </div>
+
+        <select
+          aria-label="Filter by job"
+          value={jobFilter}
+          onChange={(e) => setJobFilter(e.target.value)}
+        >
+          <option value="">All Jobs ({myJobs.length})</option>
+          {myJobs.map((j) => (
+            <option key={j.id} value={j.id}>
+              {j.t}
+            </option>
+          ))}
+        </select>
+
+        <select
+          aria-label="Filter by stage"
+          value={stageFilter}
+          onChange={(e) => setStageFilter(e.target.value)}
+        >
+          <option value="">All Stages ({apps.length})</option>
+          {STAGES.map((st) => (
+            <option key={st} value={st}>
+              {st}
+            </option>
+          ))}
+        </select>
+
+        <select
+          aria-label="Minimum match"
+          value={min}
+          onChange={(e) => setMin(Number(e.target.value))}
+        >
+          <option value={0}>Any Match</option>
+          <option value={50}>50%+ Match</option>
+          <option value={70}>70%+ Match</option>
+          <option value={85}>85%+ Match</option>
+        </select>
+
+        <Button
+          type="button"
+          size="sm"
+          variant={sla ? "default" : "outline"}
+          aria-pressed={sla}
+          onClick={() => setSla((prev) => !prev)}
+          className="h-9 text-xs"
+        >
+          Needs update
+        </Button>
+
+        {(activeFilterCount > 0 || focusedStage) && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={resetAllFilters}
+            className="h-9 px-2.5 text-xs text-muted-foreground hover:text-foreground"
+          >
+            <RotateCcw className="mr-1 h-3.5 w-3.5" />
+            Reset
+          </Button>
+        )}
+      </div>
 
       {/* Differentiated Stage Summary Cards */}
       <div className="workspace-stats">

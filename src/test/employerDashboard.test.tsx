@@ -42,6 +42,10 @@ import { EmployerFindTalent } from "@/components/pro/employer/EmployerFindTalent
 import { EmployerNotificationsLive } from "@/components/pro/employer/EmployerNotificationsLive";
 import { EmployerJobs } from "@/components/pro/employer/EmployerJobs";
 import { CompanyProfileView } from "@/components/company/CompanyProfileView";
+import { ProEmployerViews } from "@/components/pro/ProEmployerViews";
+import { ProEmployerCommandCentre } from "@/components/pro/ProEmployerCommandCentre";
+import { DEFAULT_USERS } from "@/data/proData";
+import { DEMO_EMPLOYER_JOBS, DEMO_EMPLOYER_APPS, INITIAL_EMPLOYER_DEMO } from "@/data/employerDemo";
 
 const toast = vi.fn();
 const navigate = vi.fn();
@@ -76,12 +80,23 @@ beforeEach(() => {
 });
 
 describe("navigation", () => {
-  it("orders the employer menu as requested", () => {
+  it("orders the employer menu with Dashboard first and My Account immediately after", () => {
     const labels = employerMenuItems.map((i) => i.label);
-    const order = ["Overview", "Company Profile", "Jobs", "Job Applications", "Find Talent", "Notifications", "Assessments", "Security & Settings"];
+    const order = [
+      "Dashboard",
+      "My Account",
+      "Company Profile",
+      "Jobs",
+      "Job Applications",
+      "Find Talent",
+      "Notifications",
+      "Assessments",
+    ];
     expect(labels.slice(0, order.length)).toEqual(order);
+    expect(employerMenuItems.find((i) => i.label === "Dashboard")?.id).toBe("dash");
+    expect(employerMenuItems.find((i) => i.label === "My Account")?.id).toBe("account");
     expect(employerMenuItems.find((i) => i.label === "Find Talent")?.id).toBe("talent");
-    expect(employerMenuItems.find((i) => i.label === "Security & Settings")?.id).toBe("security");
+    expect(employerMenuItems.find((i) => i.label === "Security & Settings")).toBeUndefined();
   });
 });
 
@@ -142,6 +157,10 @@ describe("Job pipeline", () => {
     const hold = screen.getByRole("region", { name: "On Hold column" });
     expect(within(hold).getByText("Rahul Mehta")).toBeInTheDocument();
     expect(within(hold).getByText("1")).toBeInTheDocument();
+    expect(screen.getByLabelText("Search applicants")).toBeVisible();
+    expect(screen.getByLabelText("Filter by job")).toBeVisible();
+    expect(screen.getByLabelText("Filter by stage")).toBeVisible();
+    expect(screen.getByLabelText("Sort applicants")).toBeVisible();
     expect(screen.queryByText(/SLA/i)).toBeNull();
   });
 
@@ -413,5 +432,118 @@ describe("Company page layout", () => {
     expect(within(nav).getAllByRole("button").map((b) => b.textContent)).toEqual(["Overview", "About", "Jobs (1)", "Culture & benefits", "Contact"]);
     expect(container.querySelector(".border-l")).toBeNull();
     expect(screen.getByText("jobs@apex.dev")).toBeInTheDocument();
+  });
+});
+
+describe("Find Talent Wallet Bento & Employer Command Centre", () => {
+  beforeEach(() => {
+    if (typeof HTMLDialogElement !== "undefined" && !HTMLDialogElement.prototype.showModal) {
+      HTMLDialogElement.prototype.showModal = function () {
+        this.setAttribute("open", "");
+      };
+      HTMLDialogElement.prototype.close = function () {
+        this.removeAttribute("open");
+      };
+    }
+  });
+
+  it("exposes all Command Centre modules in employerMenuItems after the core items", () => {
+    const ids = employerMenuItems.map((i) => i.id);
+    expect(ids).toEqual(
+      expect.arrayContaining([
+        "ai-hub",
+        "talent-pool",
+        "interviews",
+        "offers",
+        "campus-hiring",
+        "employer-analytics",
+      ]),
+    );
+  });
+
+  it("renders Wallet Bento Box in Find Talent and confirms wallet deduction before unlocking Verified Candidates", () => {
+    const employerUser = {
+      ...DEFAULT_USERS["demo.employer@talento.app"],
+      wal: { bal: 12000, tx: [] },
+    };
+    const onUpdateWallet = vi.fn();
+    render(
+      <ProEmployerViews
+        view="talent"
+        user={employerUser}
+        jobs={DEMO_EMPLOYER_JOBS}
+        applications={DEMO_EMPLOYER_APPS}
+        onSaveCompanyProfile={vi.fn()}
+        onPublishJob={vi.fn()}
+        onUpdateApplicantStage={vi.fn()}
+        onBulkUpdateStage={vi.fn()}
+        onBulkSendReview={vi.fn()}
+        onOpenDrawer={vi.fn()}
+        onToast={toast}
+        onNavigate={navigate}
+        onUpdateWallet={onUpdateWallet}
+      />,
+    );
+
+    const bento = screen.getByRole("region", { name: /Hiring wallet and candidate pool selector/i });
+    expect(within(bento).getByText("Company Wallet")).toBeInTheDocument();
+    expect(within(bento).getByText("₹12,000")).toBeInTheDocument();
+    expect(within(bento).getByText("Candidates")).toBeInTheDocument();
+
+    const verifiedCard = within(bento).getByRole("button", { name: /Verified Candidates/i });
+    fireEvent.click(verifiedCard);
+
+    expect(
+      screen.getByRole("heading", { name: /Are you sure you want to unlock Verified Candidates\?/i }),
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /Yes, Deduct ₹499 & Unlock/i }));
+
+    expect(onUpdateWallet).toHaveBeenCalledWith(
+      11501,
+      expect.objectContaining({
+        type: "debit",
+        amt: 499,
+        via: "Company Wallet",
+      }),
+    );
+    expect(within(bento).getByText("Unlocked")).toBeInTheDocument();
+  });
+
+  it("renders the Employer Command Centre modules cleanly", () => {
+    const employerUser = DEFAULT_USERS["demo.employer@talento.app"];
+    const { rerender } = render(
+      <ProEmployerCommandCentre
+        view="ai-hub"
+        user={employerUser}
+        jobs={DEMO_EMPLOYER_JOBS}
+        applications={DEMO_EMPLOYER_APPS}
+        state={INITIAL_EMPLOYER_DEMO}
+        onChange={vi.fn()}
+        onNavigate={navigate}
+        onOpenDrawer={vi.fn()}
+        onPublishJob={vi.fn()}
+        onUpdateApplicantStage={vi.fn()}
+        onToast={toast}
+      />,
+    );
+    expect(screen.getByText(/Don't Just Find Candidates\. Find the Right Talent\./i)).toBeInTheDocument();
+
+    rerender(
+      <ProEmployerCommandCentre
+        view="offers"
+        user={employerUser}
+        jobs={DEMO_EMPLOYER_JOBS}
+        applications={DEMO_EMPLOYER_APPS}
+        state={INITIAL_EMPLOYER_DEMO}
+        onChange={vi.fn()}
+        onNavigate={navigate}
+        onOpenDrawer={vi.fn()}
+        onPublishJob={vi.fn()}
+        onUpdateApplicantStage={vi.fn()}
+        onToast={toast}
+      />,
+    );
+    expect(screen.getByText(/Close the Right Talent\. Faster\./i)).toBeInTheDocument();
   });
 });

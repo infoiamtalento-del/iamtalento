@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   BadgeCheck,
   Bookmark,
@@ -208,6 +208,7 @@ export function EmployerFindTalent({ searchParams, contact, onNavigate, onToast 
   const [boardStages, setBoardStages] = useState<Record<string, TalentBoardCol>>({});
   const [draggedCandidateId, setDraggedCandidateId] = useState<string | null>(null);
   const [dragOverCol, setDragOverCol] = useState<TalentBoardCol | null>(null);
+  const confirmVerifiedRef = useRef<HTMLDialogElement | null>(null);
 
   const loadOverview = useCallback(async () => {
     setOverviewError(null);
@@ -480,6 +481,99 @@ export function EmployerFindTalent({ searchParams, contact, onNavigate, onToast 
       />
       {walletBar}
       {rechargePanel}
+
+      {/* Top Tier Switcher Bento Strip inside Browse View */}
+      <div className="grid gap-3.5 md:grid-cols-2" aria-label="Candidate pool switcher">
+        <button
+          type="button"
+          data-selected={section === "candidates"}
+          onClick={() => setSection("candidates")}
+          className="workspace-tier-card"
+        >
+          <div className="flex items-center justify-between gap-2 w-full">
+            <span className="flex items-center gap-2 text-sm font-bold text-foreground">
+              <Users className="h-4 w-4 text-primary" />
+              Standard Candidates Pool
+            </span>
+            <span className="rounded-full bg-muted px-2.5 py-0.5 text-[10px] font-bold">Free</span>
+          </div>
+          <span className="text-[11px] text-muted-foreground">
+            Browse public candidate summaries with role match scores at zero wallet cost.
+          </span>
+        </button>
+
+        <button
+          type="button"
+          data-selected={section === "verified"}
+          onClick={() => {
+            if (section === "verified" || hasVerifiedAccess || balance < cheapest) {
+              setSection("verified");
+              return;
+            }
+            const dlg = confirmVerifiedRef.current;
+            if (dlg && !dlg.open) dlg.showModal();
+          }}
+          className="workspace-tier-card"
+        >
+          <div className="flex items-center justify-between gap-2 w-full">
+            <span className="flex items-center gap-2 text-sm font-bold text-foreground">
+              <BadgeCheck className="h-4 w-4 text-primary" />
+              Verified Candidates Pool
+            </span>
+            <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold text-primary">
+              {hasVerifiedAccess
+                ? "Unlocked"
+                : Number.isFinite(cheapest)
+                  ? `From ${inr(cheapest)}`
+                  : "Wallet Pass"}
+            </span>
+          </div>
+          <span className="text-[11px] text-muted-foreground">
+            Proctored CIR scorecards, verified identity &amp; downloadable CVs paid from Company Wallet.
+          </span>
+        </button>
+      </div>
+
+      <dialog
+        ref={confirmVerifiedRef}
+        className="workspace-native-dialog"
+        aria-labelledby="live-verify-wallet-title"
+      >
+        <div className="p-5 space-y-4">
+          <h2 id="live-verify-wallet-title" className="text-base font-bold text-foreground">
+            Are you sure you want to unlock Verified Candidates?
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            Unlocking the Verified Candidates subscription deducts{" "}
+            <strong>{Number.isFinite(cheapest) ? inr(cheapest) : "the package fee"}</strong> from your Company Wallet ({inr(balance)} available).
+          </p>
+          <div className="flex items-center justify-end gap-2">
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              autoFocus
+              onClick={() => confirmVerifiedRef.current?.close("")}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => {
+                confirmVerifiedRef.current?.close("confirm");
+                setSection("verified");
+                const subPkg = verifiedPackages.find((p) => p.scope === "subscription");
+                if (subPkg && balance >= subPkg.price_inr) {
+                  void subscribe(subPkg.key);
+                }
+              }}
+            >
+              Yes, Deduct &amp; Unlock
+            </Button>
+          </div>
+        </div>
+      </dialog>
 
       {locked && (
         <section className="workspace-panel space-y-4 !border-primary/40" aria-label="Premium access required">

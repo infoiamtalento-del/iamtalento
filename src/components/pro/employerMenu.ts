@@ -26,24 +26,38 @@ import {
   Settings,
   FileUp,
   UserSearch,
+  Sparkles,
+  Users,
+  FileCheck2,
+  School,
   type LucideIcon,
 } from "lucide-react";
 import type { ProView } from "./proTypes";
 
-export type EmployerMenuItem = { id: ProView; label: string; icon: LucideIcon };
+export type EmployerMenuItem = {
+  id: ProView;
+  label: string;
+  icon: LucideIcon;
+  section?: string;
+};
 
 export const employerMenuItems: EmployerMenuItem[] = [
-  { id: "dash", label: "Overview", icon: LayoutDashboard },
+  { id: "dash", label: "Dashboard", icon: LayoutDashboard, section: "Overview" },
+  { id: "account", label: "My Account", icon: UserRound },
   { id: "cp", label: "Company Profile", icon: Building2 },
-  { id: "post", label: "Jobs", icon: Briefcase },
+  { id: "post", label: "Jobs", icon: Briefcase, section: "Recruitment" },
   { id: "pipe", label: "Job Applications", icon: FileText },
   { id: "talent", label: "Find Talent", icon: UserSearch },
   { id: "notif", label: "Notifications", icon: Bell },
-  { id: "employer-assessments", label: "Assessments", icon: GraduationCap },
-  { id: "security", label: "Security & Settings", icon: ShieldCheck },
-  { id: "account", label: "My Account", icon: UserRound },
-  { id: "advertise", label: "Advertise & Subscriptions", icon: Megaphone },
+  { id: "employer-assessments", label: "Assessments", icon: GraduationCap, section: "Assessments & AI" },
+  { id: "ai-hub", label: "AI Intelligence Hub", icon: Sparkles },
+  { id: "talent-pool", label: "Talent Pool & CRM", icon: Users },
+  { id: "interviews", label: "Interview Management", icon: Video },
+  { id: "offers", label: "Offer & Hiring", icon: FileCheck2 },
+  { id: "campus-hiring", label: "Bulk & Campus Hiring", icon: School, section: "Growth & Analytics" },
+  { id: "employer-analytics", label: "Analytics & Reports", icon: BarChart3 },
   { id: "corporate-learning", label: "Corporate Learning", icon: BookOpen },
+  { id: "advertise", label: "Advertise & Subscriptions", icon: Megaphone, section: "Account & Billing" },
   { id: "payment-history", label: "Payment & Invoices", icon: Receipt },
   { id: "support", label: "Support Center", icon: Headphones },
 ];

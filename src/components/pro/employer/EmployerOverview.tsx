@@ -90,7 +90,7 @@ export function EmployerOverview({ companyName, onNavigate }: Props) {
   return (
     <div className="employer-workspace space-y-6">
       <PageHeader
-        eyebrow="Overview"
+        eyebrow="Dashboard"
         icon={<LayoutDashboard size={13} />}
         title={`Welcome back, ${companyName}`}
         description="Your live hiring numbers, recent applicants and account activity."

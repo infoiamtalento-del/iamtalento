@@ -21,6 +21,151 @@
 .employer-workspace .workspace-divider { margin:22px 0; border-top:1px solid hsl(var(--job-border)); }
 .employer-workspace .workspace-chip { display:inline-flex; gap:6px; align-items:center; border-radius:18px; padding:5px 10px; font-size:11px; font-weight:600; background:hsl(var(--job-tint)); color:hsl(var(--primary)); }
 
+/* Accessible Single-Row Tabs (Modern Web Guidance: tabs) */
+.employer-workspace .workspace-tabs {
+  display:flex;
+  overflow-x:auto;
+  border-block-end:1px solid hsl(var(--job-border));
+  gap:4px;
+  scrollbar-width:none;
+}
+.employer-workspace .workspace-tabs::-webkit-scrollbar { display:none; }
+.employer-workspace .workspace-tab,
+.employer-reference-shell .employer-workspace button.workspace-tab {
+  flex:none;
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:11px 16px;
+  border:0;
+  border-radius:8px 8px 0 0;
+  background-color:transparent;
+  color:hsl(var(--job-muted));
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  transition:color 0.15s ease, background-color 0.15s ease;
+}
+.employer-workspace .workspace-tab:hover,
+.employer-reference-shell .employer-workspace button.workspace-tab:hover {
+  color:hsl(var(--job-ink));
+  background-color:hsl(var(--job-tint) / 0.55);
+}
+.employer-workspace .workspace-tab[aria-selected="true"],
+.employer-reference-shell .employer-workspace button.workspace-tab[aria-selected="true"] {
+  color:hsl(var(--primary));
+  background-color:transparent;
+}
+.employer-workspace .workspace-tab[aria-selected="true"]::after {
+  content:"";
+  position:absolute;
+  inset-inline:0;
+  inset-block-end:0;
+  border-block-end:3px solid hsl(var(--primary));
+}
+
+/* Inline Pipeline Search & Filter Toolbar (Modern Web Guidance: css-layout) */
+.employer-workspace .workspace-filter-bar {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:safe center;
+  gap:10px;
+  padding:12px 14px;
+  margin-bottom:18px;
+  border:1px solid hsl(var(--job-border));
+  border-radius:10px;
+  background-color:hsl(var(--card));
+}
+.employer-workspace .workspace-filter-search {
+  flex:1 1 260px;
+  min-inline-size:0;
+  position:relative;
+}
+.employer-workspace .workspace-filter-bar select {
+  width:auto;
+  min-width:136px;
+  height:36px;
+  padding:0 28px 0 10px;
+  font-size:12px;
+  font-weight:500;
+  border:1px solid hsl(var(--job-border));
+  border-radius:8px;
+  background-color:hsl(var(--card));
+}
+
+/* Native Modal Dialog Scroll Containment & Styling (Modern Web Guidance: dialog) */
+dialog.workspace-native-dialog:modal {
+  overscroll-behavior:contain;
+  max-inline-size:min(480px, calc(100dvw - 2rem));
+  inline-size:100%;
+  margin:auto;
+  padding:0;
+  border:1px solid hsl(var(--job-border));
+  border-radius:16px;
+  background-color:hsl(var(--card));
+  color:hsl(var(--job-ink));
+  box-shadow:0 24px 48px -12px rgba(15, 23, 42, 0.28);
+}
+dialog.workspace-native-dialog::backdrop {
+  overflow:hidden;
+  overscroll-behavior:contain;
+  background-color:rgba(15, 23, 42, 0.55);
+}
+
+/* Find Talent Wallet Bento Grid & Choice Cards (Modern Web Guidance: css-layout & card) */
+.employer-workspace .workspace-wallet-bento {
+  display:grid;
+  grid-template-columns:repeat(12, minmax(0, 1fr));
+  gap:14px;
+}
+@media (max-width: 1024px) {
+  .employer-workspace .workspace-wallet-bento {
+    grid-template-columns:1fr;
+  }
+}
+.employer-workspace .workspace-tier-card {
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  gap:10px;
+  padding:16px;
+  border:2px solid hsl(var(--job-border));
+  border-radius:12px;
+  background-color:hsl(var(--card));
+  text-align:left;
+  cursor:pointer;
+  transition:border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+.employer-workspace .workspace-tier-card:hover,
+.employer-reference-shell .employer-workspace button.workspace-tier-card:hover {
+  border-color:hsl(var(--primary) / 0.55);
+}
+.employer-workspace .workspace-tier-card[data-selected="true"],
+.employer-reference-shell .employer-workspace button.workspace-tier-card[data-selected="true"] {
+  border-color:hsl(var(--primary));
+  background-color:hsl(var(--job-tint) / 0.45);
+  box-shadow:0 0 0 1px hsl(var(--primary) / 0.2);
+}
+.employer-workspace .workspace-pass-choice {
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  padding:12px;
+  border:2px solid hsl(var(--job-border));
+  border-radius:12px;
+  background-color:hsl(var(--card));
+  cursor:pointer;
+  transition:border-color 0.15s ease, background-color 0.15s ease;
+}
+.employer-workspace .workspace-pass-choice:hover {
+  border-color:hsl(var(--primary) / 0.45);
+}
+.employer-workspace .workspace-pass-choice:has(> input:checked) {
+  border-color:hsl(var(--primary));
+  background-color:hsl(var(--job-tint) / 0.45);
+}
+
 /* Differentiated Stage Color Themes (Solid Colors Only - Zero Gradients) */
 .employer-workspace [data-stage-theme="all"] {
   --stage-accent: #1e40af;

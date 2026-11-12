@@ -63,41 +63,52 @@ export function ProEmployerSidebar({
 
           {/* Navigation Items */}
           <nav aria-label="Dashboard navigation" className="space-y-1">
-            {menuItems.map(({ id, label, icon: Icon }) => {
+            {menuItems.map(({ id, label, icon: Icon, section }, idx) => {
               const isActive = activeView === id;
               return (
-                <button
-                  key={id}
-                  type="button"
-                  aria-current={isActive ? "page" : undefined}
-                  onClick={() => onNavigate(id)}
-                  className={cn(
-                    "group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold transition-all text-left cursor-pointer",
-                    isActive
-                      ? "bg-white/20 text-white shadow-xs border border-white/30 backdrop-blur-xs"
-                      : "text-white/85 hover:text-white hover:bg-white/10"
-                  )}
-                >
-                  <Icon
-                    className={cn(
-                      "h-4 w-4 shrink-0 transition-colors",
-                      isActive ? "text-white" : "text-blue-100 group-hover:text-white"
-                    )}
-                  />
-                  <span className="min-w-0 flex-1 truncate text-white">{label}</span>
-                  {id === "notif" && unreadCount > 0 && (
-                    <span
+                <div key={id}>
+                  {section && (
+                    <p
                       className={cn(
-                        "ml-auto flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold",
-                        isActive
-                          ? "bg-white text-[#002C66] shadow-xs"
-                          : "bg-red-500 text-white shadow-xs"
+                        "px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-blue-200/75",
+                        idx === 0 ? "pt-1" : "pt-3.5"
                       )}
                     >
-                      {unreadCount}
-                    </span>
+                      {section}
+                    </p>
                   )}
-                </button>
+                  <button
+                    type="button"
+                    aria-current={isActive ? "page" : undefined}
+                    onClick={() => onNavigate(id)}
+                    className={cn(
+                      "group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold transition-all text-left cursor-pointer",
+                      isActive
+                        ? "bg-white/20 text-white shadow-xs border border-white/30 backdrop-blur-xs"
+                        : "text-white/85 hover:text-white hover:bg-white/10"
+                    )}
+                  >
+                    <Icon
+                      className={cn(
+                        "h-4 w-4 shrink-0 transition-colors",
+                        isActive ? "text-white" : "text-blue-100 group-hover:text-white"
+                      )}
+                    />
+                    <span className="min-w-0 flex-1 truncate text-white">{label}</span>
+                    {id === "notif" && unreadCount > 0 && (
+                      <span
+                        className={cn(
+                          "ml-auto flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold",
+                          isActive
+                            ? "bg-white text-[#002C66] shadow-xs"
+                            : "bg-red-500 text-white shadow-xs"
+                        )}
+                      >
+                        {unreadCount}
+                      </span>
+                    )}
+                  </button>
+                </div>
               );
             })}
           </nav>
