@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import {
   Building2,
   Briefcase,
@@ -10,10 +10,7 @@ import {
   Clock,
   CheckCircle2,
   Plus,
-  Filter,
   ArrowRight,
-  ExternalLink,
-  ChevronRight,
   ShieldCheck,
   Award,
   Check,
@@ -23,8 +20,20 @@ import {
   List,
   Eye,
   Send,
-  MessageSquare,
   ArrowRightLeft,
+  Bookmark,
+  FileText,
+  Download,
+  GripVertical,
+  LayoutGrid,
+  Table2,
+  X,
+  IndianRupee,
+  CalendarDays,
+  ChevronDown,
+  ChevronUp,
+  Star,
+  Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,12 +52,14 @@ import {
   levelFromExp,
   avgCandidateScore,
   calcScore,
-  timeAgo,
   getRemainingTime,
-  formatINR,
+  candidateFitForJob,
+  generateHash,
 } from "@/data/proData";
 import { getCandidatePhoto, getCompanyLogo } from "@/data/portalAssets";
+import { downloadCirReportPdf, type RealTimeCertificateData } from "@/utils/credentialPdf";
 import { ProView, ProDrawerState } from "./proTypes";
+import "./employer-workspace.css";
 
 interface ProEmployerViewsProps {
   view: "cp" | "post" | "talent" | "pipe";
@@ -62,7 +73,56 @@ interface ProEmployerViewsProps {
   onBulkSendReview: (appIds: number[]) => void;
   onOpenDrawer: (drawer: ProDrawerState) => void;
   onToast: (msg: string) => void;
+  onNavigate?: (view: ProView, query?: Record<string, string>) => void;
+  onAddCandidateToPipeline?: (
+    cand: ProCandidate,
+    jobId: number,
+    stage: ProApplication["st"],
+    note?: string
+  ) => void;
+  selectedCompareCandidates?: string[];
+  onCompareCandidatesChange?: (names: string[]) => void;
 }
+
+type SourcingStage = "Discovered" | "Saved" | "Invited" | "Shortlisted" | "Interview";
+
+const SOURCING_COLUMNS: Array<{
+  id: SourcingStage;
+  title: string;
+  subtitle: string;
+  theme: string;
+}> = [
+  {
+    id: "Discovered",
+    title: "Discovered Pool",
+    subtitle: "AI-matched verified engineers",
+    theme: "Applied",
+  },
+  {
+    id: "Saved",
+    title: "Saved & Bookmarked",
+    subtitle: "Starred by HR for review",
+    theme: "On Hold",
+  },
+  {
+    id: "Invited",
+    title: "Outreach / Invited",
+    subtitle: "Invitation or role pitch sent",
+    theme: "Offer",
+  },
+  {
+    id: "Shortlisted",
+    title: "Shortlisted for Role",
+    subtitle: "Added to active job shortlist",
+    theme: "Shortlisted",
+  },
+  {
+    id: "Interview",
+    title: "Interviewing",
+    subtitle: "Technical / AI round active",
+    theme: "Interview",
+  },
+];
 
 export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
   view,
@@ -76,6 +136,10 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
   onBulkSendReview,
   onOpenDrawer,
   onToast,
+  onNavigate,
+  onAddCandidateToPipeline,
+  selectedCompareCandidates,
+  onCompareCandidatesChange,
 }) => {
   const myJobs = jobs.filter((j) => j.by === user.email);
   const myApps = applications.filter((a) => myJobs.some((j) => j.id === a.jid));
@@ -84,13 +148,23 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
   // 1. COMPANY PROFILE VIEW
   const [cpData, setCpData] = useState(() => ({
     name: user.cp?.name || user.name || "Super30 Technologies",
-    about: user.cp?.about || "Building developer tooling and autonomous engineering platforms for modern teams.",
-    mission: user.cp?.mission || "Empowering developers to build 10x faster with verified engineering trust.",
+    about:
+      user.cp?.about ||
+      "Building developer tooling and autonomous engineering platforms for modern teams.",
+    mission:
+      user.cp?.mission ||
+      "Empowering developers to build 10x faster with verified engineering trust.",
     ind: user.cp?.ind || "Software & Cloud",
     size: user.cp?.size || "Mid",
     hq: user.cp?.hq || "Bengaluru, India",
     site: user.cp?.site || "super30.ai",
-    ben: user.cp?.ben || ["Remote work", "Health insurance", "Learning budget", "Flexible hours", "Stock options"],
+    ben: user.cp?.ben || [
+      "Remote work",
+      "Health insurance",
+      "Learning budget",
+      "Flexible hours",
+      "Stock options",
+    ],
   }));
 
   const handleToggleBenefit = (benefit: string) => {
@@ -117,16 +191,6 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
   const [jobMinSal, setJobMinSal] = useState(18);
   const [jobMaxSal, setJobMaxSal] = useState(30);
   const [jobSkills, setJobSkills] = useState("React, TypeScript, Next.js, Node.js");
-
-  const handleApplyTemplate = (tpl: (typeof JOB_TEMPLATES)[0]) => {
-    setJobTitle(tpl[1]);
-    setJobWorkMode(tpl[2]);
-    setJobMinExp(tpl[3]);
-    setJobMinSal(tpl[4]);
-    setJobMaxSal(tpl[5]);
-    setJobSkills(tpl[6]);
-    onToast(`Applied "${tpl[0]}" template!`);
-  };
 
   const handlePublish = (e: React.FormEvent) => {
     e.preventDefault();
@@ -157,35 +221,194 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
     onToast(`Published job listing "${jobTitle}"!`);
   };
 
-  // 3. FIND TALENT VIEW
+  // 3. FIND TALENT VIEW STATE
+  const [talentLayout, setTalentLayout] = useState<"cards" | "kanban" | "matrix">("cards");
   const [talentQuery, setTalentQuery] = useState("");
   const [talentSmartQuery, setTalentSmartQuery] = useState("");
-  const [talentJobFilter, setTalentJobFilter] = useState<string>("");
+  const [talentJobFilter, setTalentJobFilter] = useState<string>(() =>
+    myJobs[0] ? String(myJobs[0].id) : ""
+  );
   const [talentExpLevels, setTalentExpLevels] = useState<string[]>([]);
+  const [talentWorkModes, setTalentWorkModes] = useState<string[]>([]);
   const [talentMinAssessment, setTalentMinAssessment] = useState(0);
   const [talentOnlyCertified, setTalentOnlyCertified] = useState(false);
   const [talentMaxSalary, setTalentMaxSalary] = useState(60);
   const [talentNoticePeriod, setTalentNoticePeriod] = useState(999);
-  const [talentSort, setTalentSort] = useState<"s" | "a" | "x">("s");
-  const [selectedTalentToCompare, setSelectedTalentToCompare] = useState<string[]>([]);
+  const [talentSort, setTalentSort] = useState<"s" | "a" | "x" | "sal">("s");
+  const [quickPreset, setQuickPreset] = useState<
+    "all" | "high_match" | "immediate" | "top_test" | "budget" | "saved" | "in_pipeline"
+  >("all");
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [expandedFitCard, setExpandedFitCard] = useState<string | null>(null);
+  const [draggedCandName, setDraggedCandName] = useState<string | null>(null);
+  const [dragOverSourcingStage, setDragOverSourcingStage] = useState<SourcingStage | null>(null);
 
-  const handleSmartTalentSearch = () => {
-    const q = talentSmartQuery.toLowerCase();
-    if (!q) return;
-
-    if (q.includes("react")) setTalentQuery("React");
-    if (q.includes("python")) setTalentQuery("Python");
-    if (q.includes("certified")) setTalentOnlyCertified(true);
-    if (q.includes("senior")) setTalentExpLevels(["Senior"]);
-    if (q.includes("immediate")) setTalentNoticePeriod(0);
-
-    onToast(`Filtered talent pool for "${talentSmartQuery}"`);
+  const [localCompare, setLocalCompare] = useState<string[]>([]);
+  const selectedTalentToCompare = selectedCompareCandidates ?? localCompare;
+  const updateCompareList = (next: string[]) => {
+    setLocalCompare(next);
+    onCompareCandidatesChange?.(next);
   };
 
+  const [bookmarkedTalent, setBookmarkedTalent] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem("tq_bookmarked_talent");
+      return saved ? JSON.parse(saved) : ["Aarav Mehta", "Sneha Iyer"];
+    } catch {
+      return ["Aarav Mehta", "Sneha Iyer"];
+    }
+  });
+
+  const [sourcingMap, setSourcingMap] = useState<Record<string, SourcingStage>>(() => {
+    try {
+      const raw = localStorage.getItem("tq_talent_sourcing_stages");
+      if (raw) return JSON.parse(raw);
+    } catch {
+      /* ignore */
+    }
+    return {
+      "Aarav Mehta": "Shortlisted",
+      "Diya Nair": "Shortlisted",
+      "Rohan Das": "Discovered",
+      "Sneha Iyer": "Interview",
+      "Kabir Shah": "Invited",
+      "Meera Pillai": "Saved",
+      "Arjun Rao": "Interview",
+      "Priya Menon": "Shortlisted",
+    };
+  });
+
+  const filterPopoverRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("tq_bookmarked_talent", JSON.stringify(bookmarkedTalent));
+    } catch {
+      /* ignore */
+    }
+  }, [bookmarkedTalent]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("tq_talent_sourcing_stages", JSON.stringify(sourcingMap));
+    } catch {
+      /* ignore */
+    }
+  }, [sourcingMap]);
+
+  useEffect(() => {
+    if (!filterOpen) return;
+    const handleOutside = (e: MouseEvent) => {
+      if (filterPopoverRef.current && !filterPopoverRef.current.contains(e.target as Node)) {
+        setFilterOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
+  }, [filterOpen]);
+
+  // Best-fit job resolver for a candidate when "All Roles" is selected
   const selectedJobObj = myJobs.find((j) => String(j.id) === talentJobFilter);
+  const getBestJobForCandidate = (cand: ProCandidate): ProJob | undefined => {
+    if (selectedJobObj) return selectedJobObj;
+    if (myJobs.length === 0) return jobs[0];
+    return [...myJobs].sort((a, b) => calcTalentScore(cand, b) - calcTalentScore(cand, a))[0];
+  };
+
+  const getCandidateStage = (candName: string): SourcingStage => {
+    const existingApp = myApps.find((a) => a.name === candName);
+    if (sourcingMap[candName]) return sourcingMap[candName];
+    if (existingApp) {
+      if (existingApp.st === "Interview" || existingApp.st === "Offer") return "Interview";
+      if (existingApp.st === "Shortlisted") return "Shortlisted";
+      return "Invited";
+    }
+    if (bookmarkedTalent.includes(candName)) return "Saved";
+    return "Discovered";
+  };
+
+  const toggleBookmark = (name: string) => {
+    setBookmarkedTalent((prev) => {
+      const exists = prev.includes(name);
+      const next = exists ? prev.filter((x) => x !== name) : [...prev, name];
+      onToast(exists ? `Removed ${name} from Saved Talent` : `Bookmarked ${name} to Saved Talent!`);
+      return next;
+    });
+  };
+
+  const handleSmartTalentSearch = (presetText?: string) => {
+    const raw = (presetText ?? talentSmartQuery).trim();
+    if (presetText !== undefined) setTalentSmartQuery(presetText);
+    const q = raw.toLowerCase();
+    if (!q) return;
+
+    // Reset before applying smart query tokens
+    setTalentExpLevels([]);
+    setTalentWorkModes([]);
+    setTalentOnlyCertified(false);
+    setTalentMinAssessment(0);
+    setTalentNoticePeriod(999);
+    setTalentMaxSalary(60);
+
+    const skillKeywords = [
+      "react",
+      "typescript",
+      "node.js",
+      "python",
+      "sql",
+      "aws",
+      "kubernetes",
+      "terraform",
+      "java",
+      "dsa",
+      "figma",
+      "pytorch",
+      "tableau",
+    ];
+    const matchedSkill = skillKeywords.find((k) => q.includes(k));
+    setTalentQuery(matchedSkill ? matchedSkill : "");
+
+    if (q.includes("certified")) setTalentOnlyCertified(true);
+    if (q.includes("senior")) setTalentExpLevels(["Senior"]);
+    if (q.includes("mid")) setTalentExpLevels(["Mid"]);
+    if (q.includes("junior") || q.includes("fresher")) setTalentExpLevels(["Fresher", "Junior"]);
+    if (q.includes("immediate") || q.includes("15d")) setTalentNoticePeriod(15);
+    if (q.includes("remote")) setTalentWorkModes(["Remote"]);
+    if (q.includes("80%") || q.includes("85%")) setTalentMinAssessment(80);
+    const salMatch = /(\d+)\s*lpa/.exec(q);
+    if (salMatch) setTalentMaxSalary(Number(salMatch[1]));
+
+    onToast(`AI Smart Search applied: "${raw}"`);
+  };
+
+  const resetTalentFilters = () => {
+    setTalentQuery("");
+    setTalentSmartQuery("");
+    setTalentExpLevels([]);
+    setTalentWorkModes([]);
+    setTalentMinAssessment(0);
+    setTalentOnlyCertified(false);
+    setTalentMaxSalary(60);
+    setTalentNoticePeriod(999);
+    setQuickPreset("all");
+  };
+
+  const activeTalentFilterCount =
+    (talentQuery ? 1 : 0) +
+    (talentExpLevels.length > 0 ? 1 : 0) +
+    (talentWorkModes.length > 0 ? 1 : 0) +
+    (talentMinAssessment > 0 ? 1 : 0) +
+    (talentOnlyCertified ? 1 : 0) +
+    (talentMaxSalary < 60 ? 1 : 0) +
+    (talentNoticePeriod !== 999 ? 1 : 0) +
+    (quickPreset !== "all" ? 1 : 0);
 
   const filteredCandidates = useMemo(() => {
     return CANDIDATES_SEED.filter((c) => {
+      const targetJob = getBestJobForCandidate(c);
+      const roleScore = calcTalentScore(c, targetJob);
+      const testAvg = avgCandidateScore(c);
+
       if (talentQuery) {
         const q = talentQuery.toLowerCase();
         const matchesName = c.n.toLowerCase().includes(q);
@@ -199,27 +422,114 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
         if (!talentExpLevels.includes(lvl)) return false;
       }
 
-      if (avgCandidateScore(c) < talentMinAssessment) return false;
+      if (talentWorkModes.length > 0 && !talentWorkModes.includes(c.wp)) return false;
+      if (testAvg < talentMinAssessment) return false;
       if (talentOnlyCertified && (!c.ce || c.ce.length === 0)) return false;
       if (c.es > talentMaxSalary) return false;
       if (talentNoticePeriod !== 999 && (c.nt || 0) > talentNoticePeriod) return false;
+
+      if (quickPreset === "high_match" && roleScore < 75) return false;
+      if (quickPreset === "immediate" && (c.nt || 0) > 15) return false;
+      if (quickPreset === "top_test" && testAvg < 85) return false;
+      if (quickPreset === "budget" && targetJob && c.es > targetJob.b) return false;
+      if (quickPreset === "saved" && !bookmarkedTalent.includes(c.n)) return false;
+      if (quickPreset === "in_pipeline" && !myApps.some((a) => a.name === c.n)) return false;
 
       return true;
     }).sort((a, b) => {
       if (talentSort === "a") return avgCandidateScore(b) - avgCandidateScore(a);
       if (talentSort === "x") return b.x - a.x;
-      return calcTalentScore(b, selectedJobObj) - calcTalentScore(a, selectedJobObj);
+      if (talentSort === "sal") return a.es - b.es;
+      return (
+        calcTalentScore(b, getBestJobForCandidate(b)) -
+        calcTalentScore(a, getBestJobForCandidate(a))
+      );
     });
   }, [
     talentQuery,
     talentExpLevels,
+    talentWorkModes,
     talentMinAssessment,
     talentOnlyCertified,
     talentMaxSalary,
     talentNoticePeriod,
     talentSort,
+    quickPreset,
+    bookmarkedTalent,
+    myApps,
     selectedJobObj,
   ]);
+
+  const handleMoveCandidateSourcing = (cand: ProCandidate, targetStage: SourcingStage) => {
+    setSourcingMap((prev) => ({ ...prev, [cand.n]: targetStage }));
+    const targetJob = getBestJobForCandidate(cand) || myJobs[0] || jobs[0];
+
+    if (targetStage === "Saved" && !bookmarkedTalent.includes(cand.n)) {
+      setBookmarkedTalent((prev) => [...prev, cand.n]);
+    }
+
+    if (
+      (targetStage === "Shortlisted" || targetStage === "Interview" || targetStage === "Invited") &&
+      targetJob
+    ) {
+      const mappedPipelineStage: ProApplication["st"] =
+        targetStage === "Interview"
+          ? "Interview"
+          : targetStage === "Shortlisted"
+          ? "Shortlisted"
+          : "Applied";
+      const existingApp = myApps.find((a) => a.name === cand.n && a.jid === targetJob.id);
+      if (existingApp) {
+        onUpdateApplicantStage(existingApp.id, mappedPipelineStage);
+      } else if (onAddCandidateToPipeline) {
+        onAddCandidateToPipeline(
+          cand,
+          targetJob.id,
+          mappedPipelineStage,
+          `Sourced from Find Talent into ${mappedPipelineStage} for ${targetJob.t}.`
+        );
+      } else {
+        onToast(`Moved ${cand.n} to ${targetStage} (${targetJob.t})`);
+      }
+      return;
+    }
+
+    onToast(`Moved ${cand.n} to ${targetStage}`);
+  };
+
+  const handleDownloadCandidateCir = (cand: ProCandidate) => {
+    const targetJob = getBestJobForCandidate(cand);
+    const avgScore = avgCandidateScore(cand);
+    const roleScore = calcTalentScore(cand, targetJob);
+    const cirId = `CIR-${generateHash(cand.n)}`;
+    const certData: RealTimeCertificateData = {
+      credentialId: cirId,
+      candidateName: cand.n,
+      candidateEmail: `${cand.n.toLowerCase().replace(/\s+/g, ".")}@talentcir.verified`,
+      candidateRole: `${levelFromExp(cand.x)} ${cand.sk[0] || "Software"} Engineer`,
+      title: `${cand.sk[0] || "Engineering"} & Career Intelligence Readiness`,
+      issuer: "TalentCIR AI-Proctored Assessment Authority",
+      issuedDate: "Nov 2026",
+      validUntil: "Nov 2028",
+      score: avgScore,
+      percentile: avgScore >= 88 ? "Top 4%" : avgScore >= 80 ? "Top 9%" : "Top 15%",
+      integrityScore: "99.8%",
+      timeTaken: "35m 40s / 45m",
+      codingTestCases: "12 / 12 Passed",
+      peerAverage: 64,
+      partnerCutoff: 60,
+      salaryBand: `INR ${cand.es} LPA`,
+      verificationHash: `0x94E1...${avgScore}B7`,
+      subSkills: Object.entries(cand.as).map(([k, v]) => ({
+        name: `${k} Verified Assessment`,
+        score: v,
+        benchmark: 62,
+      })),
+      recruiterSummary: `${cand.n} scored ${avgScore}% across proctored technical assessments and has a ${roleScore}% role match for ${targetJob?.t || "your open engineering roles"}.`,
+    };
+    downloadCirReportPdf(certData);
+    onToast(`Downloaded CIR Report (${cirId}.pdf) for ${cand.n}`);
+  };
 
   // 4. PIPELINE VIEW
   const [pipeJobFilter, setPipeJobFilter] = useState<string>("");
@@ -243,17 +553,15 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
 
   // RENDER BASED ON VIEW
   if (view === "cp") {
-    // COMPANY PROFILE
     return (
       <div className="space-y-6">
         <div className="bg-card border border-border/80 rounded-2xl p-6 relative overflow-hidden shadow-sm">
-          <div className="absolute top-0 right-0 w-72 h-72 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
           <div className="relative z-10">
             <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-2">
               <Building2 className="w-3.5 h-3.5" /> Employer Branding
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground font-display">
-              Company Profile & Culture
+              Company Profile &amp; Culture
             </h1>
             <p className="text-muted-foreground text-sm mt-1 max-w-2xl">
               Showcase your company mission, headquarters, perks, and values to attract top-tier verified talent.
@@ -262,8 +570,10 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Edit Form: 7 cols */}
-          <form onSubmit={handleSaveCp} className="lg:col-span-7 bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-4">
+          <form
+            onSubmit={handleSaveCp}
+            className="lg:col-span-7 bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-4"
+          >
             <h3 className="font-semibold text-foreground text-base">Edit Company Information</h3>
 
             <div className="space-y-3 text-xs">
@@ -335,7 +645,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
               </div>
 
               <div className="pt-2">
-                <label className="font-medium text-foreground block mb-2">Benefits & Perks</label>
+                <label className="font-medium text-foreground block mb-2">Benefits &amp; Perks</label>
                 <div className="flex flex-wrap gap-2">
                   {COMPANY_BENEFITS.map((benefit) => {
                     const isSelected = cpData.ben.includes(benefit);
@@ -351,8 +661,8 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                             : "bg-muted/40 text-muted-foreground border-border/60 hover:text-foreground"
                         )}
                       >
-                        <span>{benefit}</span>
-                        {isSelected && <Check className="w-3 h-3 text-primary-foreground inline" />}
+                        {isSelected && <Check className="w-3 h-3 inline mr-1" />}
+                        {benefit}
                       </button>
                     );
                   })}
@@ -361,17 +671,21 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
             </div>
 
             <div className="pt-3 border-t border-border/60 flex justify-end">
-              <Button type="submit" className="rounded-xl text-xs font-medium">
-                Save Company Profile
+              <Button type="submit" className="rounded-xl text-xs font-medium gap-2">
+                <Check className="w-3.5 h-3.5" /> Save Company Profile
               </Button>
             </div>
           </form>
 
-          {/* Live Recruiter Preview: 5 cols */}
           <div className="lg:col-span-5 bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-4">
-            <h3 className="font-semibold text-foreground text-sm flex items-center gap-2">
-              <Eye className="w-4 h-4 text-primary" /> Candidate View Preview
-            </h3>
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold text-foreground text-sm flex items-center gap-2">
+                <Eye className="w-4 h-4 text-primary" /> Candidate-Facing Preview
+              </h3>
+              <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold flex items-center gap-1">
+                <ShieldCheck className="w-3 h-3" /> Verified Partner
+              </span>
+            </div>
 
             <div className="p-4 rounded-xl border border-border/60 bg-muted/20 space-y-3 text-xs">
               <div className="flex items-center gap-3">
@@ -381,24 +695,28 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                   className="w-12 h-12 rounded-xl object-contain p-1 border border-border/60 bg-background"
                 />
                 <div>
-                  <div className="font-bold text-foreground text-sm">{cpData.name}</div>
-                  <div className="text-muted-foreground text-[11px]">
+                  <div className="font-bold text-foreground text-base">{cpData.name}</div>
+                  <div className="text-muted-foreground">
                     {cpData.ind} • {cpData.size} • {cpData.hq}
                   </div>
                 </div>
               </div>
 
-              <p className="text-muted-foreground leading-relaxed text-[11px]">{cpData.about}</p>
+              <p className="text-muted-foreground leading-relaxed">{cpData.about}</p>
 
-              <div className="pt-2 border-t border-border/50">
-                <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider block mb-1.5">
-                  Perks & Culture
-                </span>
+              {cpData.mission && (
+                <div className="p-2.5 rounded-lg bg-primary/5 border border-primary/20 text-foreground italic">
+                  "{cpData.mission}"
+                </div>
+              )}
+
+              <div>
+                <div className="font-semibold text-foreground mb-1.5">Perks &amp; Benefits</div>
                 <div className="flex flex-wrap gap-1.5">
                   {cpData.ben.map((b) => (
                     <span
                       key={b}
-                      className="px-2 py-0.5 rounded-md bg-background border border-border/60 text-foreground text-[10px] font-medium"
+                      className="px-2 py-0.5 rounded-md bg-background border border-border/60 text-[11px] font-medium text-foreground"
                     >
                       {b}
                     </span>
@@ -413,47 +731,51 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
   }
 
   if (view === "post") {
-    // POST A JOB VIEW
     return (
       <div className="space-y-6">
         <div className="bg-card border border-border/80 rounded-2xl p-6 relative overflow-hidden shadow-sm">
-          <div className="absolute top-0 right-0 w-72 h-72 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
           <div className="relative z-10">
             <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-2">
-              <Plus className="w-3.5 h-3.5" /> Hiring Studio
+              <Briefcase className="w-3.5 h-3.5" /> Job Studio
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground font-display">
-              Post a New Position
+              Create a Job Opening
             </h1>
             <p className="text-muted-foreground text-sm mt-1 max-w-2xl">
-              Publish an open engineering or product vacancy. Applicants are automatically pre-screened with review tracking.
+              Publish a role with transparent salary bands and 24-hour review SLA commitment.
             </p>
           </div>
         </div>
 
-        {/* Templates Row */}
-        <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-3">
-          <h3 className="font-semibold text-foreground text-xs uppercase tracking-wider">
-            Quick Start From Template
-          </h3>
-          <div className="flex items-center gap-2 overflow-x-auto pb-1">
-            {JOB_TEMPLATES.map((tpl, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => handleApplyTemplate(tpl)}
-                className="px-3 py-1.5 rounded-xl border border-border/80 bg-background hover:bg-muted text-xs font-semibold text-foreground transition-all shrink-0"
-              >
-                {tpl[0]}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* 2-Column Form & Preview */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          <form onSubmit={handlePublish} className="lg:col-span-7 bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-4">
-            <h3 className="font-semibold text-foreground text-base">Role Specifications</h3>
+          <form
+            onSubmit={handlePublish}
+            className="lg:col-span-7 bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-4"
+          >
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <h3 className="font-semibold text-foreground text-base">Role Details</h3>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="text-xs text-muted-foreground mr-1">Quick Templates:</span>
+                {JOB_TEMPLATES.map((tpl) => (
+                  <button
+                    key={tpl[0]}
+                    type="button"
+                    onClick={() => {
+                      setJobTitle(tpl[1]);
+                      setJobWorkMode(tpl[2]);
+                      setJobMinExp(tpl[3]);
+                      setJobMinSal(tpl[4]);
+                      setJobMaxSal(tpl[5]);
+                      setJobSkills(tpl[6]);
+                      onToast(`Applied "${tpl[0]}" template!`);
+                    }}
+                    className="px-2.5 py-1 rounded-lg bg-muted hover:bg-primary/10 hover:text-primary text-xs font-medium transition-colors"
+                  >
+                    {tpl[0]}
+                  </button>
+                ))}
+              </div>
+            </div>
 
             <div className="space-y-3 text-xs">
               <div>
@@ -461,7 +783,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                 <Input
                   value={jobTitle}
                   onChange={(e) => setJobTitle(e.target.value)}
-                  placeholder="e.g. Senior Frontend Engineer"
+                  placeholder="e.g. Senior Backend Engineer"
                   required
                 />
               </div>
@@ -472,7 +794,8 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                   <Input
                     value={jobLocation}
                     onChange={(e) => setJobLocation(e.target.value)}
-                    placeholder="Bengaluru"
+                    placeholder="e.g. Bengaluru"
+                    required
                   />
                 </div>
                 <div>
@@ -480,11 +803,11 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                   <select
                     value={jobWorkMode}
                     onChange={(e) => setJobWorkMode(e.target.value as any)}
-                    className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                    className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-sm focus-visible:outline-none"
                   >
-                    <option>Onsite</option>
                     <option>Hybrid</option>
                     <option>Remote</option>
+                    <option>Onsite</option>
                   </select>
                 </div>
                 <div>
@@ -492,7 +815,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                   <select
                     value={jobType}
                     onChange={(e) => setJobType(e.target.value as any)}
-                    className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                    className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-sm focus-visible:outline-none"
                   >
                     <option>Full-time</option>
                     <option>Internship</option>
@@ -503,10 +826,13 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <label className="font-medium text-foreground block mb-1">Min Exp (Yrs)</label>
+                  <label className="font-medium text-foreground block mb-1">
+                    Min Experience (Yrs)
+                  </label>
                   <Input
                     type="number"
-                    min={0}
+                    min="0"
+                    max="20"
                     value={jobMinExp}
                     onChange={(e) => setJobMinExp(Number(e.target.value))}
                   />
@@ -515,7 +841,8 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                   <label className="font-medium text-foreground block mb-1">Min Salary (LPA)</label>
                   <Input
                     type="number"
-                    min={1}
+                    min="1"
+                    max="100"
                     value={jobMinSal}
                     onChange={(e) => setJobMinSal(Number(e.target.value))}
                   />
@@ -524,7 +851,8 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                   <label className="font-medium text-foreground block mb-1">Max Salary (LPA)</label>
                   <Input
                     type="number"
-                    min={1}
+                    min="1"
+                    max="150"
                     value={jobMaxSal}
                     onChange={(e) => setJobMaxSal(Number(e.target.value))}
                   />
@@ -532,11 +860,13 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
               </div>
 
               <div>
-                <label className="font-medium text-foreground block mb-1">Required Skills (comma separated)</label>
+                <label className="font-medium text-foreground block mb-1">
+                  Required Skills (comma separated)
+                </label>
                 <Input
                   value={jobSkills}
                   onChange={(e) => setJobSkills(e.target.value)}
-                  placeholder="React, TypeScript, SQL"
+                  placeholder="React, TypeScript, Node.js, AWS"
                   required
                 />
               </div>
@@ -549,7 +879,6 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
             </div>
           </form>
 
-          {/* Live Preview Card */}
           <div className="lg:col-span-5 bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-4">
             <h3 className="font-semibold text-foreground text-sm flex items-center gap-2">
               <Eye className="w-4 h-4 text-primary" /> Live Card Preview
@@ -609,58 +938,470 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
   }
 
   if (view === "talent") {
-    // FIND TALENT VIEW
-    return (
-      <div className="space-y-6">
-        {/* Header Hero */}
-        <div className="bg-card border border-border/80 rounded-2xl p-6 relative overflow-hidden shadow-sm">
-          <div className="absolute top-0 right-0 w-72 h-72 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
-          <div className="relative z-10 space-y-3">
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold">
-              <Users className="w-3.5 h-3.5" /> Verified Candidate Pool
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground font-display">
-              Find Pre-Assessed Talent
-            </h1>
-            <p className="text-muted-foreground text-sm max-w-2xl">
-              Source verified engineers whose skills, GitHub projects, and proctored test scores are pre-authenticated.
-            </p>
+    // HR SOURCING KPI METRICS
+    const highMatchCount = CANDIDATES_SEED.filter(
+      (c) => calcTalentScore(c, getBestJobForCandidate(c)) >= 75
+    ).length;
+    const immediateCount = CANDIDATES_SEED.filter((c) => (c.nt || 0) <= 15).length;
+    const eliteScoreCount = CANDIDATES_SEED.filter((c) => avgCandidateScore(c) >= 85).length;
+    const inPipelineCount = CANDIDATES_SEED.filter((c) =>
+      myApps.some((a) => a.name === c.n)
+    ).length;
 
-            {/* Smart Search Bar */}
-            <div className="flex items-center gap-2 max-w-xl pt-1">
+    const kpiStats = [
+      {
+        id: "all" as const,
+        label: "Verified Talent Pool",
+        count: CANDIDATES_SEED.length,
+        sub: "100% ID & skill verified",
+        icon: Users,
+        theme: "all",
+      },
+      {
+        id: "high_match" as const,
+        label: "High Job Match (75%+)",
+        count: highMatchCount,
+        sub: selectedJobObj ? `For ${selectedJobObj.t}` : "Across active openings",
+        icon: Sparkles,
+        theme: "Shortlisted",
+      },
+      {
+        id: "immediate" as const,
+        label: "Immediate / ≤15d Joiners",
+        count: immediateCount,
+        sub: "Fast onboarding ready",
+        icon: Zap,
+        theme: "Applied",
+      },
+      {
+        id: "top_test" as const,
+        label: "Elite CIR Score (85%+)",
+        count: eliteScoreCount,
+        sub: "Top proctored performers",
+        icon: Award,
+        theme: "Interview",
+      },
+      {
+        id: "saved" as const,
+        label: "Saved / Bookmarked",
+        count: bookmarkedTalent.length,
+        sub: "HR talent shortlist",
+        icon: Bookmark,
+        theme: "Offer",
+      },
+    ];
+
+    return (
+      <div className="employer-workspace space-y-5">
+        {/* Top Header + Active Job Match Selector + Single Filter Icon + View Switcher */}
+        <header className="workspace-header flex-wrap">
+          <div>
+            <span className="workspace-eyebrow">
+              <Users size={14} />
+              HR Talent Intelligence &amp; Sourcing Studio
+            </span>
+            <h1 className="workspace-heading">Find Pre-Assessed Talent</h1>
+            <p className="workspace-description">
+              Match verified engineers against your active job openings, compare 6-dimension role fit, and drag candidates directly into your hiring pipeline.
+            </p>
+          </div>
+
+          <div
+            className="relative flex flex-wrap items-center gap-2.5"
+            ref={filterPopoverRef}
+          >
+            {/* Active Job Opening Match Selector */}
+            <div className="flex items-center gap-2 rounded-lg border border-border bg-card px-2.5 py-1">
+              <Briefcase className="h-3.5 w-3.5 text-primary shrink-0" />
+              <select
+                aria-label="Match candidates against job opening"
+                value={talentJobFilter}
+                onChange={(e) => setTalentJobFilter(e.target.value)}
+                className="!h-7 !w-auto !border-0 !bg-transparent !px-1 text-xs font-semibold cursor-pointer focus:outline-none"
+              >
+                <option value="">Auto-Match Best Role ({myJobs.length} active)</option>
+                {myJobs.map((j) => (
+                  <option key={j.id} value={j.id}>
+                    Match for: {j.t} ({j.l} · ₹{j.a}–{j.b}L)
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Single Clean Separate Filter Icon */}
+            <Button
+              type="button"
+              size="icon"
+              variant={filterOpen || activeTalentFilterCount > 0 ? "default" : "outline"}
+              aria-label="Open talent filters"
+              aria-expanded={filterOpen}
+              title="Filter candidates"
+              onClick={() => setFilterOpen((prev) => !prev)}
+              className="relative h-9 w-9 rounded-lg shrink-0"
+            >
+              <SlidersHorizontal className="h-4 w-4" />
+              {activeTalentFilterCount > 0 && (
+                <span className="absolute -right-1.5 -top-1.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground ring-2 ring-background">
+                  {activeTalentFilterCount}
+                </span>
+              )}
+            </Button>
+
+            {/* View Switcher: Cards | Kanban Board | Match Matrix */}
+            <div className="inline-flex items-center gap-1.5">
+              <Button
+                size="sm"
+                variant={talentLayout === "cards" ? "default" : "outline"}
+                onClick={() => setTalentLayout("cards")}
+              >
+                <LayoutGrid className="h-3.5 w-3.5" />
+                Cards
+              </Button>
+              <Button
+                size="sm"
+                variant={talentLayout === "kanban" ? "default" : "outline"}
+                onClick={() => setTalentLayout("kanban")}
+              >
+                <Kanban className="h-3.5 w-3.5" />
+                Kanban
+              </Button>
+              <Button
+                size="sm"
+                variant={talentLayout === "matrix" ? "default" : "outline"}
+                onClick={() => setTalentLayout("matrix")}
+              >
+                <Table2 className="h-3.5 w-3.5" />
+                Match Matrix
+              </Button>
+            </div>
+
+            {/* Filter Popover Panel */}
+            {filterOpen && (
+              <div
+                role="dialog"
+                aria-label="Talent filters"
+                className="absolute right-0 top-full z-30 mt-2 w-[340px] sm:w-[380px] rounded-xl border border-border bg-card p-4 shadow-xl space-y-4"
+              >
+                <div className="flex items-center justify-between border-b border-border pb-2.5">
+                  <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                    <SlidersHorizontal size={14} className="text-primary" />
+                    HR Sourcing Filters
+                  </span>
+                  <button
+                    type="button"
+                    aria-label="Close filters"
+                    onClick={() => setFilterOpen(false)}
+                    className="rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-semibold text-foreground">
+                    Search Name, Skill, or City
+                  </label>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
+                    <Input
+                      aria-label="Search candidates by name, skill or city"
+                      value={talentQuery}
+                      onChange={(e) => setTalentQuery(e.target.value)}
+                      placeholder="e.g. React, SQL, Bengaluru..."
+                      className="h-9 pl-8 text-xs"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-semibold text-foreground">
+                    Experience Tier
+                  </label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {["Fresher", "Junior", "Mid", "Senior"].map((lvl) => {
+                      const active = talentExpLevels.includes(lvl);
+                      return (
+                        <button
+                          key={lvl}
+                          type="button"
+                          onClick={() =>
+                            setTalentExpLevels((prev) =>
+                              active ? prev.filter((x) => x !== lvl) : [...prev, lvl]
+                            )
+                          }
+                          className={`rounded-full px-2.5 py-1 text-[11px] font-semibold border transition-colors ${
+                            active
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border bg-muted/40 text-foreground hover:border-primary/50"
+                          }`}
+                        >
+                          {lvl}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-semibold text-foreground">
+                    Work Mode Preference
+                  </label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {["Remote", "Hybrid", "Onsite"].map((wm) => {
+                      const active = talentWorkModes.includes(wm);
+                      return (
+                        <button
+                          key={wm}
+                          type="button"
+                          onClick={() =>
+                            setTalentWorkModes((prev) =>
+                              active ? prev.filter((x) => x !== wm) : [...prev, wm]
+                            )
+                          }
+                          className={`rounded-full px-2.5 py-1 text-[11px] font-semibold border transition-colors ${
+                            active
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border bg-muted/40 text-foreground hover:border-primary/50"
+                          }`}
+                        >
+                          {wm}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-semibold text-foreground">
+                      Min Assessment{" "}
+                      <span className="float-right text-primary">{talentMinAssessment}%</span>
+                      <input
+                        type="range"
+                        min={0}
+                        max={95}
+                        step={5}
+                        value={talentMinAssessment}
+                        onChange={(e) => setTalentMinAssessment(Number(e.target.value))}
+                        className="mt-2 w-full accent-primary"
+                      />
+                    </label>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-foreground">
+                      Max Salary{" "}
+                      <span className="float-right text-primary">₹{talentMaxSalary}L</span>
+                      <input
+                        type="range"
+                        min={4}
+                        max={60}
+                        step={2}
+                        value={talentMaxSalary}
+                        onChange={(e) => setTalentMaxSalary(Number(e.target.value))}
+                        className="mt-2 w-full accent-primary"
+                      />
+                    </label>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-semibold text-foreground mb-1">
+                      Notice Period
+                    </label>
+                    <select
+                      value={talentNoticePeriod}
+                      onChange={(e) => setTalentNoticePeriod(Number(e.target.value))}
+                      className="!h-9 text-xs"
+                    >
+                      <option value={999}>Any notice period</option>
+                      <option value={0}>Immediate only</option>
+                      <option value={15}>≤ 15 days</option>
+                      <option value={30}>≤ 30 days</option>
+                      <option value={60}>≤ 60 days</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-foreground mb-1">
+                      Sort Candidates
+                    </label>
+                    <select
+                      value={talentSort}
+                      onChange={(e) => setTalentSort(e.target.value as any)}
+                      className="!h-9 text-xs"
+                    >
+                      <option value="s">Best Job Match</option>
+                      <option value="a">Assessment Score</option>
+                      <option value="x">Experience (High–Low)</option>
+                      <option value="sal">Expected CTC (Low–High)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <label className="flex items-center gap-2 text-xs font-medium cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={talentOnlyCertified}
+                    onChange={(e) => setTalentOnlyCertified(e.target.checked)}
+                    className="accent-primary"
+                  />
+                  Certified Candidates Only
+                </label>
+
+                <div className="flex items-center justify-between border-t border-border pt-3">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={resetTalentFilters}
+                    className="h-8 text-xs text-muted-foreground hover:text-foreground"
+                  >
+                    <RotateCcw className="mr-1 h-3.5 w-3.5" />
+                    Reset all
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={() => setFilterOpen(false)}
+                    className="h-8 text-xs"
+                  >
+                    Done
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </header>
+
+        {/* Differentiated HR KPI Summary Cards */}
+        <div className="workspace-stats">
+          {kpiStats.map(({ id, label, count, icon: Icon, theme }) => {
+            const isActive = quickPreset === id && id !== "all";
+            return (
+              <Button
+                key={id}
+                variant="ghost"
+                data-stage-theme={theme}
+                className={`workspace-stat ${isActive ? "workspace-stat--active" : ""}`}
+                onClick={() => setQuickPreset((prev) => (prev === id ? "all" : id))}
+              >
+                <div className="workspace-icon">
+                  <Icon size={22} />
+                </div>
+                <div>
+                  <span>{label}</span>
+                  <strong>{count}</strong>
+                </div>
+              </Button>
+            );
+          })}
+        </div>
+
+        {/* AI Smart Search Bar + Quick HR Sourcing Presets */}
+        <div className="workspace-panel !p-4 space-y-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+            <div className="relative flex-1">
+              <Sparkles className="absolute left-3 top-2.5 h-4 w-4 text-primary" />
               <Input
-                placeholder='Smart find: "React developer Bengaluru 3 years certified under 20 LPA"'
+                placeholder='AI Smart Search: e.g. "React developer immediate joiner certified under 25 LPA"'
                 value={talentSmartQuery}
                 onChange={(e) => setTalentSmartQuery(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSmartTalentSearch()}
-                className="text-xs h-10 rounded-xl"
+                className="pl-9 h-9 text-xs"
               />
-              <Button onClick={handleSmartTalentSearch} className="rounded-xl h-10 text-xs gap-1.5 shrink-0">
-                <Sparkles className="w-3.5 h-3.5" /> Find
-              </Button>
             </div>
+            <Button
+              size="sm"
+              onClick={() => handleSmartTalentSearch()}
+              className="h-9 text-xs gap-1.5 shrink-0"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              AI Match Talent
+            </Button>
+            {onNavigate && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => onNavigate("pipe")}
+                className="h-9 text-xs gap-1.5 shrink-0"
+              >
+                <Layers className="w-3.5 h-3.5 text-primary" />
+                In Pipeline ({inPipelineCount})
+              </Button>
+            )}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+            <span className="font-semibold text-muted-foreground mr-1">Quick HR Filters:</span>
+            {[
+              { id: "all", label: `All (${CANDIDATES_SEED.length})` },
+              { id: "high_match", label: `75%+ Role Match (${highMatchCount})` },
+              { id: "immediate", label: `≤15d Notice (${immediateCount})` },
+              { id: "top_test", label: `85%+ CIR Score (${eliteScoreCount})` },
+              { id: "budget", label: "Within Job Budget" },
+              { id: "saved", label: `Bookmarked (${bookmarkedTalent.length})` },
+              { id: "in_pipeline", label: `In Pipeline (${inPipelineCount})` },
+            ].map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => setQuickPreset(p.id as any)}
+                className={`rounded-full px-2.5 py-1 text-[11px] font-semibold border transition-colors cursor-pointer ${
+                  quickPreset === p.id
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-muted/40 text-foreground hover:border-primary/40"
+                }`}
+              >
+                {p.label}
+              </button>
+            ))}
+
+            {activeTalentFilterCount > 0 && (
+              <button
+                type="button"
+                onClick={resetTalentFilters}
+                className="ml-auto inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline cursor-pointer"
+              >
+                <RotateCcw className="h-3 w-3" />
+                Reset filters
+              </button>
+            )}
           </div>
         </div>
 
-        {/* Compare Bar if Candidates Selected */}
+        {/* Compare Floating Bar if Candidates Selected */}
         {selectedTalentToCompare.length > 0 && (
-          <div className="p-3.5 rounded-2xl bg-primary/10 border border-primary/30 flex items-center justify-between text-xs">
-            <span className="font-semibold text-foreground">
-              {selectedTalentToCompare.length} candidates selected for side-by-side comparison
+          <div className="p-3.5 rounded-xl bg-primary/10 border border-primary/30 flex flex-wrap items-center justify-between gap-3 text-xs">
+            <span className="font-semibold text-foreground flex items-center gap-2">
+              <ArrowRightLeft className="w-4 h-4 text-primary" />
+              Comparing {selectedTalentToCompare.length} candidate
+              {selectedTalentToCompare.length === 1 ? "" : "s"}:{" "}
+              <span className="text-primary font-bold">
+                {selectedTalentToCompare.join(", ")}
+              </span>
             </span>
             <div className="flex items-center gap-2">
               <Button
                 size="sm"
-                onClick={() => onOpenDrawer({ type: "compare-candidates" })}
-                className="rounded-xl text-xs h-8 gap-1.5"
+                variant="outline"
+                onClick={() => setTalentLayout("matrix")}
+                className="h-8 text-xs gap-1.5"
               >
-                <ArrowRightLeft className="w-3.5 h-3.5" /> Compare ({selectedTalentToCompare.length})
+                <Table2 className="w-3.5 h-3.5" /> View in Match Matrix
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => onOpenDrawer({ type: "compare-candidates" })}
+                className="h-8 text-xs gap-1.5"
+              >
+                <ArrowRightLeft className="w-3.5 h-3.5" /> Side-by-Side Modal (
+                {selectedTalentToCompare.length})
               </Button>
               <Button
                 size="sm"
                 variant="ghost"
-                onClick={() => setSelectedTalentToCompare([])}
-                className="rounded-xl text-xs h-8 text-muted-foreground"
+                onClick={() => updateCompareList([])}
+                className="h-8 text-xs text-muted-foreground"
               >
                 Clear
               </Button>
@@ -668,246 +1409,741 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
           </div>
         )}
 
-        {/* 2-Column Grid: Filter Panel & Candidate Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Left Filters: 4 cols */}
-          <div className="lg:col-span-4 bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-foreground text-sm flex items-center gap-2">
-                <Filter className="w-4 h-4 text-primary" /> Filter Candidates
-              </h3>
-              <button
-                onClick={() => {
-                  setTalentQuery("");
-                  setTalentExpLevels([]);
-                  setTalentMinAssessment(0);
-                  setTalentOnlyCertified(false);
-                  setTalentMaxSalary(60);
-                  setTalentNoticePeriod(999);
-                }}
-                className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
-              >
-                <RotateCcw className="w-3 h-3" /> Reset
-              </button>
-            </div>
-
-            <div className="space-y-3.5 text-xs">
-              <div>
-                <label className="font-medium text-foreground block mb-1">Rank For Job Opening</label>
-                <select
-                  value={talentJobFilter}
-                  onChange={(e) => setTalentJobFilter(e.target.value)}
-                  className="w-full h-8 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-sm focus-visible:outline-none"
-                >
-                  <option value="">Generic (All Openings)</option>
-                  {myJobs.map((j) => (
-                    <option key={j.id} value={j.id}>
-                      {j.t}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="font-medium text-foreground block mb-1">Search Name or Skill</label>
-                <Input
-                  value={talentQuery}
-                  onChange={(e) => setTalentQuery(e.target.value)}
-                  placeholder="e.g. React, SQL, Bengaluru"
-                  className="text-xs h-8"
-                />
-              </div>
-
-              <div>
-                <label className="font-medium text-foreground block mb-1">Experience Level</label>
-                <div className="grid grid-cols-2 gap-1.5">
-                  {["Fresher", "Junior", "Mid", "Senior"].map((lvl) => {
-                    const isChecked = talentExpLevels.includes(lvl);
-                    return (
-                      <label key={lvl} className="flex items-center gap-2 cursor-pointer py-0.5">
-                        <input
-                          type="checkbox"
-                          checked={isChecked}
-                          onChange={() =>
-                            setTalentExpLevels((prev) =>
-                              isChecked ? prev.filter((x) => x !== lvl) : [...prev, lvl]
-                            )
-                          }
-                          className="rounded text-primary focus:ring-primary"
-                        />
-                        <span>{lvl}</span>
-                      </label>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="font-medium text-foreground">Min Assessment Score</label>
-                  <span className="font-bold text-primary">{talentMinAssessment}%</span>
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="95"
-                  step="5"
-                  value={talentMinAssessment}
-                  onChange={(e) => setTalentMinAssessment(Number(e.target.value))}
-                  className="w-full accent-primary"
-                />
-              </div>
-
-              <div className="pt-1">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={talentOnlyCertified}
-                    onChange={(e) => setTalentOnlyCertified(e.target.checked)}
-                    className="rounded text-primary focus:ring-primary"
-                  />
-                  <span className="font-medium text-foreground">Certified Candidates Only</span>
-                </label>
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="font-medium text-foreground">Max Expected Salary</label>
-                  <span className="font-bold text-primary">₹{talentMaxSalary} LPA</span>
-                </div>
-                <input
-                  type="range"
-                  min="3"
-                  max="60"
-                  value={talentMaxSalary}
-                  onChange={(e) => setTalentMaxSalary(Number(e.target.value))}
-                  className="w-full accent-primary"
-                />
-              </div>
-
-              <div>
-                <label className="font-medium text-foreground block mb-1">Sort Candidates</label>
-                <select
-                  value={talentSort}
-                  onChange={(e) => setTalentSort(e.target.value as any)}
-                  className="w-full h-8 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-sm focus-visible:outline-none"
-                >
-                  <option value="s">Best Algorithm Match</option>
-                  <option value="a">Assessment Score</option>
-                  <option value="x">Years Experience</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Candidate Cards: 8 cols */}
-          <div className="lg:col-span-8 space-y-4">
+        {/* VIEW 1: RICH HR DASHBOARD CARDS */}
+        {talentLayout === "cards" && (
+          <div className="space-y-4">
             <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>{filteredCandidates.length} candidate profiles match your criteria</span>
+              <span>
+                Showing <strong className="text-foreground">{filteredCandidates.length}</strong>{" "}
+                verified candidates{" "}
+                {selectedJobObj
+                  ? `ranked for ${selectedJobObj.t} (₹${selectedJobObj.a}–${selectedJobObj.b} LPA)`
+                  : "matched across your active job openings"}
+              </span>
+              <span className="hidden sm:inline">
+                Click any card to open full profile, CIR telemetry &amp; pipeline actions
+              </span>
             </div>
 
-            <div className="space-y-3.5">
-              {filteredCandidates.map((cand) => {
-                const scoreVal = calcTalentScore(cand, selectedJobObj);
-                const isCompared = selectedTalentToCompare.includes(cand.n);
+            {filteredCandidates.length === 0 ? (
+              <div className="workspace-panel py-12 text-center space-y-3">
+                <p className="text-sm font-semibold text-foreground">
+                  No candidates match your active filters.
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Try clearing a filter or adjusting minimum score and salary bounds.
+                </p>
+                <Button size="sm" variant="outline" onClick={resetTalentFilters}>
+                  <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
+                  Reset All Filters
+                </Button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                {filteredCandidates.map((cand) => {
+                  const targetJob = getBestJobForCandidate(cand);
+                  const roleMatch = calcTalentScore(cand, targetJob);
+                  const testAvg = avgCandidateScore(cand);
+                  const isCompared = selectedTalentToCompare.includes(cand.n);
+                  const isBookmarked = bookmarkedTalent.includes(cand.n);
+                  const currentStage = getCandidateStage(cand.n);
+                  const existingApp = myApps.find((a) => a.name === cand.n);
+                  const isExpanded = expandedFitCard === cand.n;
+                  const fitRows = targetJob ? candidateFitForJob(cand, targetJob) : [];
+                  const withinBudget = !targetJob || cand.es <= targetJob.b;
+
+                  const matchedSkills = targetJob
+                    ? cand.sk.filter((s) =>
+                        targetJob.sk.some((js) => js.toLowerCase() === s.toLowerCase())
+                      )
+                    : cand.sk;
+                  const missingSkills = targetJob
+                    ? targetJob.sk.filter(
+                        (js) => !cand.sk.some((s) => s.toLowerCase() === js.toLowerCase())
+                      )
+                    : [];
+
+                  return (
+                    <article
+                      key={cand.n}
+                      data-stage-theme={
+                        currentStage === "Interview"
+                          ? "Interview"
+                          : currentStage === "Shortlisted"
+                          ? "Shortlisted"
+                          : currentStage === "Invited"
+                          ? "Offer"
+                          : "Applied"
+                      }
+                      className="workspace-panel !p-5 space-y-4 border-l-4 transition-all hover:shadow-md"
+                      style={{ borderLeftColor: "var(--stage-accent, hsl(var(--primary)))" }}
+                    >
+                      {/* Card Top Header */}
+                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                        <div className="flex items-start gap-3.5 min-w-0">
+                          <img
+                            src={getCandidatePhoto(cand.n)}
+                            alt={cand.n}
+                            onClick={() =>
+                              onOpenDrawer({
+                                type: "candidate",
+                                name: cand.n,
+                                jobId: targetJob?.id,
+                              })
+                            }
+                            className="w-14 h-14 rounded-2xl object-cover shrink-0 border-2 border-primary/20 cursor-pointer"
+                          />
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  onOpenDrawer({
+                                    type: "candidate",
+                                    name: cand.n,
+                                    jobId: targetJob?.id,
+                                  })
+                                }
+                                className="font-bold text-foreground text-base hover:text-primary transition-colors cursor-pointer"
+                              >
+                                {cand.n}
+                              </button>
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold">
+                                <ShieldCheck className="w-3 h-3" /> Verified CIR
+                              </span>
+                              <span className="workspace-chip !px-2 !py-0.5 !text-[10px]">
+                                {existingApp ? `Pipeline: ${existingApp.st}` : currentStage}
+                              </span>
+                            </div>
+
+                            <p className="text-xs font-medium text-foreground/80 mt-0.5">
+                              {levelFromExp(cand.x)} {cand.sk[0]} Engineer ·{" "}
+                              {targetJob ? `Best fit for ${targetJob.t}` : "Available for hire"}
+                            </p>
+
+                            <div className="text-[11px] text-muted-foreground mt-1.5 flex items-center gap-2.5 flex-wrap">
+                              <span className="inline-flex items-center gap-1">
+                                <MapPin className="w-3 h-3 text-primary" />
+                                {cand.c} ({cand.wp})
+                              </span>
+                              <span>•</span>
+                              <span>{cand.x} yrs exp</span>
+                              <span>•</span>
+                              <span className="font-semibold text-foreground">
+                                ₹{cand.es} LPA
+                              </span>
+                              <span
+                                className={`px-1.5 py-0.2 rounded text-[10px] font-semibold ${
+                                  withinBudget
+                                    ? "bg-emerald-500/10 text-emerald-700"
+                                    : "bg-amber-500/10 text-amber-700"
+                                }`}
+                              >
+                                {withinBudget
+                                  ? targetJob
+                                    ? `Within ₹${targetJob.b}L Budget`
+                                    : "Within Budget"
+                                  : `+₹${cand.es - (targetJob?.b || 0)}L Above Max`}
+                              </span>
+                              <span>•</span>
+                              <span className="inline-flex items-center gap-1 font-medium text-primary">
+                                <Clock className="w-3 h-3" />
+                                {cand.nt === 0 ? "Immediate Joiner" : `${cand.nt}d notice`}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Dual Match & CIR Score Pills + Bookmark/Compare */}
+                        <div className="flex sm:flex-col items-center sm:items-end justify-between gap-2 shrink-0">
+                          <div className="flex items-center gap-2">
+                            <div className="rounded-xl border border-primary/30 bg-primary/5 px-2.5 py-1.5 text-center">
+                              <span className="block text-[9px] font-bold uppercase text-muted-foreground">
+                                Role Match
+                              </span>
+                              <strong className="text-sm font-extrabold text-primary">
+                                {roleMatch}%
+                              </strong>
+                            </div>
+                            <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 px-2.5 py-1.5 text-center">
+                              <span className="block text-[9px] font-bold uppercase text-muted-foreground">
+                                CIR Test Avg
+                              </span>
+                              <strong className="text-sm font-extrabold text-emerald-700 dark:text-emerald-400">
+                                {testAvg}%
+                              </strong>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              aria-label={`Bookmark ${cand.n}`}
+                              onClick={() => toggleBookmark(cand.n)}
+                              className={`inline-flex items-center gap-1 rounded-lg border px-2 py-1 text-[11px] font-semibold transition-colors cursor-pointer ${
+                                isBookmarked
+                                  ? "border-amber-500/50 bg-amber-500/10 text-amber-700"
+                                  : "border-border bg-background text-muted-foreground hover:text-foreground"
+                              }`}
+                            >
+                              <Bookmark
+                                className="w-3 h-3"
+                                fill={isBookmarked ? "currentColor" : "none"}
+                              />
+                              {isBookmarked ? "Saved" : "Save"}
+                            </button>
+
+                            <label className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2 py-1 text-[11px] font-medium text-muted-foreground hover:text-foreground cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={isCompared}
+                                onChange={() =>
+                                  updateCompareList(
+                                    isCompared
+                                      ? selectedTalentToCompare.filter((x) => x !== cand.n)
+                                      : [...selectedTalentToCompare, cand.n]
+                                  )
+                                }
+                                className="accent-primary"
+                              />
+                              Compare
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Proctored Assessment Mini Bars */}
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 rounded-xl border border-border/70 bg-muted/20 p-3">
+                        {Object.entries(cand.as).map(([skillName, score]) => (
+                          <div key={skillName} className="space-y-1">
+                            <div className="flex items-center justify-between text-[11px]">
+                              <span className="font-semibold text-foreground truncate">
+                                {skillName}
+                              </span>
+                              <span className="font-bold text-primary">{score}%</span>
+                            </div>
+                            <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
+                              <div
+                                className="h-full rounded-full bg-primary"
+                                style={{ width: `${score}%` }}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Skill Match Breakdown & Certifications */}
+                      <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          {cand.sk.map((s) => {
+                            const isMatched = matchedSkills.includes(s);
+                            return (
+                              <span
+                                key={s}
+                                className={`px-2 py-0.5 rounded-md text-[11px] font-medium border inline-flex items-center gap-1 ${
+                                  isMatched
+                                    ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+                                    : "border-border bg-muted text-foreground"
+                                }`}
+                              >
+                                {s}
+                                {isMatched && <Check className="w-3 h-3" />}
+                              </span>
+                            );
+                          })}
+                          {missingSkills.length > 0 && (
+                            <span className="px-2 py-0.5 rounded-md border border-dashed border-amber-500/50 bg-amber-500/5 text-[10px] font-medium text-amber-700">
+                              Missing for {targetJob?.t}: {missingSkills.join(", ")}
+                            </span>
+                          )}
+                          {(cand.ce || []).map((cert) => (
+                            <span
+                              key={cert}
+                              className="px-2 py-0.5 rounded-md bg-violet-500/10 text-violet-700 dark:text-violet-400 text-[11px] font-semibold inline-flex items-center gap-1"
+                            >
+                              <Award className="w-3 h-3" />
+                              {cert}
+                            </span>
+                          ))}
+                        </div>
+
+                        {targetJob && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setExpandedFitCard((prev) => (prev === cand.n ? null : cand.n))
+                            }
+                            className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary hover:underline cursor-pointer shrink-0"
+                          >
+                            6-Point Job Fit
+                            {isExpanded ? (
+                              <ChevronUp className="w-3.5 h-3.5" />
+                            ) : (
+                              <ChevronDown className="w-3.5 h-3.5" />
+                            )}
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Expandable 6-Dimension Job Fit Breakdown */}
+                      {isExpanded && fitRows.length > 0 && (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 rounded-xl border border-primary/20 bg-primary/5 p-3 text-xs">
+                          {fitRows.map((row) => (
+                            <div
+                              key={row.name}
+                              className="rounded-lg bg-card p-2.5 border border-border/60 space-y-1"
+                            >
+                              <div className="flex items-center justify-between text-[11px]">
+                                <span className="font-semibold">{row.name}</span>
+                                <strong className="text-primary">{row.score}%</strong>
+                              </div>
+                              <div className="h-1 w-full rounded-full bg-muted overflow-hidden">
+                                <div
+                                  className="h-full rounded-full bg-primary"
+                                  style={{ width: `${Math.max(8, row.score)}%` }}
+                                />
+                              </div>
+                              <p className="text-[10px] text-muted-foreground truncate">
+                                {row.note}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* HR Action Footer */}
+                      <div className="pt-3 border-t border-border/60 flex flex-wrap items-center justify-between gap-2 text-xs">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-8 text-xs gap-1.5"
+                            onClick={() =>
+                              onOpenDrawer({
+                                type: "candidate",
+                                name: cand.n,
+                                jobId: targetJob?.id,
+                              })
+                            }
+                          >
+                            <Eye className="w-3.5 h-3.5" /> Full Profile
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-8 text-xs gap-1.5"
+                            onClick={() => handleDownloadCandidateCir(cand)}
+                          >
+                            <Download className="w-3.5 h-3.5 text-primary" /> CIR PDF
+                          </Button>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <select
+                            aria-label={`Set sourcing stage for ${cand.n}`}
+                            value={currentStage}
+                            onChange={(e) =>
+                              handleMoveCandidateSourcing(
+                                cand,
+                                e.target.value as SourcingStage
+                              )
+                            }
+                            className="!h-8 !w-auto !rounded-lg !border-border !bg-muted/40 !px-2.5 text-xs font-semibold cursor-pointer"
+                          >
+                            {SOURCING_COLUMNS.map((col) => (
+                              <option key={col.id} value={col.id}>
+                                Stage: {col.id}
+                              </option>
+                            ))}
+                          </select>
+
+                          <Button
+                            size="sm"
+                            className="h-8 text-xs gap-1.5"
+                            onClick={() =>
+                              handleMoveCandidateSourcing(cand, "Shortlisted")
+                            }
+                          >
+                            <Send className="w-3.5 h-3.5" />
+                            {existingApp ? "In Pipeline" : "Shortlist"}
+                          </Button>
+                        </div>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* VIEW 2: SOURCING KANBAN BOARD FOR FIND TALENT */}
+        {talentLayout === "kanban" && (
+          <div className="space-y-3">
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <span>
+                Drag and drop verified candidates across sourcing stages. Dropping into{" "}
+                <strong className="text-foreground">Shortlisted for Role</strong> or{" "}
+                <strong className="text-foreground">Interviewing</strong> automatically adds them to{" "}
+                {selectedJobObj ? selectedJobObj.t : "your active job pipeline"}.
+              </span>
+            </div>
+
+            <div className="workspace-board" aria-label="Find talent sourcing kanban">
+              {SOURCING_COLUMNS.map((col) => {
+                const colItems = filteredCandidates.filter(
+                  (c) => getCandidateStage(c.n) === col.id
+                );
+                const isDragOver = dragOverSourcingStage === col.id;
 
                 return (
-                  <div
-                    key={cand.n}
-                    className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-3 hover:border-primary/40 transition-colors"
+                  <section
+                    key={col.id}
+                    data-stage-theme={col.theme}
+                    aria-label={`${col.title} column`}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      e.dataTransfer.dropEffect = "move";
+                      if (dragOverSourcingStage !== col.id) setDragOverSourcingStage(col.id);
+                    }}
+                    onDragEnter={(e) => {
+                      e.preventDefault();
+                      setDragOverSourcingStage(col.id);
+                    }}
+                    onDragLeave={(e) => {
+                      if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                        setDragOverSourcingStage((prev) => (prev === col.id ? null : prev));
+                      }
+                    }}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setDragOverSourcingStage(null);
+                      const droppedName =
+                        draggedCandName || e.dataTransfer.getData("text/plain");
+                      setDraggedCandName(null);
+                      const cand = CANDIDATES_SEED.find((c) => c.n === droppedName);
+                      if (cand) {
+                        handleMoveCandidateSourcing(cand, col.id);
+                      }
+                    }}
+                    className={`workspace-column ${
+                      isDragOver ? "workspace-column--drag-over" : ""
+                    }`}
                   >
-                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-                      <div className="flex items-start gap-3.5">
-                        <img
-                          src={getCandidatePhoto(cand.n)}
-                          alt={cand.n}
-                          className="w-12 h-12 rounded-2xl object-cover shrink-0 border border-border/60"
-                        />
-                        <div>
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <h4 className="font-bold text-foreground text-sm">{cand.n}</h4>
-                            <span className="inline-flex items-center gap-1 px-2 py-0.2 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-semibold">
-                              <ShieldCheck className="w-3 h-3" /> Verified
-                            </span>
-                          </div>
-                          <div className="text-xs text-muted-foreground mt-0.5 flex items-center gap-2 flex-wrap">
-                            <span>{cand.c}</span>
-                            <span>•</span>
-                            <span>{cand.x} yrs exp ({levelFromExp(cand.x)})</span>
-                            <span>•</span>
-                            <span>₹{cand.es} LPA exp</span>
-                            <span>•</span>
-                            <span>{cand.nt ? `${cand.nt}d notice` : "Immediate"}</span>
-                          </div>
-                        </div>
+                    <div className="workspace-column-header">
+                      <div className="min-w-0 flex-1">
+                        <h2 className="workspace-column-title">{col.title}</h2>
+                        <p className="workspace-column-subtitle">{col.subtitle}</p>
                       </div>
+                      <span className="workspace-column-count">{colItems.length}</span>
+                    </div>
 
-                      <div className="flex items-center gap-3 shrink-0">
-                        <div className="text-right">
-                          <span className="text-[10px] text-muted-foreground block">Talent Score</span>
-                          <span className="font-bold text-sm text-primary">{scoreVal}%</span>
-                        </div>
-                        <label className="flex items-center gap-1.5 text-xs text-muted-foreground cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={isCompared}
-                            onChange={() => {
-                              setSelectedTalentToCompare((prev) =>
-                                isCompared ? prev.filter((x) => x !== cand.n) : [...prev, cand.n]
-                              );
-                            }}
-                            className="rounded text-primary focus:ring-primary"
-                          />
-                          <span>Compare</span>
-                        </label>
+                    {isDragOver && (
+                      <div className="mb-2 rounded-lg border border-dashed border-current px-2.5 py-1.5 text-center text-[11px] font-semibold">
+                        Drop to move to {col.title}
                       </div>
-                    </div>
+                    )}
 
-                    {/* Skills & Certs */}
-                    <div className="flex items-center gap-1.5 flex-wrap text-xs pt-1">
-                      {cand.sk.map((s) => (
-                        <span
-                          key={s}
-                          className="px-2 py-0.5 rounded-md bg-muted text-foreground text-[11px] font-medium"
-                        >
-                          {s}
-                        </span>
-                      ))}
-                      {cand.ce &&
-                        cand.ce.map((cert) => (
-                          <span
-                            key={cert}
-                            className="px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-600 dark:text-purple-400 text-[11px] font-semibold"
-                          >
-                            {cert}
-                          </span>
-                        ))}
-                    </div>
+                    <div className="workspace-column-cards">
+                      {colItems.length === 0 ? (
+                        <div className="py-12 px-2 text-center text-xs text-muted-foreground">
+                          <p className="font-medium">No candidates in {col.id}</p>
+                          <p className="mt-1 text-[10px] opacity-80">
+                            Drag a candidate card here
+                          </p>
+                        </div>
+                      ) : (
+                        colItems.map((cand) => {
+                          const targetJob = getBestJobForCandidate(cand);
+                          const roleMatch = calcTalentScore(cand, targetJob);
+                          const testAvg = avgCandidateScore(cand);
+                          const isDragging = draggedCandName === cand.n;
 
-                    {/* Actions */}
-                    <div className="pt-2 border-t border-border/50 flex items-center justify-between text-xs">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="rounded-xl text-xs h-8 gap-1.5 bg-background"
-                        onClick={() => onOpenDrawer({ type: "candidate", name: cand.n, jobId: selectedJobObj?.id })}
-                      >
-                        <Eye className="w-3.5 h-3.5" /> Full Candidate Profile
-                      </Button>
-                      <Button
-                        size="sm"
-                        className="rounded-xl text-xs h-8 gap-1.5"
-                        onClick={() => onToast(`Invitation to apply sent to ${cand.n}!`)}
-                      >
-                        <Send className="w-3.5 h-3.5" /> Invite to Apply
-                      </Button>
+                          return (
+                            <div
+                              key={cand.n}
+                              role="button"
+                              tabIndex={0}
+                              draggable
+                              onDragStart={(e) => {
+                                setDraggedCandName(cand.n);
+                                e.dataTransfer.effectAllowed = "move";
+                                e.dataTransfer.setData("text/plain", cand.n);
+                              }}
+                              onDragEnd={() => {
+                                setDraggedCandName(null);
+                                setDragOverSourcingStage(null);
+                              }}
+                              onClick={() =>
+                                onOpenDrawer({
+                                  type: "candidate",
+                                  name: cand.n,
+                                  jobId: targetJob?.id,
+                                })
+                              }
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                  e.preventDefault();
+                                  onOpenDrawer({
+                                    type: "candidate",
+                                    name: cand.n,
+                                    jobId: targetJob?.id,
+                                  });
+                                }
+                              }}
+                              className={`workspace-candidate ${
+                                isDragging ? "workspace-candidate--dragging" : ""
+                              }`}
+                            >
+                              <div className="flex items-start gap-2.5">
+                                <img src={getCandidatePhoto(cand.n)} alt={cand.n} />
+                                <div className="min-w-0 flex-1">
+                                  <div className="flex items-start justify-between gap-1">
+                                    <p className="text-xs font-bold leading-snug text-foreground break-words">
+                                      {cand.n}
+                                    </p>
+                                    <span
+                                      className="text-muted-foreground/60 shrink-0 pt-0.5"
+                                      title="Drag to move sourcing stage"
+                                      aria-hidden="true"
+                                    >
+                                      <GripVertical size={13} />
+                                    </span>
+                                  </div>
+                                  <p className="mt-0.5 text-[10px] font-medium text-muted-foreground truncate">
+                                    Fit: {targetJob?.t || `${cand.sk[0]} Role`}
+                                  </p>
+                                  <div className="mt-2 flex flex-wrap items-center gap-1">
+                                    <span className="workspace-candidate-match">
+                                      {roleMatch}% match
+                                    </span>
+                                    <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
+                                      CIR {testAvg}%
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="mt-2.5 flex flex-wrap gap-1">
+                                {cand.sk.slice(0, 3).map((sk) => (
+                                  <span
+                                    key={sk}
+                                    className="rounded border border-border/70 bg-muted/50 px-1.5 py-0.5 text-[10px] font-medium"
+                                  >
+                                    {sk}
+                                  </span>
+                                ))}
+                              </div>
+
+                              <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 text-[10px] text-muted-foreground">
+                                <span className="flex items-center gap-1">
+                                  <CalendarDays size={11} />
+                                  {cand.x}y · ₹{cand.es}L
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <MapPin size={11} />
+                                  {cand.c}
+                                </span>
+                              </div>
+
+                              <div className="mt-2 flex items-center justify-between gap-2 border-t border-border/60 pt-2">
+                                <span className="flex items-center gap-1 text-[10px] font-semibold text-primary">
+                                  <Clock size={11} />
+                                  {cand.nt === 0 ? "Immediate" : `${cand.nt}d notice`}
+                                </span>
+                                <select
+                                  aria-label={`Move ${cand.n} to sourcing stage`}
+                                  value={col.id}
+                                  onClick={(e) => e.stopPropagation()}
+                                  onKeyDown={(e) => e.stopPropagation()}
+                                  onChange={(e) => {
+                                    e.stopPropagation();
+                                    handleMoveCandidateSourcing(
+                                      cand,
+                                      e.target.value as SourcingStage
+                                    );
+                                  }}
+                                  className="!h-6 !w-auto !rounded-md !border-border/80 !bg-muted/40 !px-1.5 !py-0 !text-[10px] font-semibold cursor-pointer"
+                                >
+                                  {SOURCING_COLUMNS.map((s) => (
+                                    <option key={s.id} value={s.id}>
+                                      {s.id}
+                                    </option>
+                                  ))}
+                                </select>
+                              </div>
+                            </div>
+                          );
+                        })
+                      )}
                     </div>
-                  </div>
+                  </section>
                 );
               })}
             </div>
           </div>
-        </div>
+        )}
+
+        {/* VIEW 3: MULTI-JOB MATCH & COMPARISON MATRIX */}
+        {talentLayout === "matrix" && (
+          <div className="workspace-panel !p-0 overflow-hidden">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border p-4">
+              <div>
+                <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+                  <Table2 className="h-4 w-4 text-primary" />
+                  Multi-Role Job Match &amp; Candidate Comparison Matrix
+                </h2>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Compare every candidate&apos;s exact role fit across all active job openings, assessment scores, salary vs. budget, and notice period.
+                </p>
+              </div>
+              {selectedTalentToCompare.length > 0 && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => updateCompareList([])}
+                  className="h-8 text-xs"
+                >
+                  Show All ({filteredCandidates.length})
+                </Button>
+              )}
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[860px] text-left text-xs">
+                <thead className="border-b border-border bg-muted/40 text-[11px] uppercase tracking-wide text-muted-foreground">
+                  <tr>
+                    <th className="px-4 py-3">Candidate</th>
+                    <th className="px-3 py-3">CIR Test Avg</th>
+                    {(myJobs.length ? myJobs : jobs.slice(0, 3)).map((j) => (
+                      <th key={j.id} className="px-3 py-3">
+                        Fit: {j.t}
+                      </th>
+                    ))}
+                    <th className="px-3 py-3">Exp &amp; Mode</th>
+                    <th className="px-3 py-3">CTC / Notice</th>
+                    <th className="px-3 py-3">Stage</th>
+                    <th className="px-4 py-3 text-right">HR Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {(selectedTalentToCompare.length > 0
+                    ? filteredCandidates.filter((c) => selectedTalentToCompare.includes(c.n))
+                    : filteredCandidates
+                  ).map((cand) => {
+                    const bestJob = getBestJobForCandidate(cand);
+                    const testAvg = avgCandidateScore(cand);
+                    const stage = getCandidateStage(cand.n);
+                    const roleCols = myJobs.length ? myJobs : jobs.slice(0, 3);
+
+                    return (
+                      <tr key={cand.n} className="hover:bg-muted/30">
+                        <td className="px-4 py-3.5">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              onOpenDrawer({
+                                type: "candidate",
+                                name: cand.n,
+                                jobId: bestJob?.id,
+                              })
+                            }
+                            className="flex items-center gap-3 text-left cursor-pointer group"
+                          >
+                            <img
+                              src={getCandidatePhoto(cand.n)}
+                              alt={cand.n}
+                              className="h-9 w-9 rounded-full object-cover border border-border"
+                            />
+                            <div>
+                              <span className="font-bold text-foreground group-hover:text-primary block">
+                                {cand.n}
+                              </span>
+                              <span className="text-[11px] text-muted-foreground">
+                                {cand.sk.join(", ")}
+                              </span>
+                            </div>
+                          </button>
+                        </td>
+                        <td className="px-3 py-3.5">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-bold text-emerald-700">
+                            <Star className="h-3 w-3" />
+                            {testAvg}%
+                          </span>
+                        </td>
+                        {roleCols.map((j) => {
+                          const score = calcTalentScore(cand, j);
+                          return (
+                            <td key={j.id} className="px-3 py-3.5">
+                              <div className="flex items-center gap-2">
+                                <span
+                                  className={`font-bold ${
+                                    score >= 80
+                                      ? "text-emerald-600"
+                                      : score >= 65
+                                      ? "text-primary"
+                                      : "text-muted-foreground"
+                                  }`}
+                                >
+                                  {score}%
+                                </span>
+                                <div className="h-1.5 w-14 rounded-full bg-muted overflow-hidden">
+                                  <div
+                                    className="h-full rounded-full bg-primary"
+                                    style={{ width: `${score}%` }}
+                                  />
+                                </div>
+                              </div>
+                            </td>
+                          );
+                        })}
+                        <td className="px-3 py-3.5">
+                          <span className="font-semibold">{cand.x} yrs</span> ({levelFromExp(cand.x)}
+                          )
+                          <span className="block text-[11px] text-muted-foreground">
+                            {cand.c} · {cand.wp}
+                          </span>
+                        </td>
+                        <td className="px-3 py-3.5">
+                          <span className="font-semibold text-foreground">₹{cand.es} LPA</span>
+                          <span className="block text-[11px] text-primary font-medium">
+                            {cand.nt === 0 ? "Immediate" : `${cand.nt}d notice`}
+                          </span>
+                        </td>
+                        <td className="px-3 py-3.5">
+                          <span className="workspace-chip !px-2 !py-0.5 !text-[10px]">
+                            {stage}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3.5 text-right">
+                          <div className="inline-flex items-center justify-end gap-1.5">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-7 px-2 text-[11px]"
+                              onClick={() => handleDownloadCandidateCir(cand)}
+                            >
+                              CIR PDF
+                            </Button>
+                            <Button
+                              size="sm"
+                              className="h-7 px-2.5 text-[11px]"
+                              onClick={() =>
+                                handleMoveCandidateSourcing(cand, "Shortlisted")
+                              }
+                            >
+                              Shortlist
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -915,9 +2151,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
   // 4. PIPELINE KANBAN & LIST VIEW
   return (
     <div className="space-y-6">
-      {/* Header Banner */}
       <div className="bg-card border border-border/80 rounded-2xl p-6 relative overflow-hidden shadow-sm">
-        <div className="absolute top-0 right-0 w-72 h-72 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-2">
@@ -951,63 +2185,6 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
         </div>
       </div>
 
-      {/* Filter Bar */}
-      <div className="bg-card border border-border/80 rounded-2xl p-4 shadow-sm space-y-3 text-xs">
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-          <div>
-            <label className="font-medium text-foreground block mb-1">Filter by Job</label>
-            <select
-              value={pipeJobFilter}
-              onChange={(e) => setPipeJobFilter(e.target.value)}
-              className="w-full h-8 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-sm focus-visible:outline-none"
-            >
-              <option value="">All Jobs ({myJobs.length})</option>
-              {myJobs.map((j) => (
-                <option key={j.id} value={j.id}>
-                  {j.t}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="font-medium text-foreground block mb-1">Search Candidate</label>
-            <Input
-              value={pipeSearch}
-              onChange={(e) => setPipeSearch(e.target.value)}
-              placeholder="Candidate name..."
-              className="text-xs h-8"
-            />
-          </div>
-          <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="font-medium text-foreground">Min Match</label>
-              <span className="font-bold text-primary">{pipeMinMatch}%</span>
-            </div>
-            <input
-              type="range"
-              min="0"
-              max="90"
-              step="10"
-              value={pipeMinMatch}
-              onChange={(e) => setPipeMinMatch(Number(e.target.value))}
-              className="w-full accent-primary mt-1"
-            />
-          </div>
-          <div className="flex items-end">
-            <label className="flex items-center gap-2 cursor-pointer pb-2">
-              <input
-                type="checkbox"
-                checked={pipeOnlyNeedingUpdate}
-                onChange={(e) => setPipeOnlyNeedingUpdate(e.target.checked)}
-                className="rounded text-primary focus:ring-primary"
-              />
-              <span className="font-medium text-foreground">Needs a status update</span>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      {/* Kanban Board View */}
       {pipeViewMode === "board" ? (
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 items-start overflow-x-auto pb-4">
           {STAGES.map((stage) => {
@@ -1072,7 +2249,6 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
           })}
         </div>
       ) : (
-        // List View with Bulk Actions
         <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border/60 text-xs">
             <span className="font-semibold text-foreground">

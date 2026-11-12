@@ -9,10 +9,8 @@ import {
   Brain,
   Plus,
   ArrowRight,
-  ExternalLink,
   ChevronRight,
   Building2,
-  MapPin,
   Clock,
   Sparkles,
   BarChart3,
@@ -23,15 +21,14 @@ import {
   Trash2,
   Check,
   MessageSquare,
-  AlertCircle,
-  Bell,
   UserCircle,
   Search,
+  GraduationCap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProHero } from "./ProHero";
 import { cn } from "@/lib/utils";
-import { ProUser, ProJob, ProApplication, calcScore, levelFromExp, formatINR } from "@/data/proData";
+import { ProUser, ProJob, ProApplication, calcScore, levelFromExp } from "@/data/proData";
 import { getCompanyLogo } from "@/data/portalAssets";
 import { ProView, ProDrawerState } from "./proTypes";
 
@@ -39,7 +36,7 @@ interface ProDashboardViewProps {
   user: ProUser;
   jobs: ProJob[];
   applications: ProApplication[];
-  onNavigate: (view: ProView) => void;
+  onNavigate: (view: ProView, query?: Record<string, string>) => void;
   onOpenDrawer: (drawer: ProDrawerState) => void;
   onAddSkill: (skill: string) => void;
   onDuplicateJob?: (jobId: number) => void;
@@ -102,15 +99,6 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
       .filter((a) => (!a.upd || a.upd.length === 0) && a.st !== "Rejected")
       .slice(0, 4);
 
-    const topNewApplicants = myApps
-      .filter((a) => a.st === "Applied" && findJob(a))
-      .sort((a, b) => {
-        const ja = findJob(a);
-        const jb = findJob(b);
-        return (jb ? calcScore(jb, b) : 0) - (ja ? calcScore(ja, a) : 0);
-      })
-      .slice(0, 3);
-
     return (
       <div className="space-y-6">
         {/* Header Banner */}
@@ -140,38 +128,91 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
             >
               <Users className="h-3.5 w-3.5" /> Find Talent
             </button>
+            <button
+              type="button"
+              onClick={() => onNavigate("employer-assessments")}
+              className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/30 backdrop-blur-sm transition-colors hover:bg-white/25 cursor-pointer"
+            >
+              <GraduationCap className="h-3.5 w-3.5" /> Assessments
+            </button>
+            <button
+              type="button"
+              onClick={() => onNavigate("cp")}
+              className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/30 backdrop-blur-sm transition-colors hover:bg-white/25 cursor-pointer"
+            >
+              <Building2 className="h-3.5 w-3.5" /> Company Profile
+            </button>
           </div>
         </ProHero>
 
-        {/* Stat Cards */}
+        {/* Clickable Stat Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
-          <div className="bg-card border border-border/70 rounded-2xl p-4 shadow-sm">
-            <span className="text-xs font-medium text-muted-foreground block">Active Jobs</span>
+          <button
+            type="button"
+            onClick={() => onNavigate("post")}
+            className="group text-left bg-card border border-border/70 border-t-4 border-t-blue-600 rounded-2xl p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-blue-500 hover:shadow-md cursor-pointer"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium text-muted-foreground">Active Jobs</span>
+              <ChevronRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-blue-600 transition-colors" />
+            </div>
             <div className="text-2xl font-bold text-foreground mt-1 font-display">{myJobs.length}</div>
-            <span className="text-[11px] text-muted-foreground mt-1 block">Live openings</span>
-          </div>
-          <div className="bg-card border border-border/70 rounded-2xl p-4 shadow-sm">
-            <span className="text-xs font-medium text-muted-foreground block">Total Applicants</span>
+            <span className="text-[11px] text-blue-600 font-medium mt-1 block">Manage openings →</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onNavigate("pipe")}
+            className="group text-left bg-card border border-border/70 border-t-4 border-t-indigo-600 rounded-2xl p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-indigo-500 hover:shadow-md cursor-pointer"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium text-muted-foreground">Total Applicants</span>
+              <ChevronRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-indigo-600 transition-colors" />
+            </div>
             <div className="text-2xl font-bold text-foreground mt-1 font-display">{myApps.length}</div>
-            <span className="text-[11px] text-muted-foreground mt-1 block">All roles combined</span>
-          </div>
-          <div className="bg-card border border-border/70 rounded-2xl p-4 shadow-sm">
-            <span className="text-xs font-medium text-muted-foreground block">Interviews</span>
+            <span className="text-[11px] text-indigo-600 font-medium mt-1 block">Open pipeline board →</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onNavigate("pipe", { stage: "Interview" })}
+            className="group text-left bg-card border border-border/70 border-t-4 border-t-violet-600 rounded-2xl p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-violet-500 hover:shadow-md cursor-pointer"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium text-muted-foreground">Interviews</span>
+              <ChevronRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-violet-600 transition-colors" />
+            </div>
             <div className="text-2xl font-bold text-foreground mt-1 font-display">{interviewsCount}</div>
-            <span className="text-[11px] text-muted-foreground mt-1 block">Active discussion</span>
-          </div>
-          <div className="bg-card border border-border/70 rounded-2xl p-4 shadow-sm">
-            <span className="text-xs font-medium text-muted-foreground block">Offers Made</span>
+            <span className="text-[11px] text-violet-600 font-medium mt-1 block">View interview stage →</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onNavigate("pipe", { stage: "Offer" })}
+            className="group text-left bg-card border border-border/70 border-t-4 border-t-amber-500 rounded-2xl p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-amber-500 hover:shadow-md cursor-pointer"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium text-muted-foreground">Offers Made</span>
+              <ChevronRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-amber-600 transition-colors" />
+            </div>
             <div className="text-2xl font-bold text-foreground mt-1 font-display">{offersCount}</div>
-            <span className="text-[11px] text-muted-foreground mt-1 block">Candidate offers</span>
-          </div>
-          <div className="bg-card border border-primary/30 bg-primary/5 rounded-2xl p-4 shadow-sm col-span-2 sm:col-span-1">
-            <span className="text-xs font-medium text-primary block flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5" /> Pending Review
-            </span>
+            <span className="text-[11px] text-amber-600 font-medium mt-1 block">View candidate offers →</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onNavigate("pipe", { stage: "Applied" })}
+            className="group text-left bg-card border border-primary/30 border-t-4 border-t-primary bg-primary/5 rounded-2xl p-4 shadow-sm col-span-2 sm:col-span-1 transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-md cursor-pointer"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium text-primary flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5" /> Pending Review
+              </span>
+              <ChevronRight className="w-3.5 h-3.5 text-primary" />
+            </div>
             <div className="text-2xl font-bold text-primary mt-1 font-display">{pendingCount}</div>
-            <span className="text-[11px] text-muted-foreground mt-1 block">Awaiting a decision</span>
-          </div>
+            <span className="text-[11px] text-primary font-medium mt-1 block">Review applicants →</span>
+          </button>
         </div>
 
         {/* Funnel & Distribution Grids */}
@@ -179,23 +220,61 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
           {/* Applicants per job */}
           <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-foreground text-sm flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => onNavigate("post")}
+                className="font-semibold text-foreground text-sm flex items-center gap-2 hover:text-primary transition-colors cursor-pointer"
+              >
                 <BarChart3 className="w-4 h-4 text-primary" /> Applicants per Job
-              </h3>
-              <span className="text-xs text-muted-foreground">{myJobs.length} active roles</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => onNavigate("post")}
+                className="text-xs font-medium text-primary hover:underline flex items-center gap-1 cursor-pointer"
+              >
+                {myJobs.length} active roles <ArrowRight className="w-3 h-3" />
+              </button>
             </div>
             <div className="space-y-3">
               {myJobs.length === 0 ? (
-                <p className="text-sm text-muted-foreground py-4 text-center">No active jobs posted yet.</p>
+                <button
+                  type="button"
+                  onClick={() => onNavigate("post")}
+                  className="w-full text-sm text-primary py-4 text-center hover:underline cursor-pointer"
+                >
+                  No active jobs posted yet. Click to post your first job →
+                </button>
               ) : (
                 myJobs.map((j) => {
                   const n = myApps.filter((a) => a.jid === j.id).length;
                   const pct = Math.round((n / maxPerJob) * 100);
                   return (
-                    <div key={j.id} className="space-y-1.5">
+                    <div
+                      key={j.id}
+                      onClick={() => onNavigate("pipe", { job: String(j.id) })}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          onNavigate("pipe", { job: String(j.id) });
+                        }
+                      }}
+                      className="group space-y-1.5 rounded-xl p-2 -mx-2 hover:bg-muted/50 transition-colors cursor-pointer"
+                    >
                       <div className="flex items-center justify-between text-xs">
-                        <span className="font-medium text-foreground truncate max-w-[240px]">{j.t}</span>
-                        <span className="text-muted-foreground font-semibold">{n} candidates</span>
+                        <span
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onOpenDrawer({ type: "job", id: j.id });
+                          }}
+                          className="font-medium text-foreground group-hover:text-primary hover:underline truncate max-w-[240px]"
+                        >
+                          {j.t}
+                        </span>
+                        <span className="text-muted-foreground group-hover:text-primary font-semibold flex items-center gap-1">
+                          {n} candidates <ChevronRight className="w-3 h-3" />
+                        </span>
                       </div>
                       <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
                         <div
@@ -213,21 +292,38 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
           {/* Hiring Funnel */}
           <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-foreground text-sm flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => onNavigate("pipe")}
+                className="font-semibold text-foreground text-sm flex items-center gap-2 hover:text-primary transition-colors cursor-pointer"
+              >
                 <Layers className="w-4 h-4 text-primary" /> Hiring Funnel
-              </h3>
-              <span className="text-xs text-muted-foreground">{myApps.length} total in pipeline</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => onNavigate("pipe")}
+                className="text-xs font-medium text-primary hover:underline flex items-center gap-1 cursor-pointer"
+              >
+                {myApps.length} total in pipeline <ArrowRight className="w-3 h-3" />
+              </button>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {STAGES.map((s) => {
                 const n = myApps.filter((a) => a.st === s).length;
                 const pct = Math.round((n / totalApps) * 100);
                 return (
-                  <div key={s} className="space-y-1.5">
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => onNavigate("pipe", { stage: s })}
+                    className="group w-full text-left space-y-1.5 rounded-xl p-2 -mx-2 hover:bg-muted/50 transition-colors cursor-pointer"
+                  >
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-medium text-foreground">{s}</span>
-                      <span className="text-muted-foreground font-semibold">
-                        {n} ({pct}%)
+                      <span className="font-medium text-foreground group-hover:text-primary flex items-center gap-1.5">
+                        {s}
+                      </span>
+                      <span className="text-muted-foreground group-hover:text-primary font-semibold flex items-center gap-1">
+                        {n} ({pct}%) <ChevronRight className="w-3 h-3" />
                       </span>
                     </div>
                     <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
@@ -235,19 +331,19 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
                         className={cn(
                           "h-full rounded-full transition-all duration-500",
                           s === "Offer"
-                            ? "bg-emerald-500"
+                            ? "bg-amber-500"
                             : s === "Interview"
-                            ? "bg-blue-500"
+                            ? "bg-violet-600"
                             : s === "Shortlisted"
-                            ? "bg-purple-500"
+                            ? "bg-emerald-600"
                             : s === "Rejected"
-                            ? "bg-rose-400"
-                            : "bg-primary"
+                            ? "bg-rose-500"
+                            : "bg-blue-600"
                         )}
                         style={{ width: `${Math.max(4, pct)}%` }}
                       />
                     </div>
-                  </div>
+                  </button>
                 );
               })}
             </div>
@@ -256,28 +352,54 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
 
         {/* Candidate fit & Action Center */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-          <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-3">
-            <h4 className="font-semibold text-foreground text-sm flex items-center gap-2">
-              <HeartHandshake className="w-4 h-4 text-primary" /> Candidate Fit
-            </h4>
+          <button
+            type="button"
+            onClick={() => onNavigate("pipe")}
+            className="group text-left bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-3 hover:border-primary/60 hover:shadow-md transition-all cursor-pointer"
+          >
+            <div className="flex items-center justify-between">
+              <h4 className="font-semibold text-foreground text-sm flex items-center gap-2 group-hover:text-primary transition-colors">
+                <HeartHandshake className="w-4 h-4 text-primary" /> Candidate Fit
+              </h4>
+              <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
+            </div>
             <div className="py-2 text-xs space-y-1">
               <div className="text-3xl font-bold text-foreground font-display">{avgMatch}%</div>
-              <div className="text-muted-foreground">Average match across {myApps.length} applicant{myApps.length === 1 ? "" : "s"}</div>
+              <div className="text-muted-foreground">
+                Average match across {myApps.length} applicant{myApps.length === 1 ? "" : "s"}
+              </div>
+              <div className="pt-1 text-[11px] font-semibold text-primary">
+                Compare candidates in pipeline →
+              </div>
             </div>
-          </div>
+          </button>
 
           {/* Top Applicant Skills */}
-          <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-3">
-            <h4 className="font-semibold text-foreground text-sm flex items-center gap-2">
-              <Brain className="w-4 h-4 text-primary" /> Candidate Skill Pool
-            </h4>
+          <div
+            onClick={() => onNavigate("talent")}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onNavigate("talent");
+              }
+            }}
+            className="group bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-3 hover:border-primary/60 hover:shadow-md transition-all cursor-pointer"
+          >
+            <div className="flex items-center justify-between">
+              <h4 className="font-semibold text-foreground text-sm flex items-center gap-2 group-hover:text-primary transition-colors">
+                <Brain className="w-4 h-4 text-primary" /> Candidate Skill Pool
+              </h4>
+              <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
+            </div>
             <div className="space-y-2">
               {topApplicantSkills.length === 0 ? (
                 <p className="text-xs text-muted-foreground py-2">No applicant data yet.</p>
               ) : (
                 topApplicantSkills.map(([k, count]) => (
-                  <div key={k} className="flex items-center justify-between text-xs">
-                    <span className="text-foreground truncate max-w-[120px]">{k}</span>
+                  <div key={k} className="flex items-center justify-between text-xs hover:text-primary">
+                    <span className="text-foreground group-hover:text-primary truncate max-w-[120px]">{k}</span>
                     <div className="flex items-center gap-2 w-28">
                       <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
                         <div
@@ -294,10 +416,17 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
           </div>
 
           {/* Experience Mix */}
-          <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-3">
-            <h4 className="font-semibold text-foreground text-sm flex items-center gap-2">
-              <Award className="w-4 h-4 text-primary" /> Experience Mix
-            </h4>
+          <button
+            type="button"
+            onClick={() => onNavigate("talent")}
+            className="group text-left bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-3 hover:border-primary/60 hover:shadow-md transition-all cursor-pointer"
+          >
+            <div className="flex items-center justify-between">
+              <h4 className="font-semibold text-foreground text-sm flex items-center gap-2 group-hover:text-primary transition-colors">
+                <Award className="w-4 h-4 text-primary" /> Experience Mix
+              </h4>
+              <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
+            </div>
             <div className="h-4 w-full flex rounded-full overflow-hidden bg-muted my-2">
               {["Fresher", "Junior", "Mid", "Senior"].map((lvl, i) => {
                 const count = expMix[lvl] || 0;
@@ -322,25 +451,51 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
                 </div>
               ))}
             </div>
-          </div>
+          </button>
 
           {/* Action Center Urgent Reviews */}
           <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-3">
-            <h4 className="font-semibold text-foreground text-sm flex items-center gap-2 text-primary">
-              <Clock className="w-4 h-4" /> Action Center
-            </h4>
+            <div className="flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => onNavigate("pipe")}
+                className="font-semibold text-sm flex items-center gap-2 text-primary hover:underline cursor-pointer"
+              >
+                <Clock className="w-4 h-4" /> Action Center
+              </button>
+              <button
+                type="button"
+                onClick={() => onNavigate("pipe")}
+                className="text-[11px] font-medium text-primary hover:underline cursor-pointer"
+              >
+                View all →
+              </button>
+            </div>
             <div className="space-y-2">
               {urgentNeeds.length === 0 ? (
-                <div className="text-xs text-muted-foreground py-3 text-center flex items-center justify-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500" /> No candidates are waiting for a decision.
-                </div>
+                <button
+                  type="button"
+                  onClick={() => onNavigate("pipe")}
+                  className="w-full text-xs text-muted-foreground py-3 text-center flex items-center justify-center gap-1.5 hover:text-primary cursor-pointer"
+                >
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500" /> No candidates waiting. View pipeline →
+                </button>
               ) : (
                 urgentNeeds.map((a) => {
                   const j = findJob(a);
                   return (
                     <div
                       key={a.id}
-                      className="p-2 rounded-xl bg-muted/40 border border-border/50 flex items-center justify-between text-xs"
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => onOpenDrawer({ type: "applicant", id: a.id })}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          onOpenDrawer({ type: "applicant", id: a.id });
+                        }
+                      }}
+                      className="p-2 rounded-xl bg-muted/40 border border-border/50 hover:border-primary/50 hover:bg-muted/70 transition-colors flex items-center justify-between text-xs cursor-pointer"
                     >
                       <div className="truncate max-w-[120px]">
                         <div className="font-semibold text-foreground truncate">{a.name}</div>
@@ -350,7 +505,10 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
                         size="sm"
                         variant="default"
                         className="h-7 text-xs rounded-lg px-2.5"
-                        onClick={() => onOpenDrawer({ type: "applicant", id: a.id })}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onOpenDrawer({ type: "applicant", id: a.id });
+                        }}
                       >
                         Reply
                       </Button>
@@ -365,9 +523,24 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
         {/* Active Openings List */}
         <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h3 className="font-semibold text-foreground text-base">Your Active Job Listings</h3>
-              <p className="text-xs text-muted-foreground">Manage your posted roles and duplicate or close positions.</p>
+            <div
+              onClick={() => onNavigate("post")}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onNavigate("post");
+                }
+              }}
+              className="cursor-pointer group"
+            >
+              <h3 className="font-semibold text-foreground text-base group-hover:text-primary transition-colors">
+                Your Active Job Listings
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Click any role to view details, inspect its applicant pipeline, or manage postings.
+              </p>
             </div>
             <Button size="sm" onClick={() => onNavigate("post")} className="rounded-xl gap-1.5 text-xs">
               <Plus className="w-3.5 h-3.5" /> Post Job
@@ -375,22 +548,36 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
           </div>
           <div className="divide-y divide-border/60">
             {myJobs.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-6 text-center">No jobs created yet.</p>
+              <button
+                type="button"
+                onClick={() => onNavigate("post")}
+                className="w-full text-sm text-primary py-6 text-center hover:underline cursor-pointer"
+              >
+                No jobs created yet. Click to create your first job opening →
+              </button>
             ) : (
               myJobs.map((j) => {
                 const count = myApps.filter((a) => a.jid === j.id).length;
                 return (
                   <div
                     key={j.id}
-                    className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
+                    onClick={() => onOpenDrawer({ type: "job", id: j.id })}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        onOpenDrawer({ type: "job", id: j.id });
+                      }
+                    }}
+                    className="py-3.5 px-2 -mx-2 rounded-xl hover:bg-muted/40 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3 group cursor-pointer"
                   >
                     <div className="flex items-start gap-3">
                       <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center font-bold text-primary shrink-0 border border-border/70">
                         {j.c.charAt(0)}
                       </div>
                       <div>
-                        <div className="font-semibold text-foreground text-sm hover:text-primary transition-colors cursor-pointer"
-                             onClick={() => onOpenDrawer({ type: "job", id: j.id })}>
+                        <div className="font-semibold text-foreground text-sm group-hover:text-primary transition-colors">
                           {j.t}
                         </div>
                         <div className="text-xs text-muted-foreground flex items-center gap-2 mt-0.5 flex-wrap">
@@ -400,11 +587,28 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
                           <span>•</span>
                           <span>₹{j.a}–{j.b} LPA</span>
                           <span>•</span>
-                          <span className="font-medium text-primary">{count} applicants</span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onNavigate("pipe", { job: String(j.id) });
+                            }}
+                            className="font-semibold text-primary hover:underline cursor-pointer"
+                          >
+                            {count} applicants →
+                          </button>
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex items-center gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="rounded-xl text-xs h-8 gap-1"
+                        onClick={() => onNavigate("pipe", { job: String(j.id) })}
+                      >
+                        <Layers className="w-3 h-3" /> Pipeline ({count})
+                      </Button>
                       <Button
                         size="sm"
                         variant="outline"
@@ -448,8 +652,6 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
     .filter((k) => !mySkillsLower.includes(k.toLowerCase()))
     .sort((a, b) => skillDemand[b] - skillDemand[a])
     .slice(0, 5);
-
-  const maxDemand = Math.max(1, ...Object.values(skillDemand));
 
   // Top match job
   const topJob = [...jobs].sort((a, b) => calcScore(b, user) - calcScore(a, user))[0];
@@ -602,7 +804,16 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
         {statCards.map((s) => (
           <div
             key={s.label}
-            className="flex items-start gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm"
+            role="button"
+            tabIndex={0}
+            onClick={() => onNavigate(s.view)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onNavigate(s.view);
+              }
+            }}
+            className="flex items-start gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm hover:border-primary/50 hover:shadow-md transition-all cursor-pointer"
           >
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
               {s.icon}
@@ -616,7 +827,10 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
               size="sm"
               variant="outline"
               className="h-7 shrink-0 rounded-lg border-primary/30 px-2.5 text-xs font-semibold text-primary hover:bg-primary/5 hover:text-primary"
-              onClick={() => onNavigate(s.view)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onNavigate(s.view);
+              }}
             >
               View
             </Button>
@@ -628,7 +842,18 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         {/* What to do next */}
         <div className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
-          <div className="flex items-center gap-3">
+          <div
+            onClick={() => onNavigate(nextAction ? nextAction.view : "profile")}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onNavigate(nextAction ? nextAction.view : "profile");
+              }
+            }}
+            className="flex items-center gap-3 cursor-pointer"
+          >
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <CheckCircle2 className="h-4 w-4" />
             </span>
@@ -648,7 +873,18 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
           </div>
 
           {nextAction ? (
-            <div className="flex items-center justify-between gap-3 rounded-xl border border-primary/30 bg-primary/5 p-3">
+            <div
+              onClick={() => onNavigate(nextAction.view)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onNavigate(nextAction.view);
+                }
+              }}
+              className="flex items-center justify-between gap-3 rounded-xl border border-primary/30 bg-primary/5 p-3 hover:border-primary/60 transition-colors cursor-pointer"
+            >
               <div className="flex min-w-0 items-center gap-3">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
                   <Search className="h-4 w-4" />
@@ -661,13 +897,21 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
               <Button
                 size="sm"
                 className="h-8 shrink-0 rounded-lg px-3.5 text-xs font-semibold"
-                onClick={() => onNavigate(nextAction.view)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onNavigate(nextAction.view);
+                }}
               >
                 Do it
               </Button>
             </div>
           ) : (
-            <div className="flex items-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-sm font-medium text-emerald-700 dark:text-emerald-400">
+            <div
+              onClick={() => onNavigate("profile")}
+              role="button"
+              tabIndex={0}
+              className="flex items-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-sm font-medium text-emerald-700 dark:text-emerald-400 cursor-pointer"
+            >
               <CheckCircle2 className="h-4 w-4" /> All steps complete. Your profile is in great shape.
             </div>
           )}
@@ -677,12 +921,14 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
               <div className="text-xs font-medium text-muted-foreground">Completed</div>
               <div className="flex flex-wrap gap-1.5">
                 {completedActions.map((item) => (
-                  <span
+                  <button
+                    type="button"
                     key={item.title}
-                    className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-700 dark:text-emerald-400"
+                    onClick={() => onNavigate(item.view)}
+                    className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/20 cursor-pointer"
                   >
                     <Check className="h-3 w-3" /> {item.title}
-                  </span>
+                  </button>
                 ))}
               </div>
             </div>
@@ -691,7 +937,12 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
 
         {/* Best job & Upcoming interviews */}
         <div className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
-          <div className="flex items-center gap-3">
+          <div
+            onClick={() => onNavigate("jobs")}
+            role="button"
+            tabIndex={0}
+            className="flex items-center gap-3 cursor-pointer"
+          >
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <Sparkles className="h-4 w-4" />
             </span>
@@ -759,7 +1010,12 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
           )}
 
           {/* Upcoming Interviews */}
-          <div className="space-y-3 rounded-xl border border-border bg-background p-4">
+          <div
+            onClick={() => onNavigate("applied")}
+            role="button"
+            tabIndex={0}
+            className="space-y-3 rounded-xl border border-border bg-background p-4 hover:border-primary/40 transition-colors cursor-pointer"
+          >
             <div className="flex items-center gap-3">
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <Calendar className="h-4 w-4" />
@@ -801,7 +1057,12 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
       {/* 7-Day Chart & Skills Demand */}
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         {/* Weekly Chart */}
-        <div className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
+        <div
+          onClick={() => onNavigate("applied")}
+          role="button"
+          tabIndex={0}
+          className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm hover:border-primary/40 transition-colors cursor-pointer"
+        >
           <div className="flex items-center gap-3">
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <TrendingUp className="h-4 w-4" />
@@ -836,7 +1097,12 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
 
         {/* Skills vs Demand */}
         <div className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
-          <div className="flex items-center gap-3">
+          <div
+            onClick={() => onNavigate("readiness")}
+            role="button"
+            tabIndex={0}
+            className="flex items-center gap-3 cursor-pointer"
+          >
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <Brain className="h-4 w-4" />
             </span>
@@ -851,7 +1117,13 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
           ) : (
             <div className="space-y-2">
               {userSkillRows.map(({ skill, count }) => (
-                <div key={skill} className="grid grid-cols-[minmax(0,7rem)_1fr_3.5rem] items-center gap-3 text-xs">
+                <div
+                  key={skill}
+                  onClick={() => onNavigate("jobs")}
+                  role="button"
+                  tabIndex={0}
+                  className="grid grid-cols-[minmax(0,7rem)_1fr_3.5rem] items-center gap-3 text-xs hover:text-primary cursor-pointer"
+                >
                   <span className="truncate font-medium text-foreground">{skill}</span>
                   <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
                     <div

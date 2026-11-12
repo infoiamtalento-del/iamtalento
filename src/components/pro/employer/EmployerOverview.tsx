@@ -11,6 +11,7 @@ import type { ProView } from "../proTypes";
 import {
   Avatar, EmptyState, ErrorState, JobStatusBadge, Loading, PageHeader, StageBadge, describeActivity, fmtDateTime, relativeTime,
 } from "./employerUi";
+import "../employer-workspace.css";
 
 export type NavigateFn = (view: ProView, query?: Record<string, string>) => void;
 
@@ -26,6 +27,7 @@ interface Metric {
   icon: typeof Users;
   view: ProView;
   query?: Record<string, string>;
+  theme?: string;
 }
 
 export function EmployerOverview({ companyName, onNavigate }: Props) {
@@ -55,23 +57,24 @@ export function EmployerOverview({ companyName, onNavigate }: Props) {
   if (!data) return null;
 
   const jobMetrics: Metric[] = [
-    { label: "Total jobs", value: data.jobs.total, icon: Briefcase, view: "post" },
-    { label: "Active jobs", value: data.jobs.active, icon: CheckCircle2, view: "post", query: { status: "active" } },
-    { label: "Draft jobs", value: data.jobs.draft, icon: FilePenLine, view: "post", query: { status: "draft" } },
-    { label: "Closed / expired", value: data.jobs.closed, icon: XCircle, view: "post", query: { status: "closed" } },
+    { label: "Total jobs", value: data.jobs.total, icon: Briefcase, view: "post", theme: "all" },
+    { label: "Active jobs", value: data.jobs.active, icon: CheckCircle2, view: "post", query: { status: "active" }, theme: "Shortlisted" },
+    { label: "Draft jobs", value: data.jobs.draft, icon: FilePenLine, view: "post", query: { status: "draft" }, theme: "Offer" },
+    { label: "Closed / expired", value: data.jobs.closed, icon: XCircle, view: "post", query: { status: "closed" }, theme: "Rejected" },
   ];
   const appMetrics: Metric[] = [
-    { label: "Applications", value: data.applications.total, icon: Users, view: "pipe" },
-    { label: "Pending", value: data.applications.pending, icon: Hourglass, view: "pipe", query: { stage: "Applied" } },
-    { label: "Shortlisted", value: data.applications.shortlisted, icon: Star, view: "pipe", query: { stage: "Shortlisted" } },
-    { label: "On hold", value: data.applications.on_hold, icon: PauseCircle, view: "pipe", query: { stage: "On Hold" } },
-    { label: "Selected", value: data.applications.selected, icon: CheckCircle2, view: "pipe", query: { stage: "Offer" } },
+    { label: "Applications", value: data.applications.total, icon: Users, view: "pipe", theme: "all" },
+    { label: "Pending", value: data.applications.pending, icon: Hourglass, view: "pipe", query: { stage: "Applied" }, theme: "Applied" },
+    { label: "Shortlisted", value: data.applications.shortlisted, icon: Star, view: "pipe", query: { stage: "Shortlisted" }, theme: "Shortlisted" },
+    { label: "On hold", value: data.applications.on_hold, icon: PauseCircle, view: "pipe", query: { stage: "On Hold" }, theme: "On Hold" },
+    { label: "Selected", value: data.applications.selected, icon: CheckCircle2, view: "pipe", query: { stage: "Offer" }, theme: "Offer" },
   ];
 
   const tile = (m: Metric) => (
     <button
       key={m.label}
       type="button"
+      data-stage-theme={m.theme}
       onClick={() => onNavigate(m.view, m.query)}
       className="workspace-stat cursor-pointer transition-colors hover:border-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
       aria-label={`${m.label}: ${m.value}. Open`}
@@ -111,19 +114,21 @@ export function EmployerOverview({ companyName, onNavigate }: Props) {
       )}
 
       <section aria-label="Job listings">
-        <h2 className="mb-3 text-sm font-bold">Job listings</h2>
+        <h2 className="mb-3 text-sm font-bold cursor-pointer hover:text-primary" onClick={() => onNavigate("post")}>Job listings</h2>
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">{jobMetrics.map(tile)}</div>
       </section>
 
       <section aria-label="Applications">
-        <h2 className="mb-3 text-sm font-bold">Applications</h2>
+        <h2 className="mb-3 text-sm font-bold cursor-pointer hover:text-primary" onClick={() => onNavigate("pipe")}>Applications</h2>
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">{appMetrics.map(tile)}</div>
       </section>
 
       <div className="grid gap-5 xl:grid-cols-[1.4fr_1fr]">
         <section className="workspace-panel" aria-label="Recent applications">
           <div className="mb-4 flex items-center justify-between gap-3">
-            <h2 className="flex items-center gap-2 text-sm font-bold"><ClipboardList size={16} className="text-primary" />Recent applications</h2>
+            <h2 className="flex items-center gap-2 text-sm font-bold cursor-pointer hover:text-primary" onClick={() => onNavigate("pipe")}>
+              <ClipboardList size={16} className="text-primary" />Recent applications
+            </h2>
             <Button variant="ghost" size="sm" onClick={() => onNavigate("pipe")}>View all<ArrowRight className="ml-1 h-3.5 w-3.5" /></Button>
           </div>
           {data.recent_applications.length === 0 ? (
@@ -151,15 +156,24 @@ export function EmployerOverview({ companyName, onNavigate }: Props) {
         </section>
 
         <section className="workspace-panel" aria-label="Job performance">
-          <h2 className="mb-4 flex items-center gap-2 text-sm font-bold"><Activity size={16} className="text-primary" />Job performance</h2>
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <h2 className="flex items-center gap-2 text-sm font-bold cursor-pointer hover:text-primary" onClick={() => onNavigate("post")}>
+              <Activity size={16} className="text-primary" />Job performance
+            </h2>
+            <Button variant="ghost" size="sm" onClick={() => onNavigate("post")}>Manage jobs<ArrowRight className="ml-1 h-3.5 w-3.5" /></Button>
+          </div>
           {data.job_performance.length === 0 ? (
             <EmptyState icon={<Briefcase />} title="No published jobs" hint="Publish a job to see views and applications here." />
           ) : (
             <ul className="space-y-3">
               {data.job_performance.map((j) => (
-                <li key={j.id} className="rounded-md border border-border p-3">
+                <li
+                  key={j.id}
+                  onClick={() => onNavigate("pipe", { job: j.id })}
+                  className="rounded-md border border-border p-3 hover:border-primary/60 transition-colors cursor-pointer"
+                >
                   <div className="flex items-center justify-between gap-2">
-                    <button type="button" className="truncate text-left text-xs font-semibold hover:underline" onClick={() => onNavigate("pipe", { job: j.id })}>{j.title}</button>
+                    <button type="button" className="truncate text-left text-xs font-semibold hover:underline" onClick={(e) => { e.stopPropagation(); onNavigate("pipe", { job: j.id }); }}>{j.title}</button>
                     <JobStatusBadge status={j.status} />
                   </div>
                   <dl className="mt-2 grid grid-cols-3 gap-2 text-[11px] text-muted-foreground">
@@ -176,15 +190,25 @@ export function EmployerOverview({ companyName, onNavigate }: Props) {
 
       <div className="grid gap-5 xl:grid-cols-[1.4fr_1fr]">
         <section className="workspace-panel" aria-label="Activity history">
-          <h2 className="mb-4 flex items-center gap-2 text-sm font-bold"><Clock size={16} className="text-primary" />Activity history</h2>
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <h2 className="flex items-center gap-2 text-sm font-bold cursor-pointer hover:text-primary" onClick={() => onNavigate("notif")}>
+              <Clock size={16} className="text-primary" />Activity history
+            </h2>
+            <Button variant="ghost" size="sm" onClick={() => onNavigate("notif")}>Notifications<ArrowRight className="ml-1 h-3.5 w-3.5" /></Button>
+          </div>
           {activity.length === 0 ? (
             <EmptyState icon={<Clock />} title="No activity yet" hint="Profile updates, job changes and candidate decisions are recorded here." />
           ) : (
             <ol className="space-y-0">
               {activity.map((a) => {
                 const { title, detail } = describeActivity(a);
+                const targetView: ProView = a.action.startsWith("job.") ? "post" : a.action.startsWith("application.") ? "pipe" : "cp";
                 return (
-                  <li key={a.id} className="flex gap-3 border-t border-border py-3 first:border-t-0">
+                  <li
+                    key={a.id}
+                    onClick={() => onNavigate(targetView)}
+                    className="flex gap-3 border-t border-border py-3 first:border-t-0 hover:bg-muted/30 cursor-pointer rounded-sm px-1 -mx-1"
+                  >
                     <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" aria-hidden />
                     <div className="min-w-0 flex-1">
                       <p className="text-xs font-semibold">{title}</p>
@@ -199,8 +223,12 @@ export function EmployerOverview({ companyName, onNavigate }: Props) {
         </section>
 
         <section className="workspace-panel" aria-label="Wallet">
-          <h2 className="mb-4 flex items-center gap-2 text-sm font-bold"><Wallet size={16} className="text-primary" />Company wallet</h2>
-          <p className="text-3xl font-bold">₹{Number(data.wallet_balance).toLocaleString("en-IN")}</p>
+          <h2 className="mb-4 flex items-center gap-2 text-sm font-bold cursor-pointer hover:text-primary" onClick={() => onNavigate("talent", { recharge: "1" })}>
+            <Wallet size={16} className="text-primary" />Company wallet
+          </h2>
+          <p className="text-3xl font-bold cursor-pointer hover:text-primary" onClick={() => onNavigate("talent", { recharge: "1" })}>
+            ₹{Number(data.wallet_balance).toLocaleString("en-IN")}
+          </p>
           <p className="mt-1 text-xs text-muted-foreground">Used for verified candidate access and CIR reports.</p>
           <div className="mt-4 flex flex-wrap gap-2">
             <Button size="sm" onClick={() => onNavigate("talent", { recharge: "1" })}>Recharge wallet</Button>

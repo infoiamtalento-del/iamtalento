@@ -6,7 +6,7 @@
 .employer-reference-shell .employer-workspace button { background-color:hsl(var(--card)); }
 .employer-reference-shell .employer-workspace button.bg-primary { background-color:hsl(var(--primary)); }
 .employer-workspace h1,.employer-workspace h2,.employer-workspace h3 { color: hsl(var(--job-ink)); letter-spacing: 0; }
-.employer-workspace .workspace-header { display:flex; align-items:center; justify-content:space-between; gap:24px; margin-bottom:28px; }
+.employer-workspace .workspace-header { display:flex; align-items:center; justify-content:space-between; gap:24px; margin-bottom:22px; }
 .employer-workspace .workspace-heading { font-size:28px; line-height:1.25; font-weight:700; margin-top:8px; }
 .employer-workspace .workspace-description { font-size:13px; line-height:1.7; color:hsl(var(--job-muted)); margin-top:6px; max-width:650px; }
 .employer-workspace .workspace-eyebrow { display:inline-flex; align-items:center; gap:7px; color:hsl(var(--primary)); background:hsl(var(--job-tint)); border-radius:20px; padding:5px 10px; font-size:11px; font-weight:600; }
@@ -20,15 +20,240 @@
 .employer-workspace select { height:40px; padding:0 10px; }
 .employer-workspace .workspace-divider { margin:22px 0; border-top:1px solid hsl(var(--job-border)); }
 .employer-workspace .workspace-chip { display:inline-flex; gap:6px; align-items:center; border-radius:18px; padding:5px 10px; font-size:11px; font-weight:600; background:hsl(var(--job-tint)); color:hsl(var(--primary)); }
+
+/* Differentiated Stage Color Themes (Solid Colors Only - Zero Gradients) */
+.employer-workspace [data-stage-theme="all"] {
+  --stage-accent: #1e40af;
+  --stage-bg: #eff6ff;
+  --stage-tint: #dbeafe;
+  --stage-border: #bfdbfe;
+  --stage-ink: #1e3a8a;
+}
+.employer-workspace [data-stage-theme="Applied"] {
+  --stage-accent: #2563eb;
+  --stage-bg: #eff6ff;
+  --stage-tint: #dbeafe;
+  --stage-border: #93c5fd;
+  --stage-ink: #1d4ed8;
+}
+.employer-workspace [data-stage-theme="Shortlisted"] {
+  --stage-accent: #059669;
+  --stage-bg: #ecfdf5;
+  --stage-tint: #d1fae5;
+  --stage-border: #6ee7b7;
+  --stage-ink: #047857;
+}
+.employer-workspace [data-stage-theme="Interview"] {
+  --stage-accent: #7c3aed;
+  --stage-bg: #f5f3ff;
+  --stage-tint: #ede9fe;
+  --stage-border: #c4b5fd;
+  --stage-ink: #6d28d9;
+}
+.employer-workspace [data-stage-theme="On Hold"] {
+  --stage-accent: #0284c7;
+  --stage-bg: #f0f9ff;
+  --stage-tint: #e0f2fe;
+  --stage-border: #7dd3fc;
+  --stage-ink: #0369a1;
+}
+.employer-workspace [data-stage-theme="Offer"],
+.employer-workspace [data-stage-theme="Selected"] {
+  --stage-accent: #d97706;
+  --stage-bg: #fffbeb;
+  --stage-tint: #fef3c7;
+  --stage-border: #fcd34d;
+  --stage-ink: #b45309;
+}
+.employer-workspace [data-stage-theme="Rejected"] {
+  --stage-accent: #e11d48;
+  --stage-bg: #fff1f2;
+  --stage-tint: #ffe4e6;
+  --stage-border: #fda4af;
+  --stage-ink: #be123c;
+}
+
 .employer-workspace .workspace-stats { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:14px; margin-bottom:20px; }
-.employer-workspace .workspace-stat { display:flex; align-items:center; gap:12px; border:1px solid hsl(var(--job-border)); border-radius:8px; padding:18px 14px; background:hsl(var(--job-surface)); text-align:left; min-width:0; height:92px; }
-.employer-workspace .workspace-stat span { font-size:10px; color:hsl(var(--job-muted)); white-space:normal; }
-.employer-workspace .workspace-stat strong { display:block; font-size:25px; color:hsl(var(--job-ink)); line-height:1.2; margin-top:4px; }
-.employer-workspace .workspace-board { display:grid; grid-template-columns:repeat(5,minmax(220px,1fr)); gap:14px; overflow-x:auto; padding-bottom:16px; }
-.employer-workspace .workspace-column { padding:12px; border:1px solid hsl(var(--job-border)); border-radius:8px; background:hsl(var(--job-tint)/.6); min-height:330px; }
-.employer-workspace .workspace-candidate { display:block; width:100%; height:auto; min-height:138px; padding:14px 12px; border:1px solid hsl(var(--job-border)); background:hsl(var(--card)); border-radius:6px; text-align:left; white-space:normal; margin-top:10px; }
-.employer-workspace .workspace-candidate:hover { border-color:hsl(var(--primary)); background:hsl(var(--card)); }
-.employer-workspace .workspace-candidate img { width:34px; height:34px; object-fit:cover; border-radius:50%; flex-shrink:0; }
+.employer-workspace .workspace-stat,
+.employer-reference-shell .employer-workspace button.workspace-stat {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border:1px solid var(--stage-border, hsl(var(--job-border)));
+  border-top:3px solid var(--stage-accent, hsl(var(--primary)));
+  border-radius:10px;
+  padding:16px 14px;
+  background-color:var(--stage-bg, hsl(var(--job-surface)));
+  text-align:left;
+  min-width:0;
+  height:92px;
+  transition:transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.employer-workspace .workspace-stat:hover,
+.employer-reference-shell .employer-workspace button.workspace-stat:hover {
+  transform:translateY(-2px);
+  border-color:var(--stage-accent, hsl(var(--primary)));
+  box-shadow:0 8px 20px -8px rgba(15, 23, 42, 0.14);
+}
+.employer-workspace .workspace-stat--active,
+.employer-reference-shell .employer-workspace button.workspace-stat--active {
+  border-color:var(--stage-accent, hsl(var(--primary)));
+  box-shadow:0 0 0 2px var(--stage-accent, hsl(var(--primary)));
+}
+.employer-workspace .workspace-stat .workspace-icon {
+  background-color:var(--stage-tint, hsl(var(--job-tint)));
+  color:var(--stage-accent, hsl(var(--primary)));
+}
+.employer-workspace .workspace-stat span { font-size:11px; font-weight:600; color:var(--stage-ink, hsl(var(--job-muted))); white-space:normal; }
+.employer-workspace .workspace-stat strong { display:block; font-size:25px; color:var(--stage-ink, hsl(var(--job-ink))); line-height:1.2; margin-top:4px; }
+
+.employer-workspace .workspace-board {
+  display:grid;
+  grid-template-columns:repeat(5,minmax(240px,1fr));
+  gap:14px;
+  overflow-x:auto;
+  padding-bottom:16px;
+  scrollbar-gutter:stable;
+}
+.employer-workspace .workspace-column {
+  display:flex;
+  flex-direction:column;
+  padding:12px;
+  border:1px solid var(--stage-border, hsl(var(--job-border)));
+  border-top:4px solid var(--stage-accent, hsl(var(--primary)));
+  border-radius:12px;
+  background-color:var(--stage-bg, hsl(var(--job-tint)/.6));
+  min-height:420px;
+  max-height:620px;
+  transition:border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+.employer-workspace .workspace-column--focused {
+  box-shadow:0 0 0 2px var(--stage-accent, hsl(var(--primary))), 0 12px 24px -10px rgba(15, 23, 42, 0.18);
+}
+.employer-workspace .workspace-column--drag-over {
+  border-style:dashed;
+  border-width:2px;
+  border-top-width:4px;
+  border-color:var(--stage-accent, hsl(var(--primary)));
+  background-color:var(--stage-tint, hsl(var(--job-tint)));
+  box-shadow:0 0 0 3px var(--stage-border, hsl(var(--primary)));
+}
+.employer-workspace .workspace-column-header {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  margin-bottom:10px;
+  border-radius:8px;
+  background-color:var(--stage-tint, hsl(var(--job-tint)));
+  border:1px solid var(--stage-border, hsl(var(--job-border)));
+}
+.employer-workspace .workspace-column-header .workspace-icon {
+  width:32px;
+  height:32px;
+  border-radius:8px;
+  background-color:#ffffff;
+  color:var(--stage-accent, hsl(var(--primary)));
+}
+.employer-workspace .workspace-column-title {
+  font-size:13px;
+  font-weight:700;
+  color:var(--stage-ink, hsl(var(--job-ink)));
+}
+.employer-workspace .workspace-column-subtitle {
+  font-size:10px;
+  color:var(--stage-ink, hsl(var(--job-muted)));
+  opacity:0.82;
+  margin-top:1px;
+}
+.employer-workspace .workspace-column-count {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:24px;
+  height:22px;
+  padding:0 7px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:700;
+  background-color:var(--stage-accent, hsl(var(--primary)));
+  color:#ffffff;
+}
+
+/* Scrollable Column Body following Modern Web Guidance (css-layout & customize-scrollbar-color-and-thickness) */
+.employer-workspace .workspace-column-cards {
+   --scrollbar-thumb: var(--stage-accent, #64748b);
+  --scrollbar-track: var(--stage-bg, #f1f5f9);
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  overflow-y:auto;
+  max-block-size:480px;
+  padding-right:4px;
+  padding-bottom:4px;
+  scrollbar-gutter:stable;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+  scrollbar-color:var(--scrollbar-thumb) var(--scrollbar-track);
+}
+@supports not (scrollbar-color: auto) {
+  .employer-workspace .workspace-column-cards::-webkit-scrollbar {
+    width:6px;
+    height:6px;
+  }
+  .employer-workspace .workspace-column-cards::-webkit-scrollbar-track {
+    background:var(--scrollbar-track);
+    border-radius:999px;
+  }
+  .employer-workspace .workspace-column-cards::-webkit-scrollbar-thumb {
+    background:var(--scrollbar-thumb);
+    border-radius:999px;
+  }
+}
+
+.employer-workspace .workspace-candidate,
+.employer-reference-shell .employer-workspace .workspace-candidate {
+  display:block;
+  width:100%;
+  height:auto;
+  padding:13px 12px;
+  border:1px solid hsl(var(--job-border));
+  border-left:3px solid var(--stage-accent, hsl(var(--primary)));
+  background-color:hsl(var(--card));
+  border-radius:8px;
+  text-align:left;
+  white-space:normal;
+  cursor:grab;
+  transition:border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+}
+.employer-workspace .workspace-candidate:hover,
+.employer-reference-shell .employer-workspace .workspace-candidate:hover {
+  border-color:var(--stage-accent, hsl(var(--primary)));
+  background-color:hsl(var(--card));
+  box-shadow:0 6px 16px -6px rgba(15, 23, 42, 0.12);
+  transform:translateY(-1px);
+}
+.employer-workspace .workspace-candidate:active {
+  cursor:grabbing;
+}
+.employer-workspace .workspace-candidate--dragging {
+  opacity:0.45;
+  transform:scale(0.98);
+}
+.employer-workspace .workspace-candidate img { width:36px; height:36px; object-fit:cover; border-radius:50%; flex-shrink:0; border:2px solid var(--stage-tint, hsl(var(--job-border))); }
+.employer-workspace .workspace-candidate-match {
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  border-radius:999px;
+  padding:2px 8px;
+  font-size:10px;
+  font-weight:700;
+  background-color:var(--stage-tint, hsl(var(--job-tint)));
+  color:var(--stage-ink, hsl(var(--primary)));
+}
+
 .employer-workspace .workspace-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:245px; text-align:center; gap:12px; }
 .employer-workspace .workspace-empty .workspace-icon { width:64px; height:64px; border-radius:50%; }
 .employer-workspace .workspace-empty p { font-size:12px; color:hsl(var(--job-muted)); }
@@ -38,4 +263,4 @@
 .employer-workspace .workspace-health progress::-webkit-progress-value { background:hsl(var(--primary)); }
 .employer-workspace .workspace-health progress::-moz-progress-bar { background:hsl(var(--primary)); }
 @media(max-width:1100px) { .employer-workspace .workspace-stats { grid-template-columns:repeat(3,minmax(0,1fr)); } }
-@media(max-width:640px) { .employer-workspace .workspace-header { align-items:flex-start; flex-direction:column; gap:16px; } .employer-workspace .workspace-heading { font-size:24px; } .employer-workspace .workspace-panel { padding:18px; } .employer-workspace .workspace-stats { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; } .employer-workspace .workspace-stat { padding:12px; gap:8px; } .employer-workspace .workspace-stat .workspace-icon { width:30px; height:30px; } }
+@media(max-width:640px) { .employer-workspace .workspace-header { align-items:flex-start; flex-direction:column; gap:16px; } .employer-workspace .workspace-heading { font-size:24px; } .employer-workspace .workspace-panel { padding:18px; } .employer-workspace .workspace-stats { grid-template-columns:repeat(2,minmax(0,1fr)); } .employer-workspace .workspace-stat { padding:12px; gap:8px; } .employer-workspace .workspace-stat .workspace-icon { width:30px; height:30px; } }

@@ -789,6 +789,74 @@ const TalentoPro: React.FC = () => {
     );
   };
 
+  const handleAddCandidateToPipeline = (
+    cand: CandidateSeed,
+    jobId: number,
+    stage: ApplicationStage,
+    note?: string,
+    interview?: string
+  ) => {
+    const targetJob = jobs.find((j) => j.id === jobId) || jobs.find((j) => j.by === sessionEmail) || jobs[0];
+    if (!targetJob) {
+      addToast("Please post an active job opening first.");
+      return;
+    }
+    setApps((prev) => {
+      const existing = prev.find((a) => a.name === cand.n && a.jid === targetJob.id);
+      const effectiveStage: ApplicationStage = interview ? "Interview" : stage;
+      if (existing) {
+        return prev.map((a) =>
+          a.id === existing.id
+            ? {
+                ...a,
+                st: effectiveStage,
+                note: note !== undefined ? note : a.note,
+                iv: interview || a.iv,
+                upd: [
+                  ...(a.upd || []),
+                  {
+                    msg: `Candidate status updated to "${effectiveStage}" from Find Talent sourcing hub.`,
+                    at: Date.now(),
+                  },
+                  ...(note?.trim() ? [{ msg: note.trim(), at: Date.now() }] : []),
+                  ...(interview ? [{ msg: `Interview round scheduled for ${interview}.`, at: Date.now() }] : []),
+                ],
+              }
+            : a
+        );
+      }
+      const nextId = prev.reduce((max, a) => Math.max(max, a.id), 500) + 1;
+      const emailSlug = cand.n.toLowerCase().replace(/[^a-z0-9]+/g, ".") + "@candidate.talento.in";
+      const newApp: ApplicationRecord = {
+        id: nextId,
+        jid: targetJob.id,
+        jt: targetJob.t,
+        co: targetJob.co,
+        who: emailSlug,
+        name: cand.n,
+        ti: cand.ti,
+        exp: cand.exp,
+        loc: cand.loc,
+        sk: cand.sk,
+        bio: cand.bio,
+        av: cand.av,
+        st: effectiveStage,
+        at: Date.now(),
+        note: note || `Sourced from Find Talent verified pool (${cand.badge || "CIR Verified"}).`,
+        iv: interview,
+        upd: [
+          {
+            msg: `Candidate added to "${targetJob.t}" pipeline in ${effectiveStage} stage.`,
+            at: Date.now(),
+          },
+          ...(note?.trim() ? [{ msg: note.trim(), at: Date.now() }] : []),
+          ...(interview ? [{ msg: `Interview round scheduled for ${interview}.`, at: Date.now() }] : []),
+        ],
+      };
+      return [newApp, ...prev];
+    });
+  };
+
   const handleBulkUpdateStage = (appIds: number[], stage: string) => {
     const validStage = STAGES.find((value) => value === stage);
     if (!validStage) return;
@@ -952,8 +1020,18 @@ const TalentoPro: React.FC = () => {
   const selectedJob = drawerState?.type === "job" ? jobs.find(job => job.id === drawerState.id) : undefined;
 
   const candidatePage = currentRole === "employer" && (drawerState?.type === "applicant" || drawerState?.type === "candidate") ? drawerState : null;
-  const selectedApplicant = candidatePage?.type === "applicant" ? apps.find(a => a.id === candidatePage.id && jobs.some(j => j.id === a.jid && j.by === sessionEmail)) : undefined;
-  const selectedCandidate = candidatePage?.type === "candidate" ? CANDIDATES_SEED.find(c => c.n === candidatePage.name) : undefined;
+  const selectedApplicant =
+    candidatePage?.type === "applicant"
+      ? apps.find(a => a.id === candidatePage.id && jobs.some(j => j.id === a.jid && j.by === sessionEmail))
+      : candidatePage?.type === "candidate"
+        ? apps.find(a => a.name === candidatePage.name && jobs.some(j => j.id === a.jid && j.by === sessionEmail))
+        : undefined;
+  const selectedCandidate =
+    candidatePage?.type === "candidate"
+      ? CANDIDATES_SEED.find(c => c.n === candidatePage.name)
+      : selectedApplicant
+        ? CANDIDATES_SEED.find(c => c.n === selectedApplicant.name)
+        : undefined;
 
   const navigateProView = useCallback(
     (view: ProView, query?: Record<string, string>) => {
@@ -1060,7 +1138,7 @@ const TalentoPro: React.FC = () => {
               <p className="mt-0.5 text-xs text-muted-foreground">Real-time pipeline &amp; dashboard</p>
             </div>
           </div>
-        {candidatePage ? (selectedApplicant || selectedCandidate ? <ProEmployerCandidateDetail key={JSON.stringify(candidatePage)} application={selectedApplicant} candidate={selectedCandidate} job={jobs.find(j => j.id === (selectedApplicant?.jid || (candidatePage.type === "candidate" ? candidatePage.jobId : undefined)))} onBack={closeCandidate} onToast={addToast} onSave={(id, changes, message, interview) => { setApps(previous => previous.map(a => a.id === id ? { ...a, ...changes, st: interview ? "Interview" : changes.st, iv: interview || a.iv, upd: [...(a.upd || []), ...(a.st !== changes.st ? [{ msg: `Candidate status updated to "${changes.st}".`, at: Date.now() }] : []), ...(message.trim() ? [{ msg: message.trim(), at: Date.now() }] : []), ...(interview ? [{ msg: `Interview round scheduled for ${interview}.`, at: Date.now() }] : [])] } : a)); addToast("Application changes saved. Demo updates only; no message sent."); }} /> : <div className="py-12"><p>Candidate not found in this workspace.</p><Button onClick={closeCandidate} variant="outline" className="mt-4">Back to Candidates</Button></div>) : selectedJob ? <ProJobDetail key={selectedJob.id} job={selectedJob} user={currentUser} jobs={jobs} applications={apps} onBack={() => setDrawerState(null)} onOpenJob={(id) => { setDrawerState({ type: "job", id }); window.scrollTo({ top: 0 }); }} onApply={handleApplyJob} onSave={handleSaveJob} /> : (
+        {candidatePage ? (selectedApplicant || selectedCandidate ? <ProEmployerCandidateDetail key={JSON.stringify(candidatePage)} application={selectedApplicant} candidate={selectedCandidate} job={jobs.find(j => j.id === (selectedApplicant?.jid || (candidatePage.type === "candidate" ? candidatePage.jobId : undefined)))} employerJobs={jobs.filter(j => j.by === sessionEmail)} onBack={closeCandidate} onToast={addToast} onCreateApplication={handleAddCandidateToPipeline} onSave={(id, changes, message, interview) => { setApps(previous => previous.map(a => a.id === id ? { ...a, ...changes, st: interview ? "Interview" : changes.st, iv: interview || a.iv, upd: [...(a.upd || []), ...(a.st !== changes.st ? [{ msg: `Candidate status updated to "${changes.st}".`, at: Date.now() }] : []), ...(message.trim() ? [{ msg: message.trim(), at: Date.now() }] : []), ...(interview ? [{ msg: `Interview round scheduled for ${interview}.`, at: Date.now() }] : [])] } : a)); addToast("Application changes saved. Demo updates only; no message sent."); }} /> : <div className="py-12"><p>Candidate not found in this workspace.</p><Button onClick={closeCandidate} variant="outline" className="mt-4">Back to Candidates</Button></div>) : selectedJob ? <ProJobDetail key={selectedJob.id} job={selectedJob} user={currentUser} jobs={jobs} applications={apps} onBack={() => setDrawerState(null)} onOpenJob={(id) => { setDrawerState({ type: "job", id }); window.scrollTo({ top: 0 }); }} onApply={handleApplyJob} onSave={handleSaveJob} /> : (
         <AnimatePresence mode="wait">
           <motion.div
             key={`${currentRole}-${effectiveView}`}
@@ -1182,6 +1260,10 @@ const TalentoPro: React.FC = () => {
                 onBulkSendReview={handleBulkSendReview}
                 onOpenDrawer={openDrawer}
                 onToast={addToast}
+                onNavigate={navigateProView}
+                onAddCandidateToPipeline={(cand, jobId, stage, note) => handleAddCandidateToPipeline(cand, jobId, stage, note)}
+                selectedCompareCandidates={compareCandidates}
+                onCompareCandidatesChange={setCompareCandidates}
               />
             )}
 

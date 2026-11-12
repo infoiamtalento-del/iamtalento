@@ -272,7 +272,12 @@ export function ProEmployerMyAccount({
               <dd className="font-semibold text-sm text-foreground">{user.phone || user.ph || "+91 98450 12345"}</dd>
             </div>
 
-            <div className="p-3.5 rounded-lg border border-border/70 bg-muted/20">
+            <div
+              onClick={() => onNavigate("cp")}
+              role="button"
+              tabIndex={0}
+              className="p-3.5 rounded-lg border border-border/70 bg-muted/20 hover:border-primary/50 transition-colors cursor-pointer"
+            >
               <dt className="mb-1 flex items-center gap-1.5 font-medium text-muted-foreground">
                 <Building2 size={14} className="text-primary" />
                 Company
@@ -280,7 +285,12 @@ export function ProEmployerMyAccount({
               <dd className="font-semibold text-sm text-foreground">{user.cp?.name || user.name}</dd>
             </div>
 
-            <div className="p-3.5 rounded-lg border border-border/70 bg-muted/20 sm:col-span-2">
+            <div
+              onClick={() => onNavigate("cp")}
+              role="button"
+              tabIndex={0}
+              className="p-3.5 rounded-lg border border-border/70 bg-muted/20 sm:col-span-2 hover:border-primary/50 transition-colors cursor-pointer"
+            >
               <dt className="mb-1 flex items-center gap-1.5 font-medium text-muted-foreground">
                 <MapPin size={14} className="text-primary" />
                 Headquarters
@@ -337,7 +347,7 @@ export function ProEmployerMyAccount({
                 label: "Active job openings",
                 value: myJobs.length,
                 icon: BriefcaseBusiness,
-                target: "dash" as ProView,
+                target: "post" as ProView,
               },
               {
                 label: "Candidate applications",
@@ -349,7 +359,7 @@ export function ProEmployerMyAccount({
                 label: "Scheduled interviews",
                 value: apps.filter((a) => a.st === "Interview").length,
                 icon: CalendarDays,
-                target: "interviews" as ProView,
+                target: "pipe" as ProView,
               },
             ].map(({ label, value, icon: Icon, target }) => (
               <Button
