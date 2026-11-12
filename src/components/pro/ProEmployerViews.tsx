@@ -1287,210 +1287,225 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                 </div>
               </div>
 
-              {/* ROW 3: 8-FIELD DETAILED SEARCH CRITERIA GRID */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 pt-2 border-t border-border/60 text-xs">
-                {/* 1. Role / Engineering Domain */}
-                <div className="space-y-1.5">
-                  <label className="font-bold text-foreground flex items-center gap-1.5">
-                    <Briefcase className="w-3.5 h-3.5 text-muted-foreground" />
-                    1. Role / Domain
-                  </label>
-                  <select
-                    value={talentRoleFilter}
-                    onChange={(e) => {
-                      setTalentRoleFilter(e.target.value);
-                      setHasExecutedSearch(true);
-                    }}
-                    className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none cursor-pointer"
-                  >
-                    <option value="all">All Engineering Roles</option>
-                    <option value="frontend">Frontend &amp; Full Stack (React/TS)</option>
-                    <option value="backend">Backend &amp; Distributed Systems</option>
-                    <option value="devops">Cloud, DevOps &amp; SRE (K8s/AWS)</option>
-                    <option value="ml">AI, ML &amp; Data Science</option>
-                    <option value="data">Data Analytics &amp; BI</option>
-                    <option value="mobile">Mobile Engineering (iOS/RN)</option>
-                    <option value="design">Product UI/UX &amp; Design Systems</option>
-                    <option value="qa">QA &amp; Test Automation</option>
-                  </select>
-                </div>
-
-                {/* 2. Location / City Hub */}
-                <div className="space-y-1.5">
-                  <label className="font-bold text-foreground flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-muted-foreground" />
-                    2. Location / City
-                  </label>
-                  <select
-                    value={talentCityFilter}
-                    onChange={(e) => {
-                      setTalentCityFilter(e.target.value);
-                      setHasExecutedSearch(true);
-                    }}
-                    className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none cursor-pointer"
-                  >
-                    <option value="all">All Cities (Pan-India)</option>
-                    <option value="Bengaluru">Bengaluru</option>
-                    <option value="Hyderabad">Hyderabad</option>
-                    <option value="Chennai">Chennai</option>
-                    <option value="Pune">Pune</option>
-                    <option value="Mumbai">Mumbai</option>
-                    <option value="Delhi NCR">Delhi NCR / Noida / Gurugram</option>
-                    <option value="Kolkata">Kolkata</option>
-                    <option value="Remote">Remote Only</option>
-                  </select>
-                </div>
-
-                {/* 3. Work Mode Preference */}
-                <div className="space-y-1.5">
-                  <label className="font-bold text-foreground flex items-center gap-1.5">
-                    <Building2 className="w-3.5 h-3.5 text-muted-foreground" />
-                    3. Work Mode
-                  </label>
-                  <select
-                    value={talentWorkModeFilter}
-                    onChange={(e) => {
-                      setTalentWorkModeFilter(e.target.value);
-                      setHasExecutedSearch(true);
-                    }}
-                    className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none cursor-pointer"
-                  >
-                    <option value="all">Any Work Mode</option>
-                    <option value="Hybrid">Hybrid</option>
-                    <option value="Remote">Remote</option>
-                    <option value="Onsite">Onsite</option>
-                  </select>
-                </div>
-
-                {/* 4. Minimum Experience */}
-                <div className="space-y-1.5">
-                  <label className="font-bold text-foreground flex items-center gap-1.5">
-                    <Layers className="w-3.5 h-3.5 text-muted-foreground" />
-                    4. Experience Range
-                  </label>
-                  <select
-                    value={talentMinExpFilter}
-                    onChange={(e) => {
-                      setTalentMinExpFilter(Number(e.target.value));
-                      setHasExecutedSearch(true);
-                    }}
-                    className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none cursor-pointer"
-                  >
-                    <option value={0}>Any Experience (0+ Years)</option>
-                    <option value={1}>1+ Years (Junior &amp; Above)</option>
-                    <option value={2}>2+ Years</option>
-                    <option value={3}>3+ Years (Mid-Level &amp; Above)</option>
-                    <option value={4}>4+ Years (Senior)</option>
-                    <option value={6}>6+ Years (Staff / Principal)</option>
-                  </select>
-                </div>
-
-                {/* 5. Expected CTC Budget */}
-                <div className="space-y-1.5">
-                  <label className="font-bold text-foreground flex items-center gap-1.5">
-                    <IndianRupee className="w-3.5 h-3.5 text-muted-foreground" />
-                    5. Max Expected CTC
-                  </label>
-                  <select
-                    value={talentMaxSalary}
-                    onChange={(e) => {
-                      setTalentMaxSalary(Number(e.target.value));
-                      setHasExecutedSearch(true);
-                    }}
-                    className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none cursor-pointer"
-                  >
-                    <option value={60}>Any Budget (Up to ₹60 LPA)</option>
-                    <option value={10}>Up to ₹10 LPA</option>
-                    <option value={15}>Up to ₹15 LPA</option>
-                    <option value={25}>Up to ₹25 LPA</option>
-                    <option value={35}>Up to ₹35 LPA</option>
-                    <option value={45}>Up to ₹45 LPA</option>
-                  </select>
-                </div>
-
-                {/* 6. Notice Period / Availability */}
-                <div className="space-y-1.5">
-                  <label className="font-bold text-foreground flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-                    6. Notice Period
-                  </label>
-                  <select
-                    value={talentNoticePeriod}
-                    onChange={(e) => {
-                      setTalentNoticePeriod(Number(e.target.value));
-                      setHasExecutedSearch(true);
-                    }}
-                    className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none cursor-pointer"
-                  >
-                    <option value={999}>Any Notice Period</option>
-                    <option value={0}>⚡ Immediate Joiner (0 Days)</option>
-                    <option value={15}>Within 15 Days</option>
-                    <option value={30}>Within 30 Days</option>
-                  </select>
-                </div>
-
-                {/* 7. Education & Institute Pedigree */}
-                <div className="space-y-1.5">
-                  <label className="font-bold text-foreground flex items-center gap-1.5">
-                    <GraduationCap className="w-3.5 h-3.5 text-muted-foreground" />
-                    7. Education Tier
-                  </label>
-                  <select
-                    value={talentEduFilter}
-                    onChange={(e) => {
-                      setTalentEduFilter(e.target.value);
-                      setHasExecutedSearch(true);
-                    }}
-                    className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none cursor-pointer"
-                  >
-                    <option value="all">All Engineering Colleges</option>
-                    <option value="tier1">Tier-1 Premier (IIT / BITS / NIT / IIIT / NID / DTU)</option>
-                    <option value="btech">B.Tech / B.E. Computer Science &amp; IT</option>
-                  </select>
-                </div>
-
-                {/* 8. Pool-Specific Advanced Filter */}
-                {talentOption === "verified" ? (
-                  <div className="space-y-1.5">
-                    <label className="font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5">
-                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                      8. Min CIR Trust Score
-                    </label>
-                    <select
-                      value={talentMinCirFilter}
-                      onChange={(e) => {
-                        setTalentMinCirFilter(Number(e.target.value));
-                        setHasExecutedSearch(true);
-                      }}
-                      className="w-full h-9 rounded-xl border border-emerald-500/40 bg-background px-3 py-1 text-xs font-semibold shadow-2xs focus-visible:outline-none cursor-pointer"
-                    >
-                      <option value={0}>All Verified CIR (90+/100)</option>
-                      <option value={95}>CIR 95+ (Top 5% India)</option>
-                      <option value={97}>CIR 97+ (Top 3% Pan-India)</option>
-                      <option value={99}>CIR 99 (Top 1% Elite Architect)</option>
-                    </select>
+              {/* ROW 3: 2x2 BOX GRID OF DETAILED SEARCH OPTIONS */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-border/60 text-xs">
+                {/* BOX 1 (Top-Left): Role / Domain & Education Tier */}
+                <div className="p-4 rounded-2xl bg-muted/30 border border-border/70 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-foreground text-xs uppercase tracking-wider flex items-center gap-1.5">
+                      <Briefcase className="w-3.5 h-3.5 text-primary" />
+                      Box 1 · Role &amp; Education
+                    </span>
+                    <span className="text-[10px] text-muted-foreground font-medium">Domain &amp; College</span>
                   </div>
-                ) : (
-                  <div className="space-y-1.5">
-                    <label className="font-bold text-foreground flex items-center gap-1.5">
-                      <Star className="w-3.5 h-3.5 text-muted-foreground" />
-                      8. Sort Results By
-                    </label>
-                    <select
-                      value={talentSort}
-                      onChange={(e) => {
-                        setTalentSort(e.target.value as any);
-                        setHasExecutedSearch(true);
-                      }}
-                      className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none cursor-pointer"
-                    >
-                      <option value="cir">Best Profile Rating</option>
-                      <option value="a">Highest Skill Assessment Score</option>
-                      <option value="x">Experience (High to Low)</option>
-                      <option value="sal-asc">Expected CTC (Lowest First)</option>
-                    </select>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <label className="font-semibold text-foreground block">Role / Engineering Domain</label>
+                      <select
+                        value={talentRoleFilter}
+                        onChange={(e) => {
+                          setTalentRoleFilter(e.target.value);
+                          setHasExecutedSearch(true);
+                        }}
+                        className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none cursor-pointer"
+                      >
+                        <option value="all">All Engineering Roles</option>
+                        <option value="frontend">Frontend &amp; Full Stack (React/TS)</option>
+                        <option value="backend">Backend &amp; Distributed Systems</option>
+                        <option value="devops">Cloud, DevOps &amp; SRE (K8s/AWS)</option>
+                        <option value="ml">AI, ML &amp; Data Science</option>
+                        <option value="data">Data Analytics &amp; BI</option>
+                        <option value="mobile">Mobile Engineering (iOS/RN)</option>
+                        <option value="design">Product UI/UX &amp; Design Systems</option>
+                        <option value="qa">QA &amp; Test Automation</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="font-semibold text-foreground block">Education Tier</label>
+                      <select
+                        value={talentEduFilter}
+                        onChange={(e) => {
+                          setTalentEduFilter(e.target.value);
+                          setHasExecutedSearch(true);
+                        }}
+                        className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none cursor-pointer"
+                      >
+                        <option value="all">All Engineering Colleges</option>
+                        <option value="tier1">Tier-1 Premier (IIT / BITS / NIT / IIIT)</option>
+                        <option value="btech">B.Tech / B.E. CS &amp; IT</option>
+                      </select>
+                    </div>
                   </div>
-                )}
+                </div>
+
+                {/* BOX 2 (Top-Right): Location & Work Mode */}
+                <div className="p-4 rounded-2xl bg-muted/30 border border-border/70 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-foreground text-xs uppercase tracking-wider flex items-center gap-1.5">
+                      <MapPin className="w-3.5 h-3.5 text-primary" />
+                      Box 2 · Location &amp; Work Mode
+                    </span>
+                    <span className="text-[10px] text-muted-foreground font-medium">City &amp; Flexibility</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <label className="font-semibold text-foreground block">Location / City</label>
+                      <select
+                        value={talentCityFilter}
+                        onChange={(e) => {
+                          setTalentCityFilter(e.target.value);
+                          setHasExecutedSearch(true);
+                        }}
+                        className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none cursor-pointer"
+                      >
+                        <option value="all">All Cities (Pan-India)</option>
+                        <option value="Bengaluru">Bengaluru</option>
+                        <option value="Hyderabad">Hyderabad</option>
+                        <option value="Chennai">Chennai</option>
+                        <option value="Pune">Pune</option>
+                        <option value="Mumbai">Mumbai</option>
+                        <option value="Delhi NCR">Delhi NCR / Noida / Gurugram</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Remote">Remote Only</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="font-semibold text-foreground block">Work Mode</label>
+                      <select
+                        value={talentWorkModeFilter}
+                        onChange={(e) => {
+                          setTalentWorkModeFilter(e.target.value);
+                          setHasExecutedSearch(true);
+                        }}
+                        className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none cursor-pointer"
+                      >
+                        <option value="all">Any Work Mode</option>
+                        <option value="Hybrid">Hybrid</option>
+                        <option value="Remote">Remote</option>
+                        <option value="Onsite">Onsite</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* BOX 3 (Bottom-Left): Experience & Expected CTC Budget */}
+                <div className="p-4 rounded-2xl bg-muted/30 border border-border/70 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-foreground text-xs uppercase tracking-wider flex items-center gap-1.5">
+                      <IndianRupee className="w-3.5 h-3.5 text-primary" />
+                      Box 3 · Experience &amp; CTC Budget
+                    </span>
+                    <span className="text-[10px] text-muted-foreground font-medium">Seniority &amp; Salary</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <label className="font-semibold text-foreground block">Experience Range</label>
+                      <select
+                        value={talentMinExpFilter}
+                        onChange={(e) => {
+                          setTalentMinExpFilter(Number(e.target.value));
+                          setHasExecutedSearch(true);
+                        }}
+                        className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none cursor-pointer"
+                      >
+                        <option value={0}>Any Experience (0+ Years)</option>
+                        <option value={1}>1+ Years (Junior &amp; Above)</option>
+                        <option value={2}>2+ Years</option>
+                        <option value={3}>3+ Years (Mid-Level &amp; Above)</option>
+                        <option value={4}>4+ Years (Senior)</option>
+                        <option value={6}>6+ Years (Staff / Principal)</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="font-semibold text-foreground block">Max Expected CTC</label>
+                      <select
+                        value={talentMaxSalary}
+                        onChange={(e) => {
+                          setTalentMaxSalary(Number(e.target.value));
+                          setHasExecutedSearch(true);
+                        }}
+                        className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none cursor-pointer"
+                      >
+                        <option value={60}>Any Budget (Up to ₹60 LPA)</option>
+                        <option value={10}>Up to ₹10 LPA</option>
+                        <option value={15}>Up to ₹15 LPA</option>
+                        <option value={25}>Up to ₹25 LPA</option>
+                        <option value={35}>Up to ₹35 LPA</option>
+                        <option value={45}>Up to ₹45 LPA</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* BOX 4 (Bottom-Right): Notice Period & Verification / Ranking */}
+                <div className="p-4 rounded-2xl bg-muted/30 border border-border/70 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-foreground text-xs uppercase tracking-wider flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5 text-primary" />
+                      Box 4 · Availability &amp; {talentOption === "verified" ? "CIR Score" : "Ranking"}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground font-medium">Joining &amp; Quality</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <label className="font-semibold text-foreground block">Notice Period</label>
+                      <select
+                        value={talentNoticePeriod}
+                        onChange={(e) => {
+                          setTalentNoticePeriod(Number(e.target.value));
+                          setHasExecutedSearch(true);
+                        }}
+                        className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none cursor-pointer"
+                      >
+                        <option value={999}>Any Notice Period</option>
+                        <option value={0}>⚡ Immediate Joiner (0 Days)</option>
+                        <option value={15}>Within 15 Days</option>
+                        <option value={30}>Within 30 Days</option>
+                      </select>
+                    </div>
+
+                    {talentOption === "verified" ? (
+                      <div className="space-y-1.5">
+                        <label className="font-semibold text-emerald-700 dark:text-emerald-300 block">
+                          Min CIR Trust Score
+                        </label>
+                        <select
+                          value={talentMinCirFilter}
+                          onChange={(e) => {
+                            setTalentMinCirFilter(Number(e.target.value));
+                            setHasExecutedSearch(true);
+                          }}
+                          className="w-full h-9 rounded-xl border border-emerald-500/40 bg-background px-3 py-1 text-xs font-semibold shadow-2xs focus-visible:outline-none cursor-pointer"
+                        >
+                          <option value={0}>All Verified CIR (90+/100)</option>
+                          <option value={95}>CIR 95+ (Top 5% India)</option>
+                          <option value={97}>CIR 97+ (Top 3% Pan-India)</option>
+                          <option value={99}>CIR 99 (Top 1% Elite Architect)</option>
+                        </select>
+                      </div>
+                    ) : (
+                      <div className="space-y-1.5">
+                        <label className="font-semibold text-foreground block">Sort Results By</label>
+                        <select
+                          value={talentSort}
+                          onChange={(e) => {
+                            setTalentSort(e.target.value as any);
+                            setHasExecutedSearch(true);
+                          }}
+                          className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none cursor-pointer"
+                        >
+                          <option value="cir">Best Profile Rating</option>
+                          <option value="a">Highest Skill Assessment Score</option>
+                          <option value="x">Experience (High to Low)</option>
+                          <option value="sal-asc">Expected CTC (Lowest First)</option>
+                        </select>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
 
               {/* ROW 4: ADDITIONAL VERIFIED SECTOR & CERTIFICATION BAR + EXECUTE SEARCH BUTTON */}
@@ -1698,506 +1713,319 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                   </div>
                 )}
 
-                {/* 2-COLUMN GRID: FILTER PANEL & CANDIDATE CARDS */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* LEFT FILTERS: 4 cols */}
-          <div className="lg:col-span-4 bg-card border border-border/80 rounded-3xl p-5 shadow-xs space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-foreground text-sm flex items-center gap-2">
-                <Filter className="w-4 h-4 text-primary" /> Filter {talentOption === "verified" ? "Verified Candidates" : "Candidates"}
-              </h3>
-              <button
-                onClick={handleResetDetailedSearch}
-                className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors cursor-pointer"
-              >
-                <RotateCcw className="w-3 h-3" /> Reset
-              </button>
-            </div>
-
-            <div className="space-y-4 text-xs">
-              <div>
-                <label className="font-semibold text-foreground block mb-1.5">Rank For Open Position</label>
-                <select
-                  value={talentJobFilter}
-                  onChange={(e) => setTalentJobFilter(e.target.value)}
-                  className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none"
-                >
-                  <option value="">Generic (All Openings)</option>
-                  {myJobs.map((j) => (
-                    <option key={j.id} value={j.id}>
-                      {j.t} ({j.l})
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="font-semibold text-foreground block mb-1.5">Keyword Search</label>
-                <Input
-                  value={talentQuery}
-                  onChange={(e) => setTalentQuery(e.target.value)}
-                  placeholder="e.g. React, Razorpay, Golang, BITS..."
-                  className="text-xs h-9 rounded-xl"
-                />
-              </div>
-
-              <div>
-                <label className="font-semibold text-foreground block mb-1.5">Experience Level</label>
-                <div className="grid grid-cols-2 gap-1.5">
-                  {["Fresher", "Junior", "Mid", "Senior"].map((lvl) => {
-                    const isChecked = talentExpLevels.includes(lvl);
-                    return (
-                      <label
-                        key={lvl}
-                        className={cn(
-                          "flex items-center gap-2 rounded-xl px-2.5 py-1.5 border text-xs cursor-pointer transition-colors",
-                          isChecked
-                            ? "bg-primary/10 border-primary text-primary font-bold"
-                            : "bg-background border-border/70 text-muted-foreground hover:text-foreground"
-                        )}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={isChecked}
-                          onChange={() =>
-                            setTalentExpLevels((prev) =>
-                              isChecked ? prev.filter((x) => x !== lvl) : [...prev, lvl]
-                            )
-                          }
-                          className="rounded text-primary focus:ring-primary accent-primary"
-                        />
-                        <span>{lvl}</span>
-                      </label>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="font-semibold text-foreground">Min Assessment Score</label>
-                  <span className="font-bold text-primary px-2 py-0.5 rounded-md bg-primary/10">
-                    {talentMinAssessment}%
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="95"
-                  step="5"
-                  value={talentMinAssessment}
-                  onChange={(e) => setTalentMinAssessment(Number(e.target.value))}
-                  className="w-full accent-primary cursor-pointer"
-                />
-              </div>
-
-              <div className="pt-1">
-                <label className="flex items-center gap-2 cursor-pointer p-2 rounded-xl border border-border/70 hover:bg-muted/40 transition-colors">
-                  <input
-                    type="checkbox"
-                    checked={talentOnlyCertified}
-                    onChange={(e) => setTalentOnlyCertified(e.target.checked)}
-                    className="rounded text-primary focus:ring-primary accent-primary"
-                  />
-                  <span className="font-semibold text-foreground">Certified Credentials Only (AWS, Meta, Google)</span>
-                </label>
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="font-semibold text-foreground">Max Expected CTC</label>
-                  <span className="font-bold text-primary px-2 py-0.5 rounded-md bg-primary/10">
-                    ₹{talentMaxSalary} LPA
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min="5"
-                  max="60"
-                  step="2"
-                  value={talentMaxSalary}
-                  onChange={(e) => setTalentMaxSalary(Number(e.target.value))}
-                  className="w-full accent-primary cursor-pointer"
-                />
-              </div>
-
-              <div>
-                <label className="font-semibold text-foreground block mb-1.5">Sort Candidates By</label>
-                <select
-                  value={talentSort}
-                  onChange={(e) => setTalentSort(e.target.value as any)}
-                  className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none"
-                >
-                  <option value="cir">Highest CIR Score</option>
-                  <option value="s">Best Algorithm Fit Match</option>
-                  <option value="a">Assessment Proctored Score</option>
-                  <option value="x">Experience (High to Low)</option>
-                  <option value="sal-asc">Expected Salary (Lowest First)</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          {/* RIGHT CANDIDATE CARDS: 8 cols */}
-          <div className="lg:col-span-8 space-y-4">
-            <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
-              <span>
-                Showing <strong className="text-foreground">{displayCandidates.length}</strong> {talentOption === "verified" ? "Verified Candidates" : "Candidates"}
-              </span>
-              <span className="text-[11px]">
-                {talentOption === "verified" ? "Verified dossiers: ₹2,999 / unlock" : "Free Candidate Browsing"}
-              </span>
-            </div>
-
-            {displayCandidates.length === 0 && (
-              <div className="bg-card border border-border/80 rounded-3xl p-12 text-center space-y-3">
-                <Users className="w-10 h-10 text-muted-foreground mx-auto" />
-                <h4 className="font-bold text-foreground text-base">No candidates match your current filters</h4>
-                <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-                  Try adjusting your role selection, search keyword, or salary range to discover more candidates.
-                </p>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={handleResetDetailedSearch}
-                  className="rounded-xl text-xs mt-2"
-                >
-                  Reset All Filters
-                </Button>
-              </div>
-            )}
-
-            <div className="space-y-4">
-              {displayCandidates.map((cand) => {
-                const scoreVal = calcTalentScore(cand, selectedJobObj);
-                const isCompared = selectedTalentToCompare.includes(cand.n);
-                const isVerified = cand.verified === true;
-                const isUnlocked = effectiveUnlockedNames.includes(cand.n);
-                const isBlurred = false;
-                const maskedName = getMaskedCandidateName(cand.n);
-                const anonHeadline = getAnonymizedHeadline(cand);
-                const anonEdu = getAnonymizedEducation(cand.education);
-                const anonHighlight = getAnonymizedHighlight(cand);
-
-                return (
-                  <div
-                    key={cand.n}
-                    className={cn(
-                      "bg-card border rounded-3xl p-5 sm:p-6 shadow-xs space-y-4 transition-all hover:shadow-md",
-                      isVerified
-                        ? isUnlocked
-                          ? "border-emerald-500/50 bg-gradient-to-br from-emerald-500/[0.03] to-card"
-                          : "border-emerald-500/30 hover:border-emerald-500/60 bg-gradient-to-br from-emerald-500/[0.015] to-card"
-                        : "border-border/80 hover:border-primary/40"
-                    )}
-                  >
-                    {/* Top Header Row */}
-                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                      <div className="flex items-start gap-4">
-                        {/* Avatar */}
-                        <div
-                          className="relative shrink-0 cursor-pointer group"
-                          onClick={() =>
-                            onOpenDrawer({ type: "candidate", name: cand.n, jobId: selectedJobObj?.id })
-                          }
-                        >
-                          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden border border-border/70 shadow-2xs relative bg-muted">
-                            <img
-                              src={getCandidatePhoto(cand.n)}
-                              alt={cand.n}
-                              className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
-                            />
-                          </div>
-                          {isVerified ? (
-                            <span
-                              title="CIR Verified Candidate"
-                              className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-emerald-600 text-white flex items-center justify-center border-2 border-background shadow-xs"
-                            >
-                              <ShieldCheck className="w-3.5 h-3.5" />
-                            </span>
-                          ) : (
-                            <span className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-emerald-500 border-2 border-background" />
-                          )}
-                        </div>
-
-                        {/* Name & Title */}
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <h4
-                              className="font-bold text-foreground text-base sm:text-lg font-display hover:text-primary cursor-pointer transition-colors"
-                              onClick={() =>
-                                onOpenDrawer({ type: "candidate", name: cand.n, jobId: selectedJobObj?.id })
-                              }
-                            >
-                              {cand.n}
-                            </h4>
-
-                            {isVerified && (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-[10px] font-extrabold tracking-wide uppercase">
-                                <ShieldCheck className="w-3.5 h-3.5" /> Talento Verified CIR
-                              </span>
-                            )}
-
-                            {cand.statusBadge && (
-                              <span className="px-2 py-0.5 rounded-md bg-secondary text-secondary-foreground text-[10px] font-bold">
-                                {cand.statusBadge}
-                              </span>
-                            )}
-                          </div>
-
-                          {/* Headline with Current & Previous Companies */}
-                          {cand.headline && (
-                            <div className="text-xs sm:text-sm font-semibold text-foreground/90 flex items-center gap-1.5 flex-wrap">
-                              <span>{cand.headline}</span>
-                            </div>
-                          )}
-
-                          {/* Education */}
-                          {cand.education && (
-                            <p className="text-[11px] text-muted-foreground flex items-center gap-1.5 flex-wrap">
-                              <GraduationCap className="w-3.5 h-3.5 text-muted-foreground/80 shrink-0" />
-                              <span>{cand.education}</span>
-                            </p>
-                          )}
-
-                          {/* Meta Specs Chips */}
-                          <div className="flex items-center gap-x-3 gap-y-1 flex-wrap text-xs text-muted-foreground pt-1">
-                            <span className="flex items-center gap-1">
-                              <MapPin className="w-3 h-3 text-muted-foreground" /> {cand.c} ({cand.wp})
-                            </span>
-                            <span>•</span>
-                            <span className="flex items-center gap-1">
-                              <Briefcase className="w-3 h-3 text-muted-foreground" /> {cand.x} yrs exp ({levelFromExp(cand.x)})
-                            </span>
-                            <span>•</span>
-                            <span className="flex items-center gap-1 font-semibold text-foreground">
-                              <IndianRupee className="w-3 h-3 text-muted-foreground" />
-                              {cand.currentSalary ? `₹${cand.currentSalary}L ➔ ` : ""}₹{cand.es} LPA Exp
-                            </span>
-                            <span>•</span>
-                            <span className="flex items-center gap-1">
-                              <Clock className="w-3 h-3 text-muted-foreground" /> {cand.nt ? `${cand.nt}d notice` : "Immediate Joiner"}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Right Score & Compare */}
-                      <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-3 shrink-0 pt-1 border-t sm:border-t-0 border-border/50">
-                        {isVerified && cand.cirScore ? (
-                          <div className="text-left sm:text-right">
-                            <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 font-extrabold text-xs">
-                              <ShieldCheck className="w-3.5 h-3.5" />
-                              <span>CIR {cand.cirScore}/100</span>
-                            </div>
-                            <span className="text-[10px] text-muted-foreground block mt-0.5">
-                              Top 3% Pan-India
-                            </span>
-                          </div>
-                        ) : (
-                          <div className="text-left sm:text-right">
-                            <span className="text-[10px] text-muted-foreground block">Fit Match</span>
-                            <span className="font-bold text-sm text-primary">{scoreVal}%</span>
-                          </div>
-                        )}
-
-                        <label className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground cursor-pointer select-none">
-                          <input
-                            type="checkbox"
-                            checked={isCompared}
-                            onChange={() => {
-                              setSelectedTalentToCompare((prev) =>
-                                isCompared ? prev.filter((x) => x !== cand.n) : [...prev, cand.n]
-                              );
-                            }}
-                            className="rounded text-primary focus:ring-primary accent-primary"
-                          />
-                          <span>Compare</span>
-                        </label>
-                      </div>
+                {/* RESULTS HEADER BAR & 2x2 BOX GRID OF CANDIDATE PROFILES */}
+                <div className="space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-3 bg-card border border-border/80 rounded-2xl px-4 py-3 text-xs shadow-2xs">
+                    <div className="flex items-center gap-2">
+                      <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="text-muted-foreground">
+                        Showing <strong className="text-foreground font-bold">{displayCandidates.length}</strong>{" "}
+                        {talentOption === "verified" ? "Verified Candidate Profiles" : "Candidate Profiles"} matching your search
+                      </span>
                     </div>
 
-                    {/* Engineering Highlight Quote */}
-                    {cand.highlight && (
-                      <div className="p-3 rounded-2xl bg-muted/40 border border-border/70 text-xs text-foreground/90 italic leading-relaxed">
-                        "{cand.highlight}"
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-muted-foreground font-medium">Rank For Job:</span>
+                        <select
+                          value={talentJobFilter}
+                          onChange={(e) => setTalentJobFilter(e.target.value)}
+                          className="h-8 rounded-xl border border-input bg-background px-2.5 text-xs focus-visible:outline-none"
+                        >
+                          <option value="">All Openings</option>
+                          {myJobs.map((j) => (
+                            <option key={j.id} value={j.id}>
+                              {j.t} ({j.l})
+                            </option>
+                          ))}
+                        </select>
                       </div>
-                    )}
 
-                    {/* Identity & Contact Dossier Strip (For Verified Candidates) */}
-                    {isVerified && (
-                      <div
-                        className={cn(
-                          "p-3.5 rounded-2xl border text-xs relative overflow-hidden",
-                          isUnlocked
-                            ? "bg-emerald-500/[0.06] border-emerald-500/30"
-                            : "bg-slate-900/[0.03] dark:bg-slate-100/[0.03] border-border/80"
-                        )}
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-muted-foreground font-medium">Sort By:</span>
+                        <select
+                          value={talentSort}
+                          onChange={(e) => setTalentSort(e.target.value as any)}
+                          className="h-8 rounded-xl border border-input bg-background px-2.5 text-xs focus-visible:outline-none"
+                        >
+                          <option value="cir">Highest CIR Score</option>
+                          <option value="s">Best Match Score</option>
+                          <option value="a">Assessment Score</option>
+                          <option value="x">Experience (High to Low)</option>
+                          <option value="sal-asc">Expected CTC (Lowest First)</option>
+                        </select>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={handleResetDetailedSearch}
+                        className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-border/70 bg-background transition-colors cursor-pointer"
                       >
-                        <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5">
-                          <div className="flex items-center gap-1.5 font-bold text-foreground text-xs">
-                            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                            <span className="text-emerald-800 dark:text-emerald-300">
-                              Verified Identity &amp; Direct Contact Dossier
-                            </span>
-                          </div>
-                          {!isUnlocked && (
-                            <button
-                              type="button"
-                              onClick={() => setCandidateToUnlock(cand)}
-                              className="text-[11px] font-bold text-[#002C66] dark:text-blue-400 hover:underline flex items-center gap-1 cursor-pointer"
-                            >
-                              <ShieldCheck className="w-3.5 h-3.5" /> Unlock Verified Dossier (₹2,999)
-                            </button>
-                          )}
-                        </div>
-
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                          <div className="p-2 rounded-xl bg-background border border-emerald-500/20">
-                            <span className="text-[10px] text-muted-foreground block">Full Name &amp; Employer</span>
-                            <span className="font-bold text-foreground text-xs truncate block">
-                              {cand.n} · {cand.currentCompany}
-                            </span>
-                          </div>
-                          <div className="p-2 rounded-xl bg-background border border-emerald-500/20">
-                            <span className="text-[10px] text-muted-foreground block">Verified Mobile</span>
-                            <span className="font-bold text-emerald-700 dark:text-emerald-300 text-xs truncate block">
-                              {cand.phone || "+91 98401 23456"}
-                            </span>
-                          </div>
-                          <div className="p-2 rounded-xl bg-background border border-emerald-500/20">
-                            <span className="text-[10px] text-muted-foreground block">Direct Email</span>
-                            <span className="font-bold text-foreground text-xs truncate block" title={cand.email}>
-                              {cand.email}
-                            </span>
-                          </div>
-                          <div className="p-2 rounded-xl bg-background border border-emerald-500/20">
-                            <span className="text-[10px] text-muted-foreground block">LinkedIn &amp; GitHub</span>
-                            <span className="font-bold text-primary text-xs truncate block">
-                              {cand.linkedin || cand.github || "Verified Links"}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Talento CIR Verification Box (For Verified Candidates) */}
-                    {isVerified && (
-                      <div className="p-3.5 rounded-2xl bg-emerald-500/[0.04] border border-emerald-500/20 space-y-2.5 text-xs">
-                        <div className="flex flex-wrap items-center justify-between gap-2">
-                          <div className="flex items-center gap-1.5 font-bold text-emerald-800 dark:text-emerald-300 text-xs">
-                            <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                            <span>Proctored Assessment &amp; Verification Scorecard</span>
-                          </div>
-                          {cand.cirId && (
-                            <span className="text-[10px] font-mono font-bold text-muted-foreground bg-background px-2 py-0.5 rounded-md border border-border/60">
-                              Ledger ID: {cand.cirId}
-                            </span>
-                          )}
-                        </div>
-
-                        {/* Proctored Skill Scores */}
-                        {cand.as && Object.keys(cand.as).length > 0 && (
-                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-0.5">
-                            {Object.entries(cand.as).map(([testName, score]) => (
-                              <div
-                                key={testName}
-                                className="p-2 rounded-xl bg-background border border-border/60 text-center"
-                              >
-                                <div className="text-[10px] text-muted-foreground truncate" title={testName}>
-                                  {testName}
-                                </div>
-                                <div className="text-xs font-bold text-emerald-600 mt-0.5">
-                                  {score}% <span className="text-[9px] text-muted-foreground font-normal">Passed</span>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-
-                        {/* Verified Badges */}
-                        {cand.verifiedBadges && (
-                          <div className="flex items-center gap-2 flex-wrap pt-1 text-[11px] text-muted-foreground">
-                            {cand.verifiedBadges.map((vb) => (
-                              <span
-                                key={vb}
-                                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-medium"
-                              >
-                                <CheckCircle className="w-3 h-3 text-emerald-600" /> {vb}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Skills & Certifications */}
-                    <div className="flex items-center gap-1.5 flex-wrap text-xs pt-0.5">
-                      {cand.sk.map((s) => (
-                        <span
-                          key={s}
-                          className="px-2.5 py-1 rounded-lg bg-secondary text-secondary-foreground text-xs font-medium"
-                        >
-                          {s}
-                        </span>
-                      ))}
-                      {cand.ce &&
-                        cand.ce.map((cert) => (
-                          <span
-                            key={cert}
-                            className="px-2.5 py-1 rounded-lg bg-purple-500/10 text-purple-700 dark:text-purple-300 text-xs font-semibold flex items-center gap-1"
-                          >
-                            <Award className="w-3 h-3 text-purple-600" /> {cert}
-                          </span>
-                        ))}
-                    </div>
-
-                    {/* Action Bar */}
-                    <div className="pt-3 border-t border-border/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                      {/* Left Status Indicator */}
-                      <div className="flex items-center gap-2">
-                        {isVerified ? (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-xs font-bold">
-                            <ShieldCheck className="w-3.5 h-3.5" /> Talento Verified CIR Dossier
-                          </span>
-                        ) : (
-                          <span className="text-muted-foreground text-xs">
-                            Standard candidate profile · Free to view
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Right Action Buttons */}
-                      <div className="flex items-center gap-2 flex-wrap self-end sm:self-auto">
-                        <Button
-                          size="sm"
-                          variant={isVerified ? "default" : "outline"}
-                          className={cn(
-                            "rounded-xl text-xs h-9 px-4 gap-1.5 font-semibold cursor-pointer",
-                            isVerified ? "bg-emerald-600 hover:bg-emerald-700 text-white" : "bg-background"
-                          )}
-                          onClick={() => onOpenDrawer({ type: "candidate", name: cand.n, jobId: selectedJobObj?.id })}
-                        >
-                          <Eye className="w-3.5 h-3.5" />
-                          {isVerified ? "View Full CIR Report" : "View Profile"}
-                        </Button>
-
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="rounded-xl text-xs h-9 px-3 gap-1.5 text-muted-foreground hover:text-foreground cursor-pointer"
-                          onClick={() => onToast(`Invitation to interview sent to ${cand.n}!`)}
-                        >
-                          <Send className="w-3.5 h-3.5" /> Invite
-                        </Button>
-                      </div>
+                        <RotateCcw className="w-3 h-3" /> Reset
+                      </button>
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
+
+                  {displayCandidates.length === 0 && (
+                    <div className="bg-card border border-border/80 rounded-3xl p-12 text-center space-y-3">
+                      <Users className="w-10 h-10 text-muted-foreground mx-auto" />
+                      <h4 className="font-bold text-foreground text-base">No candidates match your current filters</h4>
+                      <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+                        Try adjusting your role selection, search keyword, or salary range to discover more candidates.
+                      </p>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={handleResetDetailedSearch}
+                        className="rounded-xl text-xs mt-2"
+                      >
+                        Reset All Filters
+                      </Button>
+                    </div>
+                  )}
+
+                  {/* 2x2 BOX GRID (2 columns per row) */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch">
+                    {displayCandidates.map((cand) => {
+                      const scoreVal = calcTalentScore(cand, selectedJobObj);
+                      const isCompared = selectedTalentToCompare.includes(cand.n);
+                      const isVerified = cand.verified === true;
+                      const isUnlocked = effectiveUnlockedNames.includes(cand.n);
+
+                      return (
+                        <div
+                          key={cand.n}
+                          className={cn(
+                            "bg-card border rounded-3xl p-5 shadow-xs flex flex-col justify-between gap-4 transition-all hover:shadow-md h-full",
+                            isVerified
+                              ? "border-emerald-500/35 hover:border-emerald-500/70 bg-gradient-to-br from-emerald-500/[0.02] to-card"
+                              : "border-border/80 hover:border-primary/40"
+                          )}
+                        >
+                          {/* Top Content Stack */}
+                          <div className="space-y-3.5">
+                            {/* Card Header: Avatar + Name + Right Badge */}
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="flex items-start gap-3.5 min-w-0">
+                                <div
+                                  className="relative shrink-0 cursor-pointer group"
+                                  onClick={() =>
+                                    onOpenDrawer({ type: "candidate", name: cand.n, jobId: selectedJobObj?.id })
+                                  }
+                                >
+                                  <div className="w-14 h-14 rounded-2xl overflow-hidden border border-border/70 shadow-2xs bg-muted">
+                                    <img
+                                      src={getCandidatePhoto(cand.n)}
+                                      alt={cand.n}
+                                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                    />
+                                  </div>
+                                  {isVerified ? (
+                                    <span
+                                      title="CIR Verified Candidate"
+                                      className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-emerald-600 text-white flex items-center justify-center border-2 border-background shadow-xs"
+                                    >
+                                      <ShieldCheck className="w-3 h-3" />
+                                    </span>
+                                  ) : (
+                                    <span className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-emerald-500 border-2 border-background" />
+                                  )}
+                                </div>
+
+                                <div className="min-w-0 space-y-1">
+                                  <div className="flex items-center gap-1.5 flex-wrap">
+                                    <h4
+                                      className="font-bold text-foreground text-base font-display hover:text-primary cursor-pointer transition-colors truncate"
+                                      onClick={() =>
+                                        onOpenDrawer({ type: "candidate", name: cand.n, jobId: selectedJobObj?.id })
+                                      }
+                                    >
+                                      {cand.n}
+                                    </h4>
+                                    {isVerified && (
+                                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-[10px] font-extrabold uppercase">
+                                        <ShieldCheck className="w-3 h-3" /> Verified CIR
+                                      </span>
+                                    )}
+                                  </div>
+
+                                  {cand.headline && (
+                                    <p className="text-xs font-semibold text-foreground/90 line-clamp-1">
+                                      {cand.headline}
+                                    </p>
+                                  )}
+
+                                  {cand.education && (
+                                    <p className="text-[11px] text-muted-foreground flex items-center gap-1 truncate">
+                                      <GraduationCap className="w-3.5 h-3.5 text-muted-foreground/80 shrink-0" />
+                                      <span className="truncate">{cand.education}</span>
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+
+                              {/* Score Pill & Compare */}
+                              <div className="flex flex-col items-end gap-1.5 shrink-0">
+                                {isVerified && cand.cirScore ? (
+                                  <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 font-extrabold text-xs">
+                                    <ShieldCheck className="w-3.5 h-3.5" />
+                                    <span>CIR {cand.cirScore}</span>
+                                  </div>
+                                ) : (
+                                  <div className="px-2.5 py-1 rounded-xl bg-primary/10 text-primary font-bold text-xs">
+                                    {scoreVal}% Match
+                                  </div>
+                                )}
+
+                                <label className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground cursor-pointer select-none">
+                                  <input
+                                    type="checkbox"
+                                    checked={isCompared}
+                                    onChange={() => {
+                                      setSelectedTalentToCompare((prev) =>
+                                        isCompared ? prev.filter((x) => x !== cand.n) : [...prev, cand.n]
+                                      );
+                                    }}
+                                    className="rounded text-primary focus:ring-primary accent-primary"
+                                  />
+                                  <span>Compare</span>
+                                </label>
+                              </div>
+                            </div>
+
+                            {/* 2x2 Mini Info Boxes Inside Each Profile Box */}
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                              <div className="p-2 rounded-xl bg-muted/40 border border-border/60">
+                                <span className="text-[10px] text-muted-foreground block">Location</span>
+                                <span className="font-bold text-foreground truncate block">
+                                  {cand.c} · {cand.wp}
+                                </span>
+                              </div>
+                              <div className="p-2 rounded-xl bg-muted/40 border border-border/60">
+                                <span className="text-[10px] text-muted-foreground block">Experience</span>
+                                <span className="font-bold text-foreground truncate block">
+                                  {cand.x} Yrs ({levelFromExp(cand.x)})
+                                </span>
+                              </div>
+                              <div className="p-2 rounded-xl bg-muted/40 border border-border/60">
+                                <span className="text-[10px] text-muted-foreground block">Expected CTC</span>
+                                <span className="font-bold text-foreground truncate block">
+                                  ₹{cand.es} LPA
+                                </span>
+                              </div>
+                              <div className="p-2 rounded-xl bg-muted/40 border border-border/60">
+                                <span className="text-[10px] text-muted-foreground block">Notice Period</span>
+                                <span className="font-bold text-emerald-700 dark:text-emerald-300 truncate block">
+                                  {cand.nt ? `${cand.nt} Days` : "Immediate"}
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Engineering Highlight */}
+                            {cand.highlight && (
+                              <div className="p-2.5 rounded-xl bg-muted/30 border border-border/60 text-xs text-foreground/85 italic line-clamp-2 leading-relaxed">
+                                "{cand.highlight}"
+                              </div>
+                            )}
+
+                            {/* Verified Proctored Scorecard Strip (for Verified Pool) */}
+                            {isVerified && cand.as && Object.keys(cand.as).length > 0 && (
+                              <div className="p-2.5 rounded-2xl bg-emerald-500/[0.05] border border-emerald-500/20 space-y-2 text-xs">
+                                <div className="flex items-center justify-between gap-2">
+                                  <span className="font-bold text-emerald-800 dark:text-emerald-300 text-[11px] flex items-center gap-1">
+                                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                                    Proctored Assessment Scores
+                                  </span>
+                                  {cand.cirId && (
+                                    <span className="text-[10px] font-mono text-muted-foreground">
+                                      {cand.cirId}
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="grid grid-cols-3 gap-1.5">
+                                  {Object.entries(cand.as)
+                                    .slice(0, 3)
+                                    .map(([testName, score]) => (
+                                      <div
+                                        key={testName}
+                                        className="px-2 py-1 rounded-lg bg-background border border-border/60 text-center"
+                                      >
+                                        <div className="text-[10px] text-muted-foreground truncate" title={testName}>
+                                          {testName}
+                                        </div>
+                                        <div className="text-xs font-bold text-emerald-600">{score}%</div>
+                                      </div>
+                                    ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Skills & Certs */}
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              {cand.sk.slice(0, 5).map((s) => (
+                                <span
+                                  key={s}
+                                  className="px-2 py-0.5 rounded-lg bg-secondary text-secondary-foreground text-[11px] font-medium"
+                                >
+                                  {s}
+                                </span>
+                              ))}
+                              {cand.ce && cand.ce.length > 0 && (
+                                <span className="px-2 py-0.5 rounded-lg bg-purple-500/10 text-purple-700 dark:text-purple-300 text-[11px] font-semibold flex items-center gap-1">
+                                  <Award className="w-3 h-3 text-purple-600" /> {cand.ce[0]}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Card Footer Bar */}
+                          <div className="pt-3 border-t border-border/60 flex items-center justify-between gap-2 text-xs mt-auto">
+                            <div className="min-w-0 truncate text-[11px] text-muted-foreground">
+                              {cand.email || "+91 Verified Contact"}
+                            </div>
+
+                            <div className="flex items-center gap-1.5 shrink-0">
+                              {isVerified && !isUnlocked && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="rounded-xl text-xs h-8 px-2.5 gap-1 font-semibold border-emerald-500/30 text-emerald-700 hover:bg-emerald-50 cursor-pointer"
+                                  onClick={() => setCandidateToUnlock(cand)}
+                                >
+                                  <Wallet className="w-3 h-3" /> Unlock (₹2,999)
+                                </Button>
+                              )}
+
+                              <Button
+                                size="sm"
+                                variant={isVerified ? "default" : "outline"}
+                                className={cn(
+                                  "rounded-xl text-xs h-8 px-3 gap-1.5 font-semibold cursor-pointer",
+                                  isVerified ? "bg-emerald-600 hover:bg-emerald-700 text-white" : "bg-background"
+                                )}
+                                onClick={() =>
+                                  onOpenDrawer({ type: "candidate", name: cand.n, jobId: selectedJobObj?.id })
+                                }
+                              >
+                                <Eye className="w-3.5 h-3.5" />
+                                {isVerified ? "CIR Report" : "View Profile"}
+                              </Button>
+
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="rounded-xl text-xs h-8 px-2.5 gap-1 text-muted-foreground hover:text-foreground cursor-pointer"
+                                onClick={() => onToast(`Invitation to interview sent to ${cand.n}!`)}
+                              >
+                                <Send className="w-3.5 h-3.5" />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               </>
             )}
           </div>
