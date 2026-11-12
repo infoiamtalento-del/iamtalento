@@ -53,47 +53,10 @@ export function openDemoWorkspace(role: SelfServeRole): string {
 export const DEMO_PASSWORD = "DemoPassword123!";
 
 /**
- * Signs in as the dedicated demo user in Supabase, establishing a live authenticated
- * session so the entire backend workflow (jobs, applications, profiles) is fully functional.
- * Falls back to offline dummy session if network/Supabase is unreachable.
+ * Enters the dedicated demo workspace immediately without waiting on remote network calls,
+ * keeping dummy profile entry separate from real authentication.
  */
 export async function loginDemoUser(role: SelfServeRole): Promise<string> {
-  const demoEmail = role === "employer" ? "demo.employer@talento.app" : "demo.candidate@talento.app";
-  try {
-    clearDemoOnlySession();
-
-    let sessionUser: User | null = null;
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: demoEmail,
-      password: DEMO_PASSWORD,
-    });
-
-    if (data?.user) {
-      sessionUser = data.user;
-    } else if (error && /invalid login credentials|user not found/i.test(error.message)) {
-      const up = await supabase.auth.signUp({
-        email: demoEmail,
-        password: DEMO_PASSWORD,
-        options: {
-          data: {
-            full_name: role === "employer" ? "Super30" : "Yogesh",
-            role: role === "employer" ? "employer" : "employee",
-            company_name: role === "employer" ? "Super30 Tech" : undefined,
-          },
-        },
-      });
-      if (up.data?.user) {
-        sessionUser = up.data.user;
-      }
-    }
-
-    if (sessionUser) {
-      return await establishProSessionForUser(sessionUser, role);
-    }
-  } catch (err) {
-    console.warn("Live demo login fallback to local session:", err);
-  }
-
   return openDemoWorkspace(role);
 }
 
@@ -199,14 +162,10 @@ export async function signInWithEmail(
   if (error) throw new Error(formatAuthError(error));
   if (!data.user || !data.session) throw new Error("No session returned from authentication");
 
-  // Record login event in background
+  // Record login event in background without blocking sign-in redirect
   if (typeof window !== "undefined") {
-    try {
-      const deviceHash = `${navigator.userAgent}_${screen.width}x${screen.height}`;
-      await recordLoginEvent(deviceHash);
-    } catch {
-      /* ignore telemetry errors */
-    }
+    const deviceHash = `${navigator.userAgent}_${screen.width}x${screen.height}`;
+    void recordLoginEvent(deviceHash);
   }
 
   return { user: data.user, session: data.session };
@@ -220,7 +179,11 @@ export const signInWithPasswordAndRecover = signInWithEmail;
  */
 export async function getMyContext(): Promise<any> {
   try {
-    const { data, error } = await (supabase as any).rpc("get_my_context");
+    const rpcPromise = (supabase as any).rpc("get_my_context");
+    const timeoutPromise = new Promise<{ data: null; error: Error }>((resolve) =>
+      setTimeout(() => resolve({ data: null, error: new Error("timeout") }), 2500)
+    );
+    const { data, error } = await Promise.race([rpcPromise, timeoutPromise]);
     if (error || !data || data.authenticated === false) return null;
     return data;
   } catch {

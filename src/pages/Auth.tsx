@@ -92,17 +92,9 @@ const Auth = () => {
     });
   }, [navigate, searchParams]);
 
-  const openDemoProfile = async () => {
-    setLoading(true);
-    try {
-      const dest = await loginDemoUser(role);
-      navigate(dest);
-    } catch {
-      const dest = openDemoWorkspace(role);
-      navigate(dest);
-    } finally {
-      setLoading(false);
-    }
+  const openDemoProfile = () => {
+    const dest = openDemoWorkspace(role);
+    navigate(dest);
   };
   const demoUser = DEFAULT_USERS[role === "employer" ? "demo.employer@talento.app" : "demo.candidate@talento.app"];
 
@@ -128,6 +120,19 @@ const Auth = () => {
     e.preventDefault();
     if (!email.trim() || !password) {
       toast.error("Please enter your email and password");
+      return;
+    }
+    const normalized = email.trim().toLowerCase();
+    if (
+      normalized === "demo.employer@talento.app" ||
+      normalized === "recruiter@acme.inc" ||
+      normalized === "demo.candidate@talento.app"
+    ) {
+      const demoRole: UserRole =
+        normalized === "demo.candidate@talento.app" ? "employee" : "employer";
+      const dest = openDemoWorkspace(demoRole);
+      toast.success("Welcome back!");
+      navigate(dest);
       return;
     }
     setLoading(true);
