@@ -299,7 +299,13 @@ const TalentoPro: React.FC = () => {
   // Real signed-in candidates: load their profile from Supabase, then save edits back (debounced).
   const [liveEmail, setLiveEmail] = useState<string | null>(null);
   // A real signed-in employer account: the dashboard reads and writes the backend instead of demo state.
-  const liveEmployer = Boolean(backend.userId) && !demoOnly && currentRole === "employer" && Boolean(liveEmail) && sessionEmail === liveEmail;
+  const liveEmployer =
+    Boolean(backend.userId) &&
+    !demoOnly &&
+    currentRole === "employer" &&
+    Boolean(liveEmail) &&
+    sessionEmail === liveEmail &&
+    sessionEmail !== "demo.employer@talento.app";
   const [liveUnread, setLiveUnread] = useState(0);
   const refreshLiveUnread = useCallback(async () => {
     if (!liveEmployer) return;
@@ -330,6 +336,16 @@ const TalentoPro: React.FC = () => {
           const empProfile = await getEmployerProfile();
           if (alive && empProfile) {
             const email = empProfile.official_email || `${backend.userId}@employer.local`;
+            if (email === "demo.employer@talento.app") {
+              setLiveEmail(null);
+              return;
+            }
+            try {
+              await rpc("employer_dashboard_overview");
+            } catch {
+              setLiveEmail(null);
+              return;
+            }
             const user: ProUser = {
               ...(usersRef.current[email] ?? usersRef.current["recruiter@acme.inc"] ?? {}),
               email,
@@ -790,9 +806,9 @@ const TalentoPro: React.FC = () => {
   };
 
   const handleAddCandidateToPipeline = (
-    cand: CandidateSeed,
+    cand: ProCandidate,
     jobId: number,
-    stage: ApplicationStage,
+    stage: ProApplication["st"],
     note?: string,
     interview?: string
   ) => {
@@ -803,7 +819,7 @@ const TalentoPro: React.FC = () => {
     }
     setApps((prev) => {
       const existing = prev.find((a) => a.name === cand.n && a.jid === targetJob.id);
-      const effectiveStage: ApplicationStage = interview ? "Interview" : stage;
+      const effectiveStage: ProApplication["st"] = interview ? "Interview" : stage;
       if (existing) {
         return prev.map((a) =>
           a.id === existing.id
@@ -827,22 +843,18 @@ const TalentoPro: React.FC = () => {
       }
       const nextId = prev.reduce((max, a) => Math.max(max, a.id), 500) + 1;
       const emailSlug = cand.n.toLowerCase().replace(/[^a-z0-9]+/g, ".") + "@candidate.talento.in";
-      const newApp: ApplicationRecord = {
+      const newApp: ProApplication = {
         id: nextId,
         jid: targetJob.id,
-        jt: targetJob.t,
-        co: targetJob.co,
         who: emailSlug,
         name: cand.n,
-        ti: cand.ti,
-        exp: cand.exp,
-        loc: cand.loc,
+        exp: cand.x,
         sk: cand.sk,
-        bio: cand.bio,
-        av: cand.av,
+        ce: cand.ce,
+        as: cand.as,
         st: effectiveStage,
         at: Date.now(),
-        note: note || `Sourced from Find Talent verified pool (${cand.badge || "CIR Verified"}).`,
+        note: note || "Sourced from Find Talent verified pool (CIR Verified).",
         iv: interview,
         upd: [
           {
