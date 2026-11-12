@@ -202,6 +202,13 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
   const [talentExpLevels, setTalentExpLevels] = useState<string[]>([]);
   const [talentRoleFilter, setTalentRoleFilter] = useState<string>("all");
   const [talentQuickFilter, setTalentQuickFilter] = useState<string>("all");
+  const [talentCityFilter, setTalentCityFilter] = useState<string>("all");
+  const [talentWorkModeFilter, setTalentWorkModeFilter] = useState<string>("all");
+  const [talentMinExpFilter, setTalentMinExpFilter] = useState<number>(0);
+  const [talentEduFilter, setTalentEduFilter] = useState<string>("all");
+  const [talentMinCirFilter, setTalentMinCirFilter] = useState<number>(0);
+  const [talentCompanySectorFilter, setTalentCompanySectorFilter] = useState<string>("all");
+  const [talentSelectedSkills, setTalentSelectedSkills] = useState<string[]>([]);
   const [talentMinAssessment, setTalentMinAssessment] = useState(0);
   const [talentOnlyCertified, setTalentOnlyCertified] = useState(false);
   const [talentMaxSalary, setTalentMaxSalary] = useState(60);
@@ -209,14 +216,32 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
   const [talentSort, setTalentSort] = useState<"cir" | "s" | "a" | "x" | "sal-asc">("cir");
   const [selectedTalentToCompare, setSelectedTalentToCompare] = useState<string[]>([]);
 
+  const handleResetDetailedSearch = () => {
+    setTalentQuery("");
+    setTalentSmartQuery("");
+    setTalentJobFilter("");
+    setTalentExpLevels([]);
+    setTalentRoleFilter("all");
+    setTalentQuickFilter("all");
+    setTalentCityFilter("all");
+    setTalentWorkModeFilter("all");
+    setTalentMinExpFilter(0);
+    setTalentEduFilter("all");
+    setTalentMinCirFilter(0);
+    setTalentCompanySectorFilter("all");
+    setTalentSelectedSkills([]);
+    setTalentMinAssessment(0);
+    setTalentOnlyCertified(false);
+    setTalentMaxSalary(60);
+    setTalentNoticePeriod(999);
+    setTalentSort("cir");
+    setHasExecutedSearch(false);
+  };
+
   const handleSelectTalentOption = (opt: "candidates" | "verified") => {
     setTalentOption(opt);
     setTalentSubPage(opt);
-    setTalentQuery("");
-    setTalentSmartQuery("");
-    setTalentRoleFilter("all");
-    setTalentQuickFilter("all");
-    setHasExecutedSearch(false);
+    handleResetDetailedSearch();
   };
 
   const handleConfirmDeductAndUnlock = () => {
@@ -305,15 +330,57 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
         if (!matchesAllTokens) return false;
       }
 
+      if (talentSelectedSkills.length > 0) {
+        const candSkillsLower = c.sk.map((s) => s.toLowerCase()).join(" ");
+        const matchesSkills = talentSelectedSkills.every((reqSkill) =>
+          candSkillsLower.includes(reqSkill.toLowerCase())
+        );
+        if (!matchesSkills) return false;
+      }
+
       if (talentRoleFilter !== "all") {
         const combined = `${c.headline || ""} ${c.sk.join(" ")}`.toLowerCase();
         if (talentRoleFilter === "frontend" && !combined.includes("frontend") && !combined.includes("react")) return false;
-        if (talentRoleFilter === "backend" && !combined.includes("backend") && !combined.includes("golang") && !combined.includes("java")) return false;
-        if (talentRoleFilter === "devops" && !combined.includes("devops") && !combined.includes("cloud") && !combined.includes("kubernetes") && !combined.includes("aws")) return false;
+        if (talentRoleFilter === "backend" && !combined.includes("backend") && !combined.includes("golang") && !combined.includes("java") && !combined.includes("node")) return false;
+        if (talentRoleFilter === "devops" && !combined.includes("devops") && !combined.includes("cloud") && !combined.includes("kubernetes") && !combined.includes("aws") && !combined.includes("docker")) return false;
         if (talentRoleFilter === "ml" && !combined.includes("ml") && !combined.includes("pytorch") && !combined.includes("ai")) return false;
-        if (talentRoleFilter === "data" && !combined.includes("data") && !combined.includes("sql") && !combined.includes("analytics")) return false;
+        if (talentRoleFilter === "data" && !combined.includes("data") && !combined.includes("sql") && !combined.includes("analytics") && !combined.includes("power bi")) return false;
         if (talentRoleFilter === "mobile" && !combined.includes("mobile") && !combined.includes("ios") && !combined.includes("react native")) return false;
         if (talentRoleFilter === "design" && !combined.includes("design") && !combined.includes("ux") && !combined.includes("figma")) return false;
+        if (talentRoleFilter === "qa" && !combined.includes("qa") && !combined.includes("automation") && !combined.includes("selenium") && !combined.includes("playwright")) return false;
+      }
+
+      if (talentCityFilter !== "all") {
+        const cityLower = c.c.toLowerCase();
+        if (talentCityFilter === "Delhi NCR") {
+          if (!cityLower.includes("delhi") && !cityLower.includes("noida") && !cityLower.includes("gurugram")) return false;
+        } else if (!cityLower.includes(talentCityFilter.toLowerCase())) {
+          return false;
+        }
+      }
+
+      if (talentWorkModeFilter !== "all" && c.wp !== talentWorkModeFilter) return false;
+      if (talentMinExpFilter > 0 && c.x < talentMinExpFilter) return false;
+
+      if (talentEduFilter !== "all") {
+        const eduLower = (c.education || "").toLowerCase();
+        if (talentEduFilter === "tier1") {
+          const isTier1 = ["iit", "bits", "nit", "iiit", "nid", "dtu", "coep", "jadavpur", "rv college"].some((inst) =>
+            eduLower.includes(inst)
+          );
+          if (!isTier1) return false;
+        } else if (talentEduFilter === "btech" && !eduLower.includes("b.tech") && !eduLower.includes("b.e")) {
+          return false;
+        }
+      }
+
+      if (talentMinCirFilter > 0 && (c.cirScore || 0) < talentMinCirFilter) return false;
+
+      if (talentCompanySectorFilter !== "all") {
+        const comp = c.currentCompany || "";
+        if (talentCompanySectorFilter === "fintech" && !["Razorpay", "PhonePe", "CRED"].includes(comp)) return false;
+        if (talentCompanySectorFilter === "consumer" && !["Swiggy", "Flipkart", "Zomato"].includes(comp)) return false;
+        if (talentCompanySectorFilter === "saas" && !["BrowserStack", "Postman"].includes(comp)) return false;
       }
 
       if (talentQuickFilter === "immediate" && (c.nt || 0) > 15) return false;
@@ -340,7 +407,14 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
     });
   }, [
     talentQuery,
+    talentSelectedSkills,
     talentRoleFilter,
+    talentCityFilter,
+    talentWorkModeFilter,
+    talentMinExpFilter,
+    talentEduFilter,
+    talentMinCirFilter,
+    talentCompanySectorFilter,
     talentQuickFilter,
     talentExpLevels,
     talentMinAssessment,
@@ -979,160 +1053,458 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
           </button>
         </div>
 
-        {/* STEP 2: WHEN USER CLICKS CANDIDATES OR VERIFIED CANDIDATES -> SHOW SEARCH BAR FIRST */}
+        {/* STEP 2: WHEN USER CLICKS CANDIDATES OR VERIFIED CANDIDATES -> SHOW DETAILED SEARCH OPTIONS FIRST */}
         {talentSubPage !== "hub" && (
           <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-200">
-            {/* DEDICATED SEARCH BAR CARD FOR SELECTED POOL */}
+            {/* COMPREHENSIVE DETAILED SEARCH & SOURCING BUILDER */}
             <div
               className={cn(
-                "p-6 rounded-3xl border shadow-xs space-y-4",
+                "p-6 sm:p-7 rounded-3xl border shadow-xs space-y-5",
                 talentOption === "verified"
-                  ? "bg-gradient-to-br from-emerald-500/[0.05] via-card to-card border-emerald-500/30"
+                  ? "bg-gradient-to-br from-emerald-500/[0.05] via-card to-card border-emerald-500/35"
                   : "bg-card border-border/80"
               )}
             >
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-2.5">
+              {/* Search Header */}
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/60 pb-4">
+                <div className="flex items-center gap-3">
                   <div
                     className={cn(
-                      "h-9 w-9 rounded-xl flex items-center justify-center text-white shrink-0",
+                      "h-10 w-10 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-2xs",
                       talentOption === "verified" ? "bg-emerald-600" : "bg-[#002C66]"
                     )}
                   >
-                    <Search className="w-4 h-4" />
+                    <SlidersHorizontal className="w-5 h-5" />
                   </div>
                   <div>
-                    <h2 className="text-base sm:text-lg font-bold text-foreground font-display flex items-center gap-2">
+                    <h2 className="text-base sm:text-lg font-bold text-foreground font-display flex items-center gap-2 flex-wrap">
                       {talentOption === "verified"
-                        ? "Search Verified CIR Candidates"
-                        : "Search Standard Candidates"}
+                        ? "Detailed Search · Verified CIR Candidates"
+                        : "Detailed Search · Standard Candidates"}
                       <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-muted text-muted-foreground">
                         {talentOption === "verified"
-                          ? `${verifiedCandidatesCount} Verified Profiles`
-                          : `${standardCandidatesCount} Profiles`}
+                          ? `${verifiedCandidatesCount} Verified Pool`
+                          : `${standardCandidatesCount} Candidate Pool`}
                       </span>
                     </h2>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-muted-foreground mt-0.5">
                       {talentOption === "verified"
-                        ? "Search by skill, role, architecture, or city. Profiles will appear below based on your search (blurred until unlocked for ₹2,999)."
-                        : "Search by skill, role, city, or experience to view matching candidate profiles below."}
+                        ? "Configure role, tech stack, location, experience, CTC, notice period, and CIR score criteria to find verified engineers."
+                        : "Configure role, skills, city, work mode, experience, expected CTC, and notice period to find matching candidates."}
                     </p>
                   </div>
                 </div>
 
-                {(hasExecutedSearch || talentQuery.trim().length > 0) && (
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => {
-                      setTalentQuery("");
-                      setTalentSmartQuery("");
-                      setTalentRoleFilter("all");
-                      setTalentQuickFilter("all");
-                      setHasExecutedSearch(false);
-                    }}
-                    className="text-xs h-8 rounded-xl text-muted-foreground hover:text-foreground gap-1.5 cursor-pointer"
-                  >
-                    <RotateCcw className="w-3.5 h-3.5" /> Clear Search
-                  </Button>
-                )}
-              </div>
-
-              {/* Search Bar Input */}
-              <div className="flex flex-col sm:flex-row items-center gap-2.5">
-                <div className="relative flex-1 w-full">
-                  <Search className="w-4 h-4 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2" />
-                  <Input
-                    autoFocus
-                    placeholder={
-                      talentOption === "verified"
-                        ? 'Search Verified Candidates by skill, role, or city: e.g. "React", "Golang", "Kubernetes", "PyTorch", "SQL", "Figma", "Bengaluru"...'
-                        : 'Search Candidates by skill, role, or city: e.g. "React", "Java", "Python", "Node.js", "SQL", "Figma", "Docker", "Pune"...'
-                    }
-                    value={talentQuery}
-                    onChange={(e) => {
-                      setTalentQuery(e.target.value);
-                      if (e.target.value.trim().length > 0) {
-                        setHasExecutedSearch(true);
-                      }
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        setHasExecutedSearch(true);
-                      }
-                    }}
-                    className="text-xs sm:text-sm h-12 pl-10 pr-4 rounded-xl bg-background border-border/80 shadow-2xs"
-                  />
-                </div>
                 <Button
-                  onClick={() => setHasExecutedSearch(true)}
-                  className={cn(
-                    "h-12 px-6 rounded-xl text-xs sm:text-sm font-bold gap-2 shrink-0 text-white w-full sm:w-auto cursor-pointer shadow-xs",
-                    talentOption === "verified"
-                      ? "bg-emerald-600 hover:bg-emerald-700"
-                      : "bg-[#002C66] hover:bg-[#00204d]"
-                  )}
+                  size="sm"
+                  variant="ghost"
+                  onClick={handleResetDetailedSearch}
+                  className="text-xs h-8 rounded-xl text-muted-foreground hover:text-foreground gap-1.5 cursor-pointer"
                 >
-                  <Search className="w-4 h-4" /> Search Profiles
+                  <RotateCcw className="w-3.5 h-3.5" /> Reset All Search Options
                 </Button>
               </div>
 
-              {/* Popular Quick Search Pills */}
-              <div className="flex items-center gap-2 flex-wrap pt-1 text-xs">
-                <span className="text-[11px] font-semibold text-muted-foreground">
-                  Quick Search:
-                </span>
-                {(talentOption === "verified"
-                  ? [
-                      "React",
-                      "Kubernetes",
-                      "Golang",
-                      "PyTorch",
-                      "SQL",
-                      "Figma",
-                      "React Native",
-                      "Bengaluru",
-                    ]
-                  : [
-                      "React",
-                      "Java",
-                      "Python",
-                      "Node.js",
-                      "SQL",
-                      "Figma",
-                      "Docker",
-                      "Bengaluru",
-                    ]
-                ).map((tag) => (
-                  <button
-                    key={tag}
-                    type="button"
-                    onClick={() => {
-                      setTalentQuery(tag);
-                      setHasExecutedSearch(true);
-                    }}
+              {/* ROW 1: PRIMARY KEYWORD / SKILL / ROLE SEARCH INPUT */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                  <Search className="w-3.5 h-3.5 text-primary" />
+                  Keywords, Tech Stack, Designation, or Certification
+                </label>
+                <div className="flex flex-col sm:flex-row items-center gap-2.5">
+                  <div className="relative flex-1 w-full">
+                    <Search className="w-4 h-4 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <Input
+                      autoFocus
+                      placeholder={
+                        talentOption === "verified"
+                          ? 'Type skills, role, or certification: e.g. "React TypeScript", "Golang Kafka", "Kubernetes AWS", "PyTorch", "SQL Snowflake"...'
+                          : 'Type skills, role, or city: e.g. "React", "Java Spring Boot", "Python Selenium", "Node.js MongoDB", "Figma", "Power BI"...'
+                      }
+                      value={talentQuery}
+                      onChange={(e) => {
+                        setTalentQuery(e.target.value);
+                        if (e.target.value.trim().length > 0) {
+                          setHasExecutedSearch(true);
+                        }
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          setHasExecutedSearch(true);
+                        }
+                      }}
+                      className="text-xs sm:text-sm h-11 pl-10 pr-4 rounded-xl bg-background border-border/80 shadow-2xs"
+                    />
+                  </div>
+                  <Button
+                    onClick={() => setHasExecutedSearch(true)}
                     className={cn(
-                      "px-3 py-1 rounded-lg border text-xs font-medium transition-all cursor-pointer",
-                      talentQuery.toLowerCase() === tag.toLowerCase()
-                        ? talentOption === "verified"
-                          ? "bg-emerald-600 text-white border-emerald-600 font-bold"
-                          : "bg-[#002C66] text-white border-[#002C66] font-bold"
-                        : "bg-background hover:bg-muted text-foreground/80 border-border/70"
+                      "h-11 px-6 rounded-xl text-xs sm:text-sm font-bold gap-2 shrink-0 text-white w-full sm:w-auto cursor-pointer shadow-xs",
+                      talentOption === "verified"
+                        ? "bg-emerald-600 hover:bg-emerald-700"
+                        : "bg-[#002C66] hover:bg-[#00204d]"
                     )}
                   >
-                    {tag}
-                  </button>
-                ))}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setTalentQuery("");
-                    setHasExecutedSearch(true);
-                  }}
-                  className="px-3 py-1 rounded-lg bg-primary/10 text-primary border border-primary/30 text-xs font-bold hover:bg-primary/15 transition-colors cursor-pointer"
-                >
-                  Show All {talentOption === "verified" ? verifiedCandidatesCount : standardCandidatesCount} Profiles
-                </button>
+                    <Search className="w-4 h-4" /> Search Candidates
+                  </Button>
+                </div>
+              </div>
+
+              {/* ROW 2: MULTI-SELECT TECHNICAL SKILL PILLS */}
+              <div className="space-y-2 pt-1">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-foreground">
+                    Select Technical Skills (Click to Filter by Stack):
+                  </span>
+                  {talentSelectedSkills.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setTalentSelectedSkills([])}
+                      className="text-[11px] text-primary hover:underline font-semibold cursor-pointer"
+                    >
+                      Clear selected skills ({talentSelectedSkills.length})
+                    </button>
+                  )}
+                </div>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {(talentOption === "verified"
+                    ? [
+                        "React",
+                        "TypeScript",
+                        "Next.js",
+                        "Node.js",
+                        "Golang",
+                        "Java",
+                        "Kubernetes",
+                        "Terraform",
+                        "AWS",
+                        "Python",
+                        "PyTorch",
+                        "SQL",
+                        "PostgreSQL",
+                        "Kafka",
+                        "Figma",
+                        "React Native",
+                        "Swift",
+                        "Docker",
+                      ]
+                    : [
+                        "React",
+                        "JavaScript",
+                        "Java",
+                        "Spring Boot",
+                        "Python",
+                        "Node.js",
+                        "MongoDB",
+                        "SQL",
+                        "Power BI",
+                        "Tableau",
+                        "Figma",
+                        "Docker",
+                        "AWS",
+                        "Linux",
+                        "Selenium",
+                        "Playwright",
+                        "Tailwind CSS",
+                      ]
+                  ).map((skill) => {
+                    const isSelected = talentSelectedSkills.includes(skill);
+                    return (
+                      <button
+                        key={skill}
+                        type="button"
+                        onClick={() => {
+                          setTalentSelectedSkills((prev) =>
+                            isSelected ? prev.filter((s) => s !== skill) : [...prev, skill]
+                          );
+                          setHasExecutedSearch(true);
+                        }}
+                        className={cn(
+                          "px-2.5 py-1 rounded-lg border text-xs font-medium transition-all cursor-pointer",
+                          isSelected
+                            ? talentOption === "verified"
+                              ? "bg-emerald-600 text-white border-emerald-600 font-bold shadow-2xs"
+                              : "bg-[#002C66] text-white border-[#002C66] font-bold shadow-2xs"
+                            : "bg-background hover:bg-muted text-foreground/85 border-border/70"
+                        )}
+                      >
+                        {isSelected ? `✓ ${skill}` : `+ ${skill}`}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* ROW 3: 8-FIELD DETAILED SEARCH CRITERIA GRID */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 pt-2 border-t border-border/60 text-xs">
+                {/* 1. Role / Engineering Domain */}
+                <div className="space-y-1.5">
+                  <label className="font-bold text-foreground flex items-center gap-1.5">
+                    <Briefcase className="w-3.5 h-3.5 text-muted-foreground" />
+                    1. Role / Domain
+                  </label>
+                  <select
+                    value={talentRoleFilter}
+                    onChange={(e) => {
+                      setTalentRoleFilter(e.target.value);
+                      setHasExecutedSearch(true);
+                    }}
+                    className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none cursor-pointer"
+                  >
+                    <option value="all">All Engineering Roles</option>
+                    <option value="frontend">Frontend &amp; Full Stack (React/TS)</option>
+                    <option value="backend">Backend &amp; Distributed Systems</option>
+                    <option value="devops">Cloud, DevOps &amp; SRE (K8s/AWS)</option>
+                    <option value="ml">AI, ML &amp; Data Science</option>
+                    <option value="data">Data Analytics &amp; BI</option>
+                    <option value="mobile">Mobile Engineering (iOS/RN)</option>
+                    <option value="design">Product UI/UX &amp; Design Systems</option>
+                    <option value="qa">QA &amp; Test Automation</option>
+                  </select>
+                </div>
+
+                {/* 2. Location / City Hub */}
+                <div className="space-y-1.5">
+                  <label className="font-bold text-foreground flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-muted-foreground" />
+                    2. Location / City
+                  </label>
+                  <select
+                    value={talentCityFilter}
+                    onChange={(e) => {
+                      setTalentCityFilter(e.target.value);
+                      setHasExecutedSearch(true);
+                    }}
+                    className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none cursor-pointer"
+                  >
+                    <option value="all">All Cities (Pan-India)</option>
+                    <option value="Bengaluru">Bengaluru</option>
+                    <option value="Hyderabad">Hyderabad</option>
+                    <option value="Chennai">Chennai</option>
+                    <option value="Pune">Pune</option>
+                    <option value="Mumbai">Mumbai</option>
+                    <option value="Delhi NCR">Delhi NCR / Noida / Gurugram</option>
+                    <option value="Kolkata">Kolkata</option>
+                    <option value="Remote">Remote Only</option>
+                  </select>
+                </div>
+
+                {/* 3. Work Mode Preference */}
+                <div className="space-y-1.5">
+                  <label className="font-bold text-foreground flex items-center gap-1.5">
+                    <Building2 className="w-3.5 h-3.5 text-muted-foreground" />
+                    3. Work Mode
+                  </label>
+                  <select
+                    value={talentWorkModeFilter}
+                    onChange={(e) => {
+                      setTalentWorkModeFilter(e.target.value);
+                      setHasExecutedSearch(true);
+                    }}
+                    className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none cursor-pointer"
+                  >
+                    <option value="all">Any Work Mode</option>
+                    <option value="Hybrid">Hybrid</option>
+                    <option value="Remote">Remote</option>
+                    <option value="Onsite">Onsite</option>
+                  </select>
+                </div>
+
+                {/* 4. Minimum Experience */}
+                <div className="space-y-1.5">
+                  <label className="font-bold text-foreground flex items-center gap-1.5">
+                    <Layers className="w-3.5 h-3.5 text-muted-foreground" />
+                    4. Experience Range
+                  </label>
+                  <select
+                    value={talentMinExpFilter}
+                    onChange={(e) => {
+                      setTalentMinExpFilter(Number(e.target.value));
+                      setHasExecutedSearch(true);
+                    }}
+                    className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none cursor-pointer"
+                  >
+                    <option value={0}>Any Experience (0+ Years)</option>
+                    <option value={1}>1+ Years (Junior &amp; Above)</option>
+                    <option value={2}>2+ Years</option>
+                    <option value={3}>3+ Years (Mid-Level &amp; Above)</option>
+                    <option value={4}>4+ Years (Senior)</option>
+                    <option value={6}>6+ Years (Staff / Principal)</option>
+                  </select>
+                </div>
+
+                {/* 5. Expected CTC Budget */}
+                <div className="space-y-1.5">
+                  <label className="font-bold text-foreground flex items-center gap-1.5">
+                    <IndianRupee className="w-3.5 h-3.5 text-muted-foreground" />
+                    5. Max Expected CTC
+                  </label>
+                  <select
+                    value={talentMaxSalary}
+                    onChange={(e) => {
+                      setTalentMaxSalary(Number(e.target.value));
+                      setHasExecutedSearch(true);
+                    }}
+                    className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none cursor-pointer"
+                  >
+                    <option value={60}>Any Budget (Up to ₹60 LPA)</option>
+                    <option value={10}>Up to ₹10 LPA</option>
+                    <option value={15}>Up to ₹15 LPA</option>
+                    <option value={25}>Up to ₹25 LPA</option>
+                    <option value={35}>Up to ₹35 LPA</option>
+                    <option value={45}>Up to ₹45 LPA</option>
+                  </select>
+                </div>
+
+                {/* 6. Notice Period / Availability */}
+                <div className="space-y-1.5">
+                  <label className="font-bold text-foreground flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-muted-foreground" />
+                    6. Notice Period
+                  </label>
+                  <select
+                    value={talentNoticePeriod}
+                    onChange={(e) => {
+                      setTalentNoticePeriod(Number(e.target.value));
+                      setHasExecutedSearch(true);
+                    }}
+                    className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none cursor-pointer"
+                  >
+                    <option value={999}>Any Notice Period</option>
+                    <option value={0}>⚡ Immediate Joiner (0 Days)</option>
+                    <option value={15}>Within 15 Days</option>
+                    <option value={30}>Within 30 Days</option>
+                  </select>
+                </div>
+
+                {/* 7. Education & Institute Pedigree */}
+                <div className="space-y-1.5">
+                  <label className="font-bold text-foreground flex items-center gap-1.5">
+                    <GraduationCap className="w-3.5 h-3.5 text-muted-foreground" />
+                    7. Education Tier
+                  </label>
+                  <select
+                    value={talentEduFilter}
+                    onChange={(e) => {
+                      setTalentEduFilter(e.target.value);
+                      setHasExecutedSearch(true);
+                    }}
+                    className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none cursor-pointer"
+                  >
+                    <option value="all">All Engineering Colleges</option>
+                    <option value="tier1">Tier-1 Premier (IIT / BITS / NIT / IIIT / NID / DTU)</option>
+                    <option value="btech">B.Tech / B.E. Computer Science &amp; IT</option>
+                  </select>
+                </div>
+
+                {/* 8. Pool-Specific Advanced Filter */}
+                {talentOption === "verified" ? (
+                  <div className="space-y-1.5">
+                    <label className="font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                      8. Min CIR Trust Score
+                    </label>
+                    <select
+                      value={talentMinCirFilter}
+                      onChange={(e) => {
+                        setTalentMinCirFilter(Number(e.target.value));
+                        setHasExecutedSearch(true);
+                      }}
+                      className="w-full h-9 rounded-xl border border-emerald-500/40 bg-background px-3 py-1 text-xs font-semibold shadow-2xs focus-visible:outline-none cursor-pointer"
+                    >
+                      <option value={0}>All Verified CIR (90+/100)</option>
+                      <option value={95}>CIR 95+ (Top 5% India)</option>
+                      <option value={97}>CIR 97+ (Top 3% Pan-India)</option>
+                      <option value={99}>CIR 99 (Top 1% Elite Architect)</option>
+                    </select>
+                  </div>
+                ) : (
+                  <div className="space-y-1.5">
+                    <label className="font-bold text-foreground flex items-center gap-1.5">
+                      <Star className="w-3.5 h-3.5 text-muted-foreground" />
+                      8. Sort Results By
+                    </label>
+                    <select
+                      value={talentSort}
+                      onChange={(e) => {
+                        setTalentSort(e.target.value as any);
+                        setHasExecutedSearch(true);
+                      }}
+                      className="w-full h-9 rounded-xl border border-input bg-background px-3 py-1 text-xs shadow-2xs focus-visible:outline-none cursor-pointer"
+                    >
+                      <option value="cir">Best Profile Rating</option>
+                      <option value="a">Highest Skill Assessment Score</option>
+                      <option value="x">Experience (High to Low)</option>
+                      <option value="sal-asc">Expected CTC (Lowest First)</option>
+                    </select>
+                  </div>
+                )}
+              </div>
+
+              {/* ROW 4: ADDITIONAL VERIFIED SECTOR & CERTIFICATION BAR + EXECUTE SEARCH BUTTON */}
+              <div className="pt-3 border-t border-border/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                <div className="flex flex-wrap items-center gap-3">
+                  <label className="inline-flex items-center gap-2 cursor-pointer select-none px-3 py-1.5 rounded-xl bg-muted/50 border border-border/70 hover:bg-muted">
+                    <input
+                      type="checkbox"
+                      checked={talentOnlyCertified}
+                      onChange={(e) => {
+                        setTalentOnlyCertified(e.target.checked);
+                        setHasExecutedSearch(true);
+                      }}
+                      className="rounded text-primary focus:ring-primary accent-primary"
+                    />
+                    <Award className="w-3.5 h-3.5 text-purple-600" />
+                    <span className="font-semibold text-foreground">
+                      Certified Engineers Only (AWS, CKA, Meta, Google, Oracle)
+                    </span>
+                  </label>
+
+                  {talentOption === "verified" && (
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-muted-foreground font-semibold">Company Sector:</span>
+                      {[
+                        { id: "all", label: "All Sectors" },
+                        { id: "fintech", label: "Fintech Unicorns" },
+                        { id: "consumer", label: "Consumer Decacorns" },
+                        { id: "saas", label: "Global Cloud SaaS" },
+                      ].map((sec) => (
+                        <button
+                          key={sec.id}
+                          type="button"
+                          onClick={() => {
+                            setTalentCompanySectorFilter(sec.id);
+                            setHasExecutedSearch(true);
+                          }}
+                          className={cn(
+                            "px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-colors cursor-pointer",
+                            talentCompanySectorFilter === sec.id
+                              ? "bg-emerald-600 text-white border-emerald-600"
+                              : "bg-background text-muted-foreground border-border/70 hover:text-foreground"
+                          )}
+                        >
+                          {sec.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2 self-end sm:self-auto">
+                  <Button
+                    size="sm"
+                    onClick={() => setHasExecutedSearch(true)}
+                    className={cn(
+                      "rounded-xl text-xs h-9 px-5 font-bold text-white gap-1.5 cursor-pointer shadow-xs",
+                      talentOption === "verified"
+                        ? "bg-emerald-600 hover:bg-emerald-700"
+                        : "bg-[#002C66] hover:bg-[#00204d]"
+                    )}
+                  >
+                    <Search className="w-3.5 h-3.5" />
+                    View Matching Profiles ({displayCandidates.length})
+                  </Button>
+                </div>
               </div>
             </div>
 
@@ -1147,17 +1519,16 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                       : "bg-[#002C66]/10 text-[#002C66]"
                   )}
                 >
-                  <Search className="w-6 h-6" />
+                  <SlidersHorizontal className="w-6 h-6" />
                 </div>
                 <h3 className="text-base sm:text-lg font-bold text-foreground font-display">
                   {talentOption === "verified"
-                    ? "Enter a Skill, Role, or Location Above to Search Verified Candidates"
-                    : "Enter a Skill, Role, or Location Above to Search Candidates"}
+                    ? "Select Any Detailed Search Criteria Above to View Matching Verified Candidates"
+                    : "Select Any Detailed Search Criteria Above to View Matching Candidates"}
                 </h3>
-                <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
-                  {talentOption === "verified"
-                    ? "Type any technology (e.g. React, Golang, Kubernetes, PyTorch, SQL) or click a Quick Search tag above to display matching CIR-verified profiles."
-                    : "Type any technology (e.g. React, Java, Python, SQL, Figma) or click a Quick Search tag above to display matching candidate profiles."}
+                <p className="text-xs sm:text-sm text-muted-foreground max-w-lg mx-auto leading-relaxed">
+                  Choose a Role, click any Technical Skill pill, select a City/Work Mode/Experience/CTC filter, or click{" "}
+                  <strong>"View Matching Profiles ({displayCandidates.length})"</strong> above to display candidate profiles.
                 </p>
               </div>
             ) : (
@@ -1284,17 +1655,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                 <Filter className="w-4 h-4 text-primary" /> Filter {talentOption === "verified" ? "Verified Candidates" : "Candidates"}
               </h3>
               <button
-                onClick={() => {
-                  setTalentQuery("");
-                  setTalentExpLevels([]);
-                  setTalentRoleFilter("all");
-                  setTalentQuickFilter("all");
-                  setTalentMinAssessment(0);
-                  setTalentOnlyCertified(false);
-                  setTalentMaxSalary(60);
-                  setTalentNoticePeriod(999);
-                  setTalentSort("cir");
-                }}
+                onClick={handleResetDetailedSearch}
                 className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors cursor-pointer"
               >
                 <RotateCcw className="w-3 h-3" /> Reset
@@ -1446,13 +1807,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => {
-                    setTalentQuery("");
-                    setTalentRoleFilter("all");
-                    setTalentQuickFilter("all");
-                    setTalentExpLevels([]);
-                    setTalentMaxSalary(60);
-                  }}
+                  onClick={handleResetDetailedSearch}
                   className="rounded-xl text-xs mt-2"
                 >
                   Reset All Filters
