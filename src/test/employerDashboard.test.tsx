@@ -103,6 +103,7 @@ describe("navigation", () => {
       "Jobs",
       "Job Applications",
       "Find Talent",
+      "Bulk & Campus Hiring",
       "Notifications",
       "Assessments",
     ];
@@ -459,6 +460,12 @@ describe("Find Talent Wallet Bento & Employer Command Centre", () => {
         this.removeAttribute("open");
       };
     }
+    if (!URL.createObjectURL) {
+      URL.createObjectURL = vi.fn(() => "blob:mock-cir-pdf");
+    }
+    if (!URL.revokeObjectURL) {
+      URL.revokeObjectURL = vi.fn();
+    }
   });
 
   it("exposes all Command Centre modules in employerMenuItems after the core items", () => {
@@ -475,13 +482,13 @@ describe("Find Talent Wallet Bento & Employer Command Centre", () => {
     );
   });
 
-  it("renders Wallet Bento Box in Find Talent and confirms wallet deduction before unlocking Verified Candidates", () => {
+  it("places Company Wallet bento card above list/kanban, shows 4 free profiles + blurs/locks remaining with View All wallet unlock", () => {
     const employerUser = {
       ...DEFAULT_USERS["demo.employer@talento.app"],
       wal: { bal: 12000, tx: [] },
     };
     const onUpdateWallet = vi.fn();
-    render(
+    const { container } = render(
       <ProEmployerViews
         view="talent"
         user={employerUser}
@@ -499,13 +506,36 @@ describe("Find Talent Wallet Bento & Employer Command Centre", () => {
       />,
     );
 
-    const bento = screen.getByRole("region", { name: /Hiring wallet and candidate pool selector/i });
-    expect(within(bento).getByText("Company Wallet")).toBeInTheDocument();
-    expect(within(bento).getByText("₹12,000")).toBeInTheDocument();
-    expect(within(bento).getByText("Candidates")).toBeInTheDocument();
+    const searchInput = screen.getByLabelText("Search candidates by name, skill or city");
+    const walletSection = screen.getByRole("region", { name: /Company hiring wallet/i });
+    expect(within(walletSection).getByText("Company Wallet")).toBeInTheDocument();
+    expect(within(walletSection).getByText("₹12,000")).toBeInTheDocument();
+    expect(within(walletSection).getByText("4 Free Profiles · 4 Locked")).toBeInTheDocument();
+    expect(screen.queryByText("Public talent directory")).toBeNull();
+    expect(screen.queryByText("AI-Proctored & CIR Certified")).toBeNull();
+    expect(screen.queryByText("Verified Talent Pool")).toBeNull();
+    expect(screen.queryByText("High Job Match (75%+)")).toBeNull();
+    expect(screen.queryByText("Immediate / ≤15d Joiners")).toBeNull();
+    expect(screen.queryByText("Elite CIR Score (85%+)")).toBeNull();
+    expect(screen.queryByText("Saved / Bookmarked")).toBeNull();
 
-    const verifiedCard = within(bento).getByRole("button", { name: /Verified Candidates/i });
-    fireEvent.click(verifiedCard);
+    // Only 4 profiles are clear; remaining 4 are blurred, inert, and locked
+    const freeCards = container.querySelectorAll('article[data-locked="false"]');
+    const lockedCards = container.querySelectorAll('article[data-locked="true"]');
+    expect(freeCards).toHaveLength(4);
+    expect(lockedCards).toHaveLength(4);
+    expect(lockedCards[0].querySelector(".workspace-locked-blur")).toHaveAttribute("inert");
+
+    // Wallet bento card sits below search input and directly above the candidate list
+    expect(
+      searchInput.compareDocumentPosition(walletSection) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      walletSection.compareDocumentPosition(freeCards[0]) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+
+    // Clicking "View All (8 Profiles)" CTA opens the wallet deduction confirmation dialog
+    fireEvent.click(screen.getByRole("button", { name: /View All \(8 Profiles\)/i }));
 
     expect(
       screen.getByRole("heading", { name: /Are you sure you want to unlock Verified Candidates\?/i }),
@@ -521,7 +551,10 @@ describe("Find Talent Wallet Bento & Employer Command Centre", () => {
         via: "Company Wallet",
       }),
     );
-    expect(within(bento).getByText("Unlocked")).toBeInTheDocument();
+    expect(within(walletSection).getByText("All 8 Profiles Unlocked")).toBeInTheDocument();
+    expect(within(walletSection).getByText("Verified Active")).toBeInTheDocument();
+    expect(container.querySelectorAll('article[data-locked="false"]')).toHaveLength(8);
+    expect(container.querySelectorAll('article[data-locked="true"]')).toHaveLength(0);
   });
 
   it("renders the Employer Command Centre modules cleanly", () => {

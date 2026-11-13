@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   BadgeCheck,
   Bookmark,
@@ -80,6 +80,7 @@ function CandidateCard({
   onStageChange,
   onOpen,
   actionLabel,
+  blurredLocked = false,
 }: {
   c: TalentCandidate;
   matchScore: number;
@@ -89,102 +90,132 @@ function CandidateCard({
   onStageChange: (stage: TalentBoardCol) => void;
   onOpen: () => void;
   actionLabel: string;
+  blurredLocked?: boolean;
 }) {
   return (
-    <li className="workspace-panel flex flex-col gap-3 !p-4 transition-all hover:border-primary/40">
-      <div className="flex items-start gap-3">
-        <Avatar name={c.display_name} src={c.photo_url} size={44} />
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center justify-between gap-2">
-            <p className="flex items-center gap-1.5 text-sm font-bold">
-              <span className="truncate">{c.display_name}</span>
-              {c.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-primary" aria-label="Verified candidate" />}
-            </p>
-            <div className="flex items-center gap-1.5 shrink-0">
-              <span
-                className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${
-                  matchScore >= 80
-                    ? "bg-success/15 text-success"
-                    : matchScore >= 65
-                      ? "bg-primary/12 text-primary"
-                      : "bg-secondary text-muted-foreground"
-                }`}
-              >
-                {matchScore}% match
-              </span>
-              <button
-                type="button"
-                onClick={onToggleSave}
-                aria-label={saved ? `Remove ${c.display_name} from saved` : `Save ${c.display_name}`}
-                className={`inline-flex h-7 w-7 items-center justify-center rounded-md border transition-colors ${
-                  saved
-                    ? "border-primary/40 bg-primary/10 text-primary"
-                    : "border-border bg-background text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <Bookmark className={`h-3.5 w-3.5 ${saved ? "fill-current" : ""}`} />
-              </button>
+    <li
+      data-locked={blurredLocked ? "true" : "false"}
+      className={`workspace-panel flex flex-col gap-3 !p-4 transition-all ${
+        blurredLocked ? "workspace-locked-card" : "hover:border-primary/40"
+      }`}
+    >
+      <div
+        className={`flex flex-col gap-3 h-full ${blurredLocked ? "workspace-locked-blur" : ""}`}
+        {...(blurredLocked ? ({ inert: "" } as Record<string, string>) : {})}
+      >
+        <div className="flex items-start gap-3">
+          <Avatar name={c.display_name} src={c.photo_url} size={44} />
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center justify-between gap-2">
+              <p className="flex items-center gap-1.5 text-sm font-bold">
+                <span className="truncate">{c.display_name}</span>
+                {c.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-primary" aria-label="Verified candidate" />}
+              </p>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <span
+                  className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${
+                    matchScore >= 80
+                      ? "bg-success/15 text-success"
+                      : matchScore >= 65
+                        ? "bg-primary/12 text-primary"
+                        : "bg-secondary text-muted-foreground"
+                  }`}
+                >
+                  {matchScore}% match
+                </span>
+                <button
+                  type="button"
+                  onClick={onToggleSave}
+                  aria-label={saved ? `Remove ${c.display_name} from saved` : `Save ${c.display_name}`}
+                  className={`inline-flex h-7 w-7 items-center justify-center rounded-md border transition-colors ${
+                    saved
+                      ? "border-primary/40 bg-primary/10 text-primary"
+                      : "border-border bg-background text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <Bookmark className={`h-3.5 w-3.5 ${saved ? "fill-current" : ""}`} />
+                </button>
+              </div>
             </div>
+            <p className="truncate text-xs text-muted-foreground">{c.headline || c.job_role || "Professional"}</p>
+            <p className="mt-1 flex flex-wrap items-center gap-x-3 text-[11px] text-muted-foreground">
+              {c.city && (
+                <span className="inline-flex items-center gap-1">
+                  <MapPin className="h-3 w-3" />
+                  {c.city}
+                </span>
+              )}
+              <span>{c.years_of_experience ?? 0} yrs</span>
+              <span className="font-semibold text-primary">{boardStage}</span>
+            </p>
           </div>
-          <p className="truncate text-xs text-muted-foreground">{c.headline || c.job_role || "Professional"}</p>
-          <p className="mt-1 flex flex-wrap items-center gap-x-3 text-[11px] text-muted-foreground">
-            {c.city && (
-              <span className="inline-flex items-center gap-1">
-                <MapPin className="h-3 w-3" />
-                {c.city}
-              </span>
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {c.skills.slice(0, 5).map((s) => (
+            <span key={s} className="workspace-chip !px-2 !py-0.5 !text-[10px]">
+              {s}
+            </span>
+          ))}
+        </div>
+        <div className="space-y-1 text-[11px] text-muted-foreground">
+          {c.education && (
+            <p className="flex items-center gap-1.5">
+              <GraduationCap className="h-3 w-3" />
+              {c.education}
+            </p>
+          )}
+          <p>{c.status}</p>
+        </div>
+        <div className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3">
+          <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
+            {c.unlocked ? (
+              <>
+                <ShieldCheck className="h-3 w-3 text-success" />
+                Unlocked
+              </>
+            ) : (
+              <>
+                <Lock className="h-3 w-3" />
+                Contact details locked
+              </>
             )}
-            <span>{c.years_of_experience ?? 0} yrs</span>
-            <span className="font-semibold text-primary">{boardStage}</span>
-          </p>
-        </div>
-      </div>
-      <div className="flex flex-wrap gap-1.5">
-        {c.skills.slice(0, 5).map((s) => (
-          <span key={s} className="workspace-chip !px-2 !py-0.5 !text-[10px]">
-            {s}
           </span>
-        ))}
-      </div>
-      <div className="space-y-1 text-[11px] text-muted-foreground">
-        {c.education && (
-          <p className="flex items-center gap-1.5">
-            <GraduationCap className="h-3 w-3" />
-            {c.education}
-          </p>
-        )}
-        <p>{c.status}</p>
-      </div>
-      <div className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3">
-        <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
-          {c.unlocked ? (
-            <>
-              <ShieldCheck className="h-3 w-3 text-success" />
-              Unlocked
-            </>
-          ) : (
-            <>
-              <Lock className="h-3 w-3" />
-              Contact details locked
-            </>
-          )}
-        </span>
-        <div className="flex items-center gap-1.5">
-          {boardStage !== "Shortlisted" && (
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-8 px-2 text-xs"
-              onClick={() => onStageChange("Shortlisted")}
-            >
-              Shortlist
+          <div className="flex items-center gap-1.5">
+            {boardStage !== "Shortlisted" && (
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 px-2 text-xs"
+                onClick={() => onStageChange("Shortlisted")}
+              >
+                Shortlist
+              </Button>
+            )}
+            <Button size="sm" variant={c.unlocked ? "default" : "outline"} onClick={onOpen}>
+              {actionLabel}
             </Button>
-          )}
-          <Button size="sm" variant={c.unlocked ? "default" : "outline"} onClick={onOpen}>
-            {actionLabel}
-          </Button>
+          </div>
         </div>
       </div>
+      {blurredLocked && (
+        <div className="workspace-lock-overlay">
+          <div className="workspace-lock-badge-card">
+            <span className="workspace-icon !h-9 !w-9 rounded-full">
+              <Lock size={16} aria-hidden="true" />
+            </span>
+            <div>
+              <p className="text-xs font-bold text-foreground">Profile Locked</p>
+              <p className="mt-0.5 text-[11px] text-muted-foreground leading-snug">
+                Unlock via Company Wallet to view candidate name &amp; profile details.
+              </p>
+            </div>
+            <Button size="sm" className="h-8 text-xs gap-1.5" onClick={onOpen}>
+              <Lock className="h-3.5 w-3.5" aria-hidden="true" />
+              {actionLabel}
+            </Button>
+          </div>
+        </div>
+      )}
     </li>
   );
 }
@@ -208,7 +239,6 @@ export function EmployerFindTalent({ searchParams, contact, onNavigate, onToast 
   const [boardStages, setBoardStages] = useState<Record<string, TalentBoardCol>>({});
   const [draggedCandidateId, setDraggedCandidateId] = useState<string | null>(null);
   const [dragOverCol, setDragOverCol] = useState<TalentBoardCol | null>(null);
-  const confirmVerifiedRef = useRef<HTMLDialogElement | null>(null);
 
   const loadOverview = useCallback(async () => {
     setOverviewError(null);
@@ -342,28 +372,71 @@ export function EmployerFindTalent({ searchParams, contact, onNavigate, onToast 
   const cheapest = Math.min(...verifiedPackages.map((p) => p.price_inr), Infinity);
   const hasVerifiedAccess = Boolean(sub) || overview.unlocked_count > 0;
 
+  const FREE_PREVIEW_LIMIT = 4;
+  const freePreviewIds = new Set((result?.items ?? []).slice(0, FREE_PREVIEW_LIMIT).map((c) => c.id));
+  const isCandidateBlurred = (c: TalentCandidate) => !sub && !c.unlocked && !freePreviewIds.has(c.id);
+  const lockedRemainingCount = !result || sub ? 0 : result.items.filter((c) => isCandidateBlurred(c)).length;
+
   const walletBar = (
-    <div className="workspace-panel flex flex-wrap items-center gap-4 !p-4">
-      <span className="workspace-icon">
-        <Wallet size={18} />
-      </span>
-      <div className="mr-auto">
-        <p className="text-xs text-muted-foreground">Company wallet</p>
-        <p className="text-lg font-bold">{inr(balance)}</p>
+    <section aria-label="Company hiring wallet" className="workspace-wallet-bento-card">
+      <div className="workspace-wallet-bento-tile lg:col-span-5 flex-wrap">
+        <div className="flex items-center gap-3">
+          <span className="workspace-icon !h-10 !w-10 shrink-0">
+            <Wallet size={18} aria-hidden="true" />
+          </span>
+          <div>
+            <p className="text-xs text-muted-foreground">Company wallet</p>
+            <p className="text-lg font-bold">{inr(balance)}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <Button size="sm" variant="outline" onClick={() => setRecharge((v) => !v)}>
+            Recharge wallet
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => onNavigate("pipe")}>
+            Open Pipeline
+          </Button>
+        </div>
       </div>
-      {sub && (
-        <span className="workspace-chip">
-          <Crown className="h-3 w-3" />
-          Subscription until {new Date(sub.expires_at).toLocaleDateString("en-GB")}
-        </span>
-      )}
-      <Button size="sm" variant="outline" onClick={() => setRecharge((v) => !v)}>
-        Recharge wallet
-      </Button>
-      <Button size="sm" variant="ghost" onClick={() => onNavigate("pipe")}>
-        Open Pipeline
-      </Button>
-    </div>
+      <div className="workspace-wallet-bento-tile lg:col-span-4">
+        <div className="min-w-0">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            Talent Pool Access
+          </p>
+          {sub ? (
+            <span className="mt-0.5 inline-flex items-center gap-1 workspace-chip">
+              <Crown className="h-3 w-3" />
+              Subscription until {new Date(sub.expires_at).toLocaleDateString("en-GB")}
+            </span>
+          ) : (
+            <p className="mt-0.5 text-xs font-bold text-foreground">
+              {result
+                ? `${Math.min(FREE_PREVIEW_LIMIT, result.items.length)} Free Profiles · ${lockedRemainingCount} Locked`
+                : "First 4 Profiles Free"}
+            </p>
+          )}
+        </div>
+      </div>
+      <div className="workspace-wallet-bento-tile lg:col-span-3 justify-end">
+        {lockedRemainingCount > 0 && result ? (
+          <Button
+            size="sm"
+            className="gap-1.5"
+            onClick={() => {
+              const firstLocked = result.items.find((c) => isCandidateBlurred(c));
+              if (firstLocked) setPaywall(firstLocked);
+            }}
+          >
+            <Lock className="h-3.5 w-3.5" aria-hidden="true" />
+            View All
+          </Button>
+        ) : (
+          <span className="text-xs font-medium text-muted-foreground">
+            {sub ? "All profiles unlocked" : "Pay via Company Wallet"}
+          </span>
+        )}
+      </div>
+    </section>
   );
 
   const rechargePanel = recharge && (
@@ -479,101 +552,6 @@ export function EmployerFindTalent({ searchParams, contact, onNavigate, onToast 
           </div>
         }
       />
-      {walletBar}
-      {rechargePanel}
-
-      {/* Top Tier Switcher Bento Strip inside Browse View */}
-      <div className="grid gap-3.5 md:grid-cols-2" aria-label="Candidate pool switcher">
-        <button
-          type="button"
-          data-selected={section === "candidates"}
-          onClick={() => setSection("candidates")}
-          className="workspace-tier-card"
-        >
-          <div className="flex items-center justify-between gap-2 w-full">
-            <span className="flex items-center gap-2 text-sm font-bold text-foreground">
-              <Users className="h-4 w-4 text-primary" />
-              Standard Candidates Pool
-            </span>
-            <span className="rounded-full bg-muted px-2.5 py-0.5 text-[10px] font-bold">Free</span>
-          </div>
-          <span className="text-[11px] text-muted-foreground">
-            Browse public candidate summaries with role match scores at zero wallet cost.
-          </span>
-        </button>
-
-        <button
-          type="button"
-          data-selected={section === "verified"}
-          onClick={() => {
-            if (section === "verified" || hasVerifiedAccess || balance < cheapest) {
-              setSection("verified");
-              return;
-            }
-            const dlg = confirmVerifiedRef.current;
-            if (dlg && !dlg.open) dlg.showModal();
-          }}
-          className="workspace-tier-card"
-        >
-          <div className="flex items-center justify-between gap-2 w-full">
-            <span className="flex items-center gap-2 text-sm font-bold text-foreground">
-              <BadgeCheck className="h-4 w-4 text-primary" />
-              Verified Candidates Pool
-            </span>
-            <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold text-primary">
-              {hasVerifiedAccess
-                ? "Unlocked"
-                : Number.isFinite(cheapest)
-                  ? `From ${inr(cheapest)}`
-                  : "Wallet Pass"}
-            </span>
-          </div>
-          <span className="text-[11px] text-muted-foreground">
-            Proctored CIR scorecards, verified identity &amp; downloadable CVs paid from Company Wallet.
-          </span>
-        </button>
-      </div>
-
-      <dialog
-        ref={confirmVerifiedRef}
-        className="workspace-native-dialog"
-        aria-labelledby="live-verify-wallet-title"
-      >
-        <div className="p-5 space-y-4">
-          <h2 id="live-verify-wallet-title" className="text-base font-bold text-foreground">
-            Are you sure you want to unlock Verified Candidates?
-          </h2>
-          <p className="text-xs text-muted-foreground">
-            Unlocking the Verified Candidates subscription deducts{" "}
-            <strong>{Number.isFinite(cheapest) ? inr(cheapest) : "the package fee"}</strong> from your Company Wallet ({inr(balance)} available).
-          </p>
-          <div className="flex items-center justify-end gap-2">
-            <Button
-              type="button"
-              size="sm"
-              variant="outline"
-              autoFocus
-              onClick={() => confirmVerifiedRef.current?.close("")}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              size="sm"
-              onClick={() => {
-                confirmVerifiedRef.current?.close("confirm");
-                setSection("verified");
-                const subPkg = verifiedPackages.find((p) => p.scope === "subscription");
-                if (subPkg && balance >= subPkg.price_inr) {
-                  void subscribe(subPkg.key);
-                }
-              }}
-            >
-              Yes, Deduct &amp; Unlock
-            </Button>
-          </div>
-        </div>
-      </dialog>
 
       {locked && (
         <section className="workspace-panel space-y-4 !border-primary/40" aria-label="Premium access required">
@@ -702,6 +680,10 @@ export function EmployerFindTalent({ searchParams, contact, onNavigate, onToast 
         </div>
       </div>
 
+      {/* Company Wallet Bento Card placed directly above Candidate List / Kanban Board */}
+      {walletBar}
+      {rechargePanel}
+
       {loading && !result ? (
         <Loading label="Loading candidates" />
       ) : error ? (
@@ -727,6 +709,7 @@ export function EmployerFindTalent({ searchParams, contact, onNavigate, onToast 
                 matchScore={computeCandidateMatchScore(c, skill)}
                 saved={savedIds.includes(c.id)}
                 boardStage={getCandidateBoardCol(c)}
+                blurredLocked={isCandidateBlurred(c)}
                 onToggleSave={() => toggleSaveCandidate(c)}
                 onStageChange={(st) => moveCandidateBoardCol(c, st)}
                 actionLabel={
@@ -736,116 +719,204 @@ export function EmployerFindTalent({ searchParams, contact, onNavigate, onToast 
               />
             ))}
           </ul>
-        </>
-      ) : (
-        <div className="workspace-board">
-          {BOARD_COLS.map((col) => {
-            const colItems = result.items.filter((c) => getCandidateBoardCol(c) === col.id);
-            const isDropTarget = dragOverCol === col.id;
-            return (
-              <div
-                key={col.id}
-                data-stage-theme={col.theme}
-                onDragOver={(e) => {
-                  e.preventDefault();
-                  e.dataTransfer.dropEffect = "move";
-                  if (dragOverCol !== col.id) setDragOverCol(col.id);
-                }}
-                onDragLeave={() => {
-                  if (dragOverCol === col.id) setDragOverCol(null);
-                }}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  const id = e.dataTransfer.getData("text/plain") || draggedCandidateId;
-                  setDragOverCol(null);
-                  setDraggedCandidateId(null);
-                  const found = result.items.find((x) => x.id === id);
-                  if (found) moveCandidateBoardCol(found, col.id);
-                }}
-                className={`workspace-column ${isDropTarget ? "workspace-column-drop-active" : ""}`}
-              >
-                <div className="workspace-column-header">
-                  <div className="flex items-start gap-2.5">
-                    <span className="workspace-icon !h-7 !w-7 !rounded-md">
-                      <Target size={14} />
-                    </span>
-                    <div>
-                      <p className="workspace-stage-title text-xs font-bold leading-tight">{col.label}</p>
-                      <p className="text-[11px] text-muted-foreground">{col.hint}</p>
-                    </div>
-                  </div>
-                  <span className="workspace-stage-count">{colItems.length}</span>
-                </div>
-                <div className="workspace-column-cards">
-                  {colItems.length === 0 ? (
-                    <div className="rounded-lg border border-dashed border-border/80 px-3 py-8 text-center">
-                      <p className="text-xs font-medium text-muted-foreground">Drag candidates here</p>
-                    </div>
-                  ) : (
-                    colItems.map((c) => {
-                      const matchScore = computeCandidateMatchScore(c, skill);
-                      return (
-                        <div
-                          key={c.id}
-                          draggable
-                          onDragStart={(e) => {
-                            setDraggedCandidateId(c.id);
-                            e.dataTransfer.effectAllowed = "move";
-                            e.dataTransfer.setData("text/plain", c.id);
-                          }}
-                          onDragEnd={() => {
-                            setDraggedCandidateId(null);
-                            setDragOverCol(null);
-                          }}
-                          className="workspace-applicant-card cursor-grab active:cursor-grabbing space-y-2.5"
-                        >
-                          <div className="flex items-start gap-2.5">
-                            <Avatar name={c.display_name} src={c.photo_url} size={36} />
-                            <div className="min-w-0 flex-1">
-                              <div className="flex items-center justify-between gap-1">
-                                <p className="truncate text-xs font-bold">{c.display_name}</p>
-                                <GripVertical className="h-3.5 w-3.5 text-muted-foreground/60" />
-                              </div>
-                              <p className="truncate text-[11px] text-muted-foreground">
-                                {c.headline || c.job_role || "Professional"}
-                              </p>
-                              <div className="mt-1 flex items-center gap-1.5">
-                                <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
-                                  {matchScore}% match
-                                </span>
-                                {c.verified && (
-                                  <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-success">
-                                    <CheckCircle2 className="h-3 w-3" /> Verified
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between gap-2 border-t border-border pt-2">
-                            <span className="text-[10px] text-muted-foreground">
-                              {c.years_of_experience ?? 0} yrs · {c.city || "India"}
-                            </span>
-                            <Button
-                              size="sm"
-                              variant={c.unlocked ? "default" : "outline"}
-                              className="h-7 px-2.5 text-[11px]"
-                              onClick={() => (c.unlocked || (sub && c.verified) ? void openProfile(c) : setPaywall(c))}
-                            >
-                              {c.unlocked || (sub && c.verified)
-                                ? "View profile"
-                                : c.verified
-                                  ? "Unlock verified"
-                                  : "Unlock profile"}
-                            </Button>
-                          </div>
-                        </div>
-                      );
-                    })
-                  )}
+          {lockedRemainingCount > 0 && (
+            <div className="workspace-view-all-cta">
+              <div className="flex items-center gap-3">
+                <span className="workspace-icon !h-10 !w-10 shrink-0">
+                  <Lock size={18} aria-hidden="true" />
+                </span>
+                <div>
+                  <p className="text-sm font-bold text-foreground">
+                    Showing {Math.min(FREE_PREVIEW_LIMIT, result.items.length)} of {result.items.length} profiles ·{" "}
+                    {lockedRemainingCount} remaining {lockedRemainingCount === 1 ? "profile is" : "profiles are"} locked
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Pay or deduct from your Company Wallet to unlock all remaining profiles.
+                  </p>
                 </div>
               </div>
-            );
-          })}
+              <Button
+                size="sm"
+                className="gap-1.5 shrink-0"
+                onClick={() => {
+                  const firstLocked = result.items.find((c) => isCandidateBlurred(c));
+                  if (firstLocked) setPaywall(firstLocked);
+                }}
+              >
+                <Wallet className="h-3.5 w-3.5" aria-hidden="true" />
+                View All ({result.items.length} Profiles)
+              </Button>
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="space-y-4">
+          <div className="workspace-board">
+            {BOARD_COLS.map((col) => {
+              const colItems = result.items.filter((c) => getCandidateBoardCol(c) === col.id);
+              const isDropTarget = dragOverCol === col.id;
+              return (
+                <div
+                  key={col.id}
+                  data-stage-theme={col.theme}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = "move";
+                    if (dragOverCol !== col.id) setDragOverCol(col.id);
+                  }}
+                  onDragLeave={() => {
+                    if (dragOverCol === col.id) setDragOverCol(null);
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    const id = e.dataTransfer.getData("text/plain") || draggedCandidateId;
+                    setDragOverCol(null);
+                    setDraggedCandidateId(null);
+                    const found = result.items.find((x) => x.id === id);
+                    if (found && !isCandidateBlurred(found)) moveCandidateBoardCol(found, col.id);
+                  }}
+                  className={`workspace-column ${isDropTarget ? "workspace-column-drop-active" : ""}`}
+                >
+                  <div className="workspace-column-header">
+                    <div className="flex items-start gap-2.5">
+                      <span className="workspace-icon !h-7 !w-7 !rounded-md">
+                        <Target size={14} />
+                      </span>
+                      <div>
+                        <p className="workspace-stage-title text-xs font-bold leading-tight">{col.label}</p>
+                        <p className="text-[11px] text-muted-foreground">{col.hint}</p>
+                      </div>
+                    </div>
+                    <span className="workspace-stage-count">{colItems.length}</span>
+                  </div>
+                  <div className="workspace-column-cards">
+                    {colItems.length === 0 ? (
+                      <div className="rounded-lg border border-dashed border-border/80 px-3 py-8 text-center">
+                        <p className="text-xs font-medium text-muted-foreground">Drag candidates here</p>
+                      </div>
+                    ) : (
+                      colItems.map((c) => {
+                        const matchScore = computeCandidateMatchScore(c, skill);
+                        const blurred = isCandidateBlurred(c);
+                        return (
+                          <div
+                            key={c.id}
+                            data-locked={blurred ? "true" : "false"}
+                            draggable={!blurred}
+                            onDragStart={(e) => {
+                              if (blurred) return;
+                              setDraggedCandidateId(c.id);
+                              e.dataTransfer.effectAllowed = "move";
+                              e.dataTransfer.setData("text/plain", c.id);
+                            }}
+                            onDragEnd={() => {
+                              setDraggedCandidateId(null);
+                              setDragOverCol(null);
+                            }}
+                            className={`workspace-applicant-card space-y-2.5 ${
+                              blurred ? "workspace-locked-card" : "cursor-grab active:cursor-grabbing"
+                            }`}
+                          >
+                            <div
+                              className={`space-y-2.5 ${blurred ? "workspace-locked-blur" : ""}`}
+                              {...(blurred ? ({ inert: "" } as Record<string, string>) : {})}
+                            >
+                              <div className="flex items-start gap-2.5">
+                                <Avatar name={c.display_name} src={c.photo_url} size={36} />
+                                <div className="min-w-0 flex-1">
+                                  <div className="flex items-center justify-between gap-1">
+                                    <p className="truncate text-xs font-bold">{c.display_name}</p>
+                                    <GripVertical className="h-3.5 w-3.5 text-muted-foreground/60" />
+                                  </div>
+                                  <p className="truncate text-[11px] text-muted-foreground">
+                                    {c.headline || c.job_role || "Professional"}
+                                  </p>
+                                  <div className="mt-1 flex items-center gap-1.5">
+                                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
+                                      {matchScore}% match
+                                    </span>
+                                    {c.verified && (
+                                      <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-success">
+                                        <CheckCircle2 className="h-3 w-3" /> Verified
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="flex items-center justify-between gap-2 border-t border-border pt-2">
+                                <span className="text-[10px] text-muted-foreground">
+                                  {c.years_of_experience ?? 0} yrs · {c.city || "India"}
+                                </span>
+                                <Button
+                                  size="sm"
+                                  variant={c.unlocked ? "default" : "outline"}
+                                  className="h-7 px-2.5 text-[11px]"
+                                  onClick={() => (c.unlocked || (sub && c.verified) ? void openProfile(c) : setPaywall(c))}
+                                >
+                                  {c.unlocked || (sub && c.verified)
+                                    ? "View profile"
+                                    : c.verified
+                                      ? "Unlock verified"
+                                      : "Unlock profile"}
+                                </Button>
+                              </div>
+                            </div>
+                            {blurred && (
+                              <div className="workspace-lock-overlay workspace-lock-overlay--compact">
+                                <div className="workspace-lock-badge-card">
+                                  <p className="text-[11px] font-bold text-foreground flex items-center gap-1">
+                                    <Lock size={12} aria-hidden="true" />
+                                    Locked Profile
+                                  </p>
+                                  <Button
+                                    size="sm"
+                                    className="h-7 px-2.5 text-[11px] gap-1"
+                                    onClick={() => setPaywall(c)}
+                                  >
+                                    <Lock className="h-3 w-3" aria-hidden="true" />
+                                    Unlock
+                                  </Button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          {lockedRemainingCount > 0 && (
+            <div className="workspace-view-all-cta">
+              <div className="flex items-center gap-3">
+                <span className="workspace-icon !h-10 !w-10 shrink-0">
+                  <Lock size={18} aria-hidden="true" />
+                </span>
+                <div>
+                  <p className="text-sm font-bold text-foreground">
+                    Showing {Math.min(FREE_PREVIEW_LIMIT, result.items.length)} of {result.items.length} profiles ·{" "}
+                    {lockedRemainingCount} remaining {lockedRemainingCount === 1 ? "profile is" : "profiles are"} locked
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Pay or deduct from your Company Wallet to unlock all remaining profiles.
+                  </p>
+                </div>
+              </div>
+              <Button
+                size="sm"
+                className="gap-1.5 shrink-0"
+                onClick={() => {
+                  const firstLocked = result.items.find((c) => isCandidateBlurred(c));
+                  if (firstLocked) setPaywall(firstLocked);
+                }}
+              >
+                <Wallet className="h-3.5 w-3.5" aria-hidden="true" />
+                View All ({result.items.length} Profiles)
+              </Button>
+            </div>
+          )}
         </div>
       )}
 

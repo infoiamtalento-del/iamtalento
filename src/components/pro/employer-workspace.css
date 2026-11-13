@@ -166,6 +166,90 @@ dialog.workspace-native-dialog::backdrop {
   background-color:hsl(var(--job-tint) / 0.45);
 }
 
+/* Company Wallet Bento Card & Locked Profile Blur Overlay (Solid Colors Only - Zero Gradients) */
+.employer-workspace .workspace-wallet-bento-card {
+  display:grid;
+  grid-template-columns:repeat(12, minmax(0, 1fr));
+  gap:12px;
+  padding:14px;
+  border:1px solid hsl(var(--job-border));
+  border-radius:14px;
+  background-color:hsl(var(--card));
+  box-shadow:0 4px 16px -8px rgba(15, 23, 42, 0.08);
+}
+.employer-workspace .workspace-wallet-bento-tile {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 14px;
+  border:1px solid hsl(var(--job-border));
+  border-radius:10px;
+  background-color:hsl(var(--job-tint) / 0.35);
+  min-inline-size:0;
+}
+@media (max-width: 1024px) {
+  .employer-workspace .workspace-wallet-bento-card {
+    grid-template-columns:1fr;
+  }
+}
+
+.employer-workspace .workspace-locked-card {
+  position:relative;
+  overflow:hidden;
+}
+.employer-workspace .workspace-locked-blur,
+.employer-workspace .workspace-locked-blur[inert] {
+  filter:blur(7px);
+  opacity:0.48;
+  user-select:none;
+  pointer-events:none;
+}
+.employer-workspace .workspace-lock-overlay {
+  position:absolute;
+  inset:0;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  background-color:hsl(var(--card) / 0.62);
+  backdrop-filter:blur(2px);
+}
+.employer-workspace .workspace-lock-badge-card {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  gap:8px;
+  max-width:290px;
+  padding:14px 18px;
+  border:1px solid hsl(var(--job-border));
+  border-radius:12px;
+  background-color:hsl(var(--card));
+  box-shadow:0 12px 28px -10px rgba(15, 23, 42, 0.18);
+}
+.employer-workspace .workspace-lock-overlay--compact {
+  padding:8px;
+}
+.employer-workspace .workspace-lock-overlay--compact .workspace-lock-badge-card {
+  padding:8px 12px;
+  gap:6px;
+  max-width:200px;
+}
+.employer-workspace .workspace-view-all-cta {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:16px 20px;
+  border:1px solid hsl(var(--primary) / 0.35);
+  border-radius:14px;
+  background-color:hsl(var(--card));
+  box-shadow:0 8px 22px -10px rgba(15, 23, 42, 0.12);
+}
+
 /* Differentiated Stage Color Themes (Solid Colors Only - Zero Gradients) */
 .employer-workspace [data-stage-theme="all"] {
   --stage-accent: #1e40af;

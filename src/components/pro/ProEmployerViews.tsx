@@ -5,14 +5,12 @@ import {
   Users,
   Layers,
   Search,
-  Sparkles,
   MapPin,
   Clock,
   CheckCircle2,
   Plus,
   ArrowRight,
   ShieldCheck,
-  Award,
   Check,
   SlidersHorizontal,
   RotateCcw,
@@ -33,10 +31,8 @@ import {
   ChevronDown,
   ChevronUp,
   Star,
-  Zap,
   Wallet,
   Lock,
-  Crown,
   BadgeCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -245,9 +241,6 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
   const [talentMaxSalary, setTalentMaxSalary] = useState(60);
   const [talentNoticePeriod, setTalentNoticePeriod] = useState(999);
   const [talentSort, setTalentSort] = useState<"s" | "a" | "x" | "sal">("s");
-  const [quickPreset, setQuickPreset] = useState<
-    "all" | "high_match" | "immediate" | "top_test" | "budget" | "saved" | "in_pipeline"
-  >("all");
   const [filterOpen, setFilterOpen] = useState(false);
   const [expandedFitCard, setExpandedFitCard] = useState<string | null>(null);
   const [draggedCandName, setDraggedCandName] = useState<string | null>(null);
@@ -303,14 +296,14 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
 
   const PASS_OPTIONS = {
     session: {
-      label: "Verified Search Pass (Single Sprint)",
+      label: "Unlock All Profiles Pass (Single Sprint)",
       cost: 499,
-      desc: "Unlock AI-proctored CIR verified candidates, contact details & CIR PDF downloads for this hiring session.",
+      desc: "Unblur all matched candidate profiles, names, contact details & CIR PDF downloads for this hiring session.",
     },
     monthly: {
       label: "Unlimited Verified Pass (30 Days)",
       cost: 2499,
-      desc: "30 days unlimited verified candidate search, 50 direct CIR downloads & priority outreach.",
+      desc: "30 days unlimited access to all candidate profiles, 50 direct CIR downloads & priority outreach.",
     },
   } as const;
 
@@ -328,18 +321,6 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
     if (dlg?.open) {
       dlg.close("");
     }
-  };
-
-  const handleSelectTalentTier = (nextTier: "standard" | "verified") => {
-    if (nextTier === "standard") {
-      setTalentTier("standard");
-      return;
-    }
-    if (verifiedUnlocked) {
-      setTalentTier("verified");
-      return;
-    }
-    openWalletConfirmModal();
   };
 
   const handleQuickRechargeDemo = (amount: number) => {
@@ -496,7 +477,6 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
     setTalentOnlyCertified(false);
     setTalentMaxSalary(60);
     setTalentNoticePeriod(999);
-    setQuickPreset("all");
   };
 
   const activeTalentFilterCount =
@@ -506,13 +486,10 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
     (talentMinAssessment > 0 ? 1 : 0) +
     (talentOnlyCertified ? 1 : 0) +
     (talentMaxSalary < 60 ? 1 : 0) +
-    (talentNoticePeriod !== 999 ? 1 : 0) +
-    (quickPreset !== "all" ? 1 : 0);
+    (talentNoticePeriod !== 999 ? 1 : 0);
 
   const filteredCandidates = useMemo(() => {
     return CANDIDATES_SEED.filter((c) => {
-      const targetJob = getBestJobForCandidate(c);
-      const roleScore = calcTalentScore(c, targetJob);
       const testAvg = avgCandidateScore(c);
 
       if (talentQuery) {
@@ -531,16 +508,8 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
       if (talentWorkModes.length > 0 && !talentWorkModes.includes(c.wp)) return false;
       if (testAvg < talentMinAssessment) return false;
       if (talentOnlyCertified && (!c.ce || c.ce.length === 0)) return false;
-      if (talentTier === "verified" && avgCandidateScore(c) < 75) return false;
       if (c.es > talentMaxSalary) return false;
       if (talentNoticePeriod !== 999 && (c.nt || 0) > talentNoticePeriod) return false;
-
-      if (quickPreset === "high_match" && roleScore < 75) return false;
-      if (quickPreset === "immediate" && (c.nt || 0) > 15) return false;
-      if (quickPreset === "top_test" && testAvg < 85) return false;
-      if (quickPreset === "budget" && targetJob && c.es > targetJob.b) return false;
-      if (quickPreset === "saved" && !bookmarkedTalent.includes(c.n)) return false;
-      if (quickPreset === "in_pipeline" && !myApps.some((a) => a.name === c.n)) return false;
 
       return true;
     }).sort((a, b) => {
@@ -561,11 +530,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
     talentMaxSalary,
     talentNoticePeriod,
     talentSort,
-    quickPreset,
-    bookmarkedTalent,
-    myApps,
     selectedJobObj,
-    talentTier,
   ]);
 
   const handleMoveCandidateSourcing = (cand: ProCandidate, targetStage: SourcingStage) => {
@@ -1046,58 +1011,45 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
   }
 
   if (view === "talent") {
-    // HR SOURCING KPI METRICS
-    const highMatchCount = CANDIDATES_SEED.filter(
-      (c) => calcTalentScore(c, getBestJobForCandidate(c)) >= 75
-    ).length;
-    const immediateCount = CANDIDATES_SEED.filter((c) => (c.nt || 0) <= 15).length;
-    const eliteScoreCount = CANDIDATES_SEED.filter((c) => avgCandidateScore(c) >= 85).length;
-    const inPipelineCount = CANDIDATES_SEED.filter((c) =>
-      myApps.some((a) => a.name === c.n)
-    ).length;
+    const FREE_PREVIEW_LIMIT = 4;
+    const freePreviewNames = new Set(
+      filteredCandidates.slice(0, FREE_PREVIEW_LIMIT).map((c) => c.n)
+    );
+    const isProfileLocked = (candName: string) =>
+      !verifiedUnlocked && !freePreviewNames.has(candName);
+    const visibleFreeCount = Math.min(FREE_PREVIEW_LIMIT, filteredCandidates.length);
+    const lockedCount = verifiedUnlocked
+      ? 0
+      : Math.max(0, filteredCandidates.length - FREE_PREVIEW_LIMIT);
 
-    const kpiStats = [
-      {
-        id: "all" as const,
-        label: "Verified Talent Pool",
-        count: CANDIDATES_SEED.length,
-        sub: "100% ID & skill verified",
-        icon: Users,
-        theme: "all",
-      },
-      {
-        id: "high_match" as const,
-        label: "High Job Match (75%+)",
-        count: highMatchCount,
-        sub: selectedJobObj ? `For ${selectedJobObj.t}` : "Across active openings",
-        icon: Sparkles,
-        theme: "Shortlisted",
-      },
-      {
-        id: "immediate" as const,
-        label: "Immediate / ≤15d Joiners",
-        count: immediateCount,
-        sub: "Fast onboarding ready",
-        icon: Zap,
-        theme: "Applied",
-      },
-      {
-        id: "top_test" as const,
-        label: "Elite CIR Score (85%+)",
-        count: eliteScoreCount,
-        sub: "Top proctored performers",
-        icon: Award,
-        theme: "Interview",
-      },
-      {
-        id: "saved" as const,
-        label: "Saved / Bookmarked",
-        count: bookmarkedTalent.length,
-        sub: "HR talent shortlist",
-        icon: Bookmark,
-        theme: "Offer",
-      },
-    ];
+    const viewAllUnlockBanner = lockedCount > 0 && (
+      <div className="workspace-view-all-cta">
+        <div className="flex items-center gap-3">
+          <span className="workspace-icon !h-10 !w-10 shrink-0">
+            <Lock size={18} aria-hidden="true" />
+          </span>
+          <div>
+            <p className="text-sm font-bold text-foreground">
+              Showing {visibleFreeCount} of {filteredCandidates.length} profiles · {lockedCount}{" "}
+              remaining {lockedCount === 1 ? "profile is" : "profiles are"} locked
+            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Pay or deduct {formatINR(PASS_OPTIONS.session.cost)} from your Company Wallet to
+              unblur all candidate names, contact details, and CIR reports.
+            </p>
+          </div>
+        </div>
+        <Button
+          type="button"
+          size="sm"
+          className="gap-1.5 font-semibold shrink-0"
+          onClick={() => openWalletConfirmModal()}
+        >
+          <Wallet className="h-3.5 w-3.5" aria-hidden="true" />
+          View All ({filteredCandidates.length} Profiles)
+        </Button>
+      </div>
+    );
 
     return (
       <div className="employer-workspace space-y-5">
@@ -1141,308 +1093,6 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
             </Button>
           </div>
         </header>
-
-        {/* Top Wallet Bento Box: Company Wallet + Candidates vs Verified Candidates */}
-        <section
-          aria-label="Hiring wallet and candidate pool selector"
-          className="workspace-wallet-bento"
-        >
-          {/* Bento Cell 1: Company Wallet */}
-          <article className="workspace-panel lg:col-span-4 !p-4 flex flex-col justify-between gap-3">
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <span className="workspace-icon !h-10 !w-10 shrink-0">
-                  <Wallet size={18} />
-                </span>
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                    Company Wallet
-                  </p>
-                  <p className="text-xl font-bold text-foreground mt-0.5">
-                    {formatINR(walletBalance)}
-                  </p>
-                </div>
-              </div>
-
-              {verifiedUnlocked ? (
-                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700">
-                  <BadgeCheck className="h-3 w-3" />
-                  Verified Active
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-0.5 text-[10px] font-semibold text-muted-foreground">
-                  Standard Pool
-                </span>
-              )}
-            </div>
-
-            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border/70 pt-2.5 text-xs">
-              <div className="flex items-center gap-1.5">
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  className="h-7 px-2.5 text-[11px] font-semibold"
-                  onClick={() => handleQuickRechargeDemo(2000)}
-                >
-                  <Plus className="h-3 w-3 mr-1" />
-                  Add ₹2,000
-                </Button>
-                {onNavigate && (
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="ghost"
-                    className="h-7 px-2 text-[11px] text-muted-foreground hover:text-foreground"
-                    onClick={() => onNavigate("payment-history")}
-                  >
-                    Ledger →
-                  </Button>
-                )}
-              </div>
-
-              {verifiedUnlocked && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setVerifiedUnlocked(false);
-                    setTalentTier("standard");
-                    onToast("Reset demo Verified Pass so you can test wallet unlock again.");
-                  }}
-                  className="text-[11px] font-medium text-muted-foreground hover:text-primary underline cursor-pointer"
-                >
-                  Relock pass
-                </button>
-              )}
-            </div>
-          </article>
-
-          {/* Bento Cell 2: Option 1 — Standard Candidates (Free) */}
-          <button
-            type="button"
-            data-selected={talentTier === "standard"}
-            onClick={() => handleSelectTalentTier("standard")}
-            className="workspace-tier-card lg:col-span-4"
-          >
-            <div className="flex items-start justify-between gap-2 w-full">
-              <div className="flex items-center gap-2.5">
-                <span className="workspace-icon !h-9 !w-9 shrink-0">
-                  <Users size={17} />
-                </span>
-                <div>
-                  <span className="block text-sm font-bold text-foreground">Candidates</span>
-                  <span className="block text-[11px] text-muted-foreground">
-                    Public talent directory
-                  </span>
-                </div>
-              </div>
-              <span className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-[10px] font-bold text-foreground">
-                Free Browse
-              </span>
-            </div>
-            <p className="text-[11px] text-muted-foreground leading-relaxed">
-              Search public candidate profiles, skills, experience &amp; role match scores with zero wallet deduction.
-            </p>
-          </button>
-
-          {/* Bento Cell 3: Option 2 — Verified Candidates (Wallet Deduction Pass) */}
-          <button
-            type="button"
-            data-selected={talentTier === "verified"}
-            onClick={() => handleSelectTalentTier("verified")}
-            className="workspace-tier-card lg:col-span-4"
-          >
-            <div className="flex items-start justify-between gap-2 w-full">
-              <div className="flex items-center gap-2.5">
-                <span className="workspace-icon !h-9 !w-9 shrink-0">
-                  <BadgeCheck size={18} />
-                </span>
-                <div>
-                  <span className="flex items-center gap-1.5 text-sm font-bold text-foreground">
-                    Verified Candidates
-                    <Crown className="h-3.5 w-3.5 text-amber-500" />
-                  </span>
-                  <span className="block text-[11px] text-muted-foreground">
-                    AI-Proctored &amp; CIR Certified
-                  </span>
-                </div>
-              </div>
-              {verifiedUnlocked ? (
-                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700">
-                  <Check className="h-3 w-3" />
-                  Unlocked
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold text-primary">
-                  <Lock className="h-3 w-3" />
-                  ₹499 Wallet
-                </span>
-              )}
-            </div>
-            <p className="text-[11px] text-muted-foreground leading-relaxed">
-              Search 100% ID &amp; proctoring-verified talent with full CIR scorecards, direct contact details &amp; PDF reports.
-            </p>
-          </button>
-        </section>
-
-        {/* Native Modal Confirmation Dialog: "Are you sure?" Wallet Deduction */}
-        <dialog
-          ref={walletDialogRef}
-          className="workspace-native-dialog"
-          aria-labelledby="verify-wallet-dialog-title"
-          onClose={() => setPendingCirCandidate(null)}
-        >
-          <div className="p-5 sm:p-6 space-y-4">
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <span className="workspace-icon !h-10 !w-10 shrink-0">
-                  <BadgeCheck size={20} />
-                </span>
-                <div>
-                  <h2 id="verify-wallet-dialog-title" className="text-base font-bold text-foreground">
-                    Are you sure you want to unlock Verified Candidates?
-                  </h2>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    Searching Verified Candidates deducts the pass amount from your Company Wallet.
-                  </p>
-                </div>
-              </div>
-              <button
-                type="button"
-                aria-label="Close confirmation dialog"
-                onClick={closeWalletConfirmModal}
-                className="rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer"
-              >
-                <X size={15} />
-              </button>
-            </div>
-
-            {/* Pass Selection Options */}
-            <div className="space-y-2">
-              {(["session", "monthly"] as const).map((key) => {
-                const opt = PASS_OPTIONS[key];
-                const isChosen = selectedPassKey === key;
-                return (
-                  <label
-                    key={key}
-                    className="workspace-pass-choice"
-                  >
-                    <input
-                      type="radio"
-                      name="verified-pass-tier"
-                      checked={isChosen}
-                      onChange={() => setSelectedPassKey(key)}
-                      className="mt-1 accent-primary"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-xs font-bold text-foreground">{opt.label}</span>
-                        <strong className="text-xs font-bold text-primary">
-                          {formatINR(opt.cost)}
-                        </strong>
-                      </div>
-                      <p className="mt-0.5 text-[11px] text-muted-foreground leading-snug">
-                        {opt.desc}
-                      </p>
-                    </div>
-                  </label>
-                );
-              })}
-            </div>
-
-            {/* Wallet Balance Math Breakdown */}
-            <div className="rounded-xl border border-border bg-muted/30 p-3.5 space-y-2 text-xs">
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Current Company Wallet</span>
-                <span className="font-semibold text-foreground">{formatINR(walletBalance)}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Wallet Deduction</span>
-                <span className="font-bold text-destructive">
-                  − {formatINR(PASS_OPTIONS[selectedPassKey].cost)}
-                </span>
-              </div>
-              <div className="flex items-center justify-between border-t border-border pt-2">
-                <span className="font-semibold text-foreground">Remaining Balance</span>
-                <strong
-                  className={`text-sm ${
-                    walletBalance >= PASS_OPTIONS[selectedPassKey].cost
-                      ? "text-emerald-700"
-                      : "text-destructive"
-                  }`}
-                >
-                  {walletBalance >= PASS_OPTIONS[selectedPassKey].cost
-                    ? formatINR(walletBalance - PASS_OPTIONS[selectedPassKey].cost)
-                    : `Short by ${formatINR(PASS_OPTIONS[selectedPassKey].cost - walletBalance)}`}
-                </strong>
-              </div>
-            </div>
-
-            {walletBalance < PASS_OPTIONS[selectedPassKey].cost && (
-              <div className="flex items-center justify-between gap-3 rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-xs">
-                <span className="text-amber-900 font-medium">
-                  Low wallet balance for this pass.
-                </span>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  className="h-7 text-xs shrink-0"
-                  onClick={() => handleQuickRechargeDemo(3000)}
-                >
-                  <Plus className="h-3 w-3 mr-1" />
-                  Top Up ₹3,000
-                </Button>
-              </div>
-            )}
-
-            <div className="flex items-center justify-end gap-2.5 pt-1">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                autoFocus
-                onClick={closeWalletConfirmModal}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="button"
-                size="sm"
-                disabled={walletBalance < PASS_OPTIONS[selectedPassKey].cost}
-                onClick={handleConfirmVerifiedDeduction}
-                className="gap-1.5"
-              >
-                <Wallet className="h-3.5 w-3.5" />
-                Yes, Deduct {formatINR(PASS_OPTIONS[selectedPassKey].cost)} &amp; Unlock
-              </Button>
-            </div>
-          </div>
-        </dialog>
-
-        {/* Differentiated HR KPI Summary Cards (Click any card to filter) */}
-        <div className="workspace-stats">
-          {kpiStats.map(({ id, label, count, icon: Icon, theme }) => {
-            const isActive = quickPreset === id && id !== "all";
-            return (
-              <Button
-                key={id}
-                variant="ghost"
-                data-stage-theme={theme}
-                className={`workspace-stat ${isActive ? "workspace-stat--active" : ""}`}
-                onClick={() => setQuickPreset((prev) => (prev === id ? "all" : id))}
-              >
-                <div className="workspace-icon">
-                  <Icon size={22} />
-                </div>
-                <div>
-                  <span>{label}</span>
-                  <strong>{count}</strong>
-                </div>
-              </Button>
-            );
-          })}
-        </div>
 
         {/* Single Clean Search, Role Matcher & Separate Filter Icon Bar */}
         <div className="workspace-panel !p-3">
@@ -1691,6 +1341,258 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
           </div>
         </div>
 
+        {/* Company Wallet Bento Card — placed directly above Candidate List / Kanban Board */}
+        <section
+          aria-label="Company hiring wallet"
+          className="workspace-wallet-bento-card"
+        >
+          {/* Bento Tile 1: Wallet Balance & Quick Credits */}
+          <div className="workspace-wallet-bento-tile lg:col-span-5 flex-wrap">
+            <div className="flex items-center gap-3">
+              <span className="workspace-icon !h-10 !w-10 shrink-0">
+                <Wallet size={18} aria-hidden="true" />
+              </span>
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                  Company Wallet
+                </p>
+                <p className="text-lg font-bold text-foreground">
+                  {formatINR(walletBalance)}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-1.5 text-xs">
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                className="h-8 px-3 text-xs font-semibold"
+                onClick={() => handleQuickRechargeDemo(2000)}
+              >
+                <Plus className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
+                Add ₹2,000
+              </Button>
+              {onNavigate && (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  className="h-8 px-2.5 text-xs text-muted-foreground hover:text-foreground"
+                  onClick={() => onNavigate("payment-history")}
+                >
+                  Ledger →
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {/* Bento Tile 2: Candidate Access Status */}
+          <div className="workspace-wallet-bento-tile lg:col-span-4">
+            <div className="min-w-0">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                Talent Pool Access
+              </p>
+              {verifiedUnlocked ? (
+                <div className="mt-0.5 flex items-center gap-2 flex-wrap">
+                  <span className="text-xs font-bold text-foreground">
+                    All {filteredCandidates.length} Profiles Unlocked
+                  </span>
+                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700">
+                    <BadgeCheck className="h-3 w-3" aria-hidden="true" />
+                    Verified Active
+                  </span>
+                </div>
+              ) : (
+                <p className="mt-0.5 text-xs font-bold text-foreground">
+                  {visibleFreeCount} Free Profiles · {lockedCount} Locked
+                </p>
+              )}
+              <p className="text-[11px] text-muted-foreground truncate mt-0.5">
+                {verifiedUnlocked
+                  ? "Full names, CIR scorecards & contacts active"
+                  : "Remaining profiles blurred until unlocked"}
+              </p>
+            </div>
+          </div>
+
+          {/* Bento Tile 3: View All / Unlock Action */}
+          <div className="workspace-wallet-bento-tile lg:col-span-3 justify-end">
+            {verifiedUnlocked ? (
+              <div className="flex w-full items-center justify-between gap-2">
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700">
+                  <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
+                  Wallet Pass Active
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setVerifiedUnlocked(false);
+                    setTalentTier("standard");
+                    onToast("Reset demo Verified Pass so you can test wallet unlock again.");
+                  }}
+                  className="text-[11px] font-medium text-muted-foreground hover:text-primary underline cursor-pointer"
+                >
+                  Relock pass
+                </button>
+              </div>
+            ) : (
+              <div className="flex w-full items-center justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="text-[11px] font-bold text-foreground">
+                    {formatINR(PASS_OPTIONS.session.cost)} Pass
+                  </p>
+                  <p className="text-[10px] text-muted-foreground">Pay via Wallet</p>
+                </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  className="h-8 text-xs gap-1.5 shrink-0"
+                  onClick={() => openWalletConfirmModal()}
+                >
+                  <Lock className="h-3.5 w-3.5" aria-hidden="true" />
+                  View All
+                </Button>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Native Modal Confirmation Dialog: Wallet Payment / Deduction */}
+        <dialog
+          ref={walletDialogRef}
+          className="workspace-native-dialog"
+          aria-labelledby="verify-wallet-dialog-title"
+          onClose={() => setPendingCirCandidate(null)}
+          {...({ closedby: "any" } as Record<string, string>)}
+        >
+          <div className="p-5 sm:p-6 space-y-4">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <span className="workspace-icon !h-10 !w-10 shrink-0">
+                  <BadgeCheck size={20} aria-hidden="true" />
+                </span>
+                <div>
+                  <h2 id="verify-wallet-dialog-title" className="text-base font-bold text-foreground">
+                    Are you sure you want to unlock Verified Candidates?
+                  </h2>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Pay or deduct the pass amount from your Company Wallet to unblur and view all candidate profiles, contact details, and CIR reports.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                aria-label="Close confirmation dialog"
+                onClick={closeWalletConfirmModal}
+                className="rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer"
+              >
+                <X size={15} aria-hidden="true" />
+              </button>
+            </div>
+
+            {/* Pass Selection Options */}
+            <div className="space-y-2">
+              {(["session", "monthly"] as const).map((key) => {
+                const opt = PASS_OPTIONS[key];
+                const isChosen = selectedPassKey === key;
+                return (
+                  <label
+                    key={key}
+                    className="workspace-pass-choice"
+                  >
+                    <input
+                      type="radio"
+                      name="verified-pass-tier"
+                      checked={isChosen}
+                      onChange={() => setSelectedPassKey(key)}
+                      className="mt-1 accent-primary"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-xs font-bold text-foreground">{opt.label}</span>
+                        <strong className="text-xs font-bold text-primary">
+                          {formatINR(opt.cost)}
+                        </strong>
+                      </div>
+                      <p className="mt-0.5 text-[11px] text-muted-foreground leading-snug">
+                        {opt.desc}
+                      </p>
+                    </div>
+                  </label>
+                );
+              })}
+            </div>
+
+            {/* Wallet Balance Math Breakdown */}
+            <div className="rounded-xl border border-border bg-muted/30 p-3.5 space-y-2 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Current Company Wallet</span>
+                <span className="font-semibold text-foreground">{formatINR(walletBalance)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Wallet Deduction</span>
+                <span className="font-bold text-destructive">
+                  − {formatINR(PASS_OPTIONS[selectedPassKey].cost)}
+                </span>
+              </div>
+              <div className="flex items-center justify-between border-t border-border pt-2">
+                <span className="font-semibold text-foreground">Remaining Balance</span>
+                <strong
+                  className={`text-sm ${
+                    walletBalance >= PASS_OPTIONS[selectedPassKey].cost
+                      ? "text-emerald-700"
+                      : "text-destructive"
+                  }`}
+                >
+                  {walletBalance >= PASS_OPTIONS[selectedPassKey].cost
+                    ? formatINR(walletBalance - PASS_OPTIONS[selectedPassKey].cost)
+                    : `Short by ${formatINR(PASS_OPTIONS[selectedPassKey].cost - walletBalance)}`}
+                </strong>
+              </div>
+            </div>
+
+            {walletBalance < PASS_OPTIONS[selectedPassKey].cost && (
+              <div className="flex items-center justify-between gap-3 rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-xs">
+                <span className="text-amber-900 font-medium">
+                  Low wallet balance for this pass.
+                </span>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="h-7 text-xs shrink-0"
+                  onClick={() => handleQuickRechargeDemo(3000)}
+                >
+                  <Plus className="h-3 w-3 mr-1" aria-hidden="true" />
+                  Top Up ₹3,000
+                </Button>
+              </div>
+            )}
+
+            <div className="flex items-center justify-end gap-2.5 pt-1">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                autoFocus
+                onClick={closeWalletConfirmModal}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                disabled={walletBalance < PASS_OPTIONS[selectedPassKey].cost}
+                onClick={handleConfirmVerifiedDeduction}
+                className="gap-1.5"
+              >
+                <Wallet className="h-3.5 w-3.5" aria-hidden="true" />
+                Yes, Deduct {formatINR(PASS_OPTIONS[selectedPassKey].cost)} &amp; Unlock
+              </Button>
+            </div>
+          </div>
+        </dialog>
+
         {/* Compare Floating Bar if Candidates Selected */}
         {selectedTalentToCompare.length > 0 && (
           <div className="p-3 rounded-xl bg-primary/10 border border-primary/30 flex flex-wrap items-center justify-between gap-3 text-xs">
@@ -1737,6 +1639,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
             ) : (
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                 {filteredCandidates.map((cand) => {
+                  const locked = isProfileLocked(cand.n);
                   const targetJob = getBestJobForCandidate(cand);
                   const roleMatch = calcTalentScore(cand, targetJob);
                   const testAvg = avgCandidateScore(cand);
@@ -1744,7 +1647,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                   const isBookmarked = bookmarkedTalent.includes(cand.n);
                   const currentStage = getCandidateStage(cand.n);
                   const existingApp = myApps.find((a) => a.name === cand.n);
-                  const isExpanded = expandedFitCard === cand.n;
+                  const isExpanded = !locked && expandedFitCard === cand.n;
                   const fitRows = targetJob ? candidateFitForJob(cand, targetJob) : [];
 
                   const matchedSkills = targetJob
@@ -1756,250 +1659,288 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                   return (
                     <article
                       key={cand.n}
-                      className="workspace-panel !p-5 flex flex-col justify-between gap-4 transition-all hover:border-primary/40"
+                      data-locked={locked ? "true" : "false"}
+                      className={cn(
+                        "workspace-panel !p-5 flex flex-col justify-between gap-4 transition-all",
+                        locked ? "workspace-locked-card" : "hover:border-primary/40"
+                      )}
                     >
-                      {/* Row 1: Identity + Match Score */}
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-start gap-3.5 min-w-0">
-                          <img
-                            src={getCandidatePhoto(cand.n)}
-                            alt={cand.n}
-                            onClick={() =>
-                              onOpenDrawer({
-                                type: "candidate",
-                                name: cand.n,
-                                jobId: targetJob?.id,
-                              })
-                            }
-                            className="w-12 h-12 rounded-xl object-cover shrink-0 border border-border cursor-pointer"
-                          />
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-1.5 flex-wrap">
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  onOpenDrawer({
-                                    type: "candidate",
-                                    name: cand.n,
-                                    jobId: targetJob?.id,
-                                  })
-                                }
-                                className="font-bold text-foreground text-base hover:text-primary transition-colors cursor-pointer"
-                              >
-                                {cand.n}
-                              </button>
-                              <ShieldCheck
-                                className="w-4 h-4 text-emerald-600 shrink-0"
-                                aria-label="Verified CIR"
-                              />
-                              {existingApp && (
-                                <span className="workspace-chip !px-2 !py-0.5 !text-[10px]">
-                                  {existingApp.st}
-                                </span>
-                              )}
-                            </div>
-
-                            <p className="text-xs text-muted-foreground mt-0.5 truncate">
-                              {levelFromExp(cand.x)} {cand.sk[0]} Engineer
-                              {targetJob ? ` · Best fit: ${targetJob.t}` : ""}
-                            </p>
-
-                            <p className="text-xs text-muted-foreground mt-1.5 flex items-center gap-2 flex-wrap">
-                              <span>{cand.c} ({cand.wp})</span>
-                              <span>·</span>
-                              <span>{cand.x} yrs</span>
-                              <span>·</span>
-                              <span className="font-semibold text-foreground">₹{cand.es} LPA</span>
-                              <span>·</span>
-                              <span className="text-primary font-medium">
-                                {cand.nt === 0 ? "Immediate" : `${cand.nt}d notice`}
-                              </span>
-                              {talentTier === "verified" && verifiedUnlocked ? (
-                                <>
-                                  <span>·</span>
-                                  <span className="text-emerald-700 font-semibold">
-                                    {cand.n.toLowerCase().replace(/\s+/g, ".")}@talentcir.verified
-                                  </span>
-                                </>
-                              ) : (
-                                <>
-                                  <span>·</span>
-                                  <span className="inline-flex items-center gap-1 text-muted-foreground">
-                                    <Lock className="w-3 h-3" /> Contact locked
-                                  </span>
-                                </>
-                              )}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Right: Clean Match Pill + Bookmark Icon */}
-                        <div className="flex items-center gap-2 shrink-0">
-                          <div className="text-right">
-                            <span className="inline-flex items-center rounded-lg bg-primary/10 px-2.5 py-1 text-xs font-bold text-primary">
-                              {roleMatch}% Match
-                            </span>
-                            <span className="block text-[10px] text-muted-foreground mt-0.5">
-                              CIR Avg {testAvg}%
-                            </span>
-                          </div>
-
-                          <button
-                            type="button"
-                            aria-label={`Bookmark ${cand.n}`}
-                            title={isBookmarked ? "Saved" : "Save candidate"}
-                            onClick={() => toggleBookmark(cand.n)}
-                            className={`inline-flex h-8 w-8 items-center justify-center rounded-lg border transition-colors cursor-pointer ${
-                              isBookmarked
-                                ? "border-amber-500/40 bg-amber-500/10 text-amber-600"
-                                : "border-border bg-background text-muted-foreground hover:text-foreground"
-                            }`}
-                          >
-                            <Bookmark
-                              className="w-3.5 h-3.5"
-                              fill={isBookmarked ? "currentColor" : "none"}
-                            />
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Row 2: Unified Skills with Assessment Scores (Single clean row) */}
-                      <div className="flex items-center justify-between gap-2 flex-wrap">
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          {cand.sk.map((s) => {
-                            const isMatched = matchedSkills.includes(s);
-                            const skillScore = cand.as[s];
-                            return (
-                              <span
-                                key={s}
-                                className={`px-2.5 py-1 rounded-md text-[11px] font-medium border inline-flex items-center gap-1.5 ${
-                                  isMatched
-                                    ? "border-primary/30 bg-primary/5 text-foreground"
-                                    : "border-border bg-muted/40 text-muted-foreground"
-                                }`}
-                              >
-                                {s}
-                                {skillScore !== undefined && (
-                                  <strong className="text-primary font-bold">{skillScore}%</strong>
-                                )}
-                              </span>
-                            );
-                          })}
-                        </div>
-
-                        {targetJob && (
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setExpandedFitCard((prev) => (prev === cand.n ? null : cand.n))
-                            }
-                            className="inline-flex items-center gap-1 text-[11px] font-semibold text-muted-foreground hover:text-primary cursor-pointer"
-                          >
-                            Job Fit
-                            {isExpanded ? (
-                              <ChevronUp className="w-3.5 h-3.5" />
-                            ) : (
-                              <ChevronDown className="w-3.5 h-3.5" />
-                            )}
-                          </button>
+                      <div
+                        className={cn(
+                          "flex flex-col justify-between gap-4 h-full",
+                          locked && "workspace-locked-blur"
                         )}
+                        {...(locked ? ({ inert: "" } as Record<string, string>) : {})}
+                      >
+                        {/* Row 1: Identity + Match Score */}
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex items-start gap-3.5 min-w-0">
+                            <img
+                              src={getCandidatePhoto(cand.n)}
+                              alt={cand.n}
+                              onClick={() =>
+                                onOpenDrawer({
+                                  type: "candidate",
+                                  name: cand.n,
+                                  jobId: targetJob?.id,
+                                })
+                              }
+                              className="w-12 h-12 rounded-xl object-cover shrink-0 border border-border cursor-pointer"
+                            />
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    onOpenDrawer({
+                                      type: "candidate",
+                                      name: cand.n,
+                                      jobId: targetJob?.id,
+                                    })
+                                  }
+                                  className="font-bold text-foreground text-base hover:text-primary transition-colors cursor-pointer"
+                                >
+                                  {cand.n}
+                                </button>
+                                <ShieldCheck
+                                  className="w-4 h-4 text-emerald-600 shrink-0"
+                                  aria-label="Verified CIR"
+                                />
+                                {existingApp && (
+                                  <span className="workspace-chip !px-2 !py-0.5 !text-[10px]">
+                                    {existingApp.st}
+                                  </span>
+                                )}
+                              </div>
+
+                              <p className="text-xs text-muted-foreground mt-0.5 truncate">
+                                {levelFromExp(cand.x)} {cand.sk[0]} Engineer
+                                {targetJob ? ` · Best fit: ${targetJob.t}` : ""}
+                              </p>
+
+                              <p className="text-xs text-muted-foreground mt-1.5 flex items-center gap-2 flex-wrap">
+                                <span>{cand.c} ({cand.wp})</span>
+                                <span>·</span>
+                                <span>{cand.x} yrs</span>
+                                <span>·</span>
+                                <span className="font-semibold text-foreground">₹{cand.es} LPA</span>
+                                <span>·</span>
+                                <span className="text-primary font-medium">
+                                  {cand.nt === 0 ? "Immediate" : `${cand.nt}d notice`}
+                                </span>
+                                {verifiedUnlocked ? (
+                                  <>
+                                    <span>·</span>
+                                    <span className="text-emerald-700 font-semibold">
+                                      {cand.n.toLowerCase().replace(/\s+/g, ".")}@talentcir.verified
+                                    </span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <span>·</span>
+                                    <span className="inline-flex items-center gap-1 text-muted-foreground">
+                                      <Lock className="w-3 h-3" aria-hidden="true" /> Contact locked
+                                    </span>
+                                  </>
+                                )}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Right: Clean Match Pill + Bookmark Icon */}
+                          <div className="flex items-center gap-2 shrink-0">
+                            <div className="text-right">
+                              <span className="inline-flex items-center rounded-lg bg-primary/10 px-2.5 py-1 text-xs font-bold text-primary">
+                                {roleMatch}% Match
+                              </span>
+                              <span className="block text-[10px] text-muted-foreground mt-0.5">
+                                CIR Avg {testAvg}%
+                              </span>
+                            </div>
+
+                            <button
+                              type="button"
+                              aria-label={`Bookmark ${cand.n}`}
+                              title={isBookmarked ? "Saved" : "Save candidate"}
+                              onClick={() => toggleBookmark(cand.n)}
+                              className={`inline-flex h-8 w-8 items-center justify-center rounded-lg border transition-colors cursor-pointer ${
+                                isBookmarked
+                                  ? "border-amber-500/40 bg-amber-500/10 text-amber-600"
+                                  : "border-border bg-background text-muted-foreground hover:text-foreground"
+                              }`}
+                            >
+                              <Bookmark
+                                className="w-3.5 h-3.5"
+                                fill={isBookmarked ? "currentColor" : "none"}
+                              />
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Row 2: Unified Skills with Assessment Scores (Single clean row) */}
+                        <div className="flex items-center justify-between gap-2 flex-wrap">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            {cand.sk.map((s) => {
+                              const isMatched = matchedSkills.includes(s);
+                              const skillScore = cand.as[s];
+                              return (
+                                <span
+                                  key={s}
+                                  className={`px-2.5 py-1 rounded-md text-[11px] font-medium border inline-flex items-center gap-1.5 ${
+                                    isMatched
+                                      ? "border-primary/30 bg-primary/5 text-foreground"
+                                      : "border-border bg-muted/40 text-muted-foreground"
+                                  }`}
+                                >
+                                  {s}
+                                  {skillScore !== undefined && (
+                                    <strong className="text-primary font-bold">{skillScore}%</strong>
+                                  )}
+                                </span>
+                              );
+                            })}
+                          </div>
+
+                          {targetJob && (
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setExpandedFitCard((prev) => (prev === cand.n ? null : cand.n))
+                              }
+                              className="inline-flex items-center gap-1 text-[11px] font-semibold text-muted-foreground hover:text-primary cursor-pointer"
+                            >
+                              Job Fit
+                              {isExpanded ? (
+                                <ChevronUp className="w-3.5 h-3.5" />
+                              ) : (
+                                <ChevronDown className="w-3.5 h-3.5" />
+                              )}
+                            </button>
+                          )}
+                        </div>
+
+                        {/* Optional Expandable Job Fit Breakdown (Hidden by default) */}
+                        {isExpanded && fitRows.length > 0 && (
+                          <div className="grid grid-cols-3 gap-2 rounded-xl border border-border bg-muted/20 p-3 text-xs">
+                            {fitRows.map((row) => (
+                              <div key={row.name} className="space-y-0.5">
+                                <div className="flex items-center justify-between text-[11px]">
+                                  <span className="text-muted-foreground">{row.name}</span>
+                                  <strong className="text-foreground">{row.score}%</strong>
+                                </div>
+                                <div className="h-1 w-full rounded-full bg-muted overflow-hidden">
+                                  <div
+                                    className="h-full rounded-full bg-primary"
+                                    style={{ width: `${Math.max(8, row.score)}%` }}
+                                  />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Row 3: Clean Action Footer */}
+                        <div className="pt-3 border-t border-border/60 flex items-center justify-between gap-2 text-xs">
+                          <div className="flex items-center gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-8 text-xs"
+                              onClick={() =>
+                                onOpenDrawer({
+                                  type: "candidate",
+                                  name: cand.n,
+                                  jobId: targetJob?.id,
+                                })
+                              }
+                            >
+                              View Profile
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-8 text-xs text-muted-foreground hover:text-foreground gap-1"
+                              onClick={() =>
+                                verifiedUnlocked
+                                  ? handleDownloadCandidateCir(cand)
+                                  : openWalletConfirmModal(cand)
+                              }
+                            >
+                              {verifiedUnlocked ? (
+                                <Download className="w-3.5 h-3.5" />
+                              ) : (
+                                <Lock className="w-3.5 h-3.5" />
+                              )}
+                              CIR PDF
+                            </Button>
+                            <label className="inline-flex items-center gap-1.5 px-2 py-1 text-xs text-muted-foreground hover:text-foreground cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={isCompared}
+                                onChange={() =>
+                                  updateCompareList(
+                                    isCompared
+                                      ? selectedTalentToCompare.filter((x) => x !== cand.n)
+                                      : [...selectedTalentToCompare, cand.n]
+                                  )
+                                }
+                                className="accent-primary"
+                              />
+                              Compare
+                            </label>
+                          </div>
+
+                          <Button
+                            size="sm"
+                            variant={currentStage === "Shortlisted" || existingApp ? "secondary" : "default"}
+                            className="h-8 text-xs gap-1.5"
+                            onClick={() =>
+                              handleMoveCandidateSourcing(cand, "Shortlisted")
+                            }
+                          >
+                            {existingApp || currentStage === "Shortlisted" ? (
+                              <>
+                                <Check className="w-3.5 h-3.5" /> Shortlisted
+                              </>
+                            ) : (
+                              <>
+                                <Send className="w-3.5 h-3.5" /> Shortlist
+                              </>
+                            )}
+                          </Button>
+                        </div>
                       </div>
 
-                      {/* Optional Expandable Job Fit Breakdown (Hidden by default) */}
-                      {isExpanded && fitRows.length > 0 && (
-                        <div className="grid grid-cols-3 gap-2 rounded-xl border border-border bg-muted/20 p-3 text-xs">
-                          {fitRows.map((row) => (
-                            <div key={row.name} className="space-y-0.5">
-                              <div className="flex items-center justify-between text-[11px]">
-                                <span className="text-muted-foreground">{row.name}</span>
-                                <strong className="text-foreground">{row.score}%</strong>
-                              </div>
-                              <div className="h-1 w-full rounded-full bg-muted overflow-hidden">
-                                <div
-                                  className="h-full rounded-full bg-primary"
-                                  style={{ width: `${Math.max(8, row.score)}%` }}
-                                />
-                              </div>
+                      {locked && (
+                        <div className="workspace-lock-overlay">
+                          <div className="workspace-lock-badge-card">
+                            <span className="workspace-icon !h-9 !w-9 rounded-full">
+                              <Lock size={16} aria-hidden="true" />
+                            </span>
+                            <div>
+                              <p className="text-xs font-bold text-foreground">Profile Locked</p>
+                              <p className="mt-0.5 text-[11px] text-muted-foreground leading-snug">
+                                Pay or deduct from Company Wallet to view candidate name &amp; full CIR details.
+                              </p>
                             </div>
-                          ))}
+                            <Button
+                              type="button"
+                              size="sm"
+                              className="h-8 text-xs gap-1.5"
+                              onClick={() => openWalletConfirmModal()}
+                            >
+                              <Lock className="w-3.5 h-3.5" aria-hidden="true" />
+                              Unlock Profile
+                            </Button>
+                          </div>
                         </div>
                       )}
-
-                      {/* Row 3: Clean Action Footer */}
-                      <div className="pt-3 border-t border-border/60 flex items-center justify-between gap-2 text-xs">
-                        <div className="flex items-center gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="h-8 text-xs"
-                            onClick={() =>
-                              onOpenDrawer({
-                                type: "candidate",
-                                name: cand.n,
-                                jobId: targetJob?.id,
-                              })
-                            }
-                          >
-                            View Profile
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="h-8 text-xs text-muted-foreground hover:text-foreground gap-1"
-                            onClick={() =>
-                              verifiedUnlocked
-                                ? handleDownloadCandidateCir(cand)
-                                : openWalletConfirmModal(cand)
-                            }
-                          >
-                            {verifiedUnlocked ? (
-                              <Download className="w-3.5 h-3.5" />
-                            ) : (
-                              <Lock className="w-3.5 h-3.5" />
-                            )}
-                            CIR PDF
-                          </Button>
-                          <label className="inline-flex items-center gap-1.5 px-2 py-1 text-xs text-muted-foreground hover:text-foreground cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={isCompared}
-                              onChange={() =>
-                                updateCompareList(
-                                  isCompared
-                                    ? selectedTalentToCompare.filter((x) => x !== cand.n)
-                                    : [...selectedTalentToCompare, cand.n]
-                                )
-                              }
-                              className="accent-primary"
-                            />
-                            Compare
-                          </label>
-                        </div>
-
-                        <Button
-                          size="sm"
-                          variant={currentStage === "Shortlisted" || existingApp ? "secondary" : "default"}
-                          className="h-8 text-xs gap-1.5"
-                          onClick={() =>
-                            handleMoveCandidateSourcing(cand, "Shortlisted")
-                          }
-                        >
-                          {existingApp || currentStage === "Shortlisted" ? (
-                            <>
-                              <Check className="w-3.5 h-3.5" /> Shortlisted
-                            </>
-                          ) : (
-                            <>
-                              <Send className="w-3.5 h-3.5" /> Shortlist
-                            </>
-                          )}
-                        </Button>
-                      </div>
                     </article>
                   );
                 })}
               </div>
             )}
+            {viewAllUnlockBanner}
           </div>
         )}
 
@@ -2048,7 +1989,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                         draggedCandName || e.dataTransfer.getData("text/plain");
                       setDraggedCandName(null);
                       const cand = CANDIDATES_SEED.find((c) => c.n === droppedName);
-                      if (cand) {
+                      if (cand && !isProfileLocked(cand.n)) {
                         handleMoveCandidateSourcing(cand, col.id);
                       }
                     }}
@@ -2080,10 +2021,73 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                         </div>
                       ) : (
                         colItems.map((cand) => {
+                          const locked = isProfileLocked(cand.n);
                           const targetJob = getBestJobForCandidate(cand);
                           const roleMatch = calcTalentScore(cand, targetJob);
                           const testAvg = avgCandidateScore(cand);
-                          const isDragging = draggedCandName === cand.n;
+                          const isDragging = !locked && draggedCandName === cand.n;
+
+                          if (locked) {
+                            return (
+                              <div
+                                key={cand.n}
+                                data-locked="true"
+                                className="workspace-candidate workspace-locked-card !cursor-default"
+                              >
+                                <div
+                                  className="workspace-locked-blur"
+                                  {...({ inert: "" } as Record<string, string>)}
+                                >
+                                  <div className="flex items-start gap-2.5">
+                                    <img src={getCandidatePhoto(cand.n)} alt={cand.n} />
+                                    <div className="min-w-0 flex-1">
+                                      <p className="text-xs font-bold leading-snug text-foreground break-words">
+                                        {cand.n}
+                                      </p>
+                                      <p className="mt-0.5 text-[10px] font-medium text-muted-foreground truncate">
+                                        Fit: {targetJob?.t || `${cand.sk[0]} Role`}
+                                      </p>
+                                      <div className="mt-2 flex flex-wrap items-center gap-1">
+                                        <span className="workspace-candidate-match">
+                                          {roleMatch}% match
+                                        </span>
+                                        <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
+                                          CIR {testAvg}%
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="mt-2.5 flex flex-wrap gap-1">
+                                    {cand.sk.slice(0, 3).map((sk) => (
+                                      <span
+                                        key={sk}
+                                        className="rounded border border-border/70 bg-muted/50 px-1.5 py-0.5 text-[10px] font-medium"
+                                      >
+                                        {sk}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                                <div className="workspace-lock-overlay workspace-lock-overlay--compact">
+                                  <div className="workspace-lock-badge-card">
+                                    <p className="text-[11px] font-bold text-foreground flex items-center gap-1">
+                                      <Lock size={12} aria-hidden="true" />
+                                      Locked Profile
+                                    </p>
+                                    <Button
+                                      type="button"
+                                      size="sm"
+                                      className="h-7 px-2.5 text-[11px] gap-1"
+                                      onClick={() => openWalletConfirmModal()}
+                                    >
+                                      <Lock className="w-3 h-3" aria-hidden="true" />
+                                      Unlock
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          }
 
                           return (
                             <div
@@ -2207,6 +2211,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                 );
               })}
             </div>
+            {viewAllUnlockBanner}
           </div>
         )}
 
@@ -2257,51 +2262,69 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                     ? filteredCandidates.filter((c) => selectedTalentToCompare.includes(c.n))
                     : filteredCandidates
                   ).map((cand) => {
+                    const locked = isProfileLocked(cand.n);
                     const bestJob = getBestJobForCandidate(cand);
                     const testAvg = avgCandidateScore(cand);
                     const stage = getCandidateStage(cand.n);
                     const roleCols = myJobs.length ? myJobs : jobs.slice(0, 3);
 
                     return (
-                      <tr key={cand.n} className="hover:bg-muted/30">
+                      <tr
+                        key={cand.n}
+                        data-locked={locked ? "true" : "false"}
+                        className="hover:bg-muted/30"
+                      >
                         <td className="px-4 py-3.5">
-                          <button
-                            type="button"
-                            onClick={() =>
-                              onOpenDrawer({
-                                type: "candidate",
-                                name: cand.n,
-                                jobId: bestJob?.id,
-                              })
-                            }
-                            className="flex items-center gap-3 text-left cursor-pointer group"
+                          <div
+                            className={cn(locked && "workspace-locked-blur")}
+                            {...(locked ? ({ inert: "" } as Record<string, string>) : {})}
                           >
-                            <img
-                              src={getCandidatePhoto(cand.n)}
-                              alt={cand.n}
-                              className="h-9 w-9 rounded-full object-cover border border-border"
-                            />
-                            <div>
-                              <span className="font-bold text-foreground group-hover:text-primary block">
-                                {cand.n}
-                              </span>
-                              <span className="text-[11px] text-muted-foreground">
-                                {cand.sk.join(", ")}
-                              </span>
-                            </div>
-                          </button>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                onOpenDrawer({
+                                  type: "candidate",
+                                  name: cand.n,
+                                  jobId: bestJob?.id,
+                                })
+                              }
+                              className="flex items-center gap-3 text-left cursor-pointer group"
+                            >
+                              <img
+                                src={getCandidatePhoto(cand.n)}
+                                alt={cand.n}
+                                className="h-9 w-9 rounded-full object-cover border border-border"
+                              />
+                              <div>
+                                <span className="font-bold text-foreground group-hover:text-primary block">
+                                  {cand.n}
+                                </span>
+                                <span className="text-[11px] text-muted-foreground">
+                                  {cand.sk.join(", ")}
+                                </span>
+                              </div>
+                            </button>
+                          </div>
                         </td>
                         <td className="px-3 py-3.5">
-                          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-bold text-emerald-700">
-                            <Star className="h-3 w-3" />
-                            {testAvg}%
-                          </span>
+                          <div
+                            className={cn(locked && "workspace-locked-blur")}
+                            {...(locked ? ({ inert: "" } as Record<string, string>) : {})}
+                          >
+                            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-bold text-emerald-700">
+                              <Star className="h-3 w-3" />
+                              {testAvg}%
+                            </span>
+                          </div>
                         </td>
                         {roleCols.map((j) => {
                           const score = calcTalentScore(cand, j);
                           return (
                             <td key={j.id} className="px-3 py-3.5">
-                              <div className="flex items-center gap-2">
+                              <div
+                                className={cn("flex items-center gap-2", locked && "workspace-locked-blur")}
+                                {...(locked ? ({ inert: "" } as Record<string, string>) : {})}
+                              >
                                 <span
                                   className={`font-bold ${
                                     score >= 80
@@ -2324,43 +2347,75 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                           );
                         })}
                         <td className="px-3 py-3.5">
-                          <span className="font-semibold">{cand.x} yrs</span> ({levelFromExp(cand.x)}
-                          )
-                          <span className="block text-[11px] text-muted-foreground">
-                            {cand.c} · {cand.wp}
-                          </span>
+                          <div
+                            className={cn(locked && "workspace-locked-blur")}
+                            {...(locked ? ({ inert: "" } as Record<string, string>) : {})}
+                          >
+                            <span className="font-semibold">{cand.x} yrs</span> ({levelFromExp(cand.x)}
+                            )
+                            <span className="block text-[11px] text-muted-foreground">
+                              {cand.c} · {cand.wp}
+                            </span>
+                          </div>
                         </td>
                         <td className="px-3 py-3.5">
-                          <span className="font-semibold text-foreground">₹{cand.es} LPA</span>
-                          <span className="block text-[11px] text-primary font-medium">
-                            {cand.nt === 0 ? "Immediate" : `${cand.nt}d notice`}
-                          </span>
+                          <div
+                            className={cn(locked && "workspace-locked-blur")}
+                            {...(locked ? ({ inert: "" } as Record<string, string>) : {})}
+                          >
+                            <span className="font-semibold text-foreground">₹{cand.es} LPA</span>
+                            <span className="block text-[11px] text-primary font-medium">
+                              {cand.nt === 0 ? "Immediate" : `${cand.nt}d notice`}
+                            </span>
+                          </div>
                         </td>
                         <td className="px-3 py-3.5">
-                          <span className="workspace-chip !px-2 !py-0.5 !text-[10px]">
-                            {stage}
-                          </span>
+                          <div
+                            className={cn(locked && "workspace-locked-blur")}
+                            {...(locked ? ({ inert: "" } as Record<string, string>) : {})}
+                          >
+                            <span className="workspace-chip !px-2 !py-0.5 !text-[10px]">
+                              {stage}
+                            </span>
+                          </div>
                         </td>
                         <td className="px-4 py-3.5 text-right">
-                          <div className="inline-flex items-center justify-end gap-1.5">
+                          {locked ? (
                             <Button
+                              type="button"
                               size="sm"
                               variant="outline"
-                              className="h-7 px-2 text-[11px]"
-                              onClick={() => handleDownloadCandidateCir(cand)}
+                              className="h-7 px-2.5 text-[11px] gap-1"
+                              onClick={() => openWalletConfirmModal()}
                             >
-                              CIR PDF
+                              <Lock className="h-3 w-3" aria-hidden="true" />
+                              Unlock
                             </Button>
-                            <Button
-                              size="sm"
-                              className="h-7 px-2.5 text-[11px]"
-                              onClick={() =>
-                                handleMoveCandidateSourcing(cand, "Shortlisted")
-                              }
-                            >
-                              Shortlist
-                            </Button>
-                          </div>
+                          ) : (
+                            <div className="inline-flex items-center justify-end gap-1.5">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-7 px-2 text-[11px]"
+                                onClick={() =>
+                                  verifiedUnlocked
+                                    ? handleDownloadCandidateCir(cand)
+                                    : openWalletConfirmModal(cand)
+                                }
+                              >
+                                CIR PDF
+                              </Button>
+                              <Button
+                                size="sm"
+                                className="h-7 px-2.5 text-[11px]"
+                                onClick={() =>
+                                  handleMoveCandidateSourcing(cand, "Shortlisted")
+                                }
+                              >
+                                Shortlist
+                              </Button>
+                            </div>
+                          )}
                         </td>
                       </tr>
                     );
@@ -2368,6 +2423,7 @@ export const ProEmployerViews: React.FC<ProEmployerViewsProps> = ({
                 </tbody>
               </table>
             </div>
+            {lockedCount > 0 && <div className="p-4 border-t border-border">{viewAllUnlockBanner}</div>}
           </div>
         )}
       </div>
