@@ -8,8 +8,15 @@ const ats = vi.hoisted(() => ({
   listApplications: vi.fn(),
   getApplication: vi.fn(),
   changeStage: vi.fn(),
+  bulkChangeStage: vi.fn(),
+  markApplicationHired: vi.fn(),
   releaseHold: vi.fn(),
   saveApplicationNote: vi.fn(),
+  listTenantRecruiters: vi.fn(),
+  assignRecruiter: vi.fn(),
+  setApplicationWorkflowFlags: vi.fn(),
+  compareApplications: vi.fn(),
+  exportApplications: vi.fn(),
   getPublishReadiness: vi.fn(),
   listEmployerNotifications: vi.fn(),
   markNotificationActed: vi.fn(),
@@ -25,16 +32,19 @@ const talent = vi.hoisted(() => ({
 const jobs = vi.hoisted(() => ({
   listMyJobs: vi.fn(), createJob: vi.fn(), updateJob: vi.fn(), publishJob: vi.fn(), pauseJob: vi.fn(), resumeJob: vi.fn(),
   closeJob: vi.fn(), deleteJob: vi.fn(), duplicateJob: vi.fn(), getJobForEdit: vi.fn(),
+  scheduleJobPublish: vi.fn(), renewJob: vi.fn(), promoteJob: vi.fn(),
+  checkDuplicateJobs: vi.fn(), getSalaryBenchmark: vi.fn(), getCompetitorJobAnalysis: vi.fn(), generateJobAiAssist: vi.fn(),
 }));
 const cirPdf = vi.hoisted(() => ({ downloadCirPdf: vi.fn() }));
 
 vi.mock("@/services/employer/ats", async (orig) => ({ ...(await orig<typeof import("@/services/employer/ats")>()), ...ats }));
 vi.mock("@/services/employer/talent", async (orig) => ({ ...(await orig<typeof import("@/services/employer/talent")>()), ...talent }));
-vi.mock("@/services/employer/jobs", () => jobs);
+vi.mock("@/services/employer/jobs", async (orig) => ({ ...(await orig<typeof import("@/services/employer/jobs")>()), ...jobs }));
 vi.mock("@/lib/cirPdf", () => cirPdf);
 vi.mock("@/services/candidate/wallet", () => ({ createOrder: vi.fn(), payWithRazorpay: vi.fn() }));
 vi.mock("@/integrations/supabase/client", () => ({ supabase: { storage: { from: () => ({}) }, auth: {} } }));
 
+import { MemoryRouter } from "react-router-dom";
 import { EmployerOverview } from "@/components/pro/employer/EmployerOverview";
 import { EmployerApplicantDetail } from "@/components/pro/employer/EmployerApplicantDetail";
 import { EmployerPipeline } from "@/components/pro/employer/EmployerPipeline";
@@ -44,6 +54,8 @@ import { EmployerJobs } from "@/components/pro/employer/EmployerJobs";
 import { CompanyProfileView } from "@/components/company/CompanyProfileView";
 import { ProEmployerViews } from "@/components/pro/ProEmployerViews";
 import { ProEmployerCommandCentre } from "@/components/pro/ProEmployerCommandCentre";
+import { ProEmployerJobPosting } from "@/components/pro/ProEmployerJobPosting";
+import { ProEmployerPipeline } from "@/components/pro/ProEmployerPipeline";
 import { DEFAULT_USERS } from "@/data/proData";
 import { DEMO_EMPLOYER_JOBS, DEMO_EMPLOYER_APPS, INITIAL_EMPLOYER_DEMO } from "@/data/employerDemo";
 
@@ -77,6 +89,8 @@ beforeEach(() => {
   ats.getOverview.mockResolvedValue(overview);
   ats.listActivity.mockResolvedValue([{ id: 1, at: new Date().toISOString(), action: "job.publish", entity: "employer_job_openings", entity_id: "j1", meta: { title: "Frontend Engineer" }, actor: "Owner" }]);
   ats.getPublishReadiness.mockResolvedValue({ ready: true, completion: 100, missing: [] });
+  ats.listTenantRecruiters.mockResolvedValue([{ user_id: "r1", role: "recruiter", name: "Ananya Rao", email: "ananya@apex.dev" }]);
+  jobs.checkDuplicateJobs.mockResolvedValue({ has_duplicates: false, matches: [] });
 });
 
 describe("navigation", () => {
@@ -545,5 +559,267 @@ describe("Find Talent Wallet Bento & Employer Command Centre", () => {
       />,
     );
     expect(screen.getByText(/Close the Right Talent\. Faster\./i)).toBeInTheDocument();
+  });
+});
+
+describe("2. Job Management & 3. Job Applications Management (Live & Demo)", () => {
+  it("renders Section 2 Job Management with AI Co-Pilot, benchmarks, competitor analysis, duplicate detection, and renewal", async () => {
+    jobs.listMyJobs.mockResolvedValue([
+      {
+        id: "j-closed",
+        designation: "Cloud Architect",
+        status: "closed",
+        work_mode: "Remote",
+        job_type: "Full-time",
+        job_location: "Bengaluru",
+        city: "Bengaluru",
+        country: "India",
+        industry: "Cloud",
+        department: "Platform",
+        job_function: "Architecture",
+        skills: ["AWS"],
+        views_count: 200,
+        applications_count: 15,
+        conversion_rate: 7.5,
+        is_featured: true,
+        is_sponsored: false,
+        published_at: "2026-10-01T00:00:00Z",
+        closes_at: "2026-10-31T00:00:00Z",
+        created_at: "2026-10-01T00:00:00Z",
+        moderation_note: null,
+        salary_min: 30,
+        salary_max: 45,
+      },
+    ]);
+    jobs.renewJob.mockResolvedValue({ id: "j-closed", status: "active" });
+    jobs.generateJobAiAssist.mockResolvedValue({
+      job_description: "Generated enterprise cloud architect job description with full ownership.",
+      responsibilities: "Own cloud architecture",
+      qualifications: "B.Tech CS",
+      requirements: "5+ yrs AWS",
+      benefits: ["Health Insurance"],
+      suggested_skills: ["AWS", "Terraform", "Kubernetes"],
+    });
+    jobs.getSalaryBenchmark.mockResolvedValue({
+      min_lpa: 28,
+      median_lpa: 35,
+      max_lpa: 42,
+      sample_size: 14,
+      currency: "INR",
+      location_factor: 1.1,
+    });
+    jobs.getCompetitorJobAnalysis.mockResolvedValue({
+      competing_openings: 12,
+      active_employers: 7,
+      avg_salary_min: 26,
+      avg_salary_max: 40,
+      remote_share_pct: 40,
+      hybrid_share_pct: 60,
+      top_skills: ["AWS"],
+      demand_level: "High",
+    });
+    jobs.checkDuplicateJobs.mockResolvedValue({
+      has_duplicates: true,
+      matches: [{ id: "j-closed", designation: "Cloud Architect", status: "closed", job_location: "Bengaluru", similarity_pct: 92 }],
+    });
+
+    render(<EmployerJobs companyName="Apex" searchParams={params("new=1")} onNavigate={navigate} onToast={toast} />);
+    expect(await screen.findByText("Manage Every Opportunity. From Posting to Placement.")).toBeInTheDocument();
+    expect(screen.getAllByText("7.5%").length).toBeGreaterThan(0);
+
+    const titleInput = await screen.findByPlaceholderText("Senior React Developer");
+    fireEvent.change(titleInput, { target: { value: "Cloud Architect" } });
+    expect(await screen.findByText(/Duplicate Job Detection/i)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /AI JD Generator/i }));
+    await waitFor(() => expect(jobs.generateJobAiAssist).toHaveBeenCalled());
+
+    fireEvent.click(screen.getByRole("button", { name: /Salary Benchmark/i }));
+    expect(await screen.findByText(/Median ₹35 LPA/i)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /Competitor Analysis/i }));
+    expect(await screen.findByText(/12 openings across 7 employers/i)).toBeInTheDocument();
+  });
+
+  it("renders Section 3 Job Applications Management with all 11 buckets, bulk shortlist/reject, notes, recruiter assignment, and comparison", async () => {
+    jobs.listMyJobs.mockResolvedValue([{ id: "j1", designation: "Senior React Developer" }]);
+    ats.listApplications.mockResolvedValue({
+      total: 2,
+      counts: { Applied: 2 },
+      buckets: {
+        all: 2,
+        new: 2,
+        ai_screened: 2,
+        shortlisted: 0,
+        rejected: 0,
+        on_hold: 0,
+        interview_scheduled: 0,
+        assessment_pending: 1,
+        assessment_completed: 1,
+        offer_released: 0,
+        hired: 0,
+      },
+      items: [
+        {
+          id: "a1",
+          job_id: "j1",
+          job_title: "Senior React Developer",
+          candidate_id: "c1",
+          name: "Divya Nair",
+          headline: "Frontend Lead",
+          experience_years: 5,
+          skills: ["React", "TypeScript"],
+          stage: "Applied",
+          match_score: 91,
+          cir_score: 86,
+          ai_screened: true,
+          assessment_status: "completed",
+          assigned_recruiter_name: "Ananya Rao",
+          recruiter_note: "Strong architecture round.",
+          cover_note: null,
+          applied_at: new Date().toISOString(),
+          stage_changed_at: new Date().toISOString(),
+          days_in_stage: 0,
+          talent_cir_id: "IAT-1",
+          photo_url: null,
+          verified: true,
+        },
+        {
+          id: "a2",
+          job_id: "j1",
+          job_title: "Senior React Developer",
+          candidate_id: "c2",
+          name: "Rahul Mehta",
+          headline: "React Engineer",
+          experience_years: 3,
+          skills: ["React"],
+          stage: "Applied",
+          match_score: 78,
+          cir_score: null,
+          ai_screened: true,
+          assessment_status: "pending",
+          assigned_recruiter_name: null,
+          recruiter_note: null,
+          cover_note: null,
+          applied_at: new Date().toISOString(),
+          stage_changed_at: new Date().toISOString(),
+          days_in_stage: 0,
+          talent_cir_id: "IAT-2",
+          photo_url: null,
+          verified: false,
+        },
+      ],
+    });
+    ats.bulkChangeStage.mockResolvedValue({ updated: 2, stage: "Shortlisted" });
+    ats.compareApplications.mockResolvedValue([
+      {
+        id: "a1",
+        job_id: "j1",
+        job_title: "Senior React Developer",
+        candidate_id: "c1",
+        name: "Divya Nair",
+        headline: "Frontend Lead",
+        city: "Pune",
+        experience_years: 5,
+        skills: ["React", "TypeScript"],
+        certifications: [],
+        verified: true,
+        photo_url: null,
+        talent_cir_id: "IAT-1",
+        stage: "Applied",
+        is_hired: false,
+        offer_released: false,
+        assessment_status: "completed",
+        ai_screened: true,
+        match_score: 91,
+        cir_score: 86,
+        cir_tier: "Gold",
+        readiness_score: 86,
+        assigned_recruiter_name: "Ananya Rao",
+        recruiter_note: "Strong architecture round.",
+        interview_count: 0,
+        applied_at: new Date().toISOString(),
+      },
+      {
+        id: "a2",
+        job_id: "j1",
+        job_title: "Senior React Developer",
+        candidate_id: "c2",
+        name: "Rahul Mehta",
+        headline: "React Engineer",
+        city: "Mumbai",
+        experience_years: 3,
+        skills: ["React"],
+        certifications: [],
+        verified: false,
+        photo_url: null,
+        talent_cir_id: "IAT-2",
+        stage: "Applied",
+        is_hired: false,
+        offer_released: false,
+        assessment_status: "pending",
+        ai_screened: true,
+        match_score: 78,
+        cir_score: null,
+        cir_tier: null,
+        readiness_score: 78,
+        assigned_recruiter_name: null,
+        recruiter_note: null,
+        interview_count: 0,
+        applied_at: new Date().toISOString(),
+      },
+    ]);
+
+    render(<EmployerPipeline searchParams={params()} onNavigate={navigate} onToast={toast} />);
+    expect(await screen.findByText("Every Application. Every Candidate. Every Hiring Decision.")).toBeInTheDocument();
+
+    const tablist = screen.getByRole("tablist", { name: "Application views" });
+    expect(within(tablist).getAllByRole("tab")).toHaveLength(11);
+
+    // Select both candidates and verify Bulk Shortlist & Candidate Comparison
+    fireEvent.click(screen.getByLabelText("Select Divya Nair"));
+    fireEvent.click(screen.getByLabelText("Select Rahul Mehta"));
+
+    fireEvent.click(screen.getByRole("button", { name: /Compare selected \(2\)/i }));
+    expect(await screen.findByRole("region", { name: "Candidate comparison table" })).toBeInTheDocument();
+    fireEvent.keyDown(document, { key: "Escape" });
+
+    fireEvent.click(screen.getByRole("button", { name: /Bulk Shortlist/i }));
+    await waitFor(() => expect(ats.bulkChangeStage).toHaveBeenCalledWith(["a1", "a2"], "Shortlisted"));
+  });
+
+  it("renders Demo ProEmployerJobPosting and ProEmployerPipeline with full Section 2 & Section 3 parity", () => {
+    const employerUser = DEFAULT_USERS["demo.employer@talento.app"];
+    const onSaveJob = vi.fn();
+    const { unmount } = render(
+      <ProEmployerJobPosting
+        user={employerUser}
+        jobs={DEMO_EMPLOYER_JOBS}
+        applications={DEMO_EMPLOYER_APPS}
+        onPublishJob={vi.fn()}
+        onSaveJob={onSaveJob}
+        onToast={toast}
+      />,
+    );
+    expect(screen.getByText("Manage Every Opportunity. From Posting to Placement.")).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "Manage job posts table" })).toBeInTheDocument();
+    unmount();
+
+    const onBulkUpdateStage = vi.fn();
+    render(
+      <MemoryRouter>
+        <ProEmployerPipeline
+          user={employerUser}
+          jobs={DEMO_EMPLOYER_JOBS}
+          applications={DEMO_EMPLOYER_APPS}
+          onOpenDrawer={vi.fn()}
+          onBulkUpdateStage={onBulkUpdateStage}
+          onBulkSendReview={vi.fn()}
+          onToast={toast}
+        />
+      </MemoryRouter>,
+    );
+    expect(screen.getByText("Every Application. Every Candidate. Every Hiring Decision.")).toBeInTheDocument();
+    expect(within(screen.getByRole("tablist", { name: "Application views" })).getAllByRole("tab")).toHaveLength(11);
   });
 });

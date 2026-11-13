@@ -210,12 +210,39 @@ dialog.workspace-native-dialog::backdrop {
   --stage-border: #fcd34d;
   --stage-ink: #b45309;
 }
+.employer-workspace [data-stage-theme="Hired"] {
+  --stage-accent: #047857;
+  --stage-bg: #ecfdf5;
+  --stage-tint: #d1fae5;
+  --stage-border: #34d399;
+  --stage-ink: #065f46;
+}
 .employer-workspace [data-stage-theme="Rejected"] {
   --stage-accent: #e11d48;
   --stage-bg: #fff1f2;
   --stage-tint: #ffe4e6;
   --stage-border: #fda4af;
   --stage-ink: #be123c;
+}
+
+/* Keyboard-Scrollable Responsive Data Table Wrapper & Sticky Header (Modern Web Guidance: responsive-table) */
+.employer-workspace .workspace-table-scroll {
+  overflow-x: auto;
+  max-inline-size: 100%;
+  container-type: inline-size;
+}
+.employer-workspace .workspace-table-scroll:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: -2px;
+}
+.employer-workspace .workspace-table-scroll table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.employer-workspace .workspace-table-scroll thead {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
 }
 
 .employer-workspace .workspace-stats { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:14px; margin-bottom:20px; }

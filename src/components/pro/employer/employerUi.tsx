@@ -11,6 +11,7 @@ const STAGE_TONE: Record<string, string> = {
   Interview: "bg-primary/15 text-primary",
   "On Hold": "bg-warning/15 text-warning",
   Offer: "bg-success/15 text-success",
+  Hired: "bg-success/20 text-success",
   Rejected: "bg-destructive/10 text-destructive",
   Withdrawn: "bg-muted text-muted-foreground",
 };
@@ -25,6 +26,7 @@ export function StageBadge({ stage, className }: { stage: string; className?: st
 
 const JOB_TONE: Record<string, string> = {
   active: "bg-success/10 text-success",
+  scheduled: "bg-primary/15 text-primary",
   draft: "bg-muted text-muted-foreground",
   paused: "bg-warning/15 text-warning",
   pending_review: "bg-primary/10 text-primary",
@@ -33,7 +35,14 @@ const JOB_TONE: Record<string, string> = {
   rejected: "bg-destructive/10 text-destructive",
 };
 export const JOB_STATUS_LABEL: Record<string, string> = {
-  active: "Active", draft: "Draft", paused: "Paused", pending_review: "In review", closed: "Closed", expired: "Expired", rejected: "Rejected",
+  active: "Active",
+  scheduled: "Scheduled",
+  draft: "Draft",
+  paused: "Paused",
+  pending_review: "In review",
+  closed: "Closed",
+  expired: "Expired",
+  rejected: "Rejected",
 };
 
 export function JobStatusBadge({ status }: { status: string }) {
@@ -123,12 +132,18 @@ const ACTION_LABEL: Record<string, string> = {
   "job.create": "Job created",
   "job.update": "Job edited",
   "job.publish": "Job published",
+  "job.schedule": "Job scheduled",
   "job.pause": "Job unpublished",
   "job.resume": "Job activated",
+  "job.renew": "Job renewed",
+  "job.promote": "Job promoted",
   "job.close": "Job closed",
   "job.duplicate": "Job duplicated",
   "job.delete": "Job deleted",
   "application.stage_change": "Candidate status changed",
+  "application.hired": "Candidate hired",
+  "application.assign_recruiter": "Recruiter assigned",
+  "application.export": "Applications exported",
   "talent.unlock": "Talent access purchased",
   "cir.unlock": "CIR report opened",
   "settings.update": "Settings updated",
@@ -140,6 +155,12 @@ export function describeActivity(a: { action: string; meta: Record<string, unkno
   if (a.action === "application.stage_change") {
     const to = STAGE_LABEL[String(m.to)] ?? String(m.to ?? "");
     return { title, detail: `${m.name ?? "Candidate"} moved to ${to}${m.job ? ` · ${m.job}` : ""}` };
+  }
+  if (a.action === "application.hired") {
+    return { title, detail: `${m.name ?? "Candidate"}${m.job ? ` · ${m.job}` : ""}` };
+  }
+  if (a.action === "application.assign_recruiter") {
+    return { title, detail: `${m.name ?? "Candidate"} → ${m.recruiter ?? "Unassigned"}` };
   }
   if (a.action.startsWith("job.") && m.title) return { title, detail: String(m.title) };
   if (a.action === "job.close" && m.reason) return { title, detail: String(m.reason) };

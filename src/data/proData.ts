@@ -5,13 +5,33 @@ export interface ProJob {
   c: string; // company
   l: string; // location
   m: "Remote" | "Hybrid" | "Onsite"; // work mode
-  ty: "Full-time" | "Internship" | "Contract"; // type
+  ty: "Full-time" | "Part-time" | "Internship" | "Contract"; // type
   e: number; // min exp yrs
   a: number; // salary min LPA
   b: number; // salary max LPA
   sk: string[]; // skills
   at: number; // timestamp
   by: string; // author email
+  // Extended Section 2: Job Management fields
+  qualifications?: string;
+  responsibilities?: string;
+  benefits?: string[];
+  requirements?: string;
+  industry?: string;
+  department?: string;
+  jobFunction?: string;
+  city?: string;
+  country?: string;
+  status?: "active" | "draft" | "scheduled" | "paused" | "closed" | "expired";
+  scheduledAt?: string;
+  closesAt?: string;
+  autoClose?: boolean;
+  expiryReminderDays?: number;
+  featured?: boolean;
+  sponsored?: boolean;
+  promotionTier?: "none" | "featured" | "sponsored";
+  views?: number;
+  salaryVisible?: boolean;
 }
 
 export interface ProCandidate {
@@ -35,13 +55,21 @@ export interface ProApplication {
   sk: string[];
   ce?: string[];
   as?: Record<string, number>;
-  st: "Applied" | "Shortlisted" | "Interview" | "Offer" | "Rejected";
+  st: "Applied" | "Shortlisted" | "Interview" | "On Hold" | "Offer" | "Rejected";
   at: number;
   cn?: string; // cover note
   note?: string; // recruiter private note
   iv?: string; // interview date
   vw?: number; // viewed
   upd?: { msg: string; at: number; auto?: boolean }[];
+  // Extended Section 3: Job Applications Management fields
+  recruiter?: string;
+  aiScreened?: boolean;
+  assessmentStatus?: "none" | "pending" | "completed";
+  offerReleased?: boolean;
+  hired?: boolean;
+  hiredAt?: number;
+  resumeUrl?: string;
 }
 
 export interface ProUser {
@@ -136,6 +164,7 @@ export interface ProUser {
 
 export const D_MS = 86400000;
 export const STAGES = ["Applied", "Shortlisted", "Interview", "Offer", "Rejected"] as const;
+export const EMPLOYER_STAGES = ["Applied", "Shortlisted", "Interview", "On Hold", "Offer", "Rejected"] as const;
 
 export const SEED_JOBS_RAW: [string, string, string, "Remote" | "Hybrid" | "Onsite", "Full-time" | "Internship" | "Contract", number, number, number, string[], number][] = [
   ["Frontend Developer", "Zoho", "Chennai", "Hybrid", "Full-time", 1, 8, 14, ["React", "TypeScript", "CSS"], 2],

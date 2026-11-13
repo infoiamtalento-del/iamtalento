@@ -15,6 +15,7 @@ import {
   DEFAULT_APPS,
   CANDIDATES_SEED,
   STAGES,
+  EMPLOYER_STAGES,
 } from "@/data/proData";
 
 import { getCandidatePhoto } from "@/data/portalAssets";
@@ -733,7 +734,28 @@ const TalentoPro: React.FC = () => {
 
   // Applicant & Pipeline Actions (Employer)
   const handleUpdateApplicantStage = async (appId: number, stage: string) => {
-    const validStage = STAGES.find((value) => value === stage);
+    if (stage === "Hired") {
+      setApps((prev) =>
+        prev.map((a) =>
+          a.id === appId
+            ? {
+                ...a,
+                st: "Offer",
+                offerReleased: true,
+                hired: true,
+                hiredAt: Date.now(),
+                upd: [
+                  ...(a.upd || []),
+                  { msg: "Candidate marked as Hired.", at: Date.now() },
+                ],
+              }
+            : a
+        )
+      );
+      addToast("Applicant marked as Hired");
+      return;
+    }
+    const validStage = EMPLOYER_STAGES.find((value) => value === stage);
     if (!validStage) return;
     setApps((prev) =>
       prev.map((a) => {
@@ -741,6 +763,8 @@ const TalentoPro: React.FC = () => {
           return {
             ...a,
             st: validStage,
+            offerReleased: validStage === "Offer" ? true : a.offerReleased,
+            hired: validStage === "Rejected" ? false : a.hired,
             upd: [
               ...(a.upd || []),
               {
@@ -874,7 +898,28 @@ const TalentoPro: React.FC = () => {
   };
 
   const handleBulkUpdateStage = (appIds: number[], stage: string) => {
-    const validStage = STAGES.find((value) => value === stage);
+    if (stage === "Hired") {
+      setApps((prev) =>
+        prev.map((a) =>
+          appIds.includes(a.id)
+            ? {
+                ...a,
+                st: "Offer",
+                offerReleased: true,
+                hired: true,
+                hiredAt: Date.now(),
+                upd: [
+                  ...(a.upd || []),
+                  { msg: "Candidate marked as Hired.", at: Date.now() },
+                ],
+              }
+            : a
+        )
+      );
+      addToast(`Marked ${appIds.length} applicant${appIds.length === 1 ? "" : "s"} as Hired`);
+      return;
+    }
+    const validStage = EMPLOYER_STAGES.find((value) => value === stage);
     if (!validStage) return;
     setApps((prev) =>
       prev.map((a) => {
@@ -882,6 +927,8 @@ const TalentoPro: React.FC = () => {
           return {
             ...a,
             st: validStage,
+            offerReleased: validStage === "Offer" ? true : a.offerReleased,
+            hired: validStage === "Rejected" ? false : a.hired,
             upd: [
               ...(a.upd || []),
               {
@@ -895,6 +942,25 @@ const TalentoPro: React.FC = () => {
       })
     );
     addToast(`Updated ${appIds.length} applicants to ${stage}`);
+  };
+
+  const handleUpdateDemoApplications = (
+    appIds: number[],
+    patch: Partial<ProApplication>,
+    logMessage?: string
+  ) => {
+    setApps((prev) =>
+      prev.map((a) => {
+        if (!appIds.includes(a.id)) return a;
+        return {
+          ...a,
+          ...patch,
+          upd: logMessage
+            ? [...(a.upd || []), { msg: logMessage, at: Date.now() }]
+            : a.upd,
+        };
+      })
+    );
   };
 
   const handleBulkSendReview = (appIds: number[]) => {
@@ -978,6 +1044,21 @@ const TalentoPro: React.FC = () => {
   const handleCloseJob = (jobId: number) => {
     setJobs((prev) => prev.filter((j) => j.id !== jobId));
     addToast("Job listing closed.");
+  };
+
+  const handleSaveOrUpdateDemoJob = (jobData: ProJob) => {
+    setJobs((prev) => {
+      const exists = prev.some((j) => j.id === jobData.id);
+      if (exists) {
+        return prev.map((j) => (j.id === jobData.id ? { ...j, ...jobData } : j));
+      }
+      return [jobData, ...prev];
+    });
+  };
+
+  const handleDeleteDemoJob = (jobId: number) => {
+    setJobs((prev) => prev.filter((j) => j.id !== jobId));
+    addToast("Job listing deleted.");
   };
 
   // Wallet updates
@@ -1295,7 +1376,18 @@ const TalentoPro: React.FC = () => {
             )}
 
             {effectiveView === "post" && !liveEmployer && (
-              <ProEmployerJobPosting user={currentUser} onPublishJob={handlePublishJob} onToast={addToast} />
+              <ProEmployerJobPosting
+                user={currentUser}
+                jobs={jobs}
+                applications={apps}
+                searchParams={searchParams}
+                onPublishJob={handlePublishJob}
+                onSaveJob={handleSaveOrUpdateDemoJob}
+                onDuplicateJob={handleDuplicateJob}
+                onDeleteJob={handleDeleteDemoJob}
+                onNavigate={navigateProView}
+                onToast={addToast}
+              />
             )}
 
             {effectiveView === "pipe" && !liveEmployer && (
@@ -1306,6 +1398,9 @@ const TalentoPro: React.FC = () => {
                 onOpenDrawer={openDrawer}
                 onBulkUpdateStage={handleBulkUpdateStage}
                 onBulkSendReview={handleBulkSendReview}
+                onUpdateApplications={handleUpdateDemoApplications}
+                onNavigate={navigateProView}
+                onToast={addToast}
               />
             )}
 
