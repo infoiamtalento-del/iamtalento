@@ -46,6 +46,8 @@ import ProjectsSection from "@/components/profile/sections/ProjectsSection";
 import CoursesSection from "@/components/profile/sections/CoursesSection";
 import AchievementsSection from "@/components/profile/sections/AchievementsSection";
 import VolunteerSection from "@/components/profile/sections/VolunteerSection";
+import { CharCount } from "@/components/profile/CharCount";
+import { PROFILE_CHAR_LIMITS, hasCustomExpertiseCards } from "@/components/profile/profileFormatters";
 import {
   loadFullLiveProfile,
   normalizeLiveProfile,
@@ -140,7 +142,9 @@ const ProfileBuilder = () => {
           video_pitch: n.videoPitch,
         });
 
-        const paddedCards = [...n.expertiseCards];
+        const paddedCards = hasCustomExpertiseCards(n.expertiseCards, n.industry, n.headline || n.jobRole)
+          ? [...n.expertiseCards]
+          : [];
         while (paddedCards.length < 4) paddedCards.push({ title: "", sub: "" });
         setExpertiseCards(paddedCards.slice(0, 4));
 
@@ -420,7 +424,7 @@ const ProfileBuilder = () => {
       </Helmet>
       <div className="min-h-screen bg-background">
         <header className="sticky top-0 z-20 border-b bg-card/80 backdrop-blur-sm">
-          <div className="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
+          <div className="container flex items-center justify-between py-3">
             <div className="flex items-center gap-3">
               <Link to="/" className="flex items-center gap-2">
                 <img src={siteLogo.url} alt={siteLogo.alt} className="h-10 w-auto object-contain" />
@@ -449,7 +453,7 @@ const ProfileBuilder = () => {
           </div>
         </header>
 
-        <div className="max-w-5xl mx-auto px-4 py-8">
+        <div className="container py-8">
           <div className="grid lg:grid-cols-[1fr_280px] gap-8">
             <div className="space-y-4">
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
@@ -471,6 +475,7 @@ const ProfileBuilder = () => {
                   userId={userId || ""}
                   fullName={profile.full_name || ""}
                   onChange={updateProfile}
+                  onShellStateSynced={setExistingShellState}
                 />
               </ProfileSection>
 
@@ -487,30 +492,45 @@ const ProfileBuilder = () => {
                     onChange={updateProfile}
                   />
                   <div className="pt-3 border-t space-y-3">
-                    <Label className="text-xs font-semibold text-foreground block">
-                      4 Core Expertise Highlight Cards (Displayed in About Me Panel)
-                    </Label>
+                    <div>
+                      <Label className="text-xs font-semibold text-foreground block">
+                        4 Core Spotlight Cards (Optional — Displayed in About Me Panel)
+                      </Label>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Leave blank to auto-curate smart highlights from your role, skills &amp; tools.
+                      </p>
+                    </div>
                     <div className="grid sm:grid-cols-2 gap-3">
                       {expertiseCards.map((card, idx) => (
                         <div key={idx} className="rounded-lg border p-3 space-y-2 bg-muted/20">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-[11px] font-medium text-muted-foreground">Card {idx + 1} Title</span>
+                            <CharCount value={card.title} max={PROFILE_CHAR_LIMITS.expertiseTitle} />
+                          </div>
                           <Input
+                            maxLength={PROFILE_CHAR_LIMITS.expertiseTitle}
                             value={card.title}
                             onChange={(e) => {
                               const next = [...expertiseCards];
                               next[idx] = { ...next[idx], title: e.target.value };
                               setExpertiseCards(next);
                             }}
-                            placeholder={`Card ${idx + 1} Title (e.g. Cloud Architecture)`}
+                            placeholder={`Highlight ${idx + 1} (e.g. Performance Marketing)`}
                             className="h-8 text-xs"
                           />
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-[11px] text-muted-foreground">Subtitle</span>
+                            <CharCount value={card.sub} max={PROFILE_CHAR_LIMITS.expertiseSub} />
+                          </div>
                           <Input
+                            maxLength={PROFILE_CHAR_LIMITS.expertiseSub}
                             value={card.sub}
                             onChange={(e) => {
                               const next = [...expertiseCards];
                               next[idx] = { ...next[idx], sub: e.target.value };
                               setExpertiseCards(next);
                             }}
-                            placeholder="Subtitle (e.g. AWS, Docker & K8s)"
+                            placeholder="Short proof point (e.g. Multi-channel ROI growth)"
                             className="h-8 text-xs"
                           />
                         </div>
@@ -549,6 +569,7 @@ const ProfileBuilder = () => {
                   {languages.map((lang, idx) => (
                     <div key={idx} className="flex items-center gap-2">
                       <Input
+                        maxLength={PROFILE_CHAR_LIMITS.languageName}
                         value={lang.name}
                         onChange={(e) => {
                           const next = [...languages];
@@ -559,6 +580,7 @@ const ProfileBuilder = () => {
                         className="h-9 text-sm flex-1"
                       />
                       <Input
+                        maxLength={PROFILE_CHAR_LIMITS.languageLevel}
                         value={lang.level}
                         onChange={(e) => {
                           const next = [...languages];

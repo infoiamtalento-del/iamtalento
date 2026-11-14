@@ -6,6 +6,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Plus, Trash2, Building2, Calendar } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { CharCount } from "@/components/profile/CharCount";
+import { PROFILE_CHAR_LIMITS } from "@/components/profile/profileFormatters";
 
 interface Experience {
   id?: string;
@@ -77,38 +79,48 @@ const ExperienceSection = ({ experiences, onChange }: Props) => {
               <div className="space-y-3">
                 <div className="grid sm:grid-cols-2 gap-3">
                   <div>
-                    <Label className="text-xs text-muted-foreground">Job Title *</Label>
+                    <div className="flex items-center justify-between gap-2">
+                      <Label className="text-xs text-muted-foreground">Job Title *</Label>
+                      <CharCount value={exp.job_title} max={PROFILE_CHAR_LIMITS.expTitle} />
+                    </div>
                     <Input
+                      maxLength={PROFILE_CHAR_LIMITS.expTitle}
                       value={exp.job_title}
                       onChange={(e) => updateExperience(i, "job_title", e.target.value)}
-                      placeholder="e.g. Senior Software Engineer"
+                      placeholder="e.g. Digital Marketing Executive or Senior Engineer"
                       className="mt-1 h-9 text-sm"
                     />
                   </div>
                   <div>
-                    <Label className="text-xs text-muted-foreground">Company *</Label>
+                    <div className="flex items-center justify-between gap-2">
+                      <Label className="text-xs text-muted-foreground">Company *</Label>
+                      <CharCount value={exp.company_name} max={PROFILE_CHAR_LIMITS.expCompany} />
+                    </div>
                     <Input
+                      maxLength={PROFILE_CHAR_LIMITS.expCompany}
                       value={exp.company_name}
                       onChange={(e) => updateExperience(i, "company_name", e.target.value)}
-                      placeholder="e.g. Google"
+                      placeholder="e.g. Acme Corp"
                       className="mt-1 h-9 text-sm"
                     />
                   </div>
                   <div>
                     <Label className="text-xs text-muted-foreground">Location</Label>
                     <Input
+                      maxLength={PROFILE_CHAR_LIMITS.expLocation}
                       value={exp.location}
                       onChange={(e) => updateExperience(i, "location", e.target.value)}
-                      placeholder="e.g. Bengaluru, India"
+                      placeholder="e.g. Chennai, India"
                       className="mt-1 h-9 text-sm"
                     />
                   </div>
                   <div>
                     <Label className="text-xs text-muted-foreground">Employment Type</Label>
                     <Input
+                      maxLength={35}
                       value={exp.employment_type}
                       onChange={(e) => updateExperience(i, "employment_type", e.target.value)}
-                      placeholder="e.g. Full-time"
+                      placeholder="e.g. Full-time or Internship"
                       className="mt-1 h-9 text-sm"
                     />
                   </div>
@@ -162,11 +174,17 @@ const ExperienceSection = ({ experiences, onChange }: Props) => {
                   />
                 </div>
                 <div>
-                  <Label className="text-xs text-muted-foreground">Description</Label>
+                  <div className="flex items-center justify-between gap-2">
+                    <Label className="text-xs text-muted-foreground">
+                      Description (start lines with &quot;- &quot; for clean bullet points)
+                    </Label>
+                    <CharCount value={exp.description} max={PROFILE_CHAR_LIMITS.expDescription} />
+                  </div>
                   <Textarea
+                    maxLength={PROFILE_CHAR_LIMITS.expDescription}
                     value={exp.description}
                     onChange={(e) => updateExperience(i, "description", e.target.value)}
-                    placeholder="Key responsibilities & achievements..."
+                    placeholder="- Key responsibilities & measurable achievements..."
                     className="mt-1 min-h-[80px] text-sm"
                   />
                 </div>

@@ -69,7 +69,7 @@ import { DEMO_EMPLOYER_JOBS, DEMO_EMPLOYER_APPS, INITIAL_EMPLOYER_DEMO, createDe
 import { useCandidateBackend, backendErrorMessage } from "@/hooks/useCandidateBackend";
 import { createOrder, payWithRazorpay } from "@/services/candidate/wallet";
 import { rpc, db } from "@/services/db";
-import { fromProUser, loadLiveProfile, saveLiveProfile, toProUser } from "@/services/candidate/profile";
+import { fromProUser, loadFullLiveProfile, saveLiveProfile, toProUser } from "@/services/candidate/profile";
 import { getEmployerProfile, saveEmployerProfile } from "@/services/employer/profile";
 import { createJob, publishJob } from "@/services/employer/jobs";
 import { EmployerOverview } from "@/components/pro/employer/EmployerOverview";
@@ -319,6 +319,8 @@ const TalentoPro: React.FC = () => {
   }, [refreshLiveUnread, activeView]);
   const [liveBooting, setLiveBooting] = useState(false);
   const lastSavedProfile = useRef("");
+  const pendingShellSaveRef = useRef(false);
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const sessionEmailRef = useRef(sessionEmail);
   sessionEmailRef.current = sessionEmail;
   const usersRef = useRef(users);
@@ -369,10 +371,11 @@ const TalentoPro: React.FC = () => {
           }
           return;
         }
-        const live = await loadLiveProfile();
+        const live = await loadFullLiveProfile();
         if (!alive || !live) return;
         const email = live.profile.email || `${backend.userId}@live.local`;
         const user = toProUser(live, usersRef.current[email]);
+        pendingShellSaveRef.current = false;
         lastSavedProfile.current = JSON.stringify(fromProUser(user));
         setUsers((prev) => ({ ...prev, [email]: user }));
         setLiveEmail(email);
@@ -392,8 +395,13 @@ const TalentoPro: React.FC = () => {
 
   const reloadLiveCandidate = useCallback(async () => {
     if (!backend.userId || demoOnly) return;
+    if (saveTimerRef.current) {
+      clearTimeout(saveTimerRef.current);
+      saveTimerRef.current = null;
+    }
+    pendingShellSaveRef.current = false;
     try {
-      const live = await loadLiveProfile();
+      const live = await loadFullLiveProfile();
       if (!live) return;
       const email = live.profile.email || `${backend.userId}@live.local`;
       const user = toProUser(live, usersRef.current[email]);
@@ -406,18 +414,28 @@ const TalentoPro: React.FC = () => {
 
   useEffect(() => {
     if (!liveEmail || sessionEmail !== liveEmail) return;
+    if (!pendingShellSaveRef.current) return;
     const user = users[liveEmail];
     if (!user) return;
     const payload = JSON.stringify(fromProUser(user));
-    if (payload === lastSavedProfile.current) return;
+    if (payload === lastSavedProfile.current) {
+      pendingShellSaveRef.current = false;
+      return;
+    }
     const timer = setTimeout(() => {
+      saveTimerRef.current = null;
+      pendingShellSaveRef.current = false;
       lastSavedProfile.current = payload;
       saveLiveProfile(user).catch((e) => {
         lastSavedProfile.current = "";
         addToast(backendErrorMessage(e));
       });
     }, 1200);
-    return () => clearTimeout(timer);
+    saveTimerRef.current = timer;
+    return () => {
+      clearTimeout(timer);
+      if (saveTimerRef.current === timer) saveTimerRef.current = null;
+    };
   }, [users, liveEmail, sessionEmail]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const [employerDemo, setEmployerDemo] = useState<EmployerDemoState>(() => loadStorage("employer_demo", INITIAL_EMPLOYER_DEMO));
@@ -637,6 +655,9 @@ const TalentoPro: React.FC = () => {
   const handleUpdateUser = (incoming: ProUser) => {
     // A signed-in candidate's email belongs to their auth account and cannot be edited here.
     const updatedUser = liveEmail && sessionEmail === liveEmail ? { ...incoming, email: sessionEmail } : incoming;
+    if (liveEmail && sessionEmail === liveEmail) {
+      pendingShellSaveRef.current = true;
+    }
     if (updatedUser.email && updatedUser.email !== sessionEmail) {
       setUsers((prev) => {
         const next = { ...prev };
@@ -1229,12 +1250,14 @@ const TalentoPro: React.FC = () => {
         />
 
         <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 py-6 min-w-0 flex-1">
-          <div className="mb-6 flex flex-wrap items-center gap-4 border-b border-border pb-4">
-            <div className="mr-auto">
-              <p className="text-sm font-semibold text-primary">Workspace · {currentUser.name}</p>
-              <p className="mt-0.5 text-xs text-muted-foreground">Real-time pipeline &amp; dashboard</p>
+          {effectiveView !== "profile" && (
+            <div className="mb-6 flex flex-wrap items-center gap-4 border-b border-border pb-4">
+              <div className="mr-auto">
+                <p className="text-sm font-semibold text-primary">Workspace · {currentUser.name}</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">Real-time pipeline &amp; dashboard</p>
+              </div>
             </div>
-          </div>
+          )}
         {candidatePage ? (selectedApplicant || selectedCandidate ? <ProEmployerCandidateDetail key={JSON.stringify(candidatePage)} application={selectedApplicant} candidate={selectedCandidate} job={jobs.find(j => j.id === (selectedApplicant?.jid || (candidatePage.type === "candidate" ? candidatePage.jobId : undefined)))} employerJobs={jobs.filter(j => j.by === sessionEmail)} onBack={closeCandidate} onToast={addToast} onCreateApplication={handleAddCandidateToPipeline} onSave={(id, changes, message, interview) => { setApps(previous => previous.map(a => a.id === id ? { ...a, ...changes, st: interview ? "Interview" : changes.st, iv: interview || a.iv, upd: [...(a.upd || []), ...(a.st !== changes.st ? [{ msg: `Candidate status updated to "${changes.st}".`, at: Date.now() }] : []), ...(message.trim() ? [{ msg: message.trim(), at: Date.now() }] : []), ...(interview ? [{ msg: `Interview round scheduled for ${interview}.`, at: Date.now() }] : [])] } : a)); addToast("Application changes saved. Demo updates only; no message sent."); }} /> : <div className="py-12"><p>Candidate not found in this workspace.</p><Button onClick={closeCandidate} variant="outline" className="mt-4">Back to Candidates</Button></div>) : selectedJob ? <ProJobDetail key={selectedJob.id} job={selectedJob} user={currentUser} jobs={jobs} applications={apps} onBack={() => setDrawerState(null)} onOpenJob={(id) => { setDrawerState({ type: "job", id }); window.scrollTo({ top: 0 }); }} onApply={handleApplyJob} onSave={handleSaveJob} /> : (
         <AnimatePresence mode="wait">
           <motion.div

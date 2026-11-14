@@ -4,12 +4,10 @@ import {
   ArrowLeft,
   ArrowRight,
   Award,
-  Brain,
   BriefcaseBusiness,
   Camera,
   CheckCircle2,
   ChevronDown,
-  Cloud,
   Code2,
   Crown,
   Download,
@@ -21,7 +19,6 @@ import {
   Heart,
   ImagePlus,
   Languages,
-  Layers,
   Linkedin,
   Loader2,
   Mail,
@@ -33,7 +30,6 @@ import {
   Plus,
   RotateCcw,
   Share2,
-  ShieldCheck,
   Sparkles,
   Trash2,
   Trophy,
@@ -48,7 +44,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -60,11 +56,24 @@ import defaultCover from "@/assets/profile-office-cover.jpg";
 import cloudProject from "@/assets/profile-cloudsync.jpg";
 import parserProject from "@/assets/profile-resume-parser.jpg";
 import "@/components/profile/demo-profile.css";
+import { CharCount, FormattedDescription } from "@/components/profile/CharCount";
+import {
+  PROFILE_CHAR_LIMITS,
+  buildSmartHighlights,
+  formatExperiencePeriod,
+  formatPlaceName,
+  formatSmartTag,
+  hasCustomExpertiseCards,
+  isTechnicalProfile,
+  pickDomainIcon,
+} from "@/components/profile/profileFormatters";
 import {
   getResumeSignedUrl,
   loadFullLiveProfile,
   normalizeLiveProfile,
   patchLiveProfileQuick,
+  persistBannerImmediate,
+  persistProfilePhotoImmediate,
   uploadBannerPhotoFile,
   uploadProfilePhotoFile,
   uploadProjectImageFile,
@@ -92,21 +101,6 @@ const PROFILE_TABS = [
   { label: "Hobbies", id: "hobbies" },
   { label: "Interests", id: "interests" },
 ] as const;
-
-const BADGE_ICONS: { icon: LucideIcon; tone: "red" | "blue" | "green" | "violet" }[] = [
-  { icon: Code2, tone: "red" },
-  { icon: Cloud, tone: "blue" },
-  { icon: Brain, tone: "green" },
-  { icon: Layers, tone: "blue" },
-  { icon: Heart, tone: "violet" },
-];
-
-const EXPERTISE_ICONS: { icon: LucideIcon; tone: "red" | "blue" | "violet" | "green" }[] = [
-  { icon: Code2, tone: "red" },
-  { icon: Cloud, tone: "blue" },
-  { icon: Brain, tone: "violet" },
-  { icon: ShieldCheck, tone: "green" },
-];
 
 type QuickEditSection =
   | null
@@ -157,7 +151,7 @@ function Chips({ items }: { items: string[] }) {
   return (
     <div className="dp-chips">
       {items.map((t) => (
-        <span key={t}>{t}</span>
+        <span key={t}>{formatSmartTag(t)}</span>
       ))}
     </div>
   );
@@ -341,16 +335,15 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
     setQCountry(n.country || "India");
     setQBadgesInput(n.focusBadges.join(", "));
     setQAbout(n.about);
-    setQExpertise(
-      n.expertiseCards.length > 0
-        ? n.expertiseCards
-        : [
-            { title: "Core Engineering", sub: "End-to-end delivery" },
-            { title: "Architecture & Scale", sub: "Reliable production systems" },
-            { title: "Problem Solving", sub: "Data-driven execution" },
-            { title: "Collaboration", sub: "Cross-functional ownership" },
-          ]
-    );
+    const customCards = hasCustomExpertiseCards(n.expertiseCards, n.industry, n.headline)
+      ? n.expertiseCards
+      : [];
+    setQExpertise([
+      customCards[0] || { title: "", sub: "" },
+      customCards[1] || { title: "", sub: "" },
+      customCards[2] || { title: "", sub: "" },
+      customCards[3] || { title: "", sub: "" },
+    ]);
     setQExperiences(
       n.experiences.length > 0
         ? n.experiences
@@ -460,8 +453,11 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
     setUploadingPhoto(true);
     try {
       const url = await uploadProfilePhotoFile(file, data.profile.id);
-      const updated = await patchLiveProfileQuick(data, { profilePhotoUrl: url });
-      setData(updated);
+      setData((prev) =>
+        prev ? { ...prev, profile: { ...prev.profile, profile_photo_url: url } } : prev
+      );
+      const updated = await persistProfilePhotoImmediate(url);
+      if (updated) setData(updated);
       onProfileReloaded?.();
       onToast("Profile photo updated!");
     } catch (err: any) {
@@ -478,8 +474,14 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
     setUploadingBanner(true);
     try {
       const url = await uploadBannerPhotoFile(file, data.profile.id);
-      const updated = await patchLiveProfileQuick(data, { bannerPhotoUrl: url });
-      setData(updated);
+      setData((prev) => {
+        if (!prev) return prev;
+        const sh = { ...(prev.shell_state ?? {}) };
+        sh.arjun_profile_v1 = { ...(sh.arjun_profile_v1 ?? {}), banner_photo_url: url, banner_reset: false };
+        return { ...prev, profile: { ...prev.profile, banner_photo_url: url }, shell_state: sh };
+      });
+      const updated = await persistBannerImmediate(url, data.profile.id);
+      if (updated) setData(updated);
       onProfileReloaded?.();
       onToast("Cover banner image updated!");
     } catch (err: any) {
@@ -493,8 +495,14 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
     if (!data) return;
     setUploadingBanner(true);
     try {
-      const updated = await patchLiveProfileQuick(data, { bannerPhotoUrl: "" });
-      setData(updated);
+      setData((prev) => {
+        if (!prev) return prev;
+        const sh = { ...(prev.shell_state ?? {}) };
+        sh.arjun_profile_v1 = { ...(sh.arjun_profile_v1 ?? {}), banner_photo_url: "", banner_reset: true };
+        return { ...prev, profile: { ...prev.profile, banner_photo_url: "" }, shell_state: sh };
+      });
+      const updated = await persistBannerImmediate("", data.profile.id);
+      if (updated) setData(updated);
       onProfileReloaded?.();
       onToast("Restored default cover banner.");
     } catch (err: any) {
@@ -699,32 +707,32 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
     .slice(0, 2)
     .toUpperCase();
 
-  const displayBadges =
+  const domainContext = `${n.industry} ${n.headline} ${n.subHeadline} ${n.jobRole}`;
+  const rawBadges =
     n.focusBadges.length > 0
       ? n.focusBadges.slice(0, 6)
       : [n.industry, ...n.skills.slice(0, 4).map((s) => s.name)].filter(Boolean).slice(0, 5);
+  const displayBadges = Array.from(new Set(rawBadges.map((b) => formatSmartTag(b)).filter(Boolean)));
 
-  const displayExpertise: ExpertiseCardItem[] =
-    n.expertiseCards.length > 0
-      ? n.expertiseCards.slice(0, 4)
-      : [
-          {
-            title: n.headline || n.jobRole || "Core Domain Execution",
-            sub: n.industry || "Production-ready delivery",
-          },
-          {
-            title: n.skills[0]?.name ? `${n.skills[0].name} & Architecture` : "Technical Depth",
-            sub: n.skills[1]?.name ? `Paired with ${n.skills[1].name}` : "Scalable engineering",
-          },
-          {
-            title: n.tools[0] ? `${n.tools[0]} Workflow` : "Modern Tooling",
-            sub: n.tools.slice(1, 3).join(", ") || "Clean automation & QA",
-          },
-          {
-            title: "Continuous Growth",
-            sub: `${n.profileCompletion}% profile readiness`,
-          },
-        ];
+  const displayExpertise = buildSmartHighlights({
+    expertiseCards: n.expertiseCards,
+    headline: n.headline,
+    jobRole: n.jobRole,
+    industry: n.industry,
+    yearsOfExperience: n.yearsOfExperience,
+    experienceLevel: n.experienceLevel,
+    skills: n.skills,
+    tools: n.tools,
+    experiences: n.experiences,
+    workMode: n.workMode,
+    employmentType: n.employmentType,
+    noticePeriod: n.noticePeriod,
+    openToWork: n.openToWork,
+    verified: n.verification.identity_status === "verified" || n.verification.profile_status === "verified",
+    cir: n.latestCir,
+  });
+
+  const SkillsHeadingIcon = isTechnicalProfile(n.industry, n.headline) ? Code2 : Sparkles;
 
   const primaryLinks = [
     n.linkedinUrl ? { label: "LinkedIn", url: n.linkedinUrl, icon: Linkedin } : null,
@@ -743,7 +751,7 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
   );
 
   return (
-    <div className={cn("demo-dashboard", embedded ? "dp-embedded" : "dp-standalone")}>
+    <div className={cn("demo-dashboard dp-live-profile", embedded ? "dp-embedded" : "dp-standalone")}>
       {/* Visually hidden file inputs for Banner, Avatar, and Resume */}
       <input
         ref={bannerInputRef}
@@ -770,7 +778,7 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
         aria-label="Upload resume file"
       />
 
-      <main className="dp-main">
+      <main className={embedded ? "dp-main" : "container py-7 pb-16"}>
         {/* ===== HERO OVERVIEW CARD (Exact Arjun Mehta Design + Live Controls) ===== */}
         <section id="overview" className="dp-overview">
           <div className="dp-cover">
@@ -881,10 +889,10 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                 </div>
 
                 <p className="dp-designation">
-                  {n.headline || "Add your professional headline (e.g. Senior Full-Stack Engineer)"}
+                  {n.headline || "Add your professional headline (e.g. Digital Marketing Lead or Senior Engineer)"}
                 </p>
                 <p className="dp-specialty">
-                  {n.subHeadline || n.industry || "Add your specialty (e.g. Cloud & AI Specialist)"}
+                  {n.subHeadline || n.industry || "Add your specialty or domain focus"}
                 </p>
 
                 <div className="dp-contact-details">
@@ -944,14 +952,18 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
             </div>
 
             <div className="dp-intro">
-              <p>
-                {n.about ||
-                  "Click 'Edit' on About Me or 'Edit Profile' below to add your professional summary, domain focus, and key achievements."}
-              </p>
+              {n.about ? (
+                <FormattedDescription text={n.about} />
+              ) : (
+                <p>
+                  Click &lsquo;Edit&rsquo; on About Me or &lsquo;Edit Full Profile&rsquo; below to add your professional
+                  summary, domain focus, and measurable achievements.
+                </p>
+              )}
               {displayBadges.length > 0 && (
                 <div className="dp-badges">
                   {displayBadges.map((badgeName, idx) => {
-                    const { icon: Icon, tone } = BADGE_ICONS[idx % BADGE_ICONS.length];
+                    const { icon: Icon, tone } = pickDomainIcon(badgeName, domainContext, idx);
                     return (
                       <span key={badgeName}>
                         <i className={`dp-tone-${tone}`}>
@@ -1107,7 +1119,7 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                     variant="outline"
                     size="icon"
                     aria-label="More profile actions"
-                    className="cursor-pointer"
+                    className="dp-icon-only cursor-pointer"
                   >
                     <MoreHorizontal />
                   </Button>
@@ -1171,21 +1183,24 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
 
             {/* 1. ABOUT ME */}
             <Panel id="about-me" title="About Me" icon={UserRound} action={renderEditBtn("about")}>
-              <p className="dp-body-text">
-                {n.about ||
-                  "Tell employers about your engineering/domain philosophy, key milestones, and the problems you love solving."}
-              </p>
+              {n.about ? (
+                <FormattedDescription text={n.about} />
+              ) : (
+                <p className="dp-body-text">
+                  Tell employers about your professional background, key milestones, and the outcomes you drive.
+                </p>
+              )}
               <div className="dp-expertise">
                 {displayExpertise.map(({ title, sub }, idx) => {
-                  const { icon: Icon, tone } = EXPERTISE_ICONS[idx % EXPERTISE_ICONS.length];
+                  const { icon: Icon, tone } = pickDomainIcon(`${title} ${sub}`, domainContext, idx);
                   return (
                     <div key={`${title}-${idx}`}>
                       <i className={`dp-tone-${tone}`}>
                         <Icon size={24} />
                       </i>
-                      <div>
-                        <strong>{title}</strong>
-                        <span>{sub}</span>
+                      <div className="min-w-0">
+                        <strong className="break-words">{title}</strong>
+                        <span className="break-words">{sub}</span>
                       </div>
                     </div>
                   );
@@ -1221,7 +1236,8 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                       .join("")
                       .slice(0, 2)
                       .toUpperCase();
-                    const period = [e.start, e.end || "Present"].filter(Boolean).join(" – ");
+                    const period = formatExperiencePeriod(e.start, e.end);
+                    const loc = formatPlaceName(e.location);
                     return (
                       <article key={`${e.title}-${e.company}-${i}`}>
                         <div
@@ -1237,16 +1253,16 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                             <h3>{e.title}</h3>
                             {period && <span>{period}</span>}
                           </div>
-                          <p>
+                          <p className="font-medium text-foreground/85 mb-1.5">
                             {e.company}
-                            {e.location && (
+                            {loc && (
                               <>
                                 <span className="dp-separator">·</span>
-                                {e.location}
+                                {loc}
                               </>
                             )}
                           </p>
-                          {e.description && <p>{e.description}</p>}
+                          {e.description && <FormattedDescription text={e.description} />}
                           {e.tools.length > 0 && <Chips items={e.tools} />}
                         </div>
                       </article>
@@ -1257,7 +1273,12 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
             </Panel>
 
             {/* 3. SKILLS */}
-            <Panel id="skills" title="Skills" icon={Code2} action={renderEditBtn("skills", n.skills.length ? "Edit" : "+ Add")}>
+            <Panel
+              id="skills"
+              title="Skills"
+              icon={SkillsHeadingIcon}
+              action={renderEditBtn("skills", n.skills.length ? "Edit" : "+ Add")}
+            >
               {n.skills.length === 0 ? (
                 <div className="dp-empty-box">
                   <p>Add at least 3 core skills to power AI job matching and skill verification.</p>
@@ -1265,39 +1286,47 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                 </div>
               ) : (
                 <div className="dp-skill-list">
-                  {n.skills.map((skill) => (
-                    <article key={skill.name}>
-                      <i className="dp-tone-blue">
-                        <Code2 size={20} />
-                      </i>
-                      <div>
-                        <h3>{skill.name}</h3>
-                        <p>{skill.level}</p>
-                      </div>
-                      {skill.verified ? (
-                        <span className="dp-verified">
-                          <CheckCircle2 size={12} />
-                          Verified
-                        </span>
-                      ) : (
-                        <Link
-                          to="/assessments/explore"
-                          className="ml-auto text-xs font-semibold text-primary hover:underline shrink-0"
-                        >
-                          Verify →
-                        </Link>
-                      )}
-                    </article>
-                  ))}
+                  {n.skills.map((skill, idx) => {
+                    const { icon: SIcon, tone } = pickDomainIcon(skill.name, domainContext, idx);
+                    return (
+                      <article key={skill.name}>
+                        <i className={`dp-tone-${tone}`}>
+                          <SIcon size={20} />
+                        </i>
+                        <div className="min-w-0">
+                          <h3 className="break-words">{formatSmartTag(skill.name)}</h3>
+                          <p>{skill.level}</p>
+                        </div>
+                        {skill.verified ? (
+                          <span className="dp-verified">
+                            <CheckCircle2 size={12} />
+                            Verified
+                          </span>
+                        ) : (
+                          <Link
+                            to="/assessments/explore"
+                            className="ml-auto text-xs font-semibold text-primary hover:underline shrink-0"
+                          >
+                            Verify →
+                          </Link>
+                        )}
+                      </article>
+                    );
+                  })}
                 </div>
               )}
             </Panel>
 
             {/* 4. TOOLS */}
-            <Panel id="tools" title="Tools" icon={Wrench} action={renderEditBtn("tools", n.tools.length ? "Edit" : "+ Add")}>
+            <Panel
+              id="tools"
+              title="Tools & Platforms"
+              icon={Wrench}
+              action={renderEditBtn("tools", n.tools.length ? "Edit" : "+ Add")}
+            >
               {n.tools.length === 0 ? (
                 <div className="dp-empty-box">
-                  <p>Showcase your daily tools &amp; platforms (e.g. VS Code, Docker, Git, Figma, Jira).</p>
+                  <p>Showcase your daily tools &amp; platforms (e.g. Google Analytics, HubSpot, Figma, Docker, Jira).</p>
                   {renderEditBtn("tools", "+ Add Tools")}
                 </div>
               ) : (
@@ -1308,8 +1337,8 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
             {/* 5. PROJECTS */}
             <Panel
               id="projects"
-              title="Projects"
-              icon={GraduationCap}
+              title="Projects & Case Studies"
+              icon={Sparkles}
               action={
                 <div className="flex items-center gap-2">
                   {onNavigate && (
@@ -1329,7 +1358,7 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
             >
               {n.projects.length === 0 ? (
                 <div className="dp-empty-box">
-                  <p>Add portfolio projects with preview screenshots, tech stack chips, Live Demo &amp; GitHub links.</p>
+                  <p>Add portfolio projects or campaign case studies with preview images, tools &amp; links.</p>
                   {renderEditBtn("projects", "+ Add Project")}
                 </div>
               ) : (
@@ -1344,19 +1373,23 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                         loading="lazy"
                       />
                       <h3>{proj.title}</h3>
-                      {proj.description && <p>{proj.description}</p>}
+                      {proj.role && <p className="text-xs font-medium text-primary/80 mb-1">{proj.role}</p>}
+                      {proj.description && <FormattedDescription text={proj.description} />}
+                      {proj.impact && (
+                        <p className="text-xs font-medium text-foreground/80 mt-2">Impact: {proj.impact}</p>
+                      )}
                       {proj.tools.length > 0 && <Chips items={proj.tools} />}
                       <div className="dp-project-links">
                         {proj.url && (
                           <a href={proj.url} target="_blank" rel="noreferrer">
                             <ExternalLink size={14} />
-                            Live Demo
+                            Live Link
                           </a>
                         )}
                         {proj.github_url && (
                           <a href={proj.github_url} target="_blank" rel="noreferrer">
                             <Github size={13} />
-                            GitHub
+                            Source
                           </a>
                         )}
                       </div>
@@ -1573,16 +1606,24 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
             <DialogTitle className="capitalize">
               Edit {quickSection === "identity" ? "Header, Specialty & Badges" : quickSection}
             </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              Changes save directly to your live profile and public portfolio.
+            </DialogDescription>
           </DialogHeader>
 
           <form onSubmit={handleSaveQuickSection} className="space-y-4 pt-2">
             {quickSection === "identity" && (
               <div className="grid sm:grid-cols-2 gap-3.5">
                 <div>
-                  <Label htmlFor="qe-name">Full Name *</Label>
+                  <div className="flex items-center justify-between gap-2">
+                    <Label htmlFor="qe-name">Full Name *</Label>
+                    <CharCount value={qFullName} max={PROFILE_CHAR_LIMITS.fullName} />
+                  </div>
                   <Input
                     id="qe-name"
                     required
+                    autoComplete="name"
+                    maxLength={PROFILE_CHAR_LIMITS.fullName}
                     value={qFullName}
                     onChange={(e) => setQFullName(e.target.value)}
                     placeholder="e.g. Arjun Mehta"
@@ -1590,10 +1631,15 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                   />
                 </div>
                 <div>
-                  <Label htmlFor="qe-phone">Phone Number</Label>
+                  <div className="flex items-center justify-between gap-2">
+                    <Label htmlFor="qe-phone">Phone Number</Label>
+                    <CharCount value={qPhone} max={PROFILE_CHAR_LIMITS.phone} />
+                  </div>
                   <Input
                     id="qe-phone"
                     type="tel"
+                    autoComplete="tel"
+                    maxLength={PROFILE_CHAR_LIMITS.phone}
                     value={qPhone}
                     onChange={(e) => setQPhone(e.target.value)}
                     placeholder="+91 98765 43210"
@@ -1601,59 +1647,86 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                   />
                 </div>
                 <div>
-                  <Label htmlFor="qe-head">Designation / Headline</Label>
+                  <div className="flex items-center justify-between gap-2">
+                    <Label htmlFor="qe-head">Designation / Headline</Label>
+                    <CharCount value={qHeadline} max={PROFILE_CHAR_LIMITS.headline} />
+                  </div>
                   <Input
                     id="qe-head"
+                    maxLength={PROFILE_CHAR_LIMITS.headline}
                     value={qHeadline}
                     onChange={(e) => setQHeadline(e.target.value)}
-                    placeholder="e.g. Senior Full-Stack Engineer"
+                    placeholder="e.g. Digital Marketing Lead or Senior Engineer"
                     className="mt-1"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="qe-sub">Sub-Headline / Specialty</Label>
+                  <div className="flex items-center justify-between gap-2">
+                    <Label htmlFor="qe-sub">Sub-Headline / Specialty</Label>
+                    <CharCount value={qSubHeadline} max={PROFILE_CHAR_LIMITS.subHeadline} />
+                  </div>
                   <Input
                     id="qe-sub"
+                    maxLength={PROFILE_CHAR_LIMITS.subHeadline}
                     value={qSubHeadline}
                     onChange={(e) => setQSubHeadline(e.target.value)}
-                    placeholder="e.g. Cloud & AI Specialist"
+                    placeholder="e.g. Performance Growth & Brand Strategy"
                     className="mt-1"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="qe-ind">Industry</Label>
+                  <div className="flex items-center justify-between gap-2">
+                    <Label htmlFor="qe-ind">Industry</Label>
+                    <CharCount value={qIndustry} max={PROFILE_CHAR_LIMITS.industry} />
+                  </div>
                   <Input
                     id="qe-ind"
+                    maxLength={PROFILE_CHAR_LIMITS.industry}
                     value={qIndustry}
                     onChange={(e) => setQIndustry(e.target.value)}
-                    placeholder="e.g. Technology & Software"
+                    placeholder="e.g. Marketing & Growth or Technology"
                     className="mt-1"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="qe-city">City</Label>
+                  <div className="flex items-center justify-between gap-2">
+                    <Label htmlFor="qe-city">City</Label>
+                    <CharCount value={qCity} max={PROFILE_CHAR_LIMITS.city} />
+                  </div>
                   <Input
                     id="qe-city"
+                    autoComplete="address-level2"
+                    maxLength={PROFILE_CHAR_LIMITS.city}
                     value={qCity}
                     onChange={(e) => setQCity(e.target.value)}
-                    placeholder="e.g. Bengaluru"
+                    placeholder="e.g. Chennai or Bengaluru"
                     className="mt-1"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="qe-state">State</Label>
+                  <div className="flex items-center justify-between gap-2">
+                    <Label htmlFor="qe-state">State</Label>
+                    <CharCount value={qState} max={PROFILE_CHAR_LIMITS.state} />
+                  </div>
                   <Input
                     id="qe-state"
+                    autoComplete="address-level1"
+                    maxLength={PROFILE_CHAR_LIMITS.state}
                     value={qState}
                     onChange={(e) => setQState(e.target.value)}
-                    placeholder="e.g. Karnataka"
+                    placeholder="e.g. Tamil Nadu or Karnataka"
                     className="mt-1"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="qe-country">Country</Label>
+                  <div className="flex items-center justify-between gap-2">
+                    <Label htmlFor="qe-country">Country</Label>
+                    <CharCount value={qCountry} max={PROFILE_CHAR_LIMITS.country} />
+                  </div>
                   <Input
                     id="qe-country"
+                    autoComplete="country-name"
+                    maxLength={PROFILE_CHAR_LIMITS.country}
                     value={qCountry}
                     onChange={(e) => setQCountry(e.target.value)}
                     placeholder="India"
@@ -1661,12 +1734,16 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                   />
                 </div>
                 <div className="sm:col-span-2">
-                  <Label htmlFor="qe-badges">Focus Badges (comma-separated, shown under summary)</Label>
+                  <div className="flex items-center justify-between gap-2">
+                    <Label htmlFor="qe-badges">Focus Badges (comma-separated, up to 6 shown under summary)</Label>
+                    <CharCount value={qBadgesInput} max={250} />
+                  </div>
                   <Input
                     id="qe-badges"
+                    maxLength={250}
                     value={qBadgesInput}
                     onChange={(e) => setQBadgesInput(e.target.value)}
-                    placeholder="Full-Stack, Cloud Native, AI/ML, System Design, Product Thinking"
+                    placeholder="e.g. Performance Marketing, SEO, Meta Ads, Brand Strategy"
                     className="mt-1"
                   />
                 </div>
@@ -1676,39 +1753,58 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
             {quickSection === "about" && (
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="qe-about">About Me Summary</Label>
+                  <div className="flex items-center justify-between gap-2">
+                    <Label htmlFor="qe-about">About Me Summary</Label>
+                    <CharCount value={qAbout} max={PROFILE_CHAR_LIMITS.about} />
+                  </div>
                   <Textarea
                     id="qe-about"
                     rows={5}
+                    maxLength={PROFILE_CHAR_LIMITS.about}
                     value={qAbout}
                     onChange={(e) => setQAbout(e.target.value)}
-                    placeholder="Write a clear, compelling overview of your background, strengths, and impact..."
+                    placeholder="Write a clear, compelling overview of your background, strengths, and measurable impact..."
                     className="mt-1"
                   />
                 </div>
                 <div className="space-y-2.5">
-                  <Label>4 Core Expertise Highlights (displayed below About Me)</Label>
+                  <div>
+                    <Label>4 Core Spotlight Cards (optional — displayed below About Me)</Label>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Leave any card blank to auto-generate smart highlights from your role, skills &amp; tools.
+                    </p>
+                  </div>
                   <div className="grid sm:grid-cols-2 gap-2.5">
                     {qExpertise.slice(0, 4).map((card, idx) => (
                       <div key={idx} className="rounded-lg border border-border p-2.5 space-y-2">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[11px] font-semibold text-muted-foreground">Card #{idx + 1} Title</span>
+                          <CharCount value={card.title} max={PROFILE_CHAR_LIMITS.expertiseTitle} />
+                        </div>
                         <Input
+                          maxLength={PROFILE_CHAR_LIMITS.expertiseTitle}
                           value={card.title}
                           onChange={(e) =>
                             setQExpertise((prev) =>
                               prev.map((c, i) => (i === idx ? { ...c, title: e.target.value } : c))
                             )
                           }
-                          placeholder={`Pillar ${idx + 1} title (e.g. Cloud & DevOps)`}
+                          placeholder={`Highlight ${idx + 1} (e.g. Performance Marketing)`}
                           className="h-8 text-xs font-semibold"
                         />
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[11px] text-muted-foreground">Subtitle</span>
+                          <CharCount value={card.sub} max={PROFILE_CHAR_LIMITS.expertiseSub} />
+                        </div>
                         <Input
+                          maxLength={PROFILE_CHAR_LIMITS.expertiseSub}
                           value={card.sub}
                           onChange={(e) =>
                             setQExpertise((prev) =>
                               prev.map((c, i) => (i === idx ? { ...c, sub: e.target.value } : c))
                             )
                           }
-                          placeholder="Short subtitle (e.g. Scalable infrastructure)"
+                          placeholder="Short proof point (e.g. ROI-focused campaigns)"
                           className="h-8 text-xs"
                         />
                       </div>
@@ -1735,26 +1831,41 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                       </Button>
                     </div>
                     <div className="grid sm:grid-cols-2 gap-2.5">
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[11px] font-medium text-muted-foreground">Job Title *</span>
+                          <CharCount value={exp.title} max={PROFILE_CHAR_LIMITS.expTitle} />
+                        </div>
+                        <Input
+                          placeholder="e.g. Digital Marketing Executive"
+                          maxLength={PROFILE_CHAR_LIMITS.expTitle}
+                          value={exp.title}
+                          onChange={(e) =>
+                            setQExperiences((prev) =>
+                              prev.map((item, i) => (i === idx ? { ...item, title: e.target.value } : item))
+                            )
+                          }
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[11px] font-medium text-muted-foreground">Company *</span>
+                          <CharCount value={exp.company} max={PROFILE_CHAR_LIMITS.expCompany} />
+                        </div>
+                        <Input
+                          placeholder="e.g. Thesuper30 or Razorpay"
+                          maxLength={PROFILE_CHAR_LIMITS.expCompany}
+                          value={exp.company}
+                          onChange={(e) =>
+                            setQExperiences((prev) =>
+                              prev.map((item, i) => (i === idx ? { ...item, company: e.target.value } : item))
+                            )
+                          }
+                        />
+                      </div>
                       <Input
-                        placeholder="Job Title *"
-                        value={exp.title}
-                        onChange={(e) =>
-                          setQExperiences((prev) =>
-                            prev.map((item, i) => (i === idx ? { ...item, title: e.target.value } : item))
-                          )
-                        }
-                      />
-                      <Input
-                        placeholder="Company *"
-                        value={exp.company}
-                        onChange={(e) =>
-                          setQExperiences((prev) =>
-                            prev.map((item, i) => (i === idx ? { ...item, company: e.target.value } : item))
-                          )
-                        }
-                      />
-                      <Input
-                        placeholder="Location (e.g. Bengaluru, India)"
+                        placeholder="Location (e.g. Chennai, India)"
+                        maxLength={PROFILE_CHAR_LIMITS.expLocation}
                         value={exp.location}
                         onChange={(e) =>
                           setQExperiences((prev) =>
@@ -1764,7 +1875,8 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                       />
                       <div className="grid grid-cols-2 gap-2">
                         <Input
-                          placeholder="Start (e.g. 2022)"
+                          placeholder="Start (e.g. Jun 2024)"
+                          maxLength={PROFILE_CHAR_LIMITS.expPeriod}
                           value={exp.start}
                           onChange={(e) =>
                             setQExperiences((prev) =>
@@ -1774,6 +1886,7 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                         />
                         <Input
                           placeholder="End or Present"
+                          maxLength={PROFILE_CHAR_LIMITS.expPeriod}
                           value={exp.end}
                           onChange={(e) =>
                             setQExperiences((prev) =>
@@ -1783,18 +1896,28 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                         />
                       </div>
                     </div>
-                    <Textarea
-                      rows={2}
-                      placeholder="Key responsibilities & measurable impact..."
-                      value={exp.description}
-                      onChange={(e) =>
-                        setQExperiences((prev) =>
-                          prev.map((item, i) => (i === idx ? { ...item, description: e.target.value } : item))
-                        )
-                      }
-                    />
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[11px] font-medium text-muted-foreground">
+                          Key Achievements (start lines with &quot;- &quot; for bullets)
+                        </span>
+                        <CharCount value={exp.description} max={PROFILE_CHAR_LIMITS.expDescription} />
+                      </div>
+                      <Textarea
+                        rows={3}
+                        maxLength={PROFILE_CHAR_LIMITS.expDescription}
+                        placeholder="- Planned and executed campaigns improving conversion by 32%..."
+                        value={exp.description}
+                        onChange={(e) =>
+                          setQExperiences((prev) =>
+                            prev.map((item, i) => (i === idx ? { ...item, description: e.target.value } : item))
+                          )
+                        }
+                      />
+                    </div>
                     <Input
-                      placeholder="Tools & technologies used (comma-separated, e.g. React, Node.js, AWS)"
+                      maxLength={250}
+                      placeholder="Tools & skills used in role (comma-separated, e.g. Meta Ads, GA4, Figma)"
                       value={exp.tools.join(", ")}
                       onChange={(e) =>
                         setQExperiences((prev) =>
@@ -1833,9 +1956,15 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
 
             {quickSection === "skills" && (
               <div className="space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <Label htmlFor="qe-skill-name">Add Core Skill</Label>
+                  <CharCount value={qSkillName} max={PROFILE_CHAR_LIMITS.tagChip} />
+                </div>
                 <div className="flex gap-2">
                   <Input
-                    placeholder="Skill name (e.g. TypeScript, System Design)"
+                    id="qe-skill-name"
+                    maxLength={PROFILE_CHAR_LIMITS.tagChip}
+                    placeholder="Skill name (e.g. Performance Marketing, SEO, TypeScript)"
                     value={qSkillName}
                     onChange={(e) => setQSkillName(e.target.value)}
                     onKeyDown={(e) => {
@@ -1879,7 +2008,7 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                       key={s.name}
                       className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary"
                     >
-                      {s.name} · {s.level}
+                      {formatSmartTag(s.name)} · {s.level}
                       <button
                         type="button"
                         onClick={() => setQSkills((prev) => prev.filter((item) => item.name !== s.name))}
@@ -1895,9 +2024,15 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
 
             {quickSection === "tools" && (
               <div className="space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <Label htmlFor="qe-tool-input">Add Tool or Platform</Label>
+                  <CharCount value={qToolInput} max={PROFILE_CHAR_LIMITS.tagChip} />
+                </div>
                 <div className="flex gap-2">
                   <Input
-                    placeholder="Add tool (e.g. VS Code, Docker, Postman, Figma, Jira)"
+                    id="qe-tool-input"
+                    maxLength={PROFILE_CHAR_LIMITS.tagChip}
+                    placeholder="Add tool (e.g. Google Analytics, HubSpot, Figma, Docker)"
                     value={qToolInput}
                     onChange={(e) => setQToolInput(e.target.value)}
                     onKeyDown={(e) => {
@@ -1930,7 +2065,7 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                       key={t}
                       className="inline-flex items-center gap-1.5 rounded-lg bg-secondary px-3 py-1 text-xs font-medium"
                     >
-                      {t}
+                      {formatSmartTag(t)}
                       <button
                         type="button"
                         onClick={() => setQTools((prev) => prev.filter((x) => x !== t))}
@@ -1961,17 +2096,41 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                       </Button>
                     </div>
                     <div className="grid sm:grid-cols-2 gap-2.5">
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[11px] font-medium text-muted-foreground">Project / Campaign Title *</span>
+                          <CharCount value={proj.title} max={PROFILE_CHAR_LIMITS.projectTitle} />
+                        </div>
+                        <Input
+                          placeholder="e.g. Q3 Omnichannel Growth Campaign"
+                          maxLength={PROFILE_CHAR_LIMITS.projectTitle}
+                          value={proj.title}
+                          onChange={(e) =>
+                            setQProjects((prev) =>
+                              prev.map((p, i) => (i === idx ? { ...p, title: e.target.value } : p))
+                            )
+                          }
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[11px] font-medium text-muted-foreground">Your Role</span>
+                          <CharCount value={proj.role} max={PROFILE_CHAR_LIMITS.projectRole} />
+                        </div>
+                        <Input
+                          placeholder="e.g. Campaign Lead or Lead Architect"
+                          maxLength={PROFILE_CHAR_LIMITS.projectRole}
+                          value={proj.role}
+                          onChange={(e) =>
+                            setQProjects((prev) =>
+                              prev.map((p, i) => (i === idx ? { ...p, role: e.target.value } : p))
+                            )
+                          }
+                        />
+                      </div>
                       <Input
-                        placeholder="Project Title *"
-                        value={proj.title}
-                        onChange={(e) =>
-                          setQProjects((prev) =>
-                            prev.map((p, i) => (i === idx ? { ...p, title: e.target.value } : p))
-                          )
-                        }
-                      />
-                      <Input
-                        placeholder="Tools (comma-separated, e.g. React, Go, Docker)"
+                        maxLength={250}
+                        placeholder="Tools used (comma-separated, e.g. Meta Ads, GA4, React)"
                         value={proj.tools.join(", ")}
                         onChange={(e) =>
                           setQProjects((prev) =>
@@ -1990,7 +2149,18 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                         }
                       />
                       <Input
-                        placeholder="Live Demo URL (https://...)"
+                        maxLength={PROFILE_CHAR_LIMITS.projectImpact}
+                        placeholder="Key Metric / Impact (e.g. 3.4x ROAS, +48% leads)"
+                        value={proj.impact}
+                        onChange={(e) =>
+                          setQProjects((prev) =>
+                            prev.map((p, i) => (i === idx ? { ...p, impact: e.target.value } : p))
+                          )
+                        }
+                      />
+                      <Input
+                        maxLength={PROFILE_CHAR_LIMITS.url}
+                        placeholder="Live Link / Case Study URL (https://...)"
                         value={proj.url}
                         autoCorrect="off"
                         autoCapitalize="none"
@@ -2002,7 +2172,8 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                         }
                       />
                       <Input
-                        placeholder="GitHub Repo URL (https://github.com/...)"
+                        maxLength={PROFILE_CHAR_LIMITS.url}
+                        placeholder="Repository / Deck URL (https://...)"
                         value={proj.github_url}
                         autoCorrect="off"
                         autoCapitalize="none"
@@ -2014,16 +2185,23 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                         }
                       />
                     </div>
-                    <Textarea
-                      rows={2}
-                      placeholder="Project description & architecture highlights..."
-                      value={proj.description}
-                      onChange={(e) =>
-                        setQProjects((prev) =>
-                          prev.map((p, i) => (i === idx ? { ...p, description: e.target.value } : p))
-                        )
-                      }
-                    />
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[11px] font-medium text-muted-foreground">Description</span>
+                        <CharCount value={proj.description} max={PROFILE_CHAR_LIMITS.projectDescription} />
+                      </div>
+                      <Textarea
+                        rows={2}
+                        maxLength={PROFILE_CHAR_LIMITS.projectDescription}
+                        placeholder="Concise summary of problem, execution & measurable outcome..."
+                        value={proj.description}
+                        onChange={(e) =>
+                          setQProjects((prev) =>
+                            prev.map((p, i) => (i === idx ? { ...p, description: e.target.value } : p))
+                          )
+                        }
+                      />
+                    </div>
                     <div className="flex flex-wrap items-center gap-3">
                       {proj.image_url && (
                         <img
@@ -2038,7 +2216,7 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                         ) : (
                           <Upload className="h-3.5 w-3.5" />
                         )}
-                        <span>{proj.image_url ? "Change Screenshot" : "Upload Project Screenshot"}</span>
+                        <span>{proj.image_url ? "Change Cover Image" : "Upload Cover Image"}</span>
                         <input
                           type="file"
                           accept="image/jpeg,image/png,image/webp"
@@ -2083,28 +2261,53 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                       </Button>
                     </div>
                     <div className="grid sm:grid-cols-2 gap-2.5">
-                      <Input
-                        placeholder="Institution / University *"
-                        value={ed.institution}
-                        onChange={(e) =>
-                          setQEducations((prev) =>
-                            prev.map((item, i) => (i === idx ? { ...item, institution: e.target.value } : item))
-                          )
-                        }
-                      />
-                      <Input
-                        placeholder="Degree (e.g. B.Tech in Computer Science)"
-                        value={ed.degree}
-                        onChange={(e) =>
-                          setQEducations((prev) =>
-                            prev.map((item, i) => (i === idx ? { ...item, degree: e.target.value } : item))
-                          )
-                        }
-                      />
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[11px] font-medium text-muted-foreground">Institution / University *</span>
+                          <CharCount value={ed.institution} max={PROFILE_CHAR_LIMITS.eduInstitution} />
+                        </div>
                         <Input
-                          placeholder="Start Year (2020)"
-                          maxLength={4}
+                          placeholder="e.g. Loyola College or IIT Madras"
+                          maxLength={PROFILE_CHAR_LIMITS.eduInstitution}
+                          value={ed.institution}
+                          onChange={(e) =>
+                            setQEducations((prev) =>
+                              prev.map((item, i) => (i === idx ? { ...item, institution: e.target.value } : item))
+                            )
+                          }
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[11px] font-medium text-muted-foreground">Degree</span>
+                          <CharCount value={ed.degree} max={PROFILE_CHAR_LIMITS.eduDegree} />
+                        </div>
+                        <Input
+                          placeholder="e.g. BBA Marketing or B.Tech CS"
+                          maxLength={PROFILE_CHAR_LIMITS.eduDegree}
+                          value={ed.degree}
+                          onChange={(e) =>
+                            setQEducations((prev) =>
+                              prev.map((item, i) => (i === idx ? { ...item, degree: e.target.value } : item))
+                            )
+                          }
+                        />
+                      </div>
+                      <Input
+                        placeholder="Specialization / Field of Study"
+                        maxLength={PROFILE_CHAR_LIMITS.eduField}
+                        value={ed.field_of_study}
+                        onChange={(e) =>
+                          setQEducations((prev) =>
+                            prev.map((item, i) => (i === idx ? { ...item, field_of_study: e.target.value } : item))
+                          )
+                        }
+                      />
+                      <div className="grid grid-cols-3 gap-2">
+                        <Input
+                          placeholder="Start (2020)"
+                          inputMode="numeric"
+                          maxLength={PROFILE_CHAR_LIMITS.eduYear}
                           value={ed.start_year}
                           onChange={(e) =>
                             setQEducations((prev) =>
@@ -2113,8 +2316,9 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                           }
                         />
                         <Input
-                          placeholder="End Year (2024)"
-                          maxLength={4}
+                          placeholder="End (2024)"
+                          inputMode="numeric"
+                          maxLength={PROFILE_CHAR_LIMITS.eduYear}
                           value={ed.year}
                           onChange={(e) =>
                             setQEducations((prev) =>
@@ -2122,16 +2326,17 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                             )
                           }
                         />
+                        <Input
+                          placeholder="CGPA / %"
+                          maxLength={PROFILE_CHAR_LIMITS.eduGrade}
+                          value={ed.grade}
+                          onChange={(e) =>
+                            setQEducations((prev) =>
+                              prev.map((item, i) => (i === idx ? { ...item, grade: e.target.value } : item))
+                            )
+                          }
+                        />
                       </div>
-                      <Input
-                        placeholder="Grade / CGPA (e.g. 8.7 CGPA or 94.2%)"
-                        value={ed.grade}
-                        onChange={(e) =>
-                          setQEducations((prev) =>
-                            prev.map((item, i) => (i === idx ? { ...item, grade: e.target.value } : item))
-                          )
-                        }
-                      />
                     </div>
                   </div>
                 ))}
@@ -2169,26 +2374,41 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                       </Button>
                     </div>
                     <div className="grid sm:grid-cols-2 gap-2.5">
-                      <Input
-                        placeholder="Certification Name *"
-                        value={cert.name}
-                        onChange={(e) =>
-                          setQCertifications((prev) =>
-                            prev.map((c, i) => (i === idx ? { ...c, name: e.target.value } : c))
-                          )
-                        }
-                      />
-                      <Input
-                        placeholder="Issuing Organization (e.g. AWS)"
-                        value={cert.issuer}
-                        onChange={(e) =>
-                          setQCertifications((prev) =>
-                            prev.map((c, i) => (i === idx ? { ...c, issuer: e.target.value } : c))
-                          )
-                        }
-                      />
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[11px] font-medium text-muted-foreground">Certification Name *</span>
+                          <CharCount value={cert.name} max={PROFILE_CHAR_LIMITS.certName} />
+                        </div>
+                        <Input
+                          placeholder="e.g. Google Ads Search Certification"
+                          maxLength={PROFILE_CHAR_LIMITS.certName}
+                          value={cert.name}
+                          onChange={(e) =>
+                            setQCertifications((prev) =>
+                              prev.map((c, i) => (i === idx ? { ...c, name: e.target.value } : c))
+                            )
+                          }
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[11px] font-medium text-muted-foreground">Issuing Organization</span>
+                          <CharCount value={cert.issuer} max={PROFILE_CHAR_LIMITS.certIssuer} />
+                        </div>
+                        <Input
+                          placeholder="e.g. Google, HubSpot, AWS"
+                          maxLength={PROFILE_CHAR_LIMITS.certIssuer}
+                          value={cert.issuer}
+                          onChange={(e) =>
+                            setQCertifications((prev) =>
+                              prev.map((c, i) => (i === idx ? { ...c, issuer: e.target.value } : c))
+                            )
+                          }
+                        />
+                      </div>
                       <Input
                         placeholder="Issue Date / Year (e.g. 2024)"
+                        maxLength={PROFILE_CHAR_LIMITS.certDate}
                         value={cert.date}
                         onChange={(e) =>
                           setQCertifications((prev) =>
@@ -2198,6 +2418,7 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                       />
                       <Input
                         placeholder="Credential URL (https://...)"
+                        maxLength={PROFILE_CHAR_LIMITS.url}
                         value={cert.credential_url || ""}
                         autoCorrect="off"
                         autoCapitalize="none"
@@ -2242,15 +2463,23 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                       </Button>
                     </div>
                     <div className="grid sm:grid-cols-2 gap-2.5">
-                      <Input
-                        placeholder="Award Title * (e.g. Winner – Smart India Hackathon)"
-                        value={aw.title}
-                        onChange={(e) =>
-                          setQAwards((prev) => prev.map((a, i) => (i === idx ? { ...a, title: e.target.value } : a)))
-                        }
-                      />
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[11px] font-medium text-muted-foreground">Award Title *</span>
+                          <CharCount value={aw.title} max={PROFILE_CHAR_LIMITS.awardTitle} />
+                        </div>
+                        <Input
+                          placeholder="e.g. Best Performer of the Quarter"
+                          maxLength={PROFILE_CHAR_LIMITS.awardTitle}
+                          value={aw.title}
+                          onChange={(e) =>
+                            setQAwards((prev) => prev.map((a, i) => (i === idx ? { ...a, title: e.target.value } : a)))
+                          }
+                        />
+                      </div>
                       <Input
                         placeholder="Organization / Event"
+                        maxLength={PROFILE_CHAR_LIMITS.awardOrg}
                         value={aw.organization || ""}
                         onChange={(e) =>
                           setQAwards((prev) =>
@@ -2259,15 +2488,30 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                         }
                       />
                     </div>
-                    <Input
-                      placeholder="Description & Year (e.g. 1st place among 500+ teams, 2024)"
-                      value={aw.description}
-                      onChange={(e) =>
-                        setQAwards((prev) =>
-                          prev.map((a, i) => (i === idx ? { ...a, description: e.target.value } : a))
-                        )
-                      }
-                    />
+                    <div className="grid sm:grid-cols-[150px_1fr] gap-2.5">
+                      <Input
+                        placeholder="Year (e.g. 2025)"
+                        maxLength={PROFILE_CHAR_LIMITS.awardDate}
+                        value={aw.date || ""}
+                        onChange={(e) =>
+                          setQAwards((prev) =>
+                            prev.map((a, i) => (i === idx ? { ...a, date: e.target.value } : a))
+                          )
+                        }
+                      />
+                      <div className="space-y-1">
+                        <Input
+                          placeholder="Short context (e.g. Top 1% among 200+ participants)"
+                          maxLength={PROFILE_CHAR_LIMITS.awardDescription}
+                          value={aw.description}
+                          onChange={(e) =>
+                            setQAwards((prev) =>
+                              prev.map((a, i) => (i === idx ? { ...a, description: e.target.value } : a))
+                            )
+                          }
+                        />
+                      </div>
+                    </div>
                   </div>
                 ))}
                 <Button
@@ -2288,6 +2532,7 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                   <div key={idx} className="grid grid-cols-[1fr_1fr_auto] gap-2">
                     <Input
                       placeholder="Language (e.g. English)"
+                      maxLength={PROFILE_CHAR_LIMITS.languageName}
                       value={lang.name}
                       onChange={(e) =>
                         setQLanguages((prev) =>
@@ -2297,6 +2542,7 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                     />
                     <Input
                       placeholder="Proficiency (e.g. Native, Fluent)"
+                      maxLength={PROFILE_CHAR_LIMITS.languageLevel}
                       value={lang.level}
                       onChange={(e) =>
                         setQLanguages((prev) =>
@@ -2308,6 +2554,7 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                       type="button"
                       variant="ghost"
                       size="icon"
+                      aria-label={`Remove ${lang.name || "language"}`}
                       onClick={() => setQLanguages((prev) => prev.filter((_, i) => i !== idx))}
                     >
                       <Trash2 className="h-4 w-4 text-destructive" />
@@ -2328,9 +2575,15 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
 
             {quickSection === "hobbies" && (
               <div className="space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <Label htmlFor="qe-hobby-input">Add Personal Hobby</Label>
+                  <CharCount value={qHobbyInput} max={PROFILE_CHAR_LIMITS.tagChip} />
+                </div>
                 <div className="flex gap-2">
                   <Input
-                    placeholder="Add hobby (e.g. Open Source Contributing, Photography)"
+                    id="qe-hobby-input"
+                    maxLength={PROFILE_CHAR_LIMITS.tagChip}
+                    placeholder="Add hobby (e.g. Photography, Creative Writing, Chess)"
                     value={qHobbyInput}
                     onChange={(e) => setQHobbyInput(e.target.value)}
                     onKeyDown={(e) => {
@@ -2363,8 +2616,12 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                       key={h}
                       className="inline-flex items-center gap-1.5 rounded-lg bg-secondary px-3 py-1 text-xs font-medium"
                     >
-                      {h}
-                      <button type="button" onClick={() => setQHobbies((prev) => prev.filter((x) => x !== h))}>
+                      {formatSmartTag(h)}
+                      <button
+                        type="button"
+                        aria-label={`Remove ${h}`}
+                        onClick={() => setQHobbies((prev) => prev.filter((x) => x !== h))}
+                      >
                         <X className="h-3 w-3" />
                       </button>
                     </span>
@@ -2375,9 +2632,15 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
 
             {quickSection === "interests" && (
               <div className="space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <Label htmlFor="qe-interest-input">Add Domain Interest</Label>
+                  <CharCount value={qInterestInput} max={PROFILE_CHAR_LIMITS.tagChip} />
+                </div>
                 <div className="flex gap-2">
                   <Input
-                    placeholder="Add interest (e.g. Generative AI, Distributed Systems)"
+                    id="qe-interest-input"
+                    maxLength={PROFILE_CHAR_LIMITS.tagChip}
+                    placeholder="Add interest (e.g. Consumer Psychology, Growth Strategy, Generative AI)"
                     value={qInterestInput}
                     onChange={(e) => setQInterestInput(e.target.value)}
                     onKeyDown={(e) => {
@@ -2410,8 +2673,12 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                       key={it}
                       className="inline-flex items-center gap-1.5 rounded-lg bg-secondary px-3 py-1 text-xs font-medium"
                     >
-                      {it}
-                      <button type="button" onClick={() => setQInterests((prev) => prev.filter((x) => x !== it))}>
+                      {formatSmartTag(it)}
+                      <button
+                        type="button"
+                        aria-label={`Remove ${it}`}
+                        onClick={() => setQInterests((prev) => prev.filter((x) => x !== it))}
+                      >
                         <X className="h-3 w-3" />
                       </button>
                     </span>
@@ -2423,11 +2690,15 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
             {quickSection === "links" && (
               <div className="grid sm:grid-cols-2 gap-3.5">
                 <div className="sm:col-span-2">
-                  <Label htmlFor="qe-slug">Public Portfolio Handle (/u/your-handle)</Label>
+                  <div className="flex items-center justify-between gap-2">
+                    <Label htmlFor="qe-slug">Public Portfolio Handle (/u/your-handle)</Label>
+                    <CharCount value={qSlug} max={PROFILE_CHAR_LIMITS.slug} />
+                  </div>
                   <div className="flex items-center gap-1.5 mt-1">
                     <span className="text-xs font-mono text-muted-foreground">/u/</span>
                     <Input
                       id="qe-slug"
+                      maxLength={PROFILE_CHAR_LIMITS.slug}
                       value={qSlug}
                       autoCorrect="off"
                       autoCapitalize="none"
@@ -2441,6 +2712,7 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                   <Label htmlFor="qe-li">LinkedIn URL</Label>
                   <Input
                     id="qe-li"
+                    maxLength={PROFILE_CHAR_LIMITS.url}
                     value={qLinkedin}
                     autoCorrect="off"
                     autoCapitalize="none"
@@ -2454,6 +2726,7 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                   <Label htmlFor="qe-gh">GitHub URL</Label>
                   <Input
                     id="qe-gh"
+                    maxLength={PROFILE_CHAR_LIMITS.url}
                     value={qGithub}
                     autoCorrect="off"
                     autoCapitalize="none"
@@ -2467,12 +2740,13 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                   <Label htmlFor="qe-pf">Portfolio Website</Label>
                   <Input
                     id="qe-pf"
+                    maxLength={PROFILE_CHAR_LIMITS.url}
                     value={qPortfolio}
                     autoCorrect="off"
                     autoCapitalize="none"
                     spellCheck={false}
                     onChange={(e) => setQPortfolio(e.target.value)}
-                    placeholder="https://yoursite.dev"
+                    placeholder="https://yoursite.com"
                     className="mt-1"
                   />
                 </div>
@@ -2480,6 +2754,7 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                   <Label htmlFor="qe-kg">Kaggle URL</Label>
                   <Input
                     id="qe-kg"
+                    maxLength={PROFILE_CHAR_LIMITS.url}
                     value={qKaggle}
                     autoCorrect="off"
                     autoCapitalize="none"
@@ -2490,9 +2765,10 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                   />
                 </div>
                 <div className="sm:col-span-2">
-                  <Label htmlFor="qe-bh">Behance / Design Portfolio URL</Label>
+                  <Label htmlFor="qe-bh">Behance / Creative Portfolio URL</Label>
                   <Input
                     id="qe-bh"
+                    maxLength={PROFILE_CHAR_LIMITS.url}
                     value={qBehance}
                     autoCorrect="off"
                     autoCapitalize="none"
@@ -2591,11 +2867,15 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                     Configure Your 60-Second Video Resume
                   </h3>
                   <div>
-                    <label htmlFor="vr-url" className="block text-xs font-semibold text-slate-300 mb-1.5">
-                      Video URL (Direct MP4/WebM link or YouTube link)
-                    </label>
+                    <div className="flex items-center justify-between gap-2 mb-1.5">
+                      <label htmlFor="vr-url" className="block text-xs font-semibold text-slate-300">
+                        Video URL (Direct MP4/WebM link or YouTube link)
+                      </label>
+                      <CharCount value={qVideoUrl} max={PROFILE_CHAR_LIMITS.url} className="text-slate-400" />
+                    </div>
                     <Input
                       id="vr-url"
+                      maxLength={PROFILE_CHAR_LIMITS.url}
                       value={qVideoUrl}
                       autoCorrect="off"
                       autoCapitalize="none"
@@ -2606,15 +2886,19 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                     />
                   </div>
                   <div>
-                    <label htmlFor="vr-pitch" className="block text-xs font-semibold text-slate-300 mb-1.5">
-                      Written Video Pitch / Transcript Summary
-                    </label>
+                    <div className="flex items-center justify-between gap-2 mb-1.5">
+                      <label htmlFor="vr-pitch" className="block text-xs font-semibold text-slate-300">
+                        Written Video Pitch / Transcript Summary
+                      </label>
+                      <CharCount value={qVideoPitch} max={PROFILE_CHAR_LIMITS.videoPitch} className="text-slate-400" />
+                    </div>
                     <Textarea
                       id="vr-pitch"
                       rows={4}
+                      maxLength={PROFILE_CHAR_LIMITS.videoPitch}
                       value={qVideoPitch}
                       onChange={(e) => setQVideoPitch(e.target.value)}
-                      placeholder="Hello! In this 60-second pitch, I walk through my core engineering background, key projects, and what I bring to your team..."
+                      placeholder="Hello! In this 60-second pitch, I walk through my background, flagship projects, and what I bring to your team..."
                       className="bg-slate-900 border-white/20 text-white"
                     />
                   </div>
@@ -2689,7 +2973,7 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
 
             <div className="space-y-4">
               <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-3">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Core Technical Skills</h3>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Core Skills</h3>
                 <div className="flex flex-wrap gap-1.5">
                   {n.skills.length > 0 ? (
                     n.skills.map((s) => (
@@ -2697,7 +2981,7 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                         key={s.name}
                         className="px-2.5 py-1 rounded-lg bg-white/10 border border-white/15 text-xs font-medium text-slate-200"
                       >
-                        {s.name}
+                        {formatSmartTag(s.name)}
                       </span>
                     ))
                   ) : (

@@ -4,7 +4,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Camera, ImagePlus, Loader2, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 import defaultCover from "@/assets/profile-office-cover.jpg";
-import { uploadBannerPhotoFile, uploadProfilePhotoFile } from "@/services/candidate/profile";
+import {
+  persistBannerImmediate,
+  persistProfilePhotoImmediate,
+  uploadBannerPhotoFile,
+  uploadProfilePhotoFile,
+} from "@/services/candidate/profile";
 import "@/components/profile/demo-profile.css";
 
 interface Props {
@@ -13,9 +18,10 @@ interface Props {
   userId: string;
   fullName: string;
   onChange: (field: string, value: string) => void;
+  onShellStateSynced?: (shellState: Record<string, any>) => void;
 }
 
-const ProfilePhotoSection = ({ photoUrl, bannerUrl = "", userId, fullName, onChange }: Props) => {
+const ProfilePhotoSection = ({ photoUrl, bannerUrl = "", userId, fullName, onChange, onShellStateSynced }: Props) => {
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [uploadingBanner, setUploadingBanner] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -29,7 +35,8 @@ const ProfilePhotoSection = ({ photoUrl, bannerUrl = "", userId, fullName, onCha
     try {
       const publicUrl = await uploadProfilePhotoFile(file, userId);
       onChange("profile_photo_url", publicUrl);
-      toast.success("Profile photo uploaded!");
+      await persistProfilePhotoImmediate(publicUrl);
+      toast.success("Profile photo updated and saved!");
     } catch (err: any) {
       toast.error(err?.message || "Photo upload failed");
     } finally {
@@ -45,9 +52,30 @@ const ProfilePhotoSection = ({ photoUrl, bannerUrl = "", userId, fullName, onCha
     try {
       const publicUrl = await uploadBannerPhotoFile(file, userId);
       onChange("banner_photo_url", publicUrl);
-      toast.success("Cover banner uploaded!");
+      const saved = await persistBannerImmediate(publicUrl, userId);
+      if (saved?.shell_state) {
+        onShellStateSynced?.(saved.shell_state);
+      }
+      toast.success("Cover banner updated and saved!");
     } catch (err: any) {
       toast.error(err?.message || "Banner upload failed");
+    } finally {
+      setUploadingBanner(false);
+    }
+  };
+
+  const handleBannerReset = async () => {
+    onChange("banner_photo_url", "");
+    if (!userId) return;
+    setUploadingBanner(true);
+    try {
+      const saved = await persistBannerImmediate("", userId);
+      if (saved?.shell_state) {
+        onShellStateSynced?.(saved.shell_state);
+      }
+      toast.success("Reset to default cover banner.");
+    } catch (err: any) {
+      toast.error(err?.message || "Could not reset banner");
     } finally {
       setUploadingBanner(false);
     }
@@ -92,7 +120,7 @@ const ProfilePhotoSection = ({ photoUrl, bannerUrl = "", userId, fullName, onCha
                 type="button"
                 variant="ghost"
                 size="sm"
-                onClick={() => onChange("banner_photo_url", "")}
+                onClick={handleBannerReset}
                 disabled={uploadingBanner}
                 className="h-8 text-xs gap-1 text-muted-foreground"
               >

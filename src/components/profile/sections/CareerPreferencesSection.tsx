@@ -5,6 +5,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { X, Plus } from "lucide-react";
+import { CharCount } from "@/components/profile/CharCount";
+import { PROFILE_CHAR_LIMITS, formatSmartTag } from "@/components/profile/profileFormatters";
 
 interface Props {
   data: Record<string, any>;
@@ -41,9 +43,13 @@ const TagInput = ({
   };
   return (
     <div className="sm:col-span-2">
-      <Label className="text-xs font-medium text-muted-foreground mb-1.5 block">{label}</Label>
+      <div className="flex items-center justify-between gap-2 mb-1.5">
+        <Label className="text-xs font-medium text-muted-foreground">{label}</Label>
+        <CharCount value={input} max={PROFILE_CHAR_LIMITS.tagChip} />
+      </div>
       <div className="flex gap-2 mb-2">
         <Input
+          maxLength={PROFILE_CHAR_LIMITS.tagChip}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
@@ -68,7 +74,7 @@ const TagInput = ({
         <div className="flex flex-wrap gap-1.5">
           {values.map((v, i) => (
             <Badge key={i} variant="secondary" className="gap-1 text-xs">
-              {v}
+              {formatSmartTag(v)}
               <button
                 type="button"
                 aria-label={`Remove ${v}`}
@@ -132,11 +138,15 @@ const CareerPreferencesSection = ({ data, onChange }: Props) => (
       </Select>
     </div>
     <div>
-      <Label htmlFor="salary" className="text-xs font-medium text-muted-foreground mb-1.5 block">
-        Preferred Salary Range
-      </Label>
+      <div className="flex items-center justify-between gap-2 mb-1.5">
+        <Label htmlFor="salary" className="text-xs font-medium text-muted-foreground">
+          Preferred Salary Range
+        </Label>
+        <CharCount value={data.preferred_salary_range || ""} max={PROFILE_CHAR_LIMITS.salaryRange} />
+      </div>
       <Input
         id="salary"
+        maxLength={PROFILE_CHAR_LIMITS.salaryRange}
         value={data.preferred_salary_range || ""}
         onChange={(e) => onChange("preferred_salary_range", e.target.value)}
         placeholder="e.g. ₹12–18 LPA"

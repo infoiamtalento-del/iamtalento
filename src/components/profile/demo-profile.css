@@ -16,6 +16,9 @@
   padding: 0 0 40px;
   max-width: 100%;
 }
+.demo-dashboard.dp-standalone {
+  --dp-col: 100%;
+}
 .demo-dashboard.dp-standalone .dp-main {
   padding: 28px 24px 60px;
 }
@@ -296,9 +299,69 @@
   gap: 12px;
   background: hsl(var(--secondary) / .35);
 }
+.dp-live-profile .dp-cover {
+  height: 220px;
+}
+.dp-live-profile .dp-identity {
+  margin-inline: 0;
+}
+.dp-live-profile .dp-candidate-actions button {
+  height: auto;
+  min-block-size: 42px;
+  padding-block: 8px;
+}
+.dp-live-profile .dp-candidate-actions button:last-child:not(.dp-icon-only) {
+  width: auto;
+  padding: 8px 18px;
+}
+.dp-live-profile .dp-candidate-actions button.dp-icon-only {
+  width: 42px;
+  min-inline-size: 42px;
+  padding: 0;
+}
+.dp-live-profile .dp-live-tabs {
+  margin-top: 0;
+  padding: 0 20px;
+  border: 1px solid hsl(var(--border) / .55);
+  border-radius: 12px;
+  background: hsl(var(--card) / .97);
+  box-shadow: var(--dp-shadow);
+}
+.dp-live-profile .dp-live-tabs a {
+  height: auto;
+  min-block-size: 46px;
+  padding: 10px 14px;
+}
+.dp-live-profile .dp-contact-details a,
+.dp-live-profile .dp-profile-links a {
+  overflow-wrap: break-word;
+  min-inline-size: 0;
+}
+.dp-bullet-list {
+  margin: 6px 0 0;
+  padding-inline-start: 1.25rem;
+  list-style-type: disc;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: hsl(var(--dp-muted));
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+.dp-bullet-list li::marker {
+  color: hsl(var(--primary));
+}
+@media(max-width:1024px) {
+  .dp-live-profile .dp-cover { height: 185px; }
+}
 @media(max-width:600px) {
   .dp-avatar-initials { width: 96px; height: 96px; font-size: 28px; }
   .dp-cover-actions { right: 8px; top: 9px; gap: 5px; }
   .dp-cover-btn { height: 28px; padding: 0 9px; font-size: 11px; }
-  .dp-live-tabs a { font-size: 12px; padding: 0 11px; }
+  .dp-live-tabs a { font-size: 12px; padding: 8px 11px; }
+  .dp-live-profile .dp-cover { height: 145px; }
+  .dp-live-profile .dp-live-tabs { padding: 0 12px; }
+  .dp-live-profile .dp-candidate-actions button { min-block-size: 38px; padding-block: 6px; }
+  .dp-live-profile .dp-candidate-actions button:last-child:not(.dp-icon-only) { width: auto; padding: 6px 12px; }
+  .dp-live-profile .dp-candidate-actions button.dp-icon-only { width: 38px; min-inline-size: 38px; padding: 0; }
 }

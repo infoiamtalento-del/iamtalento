@@ -51,10 +51,19 @@ import { Switch } from "@/components/ui/switch";
 import { siteLogo } from "@/assets/logo";
 import defaultCover from "@/assets/profile-office-cover.jpg";
 import CompletionRing from "@/components/profile/CompletionRing";
+import { CharCount } from "@/components/profile/CharCount";
+import {
+  PROFILE_CHAR_LIMITS,
+  formatSmartTag,
+  getSuggestedToolsForIndustry,
+  hasCustomExpertiseCards,
+} from "@/components/profile/profileFormatters";
 import {
   getResumeSignedUrl,
   loadFullLiveProfile,
   normalizeLiveProfile,
+  persistBannerImmediate,
+  persistProfilePhotoImmediate,
   saveRichCandidateProfile,
   uploadBannerPhotoFile,
   uploadProfilePhotoFile,
@@ -133,19 +142,6 @@ export const INDUSTRY_CATALOG: { id: string; label: string; suggestedSkills: str
   },
 ];
 
-const SUGGESTED_TOOLS = [
-  "VS Code",
-  "Git & GitHub",
-  "Docker",
-  "Postman",
-  "Figma",
-  "Jira",
-  "AWS",
-  "Linux",
-  "Notion",
-  "Slack",
-];
-
 const WIZARD_STEPS = [
   { num: 1, title: "Verify Account", subtitle: "Email, mobile OTP & ID badge", icon: ShieldCheck },
   { num: 2, title: "Banner & Identity", subtitle: "Cover, photo, specialty & bio", icon: Camera },
@@ -166,11 +162,11 @@ interface OnboardingWizardProps {
   onNavigatePro?: (view: ProView) => void;
 }
 
-const DEFAULT_EXPERTISE: ExpertiseCardItem[] = [
-  { title: "End-to-End Development", sub: "From idea to scalable product" },
-  { title: "Cloud & DevOps", sub: "Scalable infrastructure" },
-  { title: "AI/ML Integration", sub: "Intelligent applications" },
-  { title: "Product Thinking", sub: "User-centric solutions" },
+const createEmptyExpertise = (): ExpertiseCardItem[] => [
+  { title: "", sub: "" },
+  { title: "", sub: "" },
+  { title: "", sub: "" },
+  { title: "", sub: "" },
 ];
 
 const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
@@ -222,7 +218,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   const [about, setAbout] = useState("");
   const [focusBadges, setFocusBadges] = useState<string[]>([]);
   const [badgeInput, setBadgeInput] = useState("");
-  const [expertiseCards, setExpertiseCards] = useState<ExpertiseCardItem[]>(DEFAULT_EXPERTISE);
+  const [expertiseCards, setExpertiseCards] = useState<ExpertiseCardItem[]>(createEmptyExpertise);
 
   // Step 3: Skills, Tools, Education & Experience
   const [skills, setSkills] = useState<SkillDraft[]>([]);
@@ -329,12 +325,14 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
         setCountry(norm.country || "India");
         setAbout(norm.about);
         setFocusBadges(norm.focusBadges);
-        if (norm.expertiseCards.length > 0) {
+        if (hasCustomExpertiseCards(norm.expertiseCards, norm.industry, norm.headline || norm.jobRole)) {
           const padded = [...norm.expertiseCards];
           while (padded.length < 4) {
-            padded.push(DEFAULT_EXPERTISE[padded.length]);
+            padded.push({ title: "", sub: "" });
           }
           setExpertiseCards(padded.slice(0, 4));
+        } else {
+          setExpertiseCards(createEmptyExpertise());
         }
 
         if (norm.skills.length > 0) {
@@ -456,6 +454,8 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
     return match ? match.suggestedSkills : INDUSTRY_CATALOG[0].suggestedSkills;
   }, [industry]);
 
+  const suggestedTools = useMemo(() => getSuggestedToolsForIndustry(industry), [industry]);
+
   const persistCurrentProgress = async (silent = false): Promise<boolean> => {
     if (!userId) {
       if (!silent) toast.success("Demo profile preview updated! Sign up for a real account to save permanently.");
@@ -463,7 +463,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
     }
     setSaving(true);
     try {
-      await saveRichCandidateProfile({
+      const saved = await saveRichCandidateProfile({
         fullName,
         phone,
         headline: headline.trim() || jobRole.trim(),
@@ -512,6 +512,9 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
         phoneVerified,
         existingShellState: shellExtra,
       });
+      if (saved?.shell_state) {
+        setShellExtra(saved.shell_state);
+      }
       if (!silent) toast.success("Profile saved!");
       onSaved?.();
       return true;
@@ -572,9 +575,32 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
     try {
       const url = await uploadBannerPhotoFile(file, userId);
       setBannerUrl(url);
-      toast.success("Cover banner uploaded!");
+      const saved = await persistBannerImmediate(url, userId);
+      if (saved?.shell_state) {
+        setShellExtra(saved.shell_state);
+      }
+      onSaved?.();
+      toast.success("Cover banner updated and saved!");
     } catch (err: any) {
       toast.error(err?.message || "Banner upload failed");
+    } finally {
+      setUploadingBanner(false);
+    }
+  };
+
+  const handleResetBanner = async () => {
+    setBannerUrl("");
+    if (!userId) return;
+    setUploadingBanner(true);
+    try {
+      const saved = await persistBannerImmediate("", userId);
+      if (saved?.shell_state) {
+        setShellExtra(saved.shell_state);
+      }
+      onSaved?.();
+      toast.success("Reset to default cover banner.");
+    } catch (err: any) {
+      toast.error(err?.message || "Could not reset banner");
     } finally {
       setUploadingBanner(false);
     }
@@ -588,7 +614,9 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
     try {
       const url = await uploadProfilePhotoFile(file, userId);
       setPhotoUrl(url);
-      toast.success("Profile picture uploaded!");
+      await persistProfilePhotoImmediate(url);
+      onSaved?.();
+      toast.success("Profile picture updated and saved!");
     } catch (err: any) {
       toast.error(err?.message || "Photo upload failed");
     } finally {
@@ -713,7 +741,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
     .toUpperCase();
 
   const body = (
-    <div className={embedded ? "space-y-6" : "max-w-5xl mx-auto px-4 py-8 space-y-6"}>
+    <div className={embedded ? "space-y-6" : "container py-8 space-y-6"}>
       {/* Stepper Header */}
       <div className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-sm">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-border">
@@ -837,6 +865,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     type="tel"
                     inputMode="tel"
                     autoComplete="tel"
+                    maxLength={PROFILE_CHAR_LIMITS.phone}
                     placeholder="+91 98765 43210"
                     value={phone}
                     onChange={(e) => {
@@ -974,7 +1003,8 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     type="button"
                     size="sm"
                     variant="secondary"
-                    onClick={() => setBannerUrl("")}
+                    disabled={uploadingBanner}
+                    onClick={handleResetBanner}
                     className="h-8 px-2.5 text-xs shadow-md cursor-pointer"
                     title="Reset to default banner"
                   >
@@ -1071,12 +1101,16 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
           {/* Basic Info + Specialty Fields */}
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="wiz-name" className="text-xs font-semibold">Full Name *</Label>
+              <div className="flex items-center justify-between gap-2">
+                <Label htmlFor="wiz-name" className="text-xs font-semibold">Full Name *</Label>
+                <CharCount value={fullName} max={PROFILE_CHAR_LIMITS.fullName} />
+              </div>
               <div className="relative mt-1.5">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="wiz-name"
                   autoComplete="name"
+                  maxLength={PROFILE_CHAR_LIMITS.fullName}
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="e.g. Arjun Mehta"
@@ -1086,35 +1120,47 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
               </div>
             </div>
             <div>
-              <Label htmlFor="wiz-role" className="text-xs font-semibold">Current / Target Job Role *</Label>
+              <div className="flex items-center justify-between gap-2">
+                <Label htmlFor="wiz-role" className="text-xs font-semibold">Current / Target Job Role *</Label>
+                <CharCount value={jobRole} max={PROFILE_CHAR_LIMITS.jobRole} />
+              </div>
               <div className="relative mt-1.5">
                 <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="wiz-role"
+                  maxLength={PROFILE_CHAR_LIMITS.jobRole}
                   value={jobRole}
                   onChange={(e) => setJobRole(e.target.value)}
-                  placeholder="e.g. Senior Full-Stack Engineer"
+                  placeholder="e.g. Digital Marketing Executive or Senior Engineer"
                   className="pl-9"
                 />
               </div>
             </div>
             <div>
-              <Label htmlFor="wiz-headline" className="text-xs font-semibold">Designation / Headline</Label>
+              <div className="flex items-center justify-between gap-2">
+                <Label htmlFor="wiz-headline" className="text-xs font-semibold">Designation / Headline</Label>
+                <CharCount value={headline} max={PROFILE_CHAR_LIMITS.headline} />
+              </div>
               <Input
                 id="wiz-headline"
+                maxLength={PROFILE_CHAR_LIMITS.headline}
                 value={headline}
                 onChange={(e) => setHeadline(e.target.value)}
-                placeholder="e.g. Senior Full-Stack Engineer"
+                placeholder="e.g. Digital Marketing Executive · Growth & Brand"
                 className="mt-1.5"
               />
             </div>
             <div>
-              <Label htmlFor="wiz-subheadline" className="text-xs font-semibold">Sub-Headline / Specialty</Label>
+              <div className="flex items-center justify-between gap-2">
+                <Label htmlFor="wiz-subheadline" className="text-xs font-semibold">Sub-Headline / Specialty</Label>
+                <CharCount value={subHeadline} max={PROFILE_CHAR_LIMITS.subHeadline} />
+              </div>
               <Input
                 id="wiz-subheadline"
+                maxLength={PROFILE_CHAR_LIMITS.subHeadline}
                 value={subHeadline}
                 onChange={(e) => setSubHeadline(e.target.value)}
-                placeholder="e.g. Cloud & AI Specialist"
+                placeholder="e.g. Performance Marketing & Analytics Specialist"
                 className="mt-1.5"
               />
             </div>
@@ -1155,33 +1201,48 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
             )}
 
             <div>
-              <Label htmlFor="wiz-city" className="text-xs font-semibold">City</Label>
+              <div className="flex items-center justify-between gap-2">
+                <Label htmlFor="wiz-city" className="text-xs font-semibold">City</Label>
+                <CharCount value={city} max={PROFILE_CHAR_LIMITS.city} />
+              </div>
               <div className="relative mt-1.5">
                 <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="wiz-city"
+                  autoComplete="address-level2"
+                  maxLength={PROFILE_CHAR_LIMITS.city}
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
-                  placeholder="e.g. Bengaluru"
+                  placeholder="e.g. Chennai or Bengaluru"
                   className="pl-9"
                 />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-2.5">
               <div>
-                <Label htmlFor="wiz-state" className="text-xs font-semibold">State</Label>
+                <div className="flex items-center justify-between gap-2">
+                  <Label htmlFor="wiz-state" className="text-xs font-semibold">State</Label>
+                  <CharCount value={stateName} max={PROFILE_CHAR_LIMITS.state} />
+                </div>
                 <Input
                   id="wiz-state"
+                  autoComplete="address-level1"
+                  maxLength={PROFILE_CHAR_LIMITS.state}
                   value={stateName}
                   onChange={(e) => setStateName(e.target.value)}
-                  placeholder="Karnataka"
+                  placeholder="Tamil Nadu"
                   className="mt-1.5"
                 />
               </div>
               <div>
-                <Label htmlFor="wiz-country" className="text-xs font-semibold">Country</Label>
+                <div className="flex items-center justify-between gap-2">
+                  <Label htmlFor="wiz-country" className="text-xs font-semibold">Country</Label>
+                  <CharCount value={country} max={PROFILE_CHAR_LIMITS.country} />
+                </div>
                 <Input
                   id="wiz-country"
+                  autoComplete="country-name"
+                  maxLength={PROFILE_CHAR_LIMITS.country}
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}
                   placeholder="India"
@@ -1191,25 +1252,33 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
             </div>
 
             <div className="sm:col-span-2">
-              <Label htmlFor="wiz-about" className="text-xs font-semibold">About Me Summary</Label>
+              <div className="flex items-center justify-between gap-2">
+                <Label htmlFor="wiz-about" className="text-xs font-semibold">About Me Summary</Label>
+                <CharCount value={about} max={PROFILE_CHAR_LIMITS.about} />
+              </div>
               <Textarea
                 id="wiz-about"
                 rows={4}
+                maxLength={PROFILE_CHAR_LIMITS.about}
                 value={about}
                 onChange={(e) => setAbout(e.target.value)}
-                placeholder="Passionate engineer with experience building scalable web applications, cloud microservices, and user-centric products..."
+                placeholder="Summarize your core expertise, measurable outcomes, and the value you bring to teams..."
                 className="mt-1.5"
               />
             </div>
 
             {/* Focus Badges */}
             <div className="sm:col-span-2 space-y-2">
-              <Label htmlFor="wiz-badge-input" className="text-xs font-semibold">
-                Hero Focus Badges (displayed beneath your summary)
-              </Label>
+              <div className="flex items-center justify-between gap-2">
+                <Label htmlFor="wiz-badge-input" className="text-xs font-semibold">
+                  Hero Focus Badges (up to 6 displayed beneath your summary)
+                </Label>
+                <CharCount value={badgeInput} max={PROFILE_CHAR_LIMITS.tagChip} />
+              </div>
               <div className="flex gap-2">
                 <Input
                   id="wiz-badge-input"
+                  maxLength={PROFILE_CHAR_LIMITS.tagChip}
                   value={badgeInput}
                   onChange={(e) => setBadgeInput(e.target.value)}
                   onKeyDown={(e) => {
@@ -1218,7 +1287,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                       addUniqueChip(badgeInput, focusBadges, setFocusBadges, () => setBadgeInput(""));
                     }
                   }}
-                  placeholder="e.g. Full-Stack, Cloud Native, AI/ML, System Design, Product Thinking"
+                  placeholder="e.g. Performance Marketing, Social Media Strategy, Full-Stack"
                 />
                 <Button
                   type="button"
@@ -1235,7 +1304,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                       key={b}
                       className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-xs font-medium"
                     >
-                      {b}
+                      {formatSmartTag(b)}
                       <button
                         type="button"
                         onClick={() => setFocusBadges((prev) => prev.filter((x) => x !== b))}
@@ -1251,28 +1320,43 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
 
             {/* 4 Core Expertise Pillars */}
             <div className="sm:col-span-2 space-y-2 pt-1">
-              <Label className="text-xs font-semibold">4 Core Expertise Cards (displayed inside About Me)</Label>
+              <div>
+                <Label className="text-xs font-semibold">4 Core Spotlight Cards (optional — displayed inside About Me)</Label>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Leave blank to auto-curate highlights from your role, skills &amp; tools, or customize up to 4 cards.
+                </p>
+              </div>
               <div className="grid sm:grid-cols-2 gap-2.5">
                 {expertiseCards.slice(0, 4).map((card, idx) => (
                   <div key={idx} className="rounded-xl border border-border bg-background p-3 space-y-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[11px] font-medium text-muted-foreground">Card #{idx + 1} Title</span>
+                      <CharCount value={card.title} max={PROFILE_CHAR_LIMITS.expertiseTitle} />
+                    </div>
                     <Input
+                      maxLength={PROFILE_CHAR_LIMITS.expertiseTitle}
                       value={card.title}
                       onChange={(e) =>
                         setExpertiseCards((prev) =>
                           prev.map((c, i) => (i === idx ? { ...c, title: e.target.value } : c))
                         )
                       }
-                      placeholder={`Pillar ${idx + 1} title`}
+                      placeholder={`Highlight ${idx + 1} (e.g. Performance Marketing)`}
                       className="h-8 text-xs font-semibold"
                     />
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[11px] text-muted-foreground">Subtitle</span>
+                      <CharCount value={card.sub} max={PROFILE_CHAR_LIMITS.expertiseSub} />
+                    </div>
                     <Input
+                      maxLength={PROFILE_CHAR_LIMITS.expertiseSub}
                       value={card.sub}
                       onChange={(e) =>
                         setExpertiseCards((prev) =>
                           prev.map((c, i) => (i === idx ? { ...c, sub: e.target.value } : c))
                         )
                       }
-                      placeholder="Short subtitle"
+                      placeholder="Short proof point (e.g. Multi-channel ROI growth)"
                       className="h-8 text-xs"
                     />
                   </div>
@@ -1346,7 +1430,8 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
 
             <div className="flex flex-col sm:flex-row gap-2">
               <Input
-                placeholder="Type any skill (e.g. React, Python, System Design) and press Add..."
+                maxLength={PROFILE_CHAR_LIMITS.tagChip}
+                placeholder="Type any skill (e.g. Performance Marketing, SEO, React) and press Add..."
                 value={skillInput}
                 onChange={(e) => setSkillInput(e.target.value)}
                 onKeyDown={(e) => {
@@ -1380,7 +1465,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     key={s.name}
                     className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary"
                   >
-                    {s.name}
+                    {formatSmartTag(s.name)}
                     <span className="text-[10px] uppercase opacity-75">· {s.level}</span>
                     <button
                       type="button"
@@ -1398,12 +1483,15 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
 
           {/* Tools Builder */}
           <div className="rounded-xl border border-border bg-background p-5 space-y-3">
-            <Label className="text-sm font-bold flex items-center gap-2">
-              <Wrench className="h-4 w-4 text-primary" />
-              Tools &amp; Platforms ({tools.length})
-            </Label>
+            <div className="flex items-center justify-between gap-2">
+              <Label className="text-sm font-bold flex items-center gap-2">
+                <Wrench className="h-4 w-4 text-primary" />
+                Tools &amp; Platforms ({tools.length})
+              </Label>
+              <CharCount value={toolInput} max={PROFILE_CHAR_LIMITS.tagChip} />
+            </div>
             <div className="flex flex-wrap gap-1.5">
-              {SUGGESTED_TOOLS.map((tl) => {
+              {suggestedTools.map((tl) => {
                 const exists = tools.some((x) => x.toLowerCase() === tl.toLowerCase());
                 return (
                   <button
@@ -1424,7 +1512,8 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
             </div>
             <div className="flex gap-2">
               <Input
-                placeholder="Add tool (e.g. Kubernetes, Postman, Tableau)..."
+                maxLength={PROFILE_CHAR_LIMITS.tagChip}
+                placeholder="Add tool (e.g. Google Analytics, HubSpot, Figma, Docker)..."
                 value={toolInput}
                 onChange={(e) => setToolInput(e.target.value)}
                 onKeyDown={(e) => {
@@ -1449,7 +1538,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     key={t}
                     className="inline-flex items-center gap-1.5 rounded-lg bg-secondary px-3 py-1 text-xs font-medium"
                   >
-                    {t}
+                    {formatSmartTag(t)}
                     <button
                       type="button"
                       aria-label={`Remove ${t}`}
@@ -1489,9 +1578,13 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
               <div key={idx} className="rounded-lg border border-border bg-card p-3.5 space-y-2.5">
                 <div className="grid sm:grid-cols-2 gap-2.5">
                   <div>
-                    <Label className="text-[11px] text-muted-foreground">College / University *</Label>
+                    <div className="flex items-center justify-between gap-2">
+                      <Label className="text-[11px] text-muted-foreground">College / University *</Label>
+                      <CharCount value={ed.institution} max={PROFILE_CHAR_LIMITS.eduInstitution} />
+                    </div>
                     <Input
-                      placeholder="e.g. Indian Institute of Technology, Delhi"
+                      maxLength={PROFILE_CHAR_LIMITS.eduInstitution}
+                      placeholder="e.g. Loyola College or IIT Madras"
                       value={ed.institution}
                       onChange={(e) =>
                         setEducations((prev) =>
@@ -1501,9 +1594,13 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     />
                   </div>
                   <div>
-                    <Label className="text-[11px] text-muted-foreground">Degree / Specialization</Label>
+                    <div className="flex items-center justify-between gap-2">
+                      <Label className="text-[11px] text-muted-foreground">Degree / Specialization</Label>
+                      <CharCount value={ed.degree} max={PROFILE_CHAR_LIMITS.eduDegree} />
+                    </div>
                     <Input
-                      placeholder="e.g. B.Tech in Computer Science & Engineering"
+                      maxLength={PROFILE_CHAR_LIMITS.eduDegree}
+                      placeholder="e.g. BBA Marketing or B.Tech CS"
                       value={ed.degree}
                       onChange={(e) =>
                         setEducations((prev) =>
@@ -1518,7 +1615,8 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     <Label className="text-[11px] text-muted-foreground">Start Year</Label>
                     <Input
                       placeholder="2020"
-                      maxLength={4}
+                      inputMode="numeric"
+                      maxLength={PROFILE_CHAR_LIMITS.eduYear}
                       value={ed.start_year}
                       onChange={(e) =>
                         setEducations((prev) =>
@@ -1531,7 +1629,8 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     <Label className="text-[11px] text-muted-foreground">Grad Year</Label>
                     <Input
                       placeholder="2024"
-                      maxLength={4}
+                      inputMode="numeric"
+                      maxLength={PROFILE_CHAR_LIMITS.eduYear}
                       value={ed.year}
                       onChange={(e) =>
                         setEducations((prev) =>
@@ -1544,6 +1643,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     <Label className="text-[11px] text-muted-foreground">Grade / CGPA</Label>
                     <Input
                       placeholder="e.g. 8.7 CGPA or 94.2%"
+                      maxLength={PROFILE_CHAR_LIMITS.eduGrade}
                       value={ed.grade}
                       onChange={(e) =>
                         setEducations((prev) =>
@@ -1557,6 +1657,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                       type="button"
                       variant="ghost"
                       size="icon"
+                      aria-label="Remove education"
                       onClick={() => setEducations((prev) => prev.filter((_, i) => i !== idx))}
                     >
                       <Trash2 className="h-4 w-4 text-muted-foreground" />
@@ -1598,6 +1699,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 <div key={idx} className="rounded-lg border border-border bg-card p-3.5 space-y-3">
                   <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
                     <Input
+                      maxLength={PROFILE_CHAR_LIMITS.expTitle}
                       placeholder="Role / Title *"
                       value={ex.title}
                       onChange={(e) =>
@@ -1607,6 +1709,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                       }
                     />
                     <Input
+                      maxLength={PROFILE_CHAR_LIMITS.expCompany}
                       placeholder="Company Name *"
                       value={ex.company}
                       onChange={(e) =>
@@ -1616,7 +1719,8 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                       }
                     />
                     <Input
-                      placeholder="Location (e.g. Bengaluru)"
+                      maxLength={PROFILE_CHAR_LIMITS.expLocation}
+                      placeholder="Location (e.g. Chennai)"
                       value={ex.location}
                       onChange={(e) =>
                         setExperiences((prev) =>
@@ -1626,7 +1730,8 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     />
                     <div className="flex gap-1.5">
                       <Input
-                        placeholder="Start (2022)"
+                        maxLength={PROFILE_CHAR_LIMITS.expPeriod}
+                        placeholder="Start (Jun 2024)"
                         value={ex.start}
                         onChange={(e) =>
                           setExperiences((prev) =>
@@ -1635,6 +1740,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                         }
                       />
                       <Input
+                        maxLength={PROFILE_CHAR_LIMITS.expPeriod}
                         placeholder="End / Present"
                         value={ex.end}
                         onChange={(e) =>
@@ -1647,24 +1753,35 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                         type="button"
                         variant="ghost"
                         size="icon"
+                        aria-label="Remove experience"
                         onClick={() => setExperiences((prev) => prev.filter((_, i) => i !== idx))}
                       >
                         <Trash2 className="h-4 w-4 text-muted-foreground" />
                       </Button>
                     </div>
                   </div>
-                  <Textarea
-                    rows={2}
-                    placeholder="Key impact & achievements..."
-                    value={ex.description}
-                    onChange={(e) =>
-                      setExperiences((prev) =>
-                        prev.map((item, i) => (i === idx ? { ...item, description: e.target.value } : item))
-                      )
-                    }
-                  />
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[11px] text-muted-foreground">
+                        Key Achievements (use &quot;- &quot; on new lines for clean bullets)
+                      </span>
+                      <CharCount value={ex.description} max={PROFILE_CHAR_LIMITS.expDescription} />
+                    </div>
+                    <Textarea
+                      rows={3}
+                      maxLength={PROFILE_CHAR_LIMITS.expDescription}
+                      placeholder="- Executed digital campaigns increasing lead conversion by 35%..."
+                      value={ex.description}
+                      onChange={(e) =>
+                        setExperiences((prev) =>
+                          prev.map((item, i) => (i === idx ? { ...item, description: e.target.value } : item))
+                        )
+                      }
+                    />
+                  </div>
                   <Input
-                    placeholder="Tech & tools used in this role (comma-separated, e.g. React, Node.js, AWS, PostgreSQL)"
+                    maxLength={250}
+                    placeholder="Tools & skills used in this role (comma-separated, e.g. Meta Ads, GA4, Figma)"
                     value={ex.tools.join(", ")}
                     onChange={(e) =>
                       setExperiences((prev) =>
@@ -1715,7 +1832,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
             <div className="flex items-center justify-between">
               <Label className="text-sm font-bold flex items-center gap-2">
                 <FolderKanban className="h-4 w-4 text-primary" />
-                Featured Projects ({projects.length})
+                Projects &amp; Case Studies ({projects.length})
               </Label>
               <Button
                 type="button"
@@ -1734,7 +1851,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
             </div>
             {projects.length === 0 ? (
               <p className="text-xs text-muted-foreground">
-                Add 1–4 signature projects with preview images, tech tags, Live Demo, and GitHub links.
+                Add 1–4 signature projects or campaign case studies with cover images, tools, and live links.
               </p>
             ) : (
               projects.map((proj, idx) => (
@@ -1752,15 +1869,37 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     </Button>
                   </div>
                   <div className="grid sm:grid-cols-2 gap-2.5">
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[11px] text-muted-foreground">Project / Campaign Title *</span>
+                        <CharCount value={proj.title} max={PROFILE_CHAR_LIMITS.projectTitle} />
+                      </div>
+                      <Input
+                        maxLength={PROFILE_CHAR_LIMITS.projectTitle}
+                        placeholder="e.g. Omnichannel Brand Launch or CloudSync Platform"
+                        value={proj.title}
+                        onChange={(e) =>
+                          setProjects((prev) => prev.map((p, i) => (i === idx ? { ...p, title: e.target.value } : p)))
+                        }
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[11px] text-muted-foreground">Your Role</span>
+                        <CharCount value={proj.role} max={PROFILE_CHAR_LIMITS.projectRole} />
+                      </div>
+                      <Input
+                        maxLength={PROFILE_CHAR_LIMITS.projectRole}
+                        placeholder="e.g. Campaign Strategist or Lead Engineer"
+                        value={proj.role}
+                        onChange={(e) =>
+                          setProjects((prev) => prev.map((p, i) => (i === idx ? { ...p, role: e.target.value } : p)))
+                        }
+                      />
+                    </div>
                     <Input
-                      placeholder="Project Title * (e.g. CloudSync – Real-Time Platform)"
-                      value={proj.title}
-                      onChange={(e) =>
-                        setProjects((prev) => prev.map((p, i) => (i === idx ? { ...p, title: e.target.value } : p)))
-                      }
-                    />
-                    <Input
-                      placeholder="Tech Stack (comma-separated, e.g. React, Go, Docker)"
+                      maxLength={250}
+                      placeholder="Tools used (comma-separated, e.g. Meta Ads, GA4, React)"
                       value={proj.tools.join(", ")}
                       onChange={(e) =>
                         setProjects((prev) =>
@@ -1779,7 +1918,16 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                       }
                     />
                     <Input
-                      placeholder="Live Demo URL (https://...)"
+                      maxLength={PROFILE_CHAR_LIMITS.projectImpact}
+                      placeholder="Key Metric / Impact (e.g. 3.4x ROAS, +42% organic traffic)"
+                      value={proj.impact}
+                      onChange={(e) =>
+                        setProjects((prev) => prev.map((p, i) => (i === idx ? { ...p, impact: e.target.value } : p)))
+                      }
+                    />
+                    <Input
+                      maxLength={PROFILE_CHAR_LIMITS.url}
+                      placeholder="Live Link / Case Study URL (https://...)"
                       autoCorrect="off"
                       autoCapitalize="none"
                       spellCheck={false}
@@ -1789,7 +1937,8 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                       }
                     />
                     <Input
-                      placeholder="GitHub Repository URL (https://github.com/...)"
+                      maxLength={PROFILE_CHAR_LIMITS.url}
+                      placeholder="Source / Deck URL (https://...)"
                       autoCorrect="off"
                       autoCapitalize="none"
                       spellCheck={false}
@@ -1801,14 +1950,21 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                       }
                     />
                   </div>
-                  <Textarea
-                    rows={2}
-                    placeholder="What problem does it solve and what did you build?"
-                    value={proj.description}
-                    onChange={(e) =>
-                      setProjects((prev) => prev.map((p, i) => (i === idx ? { ...p, description: e.target.value } : p)))
-                    }
-                  />
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[11px] text-muted-foreground">Description</span>
+                      <CharCount value={proj.description} max={PROFILE_CHAR_LIMITS.projectDescription} />
+                    </div>
+                    <Textarea
+                      rows={2}
+                      maxLength={PROFILE_CHAR_LIMITS.projectDescription}
+                      placeholder="What challenge did this solve and what measurable outcome did you deliver?"
+                      value={proj.description}
+                      onChange={(e) =>
+                        setProjects((prev) => prev.map((p, i) => (i === idx ? { ...p, description: e.target.value } : p)))
+                      }
+                    />
+                  </div>
                   <div className="flex flex-wrap items-center gap-3">
                     {proj.image_url && (
                       <img
@@ -1823,7 +1979,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                       ) : (
                         <ImagePlus className="h-3.5 w-3.5 text-primary" />
                       )}
-                      <span>{proj.image_url ? "Change Project Screenshot" : "Upload Project Screenshot"}</span>
+                      <span>{proj.image_url ? "Change Cover Image" : "Upload Cover Image"}</span>
                       <input
                         type="file"
                         accept="image/jpeg,image/png,image/webp"
@@ -1858,13 +2014,14 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
             </div>
             {certifications.length === 0 ? (
               <p className="text-xs text-muted-foreground">
-                Include cloud, domain, or professional licenses (e.g. AWS Solutions Architect, CFA, CKA).
+                Include industry, platform, or professional certifications (e.g. Google Ads, HubSpot, CFA, AWS).
               </p>
             ) : (
               certifications.map((cert, idx) => (
                 <div key={idx} className="rounded-lg border border-border bg-card p-3.5 space-y-2.5">
                   <div className="grid sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_130px_1fr_auto] gap-2.5 items-center">
                     <Input
+                      maxLength={PROFILE_CHAR_LIMITS.certName}
                       placeholder="Certification Name *"
                       value={cert.name}
                       onChange={(e) =>
@@ -1874,7 +2031,8 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                       }
                     />
                     <Input
-                      placeholder="Issuing Org (e.g. AWS)"
+                      maxLength={PROFILE_CHAR_LIMITS.certIssuer}
+                      placeholder="Issuing Org (e.g. Google, HubSpot)"
                       value={cert.issuer}
                       onChange={(e) =>
                         setCertifications((prev) =>
@@ -1883,6 +2041,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                       }
                     />
                     <Input
+                      maxLength={PROFILE_CHAR_LIMITS.certDate}
                       placeholder="Year (2024)"
                       value={cert.date}
                       onChange={(e) =>
@@ -1892,6 +2051,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                       }
                     />
                     <Input
+                      maxLength={PROFILE_CHAR_LIMITS.url}
                       placeholder="Credential URL"
                       autoCorrect="off"
                       autoCapitalize="none"
@@ -1907,6 +2067,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                       type="button"
                       variant="ghost"
                       size="icon"
+                      aria-label="Remove certification"
                       onClick={() => setCertifications((prev) => prev.filter((_, i) => i !== idx))}
                     >
                       <Trash2 className="h-4 w-4 text-muted-foreground" />
@@ -1936,12 +2097,13 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
             </div>
             {awards.length === 0 ? (
               <p className="text-xs text-muted-foreground">
-                Highlight hackathons, academic distinctions, or workplace awards.
+                Highlight workplace recognitions, competitions, or academic distinctions.
               </p>
             ) : (
               awards.map((aw, idx) => (
                 <div key={idx} className="rounded-lg border border-border bg-card p-3.5 grid sm:grid-cols-[1fr_1fr_1.4fr_auto] gap-2.5 items-center">
                   <Input
+                    maxLength={PROFILE_CHAR_LIMITS.awardTitle}
                     placeholder="Award Title *"
                     value={aw.title}
                     onChange={(e) =>
@@ -1949,6 +2111,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     }
                   />
                   <Input
+                    maxLength={PROFILE_CHAR_LIMITS.awardOrg}
                     placeholder="Organization / Event"
                     value={aw.organization || ""}
                     onChange={(e) =>
@@ -1956,7 +2119,8 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     }
                   />
                   <Input
-                    placeholder="Description & Year (e.g. 1st place among 500+ teams, 2024)"
+                    maxLength={PROFILE_CHAR_LIMITS.awardDescription}
+                    placeholder="Description & Year (e.g. Top performer Q4, 2024)"
                     value={aw.description}
                     onChange={(e) =>
                       setAwards((prev) => prev.map((a, i) => (i === idx ? { ...a, description: e.target.value } : a)))
@@ -1966,6 +2130,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     type="button"
                     variant="ghost"
                     size="icon"
+                    aria-label="Remove award"
                     onClick={() => setAwards((prev) => prev.filter((_, i) => i !== idx))}
                   >
                     <Trash2 className="h-4 w-4 text-muted-foreground" />
@@ -2050,11 +2215,15 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
             </Label>
             <div className="grid sm:grid-cols-2 gap-3">
               <div>
-                <Label htmlFor="wiz-vid-url" className="text-xs text-muted-foreground">
-                  Video URL (YouTube or direct MP4/WebM link)
-                </Label>
+                <div className="flex items-center justify-between gap-2">
+                  <Label htmlFor="wiz-vid-url" className="text-xs text-muted-foreground">
+                    Video URL (YouTube or direct MP4/WebM link)
+                  </Label>
+                  <CharCount value={videoIntroUrl} max={PROFILE_CHAR_LIMITS.url} />
+                </div>
                 <Input
                   id="wiz-vid-url"
+                  maxLength={PROFILE_CHAR_LIMITS.url}
                   autoCorrect="off"
                   autoCapitalize="none"
                   spellCheck={false}
@@ -2065,14 +2234,18 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 />
               </div>
               <div>
-                <Label htmlFor="wiz-vid-pitch" className="text-xs text-muted-foreground">
-                  Short Video Pitch Summary
-                </Label>
+                <div className="flex items-center justify-between gap-2">
+                  <Label htmlFor="wiz-vid-pitch" className="text-xs text-muted-foreground">
+                    Short Video Pitch Summary
+                  </Label>
+                  <CharCount value={videoPitch} max={PROFILE_CHAR_LIMITS.videoPitch} />
+                </div>
                 <Input
                   id="wiz-vid-pitch"
+                  maxLength={PROFILE_CHAR_LIMITS.videoPitch}
                   value={videoPitch}
                   onChange={(e) => setVideoPitch(e.target.value)}
-                  placeholder="In this 60s pitch, I walk through my key engineering wins..."
+                  placeholder="In this 60s pitch, I walk through my key achievements..."
                   className="mt-1"
                 />
               </div>
@@ -2138,10 +2311,14 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
             </div>
 
             <div>
-              <Label htmlFor="wiz-pref-loc" className="text-xs font-semibold">Preferred Locations (comma-separated)</Label>
+              <div className="flex items-center justify-between gap-2">
+                <Label htmlFor="wiz-pref-loc" className="text-xs font-semibold">Preferred Locations (comma-separated)</Label>
+                <CharCount value={preferredLocations} max={PROFILE_CHAR_LIMITS.preferredLocations} />
+              </div>
               <Input
                 id="wiz-pref-loc"
-                placeholder="Bengaluru, Hyderabad, Remote"
+                maxLength={PROFILE_CHAR_LIMITS.preferredLocations}
+                placeholder="Chennai, Bengaluru, Remote"
                 value={preferredLocations}
                 onChange={(e) => setPreferredLocations(e.target.value)}
                 className="mt-1.5"
@@ -2150,10 +2327,14 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
 
             <div className="grid grid-cols-2 gap-2.5">
               <div>
-                <Label htmlFor="wiz-sal" className="text-xs font-semibold">Expected CTC (LPA)</Label>
+                <div className="flex items-center justify-between gap-2">
+                  <Label htmlFor="wiz-sal" className="text-xs font-semibold">Expected CTC (LPA)</Label>
+                  <CharCount value={salaryRange} max={PROFILE_CHAR_LIMITS.salaryRange} />
+                </div>
                 <Input
                   id="wiz-sal"
-                  placeholder="e.g. 12 - 18 LPA"
+                  maxLength={PROFILE_CHAR_LIMITS.salaryRange}
+                  placeholder="e.g. 8 - 14 LPA"
                   value={salaryRange}
                   onChange={(e) => setSalaryRange(e.target.value)}
                   className="mt-1.5"
@@ -2198,6 +2379,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
               {languages.map((lang, idx) => (
                 <div key={idx} className="grid grid-cols-[1fr_92px_auto] gap-1.5">
                   <Input
+                    maxLength={PROFILE_CHAR_LIMITS.languageName}
                     placeholder="English"
                     value={lang.name}
                     onChange={(e) =>
@@ -2208,6 +2390,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     className="h-8 text-xs"
                   />
                   <Input
+                    maxLength={PROFILE_CHAR_LIMITS.languageLevel}
                     placeholder="Fluent"
                     value={lang.level}
                     onChange={(e) =>
@@ -2219,6 +2402,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                   />
                   <button
                     type="button"
+                    aria-label={`Remove ${lang.name || "language"}`}
                     onClick={() => setLanguages((prev) => prev.filter((_, i) => i !== idx))}
                     className="px-1 text-muted-foreground hover:text-destructive"
                   >
@@ -2235,6 +2419,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
               </Label>
               <div className="flex gap-1.5">
                 <Input
+                  maxLength={PROFILE_CHAR_LIMITS.tagChip}
                   placeholder="e.g. Photography, Chess"
                   value={hobbyInput}
                   onChange={(e) => setHobbyInput(e.target.value)}
@@ -2259,8 +2444,12 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
               <div className="flex flex-wrap gap-1.5">
                 {hobbies.map((h) => (
                   <span key={h} className="inline-flex items-center gap-1 rounded bg-secondary px-2 py-0.5 text-[11px]">
-                    {h}
-                    <button type="button" onClick={() => setHobbies((prev) => prev.filter((x) => x !== h))}>
+                    {formatSmartTag(h)}
+                    <button
+                      type="button"
+                      aria-label={`Remove ${h}`}
+                      onClick={() => setHobbies((prev) => prev.filter((x) => x !== h))}
+                    >
                       <X className="h-3 w-3" />
                     </button>
                   </span>
@@ -2275,7 +2464,8 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
               </Label>
               <div className="flex gap-1.5">
                 <Input
-                  placeholder="e.g. Generative AI, FinTech"
+                  maxLength={PROFILE_CHAR_LIMITS.tagChip}
+                  placeholder="e.g. Brand Strategy, Generative AI"
                   value={interestInput}
                   onChange={(e) => setInterestInput(e.target.value)}
                   onKeyDown={(e) => {
@@ -2299,8 +2489,12 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
               <div className="flex flex-wrap gap-1.5">
                 {interests.map((it) => (
                   <span key={it} className="inline-flex items-center gap-1 rounded bg-secondary px-2 py-0.5 text-[11px]">
-                    {it}
-                    <button type="button" onClick={() => setInterests((prev) => prev.filter((x) => x !== it))}>
+                    {formatSmartTag(it)}
+                    <button
+                      type="button"
+                      aria-label={`Remove ${it}`}
+                      onClick={() => setInterests((prev) => prev.filter((x) => x !== it))}
+                    >
                       <X className="h-3 w-3" />
                     </button>
                   </span>
@@ -2312,15 +2506,19 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
           {/* Public Handle & Social Links */}
           <div className="grid sm:grid-cols-2 gap-4 pt-1">
             <div>
-              <Label htmlFor="wiz-slug" className="text-xs font-semibold">Public Profile Handle (/u/your-handle)</Label>
+              <div className="flex items-center justify-between gap-2">
+                <Label htmlFor="wiz-slug" className="text-xs font-semibold">Public Profile Handle (/u/your-handle)</Label>
+                <CharCount value={portfolioSlug} max={PROFILE_CHAR_LIMITS.slug} />
+              </div>
               <div className="flex items-center gap-1.5 mt-1.5">
                 <span className="text-xs text-muted-foreground font-mono">/u/</span>
                 <Input
                   id="wiz-slug"
+                  maxLength={PROFILE_CHAR_LIMITS.slug}
                   autoCorrect="off"
                   autoCapitalize="none"
                   spellCheck={false}
-                  placeholder="arjun-mehta-pro"
+                  placeholder="your-name-pro"
                   value={portfolioSlug}
                   onChange={(e) => setPortfolioSlug(e.target.value)}
                 />
@@ -2332,6 +2530,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
               </Label>
               <Input
                 id="wiz-li"
+                maxLength={PROFILE_CHAR_LIMITS.url}
                 autoCorrect="off"
                 autoCapitalize="none"
                 spellCheck={false}
@@ -2347,6 +2546,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
               </Label>
               <Input
                 id="wiz-gh"
+                maxLength={PROFILE_CHAR_LIMITS.url}
                 autoCorrect="off"
                 autoCapitalize="none"
                 spellCheck={false}
@@ -2362,10 +2562,11 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
               </Label>
               <Input
                 id="wiz-pf-url"
+                maxLength={PROFILE_CHAR_LIMITS.url}
                 autoCorrect="off"
                 autoCapitalize="none"
                 spellCheck={false}
-                placeholder="https://yourportfolio.dev"
+                placeholder="https://yourportfolio.com"
                 value={portfolioUrl}
                 onChange={(e) => setPortfolioUrl(e.target.value)}
                 className="mt-1.5"
@@ -2375,6 +2576,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
               <Label htmlFor="wiz-kaggle" className="text-xs font-semibold">Kaggle URL (Optional)</Label>
               <Input
                 id="wiz-kaggle"
+                maxLength={PROFILE_CHAR_LIMITS.url}
                 autoCorrect="off"
                 autoCapitalize="none"
                 spellCheck={false}
@@ -2388,6 +2590,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
               <Label htmlFor="wiz-behance" className="text-xs font-semibold">Behance / Design URL (Optional)</Label>
               <Input
                 id="wiz-behance"
+                maxLength={PROFILE_CHAR_LIMITS.url}
                 autoCorrect="off"
                 autoCapitalize="none"
                 spellCheck={false}
@@ -2428,7 +2631,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
       </Helmet>
       <div className="min-h-screen bg-background">
         <header className="sticky top-0 z-30 border-b border-border bg-card/90 backdrop-blur-sm">
-          <div className="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
+          <div className="container flex items-center justify-between py-3">
             <Link to="/" className="flex items-center gap-2">
               <img src={siteLogo.url} alt="I Am Talento" className="h-9 w-auto object-contain" />
             </Link>

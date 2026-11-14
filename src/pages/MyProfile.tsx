@@ -69,7 +69,7 @@ const MyProfile = () => {
 
       <div className="min-h-screen bg-[#FBF4EB]">
         <header className="sticky top-0 z-30 bg-card/95 backdrop-blur-md border-b border-border/60">
-          <div className="max-w-[988px] mx-auto flex items-center justify-between px-4 sm:px-6 h-16 gap-3">
+          <div className="container flex items-center justify-between h-16 gap-3">
             <Link to="/" className="flex items-center gap-2 shrink-0" aria-label="IAmTalento Home">
               <img src={siteLogo.url} alt={siteLogo.alt} className="h-9 w-auto object-contain" />
             </Link>

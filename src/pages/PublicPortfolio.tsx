@@ -4,10 +4,8 @@ import { Helmet } from "react-helmet-async";
 import { toast } from "sonner";
 import {
   Award,
-  Brain,
   BriefcaseBusiness,
   CheckCircle2,
-  Cloud,
   Code2,
   Crown,
   ExternalLink,
@@ -16,45 +14,43 @@ import {
   GraduationCap,
   Heart,
   Languages,
-  Layers,
   Linkedin,
   MapPin,
   Palette,
   Share2,
-  ShieldCheck,
   Sparkles,
   Trophy,
   UserRound,
   Video,
   Wrench,
-  type LucideIcon,
 } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAsync } from "@/hooks/useAsync";
-import { fetchPublicPortfolio } from "@/services/candidate/profile";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  fetchPublicPortfolio,
+  loadFullLiveProfile,
+  normalizeLiveProfile,
+  resolvePublicBannerFromStorage,
+} from "@/services/candidate/profile";
+import { FormattedDescription } from "@/components/profile/CharCount";
+import {
+  buildSmartHighlights,
+  formatExperiencePeriod,
+  formatLocationDisplay,
+  formatPlaceName,
+  formatSmartTag,
+  isTechnicalProfile,
+  pickDomainIcon,
+} from "@/components/profile/profileFormatters";
 import { cn } from "@/lib/utils";
 import defaultCover from "@/assets/profile-office-cover.jpg";
 import cloudProject from "@/assets/profile-cloudsync.jpg";
 import parserProject from "@/assets/profile-resume-parser.jpg";
 import "@/components/profile/demo-profile.css";
-
-const BADGE_ICONS: { icon: LucideIcon; tone: "red" | "blue" | "green" | "violet" }[] = [
-  { icon: Code2, tone: "red" },
-  { icon: Cloud, tone: "blue" },
-  { icon: Brain, tone: "green" },
-  { icon: Layers, tone: "blue" },
-  { icon: Heart, tone: "violet" },
-];
-
-const EXPERTISE_ICONS: { icon: LucideIcon; tone: "red" | "blue" | "violet" | "green" }[] = [
-  { icon: Code2, tone: "red" },
-  { icon: Cloud, tone: "blue" },
-  { icon: Brain, tone: "violet" },
-  { icon: ShieldCheck, tone: "green" },
-];
 
 function toYoutubeEmbedUrl(rawUrl: string): string | null {
   try {
@@ -74,9 +70,61 @@ function toYoutubeEmbedUrl(rawUrl: string): string | null {
   return null;
 }
 
+async function loadEnrichedPublicPortfolio(slug: string): Promise<Record<string, any> | null> {
+  const base = await fetchPublicPortfolio(slug);
+  if (!base) return null;
+
+  const enriched: Record<string, any> = { ...base };
+  let ownerResetBanner = false;
+
+  // If the signed-in user is viewing their own public portfolio handle, enrich any fields
+  // that an unmigrated remote `get_public_portfolio` RPC might omit (never exposing email/phone).
+  try {
+    const sessionRes = await supabase.auth?.getSession?.();
+    if (sessionRes?.data?.session?.user) {
+      const live = await loadFullLiveProfile();
+      if (live && (live.profile.portfolio_slug || "").toLowerCase() === slug.toLowerCase()) {
+        const n = normalizeLiveProfile(live);
+        ownerResetBanner = Boolean(n.shellState?.arjun_profile_v1?.banner_reset);
+        enriched.banner = ownerResetBanner ? "" : n.bannerPhotoUrl || enriched.banner || "";
+        enriched.photo = n.profilePhotoUrl || enriched.photo;
+        enriched.sub_headline = n.subHeadline || enriched.sub_headline;
+        enriched.state = n.state || enriched.state;
+        enriched.country = n.country || enriched.country;
+        enriched.open_for_freelance = n.openForFreelance ?? enriched.open_for_freelance;
+        if (n.focusBadges.length > 0) enriched.focus_badges = n.focusBadges;
+        if (n.expertiseCards.length > 0) enriched.expertise_cards = n.expertiseCards;
+        if (n.tools.length > 0) enriched.tools = n.tools;
+        if (n.hobbies.length > 0) enriched.hobbies = n.hobbies;
+        if (n.interests.length > 0) enriched.interests = n.interests;
+        if (n.experiences.length > 0) enriched.experiences = n.experiences;
+        if (n.projects.length > 0) enriched.projects = n.projects;
+        if (n.educations.length > 0) enriched.educations = n.educations;
+        if (n.certifications.length > 0) enriched.certifications = n.certifications;
+        if (n.awards.length > 0) enriched.awards = n.awards;
+        if (n.languages.length > 0) enriched.languages = n.languages;
+        enriched.video_intro_url = n.videoIntroUrl || enriched.video_intro_url;
+        enriched.video_pitch = n.videoPitch || enriched.video_pitch;
+        enriched.kaggle = n.kaggleUrl || enriched.kaggle;
+        enriched.behance = n.behanceUrl || enriched.behance;
+      }
+    }
+  } catch {
+    /* Anonymous viewer or session check unavailable */
+  }
+
+  // Storage fallback for unmigrated remote `get_public_portfolio` RPCs when banner is absent
+  if (!enriched.banner && !ownerResetBanner && enriched.photo) {
+    const storageBanner = await resolvePublicBannerFromStorage(enriched.photo);
+    if (storageBanner) enriched.banner = storageBanner;
+  }
+
+  return enriched;
+}
+
 const PublicPortfolio: React.FC = () => {
   const { slug = "" } = useParams<{ slug: string }>();
-  const { data, loading, error } = useAsync(() => fetchPublicPortfolio(slug), [slug]);
+  const { data, loading, error } = useAsync(() => loadEnrichedPublicPortfolio(slug), [slug]);
   const [activeTab, setActiveTab] = useState("about-me");
   const [videoOpen, setVideoOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
@@ -165,9 +213,8 @@ const PublicPortfolio: React.FC = () => {
     }
   };
 
-  const locationStr = data
-    ? [data.city, data.state, data.country].map((x) => (x || "").trim()).filter(Boolean).join(", ")
-    : "";
+  const locationStr = data ? formatLocationDisplay(data.city, data.state, data.country) : "";
+  const domainContext = `${data?.industry || ""} ${data?.headline || ""} ${data?.sub_headline || ""}`;
 
   const initials = (data?.name || "T")
     .split(" ")
@@ -176,37 +223,33 @@ const PublicPortfolio: React.FC = () => {
     .slice(0, 2)
     .toUpperCase();
 
-  const focusBadges: string[] = Array.isArray(data?.focus_badges) && data.focus_badges.length > 0
-    ? data.focus_badges
-    : Array.isArray(data?.areas_of_expertise) && data.areas_of_expertise.length > 0
-      ? data.areas_of_expertise
-      : [
-          data?.industry,
-          ...(Array.isArray(data?.skills) ? data.skills.slice(0, 4).map((s: any) => s.name) : []),
-        ].filter(Boolean);
+  const rawBadges: string[] =
+    Array.isArray(data?.focus_badges) && data.focus_badges.length > 0
+      ? data.focus_badges
+      : Array.isArray(data?.areas_of_expertise) && data.areas_of_expertise.length > 0
+        ? data.areas_of_expertise
+        : [
+            data?.industry,
+            ...(Array.isArray(data?.skills) ? data.skills.slice(0, 4).map((s: any) => s.name) : []),
+          ].filter(Boolean);
 
-  const expertiseCards: { title: string; sub: string }[] =
-    Array.isArray(data?.expertise_cards) && data.expertise_cards.some((c: any) => c?.title)
-      ? data.expertise_cards.slice(0, 4)
-      : [
-          {
-            title: data?.headline || "Core Domain Execution",
-            sub: data?.industry || "Verified capability",
-          },
-          {
-            title: data?.skills?.[0]?.name ? `${data.skills[0].name} Specialist` : "Technical Depth",
-            sub: data?.skills?.[1]?.name ? `Paired with ${data.skills[1].name}` : "Production engineering",
-          },
-          {
-            title: data?.tools?.[0] ? `${data.tools[0]} Ecosystem` : "Modern Tooling",
-            sub: Array.isArray(data?.tools) && data.tools.length > 1 ? data.tools.slice(1, 3).join(", ") : "Clean delivery",
-          },
-          {
-            title: data?.cir ? `CIR ${Math.round(Number(data.cir.score))}/100` : "Verified Profile",
-            sub: data?.cir?.tier ? `${data.cir.tier} Tier` : "IAmTalento Network",
-          },
-        ];
+  const focusBadges = Array.from(new Set(rawBadges.map((b) => formatSmartTag(b)).filter(Boolean)));
 
+  const expertiseCards = data
+    ? buildSmartHighlights({
+        expertiseCards: data.expertise_cards,
+        headline: data.headline,
+        industry: data.industry,
+        skills: data.skills,
+        tools: data.tools,
+        experiences: data.experiences,
+        openToWork: data.open_to_work,
+        verified: data.verified,
+        cir: data.cir,
+      })
+    : [];
+
+  const SkillsHeadingIcon = isTechnicalProfile(data?.industry, data?.headline) ? Code2 : Sparkles;
   const ytEmbed = data?.video_intro_url ? toYoutubeEmbedUrl(data.video_intro_url) : null;
 
   return (
@@ -219,13 +262,13 @@ const PublicPortfolio: React.FC = () => {
       <Navbar />
       <main className="flex-1 pt-20">
         {loading ? (
-          <div className="container max-w-4xl py-16">
+          <div className="container py-16">
             <div className="rounded-2xl border border-border bg-card p-10 text-center text-sm text-muted-foreground">
               Loading verified portfolio…
             </div>
           </div>
         ) : error || !data ? (
-          <div className="container max-w-4xl py-16">
+          <div className="container py-16">
             <div className="rounded-2xl border border-border bg-card p-10 text-center space-y-3">
               <h1 className="text-xl font-bold">Portfolio unavailable</h1>
               <p className="text-sm text-muted-foreground">
@@ -237,8 +280,8 @@ const PublicPortfolio: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="demo-dashboard dp-standalone">
-            <div className="dp-main">
+          <div className="demo-dashboard dp-standalone dp-live-profile">
+            <div className="container py-7 pb-16">
               {/* ===== HERO OVERVIEW CARD ===== */}
               <section id="overview" className="dp-overview">
                 <div className="dp-cover">
@@ -308,14 +351,14 @@ const PublicPortfolio: React.FC = () => {
 
                   {data.about && (
                     <div className="dp-intro">
-                      <p>{data.about}</p>
+                      <FormattedDescription text={data.about} />
                     </div>
                   )}
 
                   {focusBadges.length > 0 && (
                     <div className="dp-badges">
                       {focusBadges.slice(0, 6).map((label, idx) => {
-                        const { icon: BIcon, tone } = BADGE_ICONS[idx % BADGE_ICONS.length];
+                        const { icon: BIcon, tone } = pickDomainIcon(label, domainContext, idx);
                         return (
                           <span key={label}>
                             <i className={`dp-tone-${tone}`}>
@@ -387,20 +430,20 @@ const PublicPortfolio: React.FC = () => {
                         <UserRound size={20} /> About Me
                       </h2>
                     </div>
-                    <p className="whitespace-pre-line">
-                      {data.about || `${data.name || "Candidate"} is a verified member of the IAmTalento network.`}
-                    </p>
+                    <FormattedDescription
+                      text={data.about || `${data.name || "Candidate"} is a verified member of the IAmTalento network.`}
+                    />
                     <div className="dp-expertise">
                       {expertiseCards.map((c, idx) => {
-                        const { icon: EIcon, tone } = EXPERTISE_ICONS[idx % EXPERTISE_ICONS.length];
+                        const { icon: EIcon, tone } = pickDomainIcon(`${c.title} ${c.sub}`, domainContext, idx);
                         return (
                           <div key={idx}>
                             <i className={`dp-tone-${tone}`}>
                               <EIcon size={24} />
                             </i>
-                            <span>
-                              <strong>{c.title}</strong>
-                              <span>{c.sub}</span>
+                            <span className="min-w-0">
+                              <strong className="break-words">{c.title}</strong>
+                              <span className="break-words">{c.sub}</span>
                             </span>
                           </div>
                         );
@@ -420,9 +463,8 @@ const PublicPortfolio: React.FC = () => {
                         {data.experiences.map((exp: any, idx: number) => {
                           const tones = ["blue", "red", "violet", "green"] as const;
                           const tone = tones[idx % tones.length];
-                          const startYr = exp.start ? String(exp.start).slice(0, 4) : "";
-                          const endYr =
-                            exp.end && exp.end !== "Present" ? String(exp.end).slice(0, 4) : exp.end || "Present";
+                          const periodLabel = formatExperiencePeriod(exp.start, exp.end);
+                          const expLoc = formatPlaceName(exp.location);
                           return (
                             <article key={idx}>
                               <div className={`dp-company-symbol dp-tone-${tone}`}>
@@ -431,22 +473,20 @@ const PublicPortfolio: React.FC = () => {
                               <div className="dp-job">
                                 <div className="dp-job-heading">
                                   <h3>{exp.title}</h3>
-                                  <span>
-                                    {[startYr, endYr].filter(Boolean).join(" – ")}
-                                    {exp.location && (
-                                      <>
-                                        <span className="dp-separator">|</span>
-                                        {exp.location}
-                                      </>
-                                    )}
-                                  </span>
+                                  {(periodLabel || expLoc) && (
+                                    <span>
+                                      {periodLabel}
+                                      {periodLabel && expLoc && <span className="dp-separator">|</span>}
+                                      {expLoc}
+                                    </span>
+                                  )}
                                 </div>
-                                <p className="font-medium text-foreground/85 mb-1">{exp.company}</p>
-                                {exp.description && <p className="whitespace-pre-line">{exp.description}</p>}
+                                <p className="font-medium text-foreground/85 mb-1.5">{exp.company}</p>
+                                {exp.description && <FormattedDescription text={exp.description} />}
                                 {Array.isArray(exp.tools) && exp.tools.length > 0 && (
                                   <div className="dp-chips">
                                     {exp.tools.map((t: string) => (
-                                      <span key={t}>{t}</span>
+                                      <span key={t}>{formatSmartTag(t)}</span>
                                     ))}
                                   </div>
                                 )}
@@ -463,23 +503,22 @@ const PublicPortfolio: React.FC = () => {
                     <section id="skills" tabIndex={-1} className="dp-panel">
                       <div className="dp-panel-heading">
                         <h2>
-                          <Code2 size={20} /> Skills
+                          <SkillsHeadingIcon size={20} /> Skills
                         </h2>
                       </div>
                       <div className="dp-skill-list">
                         {data.skills.map((s: any, idx: number) => {
-                          const tones = ["blue", "red", "violet", "green"] as const;
-                          const tone = tones[idx % tones.length];
+                          const { icon: SIcon, tone } = pickDomainIcon(s.name, domainContext, idx);
                           const lvl = s.level
                             ? String(s.level).charAt(0).toUpperCase() + String(s.level).slice(1)
                             : "Intermediate";
                           return (
                             <article key={s.name}>
                               <i className={`dp-tone-${tone}`}>
-                                <Code2 size={20} />
+                                <SIcon size={20} />
                               </i>
-                              <div>
-                                <h3>{s.name}</h3>
+                              <div className="min-w-0">
+                                <h3 className="break-words">{formatSmartTag(s.name)}</h3>
                                 <p>{lvl}</p>
                               </div>
                               {s.verified && (
@@ -499,12 +538,12 @@ const PublicPortfolio: React.FC = () => {
                     <section id="tools" tabIndex={-1} className="dp-panel">
                       <div className="dp-panel-heading">
                         <h2>
-                          <Wrench size={20} /> Tools
+                          <Wrench size={20} /> Tools &amp; Platforms
                         </h2>
                       </div>
                       <div className="dp-chips">
                         {data.tools.map((t: string) => (
-                          <span key={t}>{t}</span>
+                          <span key={t}>{formatSmartTag(t)}</span>
                         ))}
                       </div>
                     </section>
@@ -515,7 +554,7 @@ const PublicPortfolio: React.FC = () => {
                     <section id="projects" tabIndex={-1} className="dp-panel">
                       <div className="dp-panel-heading">
                         <h2>
-                          <Sparkles size={20} /> Projects
+                          <Sparkles size={20} /> Projects &amp; Case Studies
                         </h2>
                       </div>
                       <div className="dp-projects">
@@ -525,23 +564,29 @@ const PublicPortfolio: React.FC = () => {
                             <article key={idx}>
                               <img src={imgSrc} loading="lazy" alt={`${p.title} screenshot`} />
                               <h3>{p.title}</h3>
-                              {p.description && <p>{p.description}</p>}
+                              {p.role && <p className="text-xs font-medium text-primary/80 mb-1">{p.role}</p>}
+                              {p.description && <FormattedDescription text={p.description} />}
+                              {p.impact && (
+                                <p className="text-xs font-medium text-foreground/80 mt-2">
+                                  Impact: {p.impact}
+                                </p>
+                              )}
                               {Array.isArray(p.tools) && p.tools.length > 0 && (
                                 <div className="dp-chips">
                                   {p.tools.map((t: string) => (
-                                    <span key={t}>{t}</span>
+                                    <span key={t}>{formatSmartTag(t)}</span>
                                   ))}
                                 </div>
                               )}
                               <div className="dp-project-links">
                                 {p.url && (
                                   <a href={p.url} target="_blank" rel="noreferrer">
-                                    <ExternalLink size={14} /> Live Demo
+                                    <ExternalLink size={14} /> Live Link
                                   </a>
                                 )}
                                 {p.github_url && (
                                   <a href={p.github_url} target="_blank" rel="noreferrer">
-                                    <Github size={14} /> GitHub
+                                    <Github size={14} /> Source
                                   </a>
                                 )}
                               </div>
@@ -571,8 +616,8 @@ const PublicPortfolio: React.FC = () => {
                                   <div className="dp-school dp-tone-blue">
                                     <GraduationCap size={22} />
                                   </div>
-                                  <div>
-                                    <h3>{ed.institution}</h3>
+                                  <div className="min-w-0">
+                                    <h3 className="break-words">{ed.institution}</h3>
                                     <p>
                                       {ed.degree}
                                       {ed.field_of_study ? ` · ${ed.field_of_study}` : ""}
@@ -605,8 +650,8 @@ const PublicPortfolio: React.FC = () => {
                                 <div className="dp-school dp-tone-green">
                                   <Award size={20} />
                                 </div>
-                                <div>
-                                  <h3>{c.name}</h3>
+                                <div className="min-w-0">
+                                  <h3 className="break-words">{c.name}</h3>
                                   {c.issuer && <p>{c.issuer}</p>}
                                   <div className="dp-cert-date">
                                     <span>{c.date ? String(c.date).slice(0, 4) : "Issued"}</span>
@@ -630,7 +675,7 @@ const PublicPortfolio: React.FC = () => {
                     <section id="awards" tabIndex={-1} className="dp-panel">
                       <div className="dp-panel-heading">
                         <h2>
-                          <Trophy size={20} /> Awards
+                          <Trophy size={20} /> Awards &amp; Achievements
                         </h2>
                       </div>
                       <div className="dp-awards">
@@ -639,9 +684,11 @@ const PublicPortfolio: React.FC = () => {
                             <i className="dp-tone-violet">
                               <Trophy size={20} />
                             </i>
-                            <div>
-                              <h3>{a.title}</h3>
-                              <p>{[a.organization, a.description].filter(Boolean).join(" · ")}</p>
+                            <div className="min-w-0">
+                              <h3 className="break-words">{a.title}</h3>
+                              <p className="break-words">
+                                {[a.organization, a.description].filter(Boolean).join(" · ")}
+                              </p>
                             </div>
                           </article>
                         ))}
@@ -660,7 +707,7 @@ const PublicPortfolio: React.FC = () => {
                       <div className="dp-chips">
                         {data.languages.map((l: any) => (
                           <span key={l.name}>
-                            {l.name}
+                            {formatSmartTag(l.name)}
                             {l.level ? ` — ${l.level}` : ""}
                           </span>
                         ))}
@@ -678,7 +725,7 @@ const PublicPortfolio: React.FC = () => {
                       </div>
                       <div className="dp-chips">
                         {data.hobbies.map((h: string) => (
-                          <span key={h}>{h}</span>
+                          <span key={h}>{formatSmartTag(h)}</span>
                         ))}
                       </div>
                     </section>
@@ -694,7 +741,7 @@ const PublicPortfolio: React.FC = () => {
                       </div>
                       <div className="dp-chips">
                         {data.interests.map((it: string) => (
-                          <span key={it}>{it}</span>
+                          <span key={it}>{formatSmartTag(it)}</span>
                         ))}
                       </div>
                     </section>

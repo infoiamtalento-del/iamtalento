@@ -1,4 +1,10 @@
 import type { ProUser } from "@/data/proData";
+import {
+  PROFILE_CHAR_LIMITS,
+  PROFILE_LIST_LIMITS,
+  clampText,
+  formatLocationDisplay,
+} from "@/components/profile/profileFormatters";
 import { supabase } from "@/integrations/supabase/client";
 import { rpc } from "@/services/db";
 
@@ -54,6 +60,7 @@ export interface RichAwardItem {
 
 export interface ArjunProfileOverlayV1 {
   banner_photo_url?: string;
+  banner_reset?: boolean;
   sub_headline?: string;
   open_for_freelance?: boolean;
   video_intro_url?: string;
@@ -272,7 +279,6 @@ export function normalizeLiveProfile(live: LiveProfile): NormalizedCandidateProf
   const sh = (live.shell_state ?? {}) as Record<string, any>;
   const ov = (sh.arjun_profile_v1 ?? {}) as ArjunProfileOverlayV1;
 
-  const locationParts = [p.city, p.state, p.country].map((x) => (x || "").trim()).filter(Boolean);
   const ovExp = Array.isArray(ov.experiences) ? ov.experiences : [];
   const ovEdu = Array.isArray(ov.educations) ? ov.educations : [];
   const ovCert = Array.isArray(ov.certifications) ? ov.certifications : [];
@@ -289,12 +295,17 @@ export function normalizeLiveProfile(live: LiveProfile): NormalizedCandidateProf
                 item.company?.toLowerCase() === (e.company || "").toLowerCase()
             ) || ovExp[idx];
           const toolsFromDb = splitCsv(e.tools);
+          const rawStart = (matchOv?.start || "").trim() || (e.start || "").trim();
+          const rawEnd =
+            e.end === "Present" || matchOv?.end === "Present"
+              ? "Present"
+              : (matchOv?.end || "").trim() || (e.end || "").trim() || "Present";
           return {
             title: e.title || "",
             company: e.company || "",
-            location: (e.location ?? matchOv?.location ?? "").trim(),
-            start: e.start ? yearOf(e.start) : matchOv?.start || "",
-            end: e.end && e.end !== "Present" ? yearOf(e.end) : e.end === "Present" ? "Present" : matchOv?.end || "Present",
+            location: ((e.location || "").trim() || (matchOv?.location || "").trim()),
+            start: rawStart,
+            end: rawEnd,
             description: e.description ?? matchOv?.description ?? "",
             tools: toolsFromDb.length > 0 ? toolsFromDb : splitCsv(matchOv?.tools),
           };
@@ -309,10 +320,10 @@ export function normalizeLiveProfile(live: LiveProfile): NormalizedCandidateProf
           return {
             institution: e.institution || "",
             degree: e.degree || "",
-            field_of_study: (e.field_of_study ?? matchOv?.field_of_study ?? "").trim(),
-            start_year: (e.start_year ?? matchOv?.start_year ?? "").trim(),
-            year: (e.year ?? matchOv?.year ?? "").trim(),
-            grade: (e.grade ?? matchOv?.grade ?? "").trim(),
+            field_of_study: ((e.field_of_study || "").trim() || (matchOv?.field_of_study || "").trim()),
+            start_year: ((e.start_year || "").trim() || (matchOv?.start_year || "").trim()),
+            year: ((e.year || "").trim() || (matchOv?.year || "").trim()),
+            grade: ((e.grade || "").trim() || (matchOv?.grade || "").trim()),
           };
         })
       : ovEdu;
@@ -324,9 +335,9 @@ export function normalizeLiveProfile(live: LiveProfile): NormalizedCandidateProf
             ovCert.find((item) => item.name?.toLowerCase() === (c.name || "").toLowerCase()) || ovCert[idx];
           return {
             name: c.name || "",
-            issuer: (c.issuer ?? matchOv?.issuer ?? "").trim(),
-            date: (c.date ?? matchOv?.date ?? "").trim(),
-            credential_url: (c.credential_url ?? matchOv?.credential_url ?? "").trim(),
+            issuer: ((c.issuer || "").trim() || (matchOv?.issuer || "").trim()),
+            date: ((c.date || "").trim() || (matchOv?.date || "").trim()),
+            credential_url: ((c.credential_url || "").trim() || (matchOv?.credential_url || "").trim()),
             verified: Boolean(c.verified),
           };
         })
@@ -343,13 +354,13 @@ export function normalizeLiveProfile(live: LiveProfile): NormalizedCandidateProf
               : splitCsv(proj.tools);
           return {
             title: proj.title || "",
-            role: (proj.role ?? matchOv?.role ?? "").trim(),
+            role: ((proj.role || "").trim() || (matchOv?.role || "").trim()),
             description: proj.description ?? matchOv?.description ?? "",
             tools: dbTools.length > 0 ? dbTools : splitCsv(matchOv?.tools),
-            url: (proj.url ?? matchOv?.url ?? "").trim(),
-            github_url: (proj.github_url ?? matchOv?.github_url ?? "").trim(),
-            image_url: (proj.image_url ?? matchOv?.image_url ?? "").trim(),
-            impact: (proj.impact ?? matchOv?.impact ?? "").trim(),
+            url: ((proj.url || "").trim() || (matchOv?.url || "").trim()),
+            github_url: ((proj.github_url || "").trim() || (matchOv?.github_url || "").trim()),
+            image_url: ((proj.image_url || "").trim() || (matchOv?.image_url || "").trim()),
+            impact: ((proj.impact || "").trim() || (matchOv?.impact || "").trim()),
           };
         })
       : ovProj;
@@ -372,24 +383,24 @@ export function normalizeLiveProfile(live: LiveProfile): NormalizedCandidateProf
         : [];
 
   const tools =
-    Array.isArray(p.tools) && p.tools.length > 0
-      ? p.tools
-      : Array.isArray(ov.tools)
-        ? ov.tools
+    Array.isArray(ov.tools) && ov.tools.length > 0
+      ? ov.tools
+      : Array.isArray(p.tools) && p.tools.length > 0
+        ? p.tools
         : [];
 
   const hobbies =
-    Array.isArray(p.hobbies) && p.hobbies.length > 0
-      ? p.hobbies
-      : Array.isArray(ov.hobbies)
-        ? ov.hobbies
+    Array.isArray(ov.hobbies) && ov.hobbies.length > 0
+      ? ov.hobbies
+      : Array.isArray(p.hobbies) && p.hobbies.length > 0
+        ? p.hobbies
         : [];
 
   const interests =
-    Array.isArray(p.interests) && p.interests.length > 0
-      ? p.interests
-      : Array.isArray(ov.interests)
-        ? ov.interests
+    Array.isArray(ov.interests) && ov.interests.length > 0
+      ? ov.interests
+      : Array.isArray(p.interests) && p.interests.length > 0
+        ? p.interests
         : [];
 
   const focusBadges =
@@ -405,11 +416,15 @@ export function normalizeLiveProfile(live: LiveProfile): NormalizedCandidateProf
       : [];
 
   const openForFreelance =
-    typeof p.open_for_freelance === "boolean"
-      ? p.open_for_freelance
-      : typeof ov.open_for_freelance === "boolean"
-        ? ov.open_for_freelance
+    typeof ov.open_for_freelance === "boolean"
+      ? ov.open_for_freelance
+      : typeof p.open_for_freelance === "boolean"
+        ? p.open_for_freelance
         : false;
+
+  const bannerPhotoUrl = ov.banner_reset
+    ? ""
+    : ((ov.banner_photo_url || "").trim() || (p.banner_photo_url || "").trim());
 
   return {
     id: p.id,
@@ -418,7 +433,7 @@ export function normalizeLiveProfile(live: LiveProfile): NormalizedCandidateProf
     fullName: p.full_name || "",
     phone: p.phone || "",
     headline: p.headline || p.job_role || "",
-    subHeadline: (p.sub_headline ?? ov.sub_headline ?? "").trim(),
+    subHeadline: (ov.sub_headline !== undefined ? ov.sub_headline : p.sub_headline || "").trim(),
     industry: p.industry || (sh.tag as string) || "",
     jobRole: p.job_role || "",
     company: p.company || "",
@@ -427,10 +442,10 @@ export function normalizeLiveProfile(live: LiveProfile): NormalizedCandidateProf
     city: p.city || "",
     state: p.state || "",
     country: p.country || "India",
-    locationDisplay: locationParts.join(", "),
+    locationDisplay: formatLocationDisplay(p.city, p.state, p.country),
     about: p.about || "",
     profilePhotoUrl: (p.profile_photo_url || "").trim(),
-    bannerPhotoUrl: (p.banner_photo_url ?? ov.banner_photo_url ?? "").trim(),
+    bannerPhotoUrl,
     openToWork: p.open_to_work !== false,
     openForFreelance,
     workMode: (sh.pf?.wm as "Remote" | "Hybrid" | "Onsite") || "Hybrid",
@@ -444,13 +459,13 @@ export function normalizeLiveProfile(live: LiveProfile): NormalizedCandidateProf
     readiness: Number(p.readiness ?? 0),
     resumeUrl: p.resume_url || "",
     resumePath: p.resume_path || "",
-    videoIntroUrl: (p.video_intro_url ?? ov.video_intro_url ?? "").trim(),
-    videoPitch: (p.video_pitch ?? ov.video_pitch ?? "").trim(),
+    videoIntroUrl: ((ov.video_intro_url !== undefined ? ov.video_intro_url : p.video_intro_url) || "").trim(),
+    videoPitch: ((ov.video_pitch !== undefined ? ov.video_pitch : p.video_pitch) || "").trim(),
     linkedinUrl: p.linkedin_url || "",
     githubUrl: p.github_url || "",
     portfolioUrl: p.portfolio_url || "",
-    kaggleUrl: (p.kaggle_url ?? ov.kaggle_url ?? "").trim(),
-    behanceUrl: (p.behance_url ?? ov.behance_url ?? "").trim(),
+    kaggleUrl: ((ov.kaggle_url !== undefined ? ov.kaggle_url : p.kaggle_url) || "").trim(),
+    behanceUrl: ((ov.behance_url !== undefined ? ov.behance_url : p.behance_url) || "").trim(),
     focusBadges,
     expertiseCards,
     skills: live.skills.map((s) => ({
@@ -644,7 +659,7 @@ export async function loadFullLiveProfile(): Promise<LiveProfile | null> {
       supabase.from("experiences").select("*").eq("user_id", uid).order("start_date", { ascending: false }),
       supabase.from("certifications").select("*").eq("user_id", uid).order("created_at"),
       supabase.from("projects").select("*").eq("user_id", uid).order("created_at"),
-      supabase.from("profiles").select("areas_of_expertise, career_interests, video_intro_url, kaggle_url, behance_url").eq("id", uid).maybeSingle(),
+      supabase.from("profiles").select("*").eq("id", uid).maybeSingle(),
     ]);
 
     const enriched: LiveProfile = { ...live, profile: { ...live.profile } };
@@ -653,8 +668,17 @@ export async function loadFullLiveProfile(): Promise<LiveProfile | null> {
       if (pd.areas_of_expertise && !enriched.profile.areas_of_expertise) enriched.profile.areas_of_expertise = pd.areas_of_expertise;
       if (pd.career_interests && !enriched.profile.interests) enriched.profile.interests = pd.career_interests;
       if (pd.video_intro_url && !enriched.profile.video_intro_url) enriched.profile.video_intro_url = pd.video_intro_url;
+      if (pd.video_pitch && !enriched.profile.video_pitch) enriched.profile.video_pitch = pd.video_pitch;
       if (pd.kaggle_url && !enriched.profile.kaggle_url) enriched.profile.kaggle_url = pd.kaggle_url;
       if (pd.behance_url && !enriched.profile.behance_url) enriched.profile.behance_url = pd.behance_url;
+      if (pd.banner_photo_url && !enriched.profile.banner_photo_url) enriched.profile.banner_photo_url = pd.banner_photo_url;
+      if (pd.sub_headline && !enriched.profile.sub_headline) enriched.profile.sub_headline = pd.sub_headline;
+      if (typeof pd.open_for_freelance === "boolean" && enriched.profile.open_for_freelance == null) {
+        enriched.profile.open_for_freelance = pd.open_for_freelance;
+      }
+      if (Array.isArray(pd.tools) && !enriched.profile.tools) enriched.profile.tools = pd.tools;
+      if (Array.isArray(pd.hobbies) && !enriched.profile.hobbies) enriched.profile.hobbies = pd.hobbies;
+      if (pd.shell_state && !enriched.shell_state) enriched.shell_state = pd.shell_state;
     }
     if (Array.isArray(achRes.data)) {
       enriched.awards = achRes.data.map((a: any) => ({
@@ -773,7 +797,7 @@ export interface RichCandidateDraft {
  * Supabase deployments.
  */
 export async function saveRichCandidateProfile(draft: RichCandidateDraft): Promise<LiveProfile> {
-  const cleanedSlug = (draft.portfolioSlug || "")
+  const cleanedSlug = clampText(draft.portfolioSlug || "", PROFILE_CHAR_LIMITS.portfolioSlug)
     .trim()
     .toLowerCase()
     .replace(/[^a-z0-9-]/g, "")
@@ -785,82 +809,123 @@ export async function saveRichCandidateProfile(draft: RichCandidateDraft): Promi
 
   const cleanExperiences = draft.experiences
     .filter((e) => e.title.trim())
+    .slice(0, PROFILE_LIST_LIMITS.experiences)
     .map((e) => ({
-      title: e.title.trim(),
-      company: e.company.trim() || "Company",
-      location: e.location.trim(),
-      start: e.start.trim(),
-      end: e.end.trim() || "Present",
-      description: e.description.trim(),
-      tools: e.tools.map((t) => t.trim()).filter(Boolean),
+      title: clampText(e.title.trim(), PROFILE_CHAR_LIMITS.expTitle),
+      company: clampText(e.company.trim() || "Company", PROFILE_CHAR_LIMITS.expCompany),
+      location: clampText(e.location.trim(), PROFILE_CHAR_LIMITS.expLocation),
+      start: clampText(e.start.trim(), PROFILE_CHAR_LIMITS.expDate),
+      end: clampText(e.end.trim() || "Present", PROFILE_CHAR_LIMITS.expDate),
+      description: clampText(e.description.trim(), PROFILE_CHAR_LIMITS.expDescription),
+      tools: e.tools
+        .map((t) => clampText(t.trim(), PROFILE_CHAR_LIMITS.tagChip))
+        .filter(Boolean)
+        .slice(0, PROFILE_LIST_LIMITS.tools),
     }));
 
   const cleanEducations = draft.educations
     .filter((e) => e.institution.trim())
+    .slice(0, PROFILE_LIST_LIMITS.educations)
     .map((e) => ({
-      institution: e.institution.trim(),
-      degree: e.degree.trim() || "Degree",
-      field_of_study: (e.field_of_study || "").trim(),
-      start_year: e.start_year.trim(),
-      year: e.year.trim(),
-      grade: e.grade.trim(),
+      institution: clampText(e.institution.trim(), PROFILE_CHAR_LIMITS.eduInstitution),
+      degree: clampText(e.degree.trim() || "Degree", PROFILE_CHAR_LIMITS.eduDegree),
+      field_of_study: clampText((e.field_of_study || "").trim(), PROFILE_CHAR_LIMITS.eduField),
+      start_year: clampText(e.start_year.trim(), PROFILE_CHAR_LIMITS.eduYear),
+      year: clampText(e.year.trim(), PROFILE_CHAR_LIMITS.eduYear),
+      grade: clampText(e.grade.trim(), PROFILE_CHAR_LIMITS.eduGrade),
     }));
 
   const cleanCerts = draft.certifications
     .filter((c) => c.name.trim())
+    .slice(0, PROFILE_LIST_LIMITS.certifications)
     .map((c) => ({
-      name: c.name.trim(),
-      issuer: c.issuer.trim(),
-      date: c.date.trim(),
-      credential_url: ensureHttpUrl(c.credential_url),
+      name: clampText(c.name.trim(), PROFILE_CHAR_LIMITS.certName),
+      issuer: clampText(c.issuer.trim(), PROFILE_CHAR_LIMITS.certIssuer),
+      date: clampText(c.date.trim(), PROFILE_CHAR_LIMITS.certDate),
+      credential_url: ensureHttpUrl(clampText(c.credential_url, PROFILE_CHAR_LIMITS.url)),
       verified: Boolean(c.verified),
     }));
 
   const cleanProjects = draft.projects
     .filter((p) => p.title.trim())
+    .slice(0, PROFILE_LIST_LIMITS.projects)
     .map((p) => ({
-      title: p.title.trim(),
-      role: (p.role || "").trim(),
-      description: p.description.trim(),
-      tools: p.tools.map((t) => t.trim()).filter(Boolean),
-      url: ensureHttpUrl(p.url),
-      github_url: ensureHttpUrl(p.github_url),
+      title: clampText(p.title.trim(), PROFILE_CHAR_LIMITS.projTitle),
+      role: clampText((p.role || "").trim(), PROFILE_CHAR_LIMITS.projRole),
+      description: clampText(p.description.trim(), PROFILE_CHAR_LIMITS.projDescription),
+      tools: p.tools
+        .map((t) => clampText(t.trim(), PROFILE_CHAR_LIMITS.tagChip))
+        .filter(Boolean)
+        .slice(0, PROFILE_LIST_LIMITS.tools),
+      url: ensureHttpUrl(clampText(p.url, PROFILE_CHAR_LIMITS.url)),
+      github_url: ensureHttpUrl(clampText(p.github_url, PROFILE_CHAR_LIMITS.url)),
       image_url: httpOnly(p.image_url) || ensureHttpUrl(p.image_url),
-      impact: (p.impact || "").trim(),
+      impact: clampText((p.impact || "").trim(), PROFILE_CHAR_LIMITS.projImpact),
     }));
 
   const cleanAwards = draft.awards
     .filter((a) => a.title.trim())
+    .slice(0, PROFILE_LIST_LIMITS.awards)
     .map((a) => ({
-      title: a.title.trim(),
-      organization: (a.organization || "").trim(),
-      date: (a.date || "").trim(),
-      description: a.description.trim(),
+      title: clampText(a.title.trim(), PROFILE_CHAR_LIMITS.awardTitle),
+      organization: clampText((a.organization || "").trim(), PROFILE_CHAR_LIMITS.awardOrg),
+      date: clampText((a.date || "").trim(), PROFILE_CHAR_LIMITS.awardDate),
+      description: clampText(a.description.trim(), PROFILE_CHAR_LIMITS.awardDescription),
     }));
 
   const cleanLanguages = draft.languages
     .filter((l) => l.name.trim())
+    .slice(0, PROFILE_LIST_LIMITS.languages)
     .map((l) => ({
-      name: l.name.trim(),
-      level: l.level.trim(),
+      name: clampText(l.name.trim(), PROFILE_CHAR_LIMITS.languageName),
+      level: clampText(l.level.trim(), PROFILE_CHAR_LIMITS.languageLevel),
     }));
 
+  const cleanBannerUrl = httpOnly(draft.bannerPhotoUrl) || ensureHttpUrl(draft.bannerPhotoUrl);
+  const cleanFullName = clampText(draft.fullName.trim(), PROFILE_CHAR_LIMITS.fullName);
+  const cleanPhone = clampText(draft.phone.trim(), PROFILE_CHAR_LIMITS.phone);
+  const cleanJobRole = clampText(draft.jobRole.trim(), PROFILE_CHAR_LIMITS.jobRole);
+  const cleanHeadline = clampText(draft.headline.trim() || cleanJobRole, PROFILE_CHAR_LIMITS.headline);
+  const cleanSubHeadline = clampText(draft.subHeadline.trim(), PROFILE_CHAR_LIMITS.subHeadline);
+  const cleanAbout = clampText(draft.about.trim(), PROFILE_CHAR_LIMITS.about);
+  const cleanCity = clampText(draft.city.trim(), PROFILE_CHAR_LIMITS.city);
+  const cleanState = clampText(draft.state.trim(), PROFILE_CHAR_LIMITS.state);
+  const cleanCountry = clampText(draft.country.trim() || "India", PROFILE_CHAR_LIMITS.country);
+  const cleanSalary = clampText(draft.salaryRange.trim(), PROFILE_CHAR_LIMITS.salaryRange);
+  const cleanVideoPitch = clampText(draft.videoPitch.trim(), PROFILE_CHAR_LIMITS.videoPitch);
+
   const overlay: ArjunProfileOverlayV1 = {
-    banner_photo_url: httpOnly(draft.bannerPhotoUrl) || ensureHttpUrl(draft.bannerPhotoUrl),
-    sub_headline: draft.subHeadline.trim(),
+    banner_photo_url: cleanBannerUrl,
+    banner_reset: !cleanBannerUrl,
+    sub_headline: cleanSubHeadline,
     open_for_freelance: draft.openForFreelance,
-    video_intro_url: ensureHttpUrl(draft.videoIntroUrl),
-    video_pitch: draft.videoPitch.trim(),
-    kaggle_url: ensureHttpUrl(draft.kaggleUrl),
-    behance_url: ensureHttpUrl(draft.behanceUrl),
-    focus_badges: draft.focusBadges.map((b) => b.trim()).filter(Boolean),
+    video_intro_url: ensureHttpUrl(clampText(draft.videoIntroUrl, PROFILE_CHAR_LIMITS.url)),
+    video_pitch: cleanVideoPitch,
+    kaggle_url: ensureHttpUrl(clampText(draft.kaggleUrl, PROFILE_CHAR_LIMITS.url)),
+    behance_url: ensureHttpUrl(clampText(draft.behanceUrl, PROFILE_CHAR_LIMITS.url)),
+    focus_badges: draft.focusBadges
+      .map((b) => clampText(b.trim(), PROFILE_CHAR_LIMITS.tagChip))
+      .filter(Boolean)
+      .slice(0, PROFILE_LIST_LIMITS.focusBadges),
     expertise_cards: draft.expertiseCards
       .filter((c) => c.title.trim() || c.sub.trim())
       .slice(0, 4)
-      .map((c) => ({ title: c.title.trim(), sub: c.sub.trim() })),
-    tools: draft.tools.map((t) => t.trim()).filter(Boolean),
-    hobbies: draft.hobbies.map((h) => h.trim()).filter(Boolean),
-    interests: draft.interests.map((i) => i.trim()).filter(Boolean),
+      .map((c) => ({
+        title: clampText(c.title.trim(), PROFILE_CHAR_LIMITS.expertiseTitle),
+        sub: clampText(c.sub.trim(), PROFILE_CHAR_LIMITS.expertiseSub),
+      })),
+    tools: draft.tools
+      .map((t) => clampText(t.trim(), PROFILE_CHAR_LIMITS.tagChip))
+      .filter(Boolean)
+      .slice(0, PROFILE_LIST_LIMITS.tools),
+    hobbies: draft.hobbies
+      .map((h) => clampText(h.trim(), PROFILE_CHAR_LIMITS.tagChip))
+      .filter(Boolean)
+      .slice(0, PROFILE_LIST_LIMITS.hobbies),
+    interests: draft.interests
+      .map((i) => clampText(i.trim(), PROFILE_CHAR_LIMITS.tagChip))
+      .filter(Boolean)
+      .slice(0, PROFILE_LIST_LIMITS.interests),
     experiences: cleanExperiences,
     educations: cleanEducations,
     certifications: cleanCerts,
@@ -876,49 +941,52 @@ export async function saveRichCandidateProfile(draft: RichCandidateDraft): Promi
 
   const saved = await saveCandidatePayload({
     profile: {
-      full_name: draft.fullName.trim(),
-      phone: draft.phone.trim(),
-      headline: draft.headline.trim() || draft.jobRole.trim(),
-      sub_headline: draft.subHeadline.trim(),
-      job_role: draft.jobRole.trim(),
-      ...(draft.company !== undefined ? { company: draft.company.trim() } : {}),
-      industry: draft.industry,
+      full_name: cleanFullName,
+      phone: cleanPhone,
+      headline: cleanHeadline,
+      sub_headline: cleanSubHeadline,
+      job_role: cleanJobRole,
+      ...(draft.company !== undefined ? { company: clampText(draft.company.trim(), PROFILE_CHAR_LIMITS.company) } : {}),
+      industry: clampText(draft.industry, PROFILE_CHAR_LIMITS.industry),
       experience_level: (draft.experienceLevel || "fresher").toLowerCase(),
       years_of_experience:
         draft.experienceLevel.toLowerCase() === "fresher"
           ? 0
           : Math.max(0, Number(draft.yearsOfExperience) || 0),
-      about: draft.about.trim(),
-      city: draft.city.trim(),
-      state: draft.state.trim(),
-      country: draft.country.trim() || "India",
+      about: cleanAbout,
+      city: cleanCity,
+      state: cleanState,
+      country: cleanCountry,
       open_to_work: draft.openToWork,
       open_for_freelance: draft.openForFreelance,
-      preferred_locations: draft.preferredLocations.map((s) => s.trim()).filter(Boolean),
+      preferred_locations: draft.preferredLocations
+        .map((s) => clampText(s.trim(), PROFILE_CHAR_LIMITS.city))
+        .filter(Boolean),
       areas_of_expertise: overlay.focus_badges,
       interests: overlay.interests,
       tools: overlay.tools,
       hobbies: overlay.hobbies,
-      preferred_salary_range: draft.salaryRange.trim(),
+      preferred_salary_range: cleanSalary,
       notice_period: draft.noticePeriod,
       availability_status: draft.employmentType,
-      linkedin_url: ensureHttpUrl(draft.linkedinUrl),
-      github_url: ensureHttpUrl(draft.githubUrl),
-      portfolio_url: ensureHttpUrl(draft.portfolioUrl),
-      kaggle_url: ensureHttpUrl(draft.kaggleUrl),
-      behance_url: ensureHttpUrl(draft.behanceUrl),
-      video_intro_url: ensureHttpUrl(draft.videoIntroUrl),
-      video_pitch: draft.videoPitch.trim(),
+      linkedin_url: ensureHttpUrl(clampText(draft.linkedinUrl, PROFILE_CHAR_LIMITS.url)),
+      github_url: ensureHttpUrl(clampText(draft.githubUrl, PROFILE_CHAR_LIMITS.url)),
+      portfolio_url: ensureHttpUrl(clampText(draft.portfolioUrl, PROFILE_CHAR_LIMITS.url)),
+      kaggle_url: overlay.kaggle_url,
+      behance_url: overlay.behance_url,
+      video_intro_url: overlay.video_intro_url,
+      video_pitch: cleanVideoPitch,
       profile_photo_url: httpOnly(draft.profilePhotoUrl) || "",
-      banner_photo_url: httpOnly(draft.bannerPhotoUrl) || "",
+      banner_photo_url: cleanBannerUrl,
       ...(draft.resumePath ? { resume_path: draft.resumePath } : {}),
       ...(draft.resumeUrl ? { resume_url: ensureHttpUrl(draft.resumeUrl) } : {}),
       ...(validSlug ? { portfolio_slug: validSlug } : {}),
     },
     skills: draft.skills
       .filter((s) => s.name.trim())
+      .slice(0, PROFILE_LIST_LIMITS.skills)
       .map((s) => ({
-        name: s.name.trim(),
+        name: clampText(s.name.trim(), PROFILE_CHAR_LIMITS.tagChip),
         level: (s.level || "intermediate").toLowerCase(),
         category: ["technical", "behavioral", "management"].includes((s.category || "").toLowerCase())
           ? (s.category || "technical").toLowerCase()
@@ -937,7 +1005,7 @@ export async function saveRichCandidateProfile(draft: RichCandidateDraft): Promi
     shell_state: {
       ...baseShell,
       ...(typeof draft.phoneVerified === "boolean" ? { phv: draft.phoneVerified } : {}),
-      tag: draft.industry,
+      tag: clampText(draft.industry, PROFILE_CHAR_LIMITS.industry),
       onboardingCompleted: true,
       pf: {
         ...(baseShell.pf || {}),
@@ -1032,51 +1100,152 @@ function validateImageUpload(file: File, label: string): "png" | "webp" | "jpg" 
 }
 
 /**
+ * Removes older `banner-*` files in `${userId}/` inside `profile-photos` so public
+ * portfolio fallback lookups never resolve an outdated or reset banner.
+ */
+export async function clearBannerStorageFiles(userId: string, keepFileName?: string): Promise<void> {
+  if (!userId) return;
+  try {
+    const bucket = supabase.storage.from("profile-photos");
+    if (typeof bucket.list !== "function" || typeof bucket.remove !== "function") return;
+    const { data: existing } = await bucket.list(userId, { limit: 50 });
+    if (!Array.isArray(existing) || existing.length === 0) return;
+    const toRemove = existing
+      .map((f) => f?.name || "")
+      .filter((name) => /^banner-/i.test(name) && name !== keepFileName)
+      .map((name) => `${userId}/${name}`);
+    if (toRemove.length > 0) {
+      await bucket.remove(toRemove);
+    }
+  } catch {
+    // Non-fatal storage cleanup
+  }
+}
+
+/**
  * Uploads a JPG/PNG/WEBP profile picture to Supabase Storage (`profile-photos`)
- * and returns the public CDN URL.
+ * and returns a cache-busted public CDN URL.
  */
 export async function uploadProfilePhotoFile(file: File, userId: string): Promise<string> {
   const ext = validateImageUpload(file, "Profile photo");
   const contentType = ext === "png" ? "image/png" : ext === "webp" ? "image/webp" : "image/jpeg";
-  const path = `${userId}/avatar-${Date.now()}.${ext}`;
+  const ts = Date.now();
+  const path = `${userId}/avatar-${ts}.${ext}`;
   const { error } = await supabase.storage
     .from("profile-photos")
     .upload(path, file, { contentType, upsert: true });
   if (error) throw new Error(error.message);
   const { data } = supabase.storage.from("profile-photos").getPublicUrl(path);
-  return data.publicUrl;
+  const sep = data.publicUrl.includes("?") ? "&" : "?";
+  return `${data.publicUrl}${sep}v=${ts}`;
 }
 
 /**
  * Uploads a JPG/PNG/WEBP cover banner image to Supabase Storage (`profile-photos`)
- * under `${userId}/banner-*` and returns the public CDN URL.
+ * under `${userId}/banner-*`, cleans up superseded banner files, and returns a cache-busted public CDN URL.
  */
 export async function uploadBannerPhotoFile(file: File, userId: string): Promise<string> {
   const ext = validateImageUpload(file, "Banner image");
   const contentType = ext === "png" ? "image/png" : ext === "webp" ? "image/webp" : "image/jpeg";
-  const path = `${userId}/banner-${Date.now()}.${ext}`;
+  const ts = Date.now();
+  const fileName = `banner-${ts}.${ext}`;
+  const path = `${userId}/${fileName}`;
   const { error } = await supabase.storage
     .from("profile-photos")
     .upload(path, file, { contentType, upsert: true });
   if (error) throw new Error(error.message);
+  await clearBannerStorageFiles(userId, fileName);
   const { data } = supabase.storage.from("profile-photos").getPublicUrl(path);
-  return data.publicUrl;
+  const sep = data.publicUrl.includes("?") ? "&" : "?";
+  return `${data.publicUrl}${sep}v=${ts}`;
+}
+
+/**
+ * Immediately persists a newly uploaded or reset banner URL to both `profiles.banner_photo_url`
+ * and `profiles.shell_state.arjun_profile_v1` without altering relational rows or premature onboarding flags.
+ */
+export async function persistBannerImmediate(bannerUrl: string, userId?: string): Promise<LiveProfile | null> {
+  const cleanUrl = httpOnly(bannerUrl) || "";
+  if (!cleanUrl && userId) {
+    await clearBannerStorageFiles(userId);
+  }
+  const current = await loadLiveProfile();
+  const baseShell = { ...((current?.shell_state ?? {}) as Record<string, any>) };
+  for (const forbidden of ["pw", "wal", "ver", "vr", "role", "email", "saved", "seen"]) {
+    delete baseShell[forbidden];
+  }
+  const prevOv = (baseShell.arjun_profile_v1 ?? {}) as ArjunProfileOverlayV1;
+  baseShell.arjun_profile_v1 = {
+    ...prevOv,
+    banner_photo_url: cleanUrl,
+    banner_reset: !cleanUrl,
+  };
+  return saveCandidatePayload({
+    profile: { banner_photo_url: cleanUrl },
+    shell_state: baseShell,
+  });
+}
+
+/**
+ * Immediately persists a newly uploaded or cleared profile avatar URL to `profiles.profile_photo_url`.
+ */
+export async function persistProfilePhotoImmediate(photoUrl: string): Promise<LiveProfile | null> {
+  const cleanUrl = httpOnly(photoUrl) || "";
+  return saveCandidatePayload({
+    profile: { profile_photo_url: cleanUrl },
+  });
+}
+
+/**
+ * Public-bucket fallback for `/u/:slug` on pre-migration Supabase deployments where
+ * `get_public_portfolio` has not yet been updated to return `banner`: extracts the owner's
+ * storage folder UUID from their public avatar URL and locates the active `banner-*` asset.
+ */
+export async function resolvePublicBannerFromStorage(photoUrl?: string | null): Promise<string> {
+  if (!photoUrl) return "";
+  const match = photoUrl.match(/\/profile-photos\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\//i);
+  if (!match) return "";
+  const folderId = match[1];
+  try {
+    const bucket = supabase.storage.from("profile-photos");
+    if (typeof bucket.list !== "function") return "";
+    const { data: files } = await bucket.list(folderId, { limit: 30 });
+    if (!Array.isArray(files) || files.length === 0) return "";
+    const bannerFiles = files
+      .filter((f) => /^banner-\d+\.(jpe?g|png|webp)$/i.test(f?.name || ""))
+      .sort((a, b) => {
+        const tsA = Number((a.name.match(/^banner-(\d+)/i) || [])[1] || 0);
+        const tsB = Number((b.name.match(/^banner-(\d+)/i) || [])[1] || 0);
+        return tsB - tsA;
+      });
+    if (bannerFiles.length === 0) return "";
+    const newest = bannerFiles[0].name;
+    const ts = (newest.match(/^banner-(\d+)/i) || [])[1] || Date.now();
+    const { data } = bucket.getPublicUrl(`${folderId}/${newest}`);
+    if (!data?.publicUrl) return "";
+    const sep = data.publicUrl.includes("?") ? "&" : "?";
+    return `${data.publicUrl}${sep}v=${ts}`;
+  } catch {
+    return "";
+  }
 }
 
 /**
  * Uploads a JPG/PNG/WEBP project screenshot/preview image to Supabase Storage (`profile-photos`)
- * under `${userId}/project-*` and returns the public CDN URL.
+ * under `${userId}/project-*` and returns a cache-busted public CDN URL.
  */
 export async function uploadProjectImageFile(file: File, userId: string): Promise<string> {
   const ext = validateImageUpload(file, "Project cover image");
   const contentType = ext === "png" ? "image/png" : ext === "webp" ? "image/webp" : "image/jpeg";
-  const path = `${userId}/project-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
+  const ts = Date.now();
+  const path = `${userId}/project-${ts}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
   const { error } = await supabase.storage
     .from("profile-photos")
     .upload(path, file, { contentType, upsert: true });
   if (error) throw new Error(error.message);
   const { data } = supabase.storage.from("profile-photos").getPublicUrl(path);
-  return data.publicUrl;
+  const sep = data.publicUrl.includes("?") ? "&" : "?";
+  return `${data.publicUrl}${sep}v=${ts}`;
 }
 
 /**

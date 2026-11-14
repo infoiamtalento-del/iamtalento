@@ -2,6 +2,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { User, Mail, Phone, MapPin, Briefcase, Building2, Clock, Sparkles } from "lucide-react";
+import { CharCount } from "@/components/profile/CharCount";
+import { PROFILE_CHAR_LIMITS } from "@/components/profile/profileFormatters";
 
 interface BasicInfoData {
   full_name: string;
@@ -34,6 +36,7 @@ const Field = ({
   type = "text",
   autoComplete,
   identifierField = false,
+  maxLength,
 }: {
   icon: React.ElementType;
   label: string;
@@ -44,17 +47,22 @@ const Field = ({
   type?: string;
   autoComplete?: string;
   identifierField?: boolean;
+  maxLength?: number;
 }) => (
   <div>
-    <Label htmlFor={id} className="text-xs font-medium text-muted-foreground mb-1.5 block">
-      {label}
-    </Label>
+    <div className="flex items-center justify-between gap-2 mb-1.5">
+      <Label htmlFor={id} className="text-xs font-medium text-muted-foreground">
+        {label}
+      </Label>
+      {maxLength ? <CharCount value={value || ""} max={maxLength} /> : null}
+    </div>
     <div className="relative">
       <Icon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/50" />
       <Input
         id={id}
         name={id}
         type={type}
+        maxLength={maxLength}
         value={value || ""}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
@@ -114,6 +122,7 @@ const BasicInfoSection = ({ data, onChange }: Props) => (
       onChange={(v) => onChange("full_name", v)}
       placeholder="Your full name"
       autoComplete="name"
+      maxLength={PROFILE_CHAR_LIMITS.fullName}
     />
     <Field
       icon={Mail}
@@ -125,6 +134,7 @@ const BasicInfoSection = ({ data, onChange }: Props) => (
       type="email"
       autoComplete="email"
       identifierField
+      maxLength={120}
     />
     <Field
       icon={Phone}
@@ -135,6 +145,7 @@ const BasicInfoSection = ({ data, onChange }: Props) => (
       placeholder="+91 98765 43210"
       type="tel"
       autoComplete="tel"
+      maxLength={PROFILE_CHAR_LIMITS.phone}
     />
     <Field
       icon={Briefcase}
@@ -142,7 +153,8 @@ const BasicInfoSection = ({ data, onChange }: Props) => (
       id="professional_headline"
       value={data.professional_headline}
       onChange={(v) => onChange("professional_headline", v)}
-      placeholder="e.g. Senior Full Stack Developer"
+      placeholder="e.g. Digital Marketing Lead or Senior Developer"
+      maxLength={PROFILE_CHAR_LIMITS.headline}
     />
     <Field
       icon={Sparkles}
@@ -150,7 +162,8 @@ const BasicInfoSection = ({ data, onChange }: Props) => (
       id="sub_headline"
       value={data.sub_headline || ""}
       onChange={(v) => onChange("sub_headline", v)}
-      placeholder="e.g. Cloud & AI Specialist"
+      placeholder="e.g. Performance Growth & Brand Strategy"
+      maxLength={PROFILE_CHAR_LIMITS.subHeadline}
     />
     <Field
       icon={Briefcase}
@@ -158,7 +171,8 @@ const BasicInfoSection = ({ data, onChange }: Props) => (
       id="job_role"
       value={data.job_role}
       onChange={(v) => onChange("job_role", v)}
-      placeholder="e.g. Software Engineer"
+      placeholder="e.g. Digital Marketing Executive"
+      maxLength={PROFILE_CHAR_LIMITS.jobRole}
     />
     <Field
       icon={Building2}
@@ -167,6 +181,7 @@ const BasicInfoSection = ({ data, onChange }: Props) => (
       value={data.company}
       onChange={(v) => onChange("company", v)}
       placeholder="e.g. Acme Corp"
+      maxLength={PROFILE_CHAR_LIMITS.company}
     />
     <Field
       icon={Clock}
@@ -213,7 +228,9 @@ const BasicInfoSection = ({ data, onChange }: Props) => (
       id="city"
       value={data.city}
       onChange={(v) => onChange("city", v)}
-      placeholder="e.g. Bengaluru"
+      placeholder="e.g. Chennai or Bengaluru"
+      autoComplete="address-level2"
+      maxLength={PROFILE_CHAR_LIMITS.city}
     />
     <Field
       icon={MapPin}
@@ -221,7 +238,9 @@ const BasicInfoSection = ({ data, onChange }: Props) => (
       id="state"
       value={data.state}
       onChange={(v) => onChange("state", v)}
-      placeholder="e.g. Karnataka"
+      placeholder="e.g. Tamil Nadu"
+      autoComplete="address-level1"
+      maxLength={PROFILE_CHAR_LIMITS.state}
     />
     <Field
       icon={MapPin}
@@ -230,6 +249,8 @@ const BasicInfoSection = ({ data, onChange }: Props) => (
       value={data.country}
       onChange={(v) => onChange("country", v)}
       placeholder="e.g. India"
+      autoComplete="country-name"
+      maxLength={PROFILE_CHAR_LIMITS.country}
     />
   </div>
 );

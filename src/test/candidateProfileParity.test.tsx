@@ -2,10 +2,13 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import type { LiveProfile } from "@/services/candidate/profile";
+import { PROFILE_CHAR_LIMITS } from "@/components/profile/profileFormatters";
 
 const profileSvc = vi.hoisted(() => ({
   loadFullLiveProfile: vi.fn(),
   patchLiveProfileQuick: vi.fn(),
+  persistBannerImmediate: vi.fn(),
+  persistProfilePhotoImmediate: vi.fn(),
   uploadBannerPhotoFile: vi.fn(),
   uploadProfilePhotoFile: vi.fn(),
   uploadProjectImageFile: vi.fn(),
@@ -18,6 +21,7 @@ vi.mock("@/services/candidate/profile", async (orig) => ({
   ...profileSvc,
 }));
 
+import { normalizeLiveProfile } from "@/services/candidate/profile";
 import { LiveCandidateProfileView } from "@/components/pro/live/LiveCandidateProfileView";
 import { ProProfileView } from "@/components/pro/ProProfileView";
 import { DEFAULT_USERS } from "@/data/proData";
@@ -159,7 +163,22 @@ describe("Candidate Arjun-Mehta Profile Parity", () => {
     vi.clearAllMocks();
     profileSvc.loadFullLiveProfile.mockResolvedValue(sampleLiveProfile);
     profileSvc.getResumeSignedUrl.mockResolvedValue(null);
-    profileSvc.uploadBannerPhotoFile.mockResolvedValue("https://cdn.example.com/priya/new-banner.jpg");
+    profileSvc.uploadBannerPhotoFile.mockResolvedValue("https://cdn.example.com/priya/new-banner.jpg?v=200");
+    profileSvc.persistBannerImmediate.mockImplementation(async (url: string) => ({
+      ...sampleLiveProfile,
+      profile: {
+        ...sampleLiveProfile.profile,
+        banner_photo_url: url,
+      },
+      shell_state: {
+        ...sampleLiveProfile.shell_state,
+        arjun_profile_v1: {
+          ...(sampleLiveProfile.shell_state?.arjun_profile_v1 ?? {}),
+          banner_photo_url: url,
+          banner_reset: !url,
+        },
+      },
+    }));
     profileSvc.patchLiveProfileQuick.mockImplementation(async (live, patch) => ({
       ...live,
       profile: {
@@ -169,7 +188,7 @@ describe("Candidate Arjun-Mehta Profile Parity", () => {
     }));
   });
 
-  it("renders the Arjun-Mehta demo-dashboard layout for a live candidate with cover banner upload, all 11 tabs, and zero demo leakage", async () => {
+  it("renders the Arjun-Mehta demo-dashboard layout for a live candidate with immediate cover banner persistence, all 11 tabs, and zero demo leakage", async () => {
     const onToast = vi.fn();
     const { container } = render(
       <MemoryRouter>
@@ -181,8 +200,8 @@ describe("Candidate Arjun-Mehta Profile Parity", () => {
       expect(screen.getByRole("heading", { name: "Priya Nair" })).toBeInTheDocument();
     });
 
-    // Uses the exact .demo-dashboard CSS layout
-    expect(container.querySelector(".demo-dashboard")).toBeTruthy();
+    // Uses the exact .demo-dashboard CSS layout + live alignment modifier
+    expect(container.querySelector(".demo-dashboard.dp-live-profile")).toBeTruthy();
 
     // Never leaks Arjun Mehta demo strings into a real signed-in user's profile
     expect(container.textContent).not.toContain("Arjun Mehta");
@@ -227,19 +246,172 @@ describe("Candidate Arjun-Mehta Profile Parity", () => {
     expect(screen.getByText("Classical Violin")).toBeInTheDocument();
     expect(screen.getByText("Agentic Workflows")).toBeInTheDocument();
 
-    // Uploading a new banner image persists via uploadBannerPhotoFile + patchLiveProfileQuick
+    // Uploading a new banner image persists immediately via uploadBannerPhotoFile + persistBannerImmediate
     const bannerInput = screen.getByLabelText("Upload cover banner image") as HTMLInputElement;
     const fakeBanner = new File(["banner-bytes"], "office-banner.png", { type: "image/png" });
     fireEvent.change(bannerInput, { target: { files: [fakeBanner] } });
 
     await waitFor(() => {
       expect(profileSvc.uploadBannerPhotoFile).toHaveBeenCalledWith(fakeBanner, "user-123");
-      expect(profileSvc.patchLiveProfileQuick).toHaveBeenCalledWith(
-        expect.anything(),
-        expect.objectContaining({ bannerPhotoUrl: "https://cdn.example.com/priya/new-banner.jpg" })
+      expect(profileSvc.persistBannerImmediate).toHaveBeenCalledWith(
+        "https://cdn.example.com/priya/new-banner.jpg?v=200",
+        "user-123"
       );
       expect(onToast).toHaveBeenCalledWith("Cover banner image updated!");
+      expect((screen.getByAltText("Priya Nair cover banner") as HTMLImageElement).src).toBe(
+        "https://cdn.example.com/priya/new-banner.jpg?v=200"
+      );
     });
+  });
+
+  it("preserves changed banners across refresh and honors explicit banner resets in normalizeLiveProfile", () => {
+    // 1. User changes banner: overlay holds new URL while profile column still holds v1 or empty string
+    const changedBannerProfile: LiveProfile = {
+      ...sampleLiveProfile,
+      profile: {
+        ...sampleLiveProfile.profile,
+        banner_photo_url: "https://cdn.example.com/priya/old-banner-v1.jpg",
+      },
+      shell_state: {
+        arjun_profile_v1: {
+          banner_photo_url: "https://cdn.example.com/priya/changed-banner-v2.jpg?v=999",
+          banner_reset: false,
+        },
+      },
+    };
+    expect(normalizeLiveProfile(changedBannerProfile).bannerPhotoUrl).toBe(
+      "https://cdn.example.com/priya/changed-banner-v2.jpg?v=999"
+    );
+
+    // 2. User explicitly resets banner: banner_reset=true overrides stale profile.banner_photo_url
+    const resetBannerProfile: LiveProfile = {
+      ...sampleLiveProfile,
+      profile: {
+        ...sampleLiveProfile.profile,
+        banner_photo_url: "https://cdn.example.com/priya/old-banner-v1.jpg",
+      },
+      shell_state: {
+        arjun_profile_v1: {
+          banner_photo_url: "",
+          banner_reset: true,
+        },
+      },
+    };
+    expect(normalizeLiveProfile(resetBannerProfile).bannerPhotoUrl).toBe("");
+  });
+
+  it("formats non-technical marketing profiles cleanly with menu-aligned container width, smart title casing, bullet lists, and zero developer filler", async () => {
+    const mahiProfile: LiveProfile = {
+      ...sampleLiveProfile,
+      profile: {
+        ...sampleLiveProfile.profile,
+        id: "user-mahi",
+        full_name: "Mahi Rakhecha",
+        headline: "Digital Marketing Executive",
+        sub_headline: null,
+        industry: "Marketing & Growth",
+        job_role: "Digital Marketing Executive",
+        company: "Thesuper30",
+        city: "CHENNAI",
+        state: "",
+        country: "",
+        about:
+          "I am a Digital Marketing Executive with experience in planning, managing, and executing digital marketing campaigns to improve brand awareness, reach target audiences, and drive business growth.",
+        areas_of_expertise: ["performance marketer", "social media manager"],
+        tools: ["Google Ads", "Meta Ads Manager"],
+      },
+      skills: [
+        { name: "performance marketing", level: "advanced", category: "technical", verified: false },
+        { name: "seo", level: "intermediate", category: "technical", verified: false },
+      ],
+      experiences: [
+        {
+          title: "Digital Marketing Intern",
+          company: "Thesuper30",
+          location: "CHENNAI",
+          start: "",
+          end: "Present",
+          description:
+            "- Assisted in planning and executing digital marketing campaigns to improve brand awareness and online engagement.\n- Supported social media management, content creation, and digital marketing strategies.",
+          tools: [],
+        },
+      ],
+      shell_state: {
+        arjun_profile_v1: {
+          focus_badges: ["performance marketer", "social media manager"],
+          // Uncustomized legacy developer defaults from an older wizard session
+          expertise_cards: [
+            { title: "End-to-End Development", sub: "Frontend to Cloud" },
+            { title: "Cloud & DevOps", sub: "AWS · Docker · CI/CD" },
+            { title: "AI/ML Integration", sub: "Python · LLMs" },
+            { title: "Product Thinking", sub: "User-first mindset" },
+          ],
+        },
+      },
+    };
+
+    profileSvc.loadFullLiveProfile.mockResolvedValueOnce(mahiProfile);
+
+    const { container } = render(
+      <MemoryRouter>
+        <LiveCandidateProfileView embedded={false} onNavigate={vi.fn()} onToast={vi.fn()} />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: "Mahi Rakhecha" })).toBeInTheDocument();
+    });
+
+    // Standalone profile uses .container on <main> so its width aligns with <Navbar />
+    expect(container.querySelector(".demo-dashboard.dp-standalone.dp-live-profile main.container")).toBeTruthy();
+
+    // ALL-CAPS city normalized to clean Title Case
+    expect(screen.getAllByText("Chennai").length).toBeGreaterThan(0);
+    expect(container.textContent).not.toContain("CHENNAI");
+
+    // Focus badges & skills formatted in Title Case / Uppercase Acronyms
+    expect(screen.getByText("Performance Marketer")).toBeInTheDocument();
+    expect(screen.getByText("Social Media Manager")).toBeInTheDocument();
+    expect(screen.getAllByText("SEO").length).toBeGreaterThan(0);
+
+    // Zero developer-default or awkward filler strings on a marketing profile
+    expect(container.textContent).not.toContain("End-to-End Development");
+    expect(container.textContent).not.toContain("Cloud & DevOps");
+    expect(container.textContent).not.toContain("Modern Tooling");
+    expect(container.textContent).not.toContain("Paired with");
+
+    // Missing start date with "Present" renders "Current Role" instead of an orphan "Present"
+    expect(screen.getByText("Current Role")).toBeInTheDocument();
+
+    // Hyphenated lines render as proper <ul><li> bullets without raw "- " prefix
+    const bulletItems = container.querySelectorAll("ul.dp-bullet-list li");
+    expect(bulletItems.length).toBe(2);
+    expect(bulletItems[0].textContent).toBe(
+      "Assisted in planning and executing digital marketing campaigns to improve brand awareness and online engagement."
+    );
+  });
+
+  it("enforces character limits (maxLength + live counter) inside Quick-Edit modals", async () => {
+    render(
+      <MemoryRouter>
+        <LiveCandidateProfileView embedded onNavigate={vi.fn()} onToast={vi.fn()} />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: "Priya Nair" })).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /Edit Header/i }));
+
+    const nameInput = await screen.findByLabelText(/Full Name/i);
+    expect(nameInput).toHaveAttribute("maxLength", String(PROFILE_CHAR_LIMITS.fullName));
+
+    const headlineInput = screen.getByLabelText(/Designation \/ Headline/i);
+    expect(headlineInput).toHaveAttribute("maxLength", String(PROFILE_CHAR_LIMITS.headline));
+
+    // Live character count rendered in label row ("10/80" for "Priya Nair")
+    expect(screen.getByText(`10/${PROFILE_CHAR_LIMITS.fullName}`)).toBeInTheDocument();
   });
 
   it("keeps the demo candidate profile untouched when isLive is false", () => {
