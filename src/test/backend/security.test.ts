@@ -120,6 +120,11 @@ describe("function exposure", () => {
     "get_employer_settings", "save_employer_settings", "mark_notification_acted", "employer_publish_readiness", "employer_overview",
     "list_employer_activity", "get_employer_wallet", "get_talent_overview", "search_candidates", "purchase_talent_package",
     "get_candidate_profile_for_employer", "get_candidate_cir_report", "can_employer_read_resume", "schedule_interview", "update_interview_status",
+    // Job Management & Job Applications Management (Section 2 & Section 3)
+    "assign_application_recruiter", "bulk_change_application_stage", "check_duplicate_jobs", "compare_applications",
+    "export_employer_applications", "generate_job_ai_assist", "get_competitor_job_analysis", "get_salary_benchmark",
+    "list_tenant_recruiters", "mark_application_hired", "promote_job", "publish_scheduled_jobs", "renew_job",
+    "schedule_job_publish", "set_application_workflow_flags",
     // used inside RLS policies and constraints
     "is_admin", "is_owner", "is_tenant_member", "can_manage_job", "has_role", "all_http_urls", "is_client_role", "safe_date", "_jsonb_text_array",
     "generate_talento_id", "update_updated_at",

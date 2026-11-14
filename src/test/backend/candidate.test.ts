@@ -2,7 +2,7 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import { createDb, uuid, type Db } from "./harness";
 
-const A = uuid(11), B = uuid(12), ADMIN = uuid(15);
+const A = uuid(11), B = uuid(12), C = uuid(13), ADMIN = uuid(15);
 let db: Db;
 let frontendJob: string;
 
@@ -10,6 +10,7 @@ beforeAll(async () => {
   db = await createDb();
   await db.signUp(A, "a@test.dev", { full_name: "Asha Candidate", role: "employee" });
   await db.signUp(B, "b@test.dev", { full_name: "Bala Candidate" });
+  await db.signUp(C, "c@test.dev", { full_name: "Charu Candidate", role: "employee" });
   await db.signUp(ADMIN, "admin@test.dev", {});
   await db.admin();
   await db.q(`insert into public.platform_admins (user_id) values ($1)`, [ADMIN]);
@@ -103,6 +104,181 @@ describe("public portfolio", () => {
     expect((await db.q(`select public.get_public_portfolio('asha-rao') as p`))[0].p).toBeNull();
     await db.user(B);
     expect(await db.fails(`select public.save_candidate_profile($1::jsonb)`, [JSON.stringify({ profile: { portfolio_slug: "asha-rao" } })])).toMatch(/unique|duplicate/i);
+  });
+
+  it("round-trips all Arjun-Mehta profile parity fields and banner/project media across private & public RPCs", async () => {
+    await db.user(C);
+    const richPayload = {
+      profile: {
+        full_name: "Bala Subramanian",
+        phone: "+91 98400 11223",
+        headline: "Staff Cloud & AI Engineer",
+        sub_headline: "Distributed Systems & LLM Infrastructure",
+        about: "Architecting resilient multi-region cloud platforms.",
+        city: "Bengaluru",
+        state: "Karnataka",
+        country: "India",
+        industry: "Cybersecurity & Cloud",
+        experience_level: "Senior",
+        years_of_experience: 7,
+        open_to_work: true,
+        open_for_freelance: true,
+        profile_photo_url: "https://cdn.example.com/bala/avatar.jpg",
+        banner_photo_url: "https://cdn.example.com/bala/banner.jpg",
+        video_intro_url: "https://youtube.com/watch?v=dQw4w9WgXcQ",
+        video_pitch: "60-second walkthrough of our zero-downtime Kubernetes control plane.",
+        linkedin_url: "https://linkedin.com/in/bala-cloud",
+        github_url: "https://github.com/bala-cloud",
+        portfolio_url: "https://bala.cloud",
+        kaggle_url: "https://kaggle.com/balacloud",
+        behance_url: "https://behance.net/balacloud",
+        portfolio_slug: "bala-cloud",
+        profile_visibility: "public",
+        areas_of_expertise: ["Kubernetes", "LLM Serving", "Zero-Trust Cloud"],
+        tools: ["Docker", "Terraform", "Prometheus", "Helm"],
+        hobbies: ["Astrophotography", "Trail Running"],
+        interests: ["Rust Kernels", "eBPF Observability"],
+      },
+      skills: [
+        { name: "Kubernetes", level: "Expert", category: "technical" },
+        { name: "Go", level: "Advanced", category: "technical" },
+        { name: "System Design", level: "Expert", category: "management" },
+      ],
+      experiences: [
+        {
+          title: "Principal Cloud Architect",
+          company: "InfraScale",
+          location: "Bengaluru, India",
+          start: "2022-04-01",
+          end: "Present",
+          description: "Scaled multi-tenant inference clusters.",
+          tools: ["Kubernetes", "Go", "Terraform"],
+        },
+      ],
+      educations: [
+        {
+          institution: "IIT Madras",
+          degree: "B.Tech",
+          field_of_study: "Computer Science",
+          start_year: "2015",
+          year: "2019",
+          grade: "9.4 CGPA",
+        },
+      ],
+      certifications: ["CKA Certified Kubernetes Administrator"],
+      certification_details: [
+        {
+          name: "CKA Certified Kubernetes Administrator",
+          issuer: "CNCF / Linux Foundation",
+          date: "2024-02-15",
+          credential_url: "https://training.linuxfoundation.org/verify/cka",
+        },
+      ],
+      projects: [
+        {
+          title: "MeshGuard eBPF",
+          role: "Creator",
+          description: "Zero-trust service mesh telemetry engine.",
+          url: "https://meshguard.dev",
+          github_url: "https://github.com/bala-cloud/meshguard",
+          image_url: "https://cdn.example.com/bala/meshguard.png",
+          tools: "Go, eBPF, Envoy",
+          impact: "Sub-millisecond policy enforcement",
+        },
+      ],
+      awards: [
+        {
+          title: "KubeCon Maintainer Spotlight",
+          organization: "CNCF",
+          date: "2024-11-10",
+          description: "Recognized for open-source telemetry contributions.",
+        },
+      ],
+      languages: [
+        { name: "English", level: "Fluent" },
+        { name: "Tamil", level: "Native" },
+      ],
+      shell_state: {
+        arjun_profile_v1: {
+          expertise_cards: [
+            { title: "Cloud Native Core", sub: "Kubernetes & eBPF" },
+            { title: "LLM Serving", sub: "Multi-GPU orchestration" },
+          ],
+        },
+      },
+    };
+
+    const [{ saved }] = await db.q(
+      `select public.save_candidate_profile($1::jsonb) as saved`,
+      [JSON.stringify(richPayload)]
+    );
+
+    expect(saved.profile).toMatchObject({
+      full_name: "Bala Subramanian",
+      headline: "Staff Cloud & AI Engineer",
+      sub_headline: "Distributed Systems & LLM Infrastructure",
+      banner_photo_url: "https://cdn.example.com/bala/banner.jpg",
+      profile_photo_url: "https://cdn.example.com/bala/avatar.jpg",
+      open_to_work: true,
+      open_for_freelance: true,
+      video_intro_url: "https://youtube.com/watch?v=dQw4w9WgXcQ",
+      video_pitch: "60-second walkthrough of our zero-downtime Kubernetes control plane.",
+      kaggle_url: "https://kaggle.com/balacloud",
+      behance_url: "https://behance.net/balacloud",
+      tools: ["Docker", "Terraform", "Prometheus", "Helm"],
+      hobbies: ["Astrophotography", "Trail Running"],
+      interests: ["Rust Kernels", "eBPF Observability"],
+    });
+    expect(saved.experiences[0]).toMatchObject({
+      title: "Principal Cloud Architect",
+      company: "InfraScale",
+      location: "Bengaluru, India",
+      tools: ["Kubernetes", "Go", "Terraform"],
+    });
+    expect(saved.educations[0]).toMatchObject({
+      institution: "IIT Madras",
+      start_year: "2015",
+      year: "2019",
+      grade: "9.4 CGPA",
+    });
+    expect(saved.certifications[0]).toMatchObject({
+      name: "CKA Certified Kubernetes Administrator",
+      issuer: "CNCF / Linux Foundation",
+      credential_url: "https://training.linuxfoundation.org/verify/cka",
+    });
+    expect(saved.projects[0]).toMatchObject({
+      title: "MeshGuard eBPF",
+      url: "https://meshguard.dev",
+      github_url: "https://github.com/bala-cloud/meshguard",
+      image_url: "https://cdn.example.com/bala/meshguard.png",
+    });
+    expect(saved.awards[0]).toMatchObject({
+      title: "KubeCon Maintainer Spotlight",
+      organization: "CNCF",
+    });
+
+    await db.anon();
+    const [{ pub }] = await db.q(`select public.get_public_portfolio('bala-cloud') as pub`);
+    expect(pub).toMatchObject({
+      name: "Bala Subramanian",
+      headline: "Staff Cloud & AI Engineer",
+      sub_headline: "Distributed Systems & LLM Infrastructure",
+      banner: "https://cdn.example.com/bala/banner.jpg",
+      photo: "https://cdn.example.com/bala/avatar.jpg",
+      open_to_work: true,
+      open_for_freelance: true,
+      tools: ["Docker", "Terraform", "Prometheus", "Helm"],
+      hobbies: ["Astrophotography", "Trail Running"],
+      interests: ["Rust Kernels", "eBPF Observability"],
+    });
+    expect(pub.projects[0]).toMatchObject({
+      github_url: "https://github.com/bala-cloud/meshguard",
+      image_url: "https://cdn.example.com/bala/meshguard.png",
+    });
+    expect(pub.educations[0].grade).toBe("9.4 CGPA");
+    expect(pub.expertise_cards).toHaveLength(2);
+    expect(pub).not.toHaveProperty("email");
+    expect(pub).not.toHaveProperty("phone");
   });
 });
 

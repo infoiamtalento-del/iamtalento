@@ -21,7 +21,17 @@ const employmentTypes = [
 const availabilityStatuses = ["Available", "Open to Offers", "Not Available"];
 const noticePeriods = ["Immediate", "15 Days", "30 Days", "60 Days", "90 Days", "3+ Months"];
 
-const TagInput = ({ label, values, onChange, placeholder }: { label: string; values: string[]; onChange: (v: string[]) => void; placeholder: string }) => {
+const TagInput = ({
+  label,
+  values,
+  onChange,
+  placeholder,
+}: {
+  label: string;
+  values: string[];
+  onChange: (v: string[]) => void;
+  placeholder: string;
+}) => {
   const [input, setInput] = useState("");
   const add = () => {
     if (input.trim() && !values.includes(input.trim())) {
@@ -33,15 +43,39 @@ const TagInput = ({ label, values, onChange, placeholder }: { label: string; val
     <div className="sm:col-span-2">
       <Label className="text-xs font-medium text-muted-foreground mb-1.5 block">{label}</Label>
       <div className="flex gap-2 mb-2">
-        <Input value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), add())} placeholder={placeholder} className="h-9 text-sm flex-1" />
-        <button type="button" onClick={add} className="h-9 w-9 rounded-md border flex items-center justify-center hover:bg-accent"><Plus className="h-4 w-4" /></button>
+        <Input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.nativeEvent.isComposing) {
+              e.preventDefault();
+              add();
+            }
+          }}
+          placeholder={placeholder}
+          className="h-9 text-sm flex-1"
+        />
+        <button
+          type="button"
+          onClick={add}
+          aria-label={`Add ${label}`}
+          className="h-9 w-9 rounded-md border flex items-center justify-center hover:bg-accent"
+        >
+          <Plus className="h-4 w-4" />
+        </button>
       </div>
       {values.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
           {values.map((v, i) => (
             <Badge key={i} variant="secondary" className="gap-1 text-xs">
               {v}
-              <button onClick={() => onChange(values.filter((_, idx) => idx !== i))}><X className="h-3 w-3" /></button>
+              <button
+                type="button"
+                aria-label={`Remove ${v}`}
+                onClick={() => onChange(values.filter((_, idx) => idx !== i))}
+              >
+                <X className="h-3 w-3" />
+              </button>
             </Badge>
           ))}
         </div>
@@ -55,44 +89,104 @@ const CareerPreferencesSection = ({ data, onChange }: Props) => (
     <div>
       <Label className="text-xs font-medium text-muted-foreground mb-1.5 block">Employment Type</Label>
       <Select value={data.employment_type || ""} onValueChange={(v) => onChange("employment_type", v)}>
-        <SelectTrigger className="h-10 text-sm"><SelectValue placeholder="Select type" /></SelectTrigger>
+        <SelectTrigger className="h-10 text-sm">
+          <SelectValue placeholder="Select type" />
+        </SelectTrigger>
         <SelectContent>
-          {employmentTypes.map((t) => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
+          {employmentTypes.map((t) => (
+            <SelectItem key={t.value} value={t.value}>
+              {t.label}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
     </div>
     <div>
       <Label className="text-xs font-medium text-muted-foreground mb-1.5 block">Availability</Label>
       <Select value={data.availability_status || ""} onValueChange={(v) => onChange("availability_status", v)}>
-        <SelectTrigger className="h-10 text-sm"><SelectValue placeholder="Select status" /></SelectTrigger>
+        <SelectTrigger className="h-10 text-sm">
+          <SelectValue placeholder="Select status" />
+        </SelectTrigger>
         <SelectContent>
-          {availabilityStatuses.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+          {availabilityStatuses.map((s) => (
+            <SelectItem key={s} value={s}>
+              {s}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
     </div>
     <div>
       <Label className="text-xs font-medium text-muted-foreground mb-1.5 block">Notice Period</Label>
       <Select value={data.notice_period || ""} onValueChange={(v) => onChange("notice_period", v)}>
-        <SelectTrigger className="h-10 text-sm"><SelectValue placeholder="Select period" /></SelectTrigger>
+        <SelectTrigger className="h-10 text-sm">
+          <SelectValue placeholder="Select period" />
+        </SelectTrigger>
         <SelectContent>
-          {noticePeriods.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+          {noticePeriods.map((p) => (
+            <SelectItem key={p} value={p}>
+              {p}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
     </div>
     <div>
-      <Label htmlFor="salary" className="text-xs font-medium text-muted-foreground mb-1.5 block">Preferred Salary Range</Label>
-      <Input id="salary" value={data.preferred_salary_range || ""} onChange={(e) => onChange("preferred_salary_range", e.target.value)} placeholder="e.g. ₹10-15 LPA" className="h-10 text-sm" />
+      <Label htmlFor="salary" className="text-xs font-medium text-muted-foreground mb-1.5 block">
+        Preferred Salary Range
+      </Label>
+      <Input
+        id="salary"
+        value={data.preferred_salary_range || ""}
+        onChange={(e) => onChange("preferred_salary_range", e.target.value)}
+        placeholder="e.g. ₹12–18 LPA"
+        className="h-10 text-sm"
+      />
     </div>
-    <div className="flex items-center justify-between sm:col-span-2 p-3 rounded-lg border bg-accent/30">
+    <div className="flex items-center justify-between p-3 rounded-lg border bg-accent/30">
       <div>
         <p className="text-sm font-medium">Open to Work</p>
-        <p className="text-xs text-muted-foreground">Let employers know you're actively looking</p>
+        <p className="text-xs text-muted-foreground">Actively seeking full-time roles</p>
       </div>
-      <Switch checked={!!data.open_to_work} onCheckedChange={(v) => onChange("open_to_work", v)} />
+      <Switch checked={data.open_to_work !== false} onCheckedChange={(v) => onChange("open_to_work", v)} />
     </div>
-    <TagInput label="Preferred Locations" values={data.preferred_locations || []} onChange={(v) => onChange("preferred_locations", v)} placeholder="e.g. Bangalore, Remote" />
-    <TagInput label="Areas of Expertise" values={data.areas_of_expertise || []} onChange={(v) => onChange("areas_of_expertise", v)} placeholder="e.g. Machine Learning, Cloud" />
-    <TagInput label="Career Interests" values={data.career_interests || []} onChange={(v) => onChange("career_interests", v)} placeholder="e.g. Product Management, AI" />
+    <div className="flex items-center justify-between p-3 rounded-lg border bg-accent/30">
+      <div>
+        <p className="text-sm font-medium">Open for Freelancing</p>
+        <p className="text-xs text-muted-foreground">Available for contract & freelance gigs</p>
+      </div>
+      <Switch checked={!!data.open_for_freelance} onCheckedChange={(v) => onChange("open_for_freelance", v)} />
+    </div>
+    <TagInput
+      label="Preferred Locations"
+      values={data.preferred_locations || []}
+      onChange={(v) => onChange("preferred_locations", v)}
+      placeholder="e.g. Bengaluru, Remote"
+    />
+    <TagInput
+      label="Hero Focus Badges / Areas of Expertise"
+      values={data.areas_of_expertise || []}
+      onChange={(v) => onChange("areas_of_expertise", v)}
+      placeholder="e.g. Full Stack Dev, Cloud Architecture, GenAI"
+    />
+    <TagInput
+      label="Tools & Platforms"
+      values={data.tools || []}
+      onChange={(v) => onChange("tools", v)}
+      placeholder="e.g. Docker, AWS, Kubernetes, Figma, Git"
+    />
+    <TagInput
+      label="Hobbies"
+      values={data.hobbies || []}
+      onChange={(v) => onChange("hobbies", v)}
+      placeholder="e.g. Open Source, Photography, Chess"
+    />
+    <TagInput
+      label="Interests"
+      values={data.career_interests || []}
+      onChange={(v) => onChange("career_interests", v)}
+      placeholder="e.g. Distributed Systems, Applied AI, Developer Tooling"
+    />
   </div>
 );
 

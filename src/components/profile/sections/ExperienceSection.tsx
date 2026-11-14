@@ -17,6 +17,7 @@ interface Experience {
   end_date: string;
   is_current: boolean;
   description: string;
+  tools_technologies?: string[];
 }
 
 interface Props {
@@ -33,6 +34,7 @@ const emptyExperience: Experience = {
   end_date: "",
   is_current: false,
   description: "",
+  tools_technologies: [],
 };
 
 const ExperienceSection = ({ experiences, onChange }: Props) => {
@@ -45,7 +47,7 @@ const ExperienceSection = ({ experiences, onChange }: Props) => {
     setEditingIndex(experiences.length);
   };
 
-  const updateExperience = (index: number, field: string, value: string | boolean) => {
+  const updateExperience = (index: number, field: string, value: string | boolean | string[]) => {
     const updated = [...experiences];
     updated[index] = { ...updated[index], [field]: value };
     onChange(updated);
@@ -76,55 +78,124 @@ const ExperienceSection = ({ experiences, onChange }: Props) => {
                 <div className="grid sm:grid-cols-2 gap-3">
                   <div>
                     <Label className="text-xs text-muted-foreground">Job Title *</Label>
-                    <Input value={exp.job_title} onChange={(e) => updateExperience(i, "job_title", e.target.value)} placeholder="e.g. Software Engineer" className="mt-1 h-9 text-sm" />
+                    <Input
+                      value={exp.job_title}
+                      onChange={(e) => updateExperience(i, "job_title", e.target.value)}
+                      placeholder="e.g. Senior Software Engineer"
+                      className="mt-1 h-9 text-sm"
+                    />
                   </div>
                   <div>
                     <Label className="text-xs text-muted-foreground">Company *</Label>
-                    <Input value={exp.company_name} onChange={(e) => updateExperience(i, "company_name", e.target.value)} placeholder="e.g. Google" className="mt-1 h-9 text-sm" />
+                    <Input
+                      value={exp.company_name}
+                      onChange={(e) => updateExperience(i, "company_name", e.target.value)}
+                      placeholder="e.g. Google"
+                      className="mt-1 h-9 text-sm"
+                    />
                   </div>
                   <div>
                     <Label className="text-xs text-muted-foreground">Location</Label>
-                    <Input value={exp.location} onChange={(e) => updateExperience(i, "location", e.target.value)} placeholder="e.g. Bangalore, India" className="mt-1 h-9 text-sm" />
+                    <Input
+                      value={exp.location}
+                      onChange={(e) => updateExperience(i, "location", e.target.value)}
+                      placeholder="e.g. Bengaluru, India"
+                      className="mt-1 h-9 text-sm"
+                    />
                   </div>
                   <div>
                     <Label className="text-xs text-muted-foreground">Employment Type</Label>
-                    <Input value={exp.employment_type} onChange={(e) => updateExperience(i, "employment_type", e.target.value)} placeholder="e.g. Full-time" className="mt-1 h-9 text-sm" />
+                    <Input
+                      value={exp.employment_type}
+                      onChange={(e) => updateExperience(i, "employment_type", e.target.value)}
+                      placeholder="e.g. Full-time"
+                      className="mt-1 h-9 text-sm"
+                    />
                   </div>
                   <div>
                     <Label className="text-xs text-muted-foreground">Start Date</Label>
-                    <Input type="date" value={exp.start_date} onChange={(e) => updateExperience(i, "start_date", e.target.value)} className="mt-1 h-9 text-sm" />
+                    <Input
+                      type="date"
+                      value={exp.start_date}
+                      onChange={(e) => updateExperience(i, "start_date", e.target.value)}
+                      className="mt-1 h-9 text-sm"
+                    />
                   </div>
                   <div>
                     <Label className="text-xs text-muted-foreground">End Date</Label>
-                    <Input type="date" value={exp.end_date} onChange={(e) => updateExperience(i, "end_date", e.target.value)} disabled={exp.is_current} className="mt-1 h-9 text-sm" />
+                    <Input
+                      type="date"
+                      value={exp.end_date}
+                      onChange={(e) => updateExperience(i, "end_date", e.target.value)}
+                      disabled={exp.is_current}
+                      className="mt-1 h-9 text-sm"
+                    />
                     <label className="flex items-center gap-2 mt-1.5">
-                      <input type="checkbox" checked={exp.is_current} onChange={(e) => updateExperience(i, "is_current", e.target.checked)} className="h-3.5 w-3.5 rounded border-border text-primary" />
+                      <input
+                        type="checkbox"
+                        checked={exp.is_current}
+                        onChange={(e) => updateExperience(i, "is_current", e.target.checked)}
+                        className="h-3.5 w-3.5 rounded border-border text-primary"
+                      />
                       <span className="text-[11px] text-muted-foreground">Currently working here</span>
                     </label>
                   </div>
                 </div>
                 <div>
+                  <Label className="text-xs text-muted-foreground">
+                    Tools & Technologies Used (comma-separated)
+                  </Label>
+                  <Input
+                    value={(exp.tools_technologies || []).join(", ")}
+                    onChange={(e) =>
+                      updateExperience(
+                        i,
+                        "tools_technologies",
+                        e.target.value
+                          .split(",")
+                          .map((t) => t.trim())
+                          .filter(Boolean)
+                      )
+                    }
+                    placeholder="e.g. React, TypeScript, AWS, PostgreSQL"
+                    className="mt-1 h-9 text-sm"
+                  />
+                </div>
+                <div>
                   <Label className="text-xs text-muted-foreground">Description</Label>
-                  <Textarea value={exp.description} onChange={(e) => updateExperience(i, "description", e.target.value)} placeholder="Key responsibilities & achievements..." className="mt-1 min-h-[80px] text-sm resize-none" />
+                  <Textarea
+                    value={exp.description}
+                    onChange={(e) => updateExperience(i, "description", e.target.value)}
+                    placeholder="Key responsibilities & achievements..."
+                    className="mt-1 min-h-[80px] text-sm"
+                  />
                 </div>
                 <div className="flex gap-2 justify-end">
-                  <Button size="sm" variant="ghost" onClick={() => removeExperience(i)} className="text-destructive hover:text-destructive h-8 text-xs">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => removeExperience(i)}
+                    className="text-destructive hover:text-destructive h-8 text-xs"
+                  >
                     <Trash2 className="h-3.5 w-3.5 mr-1" /> Remove
                   </Button>
-                  <Button size="sm" onClick={() => setEditingIndex(null)} className="h-8 text-xs">
+                  <Button type="button" size="sm" onClick={() => setEditingIndex(null)} className="h-8 text-xs">
                     Done
                   </Button>
                 </div>
               </div>
             ) : (
-              <button onClick={() => setEditingIndex(i)} className="w-full text-left">
+              <button type="button" onClick={() => setEditingIndex(i)} className="w-full text-left">
                 <div className="flex items-start gap-3">
                   <div className="h-9 w-9 rounded-lg bg-accent flex items-center justify-center shrink-0 mt-0.5">
                     <Building2 className="h-4 w-4 text-muted-foreground" />
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm font-semibold truncate">{exp.job_title || "Untitled Role"}</p>
-                    <p className="text-xs text-muted-foreground truncate">{exp.company_name || "Company"} {exp.location && `· ${exp.location}`}</p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {exp.company_name || "Company"} {exp.location && `· ${exp.location}`}
+                    </p>
                     <div className="flex items-center gap-1 text-[11px] text-muted-foreground/60 mt-0.5">
                       <Calendar className="h-3 w-3" />
                       {exp.start_date || "Start"}, {exp.is_current ? "Present" : exp.end_date || "End"}
@@ -137,7 +208,7 @@ const ExperienceSection = ({ experiences, onChange }: Props) => {
         ))}
       </AnimatePresence>
 
-      <Button variant="outline" size="sm" onClick={addExperience} className="w-full h-9 text-xs border-dashed">
+      <Button type="button" variant="outline" size="sm" onClick={addExperience} className="w-full h-9 text-xs border-dashed">
         <Plus className="h-3.5 w-3.5 mr-1.5" /> Add Experience
       </Button>
     </div>

@@ -14,17 +14,29 @@ import {
   Code2,
   ExternalLink,
   FileText,
+  FolderKanban,
+  Github,
   Globe,
   GraduationCap,
+  Heart,
+  ImagePlus,
+  Languages,
+  Linkedin,
   Loader2,
   MapPin,
+  Palette,
   Phone,
   Plus,
+  RotateCcw,
+  Save,
   ShieldCheck,
   Sparkles,
   Trash2,
+  Trophy,
   Upload,
   User,
+  Video,
+  Wrench,
   X,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -37,13 +49,23 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { siteLogo } from "@/assets/logo";
+import defaultCover from "@/assets/profile-office-cover.jpg";
 import CompletionRing from "@/components/profile/CompletionRing";
 import {
   getResumeSignedUrl,
-  loadLiveProfile,
-  saveCandidatePayload,
+  loadFullLiveProfile,
+  normalizeLiveProfile,
+  saveRichCandidateProfile,
+  uploadBannerPhotoFile,
   uploadProfilePhotoFile,
+  uploadProjectImageFile,
   uploadResumeFile,
+  type ExpertiseCardItem,
+  type RichAwardItem,
+  type RichCertificationItem,
+  type RichEducationItem,
+  type RichExperienceItem,
+  type RichProjectItem,
 } from "@/services/candidate/profile";
 import { submitIdentity } from "@/services/candidate/platform";
 import type { ProView } from "@/components/pro/proTypes";
@@ -111,31 +133,30 @@ export const INDUSTRY_CATALOG: { id: string; label: string; suggestedSkills: str
   },
 ];
 
+const SUGGESTED_TOOLS = [
+  "VS Code",
+  "Git & GitHub",
+  "Docker",
+  "Postman",
+  "Figma",
+  "Jira",
+  "AWS",
+  "Linux",
+  "Notion",
+  "Slack",
+];
+
 const WIZARD_STEPS = [
   { num: 1, title: "Verify Account", subtitle: "Email, mobile OTP & ID badge", icon: ShieldCheck },
-  { num: 2, title: "Photo & Industry", subtitle: "Profile pic, industry & role", icon: Camera },
-  { num: 3, title: "Skills & Background", subtitle: "Skills, education & experience", icon: Code2 },
-  { num: 4, title: "Resume & Preferences", subtitle: "Upload CV, salary & public URL", icon: FileText },
-  { num: 5, title: "Launch Dashboard", subtitle: "Readiness review & next steps", icon: Sparkles },
+  { num: 2, title: "Banner & Identity", subtitle: "Cover, photo, specialty & bio", icon: Camera },
+  { num: 3, title: "Skills & Experience", subtitle: "Skills, tools, work & college", icon: Code2 },
+  { num: 4, title: "Projects & Proof", subtitle: "Projects, certs & awards", icon: FolderKanban },
+  { num: 5, title: "Resume & Launch", subtitle: "CV, video, status & links", icon: Sparkles },
 ] as const;
 
 interface SkillDraft {
   name: string;
   level: "beginner" | "intermediate" | "advanced" | "expert";
-}
-
-interface EduDraft {
-  degree: string;
-  institution: string;
-  year: string;
-}
-
-interface ExpDraft {
-  title: string;
-  company: string;
-  start: string;
-  end: string;
-  description: string;
 }
 
 interface OnboardingWizardProps {
@@ -144,6 +165,13 @@ interface OnboardingWizardProps {
   onSaved?: () => void;
   onNavigatePro?: (view: ProView) => void;
 }
+
+const DEFAULT_EXPERTISE: ExpertiseCardItem[] = [
+  { title: "End-to-End Development", sub: "From idea to scalable product" },
+  { title: "Cloud & DevOps", sub: "Scalable infrastructure" },
+  { title: "AI/ML Integration", sub: "Intelligent applications" },
+  { title: "Product Thinking", sub: "User-centric solutions" },
+];
 
 const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   embedded = false,
@@ -174,7 +202,10 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   const [uploadingId, setUploadingId] = useState(false);
   const idFileRef = useRef<HTMLInputElement>(null);
 
-  // Step 2: Profile Photo & Industry
+  // Step 2: Banner, Photo & Identity
+  const [bannerUrl, setBannerUrl] = useState("");
+  const [uploadingBanner, setUploadingBanner] = useState(false);
+  const bannerFileRef = useRef<HTMLInputElement>(null);
   const [photoUrl, setPhotoUrl] = useState("");
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const photoFileRef = useRef<HTMLInputElement>(null);
@@ -182,35 +213,61 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   const [industry, setIndustry] = useState("");
   const [jobRole, setJobRole] = useState("");
   const [headline, setHeadline] = useState("");
+  const [subHeadline, setSubHeadline] = useState("");
   const [experienceLevel, setExperienceLevel] = useState<"fresher" | "experienced">("fresher");
   const [yearsOfExp, setYearsOfExp] = useState<number>(0);
   const [city, setCity] = useState("");
   const [stateName, setStateName] = useState("");
   const [country, setCountry] = useState("India");
   const [about, setAbout] = useState("");
+  const [focusBadges, setFocusBadges] = useState<string[]>([]);
+  const [badgeInput, setBadgeInput] = useState("");
+  const [expertiseCards, setExpertiseCards] = useState<ExpertiseCardItem[]>(DEFAULT_EXPERTISE);
 
-  // Step 3: Skills, Education & Experience
+  // Step 3: Skills, Tools, Education & Experience
   const [skills, setSkills] = useState<SkillDraft[]>([]);
   const [skillInput, setSkillInput] = useState("");
   const [skillLevel, setSkillLevel] = useState<SkillDraft["level"]>("intermediate");
-  const [educations, setEducations] = useState<EduDraft[]>([{ degree: "", institution: "", year: "" }]);
-  const [experiences, setExperiences] = useState<ExpDraft[]>([]);
+  const [tools, setTools] = useState<string[]>([]);
+  const [toolInput, setToolInput] = useState("");
+  const [educations, setEducations] = useState<RichEducationItem[]>([
+    { institution: "", degree: "", field_of_study: "", start_year: "", year: "", grade: "" },
+  ]);
+  const [experiences, setExperiences] = useState<RichExperienceItem[]>([]);
 
-  // Step 4: Resume & Career Preferences
+  // Step 4: Projects, Certifications & Awards
+  const [projects, setProjects] = useState<RichProjectItem[]>([]);
+  const [uploadingProjIdx, setUploadingProjIdx] = useState<number | null>(null);
+  const [certifications, setCertifications] = useState<RichCertificationItem[]>([]);
+  const [awards, setAwards] = useState<RichAwardItem[]>([]);
+
+  // Step 5: Resume, Video Resume, Availability, Personal & Links
   const [resumePath, setResumePath] = useState<string | null>(null);
   const [resumeSignedUrl, setResumeSignedUrl] = useState<string | null>(null);
   const [uploadingResume, setUploadingResume] = useState(false);
   const resumeFileRef = useRef<HTMLInputElement>(null);
+  const [videoIntroUrl, setVideoIntroUrl] = useState("");
+  const [videoPitch, setVideoPitch] = useState("");
   const [openToWork, setOpenToWork] = useState(true);
+  const [openForFreelance, setOpenForFreelance] = useState(false);
   const [workMode, setWorkMode] = useState<"Remote" | "Hybrid" | "Onsite">("Hybrid");
   const [employmentType, setEmploymentType] = useState("Full-time");
   const [preferredLocations, setPreferredLocations] = useState("");
   const [salaryRange, setSalaryRange] = useState("");
   const [noticePeriod, setNoticePeriod] = useState("Immediate");
+  const [languages, setLanguages] = useState<{ name: string; level: string }[]>([
+    { name: "English", level: "Fluent" },
+  ]);
+  const [hobbies, setHobbies] = useState<string[]>([]);
+  const [hobbyInput, setHobbyInput] = useState("");
+  const [interests, setInterests] = useState<string[]>([]);
+  const [interestInput, setInterestInput] = useState("");
   const [portfolioSlug, setPortfolioSlug] = useState("");
   const [linkedinUrl, setLinkedinUrl] = useState("");
   const [githubUrl, setGithubUrl] = useState("");
   const [portfolioUrl, setPortfolioUrl] = useState("");
+  const [kaggleUrl, setKaggleUrl] = useState("");
+  const [behanceUrl, setBehanceUrl] = useState("");
   const [shellExtra, setShellExtra] = useState<Record<string, any>>({});
 
   useEffect(() => {
@@ -222,7 +279,8 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
         setEmail("demo.candidate@talento.app");
         setIndustry("Technology & Software");
         setJobRole("Frontend Developer");
-        setHeadline("Frontend Developer · React & TypeScript");
+        setHeadline("Frontend Developer");
+        setSubHeadline("React & TypeScript Specialist");
         setCity("Bengaluru");
         setSkills([
           { name: "React", level: "advanced" },
@@ -243,97 +301,110 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
       setEmail(authData.user.email || "");
 
       try {
-        const live = await loadLiveProfile();
+        const live = await loadFullLiveProfile();
         if (!alive || !live) {
           setFullName((authData.user.user_metadata?.full_name as string) || "");
           setPhone((authData.user.user_metadata?.phone as string) || "");
           setLoading(false);
           return;
         }
-        const p = live.profile;
-        const sh = live.shell_state || {};
-        setShellExtra(sh);
-        setTalentoId(p.iam_talento_id || "");
-        setEmail(p.email || authData.user.email || "");
-        setFullName(p.full_name || "");
-        setPhone(p.phone || "");
-        setPhoneVerified(Boolean(sh.phv));
-        setIdStatus(live.verification.identity_status || null);
-        setPhotoUrl(p.profile_photo_url || "");
-        setIndustry(p.industry || "");
-        setJobRole(p.job_role || "");
-        setHeadline(p.headline || "");
-        setExperienceLevel(p.experience_level === "experienced" ? "experienced" : "fresher");
-        setYearsOfExp(p.years_of_experience ?? 0);
-        setCity(p.city || "");
-        setStateName(p.state || "");
-        setCountry(p.country || "India");
-        setAbout(p.about || "");
+        const norm = normalizeLiveProfile(live);
+        setShellExtra(norm.shellState || {});
+        setTalentoId(norm.iamTalentoId);
+        setEmail(norm.email || authData.user.email || "");
+        setFullName(norm.fullName);
+        setPhone(norm.phone);
+        setPhoneVerified(Boolean(norm.shellState?.phv));
+        setIdStatus(norm.verification.identity_status || null);
+        setBannerUrl(norm.bannerPhotoUrl);
+        setPhotoUrl(norm.profilePhotoUrl);
+        setIndustry(norm.industry);
+        setJobRole(norm.jobRole);
+        setHeadline(norm.headline);
+        setSubHeadline(norm.subHeadline);
+        setExperienceLevel(norm.experienceLevel === "experienced" ? "experienced" : "fresher");
+        setYearsOfExp(norm.yearsOfExperience);
+        setCity(norm.city);
+        setStateName(norm.state);
+        setCountry(norm.country || "India");
+        setAbout(norm.about);
+        setFocusBadges(norm.focusBadges);
+        if (norm.expertiseCards.length > 0) {
+          const padded = [...norm.expertiseCards];
+          while (padded.length < 4) {
+            padded.push(DEFAULT_EXPERTISE[padded.length]);
+          }
+          setExpertiseCards(padded.slice(0, 4));
+        }
 
-        if (live.skills.length > 0) {
+        if (norm.skills.length > 0) {
           setSkills(
-            live.skills.map((s) => ({
+            norm.skills.map((s) => ({
               name: s.name,
-              level: (["beginner", "intermediate", "advanced", "expert"].includes(
-                (s.level || "").toLowerCase()
-              )
-                ? (s.level || "intermediate").toLowerCase()
+              level: (["beginner", "intermediate", "advanced", "expert"].includes(s.level.toLowerCase())
+                ? s.level.toLowerCase()
                 : "intermediate") as SkillDraft["level"],
             }))
           );
         }
-        if (live.educations.length > 0) {
-          setEducations(
-            live.educations.map((e) => ({
-              degree: e.degree || "",
-              institution: e.institution || "",
-              year: e.year || "",
-            }))
-          );
+        setTools(norm.tools);
+        if (norm.educations.length > 0) {
+          setEducations(norm.educations);
         }
-        if (live.experiences.length > 0) {
-          setExperiences(
-            live.experiences.map((e) => ({
-              title: e.title || "",
-              company: e.company || "",
-              start: e.start ? e.start.slice(0, 4) : "",
-              end: e.end && e.end !== "Present" ? e.end.slice(0, 4) : "Present",
-              description: e.description || "",
-            }))
-          );
+        if (norm.experiences.length > 0) {
+          setExperiences(norm.experiences);
         }
+        if (norm.projects.length > 0) {
+          setProjects(norm.projects);
+        }
+        if (norm.certifications.length > 0) {
+          setCertifications(norm.certifications);
+        }
+        if (norm.awards.length > 0) {
+          setAwards(norm.awards);
+        }
+        if (norm.languages.length > 0) {
+          setLanguages(norm.languages);
+        }
+        setHobbies(norm.hobbies);
+        setInterests(norm.interests);
 
-        setResumePath(p.resume_path || null);
-        if (p.resume_path) {
-          getResumeSignedUrl(p.resume_path).then((u) => {
+        setResumePath(norm.resumePath || null);
+        if (norm.resumePath) {
+          getResumeSignedUrl(norm.resumePath).then((u) => {
             if (alive) setResumeSignedUrl(u);
           });
-        } else if (p.resume_url) {
-          setResumeSignedUrl(p.resume_url);
+        } else if (norm.resumeUrl) {
+          setResumeSignedUrl(norm.resumeUrl);
         }
 
-        setOpenToWork(p.open_to_work !== false);
-        setWorkMode((sh.pf?.wm as "Remote" | "Hybrid" | "Onsite") || "Hybrid");
-        setEmploymentType(p.availability_status || sh.pf?.ty || "Full-time");
-        setPreferredLocations((p.preferred_locations || []).join(", "));
-        setSalaryRange(p.preferred_salary_range || "");
-        setNoticePeriod(p.notice_period || "Immediate");
+        setVideoIntroUrl(norm.videoIntroUrl);
+        setVideoPitch(norm.videoPitch);
+        setOpenToWork(norm.openToWork);
+        setOpenForFreelance(norm.openForFreelance);
+        setWorkMode(norm.workMode);
+        setEmploymentType(norm.employmentType);
+        setPreferredLocations(norm.preferredLocations.join(", "));
+        setSalaryRange(norm.salaryRange);
+        setNoticePeriod(norm.noticePeriod);
 
-        if (p.portfolio_slug) {
-          setPortfolioSlug(p.portfolio_slug);
-        } else if (p.full_name) {
-          const baseSlug = p.full_name
+        if (norm.portfolioSlug) {
+          setPortfolioSlug(norm.portfolioSlug);
+        } else if (norm.fullName) {
+          const baseSlug = norm.fullName
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, "-")
             .replace(/^-|-$/g, "")
             .slice(0, 24);
-          const suffix = (p.iam_talento_id || "").replace(/[^a-zA-Z0-9]/g, "").slice(-4).toLowerCase();
+          const suffix = (norm.iamTalentoId || "").replace(/[^a-zA-Z0-9]/g, "").slice(-4).toLowerCase();
           if (baseSlug) setPortfolioSlug(`${baseSlug}-${suffix || "pro"}`);
         }
 
-        setLinkedinUrl(p.linkedin_url || "");
-        setGithubUrl(p.github_url || "");
-        setPortfolioUrl(p.portfolio_url || "");
+        setLinkedinUrl(norm.linkedinUrl);
+        setGithubUrl(norm.githubUrl);
+        setPortfolioUrl(norm.portfolioUrl);
+        setKaggleUrl(norm.kaggleUrl);
+        setBehanceUrl(norm.behanceUrl);
       } catch {
         /* keep defaults */
       } finally {
@@ -348,27 +419,31 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   const completionScore = useMemo(() => {
     let pts = 0;
     if (fullName.trim()) pts += 10;
-    if (phone.trim()) pts += 8;
-    if (photoUrl) pts += 14;
-    if (industry) pts += 14;
+    if (phone.trim()) pts += 6;
+    if (photoUrl) pts += 12;
+    if (bannerUrl) pts += 6;
+    if (industry) pts += 10;
     if (headline.trim() || jobRole.trim()) pts += 10;
+    if (about.trim()) pts += 8;
     if (city.trim()) pts += 6;
-    if (skills.length >= 3) pts += 14;
-    if (educations.some((e) => e.institution.trim())) pts += 10;
-    if (experienceLevel === "fresher" || experiences.some((e) => e.title.trim())) pts += 6;
-    if (resumePath || resumeSignedUrl || linkedinUrl.trim() || githubUrl.trim()) pts += 8;
+    if (skills.length >= 3) pts += 12;
+    if (educations.some((e) => e.institution.trim())) pts += 8;
+    if (projects.some((p) => p.title.trim()) || experiences.some((e) => e.title.trim())) pts += 6;
+    if (resumePath || resumeSignedUrl || linkedinUrl.trim() || githubUrl.trim()) pts += 6;
     return Math.min(100, pts);
   }, [
     fullName,
     phone,
     photoUrl,
+    bannerUrl,
     industry,
     headline,
     jobRole,
+    about,
     city,
     skills,
     educations,
-    experienceLevel,
+    projects,
     experiences,
     resumePath,
     resumeSignedUrl,
@@ -381,12 +456,6 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
     return match ? match.suggestedSkills : INDUSTRY_CATALOG[0].suggestedSkills;
   }, [industry]);
 
-  const cleanHttp = (raw: string): string => {
-    const t = raw.trim();
-    if (!t) return "";
-    return /^https?:\/\//i.test(t) ? t : `https://${t}`;
-  };
-
   const persistCurrentProgress = async (silent = false): Promise<boolean> => {
     if (!userId) {
       if (!silent) toast.success("Demo profile preview updated! Sign up for a real account to save permanently.");
@@ -394,78 +463,56 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
     }
     setSaving(true);
     try {
-      const cleanedSlug = portfolioSlug
-        .trim()
-        .toLowerCase()
-        .replace(/[^a-z0-9-]/g, "")
-        .replace(/^-+|-+$/g, "");
-      const validSlug =
-        cleanedSlug.length >= 4 && /^[a-z0-9][a-z0-9-]{2,38}[a-z0-9]$/.test(cleanedSlug)
-          ? cleanedSlug
-          : null;
-
-      await saveCandidatePayload({
-        profile: {
-          full_name: fullName.trim(),
-          phone: phone.trim(),
-          headline: headline.trim() || jobRole.trim(),
-          job_role: jobRole.trim(),
-          industry,
-          about: about.trim(),
-          city: city.trim(),
-          state: stateName.trim(),
-          country: country.trim() || "India",
-          years_of_experience: experienceLevel === "fresher" ? 0 : Math.max(0, Number(yearsOfExp) || 0),
-          open_to_work: openToWork,
-          preferred_locations: preferredLocations
-            .split(",")
-            .map((s) => s.trim())
-            .filter(Boolean),
-          preferred_salary_range: salaryRange.trim(),
-          notice_period: noticePeriod,
-          availability_status: employmentType,
-          linkedin_url: cleanHttp(linkedinUrl),
-          github_url: cleanHttp(githubUrl),
-          portfolio_url: cleanHttp(portfolioUrl),
-          profile_photo_url: photoUrl || "",
-          ...(resumePath ? { resume_path: resumePath } : {}),
-          ...(validSlug ? { portfolio_slug: validSlug } : {}),
-        },
-        skills: skills.map((s) => ({
-          name: s.name,
-          level: s.level,
-          category: "technical",
-        })),
-        educations: educations
-          .filter((e) => e.institution.trim())
-          .map((e) => ({
-            degree: e.degree.trim() || "Degree",
-            institution: e.institution.trim(),
-            year: e.year.trim(),
-          })),
-        experiences: experiences
-          .filter((e) => e.title.trim())
-          .map((e) => ({
-            title: e.title.trim(),
-            company: e.company.trim() || "Company",
-            start: e.start.trim(),
-            end: e.end.trim() || "Present",
-            description: e.description.trim(),
-          })),
-        shell_state: {
-          ...shellExtra,
-          phv: phoneVerified,
-          tag: industry,
-          onboardingCompleted: true,
-          pf: {
-            ...(shellExtra.pf || {}),
-            wm: workMode,
-            ty: employmentType,
-            loc: preferredLocations,
-          },
-        },
+      await saveRichCandidateProfile({
+        fullName,
+        phone,
+        headline: headline.trim() || jobRole.trim(),
+        subHeadline,
+        jobRole,
+        industry,
+        experienceLevel,
+        yearsOfExperience: experienceLevel === "fresher" ? 0 : Math.max(0, Number(yearsOfExp) || 0),
+        city,
+        state: stateName,
+        country: country || "India",
+        about,
+        profilePhotoUrl: photoUrl,
+        bannerPhotoUrl: bannerUrl,
+        openToWork,
+        openForFreelance,
+        workMode,
+        employmentType,
+        noticePeriod,
+        salaryRange,
+        preferredLocations: preferredLocations
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean),
+        portfolioSlug,
+        resumePath,
+        videoIntroUrl,
+        videoPitch,
+        linkedinUrl,
+        githubUrl,
+        portfolioUrl,
+        kaggleUrl,
+        behanceUrl,
+        focusBadges,
+        expertiseCards,
+        skills: skills.map((s) => ({ name: s.name, level: s.level, category: "technical" })),
+        tools,
+        experiences,
+        projects,
+        educations,
+        certifications,
+        awards,
+        languages,
+        hobbies,
+        interests,
+        phoneVerified,
+        existingShellState: shellExtra,
       });
-      if (!silent) toast.success("Profile progress saved!");
+      if (!silent) toast.success("Profile saved!");
       onSaved?.();
       return true;
     } catch (err: any) {
@@ -499,6 +546,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
 
   const handleIdentityDocUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = "";
     if (!file || !userId) return;
     if (file.size > 10 * 1024 * 1024) {
       toast.error("ID document must be under 10 MB.");
@@ -516,8 +564,25 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
     }
   };
 
+  const handleBannerSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file || !userId) return;
+    setUploadingBanner(true);
+    try {
+      const url = await uploadBannerPhotoFile(file, userId);
+      setBannerUrl(url);
+      toast.success("Cover banner uploaded!");
+    } catch (err: any) {
+      toast.error(err?.message || "Banner upload failed");
+    } finally {
+      setUploadingBanner(false);
+    }
+  };
+
   const handlePhotoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = "";
     if (!file || !userId) return;
     setUploadingPhoto(true);
     try {
@@ -531,8 +596,25 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
     }
   };
 
+  const handleProjectImageSelect = async (idx: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file || !userId) return;
+    setUploadingProjIdx(idx);
+    try {
+      const url = await uploadProjectImageFile(file, userId);
+      setProjects((prev) => prev.map((p, i) => (i === idx ? { ...p, image_url: url } : p)));
+      toast.success("Project screenshot uploaded!");
+    } catch (err: any) {
+      toast.error(err?.message || "Project screenshot upload failed");
+    } finally {
+      setUploadingProjIdx(null);
+    }
+  };
+
   const handleResumeSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = "";
     if (!file || !userId) return;
     setUploadingResume(true);
     try {
@@ -558,8 +640,18 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
     setSkillInput("");
   };
 
-  const removeSkill = (name: string) => {
-    setSkills((prev) => prev.filter((s) => s.name !== name));
+  const addUniqueChip = (
+    raw: string,
+    list: string[],
+    setter: React.Dispatch<React.SetStateAction<string[]>>,
+    clearInput?: () => void
+  ) => {
+    const clean = raw.trim();
+    if (!clean) return;
+    if (!list.some((x) => x.toLowerCase() === clean.toLowerCase())) {
+      setter((prev) => [...prev, clean]);
+    }
+    clearInput?.();
   };
 
   const handleNextStep = async () => {
@@ -584,12 +676,22 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleFinishToDashboard = async () => {
-    const ok = await persistCurrentProgress(true);
+  const handleSaveAndViewProfile = async () => {
+    const ok = await persistCurrentProgress(false);
     if (!ok) return;
-    toast.success("Profile setup complete! Welcome to your Employee Dashboard.");
     if (embedded && onNavigatePro) {
       onNavigatePro("profile");
+    } else {
+      navigate("/talento-pro?view=profile");
+    }
+  };
+
+  const handleSaveAndGoDashboard = async () => {
+    const ok = await persistCurrentProgress(true);
+    if (!ok) return;
+    toast.success("Profile setup complete! Welcome to Talento Pro.");
+    if (embedded && onNavigatePro) {
+      onNavigatePro("dash");
     } else {
       navigate("/talento-pro?view=dash");
     }
@@ -618,33 +720,46 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
           <div>
             <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-primary">
               <Sparkles className="h-3.5 w-3.5" />
-              {embedded ? "Profile Setup & Edit Wizard" : "Account Creation · Step-by-Step Setup"}
+              {embedded ? "Full Profile Builder & Editor" : "Account Creation · Step-by-Step Setup"}
             </span>
             <h1 className="text-xl sm:text-2xl font-bold font-display mt-1">
-              {embedded ? "Update Your Verified Candidate Profile" : "Complete Your Candidate Account Setup"}
+              {embedded ? "Customize Every Section of Your Profile" : "Build Your Verified Candidate Profile"}
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
-              Upload your profile photo, select your industry, add skills &amp; resume, and unlock AI job matching.
+              Upload your cover banner &amp; headshot, add skills, tools, projects, awards, and availability.
             </p>
           </div>
-          <div className="flex items-center gap-3 shrink-0">
-            <CompletionRing percentage={completionScore} size={64} strokeWidth={6} />
-            <div className="text-xs">
-              <p className="font-bold text-foreground">{completionScore}% Ready</p>
-              {talentoId && <p className="font-mono text-primary mt-0.5">{talentoId}</p>}
+          <div className="flex flex-wrap items-center gap-3 shrink-0">
+            <div className="flex items-center gap-2.5">
+              <CompletionRing percentage={completionScore} size={56} strokeWidth={5} />
+              <div className="text-xs">
+                <p className="font-bold text-foreground">{completionScore}% Ready</p>
+                {talentoId && <p className="font-mono text-primary mt-0.5">{talentoId}</p>}
+              </div>
             </div>
+            <Button
+              type="button"
+              size="sm"
+              onClick={handleSaveAndViewProfile}
+              disabled={saving}
+              className="gap-1.5 cursor-pointer"
+            >
+              {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
+              Save &amp; View Profile
+            </Button>
           </div>
         </div>
 
         {/* Clickable 5-step bar */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-4">
-          {WIZARD_STEPS.map(({ num, title, subtitle, icon: Icon }) => {
+        <nav aria-label="Profile setup steps" className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-4">
+          {WIZARD_STEPS.map(({ num, title, subtitle }) => {
             const active = step === num;
             const done = step > num;
             return (
               <button
                 key={num}
                 type="button"
+                aria-current={active ? "step" : undefined}
                 onClick={() => setStep(num)}
                 className={`flex items-start gap-2.5 rounded-xl border p-3 text-left transition-all cursor-pointer ${
                   active
@@ -672,7 +787,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
               </button>
             );
           })}
-        </div>
+        </nav>
       </div>
 
       {/* STEP 1: VERIFY ACCOUNT */}
@@ -686,7 +801,6 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-            {/* Email Verified Card */}
             <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold uppercase tracking-wider text-emerald-700">Email Address</span>
@@ -702,10 +816,11 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
               )}
             </div>
 
-            {/* Mobile Verification Card */}
             <div className="rounded-xl border border-border bg-background p-4 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Mobile Number</span>
+                <Label htmlFor="wiz-phone" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                  Mobile Number
+                </Label>
                 {phoneVerified ? (
                   <Badge className="bg-emerald-600 text-white hover:bg-emerald-600 gap-1">
                     <CheckCircle2 className="h-3 w-3" /> Verified
@@ -718,8 +833,10 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 <div className="relative flex-1">
                   <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
+                    id="wiz-phone"
                     type="tel"
                     inputMode="tel"
+                    autoComplete="tel"
                     placeholder="+91 98765 43210"
                     value={phone}
                     onChange={(e) => {
@@ -742,7 +859,9 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                   </p>
                   <div className="flex gap-2">
                     <Input
+                      type="text"
                       inputMode="numeric"
+                      autoComplete="one-time-code"
                       maxLength={6}
                       placeholder="Enter 6-digit OTP"
                       value={otpInput}
@@ -758,7 +877,6 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
             </div>
           </div>
 
-          {/* Optional Government ID Badge */}
           <div className="rounded-xl border border-border bg-background p-5 space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
@@ -767,7 +885,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                   Government Identity Badge (Optional — Can also complete later)
                 </h3>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  Upload Aadhaar, PAN, or Passport to unlock the green Identity Verified badge on your public profile.
+                  Upload Aadhaar, Passport, or Driving License to unlock the green Identity Verified badge.
                 </p>
               </div>
               {idStatus && (
@@ -807,82 +925,121 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 type="file"
                 accept="image/jpeg,image/png,application/pdf"
                 onChange={handleIdentityDocUpload}
-                className="hidden"
+                className="dp-visually-hidden"
               />
             </div>
           </div>
 
           <div className="flex items-center justify-end gap-3 pt-2">
             <Button type="button" onClick={handleNextStep} disabled={saving} className="gap-2">
-              Continue to Photo &amp; Industry
+              Continue to Banner &amp; Identity
               <ArrowRight className="h-4 w-4" />
             </Button>
           </div>
         </div>
       )}
 
-      {/* STEP 2: UPLOAD PROFILE PIC & SELECT INDUSTRY */}
+      {/* STEP 2: COVER BANNER, PROFILE PHOTO & IDENTITY */}
       {step === 2 && (
         <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-6">
           <div>
-            <h2 className="text-lg font-bold font-display">Step 2 · Upload Profile Picture &amp; Select Industry</h2>
+            <h2 className="text-lg font-bold font-display">Step 2 · Cover Banner, Profile Photo &amp; Identity</h2>
             <p className="text-sm text-muted-foreground mt-1">
-              Add a professional headshot and pick your primary industry so recruiters and AI job matching can find you.
+              Customize your profile header exactly like the featured Talento Pro profile — upload a cover banner, headshot, specialty, summary, and focus badges.
             </p>
           </div>
 
-          {/* Profile Picture Uploader */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-5 rounded-xl border border-border bg-background p-5">
-            <div className="relative h-24 w-24 rounded-full overflow-hidden border-2 border-primary/30 bg-primary/10 flex items-center justify-center shrink-0">
-              {photoUrl ? (
-                <img src={photoUrl} alt={fullName || "Profile"} className="h-full w-full object-cover" />
-              ) : (
-                <span className="text-2xl font-bold text-primary">{initials}</span>
-              )}
-              <button
-                type="button"
-                aria-label="Upload profile photo"
-                onClick={() => photoFileRef.current?.click()}
-                disabled={uploadingPhoto}
-                className="absolute inset-0 bg-black/45 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
-              >
-                {uploadingPhoto ? (
-                  <Loader2 className="h-5 w-5 text-white animate-spin" />
-                ) : (
-                  <Camera className="h-5 w-5 text-white" />
-                )}
-              </button>
-            </div>
-            <div className="space-y-2">
-              <p className="text-sm font-bold text-foreground">Profile Picture</p>
-              <p className="text-xs text-muted-foreground">
-                JPG, PNG, or WEBP up to 5 MB. Profiles with a clear headshot receive 3× more recruiter views.
-              </p>
-              <div className="flex flex-wrap items-center gap-2">
+          {/* Live Arjun-Mehta-Style Banner + Avatar Preview & Uploader */}
+          <div className="rounded-2xl border border-border overflow-hidden bg-background">
+            <div className="relative h-36 sm:h-44 w-full overflow-hidden bg-secondary">
+              <img
+                src={bannerUrl || defaultCover}
+                alt="Cover banner preview"
+                className="h-full w-full object-cover object-center"
+              />
+              <div className="absolute right-3 top-3 flex items-center gap-2">
                 <Button
                   type="button"
-                  variant="outline"
                   size="sm"
-                  disabled={uploadingPhoto}
-                  onClick={() => photoFileRef.current?.click()}
-                  className="gap-1.5"
+                  variant="secondary"
+                  disabled={uploadingBanner}
+                  onClick={() => bannerFileRef.current?.click()}
+                  className="h-8 text-xs gap-1.5 shadow-md cursor-pointer"
                 >
-                  {uploadingPhoto ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Camera className="h-3.5 w-3.5" />}
-                  {uploadingPhoto ? "Uploading..." : photoUrl ? "Change Photo" : "Upload Profile Photo"}
+                  {uploadingBanner ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ImagePlus className="h-3.5 w-3.5" />}
+                  {uploadingBanner ? "Uploading..." : bannerUrl ? "Change Banner Image" : "Upload Banner Image"}
                 </Button>
-                {photoUrl && (
-                  <Badge className="bg-emerald-600 text-white hover:bg-emerald-600 gap-1">
-                    <CheckCircle2 className="h-3 w-3" /> Photo Uploaded
-                  </Badge>
+                {bannerUrl && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => setBannerUrl("")}
+                    className="h-8 px-2.5 text-xs shadow-md cursor-pointer"
+                    title="Reset to default banner"
+                  >
+                    <RotateCcw className="h-3.5 w-3.5" />
+                  </Button>
                 )}
               </div>
               <input
-                ref={photoFileRef}
+                ref={bannerFileRef}
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
-                onChange={handlePhotoSelect}
-                className="hidden"
+                onChange={handleBannerSelect}
+                className="dp-visually-hidden"
               />
+            </div>
+
+            <div className="px-5 pb-5 -mt-10 relative flex flex-col sm:flex-row sm:items-end gap-4">
+              <div className="relative h-24 w-24 rounded-full overflow-hidden border-4 border-card bg-primary text-primary-foreground flex items-center justify-center shrink-0 shadow-md">
+                {photoUrl ? (
+                  <img src={photoUrl} alt={fullName || "Profile"} className="h-full w-full object-cover" />
+                ) : (
+                  <span className="text-2xl font-bold">{initials}</span>
+                )}
+                <button
+                  type="button"
+                  aria-label="Upload profile photo"
+                  onClick={() => photoFileRef.current?.click()}
+                  disabled={uploadingPhoto}
+                  className="absolute inset-0 bg-black/45 opacity-0 hover:opacity-100 focus-visible:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
+                >
+                  {uploadingPhoto ? (
+                    <Loader2 className="h-5 w-5 text-white animate-spin" />
+                  ) : (
+                    <Camera className="h-5 w-5 text-white" />
+                  )}
+                </button>
+              </div>
+              <div className="flex-1 pt-1 flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm font-bold text-foreground">Cover Banner &amp; Profile Photo</p>
+                  <p className="text-xs text-muted-foreground">
+                    JPG, PNG, or WEBP up to 5 MB each. Recommended banner size: 1920 × 512 px.
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={uploadingPhoto}
+                    onClick={() => photoFileRef.current?.click()}
+                    className="gap-1.5"
+                  >
+                    {uploadingPhoto ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Camera className="h-3.5 w-3.5" />}
+                    {uploadingPhoto ? "Uploading..." : photoUrl ? "Change Photo" : "Upload Photo"}
+                  </Button>
+                  <input
+                    ref={photoFileRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    onChange={handlePhotoSelect}
+                    className="dp-visually-hidden"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -911,7 +1068,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
             </div>
           </div>
 
-          {/* Basic Info Fields */}
+          {/* Basic Info + Specialty Fields */}
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="wiz-name" className="text-xs font-semibold">Full Name *</Label>
@@ -919,9 +1076,10 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="wiz-name"
+                  autoComplete="name"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Your full name"
+                  placeholder="e.g. Arjun Mehta"
                   className="pl-9"
                   required
                 />
@@ -935,18 +1093,28 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                   id="wiz-role"
                   value={jobRole}
                   onChange={(e) => setJobRole(e.target.value)}
-                  placeholder="e.g. Full Stack Developer, Financial Analyst"
+                  placeholder="e.g. Senior Full-Stack Engineer"
                   className="pl-9"
                 />
               </div>
             </div>
-            <div className="sm:col-span-2">
-              <Label htmlFor="wiz-headline" className="text-xs font-semibold">Professional Headline</Label>
+            <div>
+              <Label htmlFor="wiz-headline" className="text-xs font-semibold">Designation / Headline</Label>
               <Input
                 id="wiz-headline"
                 value={headline}
                 onChange={(e) => setHeadline(e.target.value)}
-                placeholder="e.g. Full Stack Engineer · React, TypeScript & PostgreSQL"
+                placeholder="e.g. Senior Full-Stack Engineer"
+                className="mt-1.5"
+              />
+            </div>
+            <div>
+              <Label htmlFor="wiz-subheadline" className="text-xs font-semibold">Sub-Headline / Specialty</Label>
+              <Input
+                id="wiz-subheadline"
+                value={subHeadline}
+                onChange={(e) => setSubHeadline(e.target.value)}
+                placeholder="e.g. Cloud & AI Specialist"
                 className="mt-1.5"
               />
             </div>
@@ -999,27 +1167,117 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 />
               </div>
             </div>
-            <div>
-              <Label htmlFor="wiz-state" className="text-xs font-semibold">State</Label>
-              <Input
-                id="wiz-state"
-                value={stateName}
-                onChange={(e) => setStateName(e.target.value)}
-                placeholder="e.g. Karnataka"
+            <div className="grid grid-cols-2 gap-2.5">
+              <div>
+                <Label htmlFor="wiz-state" className="text-xs font-semibold">State</Label>
+                <Input
+                  id="wiz-state"
+                  value={stateName}
+                  onChange={(e) => setStateName(e.target.value)}
+                  placeholder="Karnataka"
+                  className="mt-1.5"
+                />
+              </div>
+              <div>
+                <Label htmlFor="wiz-country" className="text-xs font-semibold">Country</Label>
+                <Input
+                  id="wiz-country"
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+                  placeholder="India"
+                  className="mt-1.5"
+                />
+              </div>
+            </div>
+
+            <div className="sm:col-span-2">
+              <Label htmlFor="wiz-about" className="text-xs font-semibold">About Me Summary</Label>
+              <Textarea
+                id="wiz-about"
+                rows={4}
+                value={about}
+                onChange={(e) => setAbout(e.target.value)}
+                placeholder="Passionate engineer with experience building scalable web applications, cloud microservices, and user-centric products..."
                 className="mt-1.5"
               />
             </div>
 
-            <div className="sm:col-span-2">
-              <Label htmlFor="wiz-about" className="text-xs font-semibold">About / Career Summary</Label>
-              <Textarea
-                id="wiz-about"
-                rows={3}
-                value={about}
-                onChange={(e) => setAbout(e.target.value)}
-                placeholder="Briefly summarize your strengths, domain focus, and career goals..."
-                className="mt-1.5"
-              />
+            {/* Focus Badges */}
+            <div className="sm:col-span-2 space-y-2">
+              <Label htmlFor="wiz-badge-input" className="text-xs font-semibold">
+                Hero Focus Badges (displayed beneath your summary)
+              </Label>
+              <div className="flex gap-2">
+                <Input
+                  id="wiz-badge-input"
+                  value={badgeInput}
+                  onChange={(e) => setBadgeInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.nativeEvent.isComposing) {
+                      e.preventDefault();
+                      addUniqueChip(badgeInput, focusBadges, setFocusBadges, () => setBadgeInput(""));
+                    }
+                  }}
+                  placeholder="e.g. Full-Stack, Cloud Native, AI/ML, System Design, Product Thinking"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => addUniqueChip(badgeInput, focusBadges, setFocusBadges, () => setBadgeInput(""))}
+                >
+                  <Plus className="h-4 w-4 mr-1" /> Add
+                </Button>
+              </div>
+              {focusBadges.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {focusBadges.map((b) => (
+                    <span
+                      key={b}
+                      className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-xs font-medium"
+                    >
+                      {b}
+                      <button
+                        type="button"
+                        onClick={() => setFocusBadges((prev) => prev.filter((x) => x !== b))}
+                        aria-label={`Remove ${b}`}
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* 4 Core Expertise Pillars */}
+            <div className="sm:col-span-2 space-y-2 pt-1">
+              <Label className="text-xs font-semibold">4 Core Expertise Cards (displayed inside About Me)</Label>
+              <div className="grid sm:grid-cols-2 gap-2.5">
+                {expertiseCards.slice(0, 4).map((card, idx) => (
+                  <div key={idx} className="rounded-xl border border-border bg-background p-3 space-y-2">
+                    <Input
+                      value={card.title}
+                      onChange={(e) =>
+                        setExpertiseCards((prev) =>
+                          prev.map((c, i) => (i === idx ? { ...c, title: e.target.value } : c))
+                        )
+                      }
+                      placeholder={`Pillar ${idx + 1} title`}
+                      className="h-8 text-xs font-semibold"
+                    />
+                    <Input
+                      value={card.sub}
+                      onChange={(e) =>
+                        setExpertiseCards((prev) =>
+                          prev.map((c, i) => (i === idx ? { ...c, sub: e.target.value } : c))
+                        )
+                      }
+                      placeholder="Short subtitle"
+                      className="h-8 text-xs"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -1028,7 +1286,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
               <ArrowLeft className="h-4 w-4" /> Back
             </Button>
             <Button type="button" onClick={handleNextStep} disabled={saving} className="gap-2">
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+              {saving && <Loader2 className="h-4 w-4 animate-spin" />}
               Save &amp; Continue to Skills
               <ArrowRight className="h-4 w-4" />
             </Button>
@@ -1036,13 +1294,13 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
         </div>
       )}
 
-      {/* STEP 3: SKILLS, EDUCATION & EXPERIENCE */}
+      {/* STEP 3: SKILLS, TOOLS, EDUCATION & WORK EXPERIENCE */}
       {step === 3 && (
         <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-6">
           <div>
-            <h2 className="text-lg font-bold font-display">Step 3 · Skills, Education &amp; Work Experience</h2>
+            <h2 className="text-lg font-bold font-display">Step 3 · Skills, Tools, Education &amp; Work Experience</h2>
             <p className="text-sm text-muted-foreground mt-1">
-              Add at least 3 skills to unlock AI Job Match Scores and your personalized Skill Gap Report.
+              Add your technical skills, daily tools, university degrees (with CGPA), and work history.
             </p>
           </div>
 
@@ -1051,7 +1309,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
             <div className="flex items-center justify-between">
               <Label className="text-sm font-bold flex items-center gap-2">
                 <Code2 className="h-4 w-4 text-primary" />
-                Your Skills ({skills.length})
+                Skills ({skills.length})
               </Label>
               {skills.length >= 3 && (
                 <Badge className="bg-emerald-600 text-white hover:bg-emerald-600 gap-1">
@@ -1088,11 +1346,11 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
 
             <div className="flex flex-col sm:flex-row gap-2">
               <Input
-                placeholder="Type any skill (e.g. Docker, Tally, Figma) and press Add..."
+                placeholder="Type any skill (e.g. React, Python, System Design) and press Add..."
                 value={skillInput}
                 onChange={(e) => setSkillInput(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") {
+                  if (e.key === "Enter" && !e.nativeEvent.isComposing) {
                     e.preventDefault();
                     addSkill(skillInput);
                   }
@@ -1127,8 +1385,75 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     <button
                       type="button"
                       aria-label={`Remove ${s.name}`}
-                      onClick={() => removeSkill(s.name)}
+                      onClick={() => setSkills((prev) => prev.filter((item) => item.name !== s.name))}
                       className="hover:text-destructive cursor-pointer"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Tools Builder */}
+          <div className="rounded-xl border border-border bg-background p-5 space-y-3">
+            <Label className="text-sm font-bold flex items-center gap-2">
+              <Wrench className="h-4 w-4 text-primary" />
+              Tools &amp; Platforms ({tools.length})
+            </Label>
+            <div className="flex flex-wrap gap-1.5">
+              {SUGGESTED_TOOLS.map((tl) => {
+                const exists = tools.some((x) => x.toLowerCase() === tl.toLowerCase());
+                return (
+                  <button
+                    key={tl}
+                    type="button"
+                    disabled={exists}
+                    onClick={() => addUniqueChip(tl, tools, setTools)}
+                    className={`rounded-full border px-2.5 py-1 text-xs font-medium cursor-pointer ${
+                      exists
+                        ? "border-primary/30 bg-primary/10 text-primary opacity-60"
+                        : "border-border bg-card hover:border-primary text-foreground"
+                    }`}
+                  >
+                    + {tl}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="flex gap-2">
+              <Input
+                placeholder="Add tool (e.g. Kubernetes, Postman, Tableau)..."
+                value={toolInput}
+                onChange={(e) => setToolInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.nativeEvent.isComposing) {
+                    e.preventDefault();
+                    addUniqueChip(toolInput, tools, setTools, () => setToolInput(""));
+                  }
+                }}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => addUniqueChip(toolInput, tools, setTools, () => setToolInput(""))}
+              >
+                Add Tool
+              </Button>
+            </div>
+            {tools.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {tools.map((t) => (
+                  <span
+                    key={t}
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-secondary px-3 py-1 text-xs font-medium"
+                  >
+                    {t}
+                    <button
+                      type="button"
+                      aria-label={`Remove ${t}`}
+                      onClick={() => setTools((prev) => prev.filter((x) => x !== t))}
                     >
                       <X className="h-3 w-3" />
                     </button>
@@ -1149,74 +1474,106 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 type="button"
                 variant="outline"
                 size="sm"
-                onClick={() => setEducations((prev) => [...prev, { degree: "", institution: "", year: "" }])}
+                onClick={() =>
+                  setEducations((prev) => [
+                    ...prev,
+                    { institution: "", degree: "", field_of_study: "", start_year: "", year: "", grade: "" },
+                  ])
+                }
                 className="h-8 text-xs gap-1"
               >
                 <Plus className="h-3.5 w-3.5" /> Add Education
               </Button>
             </div>
             {educations.map((ed, idx) => (
-              <div key={idx} className="grid sm:grid-cols-[1fr_1fr_110px_auto] gap-2.5 items-end">
-                <div>
-                  <Label className="text-[11px] text-muted-foreground">Degree / Specialization</Label>
-                  <Input
-                    placeholder="e.g. B.Tech Computer Science"
-                    value={ed.degree}
-                    onChange={(e) =>
-                      setEducations((prev) =>
-                        prev.map((item, i) => (i === idx ? { ...item, degree: e.target.value } : item))
-                      )
-                    }
-                  />
+              <div key={idx} className="rounded-lg border border-border bg-card p-3.5 space-y-2.5">
+                <div className="grid sm:grid-cols-2 gap-2.5">
+                  <div>
+                    <Label className="text-[11px] text-muted-foreground">College / University *</Label>
+                    <Input
+                      placeholder="e.g. Indian Institute of Technology, Delhi"
+                      value={ed.institution}
+                      onChange={(e) =>
+                        setEducations((prev) =>
+                          prev.map((item, i) => (i === idx ? { ...item, institution: e.target.value } : item))
+                        )
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-[11px] text-muted-foreground">Degree / Specialization</Label>
+                    <Input
+                      placeholder="e.g. B.Tech in Computer Science & Engineering"
+                      value={ed.degree}
+                      onChange={(e) =>
+                        setEducations((prev) =>
+                          prev.map((item, i) => (i === idx ? { ...item, degree: e.target.value } : item))
+                        )
+                      }
+                    />
+                  </div>
                 </div>
-                <div>
-                  <Label className="text-[11px] text-muted-foreground">College / University</Label>
-                  <Input
-                    placeholder="e.g. VTU / IIT Madras"
-                    value={ed.institution}
-                    onChange={(e) =>
-                      setEducations((prev) =>
-                        prev.map((item, i) => (i === idx ? { ...item, institution: e.target.value } : item))
-                      )
-                    }
-                  />
+                <div className="grid sm:grid-cols-[120px_120px_1fr_auto] gap-2.5 items-end">
+                  <div>
+                    <Label className="text-[11px] text-muted-foreground">Start Year</Label>
+                    <Input
+                      placeholder="2020"
+                      maxLength={4}
+                      value={ed.start_year}
+                      onChange={(e) =>
+                        setEducations((prev) =>
+                          prev.map((item, i) => (i === idx ? { ...item, start_year: e.target.value } : item))
+                        )
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-[11px] text-muted-foreground">Grad Year</Label>
+                    <Input
+                      placeholder="2024"
+                      maxLength={4}
+                      value={ed.year}
+                      onChange={(e) =>
+                        setEducations((prev) =>
+                          prev.map((item, i) => (i === idx ? { ...item, year: e.target.value } : item))
+                        )
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-[11px] text-muted-foreground">Grade / CGPA</Label>
+                    <Input
+                      placeholder="e.g. 8.7 CGPA or 94.2%"
+                      value={ed.grade}
+                      onChange={(e) =>
+                        setEducations((prev) =>
+                          prev.map((item, i) => (i === idx ? { ...item, grade: e.target.value } : item))
+                        )
+                      }
+                    />
+                  </div>
+                  {educations.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setEducations((prev) => prev.filter((_, i) => i !== idx))}
+                    >
+                      <Trash2 className="h-4 w-4 text-muted-foreground" />
+                    </Button>
+                  )}
                 </div>
-                <div>
-                  <Label className="text-[11px] text-muted-foreground">Grad Year</Label>
-                  <Input
-                    placeholder="2025"
-                    maxLength={4}
-                    value={ed.year}
-                    onChange={(e) =>
-                      setEducations((prev) =>
-                        prev.map((item, i) => (i === idx ? { ...item, year: e.target.value } : item))
-                      )
-                    }
-                  />
-                </div>
-                {educations.length > 1 && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setEducations((prev) => prev.filter((_, i) => i !== idx))}
-                  >
-                    <Trash2 className="h-4 w-4 text-muted-foreground" />
-                  </Button>
-                )}
               </div>
             ))}
           </div>
 
-          {/* Work Experience / Internships */}
+          {/* Work Experience */}
           <div className="rounded-xl border border-border bg-background p-5 space-y-4">
             <div className="flex items-center justify-between">
-              <div>
-                <Label className="text-sm font-bold flex items-center gap-2">
-                  <Building2 className="h-4 w-4 text-primary" />
-                  Work Experience &amp; Internships {experienceLevel === "fresher" && "(Optional for Freshers)"}
-                </Label>
-              </div>
+              <Label className="text-sm font-bold flex items-center gap-2">
+                <Building2 className="h-4 w-4 text-primary" />
+                Work Experience &amp; Internships {experienceLevel === "fresher" && "(Optional for Freshers)"}
+              </Label>
               <Button
                 type="button"
                 variant="outline"
@@ -1224,7 +1581,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 onClick={() =>
                   setExperiences((prev) => [
                     ...prev,
-                    { title: "", company: "", start: "", end: "Present", description: "" },
+                    { title: "", company: "", location: "", start: "", end: "Present", description: "", tools: [] },
                   ])
                 }
                 className="h-8 text-xs gap-1"
@@ -1239,9 +1596,9 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
             ) : (
               experiences.map((ex, idx) => (
                 <div key={idx} className="rounded-lg border border-border bg-card p-3.5 space-y-3">
-                  <div className="grid sm:grid-cols-4 gap-2.5">
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
                     <Input
-                      placeholder="Role / Title"
+                      placeholder="Role / Title *"
                       value={ex.title}
                       onChange={(e) =>
                         setExperiences((prev) =>
@@ -1250,7 +1607,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                       }
                     />
                     <Input
-                      placeholder="Company Name"
+                      placeholder="Company Name *"
                       value={ex.company}
                       onChange={(e) =>
                         setExperiences((prev) =>
@@ -1259,17 +1616,26 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                       }
                     />
                     <Input
-                      placeholder="Start Year (e.g. 2023)"
-                      value={ex.start}
+                      placeholder="Location (e.g. Bengaluru)"
+                      value={ex.location}
                       onChange={(e) =>
                         setExperiences((prev) =>
-                          prev.map((item, i) => (i === idx ? { ...item, start: e.target.value } : item))
+                          prev.map((item, i) => (i === idx ? { ...item, location: e.target.value } : item))
                         )
                       }
                     />
                     <div className="flex gap-1.5">
                       <Input
-                        placeholder="End Year or Present"
+                        placeholder="Start (2022)"
+                        value={ex.start}
+                        onChange={(e) =>
+                          setExperiences((prev) =>
+                            prev.map((item, i) => (i === idx ? { ...item, start: e.target.value } : item))
+                          )
+                        }
+                      />
+                      <Input
+                        placeholder="End / Present"
                         value={ex.end}
                         onChange={(e) =>
                           setExperiences((prev) =>
@@ -1297,6 +1663,25 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                       )
                     }
                   />
+                  <Input
+                    placeholder="Tech & tools used in this role (comma-separated, e.g. React, Node.js, AWS, PostgreSQL)"
+                    value={ex.tools.join(", ")}
+                    onChange={(e) =>
+                      setExperiences((prev) =>
+                        prev.map((item, i) =>
+                          i === idx
+                            ? {
+                                ...item,
+                                tools: e.target.value
+                                  .split(",")
+                                  .map((t) => t.trim())
+                                  .filter(Boolean),
+                              }
+                            : item
+                        )
+                      )
+                    }
+                  />
                 </div>
               ))
             )}
@@ -1307,21 +1692,309 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
               <ArrowLeft className="h-4 w-4" /> Back
             </Button>
             <Button type="button" onClick={handleNextStep} disabled={saving} className="gap-2">
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-              Save &amp; Continue to Resume
+              {saving && <Loader2 className="h-4 w-4 animate-spin" />}
+              Save &amp; Continue to Projects
               <ArrowRight className="h-4 w-4" />
             </Button>
           </div>
         </div>
       )}
 
-      {/* STEP 4: UPLOAD RESUME, CAREER PREFERENCES & PUBLIC PROFILE SLUG */}
+      {/* STEP 4: PROJECTS, CERTIFICATIONS & AWARDS */}
       {step === 4 && (
         <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-6">
           <div>
-            <h2 className="text-lg font-bold font-display">Step 4 · Upload Resume, Career Preferences &amp; Public Handle</h2>
+            <h2 className="text-lg font-bold font-display">Step 4 · Projects, Certifications &amp; Awards</h2>
             <p className="text-sm text-muted-foreground mt-1">
-              Upload your CV for One-Click Job Apply and configure your shareable public profile URL.
+              Showcase featured projects (with preview screenshots, Live Demo &amp; GitHub links), certifications, and awards.
+            </p>
+          </div>
+
+          {/* Projects */}
+          <div className="rounded-xl border border-border bg-background p-5 space-y-4">
+            <div className="flex items-center justify-between">
+              <Label className="text-sm font-bold flex items-center gap-2">
+                <FolderKanban className="h-4 w-4 text-primary" />
+                Featured Projects ({projects.length})
+              </Label>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  setProjects((prev) => [
+                    ...prev,
+                    { title: "", role: "", description: "", tools: [], url: "", github_url: "", image_url: "", impact: "" },
+                  ])
+                }
+                className="h-8 text-xs gap-1"
+              >
+                <Plus className="h-3.5 w-3.5" /> Add Project
+              </Button>
+            </div>
+            {projects.length === 0 ? (
+              <p className="text-xs text-muted-foreground">
+                Add 1–4 signature projects with preview images, tech tags, Live Demo, and GitHub links.
+              </p>
+            ) : (
+              projects.map((proj, idx) => (
+                <div key={idx} className="rounded-lg border border-border bg-card p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-muted-foreground">Project #{idx + 1}</span>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setProjects((prev) => prev.filter((_, i) => i !== idx))}
+                      className="h-7 text-xs text-destructive"
+                    >
+                      <Trash2 className="h-3.5 w-3.5 mr-1" /> Remove
+                    </Button>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-2.5">
+                    <Input
+                      placeholder="Project Title * (e.g. CloudSync – Real-Time Platform)"
+                      value={proj.title}
+                      onChange={(e) =>
+                        setProjects((prev) => prev.map((p, i) => (i === idx ? { ...p, title: e.target.value } : p)))
+                      }
+                    />
+                    <Input
+                      placeholder="Tech Stack (comma-separated, e.g. React, Go, Docker)"
+                      value={proj.tools.join(", ")}
+                      onChange={(e) =>
+                        setProjects((prev) =>
+                          prev.map((p, i) =>
+                            i === idx
+                              ? {
+                                  ...p,
+                                  tools: e.target.value
+                                    .split(",")
+                                    .map((t) => t.trim())
+                                    .filter(Boolean),
+                                }
+                              : p
+                          )
+                        )
+                      }
+                    />
+                    <Input
+                      placeholder="Live Demo URL (https://...)"
+                      autoCorrect="off"
+                      autoCapitalize="none"
+                      spellCheck={false}
+                      value={proj.url}
+                      onChange={(e) =>
+                        setProjects((prev) => prev.map((p, i) => (i === idx ? { ...p, url: e.target.value } : p)))
+                      }
+                    />
+                    <Input
+                      placeholder="GitHub Repository URL (https://github.com/...)"
+                      autoCorrect="off"
+                      autoCapitalize="none"
+                      spellCheck={false}
+                      value={proj.github_url}
+                      onChange={(e) =>
+                        setProjects((prev) =>
+                          prev.map((p, i) => (i === idx ? { ...p, github_url: e.target.value } : p))
+                        )
+                      }
+                    />
+                  </div>
+                  <Textarea
+                    rows={2}
+                    placeholder="What problem does it solve and what did you build?"
+                    value={proj.description}
+                    onChange={(e) =>
+                      setProjects((prev) => prev.map((p, i) => (i === idx ? { ...p, description: e.target.value } : p)))
+                    }
+                  />
+                  <div className="flex flex-wrap items-center gap-3">
+                    {proj.image_url && (
+                      <img
+                        src={proj.image_url}
+                        alt={proj.title || "Project preview"}
+                        className="h-14 w-24 rounded-md object-cover border border-border"
+                      />
+                    )}
+                    <label className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-medium cursor-pointer hover:bg-secondary">
+                      {uploadingProjIdx === idx ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <ImagePlus className="h-3.5 w-3.5 text-primary" />
+                      )}
+                      <span>{proj.image_url ? "Change Project Screenshot" : "Upload Project Screenshot"}</span>
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        onChange={(e) => handleProjectImageSelect(idx, e)}
+                        className="dp-visually-hidden"
+                      />
+                    </label>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Certifications */}
+          <div className="rounded-xl border border-border bg-background p-5 space-y-4">
+            <div className="flex items-center justify-between">
+              <Label className="text-sm font-bold flex items-center gap-2">
+                <Award className="h-4 w-4 text-primary" />
+                Certifications ({certifications.length})
+              </Label>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  setCertifications((prev) => [...prev, { name: "", issuer: "", date: "", credential_url: "" }])
+                }
+                className="h-8 text-xs gap-1"
+              >
+                <Plus className="h-3.5 w-3.5" /> Add Certification
+              </Button>
+            </div>
+            {certifications.length === 0 ? (
+              <p className="text-xs text-muted-foreground">
+                Include cloud, domain, or professional licenses (e.g. AWS Solutions Architect, CFA, CKA).
+              </p>
+            ) : (
+              certifications.map((cert, idx) => (
+                <div key={idx} className="rounded-lg border border-border bg-card p-3.5 space-y-2.5">
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_130px_1fr_auto] gap-2.5 items-center">
+                    <Input
+                      placeholder="Certification Name *"
+                      value={cert.name}
+                      onChange={(e) =>
+                        setCertifications((prev) =>
+                          prev.map((c, i) => (i === idx ? { ...c, name: e.target.value } : c))
+                        )
+                      }
+                    />
+                    <Input
+                      placeholder="Issuing Org (e.g. AWS)"
+                      value={cert.issuer}
+                      onChange={(e) =>
+                        setCertifications((prev) =>
+                          prev.map((c, i) => (i === idx ? { ...c, issuer: e.target.value } : c))
+                        )
+                      }
+                    />
+                    <Input
+                      placeholder="Year (2024)"
+                      value={cert.date}
+                      onChange={(e) =>
+                        setCertifications((prev) =>
+                          prev.map((c, i) => (i === idx ? { ...c, date: e.target.value } : c))
+                        )
+                      }
+                    />
+                    <Input
+                      placeholder="Credential URL"
+                      autoCorrect="off"
+                      autoCapitalize="none"
+                      spellCheck={false}
+                      value={cert.credential_url || ""}
+                      onChange={(e) =>
+                        setCertifications((prev) =>
+                          prev.map((c, i) => (i === idx ? { ...c, credential_url: e.target.value } : c))
+                        )
+                      }
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setCertifications((prev) => prev.filter((_, i) => i !== idx))}
+                    >
+                      <Trash2 className="h-4 w-4 text-muted-foreground" />
+                    </Button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Awards */}
+          <div className="rounded-xl border border-border bg-background p-5 space-y-4">
+            <div className="flex items-center justify-between">
+              <Label className="text-sm font-bold flex items-center gap-2">
+                <Trophy className="h-4 w-4 text-primary" />
+                Awards &amp; Achievements ({awards.length})
+              </Label>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setAwards((prev) => [...prev, { title: "", organization: "", date: "", description: "" }])}
+                className="h-8 text-xs gap-1"
+              >
+                <Plus className="h-3.5 w-3.5" /> Add Award
+              </Button>
+            </div>
+            {awards.length === 0 ? (
+              <p className="text-xs text-muted-foreground">
+                Highlight hackathons, academic distinctions, or workplace awards.
+              </p>
+            ) : (
+              awards.map((aw, idx) => (
+                <div key={idx} className="rounded-lg border border-border bg-card p-3.5 grid sm:grid-cols-[1fr_1fr_1.4fr_auto] gap-2.5 items-center">
+                  <Input
+                    placeholder="Award Title *"
+                    value={aw.title}
+                    onChange={(e) =>
+                      setAwards((prev) => prev.map((a, i) => (i === idx ? { ...a, title: e.target.value } : a)))
+                    }
+                  />
+                  <Input
+                    placeholder="Organization / Event"
+                    value={aw.organization || ""}
+                    onChange={(e) =>
+                      setAwards((prev) => prev.map((a, i) => (i === idx ? { ...a, organization: e.target.value } : a)))
+                    }
+                  />
+                  <Input
+                    placeholder="Description & Year (e.g. 1st place among 500+ teams, 2024)"
+                    value={aw.description}
+                    onChange={(e) =>
+                      setAwards((prev) => prev.map((a, i) => (i === idx ? { ...a, description: e.target.value } : a)))
+                    }
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setAwards((prev) => prev.filter((_, i) => i !== idx))}
+                  >
+                    <Trash2 className="h-4 w-4 text-muted-foreground" />
+                  </Button>
+                </div>
+              ))
+            )}
+          </div>
+
+          <div className="flex items-center justify-between pt-2">
+            <Button type="button" variant="outline" onClick={() => setStep(3)} className="gap-1.5">
+              <ArrowLeft className="h-4 w-4" /> Back
+            </Button>
+            <Button type="button" onClick={handleNextStep} disabled={saving} className="gap-2">
+              {saving && <Loader2 className="h-4 w-4 animate-spin" />}
+              Save &amp; Continue to Resume &amp; Links
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* STEP 5: RESUME, VIDEO RESUME, AVAILABILITY, PERSONAL & LINKS */}
+      {step === 5 && (
+        <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-6">
+          <div>
+            <h2 className="text-lg font-bold font-display">Step 5 · Resume, Video Pitch, Availability &amp; Links</h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              Upload your CV, configure Open to Work &amp; Freelancing badges, add languages/hobbies/interests, and launch your profile.
             </p>
           </div>
 
@@ -1333,7 +2006,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 Upload Resume (PDF or DOCX, max 5 MB)
               </p>
               <p className="text-xs text-muted-foreground">
-                Stored securely in private storage and shared only with employers you apply to.
+                Stored securely in private storage and powers the Download Resume action on your profile.
               </p>
               {resumePath && (
                 <p className="text-xs font-medium text-emerald-600 flex items-center gap-1 pt-1">
@@ -1364,19 +2037,64 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 type="file"
                 accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                 onChange={handleResumeSelect}
-                className="hidden"
+                className="dp-visually-hidden"
               />
             </div>
           </div>
 
-          {/* Career Preferences */}
+          {/* Video Resume */}
+          <div className="rounded-xl border border-border bg-background p-5 space-y-3">
+            <Label className="text-sm font-bold flex items-center gap-2">
+              <Video className="h-4 w-4 text-primary" />
+              60-Second Video Resume (Optional)
+            </Label>
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div>
+                <Label htmlFor="wiz-vid-url" className="text-xs text-muted-foreground">
+                  Video URL (YouTube or direct MP4/WebM link)
+                </Label>
+                <Input
+                  id="wiz-vid-url"
+                  autoCorrect="off"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  value={videoIntroUrl}
+                  onChange={(e) => setVideoIntroUrl(e.target.value)}
+                  placeholder="https://youtube.com/watch?v=... or https://.../pitch.mp4"
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="wiz-vid-pitch" className="text-xs text-muted-foreground">
+                  Short Video Pitch Summary
+                </Label>
+                <Input
+                  id="wiz-vid-pitch"
+                  value={videoPitch}
+                  onChange={(e) => setVideoPitch(e.target.value)}
+                  placeholder="In this 60s pitch, I walk through my key engineering wins..."
+                  className="mt-1"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Availability Toggles & Career Preferences */}
           <div className="grid sm:grid-cols-2 gap-4">
-            <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-border bg-background p-4">
+            <div className="flex items-center justify-between rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4">
               <div>
                 <p className="text-sm font-bold">Open to Work</p>
-                <p className="text-xs text-muted-foreground">Allow verified employers to discover and invite you to roles.</p>
+                <p className="text-xs text-muted-foreground">Show green Open to Work badge on profile.</p>
               </div>
               <Switch checked={openToWork} onCheckedChange={setOpenToWork} />
+            </div>
+
+            <div className="flex items-center justify-between rounded-xl border border-sky-500/30 bg-sky-500/5 p-4">
+              <div>
+                <p className="text-sm font-bold">Open for Freelancing</p>
+                <p className="text-xs text-muted-foreground">Show Open for Freelancing badge for gigs.</p>
+              </div>
+              <Switch checked={openForFreelance} onCheckedChange={setOpenForFreelance} />
             </div>
 
             <div>
@@ -1430,120 +2148,271 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
               />
             </div>
 
-            <div>
-              <Label htmlFor="wiz-sal" className="text-xs font-semibold">Expected CTC Range (LPA)</Label>
-              <Input
-                id="wiz-sal"
-                placeholder="e.g. 8 - 14 LPA"
-                value={salaryRange}
-                onChange={(e) => setSalaryRange(e.target.value)}
-                className="mt-1.5"
-              />
+            <div className="grid grid-cols-2 gap-2.5">
+              <div>
+                <Label htmlFor="wiz-sal" className="text-xs font-semibold">Expected CTC (LPA)</Label>
+                <Input
+                  id="wiz-sal"
+                  placeholder="e.g. 12 - 18 LPA"
+                  value={salaryRange}
+                  onChange={(e) => setSalaryRange(e.target.value)}
+                  className="mt-1.5"
+                />
+              </div>
+              <div>
+                <Label htmlFor="wiz-np" className="text-xs font-semibold">Notice Period</Label>
+                <select
+                  id="wiz-np"
+                  value={noticePeriod}
+                  onChange={(e) => setNoticePeriod(e.target.value)}
+                  className="mt-1.5 h-10 w-full rounded-md border border-input bg-background px-3 text-xs font-medium"
+                >
+                  <option value="Immediate">Immediate Joiner</option>
+                  <option value="15 Days">15 Days</option>
+                  <option value="30 Days">30 Days</option>
+                  <option value="60 Days">60 Days</option>
+                  <option value="90 Days">90 Days</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Languages, Hobbies & Interests */}
+          <div className="grid md:grid-cols-3 gap-4">
+            {/* Languages */}
+            <div className="rounded-xl border border-border bg-background p-4 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <Label className="text-xs font-bold flex items-center gap-1.5">
+                  <Languages className="h-3.5 w-3.5 text-primary" /> Languages
+                </Label>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setLanguages((prev) => [...prev, { name: "", level: "Fluent" }])}
+                  className="h-6 px-2 text-[11px]"
+                >
+                  + Add
+                </Button>
+              </div>
+              {languages.map((lang, idx) => (
+                <div key={idx} className="grid grid-cols-[1fr_92px_auto] gap-1.5">
+                  <Input
+                    placeholder="English"
+                    value={lang.name}
+                    onChange={(e) =>
+                      setLanguages((prev) =>
+                        prev.map((l, i) => (i === idx ? { ...l, name: e.target.value } : l))
+                      )
+                    }
+                    className="h-8 text-xs"
+                  />
+                  <Input
+                    placeholder="Fluent"
+                    value={lang.level}
+                    onChange={(e) =>
+                      setLanguages((prev) =>
+                        prev.map((l, i) => (i === idx ? { ...l, level: e.target.value } : l))
+                      )
+                    }
+                    className="h-8 text-xs"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setLanguages((prev) => prev.filter((_, i) => i !== idx))}
+                    className="px-1 text-muted-foreground hover:text-destructive"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              ))}
             </div>
 
-            <div>
-              <Label className="text-xs font-semibold">Notice Period</Label>
-              <select
-                value={noticePeriod}
-                onChange={(e) => setNoticePeriod(e.target.value)}
-                className="mt-1.5 h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
-              >
-                <option value="Immediate">Immediate Joiner</option>
-                <option value="15 Days">15 Days</option>
-                <option value="30 Days">30 Days</option>
-                <option value="60 Days">60 Days</option>
-                <option value="90 Days">90 Days</option>
-              </select>
+            {/* Hobbies */}
+            <div className="rounded-xl border border-border bg-background p-4 space-y-2.5">
+              <Label className="text-xs font-bold flex items-center gap-1.5">
+                <Palette className="h-3.5 w-3.5 text-primary" /> Hobbies
+              </Label>
+              <div className="flex gap-1.5">
+                <Input
+                  placeholder="e.g. Photography, Chess"
+                  value={hobbyInput}
+                  onChange={(e) => setHobbyInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.nativeEvent.isComposing) {
+                      e.preventDefault();
+                      addUniqueChip(hobbyInput, hobbies, setHobbies, () => setHobbyInput(""));
+                    }
+                  }}
+                  className="h-8 text-xs"
+                />
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => addUniqueChip(hobbyInput, hobbies, setHobbies, () => setHobbyInput(""))}
+                  className="h-8 px-2.5 text-xs"
+                >
+                  Add
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {hobbies.map((h) => (
+                  <span key={h} className="inline-flex items-center gap-1 rounded bg-secondary px-2 py-0.5 text-[11px]">
+                    {h}
+                    <button type="button" onClick={() => setHobbies((prev) => prev.filter((x) => x !== h))}>
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                ))}
+              </div>
             </div>
 
+            {/* Interests */}
+            <div className="rounded-xl border border-border bg-background p-4 space-y-2.5">
+              <Label className="text-xs font-bold flex items-center gap-1.5">
+                <Heart className="h-3.5 w-3.5 text-primary" /> Interests
+              </Label>
+              <div className="flex gap-1.5">
+                <Input
+                  placeholder="e.g. Generative AI, FinTech"
+                  value={interestInput}
+                  onChange={(e) => setInterestInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.nativeEvent.isComposing) {
+                      e.preventDefault();
+                      addUniqueChip(interestInput, interests, setInterests, () => setInterestInput(""));
+                    }
+                  }}
+                  className="h-8 text-xs"
+                />
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => addUniqueChip(interestInput, interests, setInterests, () => setInterestInput(""))}
+                  className="h-8 px-2.5 text-xs"
+                >
+                  Add
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {interests.map((it) => (
+                  <span key={it} className="inline-flex items-center gap-1 rounded bg-secondary px-2 py-0.5 text-[11px]">
+                    {it}
+                    <button type="button" onClick={() => setInterests((prev) => prev.filter((x) => x !== it))}>
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Public Handle & Social Links */}
+          <div className="grid sm:grid-cols-2 gap-4 pt-1">
             <div>
               <Label htmlFor="wiz-slug" className="text-xs font-semibold">Public Profile Handle (/u/your-handle)</Label>
               <div className="flex items-center gap-1.5 mt-1.5">
                 <span className="text-xs text-muted-foreground font-mono">/u/</span>
                 <Input
                   id="wiz-slug"
-                  placeholder="yogesh-c-pro"
+                  autoCorrect="off"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  placeholder="arjun-mehta-pro"
                   value={portfolioSlug}
                   onChange={(e) => setPortfolioSlug(e.target.value)}
                 />
               </div>
             </div>
-
             <div>
-              <Label htmlFor="wiz-li" className="text-xs font-semibold">LinkedIn URL</Label>
+              <Label htmlFor="wiz-li" className="text-xs font-semibold flex items-center gap-1.5">
+                <Linkedin className="h-3.5 w-3.5" /> LinkedIn URL
+              </Label>
               <Input
                 id="wiz-li"
+                autoCorrect="off"
+                autoCapitalize="none"
+                spellCheck={false}
                 placeholder="https://linkedin.com/in/yourprofile"
                 value={linkedinUrl}
                 onChange={(e) => setLinkedinUrl(e.target.value)}
                 className="mt-1.5"
               />
             </div>
-
             <div>
-              <Label htmlFor="wiz-gh" className="text-xs font-semibold">GitHub / Portfolio URL</Label>
+              <Label htmlFor="wiz-gh" className="text-xs font-semibold flex items-center gap-1.5">
+                <Github className="h-3.5 w-3.5" /> GitHub URL
+              </Label>
               <Input
                 id="wiz-gh"
+                autoCorrect="off"
+                autoCapitalize="none"
+                spellCheck={false}
                 placeholder="https://github.com/yourusername"
                 value={githubUrl}
                 onChange={(e) => setGithubUrl(e.target.value)}
                 className="mt-1.5"
               />
             </div>
+            <div>
+              <Label htmlFor="wiz-pf-url" className="text-xs font-semibold flex items-center gap-1.5">
+                <Globe className="h-3.5 w-3.5" /> Portfolio Website URL
+              </Label>
+              <Input
+                id="wiz-pf-url"
+                autoCorrect="off"
+                autoCapitalize="none"
+                spellCheck={false}
+                placeholder="https://yourportfolio.dev"
+                value={portfolioUrl}
+                onChange={(e) => setPortfolioUrl(e.target.value)}
+                className="mt-1.5"
+              />
+            </div>
+            <div>
+              <Label htmlFor="wiz-kaggle" className="text-xs font-semibold">Kaggle URL (Optional)</Label>
+              <Input
+                id="wiz-kaggle"
+                autoCorrect="off"
+                autoCapitalize="none"
+                spellCheck={false}
+                placeholder="https://kaggle.com/yourhandle"
+                value={kaggleUrl}
+                onChange={(e) => setKaggleUrl(e.target.value)}
+                className="mt-1.5"
+              />
+            </div>
+            <div>
+              <Label htmlFor="wiz-behance" className="text-xs font-semibold">Behance / Design URL (Optional)</Label>
+              <Input
+                id="wiz-behance"
+                autoCorrect="off"
+                autoCapitalize="none"
+                spellCheck={false}
+                placeholder="https://behance.net/yourhandle"
+                value={behanceUrl}
+                onChange={(e) => setBehanceUrl(e.target.value)}
+                className="mt-1.5"
+              />
+            </div>
           </div>
 
-          <div className="flex items-center justify-between pt-2">
-            <Button type="button" variant="outline" onClick={() => setStep(3)} className="gap-1.5">
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-border">
+            <Button type="button" variant="outline" onClick={() => setStep(4)} className="gap-1.5">
               <ArrowLeft className="h-4 w-4" /> Back
             </Button>
-            <Button type="button" onClick={handleNextStep} disabled={saving} className="gap-2">
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-              Save &amp; Review Readiness
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* STEP 5: LAUNCHPAD */}
-      {step === 5 && (
-        <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-6 text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-            <BadgeCheck className="h-9 w-9" />
-          </div>
-          <div className="space-y-2 max-w-xl mx-auto">
-            <h2 className="text-2xl font-bold font-display">Your Candidate Profile is Ready!</h2>
-            <p className="text-sm text-muted-foreground">
-              Profile completion: <strong>{completionScore}%</strong> · Industry:{" "}
-              <strong>{industry || "General"}</strong> · Skills: <strong>{skills.length}</strong>
-            </p>
-            {portfolioSlug && (
-              <p className="text-xs text-primary font-medium pt-1">
-                Public Profile URL:{" "}
-                <Link to={`/u/${portfolioSlug}`} className="underline font-mono">
-                  {typeof window !== "undefined" ? window.location.origin : ""}/u/{portfolioSlug}
-                </Link>
-              </p>
-            )}
-          </div>
-
-          <div className="grid sm:grid-cols-3 gap-3 max-w-2xl mx-auto pt-2">
-            <Button type="button" onClick={handleFinishToDashboard} disabled={saving} className="h-11 gap-2">
-              {embedded ? "View Saved Profile" : "Enter Employee Dashboard"}
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-            <Button asChild variant="outline" className="h-11 gap-2">
-              <Link to="/assessments/explore">
-                <Award className="h-4 w-4 text-primary" />
-                Take Proctored Assessment
-              </Link>
-            </Button>
-            <Button asChild variant="outline" className="h-11 gap-2">
-              <Link to={portfolioSlug ? `/u/${portfolioSlug}` : "/my-profile"}>
-                <Globe className="h-4 w-4 text-primary" />
-                View Public Profile
-              </Link>
-            </Button>
+            <div className="flex flex-wrap items-center gap-2.5">
+              <Button type="button" variant="outline" onClick={handleSaveAndGoDashboard} disabled={saving}>
+                Save &amp; Open Dashboard
+              </Button>
+              <Button type="button" onClick={handleSaveAndViewProfile} disabled={saving} className="gap-2">
+                {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <BadgeCheck className="h-4 w-4" />}
+                Save &amp; View My Profile
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       )}
@@ -1555,7 +2424,7 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   return (
     <>
       <Helmet>
-        <title>Account Setup Wizard | IAmTalento</title>
+        <title>Build Your Candidate Profile | IAmTalento</title>
       </Helmet>
       <div className="min-h-screen bg-background">
         <header className="sticky top-0 z-30 border-b border-border bg-card/90 backdrop-blur-sm">
@@ -1568,10 +2437,10 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 type="button"
                 variant="ghost"
                 size="sm"
-                onClick={() => navigate("/talento-pro?view=dash")}
+                onClick={() => navigate("/talento-pro?view=profile")}
                 className="text-xs text-muted-foreground hover:text-foreground gap-1"
               >
-                Skip to Employee Dashboard
+                View My Profile
                 <ArrowRight className="h-3.5 w-3.5" />
               </Button>
             </div>
