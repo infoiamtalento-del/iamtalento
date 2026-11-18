@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProHero } from "./ProHero";
+import { EmployerAnalyticsShowcase } from "./EmployerAnalyticsShowcase";
 import { cn } from "@/lib/utils";
 import { ProUser, ProJob, ProApplication, calcScore, levelFromExp } from "@/data/proData";
 import { getCompanyLogo } from "@/data/portalAssets";
@@ -101,108 +102,75 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
 
     return (
       <div className="space-y-6">
-        {/* Header Banner */}
-        <ProHero
-          title={`${user.cp?.name || user.name} Analytics`}
-          subtitle="Real-time applicant pipeline, review progress, and talent insights."
-        >
-          <div className="flex flex-wrap items-center gap-2 pt-1">
-            <button
-              type="button"
-              onClick={() => onNavigate("post")}
-              className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/30 backdrop-blur-sm transition-colors hover:bg-white/25 cursor-pointer"
-            >
-              <Plus className="h-3.5 w-3.5" /> Post New Job
-            </button>
-            <button
-              type="button"
-              onClick={() => onNavigate("pipe")}
-              className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/30 backdrop-blur-sm transition-colors hover:bg-white/25 cursor-pointer"
-            >
-              <Layers className="h-3.5 w-3.5" /> Pipeline Board
-            </button>
-            <button
-              type="button"
-              onClick={() => onNavigate("talent")}
-              className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/30 backdrop-blur-sm transition-colors hover:bg-white/25 cursor-pointer"
-            >
-              <Users className="h-3.5 w-3.5" /> Find Talent
-            </button>
-            <button
-              type="button"
-              onClick={() => onNavigate("employer-assessments")}
-              className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/30 backdrop-blur-sm transition-colors hover:bg-white/25 cursor-pointer"
-            >
-              <GraduationCap className="h-3.5 w-3.5" /> Assessments
-            </button>
-            <button
-              type="button"
-              onClick={() => onNavigate("cp")}
-              className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/30 backdrop-blur-sm transition-colors hover:bg-white/25 cursor-pointer"
-            >
-              <Building2 className="h-3.5 w-3.5" /> Company Profile
-            </button>
-          </div>
-        </ProHero>
+        {/* Reference-Style Employer Analytics & Campaign Showcase */}
+        <EmployerAnalyticsShowcase
+          companyName={user.cp?.name || user.name}
+          activeJobsCount={myJobs.length}
+          totalApplications={myApps.length}
+          avgMatchPercent={avgMatch || 86}
+          walletBalance={user.wal?.bal ?? 9200}
+          topJobTitles={myJobs.map((j) => j.t)}
+          onNavigate={onNavigate}
+        />
 
-        {/* Clickable Stat Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
+        {/* Quick Stage Drill-Down Pills */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           <button
             type="button"
             onClick={() => onNavigate("post")}
-            className="group text-left bg-card border border-border/70 border-t-4 border-t-blue-600 rounded-2xl p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-blue-500 hover:shadow-md cursor-pointer"
+            className="group text-left bg-card border border-border/70 border-t-4 border-t-[#002C66] rounded-2xl p-3.5 shadow-2xs transition-all hover:border-[#002C66] cursor-pointer"
           >
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-muted-foreground">Active Jobs</span>
-              <ChevronRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-blue-600 transition-colors" />
+              <ChevronRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-[#002C66] transition-colors" />
             </div>
-            <div className="text-2xl font-bold text-foreground mt-1 font-display">{myJobs.length}</div>
-            <span className="text-[11px] text-blue-600 font-medium mt-1 block">Manage openings →</span>
+            <div className="text-xl font-bold text-foreground mt-1 font-display">{myJobs.length}</div>
+            <span className="text-[11px] text-[#002C66] font-semibold mt-0.5 block">Create / manage →</span>
           </button>
 
           <button
             type="button"
             onClick={() => onNavigate("pipe")}
-            className="group text-left bg-card border border-border/70 border-t-4 border-t-indigo-600 rounded-2xl p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-indigo-500 hover:shadow-md cursor-pointer"
+            className="group text-left bg-card border border-border/70 border-t-4 border-t-[#0D9488] rounded-2xl p-3.5 shadow-2xs transition-all hover:border-[#0D9488] cursor-pointer"
           >
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-muted-foreground">Total Applicants</span>
-              <ChevronRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-indigo-600 transition-colors" />
+              <ChevronRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-[#0D9488] transition-colors" />
             </div>
-            <div className="text-2xl font-bold text-foreground mt-1 font-display">{myApps.length}</div>
-            <span className="text-[11px] text-indigo-600 font-medium mt-1 block">Open pipeline board →</span>
+            <div className="text-xl font-bold text-foreground mt-1 font-display">{myApps.length}</div>
+            <span className="text-[11px] text-[#0D9488] font-semibold mt-0.5 block">Application board →</span>
           </button>
 
           <button
             type="button"
             onClick={() => onNavigate("pipe", { stage: "Interview" })}
-            className="group text-left bg-card border border-border/70 border-t-4 border-t-violet-600 rounded-2xl p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-violet-500 hover:shadow-md cursor-pointer"
+            className="group text-left bg-card border border-border/70 border-t-4 border-t-[#1D4ED8] rounded-2xl p-3.5 shadow-2xs transition-all hover:border-[#1D4ED8] cursor-pointer"
           >
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-muted-foreground">Interviews</span>
-              <ChevronRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-violet-600 transition-colors" />
+              <ChevronRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-[#1D4ED8] transition-colors" />
             </div>
-            <div className="text-2xl font-bold text-foreground mt-1 font-display">{interviewsCount}</div>
-            <span className="text-[11px] text-violet-600 font-medium mt-1 block">View interview stage →</span>
+            <div className="text-xl font-bold text-foreground mt-1 font-display">{interviewsCount}</div>
+            <span className="text-[11px] text-[#1D4ED8] font-semibold mt-0.5 block">Interview stage →</span>
           </button>
 
           <button
             type="button"
             onClick={() => onNavigate("pipe", { stage: "Offer" })}
-            className="group text-left bg-card border border-border/70 border-t-4 border-t-amber-500 rounded-2xl p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-amber-500 hover:shadow-md cursor-pointer"
+            className="group text-left bg-card border border-border/70 border-t-4 border-t-[#F97316] rounded-2xl p-3.5 shadow-2xs transition-all hover:border-[#F97316] cursor-pointer"
           >
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-muted-foreground">Offers Made</span>
-              <ChevronRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-amber-600 transition-colors" />
+              <ChevronRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-[#F97316] transition-colors" />
             </div>
-            <div className="text-2xl font-bold text-foreground mt-1 font-display">{offersCount}</div>
-            <span className="text-[11px] text-amber-600 font-medium mt-1 block">View candidate offers →</span>
+            <div className="text-xl font-bold text-foreground mt-1 font-display">{offersCount}</div>
+            <span className="text-[11px] text-[#F97316] font-semibold mt-0.5 block">Candidate offers →</span>
           </button>
 
           <button
             type="button"
             onClick={() => onNavigate("pipe", { stage: "Applied" })}
-            className="group text-left bg-card border border-primary/30 border-t-4 border-t-primary bg-primary/5 rounded-2xl p-4 shadow-sm col-span-2 sm:col-span-1 transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-md cursor-pointer"
+            className="group text-left bg-card border border-primary/30 border-t-4 border-t-primary bg-primary/5 rounded-2xl p-3.5 shadow-2xs col-span-2 sm:col-span-1 transition-all hover:border-primary cursor-pointer"
           >
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-primary flex items-center gap-1.5">
@@ -210,8 +178,8 @@ export const ProDashboardView: React.FC<ProDashboardViewProps> = ({
               </span>
               <ChevronRight className="w-3.5 h-3.5 text-primary" />
             </div>
-            <div className="text-2xl font-bold text-primary mt-1 font-display">{pendingCount}</div>
-            <span className="text-[11px] text-primary font-medium mt-1 block">Review applicants →</span>
+            <div className="text-xl font-bold text-primary mt-1 font-display">{pendingCount}</div>
+            <span className="text-[11px] text-primary font-semibold mt-0.5 block">Review applicants →</span>
           </button>
         </div>
 

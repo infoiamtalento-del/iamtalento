@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none" role="img" aria-label="Super30 Technologies logo">
+  <rect x="4" y="4" width="112" height="112" rx="26" fill="#002C66"/>
+  <rect x="10" y="10" width="100" height="100" rx="20" stroke="#1E4E8C" stroke-width="2"/>
+  <path d="M32 45C32 36.7157 38.7157 30 47 30H75C78.3137 30 81 32.6863 81 36C81 39.3137 78.3137 42 75 42H48C45.7909 42 44 43.7909 44 46C44 48.2091 45.7909 50 48 50H67C75.8366 50 83 57.1634 83 66C83 74.8366 75.8366 82 67 82H39C35.6863 82 33 79.3137 33 76C33 72.6863 35.6863 70 39 70H66C68.2091 70 70 68.2091 70 66C70 63.7909 68.2091 62 66 62H47C38.7157 62 32 55.2843 32 47V45Z" fill="#FFFFFF"/>
+  <circle cx="88" cy="34" r="7" fill="#F59E0B"/>
+  <rect x="33" y="89" width="54" height="15" rx="7.5" fill="#0E3F82"/>
+  <text x="60" y="99.5" text-anchor="middle" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-weight="800" font-size="9.5" letter-spacing="1.4" fill="#F8FAFC">SUPER 30</text>
+</svg>

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import {
-  Activity, ArrowRight, Briefcase, CheckCircle2, ClipboardList, Clock, FilePenLine, Hourglass, LayoutDashboard, PauseCircle,
-  Plus, Star, Users, Wallet, XCircle, AlertCircle,
+  Activity, ArrowRight, Briefcase, CheckCircle2, ClipboardList, Clock, FilePenLine, Hourglass, PauseCircle,
+  Star, Users, Wallet, XCircle, AlertCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,8 +9,9 @@ import {
 } from "@/services/employer/ats";
 import type { ProView } from "../proTypes";
 import {
-  Avatar, EmptyState, ErrorState, JobStatusBadge, Loading, PageHeader, StageBadge, describeActivity, fmtDateTime, relativeTime,
+  Avatar, EmptyState, ErrorState, JobStatusBadge, Loading, StageBadge, describeActivity, fmtDateTime, relativeTime,
 } from "./employerUi";
+import { EmployerAnalyticsShowcase } from "../EmployerAnalyticsShowcase";
 import "../employer-workspace.css";
 
 export type NavigateFn = (view: ProView, query?: Record<string, string>) => void;
@@ -30,7 +31,7 @@ interface Metric {
   theme?: string;
 }
 
-export function EmployerOverview({ companyName, onNavigate }: Props) {
+export function EmployerOverview({ companyName, onNavigate, onToast }: Props) {
   const [data, setData] = useState<Overview | null>(null);
   const [activity, setActivity] = useState<ActivityEntry[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -89,17 +90,14 @@ export function EmployerOverview({ companyName, onNavigate }: Props) {
 
   return (
     <div className="employer-workspace space-y-6">
-      <PageHeader
-        eyebrow="Dashboard"
-        icon={<LayoutDashboard size={13} />}
-        title={`Welcome back, ${companyName}`}
-        description="Your live hiring numbers, recent applicants and account activity."
-        actions={
-          <>
-            <Button variant="outline" size="sm" onClick={() => onNavigate("talent")}><Users className="mr-1.5 h-4 w-4" />Find talent</Button>
-            <Button size="sm" onClick={() => onNavigate("post", { new: "1" })}><Plus className="mr-1.5 h-4 w-4" />Create job</Button>
-          </>
-        }
+      <EmployerAnalyticsShowcase
+        companyName={companyName}
+        activeJobsCount={data.jobs.active}
+        totalApplications={data.applications.total}
+        walletBalance={Number(data.wallet_balance || 0)}
+        topJobTitles={data.job_performance.map((j) => j.title)}
+        onNavigate={onNavigate}
+        onToast={onToast}
       />
 
       {!data.readiness.ready && (

@@ -52,6 +52,9 @@ import { EmployerFindTalent } from "@/components/pro/employer/EmployerFindTalent
 import { EmployerNotificationsLive } from "@/components/pro/employer/EmployerNotificationsLive";
 import { EmployerJobs } from "@/components/pro/employer/EmployerJobs";
 import { CompanyProfileView } from "@/components/company/CompanyProfileView";
+import { toCompanyView } from "@/components/company/companyView";
+import { findShowcaseCompany } from "@/data/showcaseCompanies";
+import { ProEmployerProfileView } from "@/components/pro/ProEmployerProfileView";
 import { ProEmployerViews } from "@/components/pro/ProEmployerViews";
 import { ProEmployerCommandCentre } from "@/components/pro/ProEmployerCommandCentre";
 import { ProEmployerJobPosting } from "@/components/pro/ProEmployerJobPosting";
@@ -100,8 +103,8 @@ describe("navigation", () => {
       "Dashboard",
       "My Account",
       "Company Profile",
-      "Jobs",
-      "Job Applications",
+      "Create Jobs",
+      "Job Application Management",
       "Find Talent",
       "Bulk & Campus Hiring",
       "Notifications",
@@ -110,6 +113,8 @@ describe("navigation", () => {
     expect(labels.slice(0, order.length)).toEqual(order);
     expect(employerMenuItems.find((i) => i.label === "Dashboard")?.id).toBe("dash");
     expect(employerMenuItems.find((i) => i.label === "My Account")?.id).toBe("account");
+    expect(employerMenuItems.find((i) => i.label === "Create Jobs")?.id).toBe("post");
+    expect(employerMenuItems.find((i) => i.label === "Job Application Management")?.id).toBe("pipe");
     expect(employerMenuItems.find((i) => i.label === "Find Talent")?.id).toBe("talent");
     expect(employerMenuItems.find((i) => i.label === "Security & Settings")).toBeUndefined();
   });
@@ -447,6 +452,42 @@ describe("Company page layout", () => {
     expect(within(nav).getAllByRole("button").map((b) => b.textContent)).toEqual(["Overview", "About", "Jobs (1)", "Culture & benefits", "Contact"]);
     expect(container.querySelector(".border-l")).toBeNull();
     expect(screen.getByText("jobs@apex.dev")).toBeInTheDocument();
+  });
+
+  it("renders the complete Super30 Technologies flagship employer profile with logo, leadership, 6 open roles, workplace gallery, and public preview link", () => {
+    const showcase = findShowcaseCompany("super30-technologies");
+    expect(showcase).toBeTruthy();
+
+    const { unmount } = render(
+      <CompanyProfileView
+        company={toCompanyView(showcase!)}
+        jobs={showcase!.jobs}
+        openRolesCount={showcase!.jobs.length}
+        jobHref={(j) => `/jobs?q=${encodeURIComponent(j.title)}`}
+      />,
+    );
+
+    expect(screen.getByRole("heading", { level: 1, name: "Super30 Technologies" })).toBeInTheDocument();
+    const logoImg = screen.getByAltText("Super30 Technologies logo") as HTMLImageElement;
+    expect(logoImg.getAttribute("src")).toBe("/company-logos/super30-mark.svg");
+    expect(screen.getByText("IAT-EMP-204819")).toBeInTheDocument();
+    expect(screen.getByText("Vikramaditya Menon")).toBeInTheDocument();
+    expect(screen.getByText("Senior React Developer")).toBeInTheDocument();
+    expect(screen.getByText("₹18–30 LPA")).toBeInTheDocument();
+    expect(screen.getByText("careers@super30.ai")).toBeInTheDocument();
+    unmount();
+
+    render(
+      <ProEmployerProfileView
+        user={DEFAULT_USERS["demo.employer@talento.app"]}
+        jobs={DEMO_EMPLOYER_JOBS}
+        onEdit={vi.fn()}
+        onToast={toast}
+      />,
+    );
+
+    const previewLink = screen.getByRole("link", { name: /Open public preview/i });
+    expect(previewLink).toHaveAttribute("href", "/company/super30-technologies");
   });
 });
 

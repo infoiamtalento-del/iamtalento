@@ -211,6 +211,7 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
   }, [openDropdown, profileMenuOpen]);
 
   const isProPage = location.pathname === "/talento-pro" || location.pathname === "/pro";
+  const isEmployerPro = isProPage && userProfile?.role === "employer";
 
   // Effective user profile
   const effectiveProfile =
@@ -254,6 +255,19 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
     toast.success("Signed out successfully");
     navigate("/");
   };
+
+  // When logged in to the Employer Dashboard, the public website top menu is not required;
+  // navigation lives in the full-height left sidebar, while the shared accountMenu slot stays accessible.
+  if (isEmployerPro) {
+    return (
+      <header className="lg:hidden sticky top-0 z-40 flex h-14 items-center justify-between border-b border-border bg-card px-4 shadow-2xs">
+        <Link to="/" className="flex items-center gap-2" aria-label="IAmTalento Home">
+          <img src={siteLogo.url} alt="I Am Talento" className="h-8 w-auto object-contain" />
+        </Link>
+        {accountMenu ? accountMenu(handleSignOut) : null}
+      </header>
+    );
+  }
 
   return (
     <header

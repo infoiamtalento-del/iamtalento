@@ -1,8 +1,11 @@
+import { ExternalLink, Rocket } from "lucide-react";
+import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { employerMenuItems, employeeMenuItems, employerLogoutIcon as LogoutIcon } from "./employerMenu";
 import type { ProView } from "./proTypes";
 import { getCandidatePhoto } from "@/data/portalAssets";
+import { siteLogo } from "@/assets/logo";
 
 interface Props {
   activeView: ProView;
@@ -22,44 +25,84 @@ export function ProEmployerSidebar({
   unreadCount,
   userName,
   userAvatar,
-  userRole = "Workspace",
   isEmployer = false,
 }: Props) {
   const menuItems = isEmployer ? employerMenuItems : employeeMenuItems;
-  const photoUrl = userAvatar || getCandidatePhoto(userName || "Yogesh");
+  const photoUrl = userAvatar || (isEmployer ? "/company-logos/super30-mark.svg" : getCandidatePhoto(userName || "Yogesh"));
 
   return (
-    <aside className="w-full lg:w-64 xl:w-72 shrink-0 lg:fixed lg:top-16 lg:bottom-0 lg:left-0 z-30 lg:border-r border-[#001D44] bg-[#002C66] text-white overflow-y-auto shadow-md">
-      <div className="p-3 sm:p-4 flex flex-col min-h-full justify-between text-white">
+    <aside
+      className={cn(
+        "w-full lg:w-64 xl:w-72 shrink-0 lg:fixed lg:bottom-0 lg:left-0 z-30 lg:border-r border-[#001D44] bg-[#002C66] text-white overflow-y-auto shadow-md",
+        isEmployer ? "lg:top-0" : "lg:top-16"
+      )}
+    >
+      <div className="p-3.5 sm:p-4 flex flex-col min-h-full justify-between text-white">
         <div>
-          {/* Header */}
-          <div className="px-3 py-2.5 mb-2 border-b border-white/15">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full overflow-hidden border-2 border-white/30 bg-white/15 shrink-0 shadow-sm flex items-center justify-center">
-                {photoUrl ? (
+          {/* Brand Header (Reference ADNEX-style top brand lockup for Employer; User header for Candidate) */}
+          {isEmployer ? (
+            <div className="px-2.5 pt-2 pb-4 mb-3 border-b border-white/15 flex items-center justify-between gap-2">
+              <Link to="/" className="flex items-center gap-2.5 min-w-0 group" aria-label="TalentCIR Home">
+                <div className="h-9 w-9 rounded-xl bg-white p-1 flex items-center justify-center shrink-0 shadow-xs">
                   <img
-                    src={photoUrl}
-                    alt={userName || "User"}
-                    className="h-full w-full object-cover"
+                    src={siteLogo.url}
+                    alt="TalentCIR"
+                    width={32}
+                    height={32}
+                    className="h-full w-full object-contain"
                   />
-                ) : (
-                  <span className="text-xs font-bold text-white">
-                    {(userName?.charAt(0) || "U").toUpperCase()}
-                  </span>
-                )}
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-blue-200/90 truncate">
-                  Dashboard Menu
-                </p>
-                {userName && (
-                  <p className="text-xs font-bold text-white truncate">
-                    {userName}
+                </div>
+                <div className="min-w-0">
+                  <p className="font-display text-sm font-extrabold tracking-wide text-white truncate">
+                    TALENTCIR
                   </p>
-                )}
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-blue-200/80 truncate">
+                    Employer Studio
+                  </p>
+                </div>
+              </Link>
+              <Link
+                to="/company/super30-technologies"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 px-2.5 py-1 text-[10px] font-bold text-white transition-colors shrink-0"
+                title="Open public company page"
+              >
+                <span>Visit site</span>
+                <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
+              </Link>
+            </div>
+          ) : (
+            <div className="px-3 py-2.5 mb-2 border-b border-white/15">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full overflow-hidden border-2 border-white/30 bg-white/15 shrink-0 shadow-sm flex items-center justify-center">
+                  {photoUrl ? (
+                    <img
+                      src={photoUrl}
+                      alt={userName || "User"}
+                      width={40}
+                      height={40}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-xs font-bold text-white">
+                      {(userName?.charAt(0) || "U").toUpperCase()}
+                    </span>
+                  )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-blue-200/90 truncate">
+                    Dashboard Menu
+                  </p>
+                  {userName && (
+                    <p className="text-xs font-bold text-white truncate">
+                      {userName}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Navigation Items */}
           <nav aria-label="Dashboard navigation" className="space-y-1">
@@ -70,8 +113,8 @@ export function ProEmployerSidebar({
                   {section && (
                     <p
                       className={cn(
-                        "px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-blue-200/75",
-                        idx === 0 ? "pt-1" : "pt-3.5"
+                        "px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-blue-200/70",
+                        idx === 0 ? "pt-0.5" : "pt-3.5"
                       )}
                     >
                       {section}
@@ -82,16 +125,22 @@ export function ProEmployerSidebar({
                     aria-current={isActive ? "page" : undefined}
                     onClick={() => onNavigate(id)}
                     className={cn(
-                      "group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold transition-all text-left cursor-pointer",
+                      "relative group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold transition-all text-left cursor-pointer",
                       isActive
-                        ? "bg-white/20 text-white shadow-xs border border-white/30 backdrop-blur-xs"
-                        : "text-white/85 hover:text-white hover:bg-white/10"
+                        ? "bg-white/18 text-white shadow-xs border border-white/25"
+                        : "text-white/80 hover:text-white hover:bg-white/10"
                     )}
                   >
+                    {isActive && (
+                      <span
+                        aria-hidden="true"
+                        className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#FB923C]"
+                      />
+                    )}
                     <Icon
                       className={cn(
                         "h-4 w-4 shrink-0 transition-colors",
-                        isActive ? "text-white" : "text-blue-100 group-hover:text-white"
+                        isActive ? "text-[#FB923C]" : "text-blue-100 group-hover:text-white"
                       )}
                     />
                     <span className="min-w-0 flex-1 truncate text-white">{label}</span>
@@ -100,7 +149,7 @@ export function ProEmployerSidebar({
                         className={cn(
                           "ml-auto flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold",
                           isActive
-                            ? "bg-white text-[#002C66] shadow-xs"
+                            ? "bg-[#FB923C] text-white shadow-xs"
                             : "bg-red-500 text-white shadow-xs"
                         )}
                       >
@@ -114,16 +163,62 @@ export function ProEmployerSidebar({
           </nav>
         </div>
 
-        {/* Logout Button */}
-        <div className="pt-3 mt-4 border-t border-white/15 px-1">
-          <Button
-            type="button"
-            onClick={onLogout}
-            className="w-full h-10 rounded-xl px-4 py-2.5 text-xs font-bold flex items-center justify-center gap-2 bg-[#FB923C] hover:bg-[#F97316] active:bg-[#EA580C] text-white border border-orange-200/40 shadow-md transition-all cursor-pointer"
-          >
-            <LogoutIcon className="h-4 w-4 shrink-0 text-white" />
-            <span className="text-white font-bold">Logout</span>
-          </Button>
+        {/* Bottom Section: Reference "Unlock more with Pro Plan" Card + User Profile & Logout */}
+        <div className="pt-4 mt-4 border-t border-white/15 space-y-3">
+          {isEmployer && (
+            <div className="rounded-2xl border border-white/15 bg-[#001F4D] p-3.5 text-center space-y-2 shadow-inner">
+              <div className="mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-[#FB923C]/20 text-[#FB923C]">
+                <Rocket className="h-4 w-4" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-white">Unlock more with Pro Plan</p>
+                <p className="mt-0.5 text-[11px] leading-snug text-blue-200/80">
+                  Get AI-verified CIR reports, export analytics &amp; unlimited talent unlocks.
+                </p>
+              </div>
+              <Button
+                type="button"
+                size="sm"
+                onClick={() => onNavigate("advertise")}
+                className="w-full h-8 rounded-xl bg-[#FB923C] hover:bg-[#F97316] text-white text-[11px] font-bold border-0 shadow-sm cursor-pointer"
+              >
+                Upgrade Plan
+              </Button>
+            </div>
+          )}
+
+          {isEmployer && (
+            <div className="flex items-center gap-2.5 px-1.5 py-1">
+              <div className="h-9 w-9 rounded-full overflow-hidden border border-white/30 bg-white shrink-0 flex items-center justify-center p-0.5">
+                <img
+                  src={photoUrl}
+                  alt={userName || "Employer"}
+                  width={36}
+                  height={36}
+                  className="h-full w-full object-contain rounded-full"
+                />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-bold text-white truncate">
+                  {userName || "Super30 Technologies"}
+                </p>
+                <p className="text-[10px] text-emerald-300 font-semibold truncate">
+                  ● Verified Employer
+                </p>
+              </div>
+            </div>
+          )}
+
+          <div className="px-1">
+            <Button
+              type="button"
+              onClick={onLogout}
+              className="w-full h-9 rounded-xl px-4 py-2 text-xs font-bold flex items-center justify-center gap-2 bg-[#FB923C] hover:bg-[#F97316] active:bg-[#EA580C] text-white border border-orange-200/40 shadow-md transition-all cursor-pointer"
+            >
+              <LogoutIcon className="h-3.5 w-3.5 shrink-0 text-white" />
+              <span className="text-white font-bold">Logout</span>
+            </Button>
+          </div>
         </div>
       </div>
     </aside>

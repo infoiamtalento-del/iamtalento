@@ -59,7 +59,9 @@ export const COMPANY_LOGOS: Record<string, string> = {
   Postman: "https://www.google.com/s2/favicons?domain=postman.com&sz=128",
   Unacademy: "https://www.google.com/s2/favicons?domain=unacademy.com&sz=128",
   Freshworks: "https://www.google.com/s2/favicons?domain=freshworks.com&sz=128",
-  Super30: "https://www.google.com/s2/favicons?domain=talento.app&sz=128",
+  Super30: "/company-logos/super30-mark.svg",
+  "Super30 Technologies": "/company-logos/super30-mark.svg",
+  "Super30 Technologies Pvt. Ltd.": "/company-logos/super30-mark.svg",
 };
 
 export const getCompanyLogo = (companyName: string): string => {

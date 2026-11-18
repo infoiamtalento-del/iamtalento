@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 176 40" fill="none" role="img" aria-label="Super30 Technologies">
+  <rect x="0" y="4" width="32" height="32" rx="8" fill="#002C66"/>
+  <path d="M9.5 14.5C9.5 11.7386 11.7386 9.5 14.5 9.5H22C23.1046 9.5 24 10.3954 24 11.5C24 12.6046 23.1046 13.5 22 13.5H14.8C13.9716 13.5 13.3 14.1716 13.3 15C13.3 15.8284 13.9716 16.5 14.8 16.5H18.8C21.8376 16.5 24.3 18.9624 24.3 22C24.3 25.0376 21.8376 27.5 18.8 27.5H11.5C10.3954 27.5 9.5 26.6046 9.5 25.5C9.5 24.3954 10.3954 23.5 11.5 23.5H18.5C19.3284 23.5 20 22.8284 20 22C20 21.1716 19.3284 20.5 18.5 20.5H14.5C11.7386 20.5 9.5 18.2614 9.5 15.5V14.5Z" fill="#FFFFFF"/>
+  <circle cx="25.5" cy="10.5" r="2.5" fill="#F59E0B"/>
+  <text x="41" y="25" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-weight="800" font-size="17" fill="#002C66">Super30</text>
+  <text x="112" y="25" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-weight="600" font-size="13" fill="#475569">Tech</text>
+</svg>

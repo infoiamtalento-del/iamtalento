@@ -1226,13 +1226,25 @@ const TalentoPro: React.FC = () => {
       />
 
       {/* Main Content View Switcher */}
-      <main className="flex-1 w-full min-h-screen pt-16 pb-12 lg:pl-64 xl:pl-72 flex flex-col">
+      <main
+        className={cn(
+          "flex-1 w-full min-h-screen pb-12 lg:pl-64 xl:pl-72 flex flex-col",
+          currentRole === "employer" ? "pt-0 bg-[#EAEEF4]/70 dark:bg-background" : "pt-16"
+        )}
+      >
         {/* Left Side Dashboard Sidebar (Fixed) */}
         <ProEmployerSidebar
           activeView={effectiveView}
           unreadCount={unreadCount}
-          userName={currentUser.name}
-          userAvatar={currentUser.avatar || (liveCandidate ? undefined : getCandidatePhoto(currentUser.name))}
+          userName={currentUser.cp?.name || currentUser.name}
+          userAvatar={
+            currentUser.avatar ||
+            (currentRole === "employer"
+              ? "/company-logos/super30-mark.svg"
+              : liveCandidate
+                ? undefined
+                : getCandidatePhoto(currentUser.name))
+          }
           userRole={currentRole === "employer" ? "Employer Workspace" : "Employee Workspace"}
           isEmployer={currentRole === "employer"}
           onNavigate={(view) => {
@@ -1249,8 +1261,21 @@ const TalentoPro: React.FC = () => {
           }}
         />
 
-        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 py-6 min-w-0 flex-1">
-          {effectiveView !== "profile" && (
+        <div
+          className={cn(
+            "w-full min-w-0 flex-1",
+            currentRole === "employer"
+              ? "p-3 sm:p-5 lg:p-6"
+              : "px-4 sm:px-6 lg:px-8 xl:px-10 py-6"
+          )}
+        >
+          <div
+            className={cn(
+              currentRole === "employer" &&
+                "rounded-[28px] border border-border/80 bg-card p-4 sm:p-6 lg:p-8 shadow-sm min-h-[calc(100dvh-3rem)]"
+            )}
+          >
+          {currentRole !== "employer" && effectiveView !== "profile" && (
             <div className="mb-6 flex flex-wrap items-center gap-4 border-b border-border pb-4">
               <div className="mr-auto">
                 <p className="text-sm font-semibold text-primary">Workspace · {currentUser.name}</p>
@@ -1770,6 +1795,7 @@ const TalentoPro: React.FC = () => {
           </motion.div>
         </AnimatePresence>
         )}
+          </div>
         </div>
       </main>
 
