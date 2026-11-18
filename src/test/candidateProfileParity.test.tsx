@@ -246,6 +246,11 @@ describe("Candidate Arjun-Mehta Profile Parity", () => {
     expect(screen.getByText("Classical Violin")).toBeInTheDocument();
     expect(screen.getByText("Agentic Workflows")).toBeInTheDocument();
 
+    // Certification and Education icons use <i class="dp-school"> so they are never stretched by article > div flex:1
+    expect(container.querySelector(".dp-certifications article > i.dp-school")).toBeTruthy();
+    expect(container.querySelector(".dp-certifications article > div.dp-school")).toBeNull();
+    expect(container.querySelector(".dp-education article > i.dp-school")).toBeTruthy();
+
     // Uploading a new banner image persists immediately via uploadBannerPhotoFile + persistBannerImmediate
     const bannerInput = screen.getByLabelText("Upload cover banner image") as HTMLInputElement;
     const fakeBanner = new File(["banner-bytes"], "office-banner.png", { type: "image/png" });

@@ -1418,15 +1418,15 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                       const yearsText = [ed.start_year, ed.year].filter(Boolean).join(" – ");
                       return (
                         <article key={`${ed.institution}-${i}`}>
-                          <div
+                          <i
                             className={cn(
                               "dp-school",
                               i % 3 === 0 ? "dp-tone-blue" : i % 3 === 1 ? "dp-tone-red" : "dp-tone-green"
                             )}
                           >
                             <GraduationCap size={28} />
-                          </div>
-                          <div>
+                          </i>
+                          <div className="min-w-0 flex-1">
                             <h3>{ed.institution}</h3>
                             <p>
                               {ed.degree}
@@ -1462,10 +1462,10 @@ export const LiveCandidateProfileView: React.FC<Props> = ({
                   <div className="dp-certifications">
                     {n.certifications.map((c, i) => (
                       <article key={`${c.name}-${i}`}>
-                        <div className="dp-school dp-tone-blue">
+                        <i className="dp-school dp-tone-blue">
                           <Award size={22} />
-                        </div>
-                        <div>
+                        </i>
+                        <div className="min-w-0 flex-1">
                           <h3>{c.name}</h3>
                           {c.issuer && <p>{c.issuer}</p>}
                           <div className="dp-cert-date">

@@ -393,9 +393,13 @@ const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, "-")
             .replace(/^-|-$/g, "")
-            .slice(0, 24);
-          const suffix = (norm.iamTalentoId || "").replace(/[^a-zA-Z0-9]/g, "").slice(-4).toLowerCase();
-          if (baseSlug) setPortfolioSlug(`${baseSlug}-${suffix || "pro"}`);
+            .slice(0, 32);
+          if (baseSlug.length >= 4) {
+            setPortfolioSlug(baseSlug);
+          } else if (baseSlug) {
+            const suffix = (norm.iamTalentoId || "").replace(/[^a-zA-Z0-9]/g, "").slice(-4).toLowerCase();
+            setPortfolioSlug(`${baseSlug}-${suffix || "pro"}`);
+          }
         }
 
         setLinkedinUrl(norm.linkedinUrl);

@@ -731,6 +731,35 @@ export async function loadFullLiveProfile(): Promise<LiveProfile | null> {
         impact: j.impact || "",
       }));
     }
+
+    const cleanBaseSlug = (enriched.profile.full_name || "")
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9-]+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 32);
+    const idSuffix = (enriched.profile.iam_talento_id || "")
+      .replace(/[^a-zA-Z0-9]/g, "")
+      .slice(-4)
+      .toLowerCase();
+    const currentSlug = (enriched.profile.portfolio_slug || "").trim().toLowerCase();
+    const isLegacyAutoSlug =
+      Boolean(idSuffix) && currentSlug === `${cleanBaseSlug.slice(0, 24)}-${idSuffix}`;
+
+    if (
+      cleanBaseSlug.length >= 4 &&
+      /^[a-z0-9][a-z0-9-]{2,38}[a-z0-9]$/.test(cleanBaseSlug) &&
+      (!currentSlug || isLegacyAutoSlug)
+    ) {
+      try {
+        await setPortfolioSlug(cleanBaseSlug);
+        enriched.profile.portfolio_slug = cleanBaseSlug;
+      } catch {
+        /* Keep existing slug if cleanBaseSlug is already claimed */
+      }
+    }
+
     return enriched;
   } catch {
     return live;
@@ -797,10 +826,12 @@ export interface RichCandidateDraft {
  * Supabase deployments.
  */
 export async function saveRichCandidateProfile(draft: RichCandidateDraft): Promise<LiveProfile> {
-  const cleanedSlug = clampText(draft.portfolioSlug || "", PROFILE_CHAR_LIMITS.portfolioSlug)
+  const rawSlugInput = (draft.portfolioSlug || "").trim() || (draft.fullName || "").trim();
+  const cleanedSlug = clampText(rawSlugInput, PROFILE_CHAR_LIMITS.portfolioSlug)
     .trim()
     .toLowerCase()
-    .replace(/[^a-z0-9-]/g, "")
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/-+/g, "-")
     .replace(/^-+|-+$/g, "");
   const validSlug =
     cleanedSlug.length >= 4 && /^[a-z0-9][a-z0-9-]{2,38}[a-z0-9]$/.test(cleanedSlug)
@@ -939,7 +970,7 @@ export async function saveRichCandidateProfile(draft: RichCandidateDraft): Promi
     delete baseShell[forbidden];
   }
 
-  const saved = await saveCandidatePayload({
+  const payload: Record<string, any> = {
     profile: {
       full_name: cleanFullName,
       phone: cleanPhone,
@@ -1015,9 +1046,18 @@ export async function saveRichCandidateProfile(draft: RichCandidateDraft): Promi
       },
       arjun_profile_v1: overlay,
     },
-  });
+  };
 
-  return saved;
+  try {
+    return await saveCandidatePayload(payload);
+  } catch (err: any) {
+    if (validSlug && /duplicate|unique|23505|portfolio_slug/i.test(String(err?.message || err))) {
+      const fallbackSlug = `${validSlug.slice(0, 32)}-${Math.random().toString(36).slice(2, 6)}`;
+      payload.profile.portfolio_slug = fallbackSlug;
+      return await saveCandidatePayload(payload);
+    }
+    throw err;
+  }
 }
 
 export async function setPortfolioSlug(slug: string | null) {

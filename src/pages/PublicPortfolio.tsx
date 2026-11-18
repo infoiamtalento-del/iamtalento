@@ -35,6 +35,7 @@ import {
   loadFullLiveProfile,
   normalizeLiveProfile,
   resolvePublicBannerFromStorage,
+  setPortfolioSlug,
 } from "@/services/candidate/profile";
 import { FormattedDescription } from "@/components/profile/CharCount";
 import {
@@ -71,10 +72,10 @@ function toYoutubeEmbedUrl(rawUrl: string): string | null {
 }
 
 async function loadEnrichedPublicPortfolio(slug: string): Promise<Record<string, any> | null> {
-  const base = await fetchPublicPortfolio(slug);
-  if (!base) return null;
+  const cleanReqSlug = slug.trim().toLowerCase();
+  const base = await fetchPublicPortfolio(cleanReqSlug);
 
-  const enriched: Record<string, any> = { ...base };
+  let enriched: Record<string, any> | null = base ? { ...base } : null;
   let ownerResetBanner = false;
 
   // If the signed-in user is viewing their own public portfolio handle, enrich any fields
@@ -83,35 +84,94 @@ async function loadEnrichedPublicPortfolio(slug: string): Promise<Record<string,
     const sessionRes = await supabase.auth?.getSession?.();
     if (sessionRes?.data?.session?.user) {
       const live = await loadFullLiveProfile();
-      if (live && (live.profile.portfolio_slug || "").toLowerCase() === slug.toLowerCase()) {
+      if (live) {
         const n = normalizeLiveProfile(live);
-        ownerResetBanner = Boolean(n.shellState?.arjun_profile_v1?.banner_reset);
-        enriched.banner = ownerResetBanner ? "" : n.bannerPhotoUrl || enriched.banner || "";
-        enriched.photo = n.profilePhotoUrl || enriched.photo;
-        enriched.sub_headline = n.subHeadline || enriched.sub_headline;
-        enriched.state = n.state || enriched.state;
-        enriched.country = n.country || enriched.country;
-        enriched.open_for_freelance = n.openForFreelance ?? enriched.open_for_freelance;
-        if (n.focusBadges.length > 0) enriched.focus_badges = n.focusBadges;
-        if (n.expertiseCards.length > 0) enriched.expertise_cards = n.expertiseCards;
-        if (n.tools.length > 0) enriched.tools = n.tools;
-        if (n.hobbies.length > 0) enriched.hobbies = n.hobbies;
-        if (n.interests.length > 0) enriched.interests = n.interests;
-        if (n.experiences.length > 0) enriched.experiences = n.experiences;
-        if (n.projects.length > 0) enriched.projects = n.projects;
-        if (n.educations.length > 0) enriched.educations = n.educations;
-        if (n.certifications.length > 0) enriched.certifications = n.certifications;
-        if (n.awards.length > 0) enriched.awards = n.awards;
-        if (n.languages.length > 0) enriched.languages = n.languages;
-        enriched.video_intro_url = n.videoIntroUrl || enriched.video_intro_url;
-        enriched.video_pitch = n.videoPitch || enriched.video_pitch;
-        enriched.kaggle = n.kaggleUrl || enriched.kaggle;
-        enriched.behance = n.behanceUrl || enriched.behance;
+        const nameSlug = (n.fullName || "")
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z0-9-]+/g, "-")
+          .replace(/-+/g, "-")
+          .replace(/^-+|-+$/g, "");
+        const firstSlug = nameSlug.split("-")[0] || "";
+        const savedSlug = (live.profile.portfolio_slug || "").toLowerCase();
+        const isOwnProfile =
+          savedSlug === cleanReqSlug ||
+          (nameSlug.length >= 4 && nameSlug === cleanReqSlug) ||
+          (firstSlug.length >= 4 && firstSlug === cleanReqSlug);
+
+        if (isOwnProfile) {
+          if (savedSlug !== cleanReqSlug && /^[a-z0-9][a-z0-9-]{2,38}[a-z0-9]$/.test(cleanReqSlug)) {
+            void setPortfolioSlug(cleanReqSlug).catch(() => {});
+          }
+          if (!enriched) {
+            enriched = {
+              name: n.fullName,
+              headline: n.headline,
+              sub_headline: n.subHeadline,
+              about: n.about,
+              city: n.city,
+              state: n.state,
+              country: n.country,
+              industry: n.industry,
+              photo: n.profilePhotoUrl,
+              banner: n.bannerPhotoUrl,
+              verified: n.verification?.profile_status === "verified",
+              readiness: n.readiness,
+              linkedin: n.linkedinUrl,
+              github: n.githubUrl,
+              website: n.portfolioUrl,
+              kaggle: n.kaggleUrl,
+              behance: n.behanceUrl,
+              video_intro_url: n.videoIntroUrl,
+              video_pitch: n.videoPitch,
+              open_to_work: n.openToWork,
+              open_for_freelance: n.openForFreelance,
+              tools: n.tools,
+              hobbies: n.hobbies,
+              interests: n.interests,
+              focus_badges: n.focusBadges,
+              expertise_cards: n.expertiseCards,
+              skills: n.skills,
+              experiences: n.experiences,
+              educations: n.educations,
+              projects: n.projects,
+              certifications: n.certifications,
+              awards: n.awards,
+              languages: n.languages,
+              cir: n.latestCir,
+            };
+          } else {
+            ownerResetBanner = Boolean(n.shellState?.arjun_profile_v1?.banner_reset);
+            enriched.banner = ownerResetBanner ? "" : n.bannerPhotoUrl || enriched.banner || "";
+            enriched.photo = n.profilePhotoUrl || enriched.photo;
+            enriched.sub_headline = n.subHeadline || enriched.sub_headline;
+            enriched.state = n.state || enriched.state;
+            enriched.country = n.country || enriched.country;
+            enriched.open_for_freelance = n.openForFreelance ?? enriched.open_for_freelance;
+            if (n.focusBadges.length > 0) enriched.focus_badges = n.focusBadges;
+            if (n.expertiseCards.length > 0) enriched.expertise_cards = n.expertiseCards;
+            if (n.tools.length > 0) enriched.tools = n.tools;
+            if (n.hobbies.length > 0) enriched.hobbies = n.hobbies;
+            if (n.interests.length > 0) enriched.interests = n.interests;
+            if (n.experiences.length > 0) enriched.experiences = n.experiences;
+            if (n.projects.length > 0) enriched.projects = n.projects;
+            if (n.educations.length > 0) enriched.educations = n.educations;
+            if (n.certifications.length > 0) enriched.certifications = n.certifications;
+            if (n.awards.length > 0) enriched.awards = n.awards;
+            if (n.languages.length > 0) enriched.languages = n.languages;
+            enriched.video_intro_url = n.videoIntroUrl || enriched.video_intro_url;
+            enriched.video_pitch = n.videoPitch || enriched.video_pitch;
+            enriched.kaggle = n.kaggleUrl || enriched.kaggle;
+            enriched.behance = n.behanceUrl || enriched.behance;
+          }
+        }
       }
     }
   } catch {
     /* Anonymous viewer or session check unavailable */
   }
+
+  if (!enriched) return null;
 
   // Storage fallback for unmigrated remote `get_public_portfolio` RPCs when banner is absent
   if (!enriched.banner && !ownerResetBanner && enriched.photo) {
@@ -613,10 +673,10 @@ const PublicPortfolio: React.FC = () => {
                               const yrs = [ed.start_year, ed.year].filter(Boolean).join(" – ");
                               return (
                                 <article key={idx}>
-                                  <div className="dp-school dp-tone-blue">
+                                  <i className="dp-school dp-tone-blue">
                                     <GraduationCap size={22} />
-                                  </div>
-                                  <div className="min-w-0">
+                                  </i>
+                                  <div className="min-w-0 flex-1">
                                     <h3 className="break-words">{ed.institution}</h3>
                                     <p>
                                       {ed.degree}
@@ -647,10 +707,10 @@ const PublicPortfolio: React.FC = () => {
                           <div className="dp-certifications">
                             {data.certifications.map((c: any, idx: number) => (
                               <article key={idx}>
-                                <div className="dp-school dp-tone-green">
+                                <i className="dp-school dp-tone-green">
                                   <Award size={20} />
-                                </div>
-                                <div className="min-w-0">
+                                </i>
+                                <div className="min-w-0 flex-1">
                                   <h3 className="break-words">{c.name}</h3>
                                   {c.issuer && <p>{c.issuer}</p>}
                                   <div className="dp-cert-date">
