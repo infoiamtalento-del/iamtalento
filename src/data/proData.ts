@@ -118,6 +118,7 @@ export interface ProUser {
   twoFactorMethod?: "authenticator" | "sms";
   twoFactorPhone?: string;
   privacyVisibility?: "public" | "applied_only" | "private";
+  employerId?: string;
   emailAlerts?: boolean;
   smsAlerts?: boolean;
   marketingEmails?: boolean;
@@ -308,6 +309,7 @@ export const DEFAULT_USERS: Record<string, ProUser> = {
   "demo.employer@talento.app": {
     email: "demo.employer@talento.app",
     role: "employer",
+    employerId: "IAT-EMP-204819",
     name: "Super30 Technologies",
     avatar: "/company-logos/super30-mark.svg",
     phone: "+91 80 4719 3030",

@@ -1246,6 +1246,7 @@ const TalentoPro: React.FC = () => {
                 : getCandidatePhoto(currentUser.name))
           }
           userRole={currentRole === "employer" ? "Employer Workspace" : "Employee Workspace"}
+          employerId={currentUser.employerId || (currentRole === "employer" ? "IAT-EMP-204819" : undefined)}
           isEmployer={currentRole === "employer"}
           onNavigate={(view) => {
             setDrawerState(null);

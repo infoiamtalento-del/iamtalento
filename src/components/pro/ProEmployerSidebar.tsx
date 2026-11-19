@@ -15,6 +15,7 @@ interface Props {
   userName?: string;
   userAvatar?: string;
   userRole?: string;
+  employerId?: string;
   isEmployer?: boolean;
 }
 
@@ -25,10 +26,12 @@ export function ProEmployerSidebar({
   unreadCount,
   userName,
   userAvatar,
+  employerId,
   isEmployer = false,
 }: Props) {
   const menuItems = isEmployer ? employerMenuItems : employeeMenuItems;
   const photoUrl = userAvatar || (isEmployer ? "/company-logos/super30-mark.svg" : getCandidatePhoto(userName || "Yogesh"));
+  const resolvedEmployerId = employerId || (isEmployer ? "IAT-EMP-204819" : undefined);
 
   return (
     <aside
@@ -41,14 +44,14 @@ export function ProEmployerSidebar({
         <div>
           {/* Brand Header: Logo on top, TalentCIR & Employer Dashboard below, with Visit site aligned neatly */}
           {isEmployer ? (
-            <div className="px-4 py-3.5 border-b border-[#001D44] bg-[#002454]">
+            <div className="px-4 py-4 border-b border-[#001D44] bg-[#002454]">
               <div className="flex items-center justify-between gap-3">
                 <Link to="/" className="flex items-center group" aria-label="TalentCIR Home">
-                  <div className="rounded-lg bg-white px-2.5 py-1.5 flex items-center justify-center shrink-0 shadow-xs">
+                  <div className="rounded-xl bg-white px-3 py-2 flex items-center justify-center shrink-0 shadow-xs hover:opacity-95 transition-opacity">
                     <img
                       src={siteLogo.url}
                       alt="TalentCIR"
-                      className="h-6 w-auto object-contain"
+                      className="h-8 w-auto object-contain"
                     />
                   </div>
                 </Link>
@@ -56,20 +59,30 @@ export function ProEmployerSidebar({
                   to="/company/super30-technologies"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 px-2.5 py-1 text-[11px] font-bold text-white transition-colors shrink-0"
+                  className="inline-flex items-center gap-1 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 px-3 py-1 text-[11px] font-bold text-white transition-colors shrink-0"
                   title="Open public company page"
                 >
                   <span>Visit site</span>
                   <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
                 </Link>
               </div>
-              <div className="mt-2.5 pl-0.5">
-                <p className="font-display text-sm font-extrabold tracking-wide text-white leading-tight">
+              <div className="mt-3 pl-0.5 space-y-0.5">
+                <p className="font-display text-base font-extrabold tracking-wide text-white leading-tight">
                   TalentCIR
                 </p>
-                <p className="text-[11px] font-semibold text-[#FB923C] tracking-wide leading-tight mt-0.5">
+                <p className="text-xs font-semibold text-[#FB923C] tracking-wide leading-tight">
                   Employer Dashboard
                 </p>
+                {resolvedEmployerId && (
+                  <div className="pt-1.5 flex items-center gap-1.5">
+                    <span className="text-[10px] font-medium text-blue-200/70 uppercase tracking-wider">
+                      Employer ID:
+                    </span>
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-white/10 border border-white/15 font-mono text-[11px] font-bold text-emerald-300 tracking-wide select-all">
+                      {resolvedEmployerId}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           ) : (
@@ -204,9 +217,14 @@ export function ProEmployerSidebar({
                 <p className="text-xs font-bold text-white truncate">
                   {userName || "Super30 Technologies"}
                 </p>
-                <p className="text-[10px] text-emerald-300 font-semibold truncate">
-                  ● Verified Employer
-                </p>
+                <div className="flex items-center gap-1.5 text-[10px] text-emerald-300 font-semibold truncate">
+                  <span>● Verified</span>
+                  {resolvedEmployerId && (
+                    <span className="font-mono text-[9px] text-blue-200/80">
+                      · {resolvedEmployerId}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           )}
