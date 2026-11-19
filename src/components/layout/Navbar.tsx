@@ -267,7 +267,7 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
 
     return (
       <header className="sticky top-0 z-40 w-full lg:ml-64 xl:ml-72 lg:w-[calc(100%-16rem)] xl:w-[calc(100%-18rem)] border-b border-border bg-card shadow-2xs">
-        <div className="flex h-[72px] min-h-[72px] w-full items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 py-2.5">
+        <div className="flex h-[86px] min-h-[86px] w-full items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 py-3">
           {/* Left: Mobile Logo Lockup + Active Dashboard Title & Welcome Subtitle */}
           <div className="flex items-center gap-3.5 min-w-0">
             <Link

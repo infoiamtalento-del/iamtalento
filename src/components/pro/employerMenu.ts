@@ -62,6 +62,45 @@ export const employerMenuItems: EmployerMenuItem[] = [
   { id: "support", label: "Support Center", icon: Headphones },
 ];
 
+export type EmployerMenuCategory = {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+  items: EmployerMenuItem[];
+};
+
+const CATEGORY_ICONS: Record<string, LucideIcon> = {
+  Recruitment: Briefcase,
+  "Assessments & AI": Sparkles,
+  "Growth & Analytics": BarChart3,
+  "Account & Billing": Receipt,
+};
+
+export const employerDirectItems: EmployerMenuItem[] = [];
+export const employerCategoryGroups: EmployerMenuCategory[] = [];
+
+{
+  let currentGroup: EmployerMenuCategory | null = null;
+  for (const item of employerMenuItems) {
+    if (item.section === "Overview" || (!item.section && !currentGroup)) {
+      employerDirectItems.push(item);
+      continue;
+    }
+    if (item.section) {
+      currentGroup = {
+        id: item.section.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+        label: item.section,
+        icon: CATEGORY_ICONS[item.section] || item.icon,
+        items: [],
+      };
+      employerCategoryGroups.push(currentGroup);
+    }
+    if (currentGroup) {
+      currentGroup.items.push(item);
+    }
+  }
+}
+
 export const employeeMenuItems: EmployerMenuItem[] = [
   { id: "dash", label: "Employee Dashboard", icon: LayoutDashboard },
   { id: "profile", label: "My Profile & Badges", icon: UserCheck },

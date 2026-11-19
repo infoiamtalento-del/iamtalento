@@ -802,6 +802,11 @@ export function ProEmployerMyAccount({
                 <Badge className="bg-emerald-500/10 text-emerald-700 border-emerald-500/30 text-[10px]">
                   Verified Hiring Partner
                 </Badge>
+                {(user.employerId || !isLive) && (
+                  <span className="rounded-md bg-muted px-2 py-0.5 font-mono text-[11px] font-medium text-muted-foreground">
+                    ID: {user.employerId || "IAT-EMP-204819"}
+                  </span>
+                )}
               </div>
               <p className="mt-0.5 text-xs text-muted-foreground truncate">
                 {cp.name || user.name} · {displayEmail}

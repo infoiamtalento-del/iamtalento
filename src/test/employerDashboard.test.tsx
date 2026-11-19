@@ -153,6 +153,23 @@ describe("navigation", () => {
     expect(onNavigate).toHaveBeenCalledWith("notif");
 
     expect(screen.getByRole("button", { name: "Account menu" })).toBeInTheDocument();
+
+    // Direct top items are visible immediately; category items expand on click
+    expect(screen.getByRole("button", { name: "Dashboard" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "My Account" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Company Profile" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Create Jobs" })).not.toBeInTheDocument();
+
+    const recruitmentToggle = screen.getByRole("button", { name: /Recruitment/i });
+    expect(recruitmentToggle).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(recruitmentToggle);
+    expect(recruitmentToggle).toHaveAttribute("aria-expanded", "true");
+
+    const createJobsBtn = screen.getByRole("button", { name: "Create Jobs" });
+    expect(createJobsBtn).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Job Application Management" })).toBeInTheDocument();
+    fireEvent.click(createJobsBtn);
+    expect(onNavigate).toHaveBeenCalledWith("post");
   });
 });
 
