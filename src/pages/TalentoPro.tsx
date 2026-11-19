@@ -1199,9 +1199,9 @@ const TalentoPro: React.FC = () => {
           if (currentRole === "employer") {
             return (
               <ProEmployerAccountMenu
-                name={currentUser.name}
+                name={currentUser.cp?.name || currentUser.name}
                 avatarSrc={userPhoto}
-                roleLabel="Employer Workspace"
+                roleLabel="Employer Dashboard"
                 activeView={effectiveView}
                 unreadCount={unreadCount}
                 onNavigate={navView}

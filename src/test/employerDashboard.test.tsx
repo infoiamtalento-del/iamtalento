@@ -59,6 +59,8 @@ import { ProEmployerViews } from "@/components/pro/ProEmployerViews";
 import { ProEmployerCommandCentre } from "@/components/pro/ProEmployerCommandCentre";
 import { ProEmployerJobPosting } from "@/components/pro/ProEmployerJobPosting";
 import { ProEmployerPipeline } from "@/components/pro/ProEmployerPipeline";
+import { ProEmployerSidebar } from "@/components/pro/ProEmployerSidebar";
+import { ProEmployerAccountMenu } from "@/components/pro/ProEmployerAccountMenu";
 import { DEFAULT_USERS } from "@/data/proData";
 import { DEMO_EMPLOYER_JOBS, DEMO_EMPLOYER_APPS, INITIAL_EMPLOYER_DEMO } from "@/data/employerDemo";
 
@@ -117,6 +119,40 @@ describe("navigation", () => {
     expect(employerMenuItems.find((i) => i.label === "Job Application Management")?.id).toBe("pipe");
     expect(employerMenuItems.find((i) => i.label === "Find Talent")?.id).toBe("talent");
     expect(employerMenuItems.find((i) => i.label === "Security & Settings")).toBeUndefined();
+  });
+
+  it("renders the Employer sidebar brand lockup (Logo + TalentCIR + Employer Dashboard) and top-right Notifications & Profile icons", () => {
+    const onNavigate = vi.fn();
+    render(
+      <MemoryRouter>
+        <ProEmployerSidebar
+          activeView="dash"
+          unreadCount={4}
+          userName="Super30 Technologies"
+          isEmployer={true}
+          onNavigate={onNavigate}
+          onLogout={vi.fn()}
+        />
+        <ProEmployerAccountMenu
+          name="Super30 Technologies"
+          roleLabel="Employer Dashboard"
+          activeView="dash"
+          unreadCount={4}
+          onNavigate={onNavigate}
+          onSignOut={vi.fn()}
+        />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText("TalentCIR")).toBeInTheDocument();
+    expect(screen.getAllByText("Employer Dashboard").length).toBeGreaterThanOrEqual(2);
+
+    const notifBtn = screen.getByRole("button", { name: "Notifications" });
+    expect(notifBtn).toBeInTheDocument();
+    fireEvent.click(notifBtn);
+    expect(onNavigate).toHaveBeenCalledWith("notif");
+
+    expect(screen.getByRole("button", { name: "Account menu" })).toBeInTheDocument();
   });
 });
 

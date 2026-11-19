@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, ChevronDown, ChevronRight, ArrowRight, BadgeCheck, Bell, BellRing, Bot, Building2, CalendarClock, FileText, GraduationCap, Headphones, Library, Palette, ShieldCheck, Sparkles, UserRound, Users, Video, Wallet, Wand2, User, LogOut, Briefcase, Bookmark, type LucideIcon } from "lucide-react";
+import { Menu, X, ChevronDown, ChevronRight, ArrowRight, BadgeCheck, Bell, BellRing, Bot, Building2, CalendarClock, FileText, GraduationCap, Headphones, Library, Palette, Search, ShieldCheck, Sparkles, UserRound, Users, Video, Wallet, Wand2, User, LogOut, Briefcase, Bookmark, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,6 +8,7 @@ import { db } from "@/services/db";
 import { toast } from "sonner";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { siteLogo } from "@/assets/logo";
+import { employerMenuItems } from "@/components/pro/employerMenu";
 
 const eventsDropdownItems = [
   { label: "Hackathons", href: "/hackathon3" },
@@ -256,15 +257,77 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
     navigate("/");
   };
 
-  // When logged in to the Employer Dashboard, the public website top menu is not required;
-  // navigation lives in the full-height left sidebar, while the shared accountMenu slot stays accessible.
+  // When logged in to the Employer Dashboard, the public website top menu is replaced by
+  // the dedicated Employer Dashboard top header bar (title + welcome subtitle on left,
+  // search + notifications bell + profile dropdown on the extreme right).
   if (isEmployerPro) {
+    const currentViewId = new URLSearchParams(location.search).get("view") || "dash";
+    const activeEmployerItem = employerMenuItems.find((item) => item.id === currentViewId);
+    const headerTitle = activeEmployerItem?.label || "Dashboard";
+
     return (
-      <header className="lg:hidden sticky top-0 z-40 flex h-14 items-center justify-between border-b border-border bg-card px-4 shadow-2xs">
-        <Link to="/" className="flex items-center gap-2" aria-label="IAmTalento Home">
-          <img src={siteLogo.url} alt="I Am Talento" className="h-8 w-auto object-contain" />
-        </Link>
-        {accountMenu ? accountMenu(handleSignOut) : null}
+      <header className="sticky top-0 z-40 w-full lg:pl-64 xl:pl-72 border-b border-border bg-card shadow-2xs">
+        <div className="flex min-h-[72px] w-full items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 py-2.5">
+          {/* Left: Mobile Logo Lockup + Active Dashboard Title & Welcome Subtitle */}
+          <div className="flex items-center gap-3.5 min-w-0">
+            <Link
+              to="/"
+              className="lg:hidden flex flex-col items-start shrink-0 pr-3 border-r border-border"
+              aria-label="TalentCIR Home"
+            >
+              <img src={siteLogo.url} alt="TalentCIR" className="h-7 w-auto object-contain" />
+              <span className="mt-0.5 text-[10px] font-extrabold tracking-wide text-[#002C66] dark:text-foreground leading-none">
+                TalentCIR · Employer Dashboard
+              </span>
+            </Link>
+
+            <div className="min-w-0">
+              <h2 className="font-display text-lg sm:text-xl font-bold tracking-tight text-[#002C66] dark:text-foreground truncate leading-tight">
+                {headerTitle}
+              </h2>
+              <p className="hidden sm:block text-xs text-muted-foreground truncate mt-0.5">
+                Welcome back! Here&apos;s what&apos;s happening with your hiring operations today.
+              </p>
+            </div>
+          </div>
+
+          {/* Extreme Right: Search Box + Notifications Bell Icon + Profile Icon & Account Menu */}
+          <div className="flex items-center gap-3 sm:gap-5 shrink-0 ml-auto">
+            <search className="hidden md:block">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const formData = new FormData(e.currentTarget);
+                  const q = String(formData.get("q") || "").trim();
+                  navigate(
+                    q
+                      ? `/talento-pro?view=talent&role=employer&q=${encodeURIComponent(q)}`
+                      : "/talento-pro?view=talent&role=employer"
+                  );
+                }}
+                className="relative flex items-center"
+              >
+                <Search
+                  className="pointer-events-none absolute left-3 h-4 w-4 text-muted-foreground"
+                  aria-hidden="true"
+                />
+                <input
+                  type="search"
+                  name="q"
+                  aria-label="Search candidates, jobs, or skills"
+                  placeholder="Search..."
+                  className="h-10 w-56 lg:w-64 xl:w-72 rounded-xl border border-border bg-background pl-9 pr-9 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15 transition-all"
+                />
+                <Search
+                  className="pointer-events-none absolute right-3 h-3.5 w-3.5 text-muted-foreground/70"
+                  aria-hidden="true"
+                />
+              </form>
+            </search>
+
+            {accountMenu ? accountMenu(handleSignOut) : null}
+          </div>
+        </div>
       </header>
     );
   }
