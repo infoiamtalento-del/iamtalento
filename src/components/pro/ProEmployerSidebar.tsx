@@ -39,36 +39,38 @@ export function ProEmployerSidebar({
     >
       <div className="flex flex-col min-h-full justify-between text-white">
         <div>
-          {/* Brand Header (Reference top-left brand lockup matching exact header height of 72px) */}
+          {/* Brand Header: Logo on top, TalentCIR & Employer Dashboard below, with Visit site aligned neatly */}
           {isEmployer ? (
-            <div className="h-[72px] min-h-[72px] px-3 sm:px-4 border-b border-[#001D44] bg-[#002454] flex items-center justify-between gap-1.5">
-              <Link to="/" className="flex items-center gap-2.5 min-w-0 flex-1 group" aria-label="TalentCIR Home">
-                <div className="rounded-lg bg-white px-2 py-1 flex items-center justify-center shrink-0 shadow-xs">
-                  <img
-                    src={siteLogo.url}
-                    alt="TalentCIR"
-                    className="h-6 w-auto max-w-[90px] object-contain"
-                  />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="font-display text-sm font-extrabold tracking-wide text-white leading-tight whitespace-nowrap">
-                    TalentCIR
-                  </p>
-                  <p className="text-[10px] font-semibold text-[#FB923C] tracking-wide leading-tight mt-0.5 whitespace-nowrap">
-                    Employer Dashboard
-                  </p>
-                </div>
-              </Link>
-              <Link
-                to="/company/super30-technologies"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 px-2 py-1 text-[10px] font-bold text-white transition-colors shrink-0 whitespace-nowrap"
-                title="Open public company page"
-              >
-                <span>Visit site</span>
-                <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
-              </Link>
+            <div className="px-4 py-3.5 border-b border-[#001D44] bg-[#002454]">
+              <div className="flex items-center justify-between gap-3">
+                <Link to="/" className="flex items-center group" aria-label="TalentCIR Home">
+                  <div className="rounded-lg bg-white px-2.5 py-1.5 flex items-center justify-center shrink-0 shadow-xs">
+                    <img
+                      src={siteLogo.url}
+                      alt="TalentCIR"
+                      className="h-6 w-auto object-contain"
+                    />
+                  </div>
+                </Link>
+                <Link
+                  to="/company/super30-technologies"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 px-2.5 py-1 text-[11px] font-bold text-white transition-colors shrink-0"
+                  title="Open public company page"
+                >
+                  <span>Visit site</span>
+                  <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
+                </Link>
+              </div>
+              <div className="mt-2.5 pl-0.5">
+                <p className="font-display text-sm font-extrabold tracking-wide text-white leading-tight">
+                  TalentCIR
+                </p>
+                <p className="text-[11px] font-semibold text-[#FB923C] tracking-wide leading-tight mt-0.5">
+                  Employer Dashboard
+                </p>
+              </div>
             </div>
           ) : (
             <div className="px-3 py-2.5 mb-2 border-b border-white/15">
