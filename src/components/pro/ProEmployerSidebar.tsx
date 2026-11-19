@@ -41,22 +41,20 @@ export function ProEmployerSidebar({
         <div>
           {/* Brand Header (Reference top-left brand lockup matching exact header height of 72px) */}
           {isEmployer ? (
-            <div className="h-[72px] min-h-[72px] px-3.5 sm:px-4 border-b border-[#001D44] bg-[#002454] flex items-center justify-between gap-2">
-              <Link to="/" className="flex items-center gap-2.5 min-w-0 group" aria-label="TalentCIR Home">
-                <div className="rounded-xl bg-white px-2 py-1 flex items-center justify-center shrink-0 shadow-xs">
+            <div className="h-[72px] min-h-[72px] px-3 sm:px-4 border-b border-[#001D44] bg-[#002454] flex items-center justify-between gap-1.5">
+              <Link to="/" className="flex items-center gap-2.5 min-w-0 flex-1 group" aria-label="TalentCIR Home">
+                <div className="rounded-lg bg-white px-2 py-1 flex items-center justify-center shrink-0 shadow-xs">
                   <img
                     src={siteLogo.url}
                     alt="TalentCIR"
-                    width={100}
-                    height={26}
-                    className="h-6 w-auto object-contain"
+                    className="h-6 w-auto max-w-[90px] object-contain"
                   />
                 </div>
-                <div className="min-w-0">
-                  <p className="font-display text-sm font-extrabold tracking-wide text-white leading-tight truncate">
+                <div className="min-w-0 flex-1">
+                  <p className="font-display text-sm font-extrabold tracking-wide text-white leading-tight whitespace-nowrap">
                     TalentCIR
                   </p>
-                  <p className="text-[10px] font-semibold text-[#FB923C] tracking-wide leading-tight mt-0.5 truncate">
+                  <p className="text-[10px] font-semibold text-[#FB923C] tracking-wide leading-tight mt-0.5 whitespace-nowrap">
                     Employer Dashboard
                   </p>
                 </div>
@@ -65,7 +63,7 @@ export function ProEmployerSidebar({
                 to="/company/super30-technologies"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 px-2 py-0.5 text-[10px] font-bold text-white transition-colors shrink-0"
+                className="inline-flex items-center gap-1 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 px-2 py-1 text-[10px] font-bold text-white transition-colors shrink-0 whitespace-nowrap"
                 title="Open public company page"
               >
                 <span>Visit site</span>
