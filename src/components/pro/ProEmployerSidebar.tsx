@@ -33,46 +33,44 @@ export function ProEmployerSidebar({
   return (
     <aside
       className={cn(
-        "w-full lg:w-64 xl:w-72 shrink-0 lg:fixed lg:bottom-0 lg:left-0 z-30 lg:border-r border-[#001D44] bg-[#002C66] text-white overflow-y-auto shadow-md",
+        "w-full lg:w-64 xl:w-72 shrink-0 lg:fixed lg:bottom-0 lg:left-0 z-40 lg:border-r border-[#001D44] bg-[#002C66] text-white overflow-y-auto shadow-md",
         isEmployer ? "lg:top-0" : "lg:top-16"
       )}
     >
-      <div className="p-3.5 sm:p-4 flex flex-col min-h-full justify-between text-white">
+      <div className="flex flex-col min-h-full justify-between text-white">
         <div>
-          {/* Brand Header (Reference top-left brand lockup for Employer; User header for Candidate) */}
+          {/* Brand Header (Reference top-left brand lockup matching exact header height of 72px) */}
           {isEmployer ? (
-            <div className="px-3 pt-2.5 pb-4 mb-3 border-b border-white/15">
-              <div className="flex items-start justify-between gap-2">
-                <Link to="/" className="flex flex-col items-start gap-2 min-w-0 group" aria-label="TalentCIR Home">
-                  <div className="rounded-xl bg-white px-3 py-1.5 flex items-center justify-center shrink-0 shadow-xs">
-                    <img
-                      src={siteLogo.url}
-                      alt="TalentCIR"
-                      width={132}
-                      height={34}
-                      className="h-8 w-auto object-contain"
-                    />
-                  </div>
-                  <div className="min-w-0 pl-0.5">
-                    <p className="font-display text-sm font-extrabold tracking-wide text-white leading-tight truncate">
-                      TalentCIR
-                    </p>
-                    <p className="text-[11px] font-semibold text-[#FB923C] tracking-wide leading-tight mt-0.5 truncate">
-                      Employer Dashboard
-                    </p>
-                  </div>
-                </Link>
-                <Link
-                  to="/company/super30-technologies"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 px-2.5 py-1 text-[10px] font-bold text-white transition-colors shrink-0 mt-1"
-                  title="Open public company page"
-                >
-                  <span>Visit site</span>
-                  <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
-                </Link>
-              </div>
+            <div className="h-[72px] min-h-[72px] px-3.5 sm:px-4 border-b border-[#001D44] bg-[#002454] flex items-center justify-between gap-2">
+              <Link to="/" className="flex items-center gap-2.5 min-w-0 group" aria-label="TalentCIR Home">
+                <div className="rounded-xl bg-white px-2 py-1 flex items-center justify-center shrink-0 shadow-xs">
+                  <img
+                    src={siteLogo.url}
+                    alt="TalentCIR"
+                    width={100}
+                    height={26}
+                    className="h-6 w-auto object-contain"
+                  />
+                </div>
+                <div className="min-w-0">
+                  <p className="font-display text-sm font-extrabold tracking-wide text-white leading-tight truncate">
+                    TalentCIR
+                  </p>
+                  <p className="text-[10px] font-semibold text-[#FB923C] tracking-wide leading-tight mt-0.5 truncate">
+                    Employer Dashboard
+                  </p>
+                </div>
+              </Link>
+              <Link
+                to="/company/super30-technologies"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 px-2 py-0.5 text-[10px] font-bold text-white transition-colors shrink-0"
+                title="Open public company page"
+              >
+                <span>Visit site</span>
+                <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
+              </Link>
             </div>
           ) : (
             <div className="px-3 py-2.5 mb-2 border-b border-white/15">
@@ -107,7 +105,8 @@ export function ProEmployerSidebar({
           )}
 
           {/* Navigation Items */}
-          <nav aria-label="Dashboard navigation" className="space-y-1">
+          <div className="p-3 sm:p-4 pb-0">
+            <nav aria-label="Dashboard navigation" className="space-y-1">
             {menuItems.map(({ id, label, icon: Icon, section }, idx) => {
               const isActive = activeView === id;
               return (
@@ -164,9 +163,10 @@ export function ProEmployerSidebar({
             })}
           </nav>
         </div>
+      </div>
 
         {/* Bottom Section: Reference "Unlock more with Pro Plan" Card + User Profile & Logout */}
-        <div className="pt-4 mt-4 border-t border-white/15 space-y-3">
+        <div className="p-3 sm:p-4 pt-4 border-t border-white/15 space-y-3">
           {isEmployer && (
             <div className="rounded-2xl border border-white/15 bg-[#001F4D] p-3.5 text-center space-y-2 shadow-inner">
               <div className="mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-[#FB923C]/20 text-[#FB923C]">

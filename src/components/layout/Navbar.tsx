@@ -266,8 +266,8 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
     const headerTitle = activeEmployerItem?.label || "Dashboard";
 
     return (
-      <header className="sticky top-0 z-40 w-full lg:pl-64 xl:pl-72 border-b border-border bg-card shadow-2xs">
-        <div className="flex min-h-[72px] w-full items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 py-2.5">
+      <header className="sticky top-0 z-40 w-full lg:ml-64 xl:ml-72 lg:w-[calc(100%-16rem)] xl:w-[calc(100%-18rem)] border-b border-border bg-card shadow-2xs">
+        <div className="flex h-[72px] min-h-[72px] w-full items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 py-2.5">
           {/* Left: Mobile Logo Lockup + Active Dashboard Title & Welcome Subtitle */}
           <div className="flex items-center gap-3.5 min-w-0">
             <Link
