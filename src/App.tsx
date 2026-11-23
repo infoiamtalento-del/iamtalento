@@ -77,6 +77,7 @@ const AiGuidance = lazy(() => import("./pages/AiGuidance"));
 const VerifyCredential = lazy(() => import("./pages/VerifyCredential"));
 const PublicPortfolio = lazy(() => import("./pages/PublicPortfolio"));
 const PublicCompany = lazy(() => import("./pages/PublicCompany"));
+const SuperAdminDashboard = lazy(() => import("./pages/SuperAdminDashboard"));
 
 const queryClient = new QueryClient();
 
@@ -175,6 +176,8 @@ const AnimatedRoutes = () => {
           <Route path="/verify/:token" element={<PageTransition><VerifyCredential /></PageTransition>} />
           <Route path="/u/:slug" element={<PageTransition><PublicPortfolio /></PageTransition>} />
           <Route path="/company/:slug" element={<PageTransition><PublicCompany /></PageTransition>} />
+          <Route path="/super-admin" element={<PageTransition><SuperAdminDashboard /></PageTransition>} />
+          <Route path="/admin" element={<PageTransition><SuperAdminDashboard /></PageTransition>} />
           <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
         </Routes>
       </Suspense>

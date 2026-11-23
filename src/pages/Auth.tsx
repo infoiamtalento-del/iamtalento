@@ -471,14 +471,33 @@ const Auth = () => {
                     Don't have an account?{" "}
                     <button type="button" onClick={() => setMode("signup")} className="text-primary font-semibold hover:underline">Sign Up</button>
                   </p>
-                  <div className="border-t border-border pt-5">
-                    <p className="mb-3 text-xs font-semibold uppercase text-muted-foreground">Demo account</p>
+                  <div className="border-t border-border pt-5 space-y-2.5">
+                    <p className="mb-1 text-xs font-semibold uppercase text-muted-foreground">Demo account</p>
                     <Button type="button" variant="outline" onClick={openDemoProfile} className="h-auto w-full justify-start gap-3 whitespace-normal border-primary/30 bg-primary/5 p-4 text-left hover:bg-primary/10">
                       <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary text-primary-foreground">
                         <img src={getCandidatePhoto(demoUser.name)} alt={demoUser.name} className="h-full w-full object-cover" />
                       </span>
                       <span className="min-w-0 flex-1"><span className="block text-sm font-semibold text-primary">Quick login as {demoUser.name}</span><span className="mt-1 block text-xs text-muted-foreground">{role === "employer" ? "Employer company profile" : "Employee profile"}</span></span>
                       <ArrowRight className="text-primary" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => navigate("/super-admin")}
+                      className="h-auto w-full justify-start gap-3 whitespace-normal border-[#002C66]/25 bg-[#002C66]/5 p-3.5 text-left hover:bg-[#002C66]/10 cursor-pointer"
+                    >
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#002C66] text-xs font-extrabold text-white">
+                        SA
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-sm font-semibold text-[#002C66] dark:text-foreground">
+                          Open Super Admin Console
+                        </span>
+                        <span className="mt-0.5 block text-xs text-muted-foreground">
+                          Full platform data · Candidates, Employers, ATS, CIR, Billing &amp; DB
+                        </span>
+                      </span>
+                      <ArrowRight className="text-[#002C66] dark:text-foreground" />
                     </Button>
                   </div>
                 </motion.form>
