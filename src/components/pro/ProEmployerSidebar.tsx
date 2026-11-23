@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ChevronDown, ExternalLink, Rocket } from "lucide-react";
+import { ChevronDown, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -61,52 +61,53 @@ export function ProEmployerSidebar({
   return (
     <aside
       className={cn(
-        "w-full lg:w-64 xl:w-72 shrink-0 lg:fixed lg:bottom-0 lg:left-0 z-40 lg:border-r border-[#001D44] bg-[#002C66] text-white shadow-md flex flex-col",
+        "w-full lg:w-64 xl:w-72 shrink-0 lg:fixed lg:bottom-0 lg:left-0 z-40 lg:border-r border-[#001D44] bg-[#002C66] text-white flex flex-col",
         isEmployer ? "lg:top-0 lg:overflow-hidden" : "lg:top-16 overflow-y-auto"
       )}
     >
       {/* Top Brand Header + Employer Workspace Identity */}
       {isEmployer ? (
         <div className="shrink-0">
-          {/* 86px Brand Bar — flush horizontal alignment with the top header bar */}
-          <div className="h-[86px] min-h-[86px] px-5 bg-[#002C66] border-b border-white/10 flex items-center">
+          {/* 80px (h-20) Brand Bar — 4px grid & flush horizontal alignment with top header bar */}
+          <div className="h-20 min-h-20 px-5 bg-[#002C66] border-b border-white/10 flex items-center">
             <Link to="/" className="inline-flex items-center focus:outline-none" aria-label="TalentCIR Home">
               <img
                 src={siteLogo.url}
                 alt="TalentCIR"
-                className="h-10 w-auto object-contain brightness-0 invert"
+                className="h-9 w-auto object-contain brightness-0 invert"
               />
               <span className="sr-only">TalentCIR</span>
               <span className="sr-only">Employer Dashboard</span>
             </Link>
           </div>
 
-          {/* Clean Employer ID & Visit Site Strip */}
-          <div className="px-4 py-2.5 bg-[#002250] border-b border-white/10 flex items-center justify-between gap-2">
+          {/* Signature Monospace Verification Stamp + Live Status Dot */}
+          <div className="px-5 py-2.5 bg-[#002250] border-b border-white/10 flex items-center justify-between gap-2">
             {resolvedEmployerId && (
               <span
-                className="font-mono text-[11px] font-medium text-blue-100/85 tracking-wide select-all"
-                title="Unique Employer ID"
+                className="inline-flex items-center gap-1.5 font-mono text-[11px] font-normal text-blue-100/90 select-all"
+                title="Verified Employer Registry ID"
               >
-                ID: {resolvedEmployerId}
+                <span className="h-1.5 w-1.5 rounded-full bg-[#4cc38a] shrink-0" aria-hidden="true" />
+                {resolvedEmployerId}
               </span>
             )}
             <Link
               to="/company/super30-technologies"
               target="_blank"
               rel="noopener noreferrer"
-              className="ml-auto inline-flex items-center gap-1 text-[11px] font-medium text-blue-200 hover:text-white transition-colors shrink-0"
+              className="ml-auto inline-flex items-center gap-1 text-xs font-normal text-blue-200/85 hover:text-white transition-colors duration-150 shrink-0"
               title="Open public company page"
             >
               <span>Visit site</span>
-              <ExternalLink className="h-3 w-3" aria-hidden="true" />
+              <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden="true" />
             </Link>
           </div>
         </div>
       ) : (
         <div className="px-4 pt-4 pb-2.5 border-b border-white/15 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full overflow-hidden border-2 border-white/30 bg-white/15 shrink-0 shadow-sm flex items-center justify-center">
+            <div className="h-10 w-10 rounded-full overflow-hidden border-2 border-white/30 bg-white/15 shrink-0 flex items-center justify-center">
               {photoUrl ? (
                 <img
                   src={photoUrl}
@@ -116,17 +117,17 @@ export function ProEmployerSidebar({
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <span className="text-xs font-bold text-white">
+                <span className="text-xs font-semibold text-white">
                   {(userName?.charAt(0) || "U").toUpperCase()}
                 </span>
               )}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-blue-200/90 truncate">
-                Dashboard Menu
+              <p className="text-xs font-medium text-blue-200/85 truncate">
+                Dashboard menu
               </p>
               {userName && (
-                <p className="text-xs font-bold text-white truncate">
+                <p className="text-xs font-medium text-white truncate">
                   {userName}
                 </p>
               )}
@@ -137,11 +138,11 @@ export function ProEmployerSidebar({
 
       {/* Scrollable Navigation + Bottom Section */}
       <div className="flex-1 overflow-y-auto flex flex-col justify-between text-white [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.2)_transparent]">
-        <div className="p-3 sm:p-3.5">
+        <div className="p-3">
           <nav aria-label="Dashboard navigation" className="space-y-0.5">
             {isEmployer ? (
               <>
-                {/* Direct Top Items: Dashboard, My Account, Company Profile */}
+                {/* Direct Top Items: 36px (h-9) uniform rows, 16px stroke-1.5 icons in aligned column */}
                 <div className="space-y-0.5">
                   {employerDirectItems.map(({ id, label, icon: Icon }) => {
                     const isActive = activeView === id;
@@ -152,23 +153,15 @@ export function ProEmployerSidebar({
                         aria-current={isActive ? "page" : undefined}
                         onClick={() => onNavigate(id)}
                         className={cn(
-                          "relative group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs font-medium transition-all text-left cursor-pointer",
+                          "relative flex h-9 w-full items-center gap-2.5 rounded-lg px-3 text-[13px] transition-colors duration-150 text-left cursor-pointer",
                           isActive
-                            ? "bg-white/15 text-white font-semibold shadow-2xs border border-white/15"
-                            : "text-blue-100/85 hover:text-white hover:bg-white/8"
+                            ? "bg-white/14 text-white font-medium shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]"
+                            : "text-blue-100/80 hover:text-white hover:bg-white/8 font-normal"
                         )}
                       >
-                        {isActive && (
-                          <span
-                            aria-hidden="true"
-                            className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#FB923C]"
-                          />
-                        )}
                         <Icon
-                          className={cn(
-                            "h-4 w-4 shrink-0 transition-colors",
-                            isActive ? "text-[#FB923C]" : "text-blue-200/80 group-hover:text-white"
-                          )}
+                          className="h-4 w-4 shrink-0 text-blue-200/80"
+                          strokeWidth={1.5}
                         />
                         <span className="min-w-0 flex-1 truncate text-white">{label}</span>
                       </button>
@@ -176,10 +169,10 @@ export function ProEmployerSidebar({
                   })}
                 </div>
 
-                <div className="my-2.5 border-t border-white/10" />
+                <div className="my-3 border-t border-white/10" />
 
-                {/* Collapsible Category Dropdowns (Recruitment, Assessments & AI, Growth & Analytics, Account & Billing) */}
-                <div className="space-y-1">
+                {/* Collapsible Category Dropdowns */}
+                <div className="space-y-0.5">
                   {employerCategoryGroups.map((group) => {
                     const GroupIcon = group.icon;
                     const isOpen = Boolean(openGroups[group.id]);
@@ -194,38 +187,36 @@ export function ProEmployerSidebar({
                           aria-expanded={isOpen}
                           onClick={() => toggleGroup(group.id)}
                           className={cn(
-                            "group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs font-semibold transition-all text-left cursor-pointer",
+                            "flex h-9 w-full items-center gap-2.5 rounded-lg px-3 text-[13px] transition-colors duration-150 text-left cursor-pointer",
                             hasActiveItem
-                              ? "bg-white/12 text-white"
-                              : "text-blue-100/90 hover:text-white hover:bg-white/8"
+                              ? "bg-white/10 text-white font-medium"
+                              : "text-blue-100/85 hover:text-white hover:bg-white/8 font-normal"
                           )}
                         >
                           <GroupIcon
-                            className={cn(
-                              "h-4 w-4 shrink-0 transition-colors",
-                              hasActiveItem || isOpen
-                                ? "text-[#FB923C]"
-                                : "text-blue-200/80 group-hover:text-white"
-                            )}
+                            className="h-4 w-4 shrink-0 text-blue-200/80"
+                            strokeWidth={1.5}
                             aria-hidden="true"
                           />
                           <span className="min-w-0 flex-1 truncate text-white">{group.label}</span>
                           {!isOpen && hasNotifBadge && (
-                            <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white shadow-xs">
+                            <span className="inline-flex items-center gap-1.5 font-mono text-xs text-blue-200/85 tabular-nums">
+                              <span className="h-1.5 w-1.5 rounded-full bg-[#fb923c]" />
                               {unreadCount}
                             </span>
                           )}
                           <ChevronDown
                             className={cn(
-                              "h-3.5 w-3.5 shrink-0 text-blue-200/75 transition-transform duration-200",
+                              "h-3.5 w-3.5 shrink-0 text-blue-200/70 transition-transform duration-150",
                               isOpen && "rotate-180 text-white"
                             )}
+                            strokeWidth={1.5}
                             aria-hidden="true"
                           />
                         </button>
 
                         {isOpen && (
-                          <div className="ml-4 mt-0.5 mb-1 pl-2.5 border-l border-white/15 space-y-0.5">
+                          <div className="ml-5 mt-0.5 mb-1 pl-2.5 border-l border-white/12 space-y-0.5">
                             {group.items.map(({ id, label, icon: Icon }) => {
                               const isActive = activeView === id;
                               return (
@@ -235,30 +226,20 @@ export function ProEmployerSidebar({
                                   aria-current={isActive ? "page" : undefined}
                                   onClick={() => onNavigate(id)}
                                   className={cn(
-                                    "relative group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all text-left cursor-pointer",
+                                    "relative flex h-8 w-full items-center gap-2.5 rounded-lg px-2.5 text-xs transition-colors duration-150 text-left cursor-pointer",
                                     isActive
-                                      ? "bg-white/15 text-white font-semibold shadow-2xs"
-                                      : "text-blue-100/80 hover:text-white hover:bg-white/8"
+                                      ? "bg-white/14 text-white font-medium shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]"
+                                      : "text-blue-100/80 hover:text-white hover:bg-white/8 font-normal"
                                   )}
                                 >
                                   <Icon
-                                    className={cn(
-                                      "h-3.5 w-3.5 shrink-0 transition-colors",
-                                      isActive
-                                        ? "text-[#FB923C]"
-                                        : "text-blue-200/75 group-hover:text-white"
-                                    )}
+                                    className="h-4 w-4 shrink-0 text-blue-200/75"
+                                    strokeWidth={1.5}
                                   />
                                   <span className="min-w-0 flex-1 truncate text-white">{label}</span>
                                   {id === "notif" && unreadCount > 0 && (
-                                    <span
-                                      className={cn(
-                                        "ml-auto flex h-4.5 min-w-4.5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold",
-                                        isActive
-                                          ? "bg-[#FB923C] text-white shadow-xs"
-                                          : "bg-red-500 text-white shadow-xs"
-                                      )}
-                                    >
+                                    <span className="ml-auto inline-flex items-center gap-1.5 font-mono text-xs text-blue-200/85 tabular-nums">
+                                      <span className="h-1.5 w-1.5 rounded-full bg-[#fb923c]" />
                                       {unreadCount}
                                     </span>
                                   )}
@@ -280,8 +261,8 @@ export function ProEmployerSidebar({
                     {section && (
                       <p
                         className={cn(
-                          "px-3 pb-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-blue-200/60",
-                          idx === 0 ? "pt-0.5" : "pt-3.5"
+                          "px-3 pb-1.5 text-xs font-normal text-blue-200/65",
+                          idx === 0 ? "pt-0.5" : "pt-5"
                         )}
                       >
                         {section}
@@ -292,34 +273,20 @@ export function ProEmployerSidebar({
                       aria-current={isActive ? "page" : undefined}
                       onClick={() => onNavigate(id)}
                       className={cn(
-                        "relative group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs font-medium transition-all text-left cursor-pointer",
+                        "relative flex h-9 w-full items-center gap-2.5 rounded-lg px-3 text-xs font-medium transition-colors duration-150 text-left cursor-pointer",
                         isActive
-                          ? "bg-white/15 text-white font-semibold shadow-2xs border border-white/15"
-                          : "text-blue-100/85 hover:text-white hover:bg-white/8"
+                          ? "bg-white/14 text-white font-medium shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]"
+                          : "text-blue-100/85 hover:text-white hover:bg-white/8 font-normal"
                       )}
                     >
-                      {isActive && (
-                        <span
-                          aria-hidden="true"
-                          className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#FB923C]"
-                        />
-                      )}
                       <Icon
-                        className={cn(
-                          "h-4 w-4 shrink-0 transition-colors",
-                          isActive ? "text-[#FB923C]" : "text-blue-200/80 group-hover:text-white"
-                        )}
+                        className="h-4 w-4 shrink-0 text-blue-200/80"
+                        strokeWidth={1.5}
                       />
                       <span className="min-w-0 flex-1 truncate text-white">{label}</span>
                       {id === "notif" && unreadCount > 0 && (
-                        <span
-                          className={cn(
-                            "ml-auto flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold",
-                            isActive
-                              ? "bg-[#FB923C] text-white shadow-xs"
-                              : "bg-red-500 text-white shadow-xs"
-                          )}
-                        >
+                        <span className="ml-auto inline-flex items-center gap-1.5 font-mono text-xs text-blue-200/85 tabular-nums">
+                          <span className="h-1.5 w-1.5 rounded-full bg-[#fb923c]" />
                           {unreadCount}
                         </span>
                       )}
@@ -331,26 +298,24 @@ export function ProEmployerSidebar({
           </nav>
         </div>
 
-        {/* Bottom Section: Pro Plan Card & Clean Logout */}
-        <div className="p-3 sm:p-3.5 pt-3 border-t border-white/10 space-y-2.5">
+        {/* Bottom Section: Quiet Plan Summary & Sign Out */}
+        <div className="p-3 pt-3 border-t border-white/10 space-y-2">
           {isEmployer && (
-            <div className="rounded-xl border border-white/10 bg-[#001F4D] p-3 text-left space-y-2">
-              <div className="flex items-center gap-2">
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#FB923C]/15 text-[#FB923C]">
-                  <Rocket className="h-3.5 w-3.5" aria-hidden="true" />
-                </div>
-                <p className="text-xs font-semibold text-white">Pro Plan</p>
+            <div className="rounded-xl border border-white/10 bg-[#002250] p-3 text-left space-y-2">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-medium text-white">TalentCIR Pro</p>
+                <span className="font-mono text-[11px] text-blue-200/75">Employer</span>
               </div>
               <p className="text-[11px] leading-relaxed text-blue-200/75">
-                Unlock AI-verified CIR reports, analytics &amp; talent credits.
+                Verified CIR reports, pipeline analytics and candidate unlock credits
               </p>
               <Button
                 type="button"
                 size="sm"
                 onClick={() => onNavigate("advertise")}
-                className="w-full h-8 rounded-lg bg-[#FB923C] hover:bg-[#F97316] text-white text-[11px] font-semibold border-0 shadow-xs cursor-pointer"
+                className="w-full h-8 rounded-lg bg-white text-[#002C66] hover:bg-blue-50 text-xs font-medium border-0 shadow-none cursor-pointer"
               >
-                Upgrade Plan
+                Upgrade plan
               </Button>
             </div>
           )}
@@ -358,9 +323,9 @@ export function ProEmployerSidebar({
           <Button
             type="button"
             onClick={onLogout}
-            className="w-full h-9 rounded-lg px-3 py-2 text-xs font-medium flex items-center justify-center gap-2 bg-white/8 hover:bg-white/15 active:bg-white/20 text-blue-100 hover:text-white border border-white/15 shadow-none transition-colors cursor-pointer"
+            className="w-full h-9 rounded-lg px-3 py-2 text-xs font-medium flex items-center justify-center gap-2 bg-white/8 hover:bg-white/14 text-blue-100 hover:text-white border border-white/12 shadow-none transition-colors duration-150 cursor-pointer"
           >
-            <LogoutIcon className="h-3.5 w-3.5 shrink-0" />
+            <LogoutIcon className="h-4 w-4 shrink-0" strokeWidth={1.5} />
             <span>Sign out</span>
           </Button>
         </div>

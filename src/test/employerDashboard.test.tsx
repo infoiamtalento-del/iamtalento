@@ -176,7 +176,7 @@ describe("navigation", () => {
 describe("Overview", () => {
   it("shows real metrics, no SLA elements, and drills into filtered views", async () => {
     render(<EmployerOverview companyName="Apex" onNavigate={navigate} onToast={toast} />);
-    expect(await screen.findByText("Welcome back, Apex")).toBeInTheDocument();
+    expect(await screen.findByText("Apex · Hiring overview")).toBeInTheDocument();
     expect(screen.queryByText(/SLA/i)).toBeNull();
     expect(screen.getByRole("button", { name: /^On hold: 1/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /^Draft jobs: 2/ })).toBeInTheDocument();
@@ -204,7 +204,7 @@ describe("Overview", () => {
     render(<EmployerOverview companyName="Apex" onNavigate={navigate} onToast={toast} />);
     expect(await screen.findByRole("alert")).toHaveTextContent("boom");
     fireEvent.click(screen.getByRole("button", { name: /Retry/ }));
-    expect(await screen.findByText("Welcome back, Apex")).toBeInTheDocument();
+    expect(await screen.findByText("Apex · Hiring overview")).toBeInTheDocument();
   });
 });
 

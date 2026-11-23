@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useSearchParams } from "react-router-dom";
 import {
@@ -20,9 +20,6 @@ import {
   Download,
   ChevronDown,
   ExternalLink,
-  CheckCircle2,
-  Eye,
-  Sparkles,
   Menu,
   X,
   Sliders,
@@ -57,6 +54,8 @@ import {
   SuperAdminInspector,
   type InspectedEntity,
 } from "@/components/admin/SuperAdminInspector";
+import { SuperAdminCandidatesPanel } from "@/components/admin/SuperAdminCandidatesPanel";
+import { SuperAdminEmployersPanel } from "@/components/admin/SuperAdminEmployersPanel";
 
 interface NavGroup {
   id: string;
@@ -64,7 +63,7 @@ interface NavGroup {
   items: Array<{
     id: AdminSectionId;
     label: string;
-    icon: React.ComponentType<{ className?: string }>;
+    icon: React.ComponentType<{ className?: string; strokeWidth?: number | string }>;
     badgeKey?: "candidates" | "employers" | "kyc" | "jobs" | "applications" | "assessments" | "proctoring" | "billing" | "wallets" | "learning" | "support" | "system";
   }>;
 }
@@ -117,85 +116,87 @@ const NAV_GROUPS: NavGroup[] = [
 const SECTION_META: Record<AdminSectionId, { title: string; subtitle: string }> = {
   overview: {
     title: "Super Admin Command Center",
-    subtitle: "Complete real-time visibility across live Supabase tables, users, ATS pipelines, CIR proctoring & revenue.",
+    subtitle: "Live Supabase tables, candidate and employer registries, proctoring and revenue",
   },
   candidates: {
     title: "Candidates Directory (360° Profiles)",
-    subtitle: "Every registered & verified candidate with CIR scores, KYC status, skills, work history, wallet & public portfolio.",
+    subtitle: "Registered candidates with CIR scores, KYC state, cohorts, courses and public portfolios",
   },
   employers: {
     title: "Employers & Tenant Organizations",
-    subtitle: "Corporate accounts, CIN/GSTIN/PAN verification, SaaS MRR, recruiter seats, wallet credits & hiring metrics.",
+    subtitle: "Corporate tenants, CIN and GSTIN verification, profile completion, SaaS plans and credits",
   },
   kyc: {
     title: "Identity (KYC) & Corporate (KYB) Verification Queue",
-    subtitle: "Review candidate government ID checks and employer CIN / GSTIN / PAN corporate filings.",
+    subtitle: "Candidate government ID checks and employer CIN, GSTIN and PAN filings",
   },
   jobs: {
     title: "All Job Postings & Moderation Queue",
-    subtitle: "Approve pending postings, manage sponsored slots, audit compensation bands, and track job conversion funnels.",
+    subtitle: "Pending postings, sponsored slots, compensation bands and conversion rates",
   },
   applications: {
     title: "Global Applications & ATS Lifecycle",
-    subtitle: "Cross-company candidate applications, AI skill-match scores, interview slots, recruiter notes & BGV status.",
+    subtitle: "Cross-company applications, skill match scores, interview slots and BGV state",
   },
   assessments: {
     title: "Skill Assessments & Verifiable CIR Credentials",
-    subtitle: "Core Aptitude, Communication, Domain, Coding & Linda AI Interview scorecards and issued credentials.",
+    subtitle: "Aptitude, communication, domain, coding and interview scorecards",
   },
   proctoring: {
     title: "30-Layer AI Proctoring & Integrity Telemetry",
-    subtitle: "Inspect trust scores, multi-monitor detections, tab-focus logs, environment fingerprints & manual overrides.",
+    subtitle: "Session trust scores, display and focus telemetry, and credential overrides",
   },
   billing: {
     title: "Revenue, Razorpay Orders, Subscriptions & GST",
-    subtitle: "Captured payments, 18% GST invoices, SaaS MRR plans, coupon redemptions & one-click gateway refunds.",
+    subtitle: "Captured payments, 18% GST invoices, recurring plans and gateway refunds",
   },
   wallets: {
     title: "Wallet Escrow Accounts & Immutable Ledger",
-    subtitle: "Employer & candidate credit balances, lifetime inflows/outflows, and manual ledger adjustments.",
+    subtitle: "Employer and candidate credit balances, inflows, outflows and manual entries",
   },
   learning: {
     title: "LMS Courses, Mentors, Hackathons & Networking",
-    subtitle: "Code Arena hackathons, AI learning tracks, 1:1 mentor bookings, and city networking RSVPs.",
+    subtitle: "Code Arena hackathons, learning tracks, mentor sessions and city mixers",
   },
   support: {
     title: "Support Tickets & SLA Escalation Desk",
-    subtitle: "Respond to urgent employer KYB, billing GST, and candidate proctoring tickets with SLA tracking.",
+    subtitle: "Employer KYB, GST billing and candidate proctoring threads",
   },
   system: {
     title: "Immutable Audit Logs, Feature Flags & Database Explorer",
-    subtitle: "Security event stream, platform feature switches, and live Postgres schema row inventory.",
+    subtitle: "Security event log, platform switches and Postgres schema row counts",
   },
 };
 
 const StatusPill: React.FC<{ value: string }> = ({ value }) => {
   const norm = value.toLowerCase();
-  const cls =
+  const dotCls =
     norm === "verified" || norm === "active" || norm === "issued" || norm === "captured" || norm === "hired" || norm === "resolved"
-      ? "bg-emerald-500/12 text-emerald-700 border-emerald-300"
+      ? "bg-[#16a34a]"
       : norm === "pending" || norm === "pending_review" || norm === "in_progress" || norm === "open" || norm === "shortlisted" || norm === "interview" || norm === "offer"
-        ? "bg-amber-500/15 text-amber-800 border-amber-300"
+        ? "bg-[#d97706]"
         : norm === "flagged" || norm === "rejected" || norm === "suspended" || norm === "failed" || norm === "urgent"
-          ? "bg-rose-500/12 text-rose-700 border-rose-300"
-          : "bg-slate-500/10 text-slate-700 border-slate-300";
+          ? "bg-[#dc2626]"
+          : "bg-[#94a3b8]";
   return (
-    <span className={cn("inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide", cls)}>
+    <span className="inline-flex items-center gap-1.5 text-xs text-[#111827] dark:text-[#eef0f5] capitalize">
+      <span className={cn("h-1.5 w-1.5 rounded-full shrink-0", dotCls)} />
       {value.replace(/_/g, " ")}
     </span>
   );
 };
 
-const OriginBadge: React.FC<{ origin: "live_db" | "platform" }> = ({ origin }) =>
-  origin === "live_db" ? (
-    <span className="inline-flex items-center rounded-md bg-emerald-600 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-white">
-      LIVE DB
-    </span>
-  ) : (
-    <span className="inline-flex items-center rounded-md bg-slate-200 dark:bg-slate-800 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-      PLATFORM
-    </span>
-  );
+const OriginBadge: React.FC<{ origin: "live_db" | "platform" }> = ({ origin }) => (
+  <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-[#6b7487]">
+    <span
+      className={cn(
+        "h-1.5 w-1.5 rounded-full shrink-0",
+        origin === "live_db" ? "bg-[#16a34a]" : "bg-[#94a3b8]"
+      )}
+    />
+    {origin === "live_db" ? "Live DB" : "Platform"}
+  </span>
+);
 
 const SuperAdminDashboard: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -219,10 +220,10 @@ const SuperAdminDashboard: React.FC = () => {
 
   // Table Filters & Global Omni-Search
   const [tableQuery, setTableQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
   const [originFilter, setOriginFilter] = useState<"all" | "live_db" | "platform">("all");
   const [omniQuery, setOmniQuery] = useState("");
   const [inspected, setInspected] = useState<InspectedEntity>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const loadSnapshot = useCallback(async (isRefresh = false) => {
     if (isRefresh) setSyncing(true);
@@ -247,11 +248,21 @@ const SuperAdminDashboard: React.FC = () => {
     loadSnapshot(false);
   }, [loadSnapshot]);
 
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
   const selectSection = (sec: AdminSectionId) => {
     setActiveSection(sec);
     setSearchParams(sec === "overview" ? {} : { tab: sec });
     setTableQuery("");
-    setStatusFilter("all");
     setOriginFilter("all");
     setMobileMenuOpen(false);
     window.scrollTo({ top: 0 });
@@ -323,6 +334,79 @@ const SuperAdminDashboard: React.FC = () => {
     });
     appendAudit("candidate.status_toggled", "profiles", id, "Toggled candidate account suspension", "warning");
     toast.success("Candidate account status updated");
+  };
+
+  const handleToggleArchiveCandidates = (ids: string[], archive: boolean) => {
+    setSnapshot((prev) => {
+      if (!prev) return prev;
+      const updated = prev.candidates.map((c) =>
+        ids.includes(c.id) ? { ...c, archived: archive } : c
+      );
+      if (inspected?.kind === "candidate" && ids.includes(inspected.data.id)) {
+        const target = updated.find((c) => c.id === inspected.data.id);
+        if (target) setInspected({ kind: "candidate", data: target });
+      }
+      return { ...prev, candidates: updated };
+    });
+    appendAudit(
+      archive ? "candidate.archived" : "candidate.unarchived",
+      "profiles",
+      ids.join(","),
+      `${archive ? "Archived" : "Restored"} ${ids.length} candidate profile(s)`
+    );
+    toast.success(
+      `${archive ? "Archived" : "Restored"} ${ids.length} candidate profile${ids.length > 1 ? "s" : ""}`
+    );
+  };
+
+  const handleBulkVerifyKyc = (ids: string[]) => {
+    setSnapshot((prev) =>
+      prev
+        ? {
+            ...prev,
+            candidates: prev.candidates.map((c) =>
+              ids.includes(c.id) ? { ...c, kycStatus: "verified" as const } : c
+            ),
+          }
+        : prev
+    );
+    appendAudit("candidate.bulk_kyc_verified", "identity_verifications", ids.join(","), `Verified KYC for ${ids.length} candidates`);
+    toast.success(`Verified KYC for ${ids.length} candidate(s)`);
+  };
+
+  const handleToggleArchiveEmployers = (ids: string[], archive: boolean) => {
+    setSnapshot((prev) => {
+      if (!prev) return prev;
+      const updated = prev.employers.map((e) =>
+        ids.includes(e.id) ? { ...e, archived: archive } : e
+      );
+      if (inspected?.kind === "employer" && ids.includes(inspected.data.id)) {
+        const target = updated.find((e) => e.id === inspected.data.id);
+        if (target) setInspected({ kind: "employer", data: target });
+      }
+      return { ...prev, employers: updated };
+    });
+    appendAudit(
+      archive ? "employer.archived" : "employer.unarchived",
+      "employers",
+      ids.join(","),
+      `${archive ? "Archived" : "Restored"} ${ids.length} employer profile(s)`
+    );
+    toast.success(
+      `${archive ? "Archived" : "Restored"} ${ids.length} employer profile${ids.length > 1 ? "s" : ""}`
+    );
+  };
+
+  const handleSendCompletionNudge = (emp: SuperAdminEmployer) => {
+    appendAudit(
+      "employer.profile_nudge_sent",
+      "employers",
+      emp.employerCode,
+      `Sent onboarding completion reminder to ${emp.officialEmail} (Missing: ${emp.missingProfileFields.join(", ")})`
+    );
+    toast.success(
+      `Sent profile completion reminder to ${emp.companyName} (${emp.officialEmail})`
+    );
   };
 
   const handleReviewEmployer = async (
@@ -653,64 +737,58 @@ const SuperAdminDashboard: React.FC = () => {
 
   const renderSidebarContent = () => (
     <>
-      {/* Top 86px Brand Bar matching Employer layout */}
+      {/* 64px Brand Bar on 4px Grid */}
       <div className="shrink-0">
-        <div className="h-[86px] min-h-[86px] px-5 bg-[#002C66] border-b border-white/10 flex items-center justify-between gap-2">
+        <div className="h-16 min-h-16 px-5 bg-[#002C66] border-b border-white/10 flex items-center justify-between gap-2">
           <Link to="/" className="inline-flex items-center focus:outline-none" aria-label="TalentCIR Home">
             <img
               src={siteLogo.url}
               alt="TalentCIR"
-              className="h-10 w-auto object-contain brightness-0 invert"
+              className="h-8 w-auto object-contain brightness-0 invert"
             />
           </Link>
         </div>
 
-        <div className="px-4 py-2.5 bg-[#002250] border-b border-white/10 flex items-center justify-between gap-2">
-          <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold text-[#FB923C] tracking-wider uppercase">
-            ● Super Admin
-          </span>
-          <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-300">
-            {snapshot?.liveDbConnected ? "Live DB Connected" : "Syncing..."}
+        <div className="px-5 py-2.5 bg-[#002250] border-b border-white/10 flex items-center justify-between gap-2">
+          <span className="font-mono text-xs text-blue-100">Super Admin</span>
+          <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-blue-200/85">
+            <span className={cn("h-1.5 w-1.5 rounded-full", snapshot?.liveDbConnected ? "bg-[#4cc38a]" : "bg-[#d97706]")} />
+            {snapshot?.liveDbConnected ? "Live DB" : "Syncing"}
           </span>
         </div>
       </div>
 
-      {/* Navigation */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-1 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.2)_transparent]">
+      {/* Navigation: 36px rows, 16px icons, sentence-case groups */}
+      <div className="flex-1 overflow-y-auto px-3 py-4 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.2)_transparent]">
         <button
           type="button"
           onClick={() => selectSection("overview")}
           className={cn(
-            "relative flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-semibold transition-all text-left cursor-pointer",
+            "relative flex h-9 w-full items-center gap-2.5 rounded-lg px-3 text-[13px] transition-colors duration-150 text-left cursor-pointer",
             activeSection === "overview"
-              ? "bg-white/16 text-white border border-white/20"
-              : "text-blue-100/85 hover:text-white hover:bg-white/8"
+              ? "bg-white/14 text-white font-medium shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]"
+              : "text-blue-100/80 hover:text-white hover:bg-white/8 font-normal"
           )}
         >
-          {activeSection === "overview" && (
-            <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#FB923C]" />
-          )}
-          <LayoutDashboard className={cn("h-4 w-4 shrink-0", activeSection === "overview" ? "text-[#FB923C]" : "text-blue-200")} />
+          <LayoutDashboard className="h-4 w-4 shrink-0 text-blue-200/85" strokeWidth={1.5} />
           <span>Executive Overview</span>
         </button>
-
-        <div className="my-2 border-t border-white/10" />
 
         {NAV_GROUPS.map((group) => {
           const isOpen = Boolean(openGroups[group.id]);
           return (
-            <div key={group.id} className="pt-0.5">
+            <div key={group.id} className="pt-5">
               <button
                 type="button"
                 onClick={() => setOpenGroups((p) => ({ ...p, [group.id]: !p[group.id] }))}
-                className="flex w-full items-center justify-between px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.08em] text-blue-200/70 hover:text-white cursor-pointer"
+                className="flex w-full items-center justify-between px-3 pb-2 text-xs font-normal text-blue-200/65 hover:text-white transition-colors duration-150 cursor-pointer"
               >
                 <span>{group.label}</span>
-                <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", isOpen && "rotate-180")} />
+                <ChevronDown className={cn("h-3.5 w-3.5 transition-transform duration-150", isOpen && "rotate-180")} strokeWidth={1.5} />
               </button>
 
               {isOpen && (
-                <div className="mt-0.5 space-y-0.5">
+                <div className="space-y-0.5">
                   {group.items.map((item) => {
                     const Icon = item.icon;
                     const isActive = activeSection === item.id;
@@ -722,26 +800,19 @@ const SuperAdminDashboard: React.FC = () => {
                         type="button"
                         onClick={() => selectSection(item.id)}
                         className={cn(
-                          "relative flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium transition-all text-left cursor-pointer",
+                          "relative flex h-9 w-full items-center gap-2.5 rounded-lg px-3 text-[13px] transition-colors duration-150 text-left cursor-pointer",
                           isActive
-                            ? "bg-white/15 text-white font-semibold border border-white/15"
-                            : "text-blue-100/85 hover:text-white hover:bg-white/8"
+                            ? "bg-white/14 text-white font-medium shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]"
+                            : "text-blue-100/80 hover:text-white hover:bg-white/8 font-normal"
                         )}
                       >
-                        {isActive && (
-                          <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#FB923C]" />
-                        )}
-                        <Icon className={cn("h-4 w-4 shrink-0", isActive ? "text-[#FB923C]" : "text-blue-200/80")} />
+                        <Icon className="h-4 w-4 shrink-0 text-blue-200/80" strokeWidth={1.5} />
                         <span className="flex-1 truncate text-white">{item.label}</span>
                         {typeof count === "number" && (
-                          <span
-                            className={cn(
-                              "rounded-full px-1.5 py-0.5 text-[10px] font-bold leading-none",
-                              isAlert && count > 0
-                                ? "bg-[#FB923C] text-white"
-                                : "bg-white/12 text-blue-100"
+                          <span className="inline-flex items-center gap-1.5 font-mono text-xs text-blue-200/75 tabular-nums">
+                            {isAlert && count > 0 && (
+                              <span className="h-1.5 w-1.5 rounded-full bg-[#fb923c]" />
                             )}
-                          >
                             {count}
                           </span>
                         )}
@@ -756,21 +827,21 @@ const SuperAdminDashboard: React.FC = () => {
       </div>
 
       {/* Bottom Quick Portals */}
-      <div className="p-3 border-t border-white/10 space-y-1.5 shrink-0">
-        <div className="grid grid-cols-2 gap-1.5">
+      <div className="p-3 border-t border-white/10 shrink-0">
+        <div className="grid grid-cols-2 gap-2">
           <Link
             to="/talento-pro?view=dash&role=employer"
-            className="flex items-center justify-center gap-1 rounded-lg bg-white/10 hover:bg-white/18 px-2 py-2 text-[11px] font-semibold text-white transition-colors"
+            className="flex h-8 items-center justify-center gap-1.5 rounded-lg bg-white/8 hover:bg-white/14 px-2 text-xs text-blue-100 hover:text-white transition-colors duration-150"
           >
-            Employer View
-            <ExternalLink className="h-3 w-3" />
+            Employer
+            <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.5} />
           </Link>
           <Link
             to="/talento-pro?view=dash"
-            className="flex items-center justify-center gap-1 rounded-lg bg-white/10 hover:bg-white/18 px-2 py-2 text-[11px] font-semibold text-white transition-colors"
+            className="flex h-8 items-center justify-center gap-1.5 rounded-lg bg-white/8 hover:bg-white/14 px-2 text-xs text-blue-100 hover:text-white transition-colors duration-150"
           >
-            Candidate View
-            <ExternalLink className="h-3 w-3" />
+            Candidate
+            <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.5} />
           </Link>
         </div>
       </div>
@@ -780,20 +851,20 @@ const SuperAdminDashboard: React.FC = () => {
   const q = tableQuery.trim().toLowerCase();
 
   return (
-    <div className="min-h-screen bg-[#EAEEF4]/70 dark:bg-background text-foreground flex flex-col">
+    <div className="min-h-screen bg-[#f5f7fa] dark:bg-[#0b0d14] text-[#111827] dark:text-[#eef0f5] flex flex-col">
       <Helmet>
         <title>Super Admin Command Console | TalentCIR</title>
       </Helmet>
 
-      {/* Desktop Fixed Sidebar */}
-      <aside className="hidden lg:flex lg:w-64 xl:w-72 lg:fixed lg:inset-y-0 lg:left-0 z-40 border-r border-[#001D44] bg-[#002C66] text-white flex-col shadow-md">
+      {/* Desktop Fixed Sidebar (#002C66 Navy) */}
+      <aside className="hidden lg:flex lg:w-64 lg:fixed lg:inset-y-0 lg:left-0 z-40 border-r border-[#001D44] bg-[#002C66] text-white flex-col">
         {renderSidebarContent()}
       </aside>
 
       {/* Mobile Drawer Sidebar */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-50 lg:hidden flex">
-          <div className="w-72 max-w-[85vw] bg-[#002C66] text-white flex flex-col h-full shadow-2xl">
+          <div className="w-64 max-w-[85vw] bg-[#002C66] text-white flex flex-col h-full">
             <div className="flex justify-end p-2">
               <button
                 type="button"
@@ -801,7 +872,7 @@ const SuperAdminDashboard: React.FC = () => {
                 className="p-2 text-white"
                 aria-label="Close menu"
               >
-                <X className="h-5 w-5" />
+                <X className="h-5 w-5" strokeWidth={1.5} />
               </button>
             </div>
             {renderSidebarContent()}
@@ -810,48 +881,59 @@ const SuperAdminDashboard: React.FC = () => {
         </div>
       )}
 
-      {/* Top Sticky 86px Header Bar */}
-      <header className="sticky top-0 z-30 w-full lg:ml-64 xl:ml-72 lg:w-[calc(100%-16rem)] xl:w-[calc(100%-18rem)] border-b border-border bg-card shadow-2xs">
-        <div className="flex min-h-[86px] w-full items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 py-3">
+      {/* Top Sticky 64px Header Bar */}
+      <header className="sticky top-0 z-30 w-full lg:ml-64 lg:w-[calc(100%-16rem)] border-b border-[#111827]/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#11141c]">
+        <div className="flex h-16 min-h-16 w-full items-center justify-between gap-4 px-6 lg:px-8">
           <div className="flex items-center gap-3 min-w-0">
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
-              className="lg:hidden rounded-lg border border-border p-2 text-foreground"
+              className="lg:hidden rounded-lg border border-[#111827]/[0.08] p-2 text-[#111827]"
               aria-label="Open admin navigation"
             >
-              <Menu className="h-5 w-5" />
+              <Menu className="h-4 w-4" strokeWidth={1.5} />
             </button>
             <div className="min-w-0">
-              <h1 className="font-display text-lg sm:text-xl font-bold tracking-tight text-[#002C66] dark:text-foreground truncate">
+              <h1 className="text-lg font-medium text-[#111827] dark:text-[#eef0f5] truncate">
                 {SECTION_META[activeSection].title}
               </h1>
-              <p className="hidden md:block text-xs text-muted-foreground truncate mt-0.5">
+              <p className="hidden md:block text-xs text-[#6b7487] truncate">
                 {SECTION_META[activeSection].subtitle}
               </p>
             </div>
           </div>
 
-          {/* Right Omni-Search + Sync + Export + Admin Pill */}
-          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+          {/* Right Omni-Search with Keycaps + Sync + Export */}
+          <div className="flex items-center gap-2 shrink-0">
             <div className="relative hidden sm:block">
-              <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#6b7487]" strokeWidth={1.5} />
               <input
+                ref={searchInputRef}
                 type="search"
                 value={omniQuery}
                 onChange={(e) => setOmniQuery(e.target.value)}
-                placeholder="Global search (name, ID, email, GSTIN, invoice)..."
+                placeholder="Search"
                 aria-label="Global platform omni-search"
-                className="h-10 w-56 xl:w-80 rounded-xl border border-border bg-background pl-9 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15"
+                className="h-9 w-56 xl:w-72 rounded-lg border border-[#111827]/[0.08] dark:border-white/[0.08] bg-[#f5f7fa] dark:bg-[#1a1e28] pl-9 pr-14 text-xs text-[#111827] dark:text-[#eef0f5] placeholder:text-[#6b7487] focus:border-[#002C66] focus:bg-white focus:outline-none transition-colors duration-150"
               />
+              {!omniQuery && (
+                <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 inline-flex items-center gap-1">
+                  <kbd className="rounded border border-[#111827]/12 bg-white px-1.5 py-0.5 font-mono text-[10px] text-[#6b7487]">
+                    ⌘
+                  </kbd>
+                  <kbd className="rounded border border-[#111827]/12 bg-white px-1.5 py-0.5 font-mono text-[10px] text-[#6b7487]">
+                    K
+                  </kbd>
+                </span>
+              )}
               {omniQuery.trim() && (
-                <div className="absolute right-0 mt-2 w-96 max-w-[90vw] rounded-xl border border-border bg-popover p-2 shadow-2xl z-50 space-y-1">
-                  <div className="flex items-center justify-between px-2 py-1 text-[10px] font-bold uppercase text-muted-foreground">
-                    <span>Cross-Platform Matches ({omniMatches.length})</span>
+                <div className="absolute right-0 mt-2 w-96 max-w-[90vw] rounded-xl border border-[#111827]/[0.08] bg-white dark:bg-[#11141c] p-2 shadow-[0_8px_24px_rgba(0,0,0,0.08)] z-50 space-y-1">
+                  <div className="flex items-center justify-between px-2 py-1 text-xs text-[#6b7487]">
+                    <span>Matches ({omniMatches.length})</span>
                     <button
                       type="button"
                       onClick={() => setOmniQuery("")}
-                      className="text-primary hover:underline cursor-pointer"
+                      className="text-[#002C66] hover:underline cursor-pointer"
                     >
                       Clear
                     </button>
@@ -865,20 +947,20 @@ const SuperAdminDashboard: React.FC = () => {
                           setInspected(m.entity);
                           setOmniQuery("");
                         }}
-                        className="flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-left hover:bg-accent cursor-pointer"
+                        className="flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-left hover:bg-[#f5f7fa] cursor-pointer"
                       >
                         <div className="min-w-0">
-                          <p className="text-xs font-bold text-foreground truncate">{m.title}</p>
-                          <p className="text-[11px] text-muted-foreground truncate">{m.sub}</p>
+                          <p className="text-xs font-medium text-[#111827] truncate">{m.title}</p>
+                          <p className="font-mono text-[11px] text-[#6b7487] truncate">{m.sub}</p>
                         </div>
-                        <Badge variant="outline" className="text-[10px] shrink-0">
+                        <span className="font-mono text-[11px] text-[#6b7487] shrink-0">
                           {m.badge}
-                        </Badge>
+                        </span>
                       </button>
                     ))
                   ) : (
-                    <p className="px-3 py-4 text-center text-xs text-muted-foreground">
-                      No matching records across platform.
+                    <p className="px-3 py-4 text-center text-xs text-[#6b7487]">
+                      No matching records
                     </p>
                   )}
                 </div>
@@ -891,9 +973,9 @@ const SuperAdminDashboard: React.FC = () => {
               size="sm"
               disabled={syncing}
               onClick={() => loadSnapshot(true)}
-              className="h-10 gap-1.5 rounded-xl text-xs font-semibold cursor-pointer"
+              className="h-9 gap-1.5 rounded-lg text-xs font-medium cursor-pointer"
             >
-              <RefreshCw className={cn("h-3.5 w-3.5", syncing && "animate-spin")} />
+              <RefreshCw className={cn("h-4 w-4 text-[#6b7487]", syncing && "animate-spin")} strokeWidth={1.5} />
               <span className="hidden md:inline">Sync DB</span>
             </Button>
 
@@ -902,33 +984,23 @@ const SuperAdminDashboard: React.FC = () => {
               variant="outline"
               size="sm"
               onClick={handleExportCurrentSection}
-              className="h-10 gap-1.5 rounded-xl text-xs font-semibold cursor-pointer"
+              className="h-9 gap-1.5 rounded-lg text-xs font-medium cursor-pointer"
             >
-              <Download className="h-3.5 w-3.5" />
+              <Download className="h-4 w-4 text-[#6b7487]" strokeWidth={1.5} />
               <span className="hidden md:inline">Export CSV</span>
             </Button>
-
-            <div className="hidden xl:flex items-center gap-2.5 rounded-full border border-border bg-background pl-2 pr-3.5 py-1.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#002C66] text-xs font-extrabold text-white">
-                SA
-              </span>
-              <div className="leading-tight">
-                <p className="text-xs font-bold text-[#002C66] dark:text-foreground">Root Admin</p>
-                <p className="text-[10px] font-medium text-emerald-600">● Full Access</p>
-              </div>
-            </div>
           </div>
         </div>
       </header>
 
       {/* Main Content Body */}
-      <main className="flex-1 w-full lg:pl-64 xl:pl-72">
-        <div className="p-4 sm:p-6 lg:p-7">
+      <main className="flex-1 w-full lg:pl-64">
+        <div className="mx-auto max-w-[1600px] p-6 lg:p-8">
           {loading || !snapshot ? (
-            <div className="rounded-3xl border border-border bg-card p-16 text-center space-y-3">
-              <div className="mx-auto h-9 w-9 rounded-full border-2 border-[#002C66] border-t-transparent animate-spin" />
-              <p className="text-sm font-semibold text-muted-foreground">
-                Loading live Supabase records &amp; platform telemetry...
+            <div className="rounded-2xl border border-[#111827]/[0.08] bg-white p-16 text-center space-y-3">
+              <div className="mx-auto h-8 w-8 rounded-full border-2 border-[#002C66] border-t-transparent animate-spin" />
+              <p className="text-sm text-[#6b7487]">
+                Loading platform records
               </p>
             </div>
           ) : activeSection === "overview" ? (
@@ -941,38 +1013,38 @@ const SuperAdminDashboard: React.FC = () => {
               onClearProctorFlag={(id) => handleReviewAssessment(id, "Issued")}
             />
           ) : (
-            <div className="rounded-3xl border border-border bg-card p-4 sm:p-6 shadow-2xs space-y-5">
+            <div className="rounded-2xl border border-[#111827]/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#11141c] p-5 sm:p-6 space-y-5">
               {/* Universal Filter Bar for Detailed Data Views */}
-              {activeSection !== "system" && (
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
+              {activeSection !== "system" &&
+                activeSection !== "candidates" &&
+                activeSection !== "employers" && (
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#111827]/[0.08] pb-4">
                   <div className="relative flex-1 min-w-[220px] max-w-md">
-                    <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#6b7487]" strokeWidth={1.5} />
                     <Input
                       value={tableQuery}
                       onChange={(e) => setTableQuery(e.target.value)}
-                      placeholder={`Filter ${SECTION_META[activeSection].title.toLowerCase()}...`}
+                      placeholder="Filter records"
                       className="h-9 pl-9 text-xs"
                     />
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2">
-                    {(activeSection === "candidates" ||
-                      activeSection === "employers" ||
-                      activeSection === "jobs") && (
-                      <div className="inline-flex rounded-lg border border-border bg-muted/40 p-0.5 text-xs">
+                    {activeSection === "jobs" && (
+                      <div className="inline-flex rounded-lg border border-[#111827]/[0.08] bg-[#eceff4] p-0.5 text-xs">
                         {(["all", "live_db", "platform"] as const).map((orig) => (
                           <button
                             key={orig}
                             type="button"
                             onClick={() => setOriginFilter(orig)}
                             className={cn(
-                              "rounded-md px-2.5 py-1 text-[11px] font-semibold transition-colors cursor-pointer",
+                              "rounded-md px-2.5 py-1 text-xs font-medium transition-colors duration-150 cursor-pointer",
                               originFilter === orig
                                 ? "bg-[#002C66] text-white"
-                                : "text-muted-foreground hover:text-foreground"
+                                : "text-[#4b5565] hover:text-[#111827]"
                             )}
                           >
-                            {orig === "all" ? "All Sources" : orig === "live_db" ? "Live DB Only" : "Platform"}
+                            {orig === "all" ? "All sources" : orig === "live_db" ? "Live DB" : "Platform"}
                           </button>
                         ))}
                       </div>
@@ -986,232 +1058,49 @@ const SuperAdminDashboard: React.FC = () => {
                         exportRecordsAsJson(`talentcir-${activeSection}-full`, snapshot)
                       }
                     >
-                      <Download className="h-3.5 w-3.5" />
-                      Full JSON Dump
+                      <Download className="h-3.5 w-3.5" strokeWidth={1.5} />
+                      Export JSON
                     </Button>
                   </div>
                 </div>
               )}
 
-              {/* 1. CANDIDATES DIRECTORY */}
+              {/* 1. CANDIDATES DIRECTORY (EMPLOYEE SUPER ADMIN) */}
               {activeSection === "candidates" && (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
-                    <thead>
-                      <tr className="border-b border-border text-[10px] uppercase tracking-wider text-muted-foreground">
-                        <th className="py-2.5 pr-3">Candidate &amp; ID</th>
-                        <th className="py-2.5 px-3">Source</th>
-                        <th className="py-2.5 px-3">Contact &amp; City</th>
-                        <th className="py-2.5 px-3">Exp &amp; Target CTC</th>
-                        <th className="py-2.5 px-3">CIR Score</th>
-                        <th className="py-2.5 px-3">Top Skills</th>
-                        <th className="py-2.5 px-3">KYC / 2FA</th>
-                        <th className="py-2.5 px-3">Wallet / Apps</th>
-                        <th className="py-2.5 pl-3 text-right">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border/60">
-                      {snapshot.candidates
-                        .filter((c) => (originFilter === "all" ? true : c.origin === originFilter))
-                        .filter(
-                          (c) =>
-                            !q ||
-                            [c.fullName, c.email, c.talentCirId, c.city, c.headline, ...c.skills].some(
-                              (v) => v?.toLowerCase().includes(q)
-                            )
-                        )
-                        .map((cand) => (
-                          <tr
-                            key={cand.id}
-                            onClick={() => setInspected({ kind: "candidate", data: cand })}
-                            className="hover:bg-muted/40 cursor-pointer transition-colors"
-                          >
-                            <td className="py-3 pr-3">
-                              <p className="font-bold text-foreground">{cand.fullName}</p>
-                              <p className="font-mono text-[11px] text-muted-foreground">
-                                {cand.talentCirId} · /u/{cand.slug}
-                              </p>
-                            </td>
-                            <td className="py-3 px-3">
-                              <OriginBadge origin={cand.origin} />
-                            </td>
-                            <td className="py-3 px-3">
-                              <p className="font-mono text-[11px]">{cand.email}</p>
-                              <p className="text-[11px] text-muted-foreground">
-                                {cand.phone} · {cand.city}
-                              </p>
-                            </td>
-                            <td className="py-3 px-3">
-                              <p className="font-semibold">{cand.experienceYears} yrs ({cand.experienceLevel})</p>
-                              <p className="text-[11px] text-muted-foreground">
-                                ₹{cand.expectedSalaryLpa}L · {cand.noticePeriodDays}d NP
-                              </p>
-                            </td>
-                            <td className="py-3 px-3">
-                              <span className="font-display text-sm font-extrabold text-[#002C66] dark:text-foreground">
-                                {cand.cirScore}
-                              </span>
-                              <span className="ml-1 text-[10px] text-muted-foreground">
-                                ({cand.percentile}th%)
-                              </span>
-                            </td>
-                            <td className="py-3 px-3 max-w-[190px]">
-                              <div className="flex flex-wrap gap-1">
-                                {cand.skills.slice(0, 3).map((s) => (
-                                  <span key={s} className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium">
-                                    {s}
-                                  </span>
-                                ))}
-                                {cand.skills.length > 3 && (
-                                  <span className="text-[10px] text-muted-foreground">
-                                    +{cand.skills.length - 3}
-                                  </span>
-                                )}
-                              </div>
-                            </td>
-                            <td className="py-3 px-3">
-                              <StatusPill value={cand.kycStatus} />
-                            </td>
-                            <td className="py-3 px-3">
-                              <p className="font-semibold">{formatINR(cand.walletBalance)}</p>
-                              <p className="text-[11px] text-muted-foreground">
-                                {cand.applicationsCount} apps · {cand.profileViews} views
-                              </p>
-                            </td>
-                            <td className="py-3 pl-3 text-right" onClick={(e) => e.stopPropagation()}>
-                              <div className="inline-flex items-center gap-1.5">
-                                <Link
-                                  to={`/u/${cand.slug}`}
-                                  target="_blank"
-                                  className="rounded-md border border-border px-2 py-1 text-[11px] font-semibold hover:bg-accent"
-                                >
-                                  Profile ↗
-                                </Link>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className="h-7 px-2 text-[11px] cursor-pointer"
-                                  onClick={() => setInspected({ kind: "candidate", data: cand })}
-                                >
-                                  <Eye className="h-3 w-3 mr-1" />
-                                  Inspect
-                                </Button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                </div>
+                <SuperAdminCandidatesPanel
+                  candidates={snapshot.candidates}
+                  onInspect={(cand) => setInspected({ kind: "candidate", data: cand })}
+                  onToggleArchive={handleToggleArchiveCandidates}
+                  onBulkVerifyKyc={handleBulkVerifyKyc}
+                />
               )}
 
               {/* 2. EMPLOYERS & TENANTS */}
               {activeSection === "employers" && (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
-                    <thead>
-                      <tr className="border-b border-border text-[10px] uppercase tracking-wider text-muted-foreground">
-                        <th className="py-2.5 pr-3">Company &amp; Employer ID</th>
-                        <th className="py-2.5 px-3">Source</th>
-                        <th className="py-2.5 px-3">Tax / Corporate IDs</th>
-                        <th className="py-2.5 px-3">Contact Lead</th>
-                        <th className="py-2.5 px-3">KYB Status</th>
-                        <th className="py-2.5 px-3">Plan &amp; MRR</th>
-                        <th className="py-2.5 px-3">Wallet / Unlocks</th>
-                        <th className="py-2.5 px-3">Jobs / Apps / Hires</th>
-                        <th className="py-2.5 pl-3 text-right">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border/60">
-                      {snapshot.employers
-                        .filter((e) => (originFilter === "all" ? true : e.origin === originFilter))
-                        .filter(
-                          (e) =>
-                            !q ||
-                            [e.companyName, e.employerCode, e.officialEmail, e.gstin, e.hq, e.industry].some(
-                              (v) => v?.toLowerCase().includes(q)
-                            )
-                        )
-                        .map((emp) => (
-                          <tr
-                            key={emp.id}
-                            onClick={() => setInspected({ kind: "employer", data: emp })}
-                            className="hover:bg-muted/40 cursor-pointer transition-colors"
-                          >
-                            <td className="py-3 pr-3">
-                              <p className="font-bold text-foreground">{emp.companyName}</p>
-                              <p className="font-mono text-[11px] text-muted-foreground">
-                                {emp.employerCode} · {emp.hq}
-                              </p>
-                            </td>
-                            <td className="py-3 px-3">
-                              <OriginBadge origin={emp.origin} />
-                            </td>
-                            <td className="py-3 px-3 font-mono text-[11px]">
-                              <p>GST: {emp.gstin}</p>
-                              <p className="text-muted-foreground">CIN: {emp.cin}</p>
-                            </td>
-                            <td className="py-3 px-3">
-                              <p className="font-semibold">{emp.contactName}</p>
-                              <p className="font-mono text-[11px] text-muted-foreground">{emp.officialEmail}</p>
-                            </td>
-                            <td className="py-3 px-3">
-                              <StatusPill value={emp.verificationStatus} />
-                            </td>
-                            <td className="py-3 px-3">
-                              <p className="font-semibold">{emp.subscriptionPlan}</p>
-                              <p className="text-[11px] text-emerald-700 font-bold">{formatINR(emp.mrrInr)}/mo</p>
-                            </td>
-                            <td className="py-3 px-3">
-                              <p className="font-semibold">{formatINR(emp.walletBalance)}</p>
-                              <p className="text-[11px] text-muted-foreground">{emp.talentUnlocksRemaining} unlocks left</p>
-                            </td>
-                            <td className="py-3 px-3 font-semibold">
-                              {emp.activeJobsCount}J · {emp.totalApplications}A · {emp.totalHires}H
-                            </td>
-                            <td className="py-3 pl-3 text-right" onClick={(e) => e.stopPropagation()}>
-                              <div className="inline-flex items-center gap-1.5">
-                                {emp.verificationStatus === "pending" && (
-                                  <Button
-                                    size="sm"
-                                    className="h-7 px-2.5 text-[11px] bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer"
-                                    onClick={() => handleReviewEmployer(emp.id, "verified")}
-                                  >
-                                    Verify
-                                  </Button>
-                                )}
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className="h-7 px-2 text-[11px] cursor-pointer"
-                                  onClick={() => setInspected({ kind: "employer", data: emp })}
-                                >
-                                  Inspect
-                                </Button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                </div>
+                <SuperAdminEmployersPanel
+                  employers={snapshot.employers}
+                  onInspect={(emp) => setInspected({ kind: "employer", data: emp })}
+                  onToggleArchive={handleToggleArchiveEmployers}
+                  onReviewEmployer={handleReviewEmployer}
+                  onSendCompletionNudge={handleSendCompletionNudge}
+                />
               )}
 
               {/* 3. KYC & KYB VERIFICATION CENTER */}
               {activeSection === "kyc" && (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <div className="space-y-3">
-                    <h3 className="font-display text-sm font-bold text-[#002C66] dark:text-foreground">
-                      Corporate KYB Filings (CIN · GSTIN · PAN)
+                    <h3 className="text-sm font-medium text-[#111827] dark:text-[#eef0f5]">
+                      Corporate KYB filings (CIN · GSTIN · PAN)
                     </h3>
                     {snapshot.employers.map((emp) => (
-                      <div key={emp.id} className="rounded-xl border border-border p-4 flex items-center justify-between gap-3">
+                      <div key={emp.id} className="rounded-xl border border-[#111827]/[0.08] p-4 flex items-center justify-between gap-3">
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">
-                            <p className="text-xs font-bold truncate">{emp.companyName}</p>
+                            <p className="text-xs font-medium text-[#111827] truncate">{emp.companyName}</p>
                             <StatusPill value={emp.verificationStatus} />
                           </div>
-                          <p className="font-mono text-[11px] text-muted-foreground mt-1">
+                          <p className="font-mono text-[11px] text-[#6b7487] mt-1">
                             {emp.employerCode} · GSTIN: {emp.gstin} · PAN: {emp.pan}
                           </p>
                         </div>
@@ -1219,7 +1108,7 @@ const SuperAdminDashboard: React.FC = () => {
                           {emp.verificationStatus !== "verified" && (
                             <Button
                               size="sm"
-                              className="h-7 text-[11px] bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer"
+                              className="h-7 text-[11px] bg-[#002C66] hover:bg-[#002250] text-white cursor-pointer"
                               onClick={() => handleReviewEmployer(emp.id, "verified")}
                             >
                               Approve
@@ -1239,17 +1128,17 @@ const SuperAdminDashboard: React.FC = () => {
                   </div>
 
                   <div className="space-y-3">
-                    <h3 className="font-display text-sm font-bold text-[#002C66] dark:text-foreground">
-                      Candidate Government ID &amp; Biometric Checks
+                    <h3 className="text-sm font-medium text-[#111827] dark:text-[#eef0f5]">
+                      Candidate government ID &amp; biometric checks
                     </h3>
                     {snapshot.candidates.map((cand) => (
-                      <div key={cand.id} className="rounded-xl border border-border p-4 flex items-center justify-between gap-3">
+                      <div key={cand.id} className="rounded-xl border border-[#111827]/[0.08] p-4 flex items-center justify-between gap-3">
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">
-                            <p className="text-xs font-bold truncate">{cand.fullName}</p>
+                            <p className="text-xs font-medium text-[#111827] truncate">{cand.fullName}</p>
                             <StatusPill value={cand.kycStatus} />
                           </div>
-                          <p className="font-mono text-[11px] text-muted-foreground mt-1">
+                          <p className="font-mono text-[11px] text-[#6b7487] mt-1">
                             {cand.talentCirId} · {cand.email}
                           </p>
                         </div>
@@ -1257,7 +1146,7 @@ const SuperAdminDashboard: React.FC = () => {
                           {cand.kycStatus !== "verified" && (
                             <Button
                               size="sm"
-                              className="h-7 text-[11px] bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer"
+                              className="h-7 text-[11px] bg-[#002C66] hover:bg-[#002250] text-white cursor-pointer"
                               onClick={() => handleVerifyCandidate(cand.id, "verified")}
                             >
                               Verify KYC
@@ -1283,18 +1172,18 @@ const SuperAdminDashboard: React.FC = () => {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
                     <thead>
-                      <tr className="border-b border-border text-[10px] uppercase tracking-wider text-muted-foreground">
-                        <th className="py-2.5 pr-3">Job Role &amp; Code</th>
-                        <th className="py-2.5 px-3">Source</th>
-                        <th className="py-2.5 px-3">Company</th>
-                        <th className="py-2.5 px-3">Location / Mode</th>
-                        <th className="py-2.5 px-3">Salary &amp; Exp</th>
-                        <th className="py-2.5 px-3">Status &amp; Tier</th>
-                        <th className="py-2.5 px-3">Views → Apps → Hires</th>
-                        <th className="py-2.5 pl-3 text-right">Moderation</th>
+                      <tr className="border-b border-[#111827]/[0.08] text-xs font-medium text-[#6b7487]">
+                        <th className="py-2.5 pr-3 font-medium">Job role &amp; code</th>
+                        <th className="py-2.5 px-3 font-medium">Source</th>
+                        <th className="py-2.5 px-3 font-medium">Company</th>
+                        <th className="py-2.5 px-3 font-medium">Location &amp; mode</th>
+                        <th className="py-2.5 px-3 font-medium">Salary &amp; exp</th>
+                        <th className="py-2.5 px-3 font-medium">Status &amp; tier</th>
+                        <th className="py-2.5 px-3 font-medium">Views → apps → hires</th>
+                        <th className="py-2.5 pl-3 text-right font-medium">Moderation</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-border/60">
+                    <tbody className="divide-y divide-[#111827]/[0.06]">
                       {snapshot.jobs
                         .filter((j) => (originFilter === "all" ? true : j.origin === originFilter))
                         .filter(
@@ -1308,11 +1197,11 @@ const SuperAdminDashboard: React.FC = () => {
                           <tr
                             key={job.id}
                             onClick={() => setInspected({ kind: "job", data: job })}
-                            className="hover:bg-muted/40 cursor-pointer transition-colors"
+                            className="hover:bg-[#f5f7fa] cursor-pointer transition-colors duration-150"
                           >
                             <td className="py-3 pr-3">
-                              <p className="font-bold text-foreground">{job.title}</p>
-                              <p className="font-mono text-[11px] text-muted-foreground">
+                              <p className="font-medium text-[#111827]">{job.title}</p>
+                              <p className="font-mono text-[11px] text-[#6b7487]">
                                 {job.jobCode} · {job.department}
                               </p>
                             </td>
@@ -1320,27 +1209,27 @@ const SuperAdminDashboard: React.FC = () => {
                               <OriginBadge origin={job.origin} />
                             </td>
                             <td className="py-3 px-3">
-                              <p className="font-semibold">{job.companyName}</p>
-                              <p className="font-mono text-[10px] text-muted-foreground">{job.employerCode}</p>
+                              <p className="font-medium text-[#111827]">{job.companyName}</p>
+                              <p className="font-mono text-[11px] text-[#6b7487]">{job.employerCode}</p>
                             </td>
                             <td className="py-3 px-3">
-                              <p>{job.location}</p>
-                              <p className="text-[11px] text-muted-foreground">{job.workMode} · {job.employmentType}</p>
+                              <p className="text-[#111827]">{job.location}</p>
+                              <p className="text-[11px] text-[#6b7487]">{job.workMode} · {job.employmentType}</p>
                             </td>
-                            <td className="py-3 px-3">
-                              <p className="font-semibold">₹{job.salaryMinLpa}L – ₹{job.salaryMaxLpa}L</p>
-                              <p className="text-[11px] text-muted-foreground">{job.minExpYears}+ yrs · {job.openingsCount} seats</p>
+                            <td className="py-3 px-3 tabular-nums">
+                              <p className="font-medium text-[#111827]">₹{job.salaryMinLpa}L – ₹{job.salaryMaxLpa}L</p>
+                              <p className="text-[11px] text-[#6b7487]">{job.minExpYears}+ yrs · {job.openingsCount} seats</p>
                             </td>
                             <td className="py-3 px-3 space-y-1">
                               <StatusPill value={job.status} />
                               {job.promotionTier !== "none" && (
-                                <span className="ml-1 inline-flex items-center gap-0.5 rounded bg-orange-500/15 px-1.5 py-0.5 text-[10px] font-bold text-orange-700">
-                                  <Sparkles className="h-2.5 w-2.5" />
+                                <span className="ml-2 inline-flex items-center gap-1.5 text-[11px] text-[#4b5565] capitalize">
+                                  <span className="h-1.5 w-1.5 rounded-full bg-[#ea580c]" />
                                   {job.promotionTier}
                                 </span>
                               )}
                             </td>
-                            <td className="py-3 px-3 font-mono text-[11px]">
+                            <td className="py-3 px-3 font-mono text-[11px] text-[#4b5565] tabular-nums">
                               {job.views}V → {job.applicationsCount}A ({job.conversionRate}%) → {job.hiredCount}H
                             </td>
                             <td className="py-3 pl-3 text-right" onClick={(e) => e.stopPropagation()}>
@@ -1348,7 +1237,7 @@ const SuperAdminDashboard: React.FC = () => {
                                 {job.status === "pending_review" && (
                                   <Button
                                     size="sm"
-                                    className="h-7 px-2.5 text-[11px] bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer"
+                                    className="h-7 px-2.5 text-[11px] bg-[#002C66] hover:bg-[#002250] text-white cursor-pointer"
                                     onClick={() => handleModerateJob(job.id, "active")}
                                   >
                                     Approve
@@ -1376,17 +1265,17 @@ const SuperAdminDashboard: React.FC = () => {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
                     <thead>
-                      <tr className="border-b border-border text-[10px] uppercase tracking-wider text-muted-foreground">
-                        <th className="py-2.5 pr-3">App ID &amp; Candidate</th>
-                        <th className="py-2.5 px-3">Role &amp; Employer</th>
-                        <th className="py-2.5 px-3">Match / CIR</th>
-                        <th className="py-2.5 px-3">Stage</th>
-                        <th className="py-2.5 px-3">Recruiter &amp; SLA</th>
-                        <th className="py-2.5 px-3">Interview / Offer / BGV</th>
-                        <th className="py-2.5 pl-3 text-right">Details</th>
+                      <tr className="border-b border-[#111827]/[0.08] text-xs font-medium text-[#6b7487]">
+                        <th className="py-2.5 pr-3 font-medium">App ID &amp; candidate</th>
+                        <th className="py-2.5 px-3 font-medium">Role &amp; employer</th>
+                        <th className="py-2.5 px-3 font-medium">Match &amp; CIR</th>
+                        <th className="py-2.5 px-3 font-medium">Stage</th>
+                        <th className="py-2.5 px-3 font-medium">Recruiter &amp; SLA</th>
+                        <th className="py-2.5 px-3 font-medium">Interview · offer · BGV</th>
+                        <th className="py-2.5 pl-3 text-right font-medium">Details</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-border/60">
+                    <tbody className="divide-y divide-[#111827]/[0.06]">
                       {snapshot.applications
                         .filter(
                           (a) =>
@@ -1399,29 +1288,29 @@ const SuperAdminDashboard: React.FC = () => {
                           <tr
                             key={app.id}
                             onClick={() => setInspected({ kind: "application", data: app })}
-                            className="hover:bg-muted/40 cursor-pointer transition-colors"
+                            className="hover:bg-[#f5f7fa] cursor-pointer transition-colors duration-150"
                           >
                             <td className="py-3 pr-3">
-                              <p className="font-bold text-foreground">{app.candidateName}</p>
-                              <p className="font-mono text-[11px] text-muted-foreground">
+                              <p className="font-medium text-[#111827]">{app.candidateName}</p>
+                              <p className="font-mono text-[11px] text-[#6b7487]">
                                 {app.appCode} · {app.candidateId}
                               </p>
                             </td>
                             <td className="py-3 px-3">
-                              <p className="font-semibold">{app.jobTitle}</p>
-                              <p className="text-[11px] text-muted-foreground">{app.companyName}</p>
+                              <p className="font-medium text-[#111827]">{app.jobTitle}</p>
+                              <p className="text-[11px] text-[#6b7487]">{app.companyName}</p>
                             </td>
-                            <td className="py-3 px-3 font-bold text-[#002C66] dark:text-foreground">
+                            <td className="py-3 px-3 font-mono font-medium text-[#111827] tabular-nums">
                               {app.matchScore}% · CIR {app.cirScore}
                             </td>
                             <td className="py-3 px-3">
                               <StatusPill value={app.stage} />
                             </td>
                             <td className="py-3 px-3">
-                              <p className="font-medium">{app.assignedRecruiter}</p>
-                              <p className="text-[11px] text-muted-foreground">{app.slaStatus}</p>
+                              <p className="font-medium text-[#111827]">{app.assignedRecruiter}</p>
+                              <p className="text-[11px] text-[#6b7487]">{app.slaStatus}</p>
                             </td>
-                            <td className="py-3 px-3 text-[11px]">
+                            <td className="py-3 px-3 text-[11px] text-[#4b5565] tabular-nums">
                               {app.interviewScheduled || "—"} · {app.offerCtcLpa ? `₹${app.offerCtcLpa}L` : "—"} · BGV {app.bgvStatus}
                             </td>
                             <td className="py-3 pl-3 text-right">
@@ -1441,18 +1330,18 @@ const SuperAdminDashboard: React.FC = () => {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
                     <thead>
-                      <tr className="border-b border-border text-[10px] uppercase tracking-wider text-muted-foreground">
-                        <th className="py-2.5 pr-3">Attempt &amp; Credential</th>
-                        <th className="py-2.5 px-3">Candidate</th>
-                        <th className="py-2.5 px-3">Assessment Track</th>
-                        <th className="py-2.5 px-3">Core / Tech / Coding / AI</th>
-                        <th className="py-2.5 px-3">CIR Score</th>
-                        <th className="py-2.5 px-3">30-Layer Trust</th>
-                        <th className="py-2.5 px-3">Status</th>
-                        <th className="py-2.5 pl-3 text-right">Action</th>
+                      <tr className="border-b border-[#111827]/[0.08] text-xs font-medium text-[#6b7487]">
+                        <th className="py-2.5 pr-3 font-medium">Attempt &amp; credential</th>
+                        <th className="py-2.5 px-3 font-medium">Candidate</th>
+                        <th className="py-2.5 px-3 font-medium">Assessment track</th>
+                        <th className="py-2.5 px-3 font-medium">Core · tech · coding · AI</th>
+                        <th className="py-2.5 px-3 font-medium">CIR score</th>
+                        <th className="py-2.5 px-3 font-medium">30-layer trust</th>
+                        <th className="py-2.5 px-3 font-medium">Status</th>
+                        <th className="py-2.5 pl-3 text-right font-medium">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-border/60">
+                    <tbody className="divide-y divide-[#111827]/[0.06]">
                       {snapshot.assessments
                         .filter(
                           (a) =>
@@ -1465,31 +1354,31 @@ const SuperAdminDashboard: React.FC = () => {
                           <tr
                             key={att.id}
                             onClick={() => setInspected({ kind: "assessment", data: att })}
-                            className="hover:bg-muted/40 cursor-pointer transition-colors"
+                            className="hover:bg-[#f5f7fa] cursor-pointer transition-colors duration-150"
                           >
                             <td className="py-3 pr-3 font-mono">
-                              <p className="font-bold text-foreground">{att.attemptCode}</p>
-                              <p className="text-[11px] text-muted-foreground">{att.credentialToken}</p>
+                              <p className="font-medium text-[#111827]">{att.attemptCode}</p>
+                              <p className="text-[11px] text-[#6b7487]">{att.credentialToken}</p>
                             </td>
                             <td className="py-3 px-3">
-                              <p className="font-semibold">{att.candidateName}</p>
-                              <p className="font-mono text-[11px] text-muted-foreground">{att.candidateEmail}</p>
+                              <p className="font-medium text-[#111827]">{att.candidateName}</p>
+                              <p className="font-mono text-[11px] text-[#6b7487]">{att.candidateEmail}</p>
                             </td>
                             <td className="py-3 px-3">
-                              <p className="font-semibold">{att.assessmentTitle}</p>
-                              <p className="text-[11px] text-muted-foreground">{att.browserDevice}</p>
+                              <p className="font-medium text-[#111827]">{att.assessmentTitle}</p>
+                              <p className="text-[11px] text-[#6b7487]">{att.browserDevice}</p>
                             </td>
-                            <td className="py-3 px-3 font-mono text-[11px]">
+                            <td className="py-3 px-3 font-mono text-[11px] text-[#4b5565] tabular-nums">
                               {att.coreAptitudeScore} / {att.domainTechnicalScore} / {att.codingScore} / {att.aiInterviewScore}
                             </td>
-                            <td className="py-3 px-3 font-display text-sm font-extrabold text-[#002C66] dark:text-foreground">
-                              {att.overallCirScore} ({att.percentile}th%)
+                            <td className="py-3 px-3 font-mono text-sm font-medium text-[#111827] tabular-nums">
+                              {att.overallCirScore} ({att.percentile}th)
                             </td>
                             <td className="py-3 px-3">
                               <span
                                 className={cn(
-                                  "font-mono font-bold",
-                                  att.proctorTrustScore < 80 ? "text-rose-600" : "text-emerald-700"
+                                  "font-mono font-medium tabular-nums",
+                                  att.proctorTrustScore < 80 ? "text-[#dc2626]" : "text-[#16a34a]"
                                 )}
                               >
                                 {att.proctorTrustScore}% ({att.proctorFlagsCount} flags)
@@ -1503,7 +1392,7 @@ const SuperAdminDashboard: React.FC = () => {
                                 {att.status === "Flagged" && (
                                   <Button
                                     size="sm"
-                                    className="h-7 px-2 text-[11px] bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer"
+                                    className="h-7 px-2 text-[11px] bg-[#002C66] hover:bg-[#002250] text-white cursor-pointer"
                                     onClick={() => handleReviewAssessment(att.id, "Issued")}
                                   >
                                     Clear
@@ -1531,18 +1420,18 @@ const SuperAdminDashboard: React.FC = () => {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
                     <thead>
-                      <tr className="border-b border-border text-[10px] uppercase tracking-wider text-muted-foreground">
-                        <th className="py-2.5 pr-3">Invoice &amp; Order ID</th>
-                        <th className="py-2.5 px-3">Customer</th>
-                        <th className="py-2.5 px-3">Category &amp; Plan</th>
-                        <th className="py-2.5 px-3">Base + 18% GST</th>
-                        <th className="py-2.5 px-3">Total INR</th>
-                        <th className="py-2.5 px-3">Gateway Method</th>
-                        <th className="py-2.5 px-3">Status</th>
-                        <th className="py-2.5 pl-3 text-right">Inspect</th>
+                      <tr className="border-b border-[#111827]/[0.08] text-xs font-medium text-[#6b7487]">
+                        <th className="py-2.5 pr-3 font-medium">Invoice &amp; order ID</th>
+                        <th className="py-2.5 px-3 font-medium">Customer</th>
+                        <th className="py-2.5 px-3 font-medium">Category &amp; plan</th>
+                        <th className="py-2.5 px-3 font-medium">Base + 18% GST</th>
+                        <th className="py-2.5 px-3 font-medium">Total INR</th>
+                        <th className="py-2.5 px-3 font-medium">Method</th>
+                        <th className="py-2.5 px-3 font-medium">Status</th>
+                        <th className="py-2.5 pl-3 text-right font-medium">Inspect</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-border/60">
+                    <tbody className="divide-y divide-[#111827]/[0.06]">
                       {snapshot.transactions
                         .filter(
                           (t) =>
@@ -1555,27 +1444,27 @@ const SuperAdminDashboard: React.FC = () => {
                           <tr
                             key={tx.id}
                             onClick={() => setInspected({ kind: "transaction", data: tx })}
-                            className="hover:bg-muted/40 cursor-pointer transition-colors"
+                            className="hover:bg-[#f5f7fa] cursor-pointer transition-colors duration-150"
                           >
                             <td className="py-3 pr-3 font-mono">
-                              <p className="font-bold text-foreground">{tx.invoiceNumber}</p>
-                              <p className="text-[11px] text-muted-foreground">{tx.orderId}</p>
+                              <p className="font-medium text-[#111827]">{tx.invoiceNumber}</p>
+                              <p className="text-[11px] text-[#6b7487]">{tx.orderId}</p>
                             </td>
                             <td className="py-3 px-3">
-                              <p className="font-semibold">{tx.actorName}</p>
-                              <p className="text-[11px] text-muted-foreground">{tx.actorType} · {tx.actorEmail}</p>
+                              <p className="font-medium text-[#111827]">{tx.actorName}</p>
+                              <p className="text-[11px] text-[#6b7487]">{tx.actorType} · {tx.actorEmail}</p>
                             </td>
                             <td className="py-3 px-3">
-                              <p className="font-semibold">{tx.category}</p>
-                              <p className="text-[11px] text-muted-foreground truncate max-w-[240px]">{tx.itemTitle}</p>
+                              <p className="font-medium text-[#111827]">{tx.category}</p>
+                              <p className="text-[11px] text-[#6b7487] truncate max-w-[240px]">{tx.itemTitle}</p>
                             </td>
-                            <td className="py-3 px-3 font-mono text-[11px]">
+                            <td className="py-3 px-3 font-mono text-[11px] text-[#4b5565] tabular-nums">
                               {formatINR(tx.amountInr)} + {formatINR(tx.gstInr)}
                             </td>
-                            <td className="py-3 px-3 font-extrabold text-[#002C66] dark:text-foreground">
+                            <td className="py-3 px-3 font-mono font-medium text-[#111827] tabular-nums">
                               {formatINR(tx.netTotalInr)}
                             </td>
-                            <td className="py-3 px-3 text-[11px]">{tx.paymentMethod}</td>
+                            <td className="py-3 px-3 text-[11px] text-[#4b5565]">{tx.paymentMethod}</td>
                             <td className="py-3 px-3">
                               <StatusPill value={tx.status} />
                             </td>
@@ -1606,28 +1495,28 @@ const SuperAdminDashboard: React.FC = () => {
                       <div
                         key={wal.id}
                         onClick={() => setInspected({ kind: "wallet", data: wal })}
-                        className="rounded-2xl border border-border p-5 hover:border-[#002C66]/40 hover:shadow-md transition-all cursor-pointer space-y-3"
+                        className="rounded-xl border border-[#111827]/[0.08] p-5 hover:border-[#002C66]/40 transition-colors duration-150 cursor-pointer space-y-3"
                       >
-                        <div className="flex items-center justify-between">
-                          <Badge variant="outline">{wal.ownerType} Wallet</Badge>
-                          <span className="font-mono text-xs text-muted-foreground">{wal.ownerCode}</span>
+                        <div className="flex items-center justify-between text-xs text-[#6b7487]">
+                          <span>{wal.ownerType} wallet</span>
+                          <span className="font-mono">{wal.ownerCode}</span>
                         </div>
                         <div>
-                          <p className="font-display text-base font-bold text-foreground">{wal.ownerName}</p>
-                          <p className="font-mono text-xs text-muted-foreground">{wal.ownerEmail}</p>
+                          <p className="text-base font-medium text-[#111827]">{wal.ownerName}</p>
+                          <p className="font-mono text-xs text-[#6b7487]">{wal.ownerEmail}</p>
                         </div>
-                        <div className="rounded-xl bg-muted/40 p-3 flex items-center justify-between">
-                          <span className="text-xs text-muted-foreground">Available Balance</span>
-                          <span className="font-display text-xl font-extrabold text-[#002C66] dark:text-foreground">
+                        <div className="rounded-lg bg-[#f5f7fa] p-3 flex items-center justify-between">
+                          <span className="text-xs text-[#6b7487]">Available balance</span>
+                          <span className="text-xl font-medium text-[#111827] tabular-nums">
                             {formatINR(wal.balanceInr)}
                           </span>
                         </div>
-                        <div className="flex justify-between text-[11px] text-muted-foreground">
+                        <div className="flex justify-between text-[11px] text-[#6b7487] tabular-nums">
                           <span>Credited: {formatINR(wal.lifetimeCreditedInr)}</span>
                           <span>Debited: {formatINR(wal.lifetimeDebitedInr)}</span>
                         </div>
                         <Button variant="outline" size="sm" className="w-full h-8 text-xs cursor-pointer">
-                          View Ledger &amp; Credit / Debit ({wal.ledger.length} entries)
+                          View ledger ({wal.ledger.length} entries)
                         </Button>
                       </div>
                     ))}
@@ -1639,33 +1528,33 @@ const SuperAdminDashboard: React.FC = () => {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
                     <thead>
-                      <tr className="border-b border-border text-[10px] uppercase tracking-wider text-muted-foreground">
-                        <th className="py-2.5 pr-3">Program &amp; Code</th>
-                        <th className="py-2.5 px-3">Type</th>
-                        <th className="py-2.5 px-3">Lead / Organizer</th>
-                        <th className="py-2.5 px-3">Participants</th>
-                        <th className="py-2.5 px-3">Completion / Submit %</th>
-                        <th className="py-2.5 px-3">Revenue / Sponsorship</th>
-                        <th className="py-2.5 px-3">Status</th>
-                        <th className="py-2.5 pl-3 text-right">Details</th>
+                      <tr className="border-b border-[#111827]/[0.08] text-xs font-medium text-[#6b7487]">
+                        <th className="py-2.5 pr-3 font-medium">Program &amp; code</th>
+                        <th className="py-2.5 px-3 font-medium">Type</th>
+                        <th className="py-2.5 px-3 font-medium">Lead / organizer</th>
+                        <th className="py-2.5 px-3 font-medium">Participants</th>
+                        <th className="py-2.5 px-3 font-medium">Completion</th>
+                        <th className="py-2.5 px-3 font-medium">Revenue</th>
+                        <th className="py-2.5 px-3 font-medium">Status</th>
+                        <th className="py-2.5 pl-3 text-right font-medium">Details</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-border/60">
+                    <tbody className="divide-y divide-[#111827]/[0.06]">
                       {snapshot.learningEvents.map((ev) => (
                         <tr
                           key={ev.id}
                           onClick={() => setInspected({ kind: "learning", data: ev })}
-                          className="hover:bg-muted/40 cursor-pointer"
+                          className="hover:bg-[#f5f7fa] cursor-pointer transition-colors duration-150"
                         >
                           <td className="py-3 pr-3">
-                            <p className="font-bold text-foreground">{ev.title}</p>
-                            <p className="font-mono text-[11px] text-muted-foreground">{ev.code} · {ev.scheduleLabel}</p>
+                            <p className="font-medium text-[#111827]">{ev.title}</p>
+                            <p className="font-mono text-[11px] text-[#6b7487]">{ev.code} · {ev.scheduleLabel}</p>
                           </td>
-                          <td className="py-3 px-3"><Badge variant="secondary">{ev.kind}</Badge></td>
-                          <td className="py-3 px-3">{ev.organizerOrInstructor}</td>
-                          <td className="py-3 px-3 font-bold">{ev.participantsCount.toLocaleString()}</td>
-                          <td className="py-3 px-3 font-semibold text-emerald-700">{ev.completionOrSubmissionRate}%</td>
-                          <td className="py-3 px-3 font-semibold">{formatINR(ev.revenueGeneratedInr)}</td>
+                          <td className="py-3 px-3"><Badge variant="secondary" className="font-normal">{ev.kind}</Badge></td>
+                          <td className="py-3 px-3 text-[#4b5565]">{ev.organizerOrInstructor}</td>
+                          <td className="py-3 px-3 font-medium text-[#111827] tabular-nums">{ev.participantsCount.toLocaleString()}</td>
+                          <td className="py-3 px-3 font-medium text-[#16a34a] tabular-nums">{ev.completionOrSubmissionRate}%</td>
+                          <td className="py-3 px-3 font-medium text-[#111827] tabular-nums">{formatINR(ev.revenueGeneratedInr)}</td>
                           <td className="py-3 px-3"><StatusPill value={ev.status} /></td>
                           <td className="py-3 pl-3 text-right">
                             <Button size="sm" variant="outline" className="h-7 px-2 text-[11px] cursor-pointer">
@@ -1694,24 +1583,24 @@ const SuperAdminDashboard: React.FC = () => {
                       <div
                         key={tkt.id}
                         onClick={() => setInspected({ kind: "ticket", data: tkt })}
-                        className="rounded-2xl border border-border p-4 hover:bg-muted/30 cursor-pointer flex flex-wrap items-center justify-between gap-4"
+                        className="rounded-xl border border-[#111827]/[0.08] p-4 hover:bg-[#f5f7fa] transition-colors duration-150 cursor-pointer flex flex-wrap items-center justify-between gap-4"
                       >
                         <div className="min-w-0 space-y-1">
                           <div className="flex flex-wrap items-center gap-2">
-                            <span className="font-mono text-xs font-bold text-[#002C66] dark:text-foreground">
+                            <span className="font-mono text-xs font-medium text-[#111827]">
                               {tkt.ticketCode}
                             </span>
                             <StatusPill value={tkt.priority} />
                             <StatusPill value={tkt.status} />
-                            <Badge variant="outline" className="text-[10px]">{tkt.category}</Badge>
+                            <Badge variant="outline" className="text-[11px] font-normal">{tkt.category}</Badge>
                           </div>
-                          <p className="text-sm font-bold text-foreground">{tkt.subject}</p>
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-sm font-medium text-[#111827]">{tkt.subject}</p>
+                          <p className="text-xs text-[#6b7487]">
                             {tkt.requesterName} ({tkt.requesterEmail}) · SLA: {tkt.slaDueIn}
                           </p>
                         </div>
-                        <Button size="sm" className="h-8 text-xs cursor-pointer">
-                          Open Thread ({tkt.messages.length})
+                        <Button size="sm" variant="outline" className="h-8 text-xs cursor-pointer">
+                          Open thread ({tkt.messages.length})
                         </Button>
                       </div>
                     ))}
@@ -1723,26 +1612,26 @@ const SuperAdminDashboard: React.FC = () => {
                 <div className="space-y-6">
                   <div>
                     <div className="flex items-center gap-2 mb-3">
-                      <Sliders className="h-4 w-4 text-[#002C66]" />
-                      <h3 className="font-display text-sm font-bold text-[#002C66] dark:text-foreground">
-                        Global Platform Controls &amp; Feature Switches (public.platform_settings)
+                      <Sliders className="h-4 w-4 text-[#6b7487]" strokeWidth={1.5} />
+                      <h3 className="text-sm font-medium text-[#111827] dark:text-[#eef0f5]">
+                        Global platform controls &amp; feature switches (public.platform_settings)
                       </h3>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {snapshot.featureFlags.map((flag) => (
                         <div
                           key={flag.key}
-                          className="rounded-xl border border-border p-4 flex items-start justify-between gap-4 bg-muted/15"
+                          className="rounded-xl border border-[#111827]/[0.08] p-4 flex items-start justify-between gap-4 bg-[#f5f7fa]/60"
                         >
                           <div className="space-y-1">
                             <div className="flex items-center gap-2">
-                              <p className="text-xs font-bold text-foreground">{flag.label}</p>
-                              <Badge variant="outline" className="text-[10px]">{flag.category}</Badge>
+                              <p className="text-xs font-medium text-[#111827]">{flag.label}</p>
+                              <Badge variant="outline" className="text-[10px] font-normal">{flag.category}</Badge>
                             </div>
-                            <p className="text-[11px] text-muted-foreground leading-relaxed">
+                            <p className="text-[11px] text-[#6b7487] leading-relaxed">
                               {flag.description}
                             </p>
-                            <p className="font-mono text-[10px] text-muted-foreground">key: {flag.key}</p>
+                            <p className="font-mono text-[11px] text-[#6b7487]">key: {flag.key}</p>
                           </div>
                           <Switch
                             checked={flag.enabled}
@@ -1755,30 +1644,30 @@ const SuperAdminDashboard: React.FC = () => {
                   </div>
 
                   <div>
-                    <h3 className="font-display text-sm font-bold text-[#002C66] dark:text-foreground mb-3">
-                      Immutable Security &amp; Operations Audit Trail (public.audit_log)
+                    <h3 className="text-sm font-medium text-[#111827] dark:text-[#eef0f5] mb-3">
+                      Immutable security &amp; operations audit trail (public.audit_log)
                     </h3>
                     <div className="space-y-2">
                       {snapshot.auditLogs.map((log) => (
                         <div
                           key={log.id}
                           onClick={() => setInspected({ kind: "audit", data: log })}
-                          className="rounded-xl border border-border px-4 py-3 hover:bg-muted/30 cursor-pointer flex flex-wrap items-center justify-between gap-3 text-xs"
+                          className="rounded-xl border border-[#111827]/[0.08] px-4 py-3 hover:bg-[#f5f7fa] transition-colors duration-150 cursor-pointer flex flex-wrap items-center justify-between gap-3 text-xs"
                         >
                           <div className="space-y-0.5">
                             <div className="flex items-center gap-2">
-                              <span className="font-mono font-bold text-[#002C66] dark:text-foreground">
+                              <span className="font-mono font-medium text-[#111827]">
                                 {log.action}
                               </span>
                               <StatusPill value={log.severity} />
-                              <span className="font-mono text-[11px] text-muted-foreground">
+                              <span className="font-mono text-[11px] text-[#6b7487]">
                                 {log.entityTable} ({log.entityId})
                               </span>
                             </div>
-                            <p className="text-muted-foreground">{log.details}</p>
+                            <p className="text-[#6b7487]">{log.details}</p>
                           </div>
-                          <div className="text-right text-[11px] text-muted-foreground">
-                            <p className="font-semibold text-foreground">{log.actorName}</p>
+                          <div className="text-right text-[11px] text-[#6b7487] tabular-nums">
+                            <p className="font-medium text-[#111827]">{log.actorName}</p>
                             <p>{log.actorIp} · {new Date(log.timestamp).toLocaleString()}</p>
                           </div>
                         </div>
@@ -1798,7 +1687,9 @@ const SuperAdminDashboard: React.FC = () => {
         onClose={() => setInspected(null)}
         onVerifyCandidate={handleVerifyCandidate}
         onSuspendCandidate={handleSuspendCandidate}
+        onToggleArchiveCandidate={(id, archive) => handleToggleArchiveCandidates([id], archive)}
         onReviewEmployer={handleReviewEmployer}
+        onToggleArchiveEmployer={(id, archive) => handleToggleArchiveEmployers([id], archive)}
         onModerateJob={handleModerateJob}
         onPromoteJob={handlePromoteJob}
         onUpdateApplicationStage={handleUpdateApplicationStage}

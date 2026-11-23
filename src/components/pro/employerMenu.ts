@@ -26,7 +26,6 @@ import {
   Settings,
   FileUp,
   UserSearch,
-  Sparkles,
   Users,
   FileCheck2,
   School,
@@ -51,7 +50,7 @@ export const employerMenuItems: EmployerMenuItem[] = [
   { id: "campus-hiring", label: "Bulk & Campus Hiring", icon: School },
   { id: "notif", label: "Notifications", icon: Bell },
   { id: "employer-assessments", label: "Assessments", icon: GraduationCap, section: "Assessments & AI" },
-  { id: "ai-hub", label: "AI Intelligence Hub", icon: Sparkles },
+  { id: "ai-hub", label: "AI Intelligence Hub", icon: Bot },
   { id: "talent-pool", label: "Talent Pool & CRM", icon: Users },
   { id: "interviews", label: "Interview Management", icon: Video },
   { id: "offers", label: "Offer & Hiring", icon: FileCheck2 },
@@ -71,7 +70,7 @@ export type EmployerMenuCategory = {
 
 const CATEGORY_ICONS: Record<string, LucideIcon> = {
   Recruitment: Briefcase,
-  "Assessments & AI": Sparkles,
+  "Assessments & AI": GraduationCap,
   "Growth & Analytics": BarChart3,
   "Account & Billing": Receipt,
 };

@@ -1229,7 +1229,7 @@ const TalentoPro: React.FC = () => {
       <main
         className={cn(
           "flex-1 w-full min-h-screen pb-12 lg:pl-64 xl:pl-72 flex flex-col",
-          currentRole === "employer" ? "pt-0 bg-[#EAEEF4]/70 dark:bg-background" : "pt-16"
+          currentRole === "employer" ? "pt-0 bg-[#f5f7fa] dark:bg-[#0b0d14]" : "pt-16"
         )}
       >
         {/* Left Side Dashboard Sidebar (Fixed) */}
@@ -1266,14 +1266,14 @@ const TalentoPro: React.FC = () => {
           className={cn(
             "w-full min-w-0 flex-1",
             currentRole === "employer"
-              ? "p-3 sm:p-5 lg:p-6"
+              ? "p-4 sm:p-6 lg:p-8"
               : "px-4 sm:px-6 lg:px-8 xl:px-10 py-6"
           )}
         >
           <div
             className={cn(
               currentRole === "employer" &&
-                "rounded-[28px] border border-border/80 bg-card p-4 sm:p-6 lg:p-8 shadow-sm min-h-[calc(100dvh-3rem)]"
+                "mx-auto max-w-[1600px] rounded-2xl border border-[#111827]/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#11141c] p-5 sm:p-6 lg:p-8 min-h-[calc(100dvh-4rem)]"
             )}
           >
           {currentRole !== "employer" && effectiveView !== "profile" && (

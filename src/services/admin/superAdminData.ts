@@ -10,11 +10,15 @@ export interface SuperAdminCandidate {
   id: string;
   talentCirId: string;
   origin: DataOrigin;
+  archived: boolean;
   fullName: string;
   slug: string;
   email: string;
   phone: string;
   headline: string;
+  industry: string;
+  accountTier: "premium" | "normal";
+  premiumPlanName?: string;
   city: string;
   country: string;
   experienceYears: number;
@@ -23,6 +27,9 @@ export interface SuperAdminCandidate {
   noticePeriodDays: number;
   workPreference: string;
   availabilityStatus: "Actively looking" | "Open to offers" | "Placed" | "Suspended";
+  freelancerStatus: "Actively Freelancing" | "Open to Freelance" | "Full-Time Only";
+  freelanceHourlyInr: number;
+  freelanceGigsCompleted: number;
   kycStatus: "verified" | "pending" | "unsubmitted" | "rejected";
   emailVerified: boolean;
   phoneVerified: boolean;
@@ -30,10 +37,25 @@ export interface SuperAdminCandidate {
   cirScore: number;
   percentile: number;
   profileCompletion: number;
+  missingProfileFields: string[];
   walletBalance: number;
   profileViews: number;
   applicationsCount: number;
   assessmentsPassed: number;
+  totalTestAttempts: number;
+  retestCount: number;
+  scoreImprovementDelta: number;
+  domainsChosen: string[];
+  coursesEnrolled: string[];
+  coursesCompleted: number;
+  mentorSessionsBooked: number;
+  mockInterviewsCount: number;
+  hackathonParticipated: boolean;
+  hackathonsList: string[];
+  networkingRegistered: boolean;
+  networkingEventsList: string[];
+  hasResume: boolean;
+  hasVideoResume: boolean;
   avatarUrl?: string;
   resumeUrl?: string;
   linkedinUrl?: string;
@@ -54,6 +76,8 @@ export interface SuperAdminEmployer {
   id: string;
   employerCode: string;
   origin: DataOrigin;
+  archived: boolean;
+  accountTier: "premium" | "normal";
   companyName: string;
   slug: string;
   industry: string;
@@ -72,6 +96,8 @@ export interface SuperAdminEmployer {
   cin: string;
   pan: string;
   gstinVerified: boolean;
+  profileCompletion: number;
+  missingProfileFields: string[];
   subscriptionPlan: "Enterprise Annual" | "Growth Pro" | "Starter" | "Free Trial";
   mrrInr: number;
   walletBalance: number;
@@ -83,6 +109,7 @@ export interface SuperAdminEmployer {
   logoUrl?: string;
   benefits: string[];
   createdAt: string;
+  lastActiveAt: string;
   raw?: Record<string, unknown>;
 }
 
@@ -446,17 +473,38 @@ export async function fetchSuperAdminSnapshot(): Promise<SuperAdminSnapshot> {
     const kyc = liveKycs.find((k) => k.user_id === uid);
     const fullName = p.full_name || p.email?.split("@")[0] || `Candidate ${idx + 1}`;
     const expYrs = Number(p.total_experience_years || 0);
+    const missingCand: string[] = [];
+    if (!p.resume_url) missingCand.push("Resume PDF");
+    if (!p.phone) missingCand.push("Mobile OTP");
+    if (!pExps.length && expYrs > 0) missingCand.push("Work Experience");
+    if (!pEdus.length) missingCand.push("Education");
+    const calcCompletion = Number(
+      p.profile_completion || Math.max(55, 100 - missingCand.length * 12)
+    );
+
+    const inferredIndustry =
+      pSkills.some((s: string) => /seo|marketing|ads|social/i.test(s))
+        ? "Digital Marketing & Growth"
+        : pSkills.some((s: string) => /sql|python|power bi|tableau|data/i.test(s))
+          ? "Data & AI"
+          : pSkills.some((s: string) => /aws|docker|kubernetes|cloud/i.test(s))
+            ? "Cloud & DevOps"
+            : "Software & SaaS";
 
     return {
       id: p.id || uid,
       talentCirId: p.talenta_id || `IAT-LIVE-${String(1040 + idx)}`,
       origin: "live_db",
+      archived: false,
       fullName,
       slug: (p as any).public_slug || slugify(fullName),
       email: p.email || "verified.user@talento.app",
       phone: p.phone || "—",
       headline: p.headline || p.current_role || "Verified TalentCIR Professional",
-      city: p.location || p.city || "India",
+      industry: (p as any).industry || inferredIndustry,
+      accountTier: idx % 2 === 0 ? "premium" : "normal",
+      premiumPlanName: idx % 2 === 0 ? "Talento Pro Candidate" : undefined,
+      city: p.location || p.city || "Bengaluru",
       country: "India",
       experienceYears: expYrs,
       experienceLevel: p.experience_level || (expYrs >= 3 ? "Experienced" : "Fresher"),
@@ -464,6 +512,9 @@ export async function fetchSuperAdminSnapshot(): Promise<SuperAdminSnapshot> {
       noticePeriodDays: Number(p.notice_period_days || 15),
       workPreference: p.preferred_work_mode || "Hybrid / Remote",
       availabilityStatus: "Actively looking",
+      freelancerStatus: idx % 3 === 0 ? "Actively Freelancing" : idx % 3 === 1 ? "Open to Freelance" : "Full-Time Only",
+      freelanceHourlyInr: idx % 3 !== 2 ? 1200 + idx * 250 : 0,
+      freelanceGigsCompleted: idx % 3 === 0 ? 3 : 0,
       kycStatus:
         kyc?.verification_status === "verified"
           ? "verified"
@@ -477,11 +528,26 @@ export async function fetchSuperAdminSnapshot(): Promise<SuperAdminSnapshot> {
       mfaEnabled: false,
       cirScore: Number((p as any).cir_score || 84),
       percentile: 88,
-      profileCompletion: Number(p.profile_completion || 85),
+      profileCompletion: calcCompletion,
+      missingProfileFields: missingCand,
       walletBalance: 500,
       profileViews: 42 + idx * 7,
       applicationsCount: 2 + (idx % 4),
       assessmentsPassed: Math.max(1, pCerts.length),
+      totalTestAttempts: idx % 2 === 0 ? 1 : 2,
+      retestCount: idx % 2 === 0 ? 0 : 1,
+      scoreImprovementDelta: idx % 2 === 0 ? 0 : 9,
+      domainsChosen: idx % 2 === 0 ? [inferredIndustry] : [inferredIndustry, "Core Aptitude & Analytics"],
+      coursesEnrolled: ["AI Engineer & Agentic Workflows Track"],
+      coursesCompleted: idx % 2 === 0 ? 1 : 0,
+      mentorSessionsBooked: idx % 3 === 0 ? 1 : 0,
+      mockInterviewsCount: 2,
+      hackathonParticipated: idx % 2 === 0,
+      hackathonsList: idx % 2 === 0 ? ["Code Arena · Season 4"] : [],
+      networkingRegistered: true,
+      networkingEventsList: ["Bengaluru Verified Builders Mixer"],
+      hasResume: Boolean(p.resume_url),
+      hasVideoResume: idx % 2 === 0,
       avatarUrl: p.avatar_url || getCandidatePhoto(fullName),
       resumeUrl: p.resume_url || undefined,
       linkedinUrl: p.linkedin_url || undefined,
@@ -499,6 +565,24 @@ export async function fetchSuperAdminSnapshot(): Promise<SuperAdminSnapshot> {
     };
   });
 
+  const CANDIDATE_INDUSTRIES = [
+    "Software & SaaS",
+    "Data & AI",
+    "Cloud & DevOps",
+    "FinTech",
+    "Product & Design",
+    "Digital Marketing & Growth",
+    "Cybersecurity",
+  ];
+  const COURSE_CATALOG = [
+    "AI Engineer & Agentic Workflows Track",
+    "Full-Stack TypeScript & System Design",
+    "SQL, Power BI & Product Analytics",
+    "Cloud Native Kubernetes & Zero-Trust",
+    "Growth Marketing & AI Funnel Automation",
+  ];
+  const ACTIVITY_DAY_OFFSETS = [1, 4, 12, 24, 48, 76, 125, 168, 240, 320, 410];
+
   // Map Platform Seed Candidates (Yogesh + CANDIDATES_SEED)
   const demoCand = DEFAULT_USERS["demo.candidate@talento.app"];
   const platformCandidates: SuperAdminCandidate[] = [
@@ -506,19 +590,26 @@ export async function fetchSuperAdminSnapshot(): Promise<SuperAdminSnapshot> {
       id: "cand-yogesh-001",
       talentCirId: "IAT-CIR-900124",
       origin: "platform",
+      archived: false,
       fullName: demoCand.name,
       slug: "yogesh",
       email: demoCand.email,
       phone: demoCand.phone || "+91 98765 43210",
       headline: demoCand.rs?.role || "Full-Stack React & TypeScript Engineer",
+      industry: "Software & SaaS",
+      accountTier: "premium",
+      premiumPlanName: "Talento Pro Annual",
       city: demoCand.city || "Bengaluru",
       country: "India",
       experienceYears: demoCand.exp || 3,
-      experienceLevel: "Mid-Senior",
+      experienceLevel: "Mid-Level",
       expectedSalaryLpa: demoCand.pf?.sal || 22,
       noticePeriodDays: demoCand.pf?.np || 15,
       workPreference: demoCand.pf?.wm || "Remote / Hybrid",
-      availabilityStatus: "Open to offers",
+      availabilityStatus: "Actively looking",
+      freelancerStatus: "Actively Freelancing",
+      freelanceHourlyInr: 2200,
+      freelanceGigsCompleted: 6,
       kycStatus: "verified",
       emailVerified: true,
       phoneVerified: true,
@@ -526,10 +617,28 @@ export async function fetchSuperAdminSnapshot(): Promise<SuperAdminSnapshot> {
       cirScore: 91,
       percentile: 96,
       profileCompletion: 100,
+      missingProfileFields: [],
       walletBalance: demoCand.wal?.bal || 1252,
       profileViews: demoCand.views || 148,
       applicationsCount: 5,
       assessmentsPassed: 4,
+      totalTestAttempts: 3,
+      retestCount: 2,
+      scoreImprovementDelta: 14,
+      domainsChosen: ["Frontend Engineering (React)", "Data & SQL", "System Design"],
+      coursesEnrolled: [
+        "AI Engineer & Agentic Workflows Track",
+        "Full-Stack TypeScript & System Design",
+      ],
+      coursesCompleted: 2,
+      mentorSessionsBooked: 3,
+      mockInterviewsCount: 5,
+      hackathonParticipated: true,
+      hackathonsList: ["Code Arena · Season 4 (Finalist)", "GenAI Agent Buildathon 2026"],
+      networkingRegistered: true,
+      networkingEventsList: ["Bengaluru CTO & Builders Roundtable", "Indiranagar React Meetup"],
+      hasResume: true,
+      hasVideoResume: true,
       avatarUrl: getCandidatePhoto(demoCand.name),
       linkedinUrl: demoCand.links?.li,
       githubUrl: demoCand.links?.gh,
@@ -550,41 +659,102 @@ export async function fetchSuperAdminSnapshot(): Promise<SuperAdminSnapshot> {
         metrics: p.m,
       })),
       assessmentScores: demoCand.as || { React: 88, SQL: 82, Python: 75, "System Design": 85 },
-      createdAt: "2026-10-14T09:30:00.000Z",
+      createdAt: "2026-04-14T09:30:00.000Z",
       lastActiveAt: new Date(Date.now() - 1800000).toISOString(),
       raw: demoCand as unknown as Record<string, unknown>,
     },
     ...CANDIDATES_SEED.map((c, idx): SuperAdminCandidate => {
+      const domainKeys = Object.keys(c.as || {});
       const scores = Object.values(c.as || {});
       const avg = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 82;
+      const isPremium = idx % 3 === 0 || idx === 1;
+      const attempts = idx % 6 === 5 ? 0 : idx % 2 === 0 ? 1 : 2 + (idx % 2);
+      const retests = Math.max(0, attempts - 1);
+      const domainsList =
+        idx % 3 === 0
+          ? [...domainKeys, "System Architecture"].slice(0, 3)
+          : idx % 3 === 1
+            ? domainKeys.slice(0, 2)
+            : domainKeys.slice(0, 1);
+      const enrolledCourses =
+        idx % 4 === 3
+          ? []
+          : idx % 2 === 0
+            ? [COURSE_CATALOG[idx % COURSE_CATALOG.length], COURSE_CATALOG[(idx + 1) % COURSE_CATALOG.length]]
+            : [COURSE_CATALOG[idx % COURSE_CATALOG.length]];
+      const dayOffset = ACTIVITY_DAY_OFFSETS[idx % ACTIVITY_DAY_OFFSETS.length];
+      const completion = idx % 5 === 4 ? 68 : idx % 4 === 2 ? 84 : 100;
+      const missing =
+        completion === 68
+          ? ["60s Video Resume", "Portfolio Link", "Certification Proof"]
+          : completion === 84
+            ? ["60s Video Resume"]
+            : [];
+      const hackJoined = idx % 2 === 0 || idx % 5 === 1;
+      const netJoined = idx % 3 !== 2;
+
       return {
         id: `cand-seed-${idx + 1}`,
         talentCirId: `IAT-CIR-${840110 + idx * 17}`,
         origin: "platform",
+        archived: false,
         fullName: c.n,
         slug: slugify(c.n),
         email: `${slugify(c.n).replace(/-/g, ".")}@talentcir.verified.in`,
         phone: `+91 98${410 + idx} ${22110 + idx * 31}`,
         headline: `${c.sk.slice(0, 2).join(" & ")} Specialist · ${c.x} yrs exp`,
+        industry: CANDIDATE_INDUSTRIES[idx % CANDIDATE_INDUSTRIES.length],
+        accountTier: isPremium ? "premium" : "normal",
+        premiumPlanName: isPremium ? "Talento Pro Candidate" : undefined,
         city: c.c,
         country: "India",
         experienceYears: c.x,
-        experienceLevel: c.x < 2 ? "Junior" : c.x < 5 ? "Mid-Level" : "Senior",
+        experienceLevel: c.x <= 1 ? "Fresher" : c.x <= 3 ? "Junior" : c.x <= 6 ? "Mid-Level" : "Senior",
         expectedSalaryLpa: c.es,
         noticePeriodDays: c.nt,
         workPreference: c.wp,
-        availabilityStatus: idx % 5 === 0 ? "Open to offers" : "Actively looking",
+        availabilityStatus:
+          idx % 6 === 5 ? "Placed" : idx % 3 === 1 ? "Open to offers" : "Actively looking",
+        freelancerStatus:
+          idx % 3 === 0
+            ? "Actively Freelancing"
+            : idx % 3 === 1
+              ? "Open to Freelance"
+              : "Full-Time Only",
+        freelanceHourlyInr: idx % 3 === 2 ? 0 : 1000 + c.x * 350,
+        freelanceGigsCompleted: idx % 3 === 0 ? 2 + (idx % 5) : idx % 3 === 1 ? 1 : 0,
         kycStatus: idx % 7 === 4 ? "pending" : "verified",
         emailVerified: true,
         phoneVerified: idx % 6 !== 3,
         mfaEnabled: idx % 2 === 0,
         cirScore: avg,
         percentile: Math.min(99, Math.max(65, avg + 6)),
-        profileCompletion: Math.min(100, 82 + (idx % 5) * 4),
+        profileCompletion: completion,
+        missingProfileFields: missing,
         walletBalance: 250 + idx * 140,
         profileViews: 38 + idx * 19,
         applicationsCount: 2 + (idx % 6),
-        assessmentsPassed: Object.keys(c.as || {}).length,
+        assessmentsPassed: attempts > 0 ? domainKeys.length : 0,
+        totalTestAttempts: attempts,
+        retestCount: retests,
+        scoreImprovementDelta: retests > 0 ? 6 + retests * 4 : 0,
+        domainsChosen: attempts > 0 ? (domainsList.length ? domainsList : ["Core Readiness"]) : [],
+        coursesEnrolled: enrolledCourses,
+        coursesCompleted: enrolledCourses.length > 0 && idx % 3 !== 1 ? 1 : 0,
+        mentorSessionsBooked: isPremium ? 1 + (idx % 3) : 0,
+        mockInterviewsCount: attempts > 0 ? 1 + (idx % 4) : 0,
+        hackathonParticipated: hackJoined,
+        hackathonsList: hackJoined
+          ? idx % 4 === 0
+            ? ["Code Arena · Season 4", "Cloud & AI Sprint S3"]
+            : ["Code Arena · Season 4"]
+          : [],
+        networkingRegistered: netJoined,
+        networkingEventsList: netJoined
+          ? [`${c.c} Verified Tech & Hiring Mixer`, "AI Career Podcast Live Q&A"]
+          : [],
+        hasResume: completion >= 84,
+        hasVideoResume: isPremium,
         avatarUrl: getCandidatePhoto(c.n),
         linkedinUrl: `linkedin.com/in/${slugify(c.n)}`,
         githubUrl: `github.com/${slugify(c.n)}`,
@@ -613,8 +783,8 @@ export async function fetchSuperAdminSnapshot(): Promise<SuperAdminSnapshot> {
           },
         ],
         assessmentScores: c.as,
-        createdAt: new Date(Date.now() - (idx + 4) * 86400000 * 3).toISOString(),
-        lastActiveAt: new Date(Date.now() - idx * 3600000 * 4).toISOString(),
+        createdAt: new Date(Date.now() - (dayOffset + 30) * 86400000).toISOString(),
+        lastActiveAt: new Date(Date.now() - dayOffset * 86400000).toISOString(),
         raw: c as unknown as Record<string, unknown>,
       };
     }),
@@ -627,49 +797,66 @@ export async function fetchSuperAdminSnapshot(): Promise<SuperAdminSnapshot> {
     ...platformCandidates.filter((c) => !seenCandidateEmails.has(c.email.toLowerCase())),
   ];
 
-  // Map Live DB Employers + Showcase Employers
-  const mappedLiveEmployers: SuperAdminEmployer[] = liveEmployers.map((emp, idx) => ({
-    id: emp.id,
-    employerCode: emp.employer_id || `IAT-EMP-${300100 + idx}`,
-    origin: "live_db",
-    companyName: emp.company_name || "Registered Employer",
-    slug: slugify(emp.company_name || `company-${idx + 1}`),
-    industry: emp.industry || "Technology & Services",
-    category: emp.company_type || "Corporate",
-    companyType: emp.company_type || "Private Limited",
-    size: emp.num_employees || "51-200",
-    hq: emp.address || "India",
-    address: emp.address || "India",
-    website: emp.website || "—",
-    establishedYear: Number(emp.established_year || 2021),
-    contactName: emp.contact_name || "Hiring Lead",
-    officialEmail: emp.official_email || "hr@company.in",
-    phone: emp.phone || "—",
-    verificationStatus:
-      (emp as any).verification_status ||
-      (emp.email_verified ? "verified" : "pending"),
-    gstin: (emp as any).gstin || "29AABCS1429B1ZB",
-    cin: (emp as any).cin || "U72900KA2021PTC148210",
-    pan: (emp as any).pan || "AABCS1429B",
-    gstinVerified: Boolean(emp.email_verified),
-    subscriptionPlan: "Growth Pro",
-    mrrInr: 14999,
-    walletBalance: 5000,
-    talentUnlocksRemaining: 28,
-    teamMembersCount: 3,
-    activeJobsCount: liveJobs.filter((j) => j.employer_id === emp.id).length,
-    totalApplications: 14,
-    totalHires: 2,
-    logoUrl: emp.logo_url || undefined,
-    benefits: ["Health Insurance", "Flexible Work", "Learning Budget"],
-    createdAt: emp.created_at || new Date().toISOString(),
-    raw: emp,
-  }));
+  // Map Live DB Employers + Showcase Employers + Pending / Incomplete Profile Employers
+  const mappedLiveEmployers: SuperAdminEmployer[] = liveEmployers.map((emp, idx) => {
+    const missingEmp: string[] = [];
+    if (!emp.website) missingEmp.push("Official Website");
+    if (!emp.description) missingEmp.push("Company Description");
+    if (!emp.logo_url) missingEmp.push("Company Logo");
+    if (!emp.phone_verified) missingEmp.push("Phone OTP Verification");
+    if (!emp.industry) missingEmp.push("Industry Classification");
+    const empCompletion = Math.max(35, 100 - missingEmp.length * 15);
+
+    return {
+      id: emp.id,
+      employerCode: emp.employer_id || `IAT-EMP-${300100 + idx}`,
+      origin: "live_db",
+      archived: false,
+      accountTier: "premium",
+      companyName: emp.company_name || "Registered Employer",
+      slug: slugify(emp.company_name || `company-${idx + 1}`),
+      industry: emp.industry || "Software & SaaS",
+      category: emp.company_type || "Corporate",
+      companyType: emp.company_type || "Private Limited",
+      size: emp.num_employees || "51-200",
+      hq: emp.address || "Bengaluru",
+      address: emp.address || "India",
+      website: emp.website || "—",
+      establishedYear: Number(emp.established_year || 2021),
+      contactName: emp.contact_name || "Hiring Lead",
+      officialEmail: emp.official_email || "hr@company.in",
+      phone: emp.phone || "—",
+      verificationStatus:
+        (emp as any).verification_status ||
+        (emp.email_verified ? "verified" : "pending"),
+      gstin: (emp as any).gstin || "29AABCS1429B1ZB",
+      cin: (emp as any).cin || "U72900KA2021PTC148210",
+      pan: (emp as any).pan || "AABCS1429B",
+      gstinVerified: Boolean(emp.email_verified),
+      profileCompletion: empCompletion,
+      missingProfileFields: missingEmp,
+      subscriptionPlan: "Growth Pro",
+      mrrInr: 14999,
+      walletBalance: 5000,
+      talentUnlocksRemaining: 28,
+      teamMembersCount: 3,
+      activeJobsCount: liveJobs.filter((j) => j.employer_id === emp.id).length,
+      totalApplications: 14,
+      totalHires: 2,
+      logoUrl: emp.logo_url || undefined,
+      benefits: ["Health Insurance", "Flexible Work", "Learning Budget"],
+      createdAt: emp.created_at || new Date().toISOString(),
+      lastActiveAt: emp.updated_at || emp.created_at || new Date().toISOString(),
+      raw: emp,
+    };
+  });
 
   const showcaseEmployers: SuperAdminEmployer[] = SHOWCASE_COMPANIES.map((sc, idx) => ({
     id: sc.id,
     employerCode: sc.employer_code,
     origin: "platform",
+    archived: false,
+    accountTier: "premium",
     companyName: sc.name,
     slug: sc.slug,
     industry: sc.industry || "Software & Cloud Infrastructure",
@@ -688,6 +875,8 @@ export async function fetchSuperAdminSnapshot(): Promise<SuperAdminSnapshot> {
     cin: `U72200KA${sc.established_year || 2019}PTC${129041 + idx * 112}`,
     pan: `AADC${1042 + idx * 19}K`,
     gstinVerified: sc.gstin_verified,
+    profileCompletion: 100,
+    missingProfileFields: [],
     subscriptionPlan: idx === 0 ? "Enterprise Annual" : "Growth Pro",
     mrrInr: idx === 0 ? 49999 : 19999,
     walletBalance: idx === 0 ? 9200 : 6400,
@@ -699,18 +888,21 @@ export async function fetchSuperAdminSnapshot(): Promise<SuperAdminSnapshot> {
     logoUrl: sc.logo_url || undefined,
     benefits: sc.benefits || [],
     createdAt: new Date(Date.now() - (30 + idx * 18) * 86400000).toISOString(),
+    lastActiveAt: new Date(Date.now() - idx * 86400000 * 3).toISOString(),
     raw: sc as unknown as Record<string, unknown>,
   }));
 
-  // Add two realistic pending-verification employers so the Admin Moderation Queue is immediately actionable
+  // Pending KYB & Incomplete Company Profile Employers
   const pendingEmployers: SuperAdminEmployer[] = [
     {
       id: "emp-pending-01",
       employerCode: "IAT-EMP-409112",
       origin: "platform",
+      archived: false,
+      accountTier: "premium",
       companyName: "FinStack Payments India Pvt. Ltd.",
       slug: "finstack-payments",
-      industry: "FinTech & Banking Infrastructure",
+      industry: "FinTech",
       category: "B2B Payments",
       companyType: "Private Limited (Series A)",
       size: "51-200",
@@ -726,6 +918,8 @@ export async function fetchSuperAdminSnapshot(): Promise<SuperAdminSnapshot> {
       cin: "U65999MH2022PTC381920",
       pan: "AAFCF8821M",
       gstinVerified: false,
+      profileCompletion: 78,
+      missingProfileFields: ["GSTIN Certificate Upload", "Workplace Gallery Photos"],
       subscriptionPlan: "Growth Pro",
       mrrInr: 19999,
       walletBalance: 5000,
@@ -735,15 +929,18 @@ export async function fetchSuperAdminSnapshot(): Promise<SuperAdminSnapshot> {
       totalApplications: 0,
       totalHires: 0,
       benefits: ["Health Insurance", "Performance Bonus", "Hybrid Flexibility"],
-      createdAt: new Date(Date.now() - 86400000 * 1.2).toISOString(),
+      createdAt: new Date(Date.now() - 86400000 * 4).toISOString(),
+      lastActiveAt: new Date(Date.now() - 86400000 * 1.2).toISOString(),
     },
     {
       id: "emp-pending-02",
       employerCode: "IAT-EMP-409188",
       origin: "platform",
+      archived: false,
+      accountTier: "normal",
       companyName: "NeuralForge Robotics Labs",
       slug: "neuralforge-robotics",
-      industry: "AI, Robotics & Edge Compute",
+      industry: "Data & AI",
       category: "DeepTech",
       companyType: "LLP",
       size: "11-50",
@@ -759,6 +956,8 @@ export async function fetchSuperAdminSnapshot(): Promise<SuperAdminSnapshot> {
       cin: "AAZ-4410",
       pan: "AABFN4410P",
       gstinVerified: false,
+      profileCompletion: 58,
+      missingProfileFields: ["Company Logo", "Company Mission & About", "Employee Benefits", "KYB Tax Proof"],
       subscriptionPlan: "Starter",
       mrrInr: 7999,
       walletBalance: 2500,
@@ -767,8 +966,54 @@ export async function fetchSuperAdminSnapshot(): Promise<SuperAdminSnapshot> {
       activeJobsCount: 1,
       totalApplications: 0,
       totalHires: 0,
-      benefits: ["ESOPs", "GPU Compute Lab", "Relocation Assistance"],
-      createdAt: new Date(Date.now() - 3600000 * 9).toISOString(),
+      benefits: ["ESOPs"],
+      createdAt: new Date(Date.now() - 86400000 * 19).toISOString(),
+      lastActiveAt: new Date(Date.now() - 86400000 * 14).toISOString(),
+    },
+    {
+      id: "emp-incomplete-03",
+      employerCode: "IAT-EMP-409245",
+      origin: "platform",
+      archived: false,
+      accountTier: "normal",
+      companyName: "BrightCart D2C Commerce",
+      slug: "brightcart-d2c",
+      industry: "Digital Marketing & Growth",
+      category: "E-Commerce",
+      companyType: "Private Limited",
+      size: "11-50",
+      hq: "Chennai, Tamil Nadu, India",
+      address: "OMR Perungudi, Chennai 600096",
+      website: "—",
+      establishedYear: 2023,
+      contactName: "harish.n@brightcart.in",
+      officialEmail: "harish.n@brightcart.in",
+      phone: "—",
+      verificationStatus: "pending",
+      gstin: "—",
+      cin: "—",
+      pan: "—",
+      gstinVerified: false,
+      profileCompletion: 35,
+      missingProfileFields: [
+        "Official Website",
+        "Phone OTP Verification",
+        "GSTIN & CIN",
+        "Company Description",
+        "Company Logo",
+        "First Job Opening",
+      ],
+      subscriptionPlan: "Free Trial",
+      mrrInr: 0,
+      walletBalance: 0,
+      talentUnlocksRemaining: 0,
+      teamMembersCount: 1,
+      activeJobsCount: 0,
+      totalApplications: 0,
+      totalHires: 0,
+      benefits: [],
+      createdAt: new Date(Date.now() - 86400000 * 65).toISOString(),
+      lastActiveAt: new Date(Date.now() - 86400000 * 48).toISOString(),
     },
   ];
 

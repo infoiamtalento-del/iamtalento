@@ -213,6 +213,19 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
 
   const isProPage = location.pathname === "/talento-pro" || location.pathname === "/pro";
   const isEmployerPro = isProPage && userProfile?.role === "employer";
+  const employerSearchRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (!isEmployerPro) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        employerSearchRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isEmployerPro]);
 
   // Effective user profile
   const effectiveProfile =
@@ -266,33 +279,33 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
     const headerTitle = activeEmployerItem?.label || "Dashboard";
 
     return (
-      <header className="sticky top-0 z-40 w-full lg:ml-64 xl:ml-72 lg:w-[calc(100%-16rem)] xl:w-[calc(100%-18rem)] border-b border-border bg-card shadow-2xs">
-        <div className="flex h-[86px] min-h-[86px] w-full items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 py-3">
-          {/* Left: Mobile Logo Lockup + Active Dashboard Title & Welcome Subtitle */}
+      <header className="sticky top-0 z-40 w-full lg:ml-64 xl:ml-72 lg:w-[calc(100%-16rem)] xl:w-[calc(100%-18rem)] border-b border-[#111827]/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#11141c]">
+        <div className="flex h-20 min-h-20 w-full items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+          {/* Left: Mobile Logo Lockup + Active Context Title */}
           <div className="flex items-center gap-3.5 min-w-0">
             <Link
               to="/"
-              className="lg:hidden flex flex-col items-start shrink-0 pr-3 border-r border-border"
+              className="lg:hidden flex flex-col items-start shrink-0 pr-3 border-r border-[#111827]/[0.08]"
               aria-label="TalentCIR Home"
             >
               <img src={siteLogo.url} alt="TalentCIR" className="h-7 w-auto object-contain" />
-              <span className="mt-0.5 text-[10px] font-extrabold tracking-wide text-[#002C66] dark:text-foreground leading-none">
-                TalentCIR · Employer Dashboard
+              <span className="mt-0.5 text-[11px] font-medium text-[#111827] dark:text-[#eef0f5] leading-none">
+                TalentCIR · Employer
               </span>
             </Link>
 
             <div className="min-w-0">
-              <h2 className="font-display text-lg sm:text-xl font-bold tracking-tight text-[#002C66] dark:text-foreground truncate leading-tight">
+              <h2 className="text-lg font-medium text-[#111827] dark:text-[#eef0f5] truncate leading-tight">
                 {headerTitle}
               </h2>
-              <p className="hidden sm:block text-xs text-muted-foreground truncate mt-0.5">
-                Welcome back! Here&apos;s what&apos;s happening with your hiring operations today.
+              <p className="hidden sm:block text-xs text-[#6b7487] truncate mt-0.5">
+                Hiring pipeline, active listings and verified CIR talent
               </p>
             </div>
           </div>
 
-          {/* Extreme Right: Search Box + Notifications Bell Icon + Profile Icon & Account Menu */}
-          <div className="flex items-center gap-3 sm:gap-5 shrink-0 ml-auto">
+          {/* Right: Search with Keycaps + Notifications + Account Menu */}
+          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0 ml-auto">
             <search className="hidden md:block">
               <form
                 onSubmit={(e) => {
@@ -308,20 +321,26 @@ const Navbar: React.FC<NavbarProps> = ({ userProfile, onSignOut, accountMenu }) 
                 className="relative flex items-center"
               >
                 <Search
-                  className="pointer-events-none absolute left-3 h-4 w-4 text-muted-foreground"
+                  className="pointer-events-none absolute left-3 h-4 w-4 text-[#6b7487]"
+                  strokeWidth={1.5}
                   aria-hidden="true"
                 />
                 <input
+                  ref={employerSearchRef}
                   type="search"
                   name="q"
                   aria-label="Search candidates, jobs, or skills"
-                  placeholder="Search..."
-                  className="h-10 w-56 lg:w-64 xl:w-72 rounded-xl border border-border bg-background pl-9 pr-9 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15 transition-all"
+                  placeholder="Search"
+                  className="h-9 w-56 lg:w-64 xl:w-72 rounded-lg border border-[#111827]/[0.08] dark:border-white/[0.08] bg-[#f5f7fa] dark:bg-[#1a1e28] pl-9 pr-14 text-xs text-[#111827] dark:text-[#eef0f5] placeholder:text-[#6b7487] focus:border-[#002C66] focus:bg-white focus:outline-none transition-colors duration-150"
                 />
-                <Search
-                  className="pointer-events-none absolute right-3 h-3.5 w-3.5 text-muted-foreground/70"
-                  aria-hidden="true"
-                />
+                <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 inline-flex items-center gap-1" aria-hidden="true">
+                  <kbd className="rounded border border-[#111827]/12 bg-white px-1.5 py-0.5 font-mono text-[10px] text-[#6b7487]">
+                    ⌘
+                  </kbd>
+                  <kbd className="rounded border border-[#111827]/12 bg-white px-1.5 py-0.5 font-mono text-[10px] text-[#6b7487]">
+                    K
+                  </kbd>
+                </span>
               </form>
             </search>
 

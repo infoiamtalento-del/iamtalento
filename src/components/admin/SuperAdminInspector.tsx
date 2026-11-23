@@ -9,11 +9,12 @@ import {
   Download,
   ExternalLink,
   ShieldCheck,
-  Sparkles,
   Plus,
   Send,
   Code2,
   FileText,
+  Archive,
+  ArchiveRestore,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -52,7 +53,9 @@ interface Props {
   onClose: () => void;
   onVerifyCandidate: (id: string, status: SuperAdminCandidate["kycStatus"]) => void;
   onSuspendCandidate: (id: string) => void;
+  onToggleArchiveCandidate: (id: string, archive: boolean) => void;
   onReviewEmployer: (id: string, status: SuperAdminEmployer["verificationStatus"]) => void;
+  onToggleArchiveEmployer: (id: string, archive: boolean) => void;
   onModerateJob: (id: string, status: SuperAdminJob["status"]) => void;
   onPromoteJob: (id: string, tier: SuperAdminJob["promotionTier"]) => void;
   onUpdateApplicationStage: (id: string, stage: string) => void;
@@ -65,17 +68,17 @@ interface Props {
 const FieldGrid: React.FC<{ items: Array<{ label: string; value: React.ReactNode; mono?: boolean }> }> = ({
   items,
 }) => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
     {items.map((item, idx) => (
       <div
         key={idx}
-        className="rounded-lg border border-border/80 bg-muted/25 px-3 py-2 min-w-0"
+        className="rounded-lg border border-[#111827]/[0.08] dark:border-white/[0.08] bg-[#f5f7fa] dark:bg-[#161a24] px-3 py-2.5 min-w-0"
       >
-        <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <p className="text-xs text-[#6b7487]">
           {item.label}
         </p>
         <div
-          className={`mt-0.5 text-xs font-semibold text-foreground break-words ${
+          className={`mt-1 text-xs font-medium text-[#111827] dark:text-[#eef0f5] tabular-nums break-words ${
             item.mono ? "font-mono" : ""
           }`}
         >
@@ -87,12 +90,12 @@ const FieldGrid: React.FC<{ items: Array<{ label: string; value: React.ReactNode
 );
 
 const SectionTitle: React.FC<{ title: string; count?: number }> = ({ title, count }) => (
-  <div className="flex items-center justify-between border-b border-border pb-1.5 pt-2">
-    <h4 className="text-xs font-bold uppercase tracking-wider text-[#002C66] dark:text-foreground">
+  <div className="flex items-center justify-between border-b border-[#111827]/[0.08] dark:border-white/[0.08] pb-2 pt-2">
+    <h4 className="text-[13px] font-medium text-[#111827] dark:text-[#eef0f5]">
       {title}
     </h4>
     {typeof count === "number" && (
-      <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
+      <span className="font-mono text-xs text-[#6b7487] tabular-nums">
         {count}
       </span>
     )}
@@ -104,7 +107,9 @@ export const SuperAdminInspector: React.FC<Props> = ({
   onClose,
   onVerifyCandidate,
   onSuspendCandidate,
+  onToggleArchiveCandidate,
   onReviewEmployer,
+  onToggleArchiveEmployer,
   onModerateJob,
   onPromoteJob,
   onUpdateApplicationStage,
@@ -177,36 +182,33 @@ export const SuperAdminInspector: React.FC<Props> = ({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Inspector Header */}
-        <div className="flex items-start justify-between gap-4 border-b border-border bg-[#002C66] px-6 py-4 text-white shrink-0">
+        <div className="flex items-start justify-between gap-4 border-b border-white/10 bg-[#002C66] px-6 py-4 text-white shrink-0">
           <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-md bg-white/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-orange-300">
-                {entity.kind} record
-              </span>
+            <div className="flex flex-wrap items-center gap-3 text-xs text-blue-200/85">
+              <span className="capitalize">{entity.kind} record</span>
               {"origin" in entity.data && (
-                <span
-                  className={`rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
-                    entity.data.origin === "live_db"
-                      ? "bg-emerald-500/25 text-emerald-200 border border-emerald-400/30"
-                      : "bg-blue-400/20 text-blue-100"
-                  }`}
-                >
-                  {entity.data.origin === "live_db" ? "● LIVE SUPABASE DB" : "PLATFORM RECORD"}
+                <span className="inline-flex items-center gap-1.5 font-mono text-[11px]">
+                  <span
+                    className={`h-1.5 w-1.5 rounded-full ${
+                      entity.data.origin === "live_db" ? "bg-[#4cc38a]" : "bg-blue-200/60"
+                    }`}
+                  />
+                  {entity.data.origin === "live_db" ? "Live Supabase DB" : "Platform"}
                 </span>
               )}
             </div>
-            <h3 className="mt-1.5 font-display text-lg font-bold text-white leading-snug break-words">
+            <h3 className="mt-1 text-lg font-medium text-white leading-snug break-words">
               {title}
             </h3>
-            <p className="mt-0.5 font-mono text-xs text-blue-200/90 break-all">{subtitle}</p>
+            <p className="mt-0.5 font-mono text-xs text-blue-200/80 break-all tabular-nums">{subtitle}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close inspector"
-            className="rounded-lg bg-white/10 p-2 text-white hover:bg-white/20 transition-colors cursor-pointer shrink-0"
+            className="rounded-lg bg-white/10 p-2 text-white hover:bg-white/20 transition-colors duration-150 cursor-pointer shrink-0"
           >
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4" strokeWidth={1.5} />
           </button>
         </div>
 
@@ -289,6 +291,26 @@ export const SuperAdminInspector: React.FC<Props> = ({
                     <Button
                       size="sm"
                       variant="outline"
+                      className="h-8 gap-1.5 text-xs cursor-pointer"
+                      onClick={() =>
+                        onToggleArchiveCandidate(entity.data.id, !entity.data.archived)
+                      }
+                    >
+                      {entity.data.archived ? (
+                        <>
+                          <ArchiveRestore className="h-3.5 w-3.5 text-emerald-600" />
+                          Unarchive Profile
+                        </>
+                      ) : (
+                        <>
+                          <Archive className="h-3.5 w-3.5 text-amber-600" />
+                          Archive Profile
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
                       className="h-8 gap-1.5 text-xs border-rose-300 text-rose-700 hover:bg-rose-50 cursor-pointer"
                       onClick={() => onSuspendCandidate(entity.data.id)}
                     >
@@ -306,42 +328,46 @@ export const SuperAdminInspector: React.FC<Props> = ({
                     </Link>
                   </div>
 
-                  <SectionTitle title="Identity, Contact & Verification" />
+                  <SectionTitle title="Identity, Tier, Industry & Freelancing" />
                   <FieldGrid
                     items={[
                       { label: "Record UUID", value: entity.data.id, mono: true },
                       { label: "TalentCIR ID", value: entity.data.talentCirId, mono: true },
+                      { label: "Account Tier", value: entity.data.accountTier === "premium" ? `PREMIUM (${entity.data.premiumPlanName || "Talento Pro"})` : "NORMAL (Free)" },
+                      { label: "Industry Domain", value: entity.data.industry },
                       { label: "Full Name", value: entity.data.fullName },
                       { label: "Headline", value: entity.data.headline },
                       { label: "Email Address", value: entity.data.email, mono: true },
                       { label: "Phone Number", value: entity.data.phone, mono: true },
-                      { label: "Location", value: `${entity.data.city}, ${entity.data.country}` },
-                      { label: "Work Preference", value: entity.data.workPreference },
+                      { label: "Location & Mode", value: `${entity.data.city}, ${entity.data.country} (${entity.data.workPreference})` },
                       { label: "Experience", value: `${entity.data.experienceYears} yrs (${entity.data.experienceLevel})` },
-                      { label: "Expected CTC / Notice", value: `₹${entity.data.expectedSalaryLpa} LPA · ${entity.data.noticePeriodDays} days` },
-                      { label: "KYC Status", value: entity.data.kycStatus.toUpperCase() },
-                      { label: "Security Flags", value: `Email: ${entity.data.emailVerified ? "Yes" : "No"} · Phone: ${entity.data.phoneVerified ? "Yes" : "No"} · 2FA: ${entity.data.mfaEnabled ? "Enabled" : "Off"}` },
+                      { label: "Job Search Status", value: `${entity.data.availabilityStatus} · ₹${entity.data.expectedSalaryLpa} LPA · ${entity.data.noticePeriodDays}d NP` },
+                      { label: "Freelancer Status", value: entity.data.freelancerStatus === "Full-Time Only" ? "Full-Time Only" : `${entity.data.freelancerStatus} · ${formatINR(entity.data.freelanceHourlyInr)}/hr · ${entity.data.freelanceGigsCompleted} gigs` },
+                      { label: "KYC & Archive State", value: `${entity.data.kycStatus} · ${entity.data.archived ? "Archived" : "Active"}` },
+                      { label: "Security & Assets", value: `2FA: ${entity.data.mfaEnabled ? "On" : "Off"} · Resume: ${entity.data.hasResume ? "Yes" : "No"} · Video Pitch: ${entity.data.hasVideoResume ? "Yes" : "No"}` },
                     ]}
                   />
 
-                  <SectionTitle title="CIR Readiness, Activity & Wallet" />
+                  <SectionTitle title="Tests, Retests, Domains, Courses & Events" />
                   <FieldGrid
                     items={[
                       { label: "CIR Readiness Score", value: `${entity.data.cirScore} / 100 (${entity.data.percentile}th percentile)` },
-                      { label: "Profile Completion", value: `${entity.data.profileCompletion}%` },
-                      { label: "Wallet Balance", value: formatINR(entity.data.walletBalance) },
-                      { label: "Engagement", value: `${entity.data.profileViews} views · ${entity.data.applicationsCount} apps · ${entity.data.assessmentsPassed} tests` },
-                      { label: "LinkedIn / GitHub", value: [entity.data.linkedinUrl, entity.data.githubUrl].filter(Boolean).join(" · ") || "—" },
-                      { label: "Created / Last Active", value: `${new Date(entity.data.createdAt).toLocaleDateString()} · ${new Date(entity.data.lastActiveAt).toLocaleString()}` },
+                      { label: "Test Attempts & Retests", value: entity.data.totalTestAttempts === 0 ? "0 attempts" : `${entity.data.totalTestAttempts} total (${entity.data.retestCount} retests · +${entity.data.scoreImprovementDelta} pts gain)` },
+                      { label: "Domains Chosen", value: entity.data.domainsChosen.length ? `${entity.data.domainsChosen.length} (${entity.data.domainsChosen.join(", ")})` : "None" },
+                      { label: "Learning Courses", value: entity.data.coursesEnrolled.length ? `${entity.data.coursesEnrolled.join(" · ")} (${entity.data.coursesCompleted} completed)` : "Not enrolled" },
+                      { label: "Hackathon Participation", value: entity.data.hackathonParticipated ? entity.data.hackathonsList.join(" · ") : "Not participated" },
+                      { label: "Networking Events", value: entity.data.networkingRegistered ? entity.data.networkingEventsList.join(" · ") : "Not registered" },
+                      { label: "Profile Completion", value: entity.data.missingProfileFields.length ? `${entity.data.profileCompletion}% (Missing: ${entity.data.missingProfileFields.join(", ")})` : "100% Complete" },
+                      { label: "Wallet & Last Active", value: `${formatINR(entity.data.walletBalance)} · Active ${new Date(entity.data.lastActiveAt).toLocaleDateString()}` },
                     ]}
                   />
 
                   <SectionTitle title="Domain Assessment Sub-Scores" count={Object.keys(entity.data.assessmentScores).length} />
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     {Object.entries(entity.data.assessmentScores).map(([domain, score]) => (
-                      <div key={domain} className="rounded-lg border border-border p-2.5 text-center bg-background">
-                        <p className="text-[11px] font-medium text-muted-foreground truncate">{domain}</p>
-                        <p className="mt-0.5 text-base font-extrabold text-[#002C66] dark:text-foreground">{score}%</p>
+                      <div key={domain} className="rounded-lg border border-[#111827]/[0.08] p-2.5 text-center bg-white">
+                        <p className="text-[11px] font-normal text-[#6b7487] truncate">{domain}</p>
+                        <p className="mt-0.5 text-base font-medium text-[#111827] dark:text-[#eef0f5] tabular-nums">{score}%</p>
                       </div>
                     ))}
                   </div>
@@ -381,8 +407,8 @@ export const SuperAdminInspector: React.FC<Props> = ({
                       </div>
                     ))}
                     {entity.data.certifications.map((ce, i) => (
-                      <div key={`ce-${i}`} className="rounded-lg border border-border px-3 py-2 font-medium">
-                        🏅 {ce}
+                      <div key={`ce-${i}`} className="rounded-lg border border-[#111827]/[0.08] px-3 py-2 font-medium">
+                        {ce}
                       </div>
                     ))}
                     {entity.data.projects.map((pj, i) => (
@@ -407,6 +433,26 @@ export const SuperAdminInspector: React.FC<Props> = ({
                     >
                       <ShieldCheck className="h-3.5 w-3.5" />
                       Approve &amp; Verify KYB
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-8 gap-1.5 text-xs cursor-pointer"
+                      onClick={() =>
+                        onToggleArchiveEmployer(entity.data.id, !entity.data.archived)
+                      }
+                    >
+                      {entity.data.archived ? (
+                        <>
+                          <ArchiveRestore className="h-3.5 w-3.5 text-emerald-600" />
+                          Unarchive
+                        </>
+                      ) : (
+                        <>
+                          <Archive className="h-3.5 w-3.5 text-amber-600" />
+                          Archive
+                        </>
+                      )}
                     </Button>
                     <Button
                       size="sm"
@@ -437,11 +483,13 @@ export const SuperAdminInspector: React.FC<Props> = ({
                     </Link>
                   </div>
 
-                  <SectionTitle title="Corporate Entity, Tax & KYB Credentials" />
+                  <SectionTitle title="Corporate Entity, Profile Completion & KYB" />
                   <FieldGrid
                     items={[
                       { label: "Employer ID", value: entity.data.employerCode, mono: true },
-                      { label: "Verification Status", value: entity.data.verificationStatus.toUpperCase() },
+                      { label: "Verification & Archive", value: `${entity.data.verificationStatus} · ${entity.data.archived ? "Archived" : "Active"}` },
+                      { label: "Company Profile Completion", value: entity.data.missingProfileFields.length ? `${entity.data.profileCompletion}% (Missing: ${entity.data.missingProfileFields.join(", ")})` : "100% complete" },
+                      { label: "Account Tier", value: entity.data.accountTier === "premium" ? "Premium employer" : "Normal / free" },
                       { label: "Legal / Brand Name", value: entity.data.companyName },
                       { label: "Company Type & Size", value: `${entity.data.companyType} · ${entity.data.size} employees` },
                       { label: "GSTIN", value: entity.data.gstin, mono: true },
@@ -501,8 +549,8 @@ export const SuperAdminInspector: React.FC<Props> = ({
                         )
                       }
                     >
-                      <Sparkles className="h-3.5 w-3.5 text-[#FB923C]" />
-                      {entity.data.promotionTier === "sponsored" ? "Remove Sponsorship" : "Boost as Sponsored"}
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#ea580c]" />
+                      {entity.data.promotionTier === "sponsored" ? "Remove Sponsorship" : "Mark as Sponsored"}
                     </Button>
                     <Button
                       size="sm"
@@ -519,7 +567,7 @@ export const SuperAdminInspector: React.FC<Props> = ({
                     items={[
                       { label: "Job Code", value: entity.data.jobCode, mono: true },
                       { label: "Employer", value: `${entity.data.companyName} (${entity.data.employerCode})` },
-                      { label: "Status & Tier", value: `${entity.data.status.toUpperCase()} · ${entity.data.promotionTier.toUpperCase()}` },
+                      { label: "Status & Tier", value: `${entity.data.status} · ${entity.data.promotionTier}` },
                       { label: "Department / Industry", value: `${entity.data.department} · ${entity.data.industry}` },
                       { label: "Location & Mode", value: `${entity.data.location} (${entity.data.workMode})` },
                       { label: "Compensation Band", value: `₹${entity.data.salaryMinLpa}L – ₹${entity.data.salaryMaxLpa}L LPA` },
@@ -672,7 +720,7 @@ export const SuperAdminInspector: React.FC<Props> = ({
                       { label: "Invoice / Credit Note", value: entity.data.invoiceNumber, mono: true },
                       { label: "Razorpay Order ID", value: entity.data.orderId, mono: true },
                       { label: "Gateway Payment Ref", value: entity.data.gatewayRef, mono: true },
-                      { label: "Status", value: entity.data.status.toUpperCase() },
+                      { label: "Status", value: entity.data.status },
                       { label: "Customer", value: `${entity.data.actorName} (${entity.data.actorType})` },
                       { label: "Billing Email", value: entity.data.actorEmail, mono: true },
                       { label: "Category & Item", value: `${entity.data.category} — ${entity.data.itemTitle}` },
@@ -687,9 +735,9 @@ export const SuperAdminInspector: React.FC<Props> = ({
               {/* WALLET & LEDGER DEEP DIVE */}
               {entity.kind === "wallet" && (
                 <div className="space-y-5">
-                  <div className="rounded-xl border border-border bg-muted/30 p-3.5 space-y-2.5">
-                    <p className="text-xs font-bold text-[#002C66] dark:text-foreground">
-                      Manual Ledger Credit / Debit Adjustment
+                  <div className="rounded-xl border border-[#111827]/[0.08] bg-[#f5f7fa] p-3.5 space-y-2.5">
+                    <p className="text-xs font-medium text-[#111827] dark:text-[#eef0f5]">
+                      Manual ledger credit / debit adjustment
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                       <Input
@@ -709,13 +757,13 @@ export const SuperAdminInspector: React.FC<Props> = ({
                     <div className="flex gap-2">
                       <Button
                         size="sm"
-                        className="h-8 gap-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs cursor-pointer"
+                        className="h-8 gap-1 bg-[#002C66] hover:bg-[#002250] text-white text-xs cursor-pointer"
                         onClick={() =>
                           onAdjustWallet(entity.data.id, "credit", Number(walletAmt) || 0, walletReason)
                         }
                       >
-                        <Plus className="h-3.5 w-3.5" />
-                        Credit Wallet
+                        <Plus className="h-3.5 w-3.5" strokeWidth={1.5} />
+                        Credit wallet
                       </Button>
                       <Button
                         size="sm"
@@ -725,29 +773,29 @@ export const SuperAdminInspector: React.FC<Props> = ({
                           onAdjustWallet(entity.data.id, "debit", Number(walletAmt) || 0, walletReason)
                         }
                       >
-                        Debit Wallet
+                        Debit wallet
                       </Button>
                     </div>
                   </div>
 
                   <FieldGrid
                     items={[
-                      { label: "Account Owner", value: `${entity.data.ownerName} (${entity.data.ownerType})` },
+                      { label: "Account owner", value: `${entity.data.ownerName} (${entity.data.ownerType})` },
                       { label: "Owner ID", value: entity.data.ownerCode, mono: true },
-                      { label: "Current Balance", value: formatINR(entity.data.balanceInr) },
-                      { label: "Lifetime In / Out", value: `+${formatINR(entity.data.lifetimeCreditedInr)} / -${formatINR(entity.data.lifetimeDebitedInr)}` },
+                      { label: "Current balance", value: formatINR(entity.data.balanceInr) },
+                      { label: "Lifetime in / out", value: `+${formatINR(entity.data.lifetimeCreditedInr)} / -${formatINR(entity.data.lifetimeDebitedInr)}` },
                     ]}
                   />
 
-                  <SectionTitle title="Immutable Wallet Ledger Entries" count={entity.data.ledger.length} />
+                  <SectionTitle title="Immutable wallet ledger entries" count={entity.data.ledger.length} />
                   <div className="space-y-2">
                     {entity.data.ledger.map((tx) => (
-                      <div key={tx.txId} className="rounded-lg border border-border p-3 text-xs flex items-center justify-between gap-3">
+                      <div key={tx.txId} className="rounded-lg border border-[#111827]/[0.08] p-3 text-xs flex items-center justify-between gap-3">
                         <div>
-                          <p className="font-bold font-mono">{tx.txId} · {tx.reason}</p>
-                          <p className="text-muted-foreground mt-0.5">{tx.via} · {new Date(tx.at).toLocaleString()}</p>
+                          <p className="font-medium font-mono text-[#111827]">{tx.txId} · {tx.reason}</p>
+                          <p className="text-[#6b7487] mt-0.5">{tx.via} · {new Date(tx.at).toLocaleString()}</p>
                         </div>
-                        <span className={`font-extrabold ${tx.type === "credit" ? "text-emerald-600" : "text-rose-600"}`}>
+                        <span className={`font-medium font-mono tabular-nums ${tx.type === "credit" ? "text-[#16a34a]" : "text-[#dc2626]"}`}>
                           {tx.type === "credit" ? "+" : "-"}{formatINR(tx.amountInr)}
                         </span>
                       </div>
@@ -762,26 +810,26 @@ export const SuperAdminInspector: React.FC<Props> = ({
                   <FieldGrid
                     items={[
                       { label: "Ticket ID", value: entity.data.ticketCode, mono: true },
-                      { label: "Priority & Status", value: `${entity.data.priority.toUpperCase()} · ${entity.data.status.toUpperCase()}` },
+                      { label: "Priority & status", value: `${entity.data.priority} · ${entity.data.status}` },
                       { label: "Requester", value: `${entity.data.requesterName} (${entity.data.requesterType})` },
                       { label: "Category & SLA", value: `${entity.data.category} · Due: ${entity.data.slaDueIn}` },
                     ]}
                   />
 
-                  <SectionTitle title="Conversation Thread" count={entity.data.messages.length} />
+                  <SectionTitle title="Conversation thread" count={entity.data.messages.length} />
                   <div className="space-y-2.5">
                     {entity.data.messages.map((m, idx) => (
                       <div
                         key={idx}
                         className={`rounded-xl border p-3 text-xs ${
                           m.role === "admin"
-                            ? "border-primary/30 bg-primary/5 ml-6"
-                            : "border-border bg-muted/25 mr-6"
+                            ? "border-[#002C66]/20 bg-[#002C66]/[0.04] ml-6"
+                            : "border-[#111827]/[0.08] bg-[#f5f7fa] mr-6"
                         }`}
                       >
-                        <div className="flex justify-between font-bold mb-1">
+                        <div className="flex justify-between font-medium mb-1">
                           <span>{m.sender}</span>
-                          <span className="text-muted-foreground font-normal">
+                          <span className="text-[#6b7487] font-normal tabular-nums">
                             {new Date(m.at).toLocaleString()}
                           </span>
                         </div>
@@ -790,12 +838,12 @@ export const SuperAdminInspector: React.FC<Props> = ({
                     ))}
                   </div>
 
-                  <div className="rounded-xl border border-border bg-muted/30 p-3 space-y-2">
+                  <div className="rounded-xl border border-[#111827]/[0.08] bg-[#f5f7fa] p-3 space-y-2">
                     <Input
                       value={ticketReply}
                       onChange={(e) => setTicketReply(e.target.value)}
-                      placeholder="Write official Super Admin response..."
-                      className="h-9 text-xs bg-background"
+                      placeholder="Write admin response"
+                      className="h-9 text-xs bg-white"
                     />
                     <div className="flex gap-2">
                       <Button
