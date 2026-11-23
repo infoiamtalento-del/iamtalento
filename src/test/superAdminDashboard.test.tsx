@@ -41,10 +41,38 @@ describe("SuperAdminDashboard", () => {
       expect(screen.getByText("Super Admin Command Center")).toBeInTheDocument();
     });
 
+    // Candidate 8-box KPI & revenue grid (2 rows × 4 cols)
+    expect(screen.getByText("Total candidates")).toBeInTheDocument();
+    expect(screen.getByText("Premium candidates")).toBeInTheDocument();
+    expect(screen.getByText("Verification pending candidates")).toBeInTheDocument();
+    expect(screen.getByText("Candidates total revenue")).toBeInTheDocument();
+    expect(screen.getByText("Candidates assessment revenue")).toBeInTheDocument();
+    expect(screen.getByText("Candidates learning revenue")).toBeInTheDocument();
+    expect(screen.getByText("Candidates hackathon revenue")).toBeInTheDocument();
+    expect(screen.getByText("Candidates networking revenue")).toBeInTheDocument();
+
+    // Employer 8-box KPI & revenue grid (2 rows × 4 cols)
+    expect(screen.getByText("Total employers")).toBeInTheDocument();
+    expect(screen.getByText("Premium employers")).toBeInTheDocument();
+    expect(screen.getByText("Verification pending employers")).toBeInTheDocument();
+    expect(screen.getByText("Employers total revenue")).toBeInTheDocument();
+    expect(screen.getByText("Employers assessment revenue")).toBeInTheDocument();
+    expect(screen.getByText("Employers learning revenue")).toBeInTheDocument();
+    expect(screen.getByText("Employers hackathon revenue")).toBeInTheDocument();
+    expect(screen.getByText("Employers networking revenue")).toBeInTheDocument();
+
     // Overview shows Hackathon & Networking & Incomplete Company Profiles telemetry
     expect(screen.getByText(/Hackathon participants/i)).toBeInTheDocument();
     expect(screen.getByText(/Networking registrants/i)).toBeInTheDocument();
     expect(screen.getByText(/Incomplete company profiles/i)).toBeInTheDocument();
+
+    // Clicking an Employer revenue box drills directly into filtered Billing orders
+    fireEvent.click(screen.getByText("Employers hackathon revenue"));
+    expect(
+      screen.getByText(/Code Arena Season 4 Title Hiring Partner & Challenge Track Sponsorship/i)
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/Bengaluru CTO & Staff Builders Roundtable/i)).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /Executive Overview/i }));
 
     // Navigate to Candidates Directory (Employee Super Admin)
     fireEvent.click(screen.getByRole("button", { name: /Candidates Directory/i }));

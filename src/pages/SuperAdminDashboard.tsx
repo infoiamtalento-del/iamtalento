@@ -49,6 +49,7 @@ import {
 import {
   SuperAdminOverview,
   type AdminSectionId,
+  type OverviewNavigateOptions,
 } from "@/components/admin/SuperAdminOverview";
 import {
   SuperAdminInspector,
@@ -221,6 +222,8 @@ const SuperAdminDashboard: React.FC = () => {
   // Table Filters & Global Omni-Search
   const [tableQuery, setTableQuery] = useState("");
   const [originFilter, setOriginFilter] = useState<"all" | "live_db" | "platform">("all");
+  const [billingActorFilter, setBillingActorFilter] = useState<"all" | "Candidate" | "Employer">("all");
+  const [billingCategoryFilter, setBillingCategoryFilter] = useState<string>("all");
   const [omniQuery, setOmniQuery] = useState("");
   const [inspected, setInspected] = useState<InspectedEntity>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -259,11 +262,13 @@ const SuperAdminDashboard: React.FC = () => {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
-  const selectSection = (sec: AdminSectionId) => {
+  const selectSection = (sec: AdminSectionId, opts?: OverviewNavigateOptions) => {
     setActiveSection(sec);
     setSearchParams(sec === "overview" ? {} : { tab: sec });
     setTableQuery("");
     setOriginFilter("all");
+    setBillingActorFilter(opts?.billingActor ?? "all");
+    setBillingCategoryFilter(opts?.billingCategory ?? "all");
     setMobileMenuOpen(false);
     window.scrollTo({ top: 0 });
   };
@@ -1050,6 +1055,46 @@ const SuperAdminDashboard: React.FC = () => {
                       </div>
                     )}
 
+                    {activeSection === "billing" && (
+                      <>
+                        <div className="inline-flex rounded-lg border border-[#111827]/[0.08] bg-[#eceff4] p-0.5 text-xs">
+                          {(["all", "Candidate", "Employer"] as const).map((act) => (
+                            <button
+                              key={act}
+                              type="button"
+                              onClick={() => setBillingActorFilter(act)}
+                              className={cn(
+                                "rounded-md px-2.5 py-1 text-xs font-medium transition-colors duration-150 cursor-pointer",
+                                billingActorFilter === act
+                                  ? "bg-[#002C66] text-white"
+                                  : "text-[#4b5565] hover:text-[#111827]"
+                              )}
+                            >
+                              {act === "all" ? "All payers" : `${act}s`}
+                            </button>
+                          ))}
+                        </div>
+
+                        <select
+                          aria-label="Filter billing category"
+                          value={billingCategoryFilter}
+                          onChange={(e) => setBillingCategoryFilter(e.target.value)}
+                          className="h-8 rounded-lg border border-[#111827]/[0.08] bg-white px-2.5 text-xs text-[#111827] focus:border-[#002C66] focus:outline-none cursor-pointer"
+                        >
+                          <option value="all">All revenue streams</option>
+                          <option value="Assessment Fee">Assessment revenue</option>
+                          <option value="Learning & Mentorship">Learning &amp; mentorship</option>
+                          <option value="Hackathon">Hackathon revenue</option>
+                          <option value="Networking">Networking revenue</option>
+                          <option value="SaaS Subscription">SaaS subscriptions</option>
+                          <option value="Talent Package">Talent packages</option>
+                          <option value="Wallet Top-up">Wallet top-ups</option>
+                          <option value="Job Promotion">Job promotions</option>
+                          <option value="Refund">Refunds</option>
+                        </select>
+                      </>
+                    )}
+
                     <Button
                       size="sm"
                       variant="outline"
@@ -1433,6 +1478,12 @@ const SuperAdminDashboard: React.FC = () => {
                     </thead>
                     <tbody className="divide-y divide-[#111827]/[0.06]">
                       {snapshot.transactions
+                        .filter((t) =>
+                          billingActorFilter === "all" ? true : t.actorType === billingActorFilter
+                        )
+                        .filter((t) =>
+                          billingCategoryFilter === "all" ? true : t.category === billingCategoryFilter
+                        )
                         .filter(
                           (t) =>
                             !q ||

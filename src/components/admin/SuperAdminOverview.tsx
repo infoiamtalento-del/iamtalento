@@ -29,9 +29,14 @@ export type AdminSectionId =
   | "support"
   | "system";
 
+export interface OverviewNavigateOptions {
+  billingActor?: "all" | "Candidate" | "Employer";
+  billingCategory?: string;
+}
+
 interface Props {
   snapshot: SuperAdminSnapshot;
-  onNavigate: (section: AdminSectionId) => void;
+  onNavigate: (section: AdminSectionId, opts?: OverviewNavigateOptions) => void;
   onInspect: (entity: InspectedEntity) => void;
   onApproveEmployer: (id: string) => void;
   onApproveJob: (id: string) => void;
@@ -56,22 +61,197 @@ export const SuperAdminOverview: React.FC<Props> = ({
   onClearProctorFlag,
 }) => {
   const activeCandidates = snapshot.candidates.filter((c) => !c.archived);
+  const archivedCandidatesCount = snapshot.candidates.filter((c) => c.archived).length;
   const verifiedCandidates = activeCandidates.filter((c) => c.kycStatus === "verified").length;
+  const premiumCandidates = activeCandidates.filter((c) => c.accountTier === "premium");
+  const normalCandidatesCount = activeCandidates.length - premiumCandidates.length;
+  const pendingVerificationCandidates = activeCandidates.filter((c) => c.kycStatus !== "verified");
 
-  const pendingEmployers = snapshot.employers.filter(
-    (e) => !e.archived && e.verificationStatus === "pending"
-  );
-  const incompleteEmployers = snapshot.employers.filter(
-    (e) => !e.archived && e.profileCompletion < 100
-  );
+  const activeEmployers = snapshot.employers.filter((e) => !e.archived);
+  const verifiedEmployersCount = activeEmployers.filter((e) => e.verificationStatus === "verified").length;
+  const premiumEmployers = activeEmployers.filter((e) => e.accountTier === "premium");
+  const normalEmployersCount = activeEmployers.length - premiumEmployers.length;
+  const pendingEmployers = activeEmployers.filter((e) => e.verificationStatus === "pending");
+  const pendingVerificationEmployers = activeEmployers.filter((e) => e.verificationStatus !== "verified");
+  const incompleteEmployers = activeEmployers.filter((e) => e.profileCompletion < 100);
+
   const pendingJobs = snapshot.jobs.filter((j) => j.status === "pending_review");
+  const activeJobsCount = snapshot.jobs.filter((j) => j.status === "active").length;
   const flaggedAssessments = snapshot.assessments.filter((a) => a.status === "Flagged");
   const openTickets = snapshot.tickets.filter((t) => t.status !== "resolved");
 
   const capturedTx = snapshot.transactions.filter((t) => t.status === "captured");
   const grossRevenue = capturedTx.reduce((s, t) => s + t.netTotalInr, 0);
-  const totalMrr = snapshot.employers.reduce((s, e) => s + e.mrrInr, 0);
+  const totalMrr = activeEmployers.reduce((s, e) => s + e.mrrInr, 0);
   const totalWalletFloat = snapshot.wallets.reduce((s, w) => s + w.balanceInr, 0);
+
+  const sumStream = (actor: "Candidate" | "Employer", category?: string) => {
+    const matching = capturedTx.filter(
+      (t) => t.actorType === actor && (!category || t.category === category)
+    );
+    return {
+      total: matching.reduce((s, t) => s + t.netTotalInr, 0),
+      count: matching.length,
+    };
+  };
+
+  const candTotalRev = sumStream("Candidate");
+  const candAssessmentRev = sumStream("Candidate", "Assessment Fee");
+  const candLearningRev = sumStream("Candidate", "Learning & Mentorship");
+  const candHackathonRev = sumStream("Candidate", "Hackathon");
+  const candNetworkingRev = sumStream("Candidate", "Networking");
+
+  const empTotalRev = sumStream("Employer");
+  const empAssessmentRev = sumStream("Employer", "Assessment Fee");
+  const empLearningRev = sumStream("Employer", "Learning & Mentorship");
+  const empHackathonRev = sumStream("Employer", "Hackathon");
+  const empNetworkingRev = sumStream("Employer", "Networking");
+
+  // 8 Boxes for Candidates (2 rows × 4 columns)
+  const candidateBoxes = [
+    {
+      label: "Total candidates",
+      value: activeCandidates.length.toLocaleString("en-IN"),
+      meta: `${verifiedCandidates} verified · ${archivedCandidatesCount} archived`,
+      alert: false,
+      highlight: false,
+      onClick: () => onNavigate("candidates"),
+    },
+    {
+      label: "Premium candidates",
+      value: premiumCandidates.length.toLocaleString("en-IN"),
+      meta: `${Math.round((premiumCandidates.length / Math.max(1, activeCandidates.length)) * 100)}% share · ${normalCandidatesCount} normal`,
+      alert: false,
+      highlight: false,
+      onClick: () => onNavigate("candidates"),
+    },
+    {
+      label: "Verification pending candidates",
+      value: pendingVerificationCandidates.length.toLocaleString("en-IN"),
+      meta: "Government ID & biometric KYC",
+      alert: pendingVerificationCandidates.length > 0,
+      highlight: false,
+      onClick: () => onNavigate("kyc"),
+    },
+    {
+      label: "Candidates total revenue",
+      value: formatINR(candTotalRev.total),
+      meta: `${candTotalRev.count} captured orders across all streams`,
+      alert: false,
+      highlight: true,
+      onClick: () =>
+        onNavigate("billing", { billingActor: "Candidate", billingCategory: "all" }),
+    },
+    {
+      label: "Candidates assessment revenue",
+      value: formatINR(candAssessmentRev.total),
+      meta: `${candAssessmentRev.count} orders · tests & retests`,
+      alert: false,
+      highlight: false,
+      onClick: () =>
+        onNavigate("billing", { billingActor: "Candidate", billingCategory: "Assessment Fee" }),
+    },
+    {
+      label: "Candidates learning revenue",
+      value: formatINR(candLearningRev.total),
+      meta: `${candLearningRev.count} orders · courses & mentors`,
+      alert: false,
+      highlight: false,
+      onClick: () =>
+        onNavigate("billing", { billingActor: "Candidate", billingCategory: "Learning & Mentorship" }),
+    },
+    {
+      label: "Candidates hackathon revenue",
+      value: formatINR(candHackathonRev.total),
+      meta: `${candHackathonRev.count} orders · sprint & arena passes`,
+      alert: false,
+      highlight: false,
+      onClick: () =>
+        onNavigate("billing", { billingActor: "Candidate", billingCategory: "Hackathon" }),
+    },
+    {
+      label: "Candidates networking revenue",
+      value: formatINR(candNetworkingRev.total),
+      meta: `${candNetworkingRev.count} orders · city chapter mixers`,
+      alert: false,
+      highlight: false,
+      onClick: () =>
+        onNavigate("billing", { billingActor: "Candidate", billingCategory: "Networking" }),
+    },
+  ];
+
+  // 8 Boxes for Employers (2 rows × 4 columns)
+  const employerBoxes = [
+    {
+      label: "Total employers",
+      value: activeEmployers.length.toLocaleString("en-IN"),
+      meta: `${verifiedEmployersCount} verified · ${incompleteEmployers.length} incomplete`,
+      alert: false,
+      highlight: false,
+      onClick: () => onNavigate("employers"),
+    },
+    {
+      label: "Premium employers",
+      value: premiumEmployers.length.toLocaleString("en-IN"),
+      meta: `MRR ${formatINR(totalMrr)} · ${normalEmployersCount} normal`,
+      alert: false,
+      highlight: false,
+      onClick: () => onNavigate("employers"),
+    },
+    {
+      label: "Verification pending employers",
+      value: pendingVerificationEmployers.length.toLocaleString("en-IN"),
+      meta: "CIN · GSTIN · PAN review",
+      alert: pendingVerificationEmployers.length > 0,
+      highlight: false,
+      onClick: () => onNavigate("kyc"),
+    },
+    {
+      label: "Employers total revenue",
+      value: formatINR(empTotalRev.total),
+      meta: `${empTotalRev.count} captured orders incl. SaaS & credits`,
+      alert: false,
+      highlight: true,
+      onClick: () =>
+        onNavigate("billing", { billingActor: "Employer", billingCategory: "all" }),
+    },
+    {
+      label: "Employers assessment revenue",
+      value: formatINR(empAssessmentRev.total),
+      meta: `${empAssessmentRev.count} orders · CIR & campus drives`,
+      alert: false,
+      highlight: false,
+      onClick: () =>
+        onNavigate("billing", { billingActor: "Employer", billingCategory: "Assessment Fee" }),
+    },
+    {
+      label: "Employers learning revenue",
+      value: formatINR(empLearningRev.total),
+      meta: `${empLearningRev.count} orders · corporate L&D`,
+      alert: false,
+      highlight: false,
+      onClick: () =>
+        onNavigate("billing", { billingActor: "Employer", billingCategory: "Learning & Mentorship" }),
+    },
+    {
+      label: "Employers hackathon revenue",
+      value: formatINR(empHackathonRev.total),
+      meta: `${empHackathonRev.count} orders · track sponsorships`,
+      alert: false,
+      highlight: false,
+      onClick: () =>
+        onNavigate("billing", { billingActor: "Employer", billingCategory: "Hackathon" }),
+    },
+    {
+      label: "Employers networking revenue",
+      value: formatINR(empNetworkingRev.total),
+      meta: `${empNetworkingRev.count} orders · hiring roundtables`,
+      alert: false,
+      highlight: false,
+      onClick: () =>
+        onNavigate("billing", { billingActor: "Employer", billingCategory: "Networking" }),
+    },
+  ];
 
   const funnelStages = ["Applied", "Shortlisted", "Interview", "Offer", "Hired"].map((stage) => {
     const count = snapshot.applications.filter((a) => a.stage === stage).length;
@@ -87,27 +267,19 @@ export const SuperAdminOverview: React.FC<Props> = ({
 
   const primaryStats = [
     {
-      label: "Total candidates",
-      value: activeCandidates.length.toLocaleString("en-IN"),
-      delta: "+18% vs October",
-      positive: true,
-      meta: `${verifiedCandidates} identity verified`,
-      target: "candidates" as AdminSectionId,
-    },
-    {
-      label: "Employers & tenants",
-      value: snapshot.employers.filter((e) => !e.archived).length.toLocaleString("en-IN"),
-      delta: `${pendingEmployers.length} awaiting KYB`,
-      positive: pendingEmployers.length === 0,
-      meta: `${incompleteEmployers.length} incomplete setup`,
-      target: "employers" as AdminSectionId,
-    },
-    {
       label: "Captured revenue (GMV)",
       value: formatINR(grossRevenue),
       delta: "+33% vs October",
       positive: true,
-      meta: `MRR ${formatINR(totalMrr)}`,
+      meta: `${capturedTx.length} captured GST invoices`,
+      target: "billing" as AdminSectionId,
+    },
+    {
+      label: "Monthly recurring revenue",
+      value: formatINR(totalMrr),
+      delta: `${premiumEmployers.length} paid SaaS tenants`,
+      positive: true,
+      meta: "Enterprise & Growth Pro",
       target: "billing" as AdminSectionId,
     },
     {
@@ -117,6 +289,14 @@ export const SuperAdminOverview: React.FC<Props> = ({
       positive: true,
       meta: `${snapshot.wallets.length} active ledgers`,
       target: "wallets" as AdminSectionId,
+    },
+    {
+      label: "Active job listings",
+      value: activeJobsCount.toLocaleString("en-IN"),
+      delta: `${pendingJobs.length} held in moderation`,
+      positive: pendingJobs.length === 0,
+      meta: `${snapshot.applications.length} ATS applications`,
+      target: "jobs" as AdminSectionId,
     },
   ];
 
@@ -161,7 +341,105 @@ export const SuperAdminOverview: React.FC<Props> = ({
 
   return (
     <div className="space-y-6">
-      {/* Row 1: Asymmetric Grid — 4 Pure Stat Numbers + Tactile CIR Credential Specimen (Moment #2) */}
+      {/* Section 1: Candidates — 8 Boxes in 2 Rows × 4 Columns */}
+      <section
+        aria-label="Candidate accounts and revenue"
+        className="rounded-xl border border-[#111827]/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#11141c] p-5 space-y-3.5"
+      >
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h2 className="text-[15px] font-medium text-[#111827] dark:text-[#eef0f5]">
+            Candidates · Accounts, verification &amp; revenue
+          </h2>
+          <span className="font-mono text-xs text-[#6b7487] tabular-nums">
+            Total {formatINR(candTotalRev.total)}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+          {candidateBoxes.map((box) => (
+            <button
+              key={box.label}
+              type="button"
+              onClick={box.onClick}
+              className={`group rounded-lg border p-4 text-left transition-colors duration-150 cursor-pointer flex flex-col justify-between ${
+                box.highlight
+                  ? "border-[#002C66]/25 bg-[#002C66]/[0.03] hover:border-[#002C66]/55 hover:bg-white dark:bg-[#1a2234]"
+                  : "border-[#111827]/[0.08] dark:border-white/[0.08] bg-[#f5f7fa] dark:bg-[#1a1e28] hover:border-[#002C66]/40 hover:bg-white dark:hover:bg-[#11141c]"
+              }`}
+            >
+              <div className="flex items-start justify-between gap-2">
+                <span className="inline-flex items-center gap-1.5 text-xs font-normal text-[#4b5565] dark:text-[#a3a9b8] leading-snug">
+                  {box.alert && (
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#d97706] shrink-0" aria-hidden="true" />
+                  )}
+                  {box.label}
+                </span>
+                <ArrowUpRight
+                  className="h-3.5 w-3.5 shrink-0 text-[#6b7487] group-hover:text-[#111827] dark:group-hover:text-white transition-colors duration-150"
+                  strokeWidth={1.5}
+                />
+              </div>
+              <p className="mt-3 text-2xl leading-none font-medium text-[#111827] dark:text-[#eef0f5] tabular-nums">
+                {box.value}
+              </p>
+              <p className="mt-2 text-[11px] text-[#6b7487] tabular-nums truncate">
+                {box.meta}
+              </p>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* Section 2: Employers — 8 Boxes in 2 Rows × 4 Columns */}
+      <section
+        aria-label="Employer accounts and revenue"
+        className="rounded-xl border border-[#111827]/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#11141c] p-5 space-y-3.5"
+      >
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h2 className="text-[15px] font-medium text-[#111827] dark:text-[#eef0f5]">
+            Employers · Accounts, verification &amp; revenue
+          </h2>
+          <span className="font-mono text-xs text-[#6b7487] tabular-nums">
+            Total {formatINR(empTotalRev.total)}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+          {employerBoxes.map((box) => (
+            <button
+              key={box.label}
+              type="button"
+              onClick={box.onClick}
+              className={`group rounded-lg border p-4 text-left transition-colors duration-150 cursor-pointer flex flex-col justify-between ${
+                box.highlight
+                  ? "border-[#002C66]/25 bg-[#002C66]/[0.03] hover:border-[#002C66]/55 hover:bg-white dark:bg-[#1a2234]"
+                  : "border-[#111827]/[0.08] dark:border-white/[0.08] bg-[#f5f7fa] dark:bg-[#1a1e28] hover:border-[#002C66]/40 hover:bg-white dark:hover:bg-[#11141c]"
+              }`}
+            >
+              <div className="flex items-start justify-between gap-2">
+                <span className="inline-flex items-center gap-1.5 text-xs font-normal text-[#4b5565] dark:text-[#a3a9b8] leading-snug">
+                  {box.alert && (
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#d97706] shrink-0" aria-hidden="true" />
+                  )}
+                  {box.label}
+                </span>
+                <ArrowUpRight
+                  className="h-3.5 w-3.5 shrink-0 text-[#6b7487] group-hover:text-[#111827] dark:group-hover:text-white transition-colors duration-150"
+                  strokeWidth={1.5}
+                />
+              </div>
+              <p className="mt-3 text-2xl leading-none font-medium text-[#111827] dark:text-[#eef0f5] tabular-nums">
+                {box.value}
+              </p>
+              <p className="mt-2 text-[11px] text-[#6b7487] tabular-nums truncate">
+                {box.meta}
+              </p>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* Section 3: Asymmetric Grid — 4 Treasury/Marketplace Figures + Tactile CIR Credential Specimen */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-4">
         <div className="xl:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
           {primaryStats.map((stat) => (

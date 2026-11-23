@@ -251,7 +251,7 @@ export const SuperAdminCandidatesPanel: React.FC<Props> = ({
   };
 
   const selectClass =
-    "h-9 w-full rounded-lg border border-[#111827]/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#11141c] px-3 text-xs font-normal text-[#111827] dark:text-[#eef0f5] focus:border-[#002C66] focus:outline-none transition-colors duration-150 cursor-pointer";
+    "h-9 w-full rounded-lg border border-white/20 bg-white px-3 text-xs font-normal text-[#111827] focus:border-[#FB923C] focus:outline-none transition-colors duration-150 cursor-pointer";
 
   const cohortCards = [
     {
@@ -381,10 +381,10 @@ export const SuperAdminCandidatesPanel: React.FC<Props> = ({
         ))}
       </div>
 
-      {/* 2. Multi-Facet Filter Workbench */}
-      <div className="rounded-xl border border-[#111827]/[0.08] dark:border-white/[0.08] bg-[#f5f7fa] dark:bg-[#161a24] p-4 space-y-4">
+      {/* 2. Multi-Facet Filter Workbench (#002C66 Dark Blue + Highlighted Search Box) */}
+      <div className="rounded-xl border border-[#001D44] bg-[#002C66] p-5 text-white space-y-4 shadow-[0_6px_20px_rgba(0,29,68,0.12)]">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="inline-flex rounded-lg border border-[#111827]/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#11141c] p-1">
+          <div className="inline-flex rounded-lg border border-white/15 bg-[#001F4D] p-1">
             {(
               [
                 { id: "active", label: `Active (${activePool.length})` },
@@ -397,10 +397,10 @@ export const SuperAdminCandidatesPanel: React.FC<Props> = ({
                 type="button"
                 onClick={() => setArchiveView(tab.id)}
                 className={cn(
-                  "rounded px-3 py-1 text-xs font-medium tabular-nums transition-colors duration-150 cursor-pointer",
+                  "rounded-md px-3 py-1 text-xs font-medium tabular-nums transition-colors duration-150 cursor-pointer",
                   archiveView === tab.id
-                    ? "bg-[#002C66] text-white"
-                    : "text-[#4b5565] dark:text-[#a3a9b8] hover:text-[#111827]"
+                    ? "bg-white text-[#002C66]"
+                    : "text-blue-100/80 hover:text-white"
                 )}
               >
                 {tab.label}
@@ -408,21 +408,21 @@ export const SuperAdminCandidatesPanel: React.FC<Props> = ({
             ))}
           </div>
 
-          <div className="relative flex-1 min-w-[200px] max-w-sm">
+          <div className="relative flex-1 min-w-[240px] max-w-md">
             <Search
-              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#6b7487]"
-              strokeWidth={1.5}
+              className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#ea580c]"
+              strokeWidth={1.75}
             />
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Filter candidates"
-              className="h-9 pl-9 text-xs bg-white dark:bg-[#11141c] rounded-lg border-[#111827]/[0.08]"
+              placeholder="Search candidates by name, ID, email, skill, or city"
+              className="h-10 pl-10 pr-4 text-xs font-medium text-[#111827] placeholder:text-[#4b5565] bg-white rounded-lg border-2 border-[#FB923C] shadow-[0_4px_14px_rgba(0,0,0,0.18)] focus-visible:ring-2 focus-visible:ring-[#FB923C]/50 focus-visible:border-[#FB923C]"
             />
           </div>
 
-          <div className="flex flex-wrap items-center gap-1 rounded-lg border border-[#111827]/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#11141c] p-1">
-            <span className="px-2 text-xs text-[#6b7487]">Last active</span>
+          <div className="flex flex-wrap items-center gap-1 rounded-lg border border-white/15 bg-[#001F4D] p-1">
+            <span className="px-2 text-xs text-blue-200/85">Last active</span>
             {(
               [
                 { id: "all", label: "All" },
@@ -439,10 +439,10 @@ export const SuperAdminCandidatesPanel: React.FC<Props> = ({
                 type="button"
                 onClick={() => setActiveWindow(w.id)}
                 className={cn(
-                  "rounded px-2 py-1 text-xs font-mono tabular-nums transition-colors duration-150 cursor-pointer",
+                  "rounded-md px-2 py-1 text-xs font-mono tabular-nums transition-colors duration-150 cursor-pointer",
                   activeWindow === w.id
-                    ? "bg-[#002C66] text-white"
-                    : "text-[#4b5565] dark:text-[#a3a9b8] hover:text-[#111827]"
+                    ? "bg-white text-[#002C66] font-medium"
+                    : "text-blue-100/80 hover:text-white"
                 )}
               >
                 {w.label}
@@ -454,7 +454,7 @@ export const SuperAdminCandidatesPanel: React.FC<Props> = ({
         {/* 10 Sentence-Case Filter Selects */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
           <div>
-            <label className="block text-xs text-[#4b5565] dark:text-[#a3a9b8] mb-1">
+            <label className="block text-xs font-medium text-blue-100/90 mb-1.5">
               Industry
             </label>
             <select
@@ -473,7 +473,7 @@ export const SuperAdminCandidatesPanel: React.FC<Props> = ({
           </div>
 
           <div>
-            <label className="block text-xs text-[#4b5565] dark:text-[#a3a9b8] mb-1">
+            <label className="block text-xs font-medium text-blue-100/90 mb-1.5">
               Account tier
             </label>
             <select
@@ -489,7 +489,7 @@ export const SuperAdminCandidatesPanel: React.FC<Props> = ({
           </div>
 
           <div>
-            <label className="block text-xs text-[#4b5565] dark:text-[#a3a9b8] mb-1">
+            <label className="block text-xs font-medium text-blue-100/90 mb-1.5">
               Location &amp; mode
             </label>
             <select
@@ -509,7 +509,7 @@ export const SuperAdminCandidatesPanel: React.FC<Props> = ({
           </div>
 
           <div>
-            <label className="block text-xs text-[#4b5565] dark:text-[#a3a9b8] mb-1">
+            <label className="block text-xs font-medium text-blue-100/90 mb-1.5">
               Experience
             </label>
             <select
@@ -527,7 +527,7 @@ export const SuperAdminCandidatesPanel: React.FC<Props> = ({
           </div>
 
           <div>
-            <label className="block text-xs text-[#4b5565] dark:text-[#a3a9b8] mb-1">
+            <label className="block text-xs font-medium text-blue-100/90 mb-1.5">
               Job search status
             </label>
             <select
@@ -545,7 +545,7 @@ export const SuperAdminCandidatesPanel: React.FC<Props> = ({
           </div>
 
           <div>
-            <label className="block text-xs text-[#4b5565] dark:text-[#a3a9b8] mb-1">
+            <label className="block text-xs font-medium text-blue-100/90 mb-1.5">
               Freelancer status
             </label>
             <select
@@ -563,7 +563,7 @@ export const SuperAdminCandidatesPanel: React.FC<Props> = ({
           </div>
 
           <div>
-            <label className="block text-xs text-[#4b5565] dark:text-[#a3a9b8] mb-1">
+            <label className="block text-xs font-medium text-blue-100/90 mb-1.5">
               Test attempts &amp; retests
             </label>
             <select
@@ -580,7 +580,7 @@ export const SuperAdminCandidatesPanel: React.FC<Props> = ({
           </div>
 
           <div>
-            <label className="block text-xs text-[#4b5565] dark:text-[#a3a9b8] mb-1">
+            <label className="block text-xs font-medium text-blue-100/90 mb-1.5">
               Domain assessments
             </label>
             <select
@@ -596,7 +596,7 @@ export const SuperAdminCandidatesPanel: React.FC<Props> = ({
           </div>
 
           <div>
-            <label className="block text-xs text-[#4b5565] dark:text-[#a3a9b8] mb-1">
+            <label className="block text-xs font-medium text-blue-100/90 mb-1.5">
               Learning courses
             </label>
             <select
@@ -614,7 +614,7 @@ export const SuperAdminCandidatesPanel: React.FC<Props> = ({
           </div>
 
           <div>
-            <label className="block text-xs text-[#4b5565] dark:text-[#a3a9b8] mb-1">
+            <label className="block text-xs font-medium text-blue-100/90 mb-1.5">
               Events &amp; profile
             </label>
             <select
@@ -646,16 +646,16 @@ export const SuperAdminCandidatesPanel: React.FC<Props> = ({
         </div>
 
         {/* Summary & Bulk Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-[#111827]/[0.08] dark:border-white/[0.08]">
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-3.5 border-t border-white/12">
           <div className="flex flex-wrap items-center gap-3 text-xs">
-            <span className="font-mono text-[#4b5565] dark:text-[#a3a9b8] tabular-nums">
+            <span className="font-mono text-blue-100/90 tabular-nums">
               Showing {filteredCandidates.length} of {candidates.length} candidates
             </span>
             {activeFilterCount > 0 && (
               <button
                 type="button"
                 onClick={resetAllFilters}
-                className="inline-flex items-center gap-1.5 text-xs font-medium text-[#002C66] dark:text-blue-300 hover:underline cursor-pointer"
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-[#FB923C] hover:text-orange-300 hover:underline cursor-pointer"
               >
                 <RotateCcw className="h-3.5 w-3.5" strokeWidth={1.5} />
                 Reset {activeFilterCount} filter{activeFilterCount > 1 ? "s" : ""}
@@ -666,13 +666,13 @@ export const SuperAdminCandidatesPanel: React.FC<Props> = ({
           <div className="flex flex-wrap items-center gap-2">
             {selectedIds.length > 0 && (
               <>
-                <span className="font-mono text-xs text-[#4b5565] tabular-nums">
+                <span className="font-mono text-xs text-blue-100/90 tabular-nums">
                   {selectedIds.length} selected
                 </span>
                 <Button
                   size="sm"
                   variant="outline"
-                  className="h-8 rounded-lg gap-1.5 text-xs font-medium cursor-pointer"
+                  className="h-8 rounded-lg gap-1.5 text-xs font-medium bg-white/10 hover:bg-white/18 text-white border-white/20 cursor-pointer"
                   onClick={() => {
                     onToggleArchive(selectedIds, archiveView !== "archived");
                     setSelectedIds([]);
@@ -680,12 +680,12 @@ export const SuperAdminCandidatesPanel: React.FC<Props> = ({
                 >
                   {archiveView === "archived" ? (
                     <>
-                      <ArchiveRestore className="h-4 w-4 text-[#6b7487]" strokeWidth={1.5} />
+                      <ArchiveRestore className="h-4 w-4 text-blue-100" strokeWidth={1.5} />
                       Unarchive selected
                     </>
                   ) : (
                     <>
-                      <Archive className="h-4 w-4 text-[#6b7487]" strokeWidth={1.5} />
+                      <Archive className="h-4 w-4 text-blue-100" strokeWidth={1.5} />
                       Archive selected
                     </>
                   )}
@@ -693,21 +693,20 @@ export const SuperAdminCandidatesPanel: React.FC<Props> = ({
                 <Button
                   size="sm"
                   variant="outline"
-                  className="h-8 rounded-lg gap-1.5 text-xs font-medium cursor-pointer"
+                  className="h-8 rounded-lg gap-1.5 text-xs font-medium bg-white/10 hover:bg-white/18 text-white border-white/20 cursor-pointer"
                   onClick={() => {
                     onBulkVerifyKyc(selectedIds);
                     setSelectedIds([]);
                   }}
                 >
-                  <Check className="h-4 w-4 text-[#6b7487]" strokeWidth={1.5} />
+                  <Check className="h-4 w-4 text-blue-100" strokeWidth={1.5} />
                   Verify KYC
                 </Button>
               </>
             )}
             <Button
               size="sm"
-              variant="outline"
-              className="h-8 rounded-lg gap-1.5 text-xs font-medium cursor-pointer"
+              className="h-8 rounded-lg gap-1.5 text-xs font-medium bg-white text-[#002C66] hover:bg-blue-50 border-0 cursor-pointer"
               onClick={() => {
                 exportRecordsAsCsv(
                   "candidates-filtered-cohort",
@@ -716,7 +715,7 @@ export const SuperAdminCandidatesPanel: React.FC<Props> = ({
                 toast.success(`Exported ${filteredCandidates.length} candidates`);
               }}
             >
-              <Download className="h-4 w-4 text-[#6b7487]" strokeWidth={1.5} />
+              <Download className="h-4 w-4 text-[#002C66]" strokeWidth={1.5} />
               Export CSV ({filteredCandidates.length})
             </Button>
           </div>
