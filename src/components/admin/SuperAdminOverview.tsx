@@ -12,22 +12,42 @@ import {
 import { Button } from "@/components/ui/button";
 import { formatINR } from "@/data/proData";
 import type { SuperAdminSnapshot } from "@/services/admin/superAdminData";
+import { REGISTRATION_TREND_SERIES } from "@/services/admin/superAdminEnterpriseData";
 import type { InspectedEntity } from "./SuperAdminInspector";
 
 export type AdminSectionId =
   | "overview"
+  | "activity-feed"
+  | "users-all"
+  | "rbac-roles"
   | "candidates"
   | "employers"
   | "kyc"
   | "jobs"
   | "applications"
+  | "recruitment-taxonomy"
   | "assessments"
   | "proctoring"
+  | "cir-config"
+  | "ai-hub"
+  | "lms"
+  | "learning"
+  | "mentors"
+  | "talent-pool"
+  | "interviews"
+  | "events-hub"
+  | "freelancing"
+  | "subscriptions"
   | "billing"
   | "wallets"
-  | "learning"
+  | "finance-ops"
+  | "marketing-cms"
+  | "notifications"
   | "support"
-  | "system";
+  | "support-kb"
+  | "analytics-reports"
+  | "system"
+  | "ops-platform";
 
 export interface OverviewNavigateOptions {
   billingActor?: "all" | "Candidate" | "Employer";
@@ -36,6 +56,8 @@ export interface OverviewNavigateOptions {
 
 interface Props {
   snapshot: SuperAdminSnapshot;
+  pendingCourseApprovals?: number;
+  openFraudAlertsCount?: number;
   onNavigate: (section: AdminSectionId, opts?: OverviewNavigateOptions) => void;
   onInspect: (entity: InspectedEntity) => void;
   onApproveEmployer: (id: string) => void;
@@ -54,6 +76,8 @@ const GROWTH_SERIES = [
 
 export const SuperAdminOverview: React.FC<Props> = ({
   snapshot,
+  pendingCourseApprovals = 2,
+  openFraudAlertsCount = 2,
   onNavigate,
   onInspect,
   onApproveEmployer,
@@ -975,6 +999,116 @@ export const SuperAdminOverview: React.FC<Props> = ({
                 </p>
               </button>
             ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Additive Section: Quick Actions + Platform Registration Trends + Pending Approvals */}
+      <div className="rounded-xl border border-[#111827]/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#11141c] p-5 space-y-3.5">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h3 className="text-[15px] font-medium text-[#111827] dark:text-[#eef0f5]">
+            Quick actions
+          </h3>
+          <span className="text-xs text-[#6b7487]">
+            Direct shortcuts across all 20 TalentCIR modules
+          </span>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5">
+          {(
+            [
+              { label: "Add employer", target: "employers" as AdminSectionId },
+              { label: "Add candidate", target: "candidates" as AdminSectionId },
+              { label: "Approve job", target: "jobs" as AdminSectionId },
+              { label: "Create assessment", target: "cir-config" as AdminSectionId },
+              { label: "Add new course", target: "lms" as AdminSectionId },
+              { label: "Add mentor", target: "mentors" as AdminSectionId },
+              { label: "Create event", target: "events-hub" as AdminSectionId },
+              { label: "Send notification", target: "notifications" as AdminSectionId },
+            ]
+          ).map((act) => (
+            <button
+              key={act.label}
+              type="button"
+              onClick={() => onNavigate(act.target)}
+              className="rounded-lg border border-[#111827]/[0.08] bg-[#f5f7fa] hover:bg-[#002C66] hover:text-white hover:border-[#002C66] px-3 py-2.5 text-xs font-medium text-[#111827] transition-colors duration-150 cursor-pointer text-left flex items-center justify-between gap-1.5"
+            >
+              <span className="truncate">{act.label}</span>
+              <ArrowUpRight className="h-3.5 w-3.5 shrink-0 opacity-70" strokeWidth={1.5} />
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-5">
+        <div className="xl:col-span-8 rounded-xl border border-[#111827]/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#11141c] p-5">
+          <div className="flex flex-wrap items-baseline justify-between gap-2 mb-4">
+            <div>
+              <h3 className="text-[15px] font-medium text-[#111827] dark:text-[#eef0f5]">
+                Platform registration trends
+              </h3>
+              <p className="text-xs text-[#6b7487]">
+                Monthly candidate and employer onboarding velocity
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => onNavigate("analytics-reports")}
+              className="text-xs font-medium text-[#002C66] hover:underline cursor-pointer"
+            >
+              Open BI analytics
+            </button>
+          </div>
+          <div className="h-56 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={REGISTRATION_TREND_SERIES} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="2 4" stroke="rgba(17,24,39,0.07)" vertical={false} />
+                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6b7487", fontFamily: "ui-monospace, monospace" }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6b7487", fontFamily: "ui-monospace, monospace" }} />
+                <Tooltip contentStyle={{ borderRadius: 8, border: "1px solid rgba(17,24,39,0.1)", fontSize: 12 }} />
+                <Line type="monotone" dataKey="candidates" name="Candidates" stroke="#002C66" strokeWidth={2.25} dot={{ r: 3, fill: "#002C66" }} />
+                <Line type="monotone" dataKey="employers" name="Employers" stroke="#ea580c" strokeWidth={2} dot={{ r: 3, fill: "#ea580c" }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="xl:col-span-4 rounded-xl border border-[#111827]/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#11141c] p-5 flex flex-col justify-between">
+          <div>
+            <div className="flex items-baseline justify-between mb-4">
+              <h3 className="text-[15px] font-medium text-[#111827] dark:text-[#eef0f5]">
+                Pending approvals
+              </h3>
+              <button
+                type="button"
+                onClick={() => onNavigate("ops-platform")}
+                className="text-xs font-medium text-[#002C66] hover:underline cursor-pointer"
+              >
+                Workflow rules
+              </button>
+            </div>
+            <div className="space-y-2">
+              {[
+                { label: "Employer verification", count: pendingVerificationEmployers.length, target: "kyc" as AdminSectionId },
+                { label: "Job postings", count: pendingJobs.length, target: "jobs" as AdminSectionId },
+                { label: "Candidate verification", count: pendingVerificationCandidates.length, target: "kyc" as AdminSectionId },
+                { label: "Refund requests", count: snapshot.transactions.filter((t) => t.status === "pending" || t.status === "refunded").length, target: "finance-ops" as AdminSectionId },
+                { label: "Course approvals", count: pendingCourseApprovals, target: "lms" as AdminSectionId },
+                { label: "Fraud & risk alerts", count: openFraudAlertsCount, target: "ops-platform" as AdminSectionId },
+              ].map((row) => (
+                <button
+                  key={row.label}
+                  type="button"
+                  onClick={() => onNavigate(row.target)}
+                  className="w-full rounded-lg border border-[#111827]/[0.08] bg-[#f5f7fa] hover:border-[#002C66]/40 px-3.5 py-2.5 flex items-center justify-between text-xs transition-colors duration-150 cursor-pointer"
+                >
+                  <span className="font-medium text-[#111827]">{row.label}</span>
+                  <span className="inline-flex items-center gap-1.5 font-mono text-[#4b5565] tabular-nums">
+                    {row.count > 0 && <span className="h-1.5 w-1.5 rounded-full bg-[#d97706]" />}
+                    {row.count} pending
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>

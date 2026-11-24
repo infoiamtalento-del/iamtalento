@@ -116,5 +116,29 @@ describe("SuperAdminDashboard", () => {
     });
     expect(screen.getByText("BrightCart D2C Commerce")).toBeInTheDocument();
     expect(screen.queryByText("Super30 Technologies")).not.toBeInTheDocument();
+
+    // Navigate to Module 02: User Management, test RBAC tab & Admin Impersonation
+    fireEvent.click(screen.getByRole("button", { name: /All Users & Accounts/i }));
+    expect(screen.getByText("Centralized User Management")).toBeInTheDocument();
+    const impersonateBtns = screen.getAllByRole("button", { name: /Impersonate/i });
+    fireEvent.click(impersonateBtns[0]);
+    expect(screen.getByText(/Impersonation session active:/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /Exit impersonation/i }));
+
+    // Filter sidebar to Module 07: AI Intelligence Hub and verify 11 AI engines render
+    fireEvent.change(screen.getByLabelText("Filter Super Admin modules"), {
+      target: { value: "AI Intelligence" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /AI Features, Usage & Logs/i }));
+    expect(screen.getByText("AI Intelligence Hub (11 Engines)")).toBeInTheDocument();
+    expect(screen.getByText("AI Career Intelligence (CIR)")).toBeInTheDocument();
+    expect(screen.getByText("AI Interview Copilot (Linda)")).toBeInTheDocument();
+
+    // Navigate to Module 20: Workflows, Fraud & Security
+    fireEvent.change(screen.getByLabelText("Filter Super Admin modules"), {
+      target: { value: "Workflows" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /Workflows, Fraud & Security/i }));
+    expect(screen.getByText(/Employer KYB · SLA 4h/i)).toBeInTheDocument();
   });
 });

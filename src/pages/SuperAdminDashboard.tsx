@@ -23,6 +23,21 @@ import {
   Menu,
   X,
   Sliders,
+  Activity,
+  Bot,
+  UserCheck,
+  Video,
+  Calendar,
+  Laptop,
+  CreditCard,
+  Megaphone,
+  Bell,
+  BarChart3,
+  Settings,
+  Lock,
+  Layers,
+  Receipt,
+  BookMarked,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,6 +58,10 @@ import {
   type SuperAdminAssessmentAttempt,
 } from "@/services/admin/superAdminData";
 import {
+  createInitialEnterpriseState,
+  type SuperAdminEnterpriseState,
+} from "@/services/admin/superAdminEnterpriseData";
+import {
   adminReviewEmployer,
   adminModerateJob,
 } from "@/services/admin/adminService";
@@ -57,59 +76,196 @@ import {
 } from "@/components/admin/SuperAdminInspector";
 import { SuperAdminCandidatesPanel } from "@/components/admin/SuperAdminCandidatesPanel";
 import { SuperAdminEmployersPanel } from "@/components/admin/SuperAdminEmployersPanel";
+import { AdminUsersAndRbacPanel } from "@/components/admin/modules/AdminUsersAndRbacPanel";
+import { AdminEcosystemOpsPanel } from "@/components/admin/modules/AdminEcosystemOpsPanel";
+import { AdminEventsAndFreelancePanel } from "@/components/admin/modules/AdminEventsAndFreelancePanel";
+import { AdminMonetizationPanel } from "@/components/admin/modules/AdminMonetizationPanel";
+import { AdminGrowthAndCommsPanel } from "@/components/admin/modules/AdminGrowthAndCommsPanel";
+import { AdminAnalyticsAndPlatformPanel } from "@/components/admin/modules/AdminAnalyticsAndPlatformPanel";
 
 interface NavGroup {
   id: string;
+  num: string;
   label: string;
   items: Array<{
     id: AdminSectionId;
     label: string;
     icon: React.ComponentType<{ className?: string; strokeWidth?: number | string }>;
-    badgeKey?: "candidates" | "employers" | "kyc" | "jobs" | "applications" | "assessments" | "proctoring" | "billing" | "wallets" | "learning" | "support" | "system";
+    badgeKey?: string;
   }>;
 }
 
 const NAV_GROUPS: NavGroup[] = [
   {
-    id: "users",
-    label: "Users & Identity",
+    id: "dashboard",
+    num: "01",
+    label: "Dashboard",
     items: [
-      { id: "candidates", label: "Candidates Directory", icon: Users, badgeKey: "candidates" },
+      { id: "overview", label: "Executive Overview", icon: LayoutDashboard },
+      { id: "activity-feed", label: "Activity Feed", icon: Activity },
+    ],
+  },
+  {
+    id: "users",
+    num: "02",
+    label: "User Management",
+    items: [
+      { id: "users-all", label: "All Users & Accounts", icon: Users, badgeKey: "allUsers" },
+      { id: "rbac-roles", label: "Admin Roles & RBAC", icon: Lock, badgeKey: "roles" },
+    ],
+  },
+  {
+    id: "employers",
+    num: "03",
+    label: "Employer Management",
+    items: [
       { id: "employers", label: "Employers & Tenants", icon: Building2, badgeKey: "employers" },
       { id: "kyc", label: "KYC & KYB Verification", icon: ShieldCheck, badgeKey: "kyc" },
     ],
   },
   {
+    id: "candidates",
+    num: "04",
+    label: "Candidate Management",
+    items: [
+      { id: "candidates", label: "Candidates Directory", icon: Users, badgeKey: "candidates" },
+    ],
+  },
+  {
     id: "recruitment",
-    label: "Recruitment & ATS",
+    num: "05",
+    label: "Recruitment & Jobs",
     items: [
       { id: "jobs", label: "All Jobs & Moderation", icon: Briefcase, badgeKey: "jobs" },
       { id: "applications", label: "Global ATS Pipeline", icon: FileText, badgeKey: "applications" },
+      { id: "recruitment-taxonomy", label: "Categories, Skills & Cities", icon: Layers },
     ],
   },
   {
     id: "assessments",
-    label: "CIR & AI Proctoring",
+    num: "06",
+    label: "Assessments & CIR",
     items: [
       { id: "assessments", label: "Assessments & CIR", icon: GraduationCap, badgeKey: "assessments" },
       { id: "proctoring", label: "30-Layer Proctoring", icon: ShieldAlert, badgeKey: "proctoring" },
+      { id: "cir-config", label: "CIR Config & Question Bank", icon: Sliders },
+    ],
+  },
+  {
+    id: "ai-hub",
+    num: "07",
+    label: "AI Intelligence Hub",
+    items: [
+      { id: "ai-hub", label: "AI Features, Usage & Logs", icon: Bot, badgeKey: "aiFeatures" },
+    ],
+  },
+  {
+    id: "lms",
+    num: "08",
+    label: "Learning Management",
+    items: [
+      { id: "lms", label: "Courses, Content & Certs", icon: BookOpen, badgeKey: "lmsCourses" },
+      { id: "learning", label: "LMS, Mentors & Events", icon: BookMarked, badgeKey: "learning" },
+    ],
+  },
+  {
+    id: "mentors",
+    num: "09",
+    label: "Mentor Management",
+    items: [
+      { id: "mentors", label: "Mentors, Sessions & Payouts", icon: UserCheck, badgeKey: "mentors" },
+    ],
+  },
+  {
+    id: "talent-pool",
+    num: "10",
+    label: "Talent Pool & CRM",
+    items: [
+      { id: "talent-pool", label: "Talent Database & Requests", icon: Users, badgeKey: "talentRequests" },
+    ],
+  },
+  {
+    id: "interviews",
+    num: "11",
+    label: "Interview Management",
+    items: [
+      { id: "interviews", label: "Interviews & AI Mocks", icon: Video, badgeKey: "interviews" },
+    ],
+  },
+  {
+    id: "events",
+    num: "12",
+    label: "Hackathons & Events",
+    items: [
+      { id: "events-hub", label: "Hackathons, Mixers & Webinars", icon: Calendar, badgeKey: "events" },
+    ],
+  },
+  {
+    id: "freelancing",
+    num: "13",
+    label: "Freelancing",
+    items: [
+      { id: "freelancing", label: "Freelancers, Projects & Escrow", icon: Laptop, badgeKey: "freelance" },
+    ],
+  },
+  {
+    id: "subscriptions",
+    num: "14",
+    label: "Subscriptions & Plans",
+    items: [
+      { id: "subscriptions", label: "Plans, Coupons & Renewals", icon: CreditCard, badgeKey: "plans" },
     ],
   },
   {
     id: "finance",
-    label: "Revenue & Wallets",
+    num: "15",
+    label: "Payments & Finance",
     items: [
       { id: "billing", label: "Orders, GST & SaaS", icon: IndianRupee, badgeKey: "billing" },
       { id: "wallets", label: "Wallets & Ledger", icon: Wallet, badgeKey: "wallets" },
+      { id: "finance-ops", label: "Payouts, GST & Commissions", icon: Receipt },
     ],
   },
   {
-    id: "ops",
-    label: "Learning, Support & DB",
+    id: "marketing",
+    num: "16",
+    label: "Marketing & CMS",
     items: [
-      { id: "learning", label: "LMS, Mentors & Events", icon: BookOpen, badgeKey: "learning" },
+      { id: "marketing-cms", label: "Website CMS & Campaigns", icon: Megaphone, badgeKey: "campaigns" },
+    ],
+  },
+  {
+    id: "notifications",
+    num: "17",
+    label: "Notifications",
+    items: [
+      { id: "notifications", label: "Broadcasts & Automation", icon: Bell, badgeKey: "notifications" },
+    ],
+  },
+  {
+    id: "support",
+    num: "18",
+    label: "Support & Grievances",
+    items: [
       { id: "support", label: "Support Desk & SLA", icon: Headphones, badgeKey: "support" },
+      { id: "support-kb", label: "Knowledge Base & FAQ", icon: BookOpen },
+    ],
+  },
+  {
+    id: "analytics",
+    num: "19",
+    label: "Analytics & Reports",
+    items: [
+      { id: "analytics-reports", label: "BI Analytics & Exports", icon: BarChart3 },
+    ],
+  },
+  {
+    id: "system",
+    num: "20",
+    label: "System Settings",
+    items: [
       { id: "system", label: "Audit Logs & DB Schema", icon: Database, badgeKey: "system" },
+      { id: "ops-platform", label: "Workflows, Fraud & Security", icon: Settings, badgeKey: "fraud" },
     ],
   },
 ];
@@ -118,6 +274,18 @@ const SECTION_META: Record<AdminSectionId, { title: string; subtitle: string }> 
   overview: {
     title: "Super Admin Command Center",
     subtitle: "Live Supabase tables, candidate and employer registries, proctoring and revenue",
+  },
+  "activity-feed": {
+    title: "Platform Activity Feed",
+    subtitle: "Live chronological stream across candidates, employers, proctoring, finance and admin ops",
+  },
+  "users-all": {
+    title: "Centralized User Management",
+    subtitle: "All registered candidates, employers and internal admin staff with verification, notes and impersonation",
+  },
+  "rbac-roles": {
+    title: "Admin Roles & RBAC Permissions",
+    subtitle: "Role-based access matrix across Super Admin, Finance, Recruitment, Learning and Support staff",
   },
   candidates: {
     title: "Candidates Directory (360° Profiles)",
@@ -139,6 +307,10 @@ const SECTION_META: Record<AdminSectionId, { title: string; subtitle: string }> 
     title: "Global Applications & ATS Lifecycle",
     subtitle: "Cross-company applications, skill match scores, interview slots and BGV state",
   },
+  "recruitment-taxonomy": {
+    title: "Job Categories, Industries, Skills & Locations",
+    subtitle: "Master recruitment taxonomy powering job creation, search filters and skill matching",
+  },
   assessments: {
     title: "Skill Assessments & Verifiable CIR Credentials",
     subtitle: "Aptitude, communication, domain, coding and interview scorecards",
@@ -146,6 +318,46 @@ const SECTION_META: Record<AdminSectionId, { title: string; subtitle: string }> 
   proctoring: {
     title: "30-Layer AI Proctoring & Integrity Telemetry",
     subtitle: "Session trust scores, display and focus telemetry, and credential overrides",
+  },
+  "cir-config": {
+    title: "CIR Score Configuration & Question Bank",
+    subtitle: "Competency weightages, pass/distinction thresholds, retake policies and proctored questions",
+  },
+  "ai-hub": {
+    title: "AI Intelligence Hub (11 Engines)",
+    subtitle: "Enable/disable controls, model and prompt config, token spend and API response telemetry",
+  },
+  lms: {
+    title: "Learning Management System (Courses & Certificates)",
+    subtitle: "Course catalog, curriculum approvals, modules, enrolments, completion rates and credentials",
+  },
+  learning: {
+    title: "LMS Courses, Mentors, Hackathons & Networking",
+    subtitle: "Code Arena hackathons, learning tracks, mentor sessions and city mixers",
+  },
+  mentors: {
+    title: "Mentor Management & 1:1 Sessions",
+    subtitle: "Mentor verification, hourly rates, availability, bookings, payouts and ratings",
+  },
+  "talent-pool": {
+    title: "Talent Pool & Employer CRM",
+    subtitle: "High-readiness verified CIR talent, employer shortlist requests and search analytics",
+  },
+  interviews: {
+    title: "Interview Management & AI Mock Interviews",
+    subtitle: "Employer schedules, Linda AI mock rubrics, panel feedback and interview dispute resolution",
+  },
+  "events-hub": {
+    title: "Hackathons, Networking Events & Webinars",
+    subtitle: "Sponsors, teams, submissions, winners, job auction bids, city mixers and mentor webinars",
+  },
+  freelancing: {
+    title: "Freelancing Marketplace & Escrow Operations",
+    subtitle: "Verified freelancers, project approvals, proposals, escrow payouts and dispute mediation",
+  },
+  subscriptions: {
+    title: "Subscriptions, Plans, Coupons & Renewals",
+    subtitle: "All 8 monetization plan segments, pricing tiers, free trials and discount campaigns",
   },
   billing: {
     title: "Revenue, Razorpay Orders, Subscriptions & GST",
@@ -155,17 +367,37 @@ const SECTION_META: Record<AdminSectionId, { title: string; subtitle: string }> 
     title: "Wallet Escrow Accounts & Immutable Ledger",
     subtitle: "Employer and candidate credit balances, inflows, outflows and manual entries",
   },
-  learning: {
-    title: "LMS Courses, Mentors, Hackathons & Networking",
-    subtitle: "Code Arena hackathons, learning tracks, mentor sessions and city mixers",
+  "finance-ops": {
+    title: "Finance Operations · Payouts, GST & Commissions",
+    subtitle: "Mentor and freelancer payout releases, GSTR-1/3B tax summaries, refunds and platform fees",
+  },
+  "marketing-cms": {
+    title: "Marketing Campaigns & Website CMS",
+    subtitle: "Website pages, blogs, case studies, SEO metadata and multi-channel growth campaigns",
+  },
+  notifications: {
+    title: "Notifications & Segmented Broadcasts",
+    subtitle: "Push, email, SMS, WhatsApp and system alerts with automated triggers and open rates",
   },
   support: {
     title: "Support Tickets & SLA Escalation Desk",
     subtitle: "Employer KYB, GST billing and candidate proctoring threads",
   },
+  "support-kb": {
+    title: "Support Knowledge Base & FAQ Management",
+    subtitle: "Self-serve documentation for candidates, employers, mentors and GST billing",
+  },
+  "analytics-reports": {
+    title: "Management Analytics & BI Reports",
+    subtitle: "User, recruitment, CIR assessment, learning, financial and platform intelligence with exports",
+  },
   system: {
     title: "Immutable Audit Logs, Feature Flags & Database Explorer",
     subtitle: "Security event log, platform switches and Postgres schema row counts",
+  },
+  "ops-platform": {
+    title: "Platform Operations · Workflows, Fraud, Automation & Compliance",
+    subtitle: "Multi-level approval rules, fraud detection alerts, automations, data backups, security and DPDP",
   },
 };
 
@@ -207,16 +439,41 @@ const SuperAdminDashboard: React.FC = () => {
     SECTION_META[initialSection] ? initialSection : "overview"
   );
   const [snapshot, setSnapshot] = useState<SuperAdminSnapshot | null>(null);
+  const [enterprise, setEnterprise] = useState<SuperAdminEnterpriseState>(() =>
+    createInitialEnterpriseState()
+  );
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [sidebarQuery, setSidebarQuery] = useState("");
+  const [impersonating, setImpersonating] = useState<{
+    id: string;
+    name: string;
+    email: string;
+    role: "Candidate" | "Employer";
+  } | null>(null);
 
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
+    dashboard: true,
     users: true,
+    employers: true,
+    candidates: true,
     recruitment: true,
     assessments: true,
     finance: true,
-    ops: true,
+    "ai-hub": false,
+    lms: false,
+    mentors: false,
+    "talent-pool": false,
+    interviews: false,
+    events: false,
+    freelancing: false,
+    subscriptions: false,
+    marketing: false,
+    notifications: false,
+    support: true,
+    analytics: false,
+    system: true,
   });
 
   // Table Filters & Global Omni-Search
@@ -702,6 +959,8 @@ const SuperAdminDashboard: React.FC = () => {
   const badgeCounts = useMemo(() => {
     if (!snapshot) return {} as Record<string, number>;
     return {
+      allUsers: snapshot.candidates.length + snapshot.employers.length + enterprise.staffAccounts.length,
+      roles: enterprise.roles.length,
       candidates: snapshot.candidates.length,
       employers: snapshot.employers.length,
       kyc:
@@ -711,147 +970,199 @@ const SuperAdminDashboard: React.FC = () => {
       applications: snapshot.applications.length,
       assessments: snapshot.assessments.length,
       proctoring: snapshot.assessments.filter((a) => a.status === "Flagged").length,
+      aiFeatures: enterprise.aiFeatures.filter((f) => f.enabled).length,
+      lmsCourses: enterprise.courses.length,
+      mentors: enterprise.mentors.length,
+      talentRequests: enterprise.talentRequests.length,
+      interviews: enterprise.interviews.length,
+      events: enterprise.hackathons.length + enterprise.networkingEvents.length + enterprise.webinars.length,
+      freelance: enterprise.freelanceProjects.length,
+      plans: enterprise.plans.length,
       billing: snapshot.transactions.length,
       wallets: snapshot.wallets.length,
       learning: snapshot.learningEvents.length,
+      campaigns: enterprise.campaigns.length,
+      notifications: enterprise.notifications.length,
       support: snapshot.tickets.filter((t) => t.status !== "resolved").length,
       system: snapshot.tableHealth.length,
+      fraud: enterprise.fraudAlerts.filter((f) => f.status === "open" || f.status === "investigating").length,
     };
-  }, [snapshot]);
+  }, [snapshot, enterprise]);
 
   const handleExportCurrentSection = () => {
     if (!snapshot) return;
     const map: Record<AdminSectionId, unknown[]> = {
       overview: snapshot.tableHealth as unknown[],
+      "activity-feed": snapshot.auditLogs as unknown[],
+      "users-all": [...snapshot.candidates, ...snapshot.employers] as unknown[],
+      "rbac-roles": enterprise.roles as unknown[],
       candidates: snapshot.candidates as unknown[],
       employers: snapshot.employers as unknown[],
       kyc: snapshot.employers.filter((e) => e.verificationStatus === "pending") as unknown[],
       jobs: snapshot.jobs as unknown[],
       applications: snapshot.applications as unknown[],
+      "recruitment-taxonomy": [enterprise.taxonomy] as unknown[],
       assessments: snapshot.assessments as unknown[],
       proctoring: snapshot.assessments as unknown[],
+      "cir-config": enterprise.questionBank as unknown[],
+      "ai-hub": enterprise.aiFeatures as unknown[],
+      lms: enterprise.courses as unknown[],
+      learning: snapshot.learningEvents as unknown[],
+      mentors: enterprise.mentors as unknown[],
+      "talent-pool": enterprise.talentRequests as unknown[],
+      interviews: enterprise.interviews as unknown[],
+      "events-hub": enterprise.hackathons as unknown[],
+      freelancing: enterprise.freelanceProjects as unknown[],
+      subscriptions: enterprise.plans as unknown[],
       billing: snapshot.transactions as unknown[],
       wallets: snapshot.wallets as unknown[],
-      learning: snapshot.learningEvents as unknown[],
+      "finance-ops": enterprise.payouts as unknown[],
+      "marketing-cms": enterprise.cmsPages as unknown[],
+      notifications: enterprise.notifications as unknown[],
       support: snapshot.tickets as unknown[],
+      "support-kb": enterprise.kbArticles as unknown[],
+      "analytics-reports": snapshot.tableHealth as unknown[],
       system: snapshot.auditLogs as unknown[],
+      "ops-platform": enterprise.fraudAlerts as unknown[],
     };
     exportRecordsAsCsv(`talentcir-admin-${activeSection}`, map[activeSection] as Array<Record<string, unknown>>);
     toast.success(`Exported ${activeSection} CSV report`);
   };
 
-  const renderSidebarContent = () => (
-    <>
-      {/* 64px Brand Bar on 4px Grid */}
-      <div className="shrink-0">
-        <div className="h-16 min-h-16 px-5 bg-[#002C66] border-b border-white/10 flex items-center justify-between gap-2">
-          <Link to="/" className="inline-flex items-center focus:outline-none" aria-label="TalentCIR Home">
-            <img
-              src={siteLogo.url}
-              alt="TalentCIR"
-              className="h-8 w-auto object-contain brightness-0 invert"
-            />
-          </Link>
-        </div>
+  const renderSidebarContent = () => {
+    const sq = sidebarQuery.trim().toLowerCase();
+    const visibleNavGroups = NAV_GROUPS.map((g) => ({
+      ...g,
+      items: sq
+        ? g.items.filter(
+            (i) =>
+              i.label.toLowerCase().includes(sq) ||
+              g.label.toLowerCase().includes(sq) ||
+              g.num.includes(sq)
+          )
+        : g.items,
+    })).filter((g) => g.items.length > 0);
 
-        <div className="px-5 py-2.5 bg-[#002250] border-b border-white/10 flex items-center justify-between gap-2">
-          <span className="font-mono text-xs text-blue-100">Super Admin</span>
-          <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-blue-200/85">
-            <span className={cn("h-1.5 w-1.5 rounded-full", snapshot?.liveDbConnected ? "bg-[#4cc38a]" : "bg-[#d97706]")} />
-            {snapshot?.liveDbConnected ? "Live DB" : "Syncing"}
-          </span>
-        </div>
-      </div>
+    return (
+      <>
+        {/* 64px Brand Bar on 4px Grid */}
+        <div className="shrink-0">
+          <div className="h-16 min-h-16 px-5 bg-[#002C66] border-b border-white/10 flex items-center justify-between gap-2">
+            <Link to="/" className="inline-flex items-center focus:outline-none" aria-label="TalentCIR Home">
+              <img
+                src={siteLogo.url}
+                alt="TalentCIR"
+                className="h-8 w-auto object-contain brightness-0 invert"
+              />
+            </Link>
+          </div>
 
-      {/* Navigation: 36px rows, 16px icons, sentence-case groups */}
-      <div className="flex-1 overflow-y-auto px-3 py-4 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.2)_transparent]">
-        <button
-          type="button"
-          onClick={() => selectSection("overview")}
-          className={cn(
-            "relative flex h-9 w-full items-center gap-2.5 rounded-lg px-3 text-[13px] transition-colors duration-150 text-left cursor-pointer",
-            activeSection === "overview"
-              ? "bg-white/14 text-white font-medium shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]"
-              : "text-blue-100/80 hover:text-white hover:bg-white/8 font-normal"
-          )}
-        >
-          <LayoutDashboard className="h-4 w-4 shrink-0 text-blue-200/85" strokeWidth={1.5} />
-          <span>Executive Overview</span>
-        </button>
+          <div className="px-5 py-2.5 bg-[#002250] border-b border-white/10 flex items-center justify-between gap-2">
+            <span className="font-mono text-xs text-blue-100">Super Admin · 20 Modules</span>
+            <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-blue-200/85">
+              <span className={cn("h-1.5 w-1.5 rounded-full", snapshot?.liveDbConnected ? "bg-[#4cc38a]" : "bg-[#d97706]")} />
+              {snapshot?.liveDbConnected ? "Live DB" : "Syncing"}
+            </span>
+          </div>
 
-        {NAV_GROUPS.map((group) => {
-          const isOpen = Boolean(openGroups[group.id]);
-          return (
-            <div key={group.id} className="pt-5">
-              <button
-                type="button"
-                onClick={() => setOpenGroups((p) => ({ ...p, [group.id]: !p[group.id] }))}
-                className="flex w-full items-center justify-between px-3 pb-2 text-xs font-normal text-blue-200/65 hover:text-white transition-colors duration-150 cursor-pointer"
-              >
-                <span>{group.label}</span>
-                <ChevronDown className={cn("h-3.5 w-3.5 transition-transform duration-150", isOpen && "rotate-180")} strokeWidth={1.5} />
-              </button>
-
-              {isOpen && (
-                <div className="space-y-0.5">
-                  {group.items.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = activeSection === item.id;
-                    const count = item.badgeKey ? badgeCounts[item.badgeKey] : undefined;
-                    const isAlert = item.id === "kyc" || item.id === "proctoring" || item.id === "support";
-                    return (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => selectSection(item.id)}
-                        className={cn(
-                          "relative flex h-9 w-full items-center gap-2.5 rounded-lg px-3 text-[13px] transition-colors duration-150 text-left cursor-pointer",
-                          isActive
-                            ? "bg-white/14 text-white font-medium shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]"
-                            : "text-blue-100/80 hover:text-white hover:bg-white/8 font-normal"
-                        )}
-                      >
-                        <Icon className="h-4 w-4 shrink-0 text-blue-200/80" strokeWidth={1.5} />
-                        <span className="flex-1 truncate text-white">{item.label}</span>
-                        {typeof count === "number" && (
-                          <span className="inline-flex items-center gap-1.5 font-mono text-xs text-blue-200/75 tabular-nums">
-                            {isAlert && count > 0 && (
-                              <span className="h-1.5 w-1.5 rounded-full bg-[#fb923c]" />
-                            )}
-                            {count}
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
+          <div className="px-3 py-2 bg-[#002659] border-b border-white/10">
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-blue-200/70" strokeWidth={1.5} />
+              <input
+                type="search"
+                value={sidebarQuery}
+                onChange={(e) => setSidebarQuery(e.target.value)}
+                placeholder="Filter 20 modules"
+                aria-label="Filter Super Admin modules"
+                className="h-8 w-full rounded-lg border border-white/15 bg-[#001F4D] pl-8 pr-2.5 text-xs text-white placeholder:text-blue-200/60 focus:border-[#FB923C] focus:outline-none transition-colors duration-150"
+              />
             </div>
-          );
-        })}
-      </div>
-
-      {/* Bottom Quick Portals */}
-      <div className="p-3 border-t border-white/10 shrink-0">
-        <div className="grid grid-cols-2 gap-2">
-          <Link
-            to="/talento-pro?view=dash&role=employer"
-            className="flex h-8 items-center justify-center gap-1.5 rounded-lg bg-white/8 hover:bg-white/14 px-2 text-xs text-blue-100 hover:text-white transition-colors duration-150"
-          >
-            Employer
-            <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.5} />
-          </Link>
-          <Link
-            to="/talento-pro?view=dash"
-            className="flex h-8 items-center justify-center gap-1.5 rounded-lg bg-white/8 hover:bg-white/14 px-2 text-xs text-blue-100 hover:text-white transition-colors duration-150"
-          >
-            Candidate
-            <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.5} />
-          </Link>
+          </div>
         </div>
-      </div>
-    </>
-  );
+
+        {/* Navigation: 20 Collapsible Modules, 36px rows, 16px icons */}
+        <div className="flex-1 overflow-y-auto px-3 py-3 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.2)_transparent]">
+          {visibleNavGroups.map((group, gIdx) => {
+            const isOpen = sq ? true : Boolean(openGroups[group.id]);
+            const hasActive = group.items.some((i) => i.id === activeSection);
+            return (
+              <div key={group.id} className={cn(gIdx === 0 ? "pt-0" : "pt-3")}>
+                <button
+                  type="button"
+                  onClick={() => setOpenGroups((p) => ({ ...p, [group.id]: !p[group.id] }))}
+                  className={cn(
+                    "flex w-full items-center justify-between px-2.5 pb-1.5 text-xs transition-colors duration-150 cursor-pointer",
+                    hasActive ? "text-white font-medium" : "text-blue-200/70 hover:text-white font-normal"
+                  )}
+                >
+                  <span className="inline-flex items-center gap-2 truncate">
+                    <span className="font-mono text-[10px] text-blue-300/65">{group.num}</span>
+                    <span className="truncate">{group.label}</span>
+                  </span>
+                  <ChevronDown className={cn("h-3.5 w-3.5 shrink-0 transition-transform duration-150", isOpen && "rotate-180")} strokeWidth={1.5} />
+                </button>
+
+                {isOpen && (
+                  <div className="space-y-0.5">
+                    {group.items.map((item) => {
+                      const Icon = item.icon;
+                      const isActive = activeSection === item.id;
+                      const count = item.badgeKey ? badgeCounts[item.badgeKey] : undefined;
+                      const isAlert = item.id === "kyc" || item.id === "proctoring" || item.id === "support" || item.id === "ops-platform";
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => selectSection(item.id)}
+                          className={cn(
+                            "relative flex h-8 w-full items-center gap-2.5 rounded-lg px-2.5 text-xs transition-colors duration-150 text-left cursor-pointer",
+                            isActive
+                              ? "bg-white/14 text-white font-medium shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]"
+                              : "text-blue-100/80 hover:text-white hover:bg-white/8 font-normal"
+                          )}
+                        >
+                          <Icon className="h-4 w-4 shrink-0 text-blue-200/80" strokeWidth={1.5} />
+                          <span className="flex-1 truncate text-white">{item.label}</span>
+                          {typeof count === "number" && (
+                            <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-blue-200/75 tabular-nums">
+                              {isAlert && count > 0 && (
+                                <span className="h-1.5 w-1.5 rounded-full bg-[#fb923c]" />
+                              )}
+                              {count}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Bottom Quick Portals */}
+        <div className="p-3 border-t border-white/10 shrink-0">
+          <div className="grid grid-cols-2 gap-2">
+            <Link
+              to="/talento-pro?view=dash&role=employer"
+              className="flex h-8 items-center justify-center gap-1.5 rounded-lg bg-white/8 hover:bg-white/14 px-2 text-xs text-blue-100 hover:text-white transition-colors duration-150"
+            >
+              Employer
+              <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.5} />
+            </Link>
+            <Link
+              to="/talento-pro?view=dash"
+              className="flex h-8 items-center justify-center gap-1.5 rounded-lg bg-white/8 hover:bg-white/14 px-2 text-xs text-blue-100 hover:text-white transition-colors duration-150"
+            >
+              Candidate
+              <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.5} />
+            </Link>
+          </div>
+        </div>
+      </>
+    );
+  };
 
   const q = tableQuery.trim().toLowerCase();
 
@@ -1000,7 +1311,41 @@ const SuperAdminDashboard: React.FC = () => {
 
       {/* Main Content Body */}
       <main className="flex-1 w-full lg:pl-64">
-        <div className="mx-auto max-w-[1600px] p-6 lg:p-8">
+        <div className="mx-auto max-w-[1600px] p-6 lg:p-8 space-y-5">
+          {/* Audit-Logged Admin Impersonation Session Banner */}
+          {impersonating && (
+            <div
+              role="status"
+              className="rounded-xl border border-[#FB923C] bg-[#002C66] text-white px-4 py-3 flex flex-wrap items-center justify-between gap-3 text-xs"
+            >
+              <div className="flex items-center gap-2.5">
+                <span className="h-2 w-2 rounded-full bg-[#FB923C]" />
+                <span>
+                  Impersonation session active: <strong>{impersonating.name}</strong> ({impersonating.role} · <span className="font-mono">{impersonating.id}</span> · {impersonating.email}) — all actions logged to audit_log
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Link
+                  to={impersonating.role === "Employer" ? "/talento-pro?view=dash&role=employer" : "/talento-pro?view=dash"}
+                  className="rounded-lg bg-white/12 hover:bg-white/20 px-3 py-1.5 text-xs font-medium text-white transition-colors duration-150"
+                >
+                  Open {impersonating.role} view
+                </Link>
+                <Button
+                  size="sm"
+                  className="h-7 bg-white text-[#002C66] hover:bg-blue-50 text-xs cursor-pointer"
+                  onClick={() => {
+                    appendAudit("admin.impersonation_ended", "auth.sessions", impersonating.id, `Ended impersonation session for ${impersonating.name}`);
+                    setImpersonating(null);
+                    toast.success("Exited impersonation session");
+                  }}
+                >
+                  Exit impersonation
+                </Button>
+              </div>
+            </div>
+          )}
+
           {loading || !snapshot ? (
             <div className="rounded-2xl border border-[#111827]/[0.08] bg-white p-16 text-center space-y-3">
               <div className="mx-auto h-8 w-8 rounded-full border-2 border-[#002C66] border-t-transparent animate-spin" />
@@ -1011,6 +1356,8 @@ const SuperAdminDashboard: React.FC = () => {
           ) : activeSection === "overview" ? (
             <SuperAdminOverview
               snapshot={snapshot}
+              pendingCourseApprovals={enterprise.courses.filter((c) => c.approvalStatus === "pending_approval").length}
+              openFraudAlertsCount={enterprise.fraudAlerts.filter((f) => f.status === "open" || f.status === "investigating").length}
               onNavigate={selectSection}
               onInspect={setInspected}
               onApproveEmployer={(id) => handleReviewEmployer(id, "verified")}
@@ -1019,10 +1366,16 @@ const SuperAdminDashboard: React.FC = () => {
             />
           ) : (
             <div className="rounded-2xl border border-[#111827]/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#11141c] p-5 sm:p-6 space-y-5">
-              {/* Universal Filter Bar for Detailed Data Views */}
-              {activeSection !== "system" &&
-                activeSection !== "candidates" &&
-                activeSection !== "employers" && (
+              {/* Universal Filter Bar for Legacy Table Views Only */}
+              {(activeSection === "kyc" ||
+                activeSection === "jobs" ||
+                activeSection === "applications" ||
+                activeSection === "assessments" ||
+                activeSection === "proctoring" ||
+                activeSection === "billing" ||
+                activeSection === "wallets" ||
+                activeSection === "learning" ||
+                activeSection === "support") && (
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#111827]/[0.08] pb-4">
                   <div className="relative flex-1 min-w-[220px] max-w-md">
                     <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#6b7487]" strokeWidth={1.5} />
@@ -1726,6 +2079,113 @@ const SuperAdminDashboard: React.FC = () => {
                     </div>
                   </div>
                 </div>
+              )}
+
+              {/* NEW ENTERPRISE MODULES (01B–20 + 7 CAPABILITIES) */}
+              {(activeSection === "users-all" || activeSection === "rbac-roles") && (
+                <AdminUsersAndRbacPanel
+                  key={activeSection}
+                  snapshot={snapshot}
+                  roles={enterprise.roles}
+                  staffAccounts={enterprise.staffAccounts}
+                  initialTab={activeSection === "rbac-roles" ? "roles" : "all"}
+                  onInspect={setInspected}
+                  onImpersonate={(target) => {
+                    setImpersonating(target);
+                    appendAudit("admin.impersonation_started", "auth.sessions", target.id, `Started audit-logged impersonation for ${target.name} (${target.role})`, "warning");
+                    toast.success(`Impersonation session active for ${target.name}`);
+                  }}
+                  onVerifyCandidate={(id) => handleVerifyCandidate(id, "verified")}
+                  onVerifyEmployer={(id) => handleReviewEmployer(id, "verified")}
+                  onSuspendCandidate={handleSuspendCandidate}
+                  onAddStaff={(staff) => {
+                    setEnterprise((p) => ({ ...p, staffAccounts: [staff, ...p.staffAccounts] }));
+                    appendAudit("staff.provisioned", "admin_users", staff.code, `Provisioned ${staff.fullName} as ${staff.roleLabel}`);
+                    toast.success(`Added ${staff.fullName} (${staff.roleLabel})`);
+                  }}
+                  onToggleStaffStatus={(id) => {
+                    setEnterprise((p) => ({
+                      ...p,
+                      staffAccounts: p.staffAccounts.map((s) =>
+                        s.id === id ? { ...s, status: s.status === "active" ? "suspended" : "active" } : s
+                      ),
+                    }));
+                    appendAudit("staff.status_toggled", "admin_users", id, "Updated internal staff account status", "warning");
+                    toast.success("Updated staff account status");
+                  }}
+                  onUpdateRolePermission={(roleKey, modKey, level) => {
+                    setEnterprise((p) => ({
+                      ...p,
+                      roles: p.roles.map((r) =>
+                        r.key === roleKey ? { ...r, permissions: { ...r.permissions, [modKey]: level } } : r
+                      ),
+                    }));
+                    appendAudit("rbac.permission_updated", "admin_roles", roleKey, `Set ${roleKey}.${modKey} = ${level}`);
+                  }}
+                  onLogAudit={(action, table, entityId, details) => appendAudit(action, table, entityId, details)}
+                />
+              )}
+
+              {(activeSection === "ai-hub" ||
+                activeSection === "lms" ||
+                activeSection === "mentors" ||
+                activeSection === "talent-pool" ||
+                activeSection === "interviews") && (
+                <AdminEcosystemOpsPanel
+                  module={activeSection}
+                  snapshot={snapshot}
+                  enterprise={enterprise}
+                  onUpdateEnterprise={setEnterprise}
+                  onInspect={setInspected}
+                  onLogAudit={(action, table, entityId, details) => appendAudit(action, table, entityId, details)}
+                />
+              )}
+
+              {(activeSection === "events-hub" || activeSection === "freelancing") && (
+                <AdminEventsAndFreelancePanel
+                  mode={activeSection}
+                  snapshot={snapshot}
+                  enterprise={enterprise}
+                  onUpdateEnterprise={setEnterprise}
+                  onLogAudit={(action, table, entityId, details) => appendAudit(action, table, entityId, details)}
+                />
+              )}
+
+              {(activeSection === "subscriptions" ||
+                activeSection === "finance-ops" ||
+                activeSection === "cir-config" ||
+                activeSection === "recruitment-taxonomy") && (
+                <AdminMonetizationPanel
+                  mode={activeSection}
+                  snapshot={snapshot}
+                  enterprise={enterprise}
+                  onUpdateEnterprise={setEnterprise}
+                  onRefundTransaction={handleRefundTransaction}
+                  onLogAudit={(action, table, entityId, details) => appendAudit(action, table, entityId, details)}
+                />
+              )}
+
+              {(activeSection === "marketing-cms" ||
+                activeSection === "notifications" ||
+                activeSection === "support-kb") && (
+                <AdminGrowthAndCommsPanel
+                  mode={activeSection}
+                  enterprise={enterprise}
+                  onUpdateEnterprise={setEnterprise}
+                  onLogAudit={(action, table, entityId, details) => appendAudit(action, table, entityId, details)}
+                />
+              )}
+
+              {(activeSection === "analytics-reports" ||
+                activeSection === "ops-platform" ||
+                activeSection === "activity-feed") && (
+                <AdminAnalyticsAndPlatformPanel
+                  mode={activeSection}
+                  snapshot={snapshot}
+                  enterprise={enterprise}
+                  onUpdateEnterprise={setEnterprise}
+                  onLogAudit={(action, table, entityId, details) => appendAudit(action, table, entityId, details)}
+                />
               )}
             </div>
           )}
