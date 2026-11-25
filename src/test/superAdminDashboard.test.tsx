@@ -41,6 +41,30 @@ describe("SuperAdminDashboard", () => {
       expect(screen.getByText("Super Admin Command Center")).toBeInTheDocument();
     });
 
+    // Reference Sidebar: 7 Section Group Headers
+    expect(screen.getByText("OVERVIEW")).toBeInTheDocument();
+    expect(screen.getByText("USERS")).toBeInTheDocument();
+    expect(screen.getByText("CORE ENGINES")).toBeInTheDocument();
+    expect(screen.getByText("ECOSYSTEM")).toBeInTheDocument();
+    expect(screen.getByText("REVENUE")).toBeInTheDocument();
+    expect(screen.getByText("ENGAGEMENT")).toBeInTheDocument();
+    expect(screen.getByText("INSIGHTS & SYSTEM")).toBeInTheDocument();
+
+    // Global Top Bar: Quick Create dropdown & Sidebar Collapse toggle
+    fireEvent.click(screen.getByRole("button", { name: /Quick Create/i }));
+    expect(screen.getByRole("menuitem", { name: /Add New Employer/i })).toBeInTheDocument();
+    expect(screen.getByRole("menuitem", { name: /Send Notification/i })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /Quick Create/i }));
+
+    fireEvent.click(screen.getByLabelText("Collapse sidebar"));
+    expect(screen.getByLabelText("Expand sidebar")).toBeInTheDocument();
+    fireEvent.click(screen.getByLabelText("Expand sidebar"));
+
+    // Page spec metadata pill toggles Menu ID & Route info
+    fireEvent.click(screen.getByRole("button", { name: /Page spec/i }));
+    expect(screen.getByText("01.01")).toBeInTheDocument();
+    expect(screen.getByText("dashboard.overview.view")).toBeInTheDocument();
+
     // Candidate 8-box KPI & revenue grid (2 rows × 4 cols)
     expect(screen.getByText("Total candidates")).toBeInTheDocument();
     expect(screen.getByText("Premium candidates")).toBeInTheDocument();
@@ -66,17 +90,17 @@ describe("SuperAdminDashboard", () => {
     expect(screen.getByText(/Networking registrants/i)).toBeInTheDocument();
     expect(screen.getByText(/Incomplete company profiles/i)).toBeInTheDocument();
 
-    // Clicking an Employer revenue box drills directly into filtered Billing orders
+    // Clicking an Employer revenue box drills directly into filtered Billing orders (15.01 Transactions)
     fireEvent.click(screen.getByText("Employers hackathon revenue"));
     expect(
       screen.getByText(/Code Arena Season 4 Title Hiring Partner & Challenge Track Sponsorship/i)
     ).toBeInTheDocument();
     expect(screen.queryByText(/Bengaluru CTO & Staff Builders Roundtable/i)).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: /Executive Overview/i }));
+    fireEvent.click(screen.getByRole("button", { name: /^Overview$/i }));
 
-    // Navigate to Candidates Directory (Employee Super Admin)
-    fireEvent.click(screen.getByRole("button", { name: /Candidates Directory/i }));
-    expect(screen.getByText("Candidates Directory (360° Profiles)")).toBeInTheDocument();
+    // Navigate to 04.01 All Candidates (Employee Super Admin)
+    fireEvent.click(screen.getByRole("button", { name: /All Candidates/i }));
+    expect(screen.getByRole("heading", { name: "All Candidates" })).toBeInTheDocument();
 
     // Cohort summary cards & filter options are present
     expect(screen.getAllByText(/Participated in hackathons/i).length).toBeGreaterThanOrEqual(2);
@@ -108,8 +132,12 @@ describe("SuperAdminDashboard", () => {
     expect(screen.getByText(/"talentCirId": "IAT-CIR-900124"/)).toBeInTheDocument();
     fireEvent.click(screen.getByLabelText("Close inspector"));
 
-    // Navigate to Employers & filter by Incomplete Company Profile
-    fireEvent.click(screen.getByRole("button", { name: /Employers & Tenants/i }));
+    // Navigate to 04.03 Resumes sub-view
+    fireEvent.click(screen.getByRole("button", { name: /^Resumes$/i }));
+    expect(screen.getByText("60s video pitches")).toBeInTheDocument();
+
+    // Navigate to 03.01 All Employers & filter by Incomplete Company Profile
+    fireEvent.click(screen.getByRole("button", { name: /All Employers/i }));
     expect(screen.getByText(/Incomplete company profiles/i)).toBeInTheDocument();
     fireEvent.change(screen.getByLabelText("Filter by Company Profile Completion"), {
       target: { value: "incomplete" },
@@ -117,28 +145,30 @@ describe("SuperAdminDashboard", () => {
     expect(screen.getByText("BrightCart D2C Commerce")).toBeInTheDocument();
     expect(screen.queryByText("Super30 Technologies")).not.toBeInTheDocument();
 
-    // Navigate to Module 02: User Management, test RBAC tab & Admin Impersonation
-    fireEvent.click(screen.getByRole("button", { name: /All Users & Accounts/i }));
-    expect(screen.getByText("Centralized User Management")).toBeInTheDocument();
+    // Navigate to Module 02: 02.01 All Users & test Admin Impersonation
+    fireEvent.click(screen.getByRole("button", { name: /All Users/i }));
+    expect(screen.getByRole("heading", { name: "All Users" })).toBeInTheDocument();
     const impersonateBtns = screen.getAllByRole("button", { name: /Impersonate/i });
     fireEvent.click(impersonateBtns[0]);
     expect(screen.getByText(/Impersonation session active:/i)).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /Exit impersonation/i }));
 
-    // Filter sidebar to Module 07: AI Intelligence Hub and verify 11 AI engines render
+    // Filter sidebar to Module 07: AI Intelligence Hub -> 07.01 AI Features
     fireEvent.change(screen.getByLabelText("Filter Super Admin modules"), {
       target: { value: "AI Intelligence" },
     });
-    fireEvent.click(screen.getByRole("button", { name: /AI Features, Usage & Logs/i }));
-    expect(screen.getByText("AI Intelligence Hub (11 Engines)")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /AI Features/i }));
+    expect(screen.getByRole("heading", { name: "AI Features" })).toBeInTheDocument();
     expect(screen.getByText("AI Career Intelligence (CIR)")).toBeInTheDocument();
     expect(screen.getByText("AI Interview Copilot (Linda)")).toBeInTheDocument();
 
-    // Navigate to Module 20: Workflows, Fraud & Security
+    // Navigate to Module 20: 20.06 Workflows & Fraud and verify inner tab switching
     fireEvent.change(screen.getByLabelText("Filter Super Admin modules"), {
       target: { value: "Workflows" },
     });
-    fireEvent.click(screen.getByRole("button", { name: /Workflows, Fraud & Security/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Workflows & Fraud/i }));
     expect(screen.getByText(/Employer KYB · SLA 4h/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("tab", { name: /Fraud Detection/i }));
+    expect(screen.getByRole("tab", { name: /Fraud Detection/i })).toHaveAttribute("aria-selected", "true");
   });
 });

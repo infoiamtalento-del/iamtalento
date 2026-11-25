@@ -5,39 +5,39 @@ import {
   LayoutDashboard,
   Users,
   Building2,
-  ShieldCheck,
+  UserRound,
   Briefcase,
-  FileText,
+  ClipboardCheck,
+  Bot,
   GraduationCap,
-  ShieldAlert,
-  IndianRupee,
+  UserCheck,
+  Contact,
+  Video,
+  Trophy,
+  Handshake,
+  Layers,
   Wallet,
-  BookOpen,
-  Headphones,
-  Database,
+  Megaphone,
+  Bell,
+  LifeBuoy,
+  BarChart3,
+  Settings,
   Search,
   RefreshCw,
   Download,
-  ChevronDown,
+  ChevronRight,
   ExternalLink,
   Menu,
   X,
   Sliders,
-  Activity,
-  Bot,
-  UserCheck,
-  Video,
-  Calendar,
-  Laptop,
-  CreditCard,
-  Megaphone,
-  Bell,
-  BarChart3,
-  Settings,
-  Lock,
-  Layers,
-  Receipt,
-  BookMarked,
+  PanelLeft,
+  Plus,
+  Inbox,
+  Eye,
+  Info,
+  KeyRound,
+  LogOut,
+  User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -62,6 +62,13 @@ import {
   type SuperAdminEnterpriseState,
 } from "@/services/admin/superAdminEnterpriseData";
 import {
+  SUPER_ADMIN_MENU_GROUPS,
+  TOPBAR_QUICK_CREATE_ITEMS,
+  findMenuPageById,
+  findDefaultPageForSection,
+  type PhaseLabel,
+} from "@/services/admin/superAdminMenuTree";
+import {
   adminReviewEmployer,
   adminModerateJob,
 } from "@/services/admin/adminService";
@@ -76,329 +83,51 @@ import {
 } from "@/components/admin/SuperAdminInspector";
 import { SuperAdminCandidatesPanel } from "@/components/admin/SuperAdminCandidatesPanel";
 import { SuperAdminEmployersPanel } from "@/components/admin/SuperAdminEmployersPanel";
-import { AdminUsersAndRbacPanel } from "@/components/admin/modules/AdminUsersAndRbacPanel";
+import {
+  AdminUsersAndRbacPanel,
+  type UsersSubTab,
+} from "@/components/admin/modules/AdminUsersAndRbacPanel";
 import { AdminEcosystemOpsPanel } from "@/components/admin/modules/AdminEcosystemOpsPanel";
 import { AdminEventsAndFreelancePanel } from "@/components/admin/modules/AdminEventsAndFreelancePanel";
 import { AdminMonetizationPanel } from "@/components/admin/modules/AdminMonetizationPanel";
 import { AdminGrowthAndCommsPanel } from "@/components/admin/modules/AdminGrowthAndCommsPanel";
 import { AdminAnalyticsAndPlatformPanel } from "@/components/admin/modules/AdminAnalyticsAndPlatformPanel";
 
-interface NavGroup {
-  id: string;
-  num: string;
-  label: string;
-  items: Array<{
-    id: AdminSectionId;
-    label: string;
-    icon: React.ComponentType<{ className?: string; strokeWidth?: number | string }>;
-    badgeKey?: string;
-  }>;
-}
+type IconComponent = React.ComponentType<{ className?: string; strokeWidth?: number | string }>;
 
-const NAV_GROUPS: NavGroup[] = [
-  {
-    id: "dashboard",
-    num: "01",
-    label: "Dashboard",
-    items: [
-      { id: "overview", label: "Executive Overview", icon: LayoutDashboard },
-      { id: "activity-feed", label: "Activity Feed", icon: Activity },
-    ],
-  },
-  {
-    id: "users",
-    num: "02",
-    label: "User Management",
-    items: [
-      { id: "users-all", label: "All Users & Accounts", icon: Users, badgeKey: "allUsers" },
-      { id: "rbac-roles", label: "Admin Roles & RBAC", icon: Lock, badgeKey: "roles" },
-    ],
-  },
-  {
-    id: "employers",
-    num: "03",
-    label: "Employer Management",
-    items: [
-      { id: "employers", label: "Employers & Tenants", icon: Building2, badgeKey: "employers" },
-      { id: "kyc", label: "KYC & KYB Verification", icon: ShieldCheck, badgeKey: "kyc" },
-    ],
-  },
-  {
-    id: "candidates",
-    num: "04",
-    label: "Candidate Management",
-    items: [
-      { id: "candidates", label: "Candidates Directory", icon: Users, badgeKey: "candidates" },
-    ],
-  },
-  {
-    id: "recruitment",
-    num: "05",
-    label: "Recruitment & Jobs",
-    items: [
-      { id: "jobs", label: "All Jobs & Moderation", icon: Briefcase, badgeKey: "jobs" },
-      { id: "applications", label: "Global ATS Pipeline", icon: FileText, badgeKey: "applications" },
-      { id: "recruitment-taxonomy", label: "Categories, Skills & Cities", icon: Layers },
-    ],
-  },
-  {
-    id: "assessments",
-    num: "06",
-    label: "Assessments & CIR",
-    items: [
-      { id: "assessments", label: "Assessments & CIR", icon: GraduationCap, badgeKey: "assessments" },
-      { id: "proctoring", label: "30-Layer Proctoring", icon: ShieldAlert, badgeKey: "proctoring" },
-      { id: "cir-config", label: "CIR Config & Question Bank", icon: Sliders },
-    ],
-  },
-  {
-    id: "ai-hub",
-    num: "07",
-    label: "AI Intelligence Hub",
-    items: [
-      { id: "ai-hub", label: "AI Features, Usage & Logs", icon: Bot, badgeKey: "aiFeatures" },
-    ],
-  },
-  {
-    id: "lms",
-    num: "08",
-    label: "Learning Management",
-    items: [
-      { id: "lms", label: "Courses, Content & Certs", icon: BookOpen, badgeKey: "lmsCourses" },
-      { id: "learning", label: "LMS, Mentors & Events", icon: BookMarked, badgeKey: "learning" },
-    ],
-  },
-  {
-    id: "mentors",
-    num: "09",
-    label: "Mentor Management",
-    items: [
-      { id: "mentors", label: "Mentors, Sessions & Payouts", icon: UserCheck, badgeKey: "mentors" },
-    ],
-  },
-  {
-    id: "talent-pool",
-    num: "10",
-    label: "Talent Pool & CRM",
-    items: [
-      { id: "talent-pool", label: "Talent Database & Requests", icon: Users, badgeKey: "talentRequests" },
-    ],
-  },
-  {
-    id: "interviews",
-    num: "11",
-    label: "Interview Management",
-    items: [
-      { id: "interviews", label: "Interviews & AI Mocks", icon: Video, badgeKey: "interviews" },
-    ],
-  },
-  {
-    id: "events",
-    num: "12",
-    label: "Hackathons & Events",
-    items: [
-      { id: "events-hub", label: "Hackathons, Mixers & Webinars", icon: Calendar, badgeKey: "events" },
-    ],
-  },
-  {
-    id: "freelancing",
-    num: "13",
-    label: "Freelancing",
-    items: [
-      { id: "freelancing", label: "Freelancers, Projects & Escrow", icon: Laptop, badgeKey: "freelance" },
-    ],
-  },
-  {
-    id: "subscriptions",
-    num: "14",
-    label: "Subscriptions & Plans",
-    items: [
-      { id: "subscriptions", label: "Plans, Coupons & Renewals", icon: CreditCard, badgeKey: "plans" },
-    ],
-  },
-  {
-    id: "finance",
-    num: "15",
-    label: "Payments & Finance",
-    items: [
-      { id: "billing", label: "Orders, GST & SaaS", icon: IndianRupee, badgeKey: "billing" },
-      { id: "wallets", label: "Wallets & Ledger", icon: Wallet, badgeKey: "wallets" },
-      { id: "finance-ops", label: "Payouts, GST & Commissions", icon: Receipt },
-    ],
-  },
-  {
-    id: "marketing",
-    num: "16",
-    label: "Marketing & CMS",
-    items: [
-      { id: "marketing-cms", label: "Website CMS & Campaigns", icon: Megaphone, badgeKey: "campaigns" },
-    ],
-  },
-  {
-    id: "notifications",
-    num: "17",
-    label: "Notifications",
-    items: [
-      { id: "notifications", label: "Broadcasts & Automation", icon: Bell, badgeKey: "notifications" },
-    ],
-  },
-  {
-    id: "support",
-    num: "18",
-    label: "Support & Grievances",
-    items: [
-      { id: "support", label: "Support Desk & SLA", icon: Headphones, badgeKey: "support" },
-      { id: "support-kb", label: "Knowledge Base & FAQ", icon: BookOpen },
-    ],
-  },
-  {
-    id: "analytics",
-    num: "19",
-    label: "Analytics & Reports",
-    items: [
-      { id: "analytics-reports", label: "BI Analytics & Exports", icon: BarChart3 },
-    ],
-  },
-  {
-    id: "system",
-    num: "20",
-    label: "System Settings",
-    items: [
-      { id: "system", label: "Audit Logs & DB Schema", icon: Database, badgeKey: "system" },
-      { id: "ops-platform", label: "Workflows, Fraud & Security", icon: Settings, badgeKey: "fraud" },
-    ],
-  },
-];
+const MODULE_ICONS: Record<string, IconComponent> = {
+  LayoutDashboard,
+  Users,
+  Building2,
+  UserRound,
+  Briefcase,
+  ClipboardCheck,
+  Bot,
+  GraduationCap,
+  UserCheck,
+  Contact,
+  Video,
+  Trophy,
+  Handshake,
+  Layers,
+  Wallet,
+  Megaphone,
+  Bell,
+  LifeBuoy,
+  BarChart3,
+  Settings,
+};
 
-const SECTION_META: Record<AdminSectionId, { title: string; subtitle: string }> = {
-  overview: {
-    title: "Super Admin Command Center",
-    subtitle: "Live Supabase tables, candidate and employer registries, proctoring and revenue",
-  },
-  "activity-feed": {
-    title: "Platform Activity Feed",
-    subtitle: "Live chronological stream across candidates, employers, proctoring, finance and admin ops",
-  },
-  "users-all": {
-    title: "Centralized User Management",
-    subtitle: "All registered candidates, employers and internal admin staff with verification, notes and impersonation",
-  },
-  "rbac-roles": {
-    title: "Admin Roles & RBAC Permissions",
-    subtitle: "Role-based access matrix across Super Admin, Finance, Recruitment, Learning and Support staff",
-  },
-  candidates: {
-    title: "Candidates Directory (360° Profiles)",
-    subtitle: "Registered candidates with CIR scores, KYC state, cohorts, courses and public portfolios",
-  },
-  employers: {
-    title: "Employers & Tenant Organizations",
-    subtitle: "Corporate tenants, CIN and GSTIN verification, profile completion, SaaS plans and credits",
-  },
-  kyc: {
-    title: "Identity (KYC) & Corporate (KYB) Verification Queue",
-    subtitle: "Candidate government ID checks and employer CIN, GSTIN and PAN filings",
-  },
-  jobs: {
-    title: "All Job Postings & Moderation Queue",
-    subtitle: "Pending postings, sponsored slots, compensation bands and conversion rates",
-  },
-  applications: {
-    title: "Global Applications & ATS Lifecycle",
-    subtitle: "Cross-company applications, skill match scores, interview slots and BGV state",
-  },
-  "recruitment-taxonomy": {
-    title: "Job Categories, Industries, Skills & Locations",
-    subtitle: "Master recruitment taxonomy powering job creation, search filters and skill matching",
-  },
-  assessments: {
-    title: "Skill Assessments & Verifiable CIR Credentials",
-    subtitle: "Aptitude, communication, domain, coding and interview scorecards",
-  },
-  proctoring: {
-    title: "30-Layer AI Proctoring & Integrity Telemetry",
-    subtitle: "Session trust scores, display and focus telemetry, and credential overrides",
-  },
-  "cir-config": {
-    title: "CIR Score Configuration & Question Bank",
-    subtitle: "Competency weightages, pass/distinction thresholds, retake policies and proctored questions",
-  },
-  "ai-hub": {
-    title: "AI Intelligence Hub (11 Engines)",
-    subtitle: "Enable/disable controls, model and prompt config, token spend and API response telemetry",
-  },
-  lms: {
-    title: "Learning Management System (Courses & Certificates)",
-    subtitle: "Course catalog, curriculum approvals, modules, enrolments, completion rates and credentials",
-  },
-  learning: {
-    title: "LMS Courses, Mentors, Hackathons & Networking",
-    subtitle: "Code Arena hackathons, learning tracks, mentor sessions and city mixers",
-  },
-  mentors: {
-    title: "Mentor Management & 1:1 Sessions",
-    subtitle: "Mentor verification, hourly rates, availability, bookings, payouts and ratings",
-  },
-  "talent-pool": {
-    title: "Talent Pool & Employer CRM",
-    subtitle: "High-readiness verified CIR talent, employer shortlist requests and search analytics",
-  },
-  interviews: {
-    title: "Interview Management & AI Mock Interviews",
-    subtitle: "Employer schedules, Linda AI mock rubrics, panel feedback and interview dispute resolution",
-  },
-  "events-hub": {
-    title: "Hackathons, Networking Events & Webinars",
-    subtitle: "Sponsors, teams, submissions, winners, job auction bids, city mixers and mentor webinars",
-  },
-  freelancing: {
-    title: "Freelancing Marketplace & Escrow Operations",
-    subtitle: "Verified freelancers, project approvals, proposals, escrow payouts and dispute mediation",
-  },
-  subscriptions: {
-    title: "Subscriptions, Plans, Coupons & Renewals",
-    subtitle: "All 8 monetization plan segments, pricing tiers, free trials and discount campaigns",
-  },
-  billing: {
-    title: "Revenue, Razorpay Orders, Subscriptions & GST",
-    subtitle: "Captured payments, 18% GST invoices, recurring plans and gateway refunds",
-  },
-  wallets: {
-    title: "Wallet Escrow Accounts & Immutable Ledger",
-    subtitle: "Employer and candidate credit balances, inflows, outflows and manual entries",
-  },
-  "finance-ops": {
-    title: "Finance Operations · Payouts, GST & Commissions",
-    subtitle: "Mentor and freelancer payout releases, GSTR-1/3B tax summaries, refunds and platform fees",
-  },
-  "marketing-cms": {
-    title: "Marketing Campaigns & Website CMS",
-    subtitle: "Website pages, blogs, case studies, SEO metadata and multi-channel growth campaigns",
-  },
-  notifications: {
-    title: "Notifications & Segmented Broadcasts",
-    subtitle: "Push, email, SMS, WhatsApp and system alerts with automated triggers and open rates",
-  },
-  support: {
-    title: "Support Tickets & SLA Escalation Desk",
-    subtitle: "Employer KYB, GST billing and candidate proctoring threads",
-  },
-  "support-kb": {
-    title: "Support Knowledge Base & FAQ Management",
-    subtitle: "Self-serve documentation for candidates, employers, mentors and GST billing",
-  },
-  "analytics-reports": {
-    title: "Management Analytics & BI Reports",
-    subtitle: "User, recruitment, CIR assessment, learning, financial and platform intelligence with exports",
-  },
-  system: {
-    title: "Immutable Audit Logs, Feature Flags & Database Explorer",
-    subtitle: "Security event log, platform switches and Postgres schema row counts",
-  },
-  "ops-platform": {
-    title: "Platform Operations · Workflows, Fraud, Automation & Compliance",
-    subtitle: "Multi-level approval rules, fraud detection alerts, automations, data backups, security and DPDP",
-  },
+const getPhaseDotClass = (phase: PhaseLabel): string => {
+  if (phase.startsWith("Phase 1")) return "bg-[#4ade80]";
+  if (phase.startsWith("Phase 2")) return "bg-[#60a5fa]";
+  return "bg-[#f59e0b]";
+};
+
+const getPhaseChipClass = (phase: PhaseLabel): string => {
+  if (phase.startsWith("Phase 1")) return "bg-emerald-50 text-emerald-700 border-emerald-200";
+  if (phase.startsWith("Phase 2")) return "bg-blue-50 text-blue-700 border-blue-200";
+  return "bg-amber-50 text-amber-800 border-amber-200";
 };
 
 const StatusPill: React.FC<{ value: string }> = ({ value }) => {
@@ -433,11 +162,22 @@ const OriginBadge: React.FC<{ origin: "live_db" | "platform" }> = ({ origin }) =
 
 const SuperAdminDashboard: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialSection = (searchParams.get("tab") as AdminSectionId) || "overview";
 
-  const [activeSection, setActiveSection] = useState<AdminSectionId>(
-    SECTION_META[initialSection] ? initialSection : "overview"
-  );
+  const initialPageId = useMemo(() => {
+    const pageParam = searchParams.get("page");
+    if (pageParam) return findMenuPageById(pageParam).page.id;
+    const legacyTab = searchParams.get("tab") as AdminSectionId | null;
+    if (legacyTab) return findDefaultPageForSection(legacyTab).page.id;
+    return "01.01";
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const [activePageId, setActivePageId] = useState<string>(initialPageId);
+  const [activeInnerTabIndex, setActiveInnerTabIndex] = useState<number>(0);
+  const resolvedMenu = useMemo(() => findMenuPageById(activePageId), [activePageId]);
+  const activeSection: AdminSectionId = resolvedMenu.page.sectionId;
+  const activeInnerTab = resolvedMenu.page.tabs[activeInnerTabIndex] ?? resolvedMenu.page.tabs[0] ?? null;
+
   const [snapshot, setSnapshot] = useState<SuperAdminSnapshot | null>(null);
   const [enterprise, setEnterprise] = useState<SuperAdminEnterpriseState>(() =>
     createInitialEnterpriseState()
@@ -445,7 +185,11 @@ const SuperAdminDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarQuery, setSidebarQuery] = useState("");
+  const [quickCreateOpen, setQuickCreateOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [showPageSpec, setShowPageSpec] = useState(false);
   const [impersonating, setImpersonating] = useState<{
     id: string;
     name: string;
@@ -453,28 +197,13 @@ const SuperAdminDashboard: React.FC = () => {
     role: "Candidate" | "Employer";
   } | null>(null);
 
-  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
-    dashboard: true,
-    users: true,
-    employers: true,
-    candidates: true,
-    recruitment: true,
-    assessments: true,
-    finance: true,
-    "ai-hub": false,
-    lms: false,
-    mentors: false,
-    "talent-pool": false,
-    interviews: false,
-    events: false,
-    freelancing: false,
-    subscriptions: false,
-    marketing: false,
-    notifications: false,
-    support: true,
-    analytics: false,
-    system: true,
-  });
+  const [openModules, setOpenModules] = useState<Record<string, boolean>>(() => ({
+    "01": true,
+    "02": true,
+    "03": true,
+    "04": true,
+    [findMenuPageById(initialPageId).module.id]: true,
+  }));
 
   // Table Filters & Global Omni-Search
   const [tableQuery, setTableQuery] = useState("");
@@ -484,6 +213,8 @@ const SuperAdminDashboard: React.FC = () => {
   const [omniQuery, setOmniQuery] = useState("");
   const [inspected, setInspected] = useState<InspectedEntity>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const quickCreateRef = useRef<HTMLDivElement>(null);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
 
   const loadSnapshot = useCallback(async (isRefresh = false) => {
     if (isRefresh) setSyncing(true);
@@ -513,22 +244,55 @@ const SuperAdminDashboard: React.FC = () => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         searchInputRef.current?.focus();
+      } else if (e.key === "Escape") {
+        setQuickCreateOpen(false);
+        setProfileMenuOpen(false);
+      }
+    };
+    const onMouseDown = (e: MouseEvent) => {
+      const target = e.target as Node;
+      if (quickCreateRef.current && !quickCreateRef.current.contains(target)) {
+        setQuickCreateOpen(false);
+      }
+      if (profileMenuRef.current && !profileMenuRef.current.contains(target)) {
+        setProfileMenuOpen(false);
       }
     };
     window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    window.addEventListener("mousedown", onMouseDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("mousedown", onMouseDown);
+    };
   }, []);
 
-  const selectSection = (sec: AdminSectionId, opts?: OverviewNavigateOptions) => {
-    setActiveSection(sec);
-    setSearchParams(sec === "overview" ? {} : { tab: sec });
-    setTableQuery("");
-    setOriginFilter("all");
-    setBillingActorFilter(opts?.billingActor ?? "all");
-    setBillingCategoryFilter(opts?.billingCategory ?? "all");
-    setMobileMenuOpen(false);
-    window.scrollTo({ top: 0 });
-  };
+  const selectPage = useCallback(
+    (pageId: string, opts?: OverviewNavigateOptions, innerTabIdx = 0) => {
+      const resolved = findMenuPageById(pageId);
+      setActivePageId(resolved.page.id);
+      setActiveInnerTabIndex(innerTabIdx);
+      setOpenModules((prev) => ({ ...prev, [resolved.module.id]: true }));
+      setSearchParams(resolved.page.id === "01.01" ? {} : { page: resolved.page.id });
+      setTableQuery("");
+      setOriginFilter("all");
+      setBillingActorFilter(opts?.billingActor ?? "all");
+      setBillingCategoryFilter(opts?.billingCategory ?? "all");
+      setMobileMenuOpen(false);
+      setQuickCreateOpen(false);
+      setProfileMenuOpen(false);
+      setShowPageSpec(false);
+      window.scrollTo({ top: 0 });
+    },
+    [setSearchParams]
+  );
+
+  const selectSection = useCallback(
+    (sec: AdminSectionId, opts?: OverviewNavigateOptions) => {
+      const resolved = findDefaultPageForSection(sec);
+      selectPage(resolved.page.id, opts, 0);
+    },
+    [selectPage]
+  );
 
   const appendAudit = useCallback(
     (action: string, entityTable: string, entityId: string, details: string, severity: "info" | "warning" | "critical" = "info") => {
@@ -956,38 +720,100 @@ const SuperAdminDashboard: React.FC = () => {
     return results;
   }, [omniQuery, snapshot]);
 
-  const badgeCounts = useMemo(() => {
+  const pageBadgeCounts = useMemo(() => {
     if (!snapshot) return {} as Record<string, number>;
+    const kycPending =
+      snapshot.employers.filter((e) => e.verificationStatus === "pending").length +
+      snapshot.candidates.filter((c) => c.kycStatus !== "verified").length;
+    const pendingJobs = snapshot.jobs.filter((j) => j.status === "pending_review").length;
+    const flaggedProctoring = snapshot.assessments.filter((a) => a.status === "Flagged").length;
+    const openTickets = snapshot.tickets.filter((t) => t.status !== "resolved").length;
+    const openFraud = enterprise.fraudAlerts.filter((f) => f.status === "open" || f.status === "investigating").length;
     return {
-      allUsers: snapshot.candidates.length + snapshot.employers.length + enterprise.staffAccounts.length,
-      roles: enterprise.roles.length,
-      candidates: snapshot.candidates.length,
-      employers: snapshot.employers.length,
-      kyc:
-        snapshot.employers.filter((e) => e.verificationStatus === "pending").length +
-        snapshot.candidates.filter((c) => c.kycStatus !== "verified").length,
-      jobs: snapshot.jobs.length,
-      applications: snapshot.applications.length,
-      assessments: snapshot.assessments.length,
-      proctoring: snapshot.assessments.filter((a) => a.status === "Flagged").length,
-      aiFeatures: enterprise.aiFeatures.filter((f) => f.enabled).length,
-      lmsCourses: enterprise.courses.length,
-      mentors: enterprise.mentors.length,
-      talentRequests: enterprise.talentRequests.length,
-      interviews: enterprise.interviews.length,
-      events: enterprise.hackathons.length + enterprise.networkingEvents.length + enterprise.webinars.length,
-      freelance: enterprise.freelanceProjects.length,
-      plans: enterprise.plans.length,
-      billing: snapshot.transactions.length,
-      wallets: snapshot.wallets.length,
-      learning: snapshot.learningEvents.length,
-      campaigns: enterprise.campaigns.length,
-      notifications: enterprise.notifications.length,
-      support: snapshot.tickets.filter((t) => t.status !== "resolved").length,
-      system: snapshot.tableHealth.length,
-      fraud: enterprise.fraudAlerts.filter((f) => f.status === "open" || f.status === "investigating").length,
-    };
+      "02.01": snapshot.candidates.length + snapshot.employers.length + enterprise.staffAccounts.length,
+      "02.03": kycPending,
+      "03.01": snapshot.employers.length,
+      "03.02": snapshot.employers.filter((e) => e.verificationStatus === "pending").length,
+      "04.01": snapshot.candidates.length,
+      "05.01": snapshot.jobs.length,
+      "05.02": pendingJobs,
+      "05.03": snapshot.applications.length,
+      "06.01": snapshot.assessments.length,
+      "06.03": flaggedProctoring,
+      "07.01": enterprise.aiFeatures.filter((f) => f.enabled).length,
+      "08.01": enterprise.courses.length,
+      "09.01": enterprise.mentors.length,
+      "10.02": enterprise.talentRequests.length,
+      "11.01": enterprise.interviews.length,
+      "12.01": enterprise.hackathons.length,
+      "12.02": enterprise.networkingEvents.length,
+      "13.02": enterprise.freelanceProjects.length,
+      "14.01": enterprise.plans.length,
+      "15.01": snapshot.transactions.length,
+      "15.06": snapshot.wallets.length,
+      "17.02": enterprise.notifications.length,
+      "18.01": openTickets,
+      "20.06": openFraud,
+    } as Record<string, number>;
   }, [snapshot, enterprise]);
+
+  const totalPendingApprovals = useMemo(() => {
+    if (!snapshot) return 0;
+    return (
+      snapshot.employers.filter((e) => e.verificationStatus === "pending").length +
+      snapshot.jobs.filter((j) => j.status === "pending_review").length +
+      enterprise.courses.filter((c) => c.approvalStatus === "pending_approval").length +
+      enterprise.fraudAlerts.filter((f) => f.status === "open" || f.status === "investigating").length
+    );
+  }, [snapshot, enterprise]);
+
+  // Effective sub-tab resolver combining submenu page default + active horizontal inner tab
+  const effectiveSubTab = useMemo(() => {
+    const base = resolvedMenu.page.initialViewTab;
+    const slug = activeInnerTab?.slug;
+    if (activeSection === "users-all" || activeSection === "rbac-roles") {
+      if (slug === "candidate-users") return "candidates";
+      if (slug === "employer-users") return "employers";
+      if (slug === "admin-users") return "admins";
+      if (slug === "registration-requests" || slug === "account-verification") return "verification";
+      if (slug === "user-activity-logs") return "activity";
+      if (slug === "user-permissions" || slug === "role-permissions") return "roles";
+      return base ?? (activeSection === "rbac-roles" ? "roles" : "all");
+    }
+    if (activeSection === "analytics-reports") {
+      if (slug === "assessment-analytics") return "assessments";
+      if (slug === "learning-analytics") return "learning";
+      if (slug === "platform-analytics") return "platform";
+      if (slug === "user-analytics") return "users";
+      if (slug === "recruitment-analytics") return "recruitment";
+      if (slug === "financial-analytics") return "financial";
+      return base ?? "users";
+    }
+    if (activeSection === "ops-platform") {
+      if (slug === "approval-workflows") return "workflows";
+      if (slug === "fraud-detection") return "fraud";
+      if (slug === "automation") return "automation";
+      if (slug === "data-and-backups") return "data";
+      if (slug === "compliance") return "compliance";
+      if (slug === "security-settings" || slug === "two-factor-authentication" || slug === "ip-restrictions") return "security";
+      return base ?? "workflows";
+    }
+    if (activeSection === "finance-ops") {
+      if (slug === "commissions") return "commissions";
+      if (slug === "gst-reports") return "gst";
+      if (slug === "payouts") return "payouts";
+      if (slug === "refunds") return "refunds";
+      return base ?? "payouts";
+    }
+    if (activeSection === "lms") {
+      if (slug === "course-approvals") return "approvals";
+      if (slug === "course-content") return "content";
+      if (slug === "certificates") return "config";
+      if (slug === "all-courses") return "courses";
+      return base ?? "courses";
+    }
+    return base;
+  }, [activeSection, resolvedMenu.page.initialViewTab, activeInnerTab?.slug]);
 
   const handleExportCurrentSection = () => {
     if (!snapshot) return;
@@ -1025,140 +851,260 @@ const SuperAdminDashboard: React.FC = () => {
       system: snapshot.auditLogs as unknown[],
       "ops-platform": enterprise.fraudAlerts as unknown[],
     };
-    exportRecordsAsCsv(`talentcir-admin-${activeSection}`, map[activeSection] as Array<Record<string, unknown>>);
-    toast.success(`Exported ${activeSection} CSV report`);
+    exportRecordsAsCsv(`talentcir-admin-${resolvedMenu.page.id}-${activeSection}`, map[activeSection] as Array<Record<string, unknown>>);
+    toast.success(`Exported ${resolvedMenu.page.label} CSV report`);
   };
 
-  const renderSidebarContent = () => {
+  const renderSidebarContent = (isCollapsedRail = false) => {
     const sq = sidebarQuery.trim().toLowerCase();
-    const visibleNavGroups = NAV_GROUPS.map((g) => ({
-      ...g,
-      items: sq
-        ? g.items.filter(
-            (i) =>
-              i.label.toLowerCase().includes(sq) ||
-              g.label.toLowerCase().includes(sq) ||
-              g.num.includes(sq)
-          )
-        : g.items,
-    })).filter((g) => g.items.length > 0);
+    const visibleGroups = SUPER_ADMIN_MENU_GROUPS.map((group) => {
+      const filteredModules = group.modules
+        .map((mod) => {
+          if (!sq) return mod;
+          const groupOrModMatches =
+            group.label.toLowerCase().includes(sq) ||
+            mod.label.toLowerCase().includes(sq) ||
+            mod.num.includes(sq);
+          if (groupOrModMatches) return mod;
+          const matchingPages = mod.pages.filter(
+            (pg) =>
+              pg.label.toLowerCase().includes(sq) ||
+              pg.id.includes(sq) ||
+              pg.tabs.some((t) => t.label.toLowerCase().includes(sq))
+          );
+          if (matchingPages.length > 0) {
+            return { ...mod, pages: matchingPages };
+          }
+          return null;
+        })
+        .filter((m): m is NonNullable<typeof m> => m !== null);
+      return { ...group, modules: filteredModules };
+    }).filter((g) => g.modules.length > 0);
 
     return (
       <>
         {/* 64px Brand Bar on 4px Grid */}
         <div className="shrink-0">
-          <div className="h-16 min-h-16 px-5 bg-[#002C66] border-b border-white/10 flex items-center justify-between gap-2">
-            <Link to="/" className="inline-flex items-center focus:outline-none" aria-label="TalentCIR Home">
-              <img
-                src={siteLogo.url}
-                alt="TalentCIR"
-                className="h-8 w-auto object-contain brightness-0 invert"
-              />
+          <div
+            className={cn(
+              "h-16 min-h-16 bg-[#002C66] border-b border-white/10 flex items-center gap-2",
+              isCollapsedRail ? "justify-center px-2" : "justify-between px-5"
+            )}
+          >
+            <Link
+              to="/"
+              className="inline-flex items-center focus:outline-none"
+              aria-label="TalentCIR Home"
+            >
+              {isCollapsedRail ? (
+                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#001F4D] border border-white/15 font-mono text-xs font-semibold text-white">
+                  TC
+                </span>
+              ) : (
+                <img
+                  src={siteLogo.url}
+                  alt="TalentCIR"
+                  className="h-8 w-auto object-contain brightness-0 invert"
+                />
+              )}
             </Link>
-          </div>
-
-          <div className="px-5 py-2.5 bg-[#002250] border-b border-white/10 flex items-center justify-between gap-2">
-            <span className="font-mono text-xs text-blue-100">Super Admin · 20 Modules</span>
-            <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-blue-200/85">
-              <span className={cn("h-1.5 w-1.5 rounded-full", snapshot?.liveDbConnected ? "bg-[#4cc38a]" : "bg-[#d97706]")} />
-              {snapshot?.liveDbConnected ? "Live DB" : "Syncing"}
-            </span>
-          </div>
-
-          <div className="px-3 py-2 bg-[#002659] border-b border-white/10">
-            <div className="relative">
-              <Search className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-blue-200/70" strokeWidth={1.5} />
-              <input
-                type="search"
-                value={sidebarQuery}
-                onChange={(e) => setSidebarQuery(e.target.value)}
-                placeholder="Filter 20 modules"
-                aria-label="Filter Super Admin modules"
-                className="h-8 w-full rounded-lg border border-white/15 bg-[#001F4D] pl-8 pr-2.5 text-xs text-white placeholder:text-blue-200/60 focus:border-[#FB923C] focus:outline-none transition-colors duration-150"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Navigation: 20 Collapsible Modules, 36px rows, 16px icons */}
-        <div className="flex-1 overflow-y-auto px-3 py-3 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.2)_transparent]">
-          {visibleNavGroups.map((group, gIdx) => {
-            const isOpen = sq ? true : Boolean(openGroups[group.id]);
-            const hasActive = group.items.some((i) => i.id === activeSection);
-            return (
-              <div key={group.id} className={cn(gIdx === 0 ? "pt-0" : "pt-3")}>
-                <button
-                  type="button"
-                  onClick={() => setOpenGroups((p) => ({ ...p, [group.id]: !p[group.id] }))}
+            {!isCollapsedRail && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#001F4D] border border-white/15 px-2 py-0.5 font-mono text-[10px] text-blue-100">
+                <span
                   className={cn(
-                    "flex w-full items-center justify-between px-2.5 pb-1.5 text-xs transition-colors duration-150 cursor-pointer",
-                    hasActive ? "text-white font-medium" : "text-blue-200/70 hover:text-white font-normal"
+                    "h-1.5 w-1.5 rounded-full",
+                    snapshot?.liveDbConnected ? "bg-[#4ade80]" : "bg-[#f59e0b]"
                   )}
-                >
-                  <span className="inline-flex items-center gap-2 truncate">
-                    <span className="font-mono text-[10px] text-blue-300/65">{group.num}</span>
-                    <span className="truncate">{group.label}</span>
-                  </span>
-                  <ChevronDown className={cn("h-3.5 w-3.5 shrink-0 transition-transform duration-150", isOpen && "rotate-180")} strokeWidth={1.5} />
-                </button>
+                />
+                {snapshot?.liveDbConnected ? "Live DB" : "Sync"}
+              </span>
+            )}
+          </div>
 
-                {isOpen && (
-                  <div className="space-y-0.5">
-                    {group.items.map((item) => {
-                      const Icon = item.icon;
-                      const isActive = activeSection === item.id;
-                      const count = item.badgeKey ? badgeCounts[item.badgeKey] : undefined;
-                      const isAlert = item.id === "kyc" || item.id === "proctoring" || item.id === "support" || item.id === "ops-platform";
-                      return (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={() => selectSection(item.id)}
-                          className={cn(
-                            "relative flex h-8 w-full items-center gap-2.5 rounded-lg px-2.5 text-xs transition-colors duration-150 text-left cursor-pointer",
-                            isActive
-                              ? "bg-white/14 text-white font-medium shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]"
-                              : "text-blue-100/80 hover:text-white hover:bg-white/8 font-normal"
-                          )}
-                        >
-                          <Icon className="h-4 w-4 shrink-0 text-blue-200/80" strokeWidth={1.5} />
-                          <span className="flex-1 truncate text-white">{item.label}</span>
-                          {typeof count === "number" && (
-                            <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-blue-200/75 tabular-nums">
-                              {isAlert && count > 0 && (
-                                <span className="h-1.5 w-1.5 rounded-full bg-[#fb923c]" />
-                              )}
-                              {count}
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
+          {!isCollapsedRail && (
+            <>
+              <div className="px-5 py-2 bg-[#002250] border-b border-white/10 flex items-center justify-between gap-2">
+                <span className="font-mono text-[11px] text-blue-100">Super Admin · 20 Modules</span>
+                <span className="font-mono text-[10px] text-blue-200/75">7 Groups · 80 Views</span>
               </div>
-            );
-          })}
+
+              <div className="px-3 py-2 bg-[#002659] border-b border-white/10">
+                <div className="relative">
+                  <Search
+                    className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-blue-200/70"
+                    strokeWidth={1.5}
+                  />
+                  <input
+                    type="search"
+                    value={sidebarQuery}
+                    onChange={(e) => setSidebarQuery(e.target.value)}
+                    placeholder="Filter menu…"
+                    aria-label="Filter Super Admin modules"
+                    className="h-8 w-full rounded-lg border border-white/15 bg-[#001F4D] pl-8 pr-2.5 text-xs text-white placeholder:text-blue-200/60 focus:border-[#FB923C] focus:outline-none transition-colors duration-150"
+                  />
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
-        {/* Bottom Quick Portals */}
-        <div className="p-3 border-t border-white/10 shrink-0">
-          <div className="grid grid-cols-2 gap-2">
-            <Link
-              to="/talento-pro?view=dash&role=employer"
-              className="flex h-8 items-center justify-center gap-1.5 rounded-lg bg-white/8 hover:bg-white/14 px-2 text-xs text-blue-100 hover:text-white transition-colors duration-150"
-            >
-              Employer
-              <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.5} />
-            </Link>
-            <Link
-              to="/talento-pro?view=dash"
-              className="flex h-8 items-center justify-center gap-1.5 rounded-lg bg-white/8 hover:bg-white/14 px-2 text-xs text-blue-100 hover:text-white transition-colors duration-150"
-            >
-              Candidate
-              <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.5} />
-            </Link>
-          </div>
+        {/* Navigation: 7 Section Headers -> 20 Numbered Modules -> Indented Submenus */}
+        <nav
+          aria-label="Super Admin menu"
+          className="flex-1 overflow-y-auto px-2.5 py-3 space-y-4 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.2)_transparent]"
+        >
+          {visibleGroups.map((group) => (
+            <div key={group.id} className="space-y-1">
+              {isCollapsedRail ? (
+                <div className="mx-2 my-1.5 border-t border-white/10" title={group.label} />
+              ) : (
+                <div className="px-2.5 pt-1 pb-1 font-mono text-[10px] font-medium tracking-[0.08em] text-blue-200/65 uppercase">
+                  {group.label}
+                </div>
+              )}
+
+              {group.modules.map((mod) => {
+                const Icon = MODULE_ICONS[mod.icon] ?? LayoutDashboard;
+                const isModActive = resolvedMenu.module.id === mod.id;
+                const isOpen = sq ? true : Boolean(openModules[mod.id]);
+
+                return (
+                  <div key={mod.id} className="space-y-0.5">
+                    <button
+                      type="button"
+                      title={isCollapsedRail ? `${mod.num} · ${mod.label}` : undefined}
+                      onClick={() => {
+                        if (isCollapsedRail) {
+                          selectPage(mod.pages[0].id);
+                        } else {
+                          setOpenModules((p) => ({ ...p, [mod.id]: !p[mod.id] }));
+                        }
+                      }}
+                      className={cn(
+                        "flex w-full items-center rounded-lg text-xs transition-colors duration-150 cursor-pointer",
+                        isCollapsedRail ? "h-9 justify-center px-0" : "h-8 gap-2 px-2.5 text-left",
+                        isModActive
+                          ? "bg-white/14 text-white font-medium shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]"
+                          : "text-blue-100/85 hover:text-white hover:bg-white/8 font-normal"
+                      )}
+                    >
+                      <Icon
+                        className={cn(
+                          "h-4 w-4 shrink-0",
+                          isModActive ? "text-white" : "text-blue-200/80"
+                        )}
+                        strokeWidth={1.5}
+                      />
+                      {!isCollapsedRail && (
+                        <>
+                          <span className="font-mono text-[10px] text-blue-300/70 shrink-0">
+                            {mod.num}
+                          </span>
+                          <span className="flex-1 truncate">{mod.label}</span>
+                          <span
+                            title={mod.phase}
+                            className={cn("h-1.5 w-1.5 rounded-full shrink-0", getPhaseDotClass(mod.phase))}
+                          />
+                          <ChevronRight
+                            className={cn(
+                              "h-3.5 w-3.5 shrink-0 text-blue-200/70 transition-transform duration-150",
+                              isOpen && "rotate-90"
+                            )}
+                            strokeWidth={1.5}
+                          />
+                        </>
+                      )}
+                    </button>
+
+                    {!isCollapsedRail && isOpen && (
+                      <div className="ml-4 border-l border-white/15 pl-2 py-0.5 space-y-0.5">
+                        {mod.pages.map((pg) => {
+                          const isPageActive = activePageId === pg.id;
+                          const count = pageBadgeCounts[pg.id];
+                          const isAlertPage =
+                            pg.id === "02.03" ||
+                            pg.id === "03.02" ||
+                            pg.id === "05.02" ||
+                            pg.id === "06.03" ||
+                            pg.id === "18.01" ||
+                            pg.id === "20.06";
+                          return (
+                            <button
+                              key={pg.id}
+                              type="button"
+                              onClick={() => selectPage(pg.id)}
+                              className={cn(
+                                "relative flex h-7 w-full items-center justify-between gap-2 rounded-md px-2.5 text-xs transition-colors duration-150 text-left cursor-pointer",
+                                isPageActive
+                                  ? "bg-white/14 text-white font-medium before:absolute before:left-0 before:top-1.5 before:bottom-1.5 before:w-0.5 before:rounded-full before:bg-[#60a5fa]"
+                                  : "text-blue-100/75 hover:text-white hover:bg-white/8 font-normal"
+                              )}
+                            >
+                              <span className="truncate">{pg.label}</span>
+                              {typeof count === "number" && (
+                                <span className="inline-flex items-center gap-1 font-mono text-[10px] text-blue-200/80 tabular-nums shrink-0">
+                                  {isAlertPage && count > 0 && (
+                                    <span className="h-1.5 w-1.5 rounded-full bg-[#FB923C]" />
+                                  )}
+                                  {count}
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+        </nav>
+
+        {/* Bottom Super Admin Identity + Quick Portals */}
+        <div className="p-3 border-t border-white/10 shrink-0 space-y-2.5 bg-[#002250]">
+          {isCollapsedRail ? (
+            <div className="flex justify-center">
+              <button
+                type="button"
+                title="Super Admin · admin@talentcir.com"
+                onClick={() => selectPage("20.01")}
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-[#FB923C] text-xs font-semibold text-[#001F4D] cursor-pointer"
+              >
+                SA
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="flex items-center gap-2.5 px-1">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#FB923C] text-xs font-semibold text-[#001F4D]">
+                  SA
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-medium text-white truncate">Super Admin</p>
+                  <p className="font-mono text-[10px] text-blue-200/75 truncate">
+                    admin@talentcir.com
+                  </p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <Link
+                  to="/talento-pro?view=dash&role=employer"
+                  className="flex h-7 items-center justify-center gap-1.5 rounded-lg bg-white/8 hover:bg-white/14 px-2 text-[11px] text-blue-100 hover:text-white transition-colors duration-150"
+                >
+                  Employer
+                  <ExternalLink className="h-3 w-3" strokeWidth={1.5} />
+                </Link>
+                <Link
+                  to="/talento-pro?view=dash"
+                  className="flex h-7 items-center justify-center gap-1.5 rounded-lg bg-white/8 hover:bg-white/14 px-2 text-[11px] text-blue-100 hover:text-white transition-colors duration-150"
+                >
+                  Candidate
+                  <ExternalLink className="h-3 w-3" strokeWidth={1.5} />
+                </Link>
+              </div>
+            </>
+          )}
         </div>
       </>
     );
@@ -1169,18 +1115,23 @@ const SuperAdminDashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#f5f7fa] dark:bg-[#0b0d14] text-[#111827] dark:text-[#eef0f5] flex flex-col">
       <Helmet>
-        <title>Super Admin Command Console | TalentCIR</title>
+        <title>{resolvedMenu.page.label} · Super Admin | TalentCIR</title>
       </Helmet>
 
-      {/* Desktop Fixed Sidebar (#002C66 Navy) */}
-      <aside className="hidden lg:flex lg:w-64 lg:fixed lg:inset-y-0 lg:left-0 z-40 border-r border-[#001D44] bg-[#002C66] text-white flex-col">
-        {renderSidebarContent()}
+      {/* Desktop Fixed Sidebar (#002C66 Navy, collapsible to 76px icon rail) */}
+      <aside
+        className={cn(
+          "hidden lg:flex lg:fixed lg:inset-y-0 lg:left-0 z-40 border-r border-[#001D44] bg-[#002C66] text-white flex-col transition-[width] duration-150",
+          sidebarCollapsed ? "lg:w-[76px]" : "lg:w-72"
+        )}
+      >
+        {renderSidebarContent(sidebarCollapsed)}
       </aside>
 
       {/* Mobile Drawer Sidebar */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-50 lg:hidden flex">
-          <div className="w-64 max-w-[85vw] bg-[#002C66] text-white flex flex-col h-full">
+          <div className="w-72 max-w-[85vw] bg-[#002C66] text-white flex flex-col h-full">
             <div className="flex justify-end p-2">
               <button
                 type="button"
@@ -1191,16 +1142,34 @@ const SuperAdminDashboard: React.FC = () => {
                 <X className="h-5 w-5" strokeWidth={1.5} />
               </button>
             </div>
-            {renderSidebarContent()}
+            {renderSidebarContent(false)}
           </div>
           <div className="flex-1 bg-black/45" onClick={() => setMobileMenuOpen(false)} />
         </div>
       )}
 
-      {/* Top Sticky 64px Header Bar */}
-      <header className="sticky top-0 z-30 w-full lg:ml-64 lg:w-[calc(100%-16rem)] border-b border-[#111827]/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#11141c]">
-        <div className="flex h-16 min-h-16 w-full items-center justify-between gap-4 px-6 lg:px-8">
-          <div className="flex items-center gap-3 min-w-0">
+      {/* Global Top Bar (G00 Reference Structure) */}
+      <header
+        className={cn(
+          "sticky top-0 z-30 w-full border-b border-[#111827]/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#11141c] transition-[margin,width] duration-150",
+          sidebarCollapsed
+            ? "lg:ml-[76px] lg:w-[calc(100%-76px)]"
+            : "lg:ml-72 lg:w-[calc(100%-18rem)]"
+        )}
+      >
+        <div className="flex h-16 min-h-16 w-full items-center justify-between gap-3 px-4 lg:px-7">
+          {/* Left: Collapse Rail Toggle + Mobile Drawer + Global Search */}
+          <div className="flex items-center gap-2.5 min-w-0 flex-1">
+            <button
+              type="button"
+              onClick={() => setSidebarCollapsed((c) => !c)}
+              className="hidden lg:inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#111827]/[0.08] bg-[#f5f7fa] text-[#111827] hover:bg-[#eceff4] transition-colors duration-150 cursor-pointer shrink-0"
+              aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+              title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              <PanelLeft className="h-4 w-4" strokeWidth={1.5} />
+            </button>
+
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
@@ -1209,31 +1178,24 @@ const SuperAdminDashboard: React.FC = () => {
             >
               <Menu className="h-4 w-4" strokeWidth={1.5} />
             </button>
-            <div className="min-w-0">
-              <h1 className="text-lg font-medium text-[#111827] dark:text-[#eef0f5] truncate">
-                {SECTION_META[activeSection].title}
-              </h1>
-              <p className="hidden md:block text-xs text-[#6b7487] truncate">
-                {SECTION_META[activeSection].subtitle}
-              </p>
-            </div>
-          </div>
 
-          {/* Right Omni-Search with Keycaps + Sync + Export */}
-          <div className="flex items-center gap-2 shrink-0">
-            <div className="relative hidden sm:block">
-              <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#6b7487]" strokeWidth={1.5} />
+            {/* TB.01 Global Search */}
+            <div className="relative flex-1 max-w-md">
+              <Search
+                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#6b7487]"
+                strokeWidth={1.5}
+              />
               <input
                 ref={searchInputRef}
                 type="search"
                 value={omniQuery}
                 onChange={(e) => setOmniQuery(e.target.value)}
-                placeholder="Search"
+                placeholder="Search users, employers, jobs, invoices…"
                 aria-label="Global platform omni-search"
-                className="h-9 w-56 xl:w-72 rounded-lg border border-[#111827]/[0.08] dark:border-white/[0.08] bg-[#f5f7fa] dark:bg-[#1a1e28] pl-9 pr-14 text-xs text-[#111827] dark:text-[#eef0f5] placeholder:text-[#6b7487] focus:border-[#002C66] focus:bg-white focus:outline-none transition-colors duration-150"
+                className="h-9 w-full rounded-lg border border-[#111827]/[0.08] dark:border-white/[0.08] bg-[#f5f7fa] dark:bg-[#1a1e28] pl-9 pr-14 text-xs text-[#111827] dark:text-[#eef0f5] placeholder:text-[#6b7487] focus:border-[#002C66] focus:bg-white focus:outline-none transition-colors duration-150"
               />
               {!omniQuery && (
-                <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 inline-flex items-center gap-1">
+                <span className="pointer-events-none hidden sm:inline-flex absolute right-2 top-1/2 -translate-y-1/2 items-center gap-1">
                   <kbd className="rounded border border-[#111827]/12 bg-white px-1.5 py-0.5 font-mono text-[10px] text-[#6b7487]">
                     ⌘
                   </kbd>
@@ -1243,7 +1205,7 @@ const SuperAdminDashboard: React.FC = () => {
                 </span>
               )}
               {omniQuery.trim() && (
-                <div className="absolute right-0 mt-2 w-96 max-w-[90vw] rounded-xl border border-[#111827]/[0.08] bg-white dark:bg-[#11141c] p-2 shadow-[0_8px_24px_rgba(0,0,0,0.08)] z-50 space-y-1">
+                <div className="absolute left-0 mt-2 w-96 max-w-[90vw] rounded-xl border border-[#111827]/[0.08] bg-white dark:bg-[#11141c] p-2 shadow-[0_8px_24px_rgba(0,0,0,0.08)] z-50 space-y-1">
                   <div className="flex items-center justify-between px-2 py-1 text-xs text-[#6b7487]">
                     <span>Matches ({omniMatches.length})</span>
                     <button
@@ -1282,6 +1244,120 @@ const SuperAdminDashboard: React.FC = () => {
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Right: Phase Legend + Quick Create + Approvals + Notifications + Impersonation + Sync/Export + Admin Profile */}
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            <div className="hidden 2xl:flex items-center gap-3 mr-2 text-[11px] text-[#6b7487]">
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-[#4ade80]" />
+                Phase 1
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-[#60a5fa]" />
+                Phase 2
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-[#f59e0b]" />
+                Phase 3
+              </span>
+            </div>
+
+            {/* TB.02 Quick Create Dropdown */}
+            <div className="relative" ref={quickCreateRef}>
+              <Button
+                type="button"
+                size="sm"
+                onClick={() => {
+                  setQuickCreateOpen((v) => !v);
+                  setProfileMenuOpen(false);
+                }}
+                aria-expanded={quickCreateOpen}
+                aria-haspopup="menu"
+                className="h-9 gap-1.5 rounded-lg bg-[#002C66] hover:bg-[#002250] text-white text-xs font-medium cursor-pointer"
+              >
+                <Plus className="h-4 w-4" strokeWidth={1.75} />
+                <span className="hidden sm:inline">Quick Create</span>
+              </Button>
+              {quickCreateOpen && (
+                <div
+                  role="menu"
+                  className="absolute right-0 mt-2 w-56 rounded-xl border border-[#111827]/[0.1] bg-white p-1.5 shadow-[0_12px_32px_rgba(0,0,0,0.12)] z-50"
+                >
+                  <div className="px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-wider text-[#6b7487]">
+                    Quick Actions
+                  </div>
+                  {TOPBAR_QUICK_CREATE_ITEMS.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      role="menuitem"
+                      onClick={() => {
+                        selectPage(item.targetPageId);
+                        toast.info(`Opened ${item.label}`);
+                      }}
+                      className="flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-left text-xs text-[#111827] hover:bg-[#f5f7fa] transition-colors duration-150 cursor-pointer"
+                    >
+                      <span>{item.label}</span>
+                      <span className="font-mono text-[10px] text-[#6b7487]">
+                        {item.targetPageId}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* TB.03 Pending Approvals */}
+            <button
+              type="button"
+              onClick={() => selectPage("03.02")}
+              title={`Pending Approvals (${totalPendingApprovals})`}
+              aria-label={`Pending Approvals (${totalPendingApprovals})`}
+              className="relative inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#111827]/[0.08] bg-white text-[#4b5565] hover:bg-[#f5f7fa] hover:text-[#111827] transition-colors duration-150 cursor-pointer"
+            >
+              <Inbox className="h-4 w-4" strokeWidth={1.5} />
+              {totalPendingApprovals > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#FB923C] px-1 font-mono text-[10px] font-semibold text-[#001F4D] tabular-nums">
+                  {totalPendingApprovals}
+                </span>
+              )}
+            </button>
+
+            {/* TB.04 Notifications */}
+            <button
+              type="button"
+              onClick={() => selectPage("17.02")}
+              title={`Notifications (${enterprise.notifications.length})`}
+              aria-label="Notifications"
+              className="relative inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#111827]/[0.08] bg-white text-[#4b5565] hover:bg-[#f5f7fa] hover:text-[#111827] transition-colors duration-150 cursor-pointer"
+            >
+              <Bell className="h-4 w-4" strokeWidth={1.5} />
+              {enterprise.notifications.length > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#002C66] px-1 font-mono text-[10px] font-semibold text-white tabular-nums">
+                  {enterprise.notifications.length}
+                </span>
+              )}
+            </button>
+
+            {/* TB.05 Admin Impersonation */}
+            <button
+              type="button"
+              onClick={() => {
+                selectPage("02.01");
+                toast.info("Select any candidate or employer and click Impersonate");
+              }}
+              title="Admin Impersonation (audit-logged)"
+              aria-label="Admin Impersonation"
+              className={cn(
+                "hidden sm:inline-flex h-9 w-9 items-center justify-center rounded-lg border transition-colors duration-150 cursor-pointer",
+                impersonating
+                  ? "border-[#FB923C] bg-[#002C66] text-white"
+                  : "border-[#111827]/[0.08] bg-white text-[#4b5565] hover:bg-[#f5f7fa] hover:text-[#111827]"
+              )}
+            >
+              <Eye className="h-4 w-4" strokeWidth={1.5} />
+            </button>
 
             <Button
               type="button"
@@ -1289,10 +1365,10 @@ const SuperAdminDashboard: React.FC = () => {
               size="sm"
               disabled={syncing}
               onClick={() => loadSnapshot(true)}
-              className="h-9 gap-1.5 rounded-lg text-xs font-medium cursor-pointer"
+              className="hidden xl:inline-flex h-9 gap-1.5 rounded-lg text-xs font-medium cursor-pointer"
             >
               <RefreshCw className={cn("h-4 w-4 text-[#6b7487]", syncing && "animate-spin")} strokeWidth={1.5} />
-              <span className="hidden md:inline">Sync DB</span>
+              <span>Sync DB</span>
             </Button>
 
             <Button
@@ -1300,18 +1376,212 @@ const SuperAdminDashboard: React.FC = () => {
               variant="outline"
               size="sm"
               onClick={handleExportCurrentSection}
-              className="h-9 gap-1.5 rounded-lg text-xs font-medium cursor-pointer"
+              className="hidden xl:inline-flex h-9 gap-1.5 rounded-lg text-xs font-medium cursor-pointer"
             >
               <Download className="h-4 w-4 text-[#6b7487]" strokeWidth={1.5} />
-              <span className="hidden md:inline">Export CSV</span>
+              <span>Export CSV</span>
             </Button>
+
+            {/* TB.06 Admin Profile Menu */}
+            <div className="relative" ref={profileMenuRef}>
+              <button
+                type="button"
+                onClick={() => {
+                  setProfileMenuOpen((v) => !v);
+                  setQuickCreateOpen(false);
+                }}
+                aria-label="Admin Profile Menu"
+                aria-expanded={profileMenuOpen}
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-[#002C66] text-xs font-semibold text-white hover:bg-[#002250] transition-colors duration-150 cursor-pointer"
+              >
+                SA
+              </button>
+              {profileMenuOpen && (
+                <div
+                  role="menu"
+                  className="absolute right-0 mt-2 w-56 rounded-xl border border-[#111827]/[0.1] bg-white p-1.5 shadow-[0_12px_32px_rgba(0,0,0,0.12)] z-50"
+                >
+                  <div className="px-2.5 py-2 border-b border-[#111827]/[0.08] mb-1">
+                    <p className="text-xs font-medium text-[#111827]">Super Admin</p>
+                    <p className="font-mono text-[11px] text-[#6b7487]">admin@talentcir.com</p>
+                  </div>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => selectPage("20.01")}
+                    className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-xs text-[#111827] hover:bg-[#f5f7fa] cursor-pointer"
+                  >
+                    <User className="h-3.5 w-3.5 text-[#6b7487]" strokeWidth={1.5} />
+                    My Profile &amp; Admin Users
+                  </button>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => selectPage("20.03")}
+                    className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-xs text-[#111827] hover:bg-[#f5f7fa] cursor-pointer"
+                  >
+                    <KeyRound className="h-3.5 w-3.5 text-[#6b7487]" strokeWidth={1.5} />
+                    Two-Factor Authentication
+                  </button>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => loadSnapshot(true)}
+                    className="flex xl:hidden w-full items-center gap-2 rounded-lg px-2.5 py-2 text-xs text-[#111827] hover:bg-[#f5f7fa] cursor-pointer"
+                  >
+                    <RefreshCw className="h-3.5 w-3.5 text-[#6b7487]" strokeWidth={1.5} />
+                    Sync Live Database
+                  </button>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={handleExportCurrentSection}
+                    className="flex xl:hidden w-full items-center gap-2 rounded-lg px-2.5 py-2 text-xs text-[#111827] hover:bg-[#f5f7fa] cursor-pointer"
+                  >
+                    <Download className="h-3.5 w-3.5 text-[#6b7487]" strokeWidth={1.5} />
+                    Export Current CSV
+                  </button>
+                  <Link
+                    to="/"
+                    role="menuitem"
+                    className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-xs text-[#dc2626] hover:bg-red-50 cursor-pointer"
+                  >
+                    <LogOut className="h-3.5 w-3.5" strokeWidth={1.5} />
+                    Sign Out
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>
 
       {/* Main Content Body */}
-      <main className="flex-1 w-full lg:pl-64">
-        <div className="mx-auto max-w-[1600px] p-6 lg:p-8 space-y-5">
+      <main
+        className={cn(
+          "flex-1 w-full transition-[padding] duration-150",
+          sidebarCollapsed ? "lg:pl-[76px]" : "lg:pl-72"
+        )}
+      >
+        <div className="mx-auto max-w-[1600px] p-5 lg:p-7 space-y-5">
+          {/* Reference Breadcrumb + Page Header + Inner Horizontal Tabs */}
+          <div className="space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <nav
+                aria-label="Breadcrumb"
+                className="flex flex-wrap items-center gap-1.5 text-xs text-[#6b7487]"
+              >
+                <span className="font-mono text-[11px] text-[#002C66] font-medium">
+                  {resolvedMenu.module.num}
+                </span>
+                <span>{resolvedMenu.module.label}</span>
+                <ChevronRight className="h-3.5 w-3.5 text-[#94a3b8]" strokeWidth={1.5} />
+                <span className="font-medium text-[#111827] dark:text-[#eef0f5]">
+                  {resolvedMenu.page.label}
+                </span>
+                {activeInnerTab && (
+                  <>
+                    <ChevronRight className="h-3.5 w-3.5 text-[#94a3b8]" strokeWidth={1.5} />
+                    <span className="text-[#002C66] font-medium">{activeInnerTab.label}</span>
+                  </>
+                )}
+              </nav>
+
+              <div className="flex items-center gap-2">
+                <span
+                  className={cn(
+                    "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-medium",
+                    getPhaseChipClass(resolvedMenu.page.phase)
+                  )}
+                >
+                  <span className={cn("h-1.5 w-1.5 rounded-full", getPhaseDotClass(resolvedMenu.page.phase))} />
+                  {resolvedMenu.page.phase}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowPageSpec((s) => !s)}
+                  className={cn(
+                    "inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-medium transition-colors duration-150 cursor-pointer",
+                    showPageSpec
+                      ? "border-[#002C66] bg-[#002C66] text-white"
+                      : "border-[#111827]/[0.1] bg-white text-[#4b5565] hover:text-[#111827]"
+                  )}
+                >
+                  <Info className="h-3 w-3" strokeWidth={1.5} />
+                  Page spec
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <h1 className="text-xl font-semibold tracking-tight text-[#111827] dark:text-[#eef0f5]">
+                {resolvedMenu.page.id === "01.01"
+                  ? "Super Admin Command Center"
+                  : resolvedMenu.page.label}
+              </h1>
+              <p className="mt-0.5 text-xs text-[#6b7487]">
+                {resolvedMenu.page.desc}
+              </p>
+            </div>
+
+            {showPageSpec && (
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-3 rounded-xl border border-[#111827]/[0.08] bg-white p-3.5 text-xs">
+                <div>
+                  <p className="font-mono text-[10px] uppercase text-[#6b7487]">Menu ID</p>
+                  <p className="mt-0.5 font-mono font-medium text-[#111827]">{resolvedMenu.page.id}</p>
+                </div>
+                <div>
+                  <p className="font-mono text-[10px] uppercase text-[#6b7487]">Route</p>
+                  <p className="mt-0.5 font-mono text-[#002C66] truncate">
+                    {activeInnerTab ? activeInnerTab.route : resolvedMenu.page.route}
+                  </p>
+                </div>
+                <div>
+                  <p className="font-mono text-[10px] uppercase text-[#6b7487]">Permission</p>
+                  <p className="mt-0.5 font-mono text-[#111827] truncate">{resolvedMenu.page.perm}</p>
+                </div>
+                <div>
+                  <p className="font-mono text-[10px] uppercase text-[#6b7487]">Allowed Roles</p>
+                  <p className="mt-0.5 text-[#111827] truncate">{resolvedMenu.page.roles}</p>
+                </div>
+                <div>
+                  <p className="font-mono text-[10px] uppercase text-[#6b7487]">Priority</p>
+                  <p className="mt-0.5 font-medium text-[#111827]">{resolvedMenu.page.prio}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Inner Horizontal Tab Bar (from Reference Menu Tree) */}
+            {resolvedMenu.page.tabs.length > 0 && (
+              <div
+                role="tablist"
+                aria-label={`${resolvedMenu.page.label} views`}
+                className="flex items-center gap-1 overflow-x-auto border-b border-[#111827]/[0.08] pb-0 [scrollbar-width:thin]"
+              >
+                {resolvedMenu.page.tabs.map((tab, idx) => {
+                  const isTabActive = idx === activeInnerTabIndex;
+                  return (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      role="tab"
+                      aria-selected={isTabActive}
+                      onClick={() => setActiveInnerTabIndex(idx)}
+                      className={cn(
+                        "whitespace-nowrap border-b-2 px-3.5 py-2 text-xs font-medium transition-colors duration-150 cursor-pointer",
+                        isTabActive
+                          ? "border-[#002C66] text-[#002C66]"
+                          : "border-transparent text-[#6b7487] hover:text-[#111827]"
+                      )}
+                    >
+                      {tab.label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
           {/* Audit-Logged Admin Impersonation Session Banner */}
           {impersonating && (
             <div
@@ -1463,26 +1733,248 @@ const SuperAdminDashboard: React.FC = () => {
                 </div>
               )}
 
-              {/* 1. CANDIDATES DIRECTORY (EMPLOYEE SUPER ADMIN) */}
-              {activeSection === "candidates" && (
-                <SuperAdminCandidatesPanel
-                  candidates={snapshot.candidates}
-                  onInspect={(cand) => setInspected({ kind: "candidate", data: cand })}
-                  onToggleArchive={handleToggleArchiveCandidates}
-                  onBulkVerifyKyc={handleBulkVerifyKyc}
-                />
-              )}
+              {/* 1. CANDIDATES DIRECTORY + DEDICATED 04.03 RESUMES & 04.04 BADGES VIEWS */}
+              {activeSection === "candidates" &&
+                (resolvedMenu.page.initialViewTab === "resumes" ? (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+                      {[
+                        {
+                          label: "Resumes uploaded",
+                          value: String(snapshot.candidates.filter((c) => c.hasResume).length),
+                          meta: `of ${snapshot.candidates.length} candidates`,
+                        },
+                        {
+                          label: "60s video pitches",
+                          value: String(snapshot.candidates.filter((c) => c.hasVideoResume).length),
+                          meta: "Verified recruiter intro reels",
+                        },
+                        {
+                          label: "LinkedIn / GitHub linked",
+                          value: String(snapshot.candidates.filter((c) => c.linkedinUrl || c.githubUrl).length),
+                          meta: "External proof of work",
+                        },
+                        {
+                          label: "Avg profile completion",
+                          value: `${Math.round(
+                            snapshot.candidates.reduce((s, c) => s + c.profileCompletion, 0) /
+                              Math.max(1, snapshot.candidates.length)
+                          )}%`,
+                          meta: "Across active candidates",
+                        },
+                      ].map((stat) => (
+                        <div key={stat.label} className="rounded-xl border border-[#111827]/[0.08] bg-[#f5f7fa] p-4">
+                          <p className="text-xs text-[#6b7487]">{stat.label}</p>
+                          <p className="mt-2 text-2xl font-medium text-[#111827] tabular-nums">{stat.value}</p>
+                          <p className="mt-1 text-[11px] text-[#6b7487]">{stat.meta}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs">
+                        <thead>
+                          <tr className="border-b border-[#111827]/[0.08] text-[#6b7487]">
+                            <th className="py-2.5 pr-3 font-medium">Candidate</th>
+                            <th className="py-2.5 px-3 font-medium">Resume PDF</th>
+                            <th className="py-2.5 px-3 font-medium">Video Pitch</th>
+                            <th className="py-2.5 px-3 font-medium">Public Portfolio</th>
+                            <th className="py-2.5 px-3 font-medium">Completion</th>
+                            <th className="py-2.5 pl-3 text-right font-medium">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#111827]/[0.06]">
+                          {snapshot.candidates.map((cand) => (
+                            <tr
+                              key={cand.id}
+                              onClick={() => setInspected({ kind: "candidate", data: cand })}
+                              className="hover:bg-[#f5f7fa] cursor-pointer transition-colors duration-150"
+                            >
+                              <td className="py-3 pr-3">
+                                <p className="font-medium text-[#111827]">{cand.fullName}</p>
+                                <p className="font-mono text-[11px] text-[#6b7487]">{cand.talentCirId} · {cand.headline}</p>
+                              </td>
+                              <td className="py-3 px-3">
+                                <StatusPill value={cand.hasResume ? "verified" : "pending"} />
+                              </td>
+                              <td className="py-3 px-3 text-[#4b5565]">
+                                {cand.hasVideoResume ? "60s Pitch Ready" : "Not uploaded"}
+                              </td>
+                              <td className="py-3 px-3 font-mono text-[11px] text-[#002C66]">
+                                /profile/{cand.slug}
+                              </td>
+                              <td className="py-3 px-3 font-mono tabular-nums text-[#111827]">
+                                {cand.profileCompletion}%
+                              </td>
+                              <td className="py-3 pl-3 text-right">
+                                <Button size="sm" variant="outline" className="h-7 px-2.5 text-[11px] cursor-pointer">
+                                  Inspect
+                                </Button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ) : resolvedMenu.page.initialViewTab === "badges" ? (
+                  <div className="space-y-4">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs">
+                        <thead>
+                          <tr className="border-b border-[#111827]/[0.08] text-[#6b7487]">
+                            <th className="py-2.5 pr-3 font-medium">Candidate</th>
+                            <th className="py-2.5 px-3 font-medium">KYC Identity</th>
+                            <th className="py-2.5 px-3 font-medium">CIR Credential Badge</th>
+                            <th className="py-2.5 px-3 font-medium">Achievement Badges</th>
+                            <th className="py-2.5 pl-3 text-right font-medium">Manage</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#111827]/[0.06]">
+                          {snapshot.candidates.map((cand) => (
+                            <tr
+                              key={cand.id}
+                              onClick={() => setInspected({ kind: "candidate", data: cand })}
+                              className="hover:bg-[#f5f7fa] cursor-pointer transition-colors duration-150"
+                            >
+                              <td className="py-3 pr-3">
+                                <p className="font-medium text-[#111827]">{cand.fullName}</p>
+                                <p className="font-mono text-[11px] text-[#6b7487]">{cand.talentCirId} · {cand.city}</p>
+                              </td>
+                              <td className="py-3 px-3">
+                                <StatusPill value={cand.kycStatus} />
+                              </td>
+                              <td className="py-3 px-3 font-mono tabular-nums text-[#111827]">
+                                CIR {cand.cirScore} · {cand.percentile >= 85 ? "Distinction" : "Verified"}
+                              </td>
+                              <td className="py-3 px-3">
+                                <div className="flex flex-wrap gap-1.5">
+                                  {cand.kycStatus === "verified" && (
+                                    <Badge variant="outline" className="text-[10px] font-normal">ID Verified</Badge>
+                                  )}
+                                  {cand.domainsChosen.length >= 2 && (
+                                    <Badge variant="outline" className="text-[10px] font-normal">Multi-Domain ({cand.domainsChosen.length})</Badge>
+                                  )}
+                                  {cand.hackathonParticipated && (
+                                    <Badge variant="outline" className="text-[10px] font-normal">Hackathon Builder</Badge>
+                                  )}
+                                  {cand.coursesCompleted > 0 && (
+                                    <Badge variant="outline" className="text-[10px] font-normal">{cand.coursesCompleted} Course Certs</Badge>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="py-3 pl-3 text-right" onClick={(e) => e.stopPropagation()}>
+                                <div className="inline-flex gap-1.5">
+                                  {cand.kycStatus !== "verified" && (
+                                    <Button
+                                      size="sm"
+                                      className="h-7 px-2.5 text-[11px] bg-[#002C66] hover:bg-[#002250] text-white cursor-pointer"
+                                      onClick={() => handleVerifyCandidate(cand.id, "verified")}
+                                    >
+                                      Grant ID Badge
+                                    </Button>
+                                  )}
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="h-7 px-2.5 text-[11px] cursor-pointer"
+                                    onClick={() => setInspected({ kind: "candidate", data: cand })}
+                                  >
+                                    Inspect
+                                  </Button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ) : (
+                  <SuperAdminCandidatesPanel
+                    candidates={snapshot.candidates}
+                    onInspect={(cand) => setInspected({ kind: "candidate", data: cand })}
+                    onToggleArchive={handleToggleArchiveCandidates}
+                    onBulkVerifyKyc={handleBulkVerifyKyc}
+                  />
+                ))}
 
-              {/* 2. EMPLOYERS & TENANTS */}
-              {activeSection === "employers" && (
-                <SuperAdminEmployersPanel
-                  employers={snapshot.employers}
-                  onInspect={(emp) => setInspected({ kind: "employer", data: emp })}
-                  onToggleArchive={handleToggleArchiveEmployers}
-                  onReviewEmployer={handleReviewEmployer}
-                  onSendCompletionNudge={handleSendCompletionNudge}
-                />
-              )}
+              {/* 2. EMPLOYERS & TENANTS + DEDICATED 03.03 EMPLOYER ACTIVITY VIEW */}
+              {activeSection === "employers" &&
+                (resolvedMenu.page.initialViewTab === "employer-activity" ? (
+                  <div className="space-y-4">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs">
+                        <thead>
+                          <tr className="border-b border-[#111827]/[0.08] text-[#6b7487]">
+                            <th className="py-2.5 pr-3 font-medium">Employer &amp; code</th>
+                            <th className="py-2.5 px-3 font-medium">Subscription &amp; MRR</th>
+                            <th className="py-2.5 px-3 font-medium">Hiring activity</th>
+                            <th className="py-2.5 px-3 font-medium">Profile completion</th>
+                            <th className="py-2.5 px-3 font-medium">Last active</th>
+                            <th className="py-2.5 pl-3 text-right font-medium">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#111827]/[0.06]">
+                          {snapshot.employers.map((emp) => (
+                            <tr
+                              key={emp.id}
+                              onClick={() => setInspected({ kind: "employer", data: emp })}
+                              className="hover:bg-[#f5f7fa] cursor-pointer transition-colors duration-150"
+                            >
+                              <td className="py-3 pr-3">
+                                <p className="font-medium text-[#111827]">{emp.companyName}</p>
+                                <p className="font-mono text-[11px] text-[#6b7487]">{emp.employerCode} · {emp.contactName}</p>
+                              </td>
+                              <td className="py-3 px-3">
+                                <p className="font-medium text-[#111827]">{emp.subscriptionPlan}</p>
+                                <p className="font-mono text-[11px] text-[#6b7487] tabular-nums">{formatINR(emp.mrrInr)}/mo · {emp.talentUnlocksRemaining} unlocks</p>
+                              </td>
+                              <td className="py-3 px-3 font-mono text-[11px] text-[#4b5565] tabular-nums">
+                                {emp.activeJobsCount} jobs · {emp.totalApplications} apps · {emp.totalHires} hires
+                              </td>
+                              <td className="py-3 px-3 font-mono tabular-nums text-[#111827]">
+                                {emp.profileCompletion}%
+                              </td>
+                              <td className="py-3 px-3 font-mono text-[11px] text-[#6b7487]">
+                                {new Date(emp.lastActiveAt).toLocaleDateString()}
+                              </td>
+                              <td className="py-3 pl-3 text-right" onClick={(e) => e.stopPropagation()}>
+                                <div className="inline-flex gap-1.5">
+                                  {emp.profileCompletion < 100 && (
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      className="h-7 px-2 text-[11px] cursor-pointer"
+                                      onClick={() => handleSendCompletionNudge(emp)}
+                                    >
+                                      Nudge
+                                    </Button>
+                                  )}
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="h-7 px-2 text-[11px] cursor-pointer"
+                                    onClick={() => setInspected({ kind: "employer", data: emp })}
+                                  >
+                                    Inspect
+                                  </Button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ) : (
+                  <SuperAdminEmployersPanel
+                    employers={snapshot.employers}
+                    onInspect={(emp) => setInspected({ kind: "employer", data: emp })}
+                    onToggleArchive={handleToggleArchiveEmployers}
+                    onReviewEmployer={handleReviewEmployer}
+                    onSendCompletionNudge={handleSendCompletionNudge}
+                  />
+                ))}
 
               {/* 3. KYC & KYB VERIFICATION CENTER */}
               {activeSection === "kyc" && (
@@ -1584,6 +2076,18 @@ const SuperAdminDashboard: React.FC = () => {
                     <tbody className="divide-y divide-[#111827]/[0.06]">
                       {snapshot.jobs
                         .filter((j) => (originFilter === "all" ? true : j.origin === originFilter))
+                        .filter((j) => {
+                          const slug = activeInnerTab?.slug;
+                          if (!slug || slug === "all-jobs" || slug === "create-job") return true;
+                          if (slug === "pending-job-approvals") return j.status === "pending_review";
+                          if (slug === "published-jobs") return j.status === "active";
+                          if (slug === "rejected-jobs") return j.status === "rejected";
+                          if (slug === "expired-jobs") return j.status === "closed" || j.status === "paused";
+                          if (slug === "featured-jobs") return j.promotionTier !== "none";
+                          if (slug === "urgent-hiring-jobs") return j.openingsCount >= 4 || j.promotionTier === "sponsored";
+                          if (slug === "reported-jobs") return j.status === "pending_review" || j.status === "rejected";
+                          return true;
+                        })
                         .filter(
                           (j) =>
                             !q ||
@@ -1675,6 +2179,19 @@ const SuperAdminDashboard: React.FC = () => {
                     </thead>
                     <tbody className="divide-y divide-[#111827]/[0.06]">
                       {snapshot.applications
+                        .filter((a) => {
+                          const slug = activeInnerTab?.slug;
+                          if (!slug || slug === "all-applications") return true;
+                          const st = a.stage.toLowerCase();
+                          if (slug === "new-applications") return st.includes("appl") || st === "new";
+                          if (slug === "under-review") return st.includes("review") || st.includes("screen");
+                          if (slug === "shortlisted-candidates") return st.includes("shortlist");
+                          if (slug === "rejected-candidates") return st.includes("reject");
+                          if (slug === "interview-scheduled") return st.includes("interview");
+                          if (slug === "selected-candidates" || slug === "offers-released") return st.includes("offer") || st.includes("select");
+                          if (slug === "hired-candidates") return st.includes("hire");
+                          return true;
+                        })
                         .filter(
                           (a) =>
                             !q ||
@@ -1837,6 +2354,16 @@ const SuperAdminDashboard: React.FC = () => {
                         .filter((t) =>
                           billingCategoryFilter === "all" ? true : t.category === billingCategoryFilter
                         )
+                        .filter((t) => {
+                          const slug = activeInnerTab?.slug;
+                          if (!slug || slug === "all-payments" || slug === "invoices" || slug === "payment-gateway-logs") return true;
+                          if (slug === "candidate-payments") return t.actorType === "Candidate";
+                          if (slug === "employer-payments") return t.actorType === "Employer";
+                          if (slug === "pending-payments") return t.status === "pending";
+                          if (slug === "failed-transactions") return t.status === "failed";
+                          if (slug === "credit-notes") return t.status === "refunded" || t.direction === "refund";
+                          return true;
+                        })
                         .filter(
                           (t) =>
                             !q ||
@@ -1976,6 +2503,15 @@ const SuperAdminDashboard: React.FC = () => {
               {activeSection === "support" && (
                 <div className="space-y-3">
                   {snapshot.tickets
+                    .filter((t) => {
+                      const slug = activeInnerTab?.slug;
+                      if (!slug || slug === "all-tickets") return true;
+                      if (slug === "open-tickets") return t.status === "open";
+                      if (slug === "pending-tickets") return t.status === "in_progress";
+                      if (slug === "resolved-tickets") return t.status === "resolved";
+                      if (slug === "escalations" || slug === "sla-breaches") return t.priority === "urgent" || t.priority === "high";
+                      return true;
+                    })
                     .filter(
                       (t) =>
                         !q ||
@@ -2084,11 +2620,11 @@ const SuperAdminDashboard: React.FC = () => {
               {/* NEW ENTERPRISE MODULES (01B–20 + 7 CAPABILITIES) */}
               {(activeSection === "users-all" || activeSection === "rbac-roles") && (
                 <AdminUsersAndRbacPanel
-                  key={activeSection}
+                  key={`${activePageId}-${effectiveSubTab ?? "default"}`}
                   snapshot={snapshot}
                   roles={enterprise.roles}
                   staffAccounts={enterprise.staffAccounts}
-                  initialTab={activeSection === "rbac-roles" ? "roles" : "all"}
+                  initialTab={(effectiveSubTab as UsersSubTab) || (activeSection === "rbac-roles" ? "roles" : "all")}
                   onInspect={setInspected}
                   onImpersonate={(target) => {
                     setImpersonating(target);
@@ -2133,6 +2669,7 @@ const SuperAdminDashboard: React.FC = () => {
                 activeSection === "interviews") && (
                 <AdminEcosystemOpsPanel
                   module={activeSection}
+                  initialSubTab={effectiveSubTab}
                   snapshot={snapshot}
                   enterprise={enterprise}
                   onUpdateEnterprise={setEnterprise}
@@ -2144,6 +2681,7 @@ const SuperAdminDashboard: React.FC = () => {
               {(activeSection === "events-hub" || activeSection === "freelancing") && (
                 <AdminEventsAndFreelancePanel
                   mode={activeSection}
+                  initialSubTab={effectiveSubTab}
                   snapshot={snapshot}
                   enterprise={enterprise}
                   onUpdateEnterprise={setEnterprise}
@@ -2157,6 +2695,7 @@ const SuperAdminDashboard: React.FC = () => {
                 activeSection === "recruitment-taxonomy") && (
                 <AdminMonetizationPanel
                   mode={activeSection}
+                  initialSubTab={effectiveSubTab}
                   snapshot={snapshot}
                   enterprise={enterprise}
                   onUpdateEnterprise={setEnterprise}
@@ -2170,6 +2709,7 @@ const SuperAdminDashboard: React.FC = () => {
                 activeSection === "support-kb") && (
                 <AdminGrowthAndCommsPanel
                   mode={activeSection}
+                  initialSubTab={effectiveSubTab}
                   enterprise={enterprise}
                   onUpdateEnterprise={setEnterprise}
                   onLogAudit={(action, table, entityId, details) => appendAudit(action, table, entityId, details)}
@@ -2181,6 +2721,7 @@ const SuperAdminDashboard: React.FC = () => {
                 activeSection === "activity-feed") && (
                 <AdminAnalyticsAndPlatformPanel
                   mode={activeSection}
+                  initialSubTab={effectiveSubTab}
                   snapshot={snapshot}
                   enterprise={enterprise}
                   onUpdateEnterprise={setEnterprise}

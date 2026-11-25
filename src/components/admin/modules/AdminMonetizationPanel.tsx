@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Plus, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +22,7 @@ export type MonetizationOrConfigMode =
 
 interface Props {
   mode: MonetizationOrConfigMode;
+  initialSubTab?: string;
   snapshot: SuperAdminSnapshot;
   enterprise: SuperAdminEnterpriseState;
   onUpdateEnterprise: React.Dispatch<React.SetStateAction<SuperAdminEnterpriseState>>;
@@ -31,6 +32,7 @@ interface Props {
 
 export const AdminMonetizationPanel: React.FC<Props> = ({
   mode,
+  initialSubTab,
   snapshot,
   enterprise,
   onUpdateEnterprise,
@@ -40,6 +42,17 @@ export const AdminMonetizationPanel: React.FC<Props> = ({
   const [subTab, setSubTab] = useState<"plans" | "coupons" | "renewals">("plans");
   const [finTab, setFinTab] = useState<"payouts" | "gst" | "refunds" | "commissions">("payouts");
   const [cirTab, setCirTab] = useState<"weights" | "question-bank">("weights");
+
+  useEffect(() => {
+    if (!initialSubTab) return;
+    if (mode === "subscriptions" && (initialSubTab === "plans" || initialSubTab === "coupons" || initialSubTab === "renewals")) {
+      setSubTab(initialSubTab);
+    } else if (mode === "finance-ops" && (initialSubTab === "payouts" || initialSubTab === "gst" || initialSubTab === "refunds" || initialSubTab === "commissions")) {
+      setFinTab(initialSubTab);
+    } else if (mode === "cir-config" && (initialSubTab === "weights" || initialSubTab === "question-bank")) {
+      setCirTab(initialSubTab);
+    }
+  }, [mode, initialSubTab]);
 
   const [showNewPlan, setShowNewPlan] = useState(false);
   const [planName, setPlanName] = useState("");

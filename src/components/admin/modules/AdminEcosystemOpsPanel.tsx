@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Plus, Check, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,7 @@ export type EcosystemModuleKind = "ai-hub" | "lms" | "mentors" | "talent-pool" |
 
 interface Props {
   module: EcosystemModuleKind;
+  initialSubTab?: string;
   snapshot: SuperAdminSnapshot;
   enterprise: SuperAdminEnterpriseState;
   onUpdateEnterprise: React.Dispatch<React.SetStateAction<SuperAdminEnterpriseState>>;
@@ -27,6 +28,7 @@ interface Props {
 
 export const AdminEcosystemOpsPanel: React.FC<Props> = ({
   module,
+  initialSubTab,
   snapshot,
   enterprise,
   onUpdateEnterprise,
@@ -38,6 +40,21 @@ export const AdminEcosystemOpsPanel: React.FC<Props> = ({
   const [mentorTab, setMentorTab] = useState<"mentors" | "sessions" | "payouts">("mentors");
   const [crmTab, setCrmTab] = useState<"talent" | "requests" | "analytics">("talent");
   const [intTab, setIntTab] = useState<"all" | "ai_mock" | "employer" | "disputed">("all");
+
+  useEffect(() => {
+    if (!initialSubTab) return;
+    if (module === "ai-hub" && (initialSubTab === "features" || initialSubTab === "logs" || initialSubTab === "models")) {
+      setAiTab(initialSubTab);
+    } else if (module === "lms" && (initialSubTab === "courses" || initialSubTab === "approvals" || initialSubTab === "content" || initialSubTab === "config")) {
+      setLmsTab(initialSubTab);
+    } else if (module === "mentors" && (initialSubTab === "mentors" || initialSubTab === "sessions" || initialSubTab === "payouts")) {
+      setMentorTab(initialSubTab);
+    } else if (module === "talent-pool" && (initialSubTab === "talent" || initialSubTab === "requests" || initialSubTab === "analytics")) {
+      setCrmTab(initialSubTab);
+    } else if (module === "interviews" && (initialSubTab === "all" || initialSubTab === "ai_mock" || initialSubTab === "employer" || initialSubTab === "disputed")) {
+      setIntTab(initialSubTab);
+    }
+  }, [module, initialSubTab]);
 
   const [search, setSearch] = useState("");
   const [editingPromptId, setEditingPromptId] = useState<string | null>(null);

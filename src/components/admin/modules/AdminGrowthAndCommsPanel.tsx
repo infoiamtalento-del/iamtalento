@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Send, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import { toast } from "sonner";
 
 interface Props {
   mode: "marketing-cms" | "notifications" | "support-kb";
+  initialSubTab?: string;
   enterprise: SuperAdminEnterpriseState;
   onUpdateEnterprise: React.Dispatch<React.SetStateAction<SuperAdminEnterpriseState>>;
   onLogAudit: (action: string, table: string, entityId: string, details: string) => void;
@@ -19,11 +20,19 @@ interface Props {
 
 export const AdminGrowthAndCommsPanel: React.FC<Props> = ({
   mode,
+  initialSubTab,
   enterprise,
   onUpdateEnterprise,
   onLogAudit,
 }) => {
   const [cmsTab, setCmsTab] = useState<"pages" | "campaigns" | "seo">("pages");
+
+  useEffect(() => {
+    if (!initialSubTab) return;
+    if (mode === "marketing-cms" && (initialSubTab === "pages" || initialSubTab === "campaigns" || initialSubTab === "seo")) {
+      setCmsTab(initialSubTab);
+    }
+  }, [mode, initialSubTab]);
   const [notifTitle, setNotifTitle] = useState("");
   const [notifChannel, setNotifChannel] = useState<NotificationBroadcastRecord["channel"]>("Push");
   const [notifAudience, setNotifAudience] = useState<NotificationBroadcastRecord["audience"]>("All Users");

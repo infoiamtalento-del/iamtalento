@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Plus, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,7 @@ import { toast } from "sonner";
 
 interface Props {
   mode: "events-hub" | "freelancing";
+  initialSubTab?: string;
   snapshot: SuperAdminSnapshot;
   enterprise: SuperAdminEnterpriseState;
   onUpdateEnterprise: React.Dispatch<React.SetStateAction<SuperAdminEnterpriseState>>;
@@ -23,6 +24,7 @@ interface Props {
 
 export const AdminEventsAndFreelancePanel: React.FC<Props> = ({
   mode,
+  initialSubTab,
   snapshot,
   enterprise,
   onUpdateEnterprise,
@@ -30,6 +32,15 @@ export const AdminEventsAndFreelancePanel: React.FC<Props> = ({
 }) => {
   const [eventsTab, setEventsTab] = useState<"hackathons" | "networking" | "webinars">("hackathons");
   const [freelanceTab, setFreelanceTab] = useState<"projects" | "freelancers" | "disputes">("projects");
+
+  useEffect(() => {
+    if (!initialSubTab) return;
+    if (mode === "events-hub" && (initialSubTab === "hackathons" || initialSubTab === "networking" || initialSubTab === "webinars")) {
+      setEventsTab(initialSubTab);
+    } else if (mode === "freelancing" && (initialSubTab === "projects" || initialSubTab === "freelancers" || initialSubTab === "disputes")) {
+      setFreelanceTab(initialSubTab);
+    }
+  }, [mode, initialSubTab]);
   const [showCreateEvent, setShowCreateEvent] = useState(false);
   const [eventTitle, setEventTitle] = useState("");
   const [eventCity, setEventCity] = useState("Bengaluru");

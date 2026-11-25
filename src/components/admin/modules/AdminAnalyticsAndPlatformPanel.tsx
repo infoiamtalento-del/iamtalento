@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Download, ShieldAlert, Check } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -29,6 +29,7 @@ import { toast } from "sonner";
 
 interface Props {
   mode: "analytics-reports" | "ops-platform" | "activity-feed";
+  initialSubTab?: string;
   snapshot: SuperAdminSnapshot;
   enterprise: SuperAdminEnterpriseState;
   onUpdateEnterprise: React.Dispatch<React.SetStateAction<SuperAdminEnterpriseState>>;
@@ -37,6 +38,7 @@ interface Props {
 
 export const AdminAnalyticsAndPlatformPanel: React.FC<Props> = ({
   mode,
+  initialSubTab,
   snapshot,
   enterprise,
   onUpdateEnterprise,
@@ -44,6 +46,31 @@ export const AdminAnalyticsAndPlatformPanel: React.FC<Props> = ({
 }) => {
   const [biTab, setBiTab] = useState<"users" | "recruitment" | "assessments" | "learning" | "financial" | "platform">("users");
   const [opsTab, setOpsTab] = useState<"workflows" | "fraud" | "automation" | "data" | "security" | "compliance">("workflows");
+
+  useEffect(() => {
+    if (!initialSubTab) return;
+    if (
+      mode === "analytics-reports" &&
+      (initialSubTab === "users" ||
+        initialSubTab === "recruitment" ||
+        initialSubTab === "assessments" ||
+        initialSubTab === "learning" ||
+        initialSubTab === "financial" ||
+        initialSubTab === "platform")
+    ) {
+      setBiTab(initialSubTab);
+    } else if (
+      mode === "ops-platform" &&
+      (initialSubTab === "workflows" ||
+        initialSubTab === "fraud" ||
+        initialSubTab === "automation" ||
+        initialSubTab === "data" ||
+        initialSubTab === "security" ||
+        initialSubTab === "compliance")
+    ) {
+      setOpsTab(initialSubTab);
+    }
+  }, [mode, initialSubTab]);
 
   /* ===================== 01B. LIVE PLATFORM ACTIVITY FEED ===================== */
   if (mode === "activity-feed") {
