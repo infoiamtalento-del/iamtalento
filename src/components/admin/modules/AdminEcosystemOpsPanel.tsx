@@ -12,6 +12,7 @@ import type {
   MentorRecord,
 } from "@/services/admin/superAdminEnterpriseData";
 import type { InspectedEntity } from "../SuperAdminInspector";
+import { adminCreateCourse, adminCreateMentor } from "@/services/admin/adminService";
 import { toast } from "sonner";
 
 export type EcosystemModuleKind = "ai-hub" | "lms" | "mentors" | "talent-pool" | "interviews";
@@ -79,13 +80,14 @@ export const AdminEcosystemOpsPanel: React.FC<Props> = ({
     const totalCostInr = enterprise.aiFeatures.reduce((s, f) => s + f.costInr, 0);
     const totalFailed = enterprise.aiFeatures.reduce((s, f) => s + f.failedRequests, 0);
     const enabledCount = enterprise.aiFeatures.filter((f) => f.enabled).length;
+    const failPct = totalRequests > 0 ? ((totalFailed / totalRequests) * 100).toFixed(2) : "0";
 
     return (
       <div className="space-y-5">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
           {[
             { label: "Active AI services", value: `${enabledCount} / ${enterprise.aiFeatures.length}`, meta: "All 11 TalentCIR AI engines" },
-            { label: "Monthly API calls", value: totalRequests.toLocaleString("en-IN"), meta: `${totalFailed} failed requests (0.04%)` },
+            { label: "Monthly API calls", value: totalRequests.toLocaleString("en-IN"), meta: `${totalFailed} failed requests (${failPct}%)` },
             { label: "Tokens consumed (30d)", value: `${totalTokensM.toFixed(1)}M`, meta: "Prompt + completion tokens" },
             { label: "Total AI inference cost", value: formatINR(totalCostInr), meta: "Tracked per feature & tier" },
           ].map((stat) => (
@@ -123,22 +125,28 @@ export const AdminEcosystemOpsPanel: React.FC<Props> = ({
 
         {aiTab === "logs" ? (
           <div className="space-y-2">
-            {enterprise.aiLogs.map((log) => (
-              <div key={log.id} className="rounded-xl border border-[#111827]/[0.08] p-4 flex flex-wrap items-center justify-between gap-3 text-xs">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className={cn("h-1.5 w-1.5 rounded-full", log.status === "success" ? "bg-[#16a34a]" : "bg-[#dc2626]")} />
-                    <span className="font-medium text-[#111827]">{log.feature}</span>
-                    <span className="font-mono text-[11px] text-[#6b7487]">{log.model}</span>
+            {enterprise.aiLogs.length === 0 ? (
+              <p className="rounded-xl border border-[#111827]/[0.08] py-10 text-center text-xs text-[#6b7487]">
+                No AI invocation logs recorded yet. Live AI requests will appear here automatically.
+              </p>
+            ) : (
+              enterprise.aiLogs.map((log) => (
+                <div key={log.id} className="rounded-xl border border-[#111827]/[0.08] p-4 flex flex-wrap items-center justify-between gap-3 text-xs">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className={cn("h-1.5 w-1.5 rounded-full", log.status === "success" ? "bg-[#16a34a]" : "bg-[#dc2626]")} />
+                      <span className="font-medium text-[#111827]">{log.feature}</span>
+                      <span className="font-mono text-[11px] text-[#6b7487]">{log.model}</span>
+                    </div>
+                    <p className="text-[#4b5565]">{log.summary}</p>
                   </div>
-                  <p className="text-[#4b5565]">{log.summary}</p>
+                  <div className="text-right font-mono text-[11px] text-[#6b7487] tabular-nums">
+                    <p className="text-[#111827]">{log.actor}</p>
+                    <p>{log.tokens.toLocaleString()} tok · {log.latencyMs}ms</p>
+                  </div>
                 </div>
-                <div className="text-right font-mono text-[11px] text-[#6b7487] tabular-nums">
-                  <p className="text-[#111827]">{log.actor}</p>
-                  <p>{log.tokens.toLocaleString()} tok · {log.latencyMs}ms</p>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -255,12 +263,13 @@ export const AdminEcosystemOpsPanel: React.FC<Props> = ({
     const pendingCourses = enterprise.courses.filter((c) => c.approvalStatus === "pending_approval");
     const visibleCourses = lmsTab === "approvals" ? pendingCourses : enterprise.courses;
 
-    const handleCreateCourse = (e: React.FormEvent) => {
+    const handleCreateCourse = async (e: React.FormEvent) => {
       e.preventDefault();
       if (!newCourseTitle.trim()) return;
       const price = Number(newCoursePrice) || 0;
+      const res = await adminCreateCourse(newCourseTitle.trim(), newCourseDomain, price);
       const created: LmsCourseRecord = {
-        id: `crs-${Date.now()}`,
+        id: (res.data?.id as string) || `crs-${Date.now()}`,
         code: `CRS-${Math.floor(400 + Math.random() * 500)}`,
         title: newCourseTitle.trim(),
         category: newCourseDomain,
@@ -286,7 +295,11 @@ export const AdminEcosystemOpsPanel: React.FC<Props> = ({
       onLogAudit("lms.course_created", "lms_courses", created.code, `Created course ${created.title}`);
       setNewCourseTitle("");
       setShowAddCourse(false);
-      toast.success(`Course "${created.title}" published to LMS`);
+      toast.success(
+        res.persisted
+          ? `Course "${created.title}" published to live LMS database`
+          : `Course "${created.title}" published in console`
+      );
     };
 
     return (
@@ -456,20 +469,23 @@ export const AdminEcosystemOpsPanel: React.FC<Props> = ({
 
   /* ===================== 09. MENTOR MANAGEMENT ===================== */
   if (module === "mentors") {
-    const handleAddMentor = (e: React.FormEvent) => {
+    const handleAddMentor = async (e: React.FormEvent) => {
       e.preventDefault();
       if (!newMentorName.trim()) return;
+      const rate = Number(newMentorRate) || 999;
+      const headline = `${newMentorDomain} Principal Mentor`;
+      const res = await adminCreateMentor(newMentorName.trim(), headline, newMentorDomain, rate);
       const created: MentorRecord = {
-        id: `mnt-${Date.now()}`,
+        id: (res.data?.id as string) || `mnt-${Date.now()}`,
         code: `MNT-${Math.floor(200 + Math.random() * 799)}`,
         fullName: newMentorName.trim(),
         email: `${newMentorName.trim().toLowerCase().replace(/\s+/g, ".")}@talentcir.com`,
-        headline: `${newMentorDomain} Principal Mentor`,
+        headline,
         domain: newMentorDomain,
         company: "TalentCIR Verified Network",
         verificationStatus: "verified",
         availability: "Available",
-        hourlyRateInr: Number(newMentorRate) || 999,
+        hourlyRateInr: rate,
         sessionsUpcoming: 0,
         sessionsCompleted: 0,
         sessionsCancelled: 0,
@@ -483,7 +499,11 @@ export const AdminEcosystemOpsPanel: React.FC<Props> = ({
       onLogAudit("mentor.created", "mentors", created.code, `Onboarded mentor ${created.fullName}`);
       setNewMentorName("");
       setShowAddMentor(false);
-      toast.success(`Mentor ${created.fullName} added`);
+      toast.success(
+        res.persisted
+          ? `Mentor ${created.fullName} saved to live database`
+          : `Mentor ${created.fullName} added`
+      );
     };
 
     return (
@@ -718,11 +738,38 @@ export const AdminEcosystemOpsPanel: React.FC<Props> = ({
           </div>
         ) : crmTab === "analytics" ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-            {[
-              { label: "Top searched skills (30d)", val: "React, TypeScript, Go, System Design, PyTorch", meta: "1,420 recruiter searches" },
-              { label: "Profile consent opt-in rate", val: "94.2%", meta: "Candidates visible to verified KYB employers" },
-              { label: "CIR unlock-to-interview rate", val: "41.8%", meta: "3.1× higher than unverified resumes" },
-            ].map((card) => (
+            {(() => {
+              const skillFreq = new Map<string, number>();
+              snapshot.candidates.forEach((c) => c.skills.forEach((sk) => skillFreq.set(sk, (skillFreq.get(sk) ?? 0) + 1)));
+              const topSkills = Array.from(skillFreq.entries())
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5)
+                .map(([sk]) => sk);
+              const totalViews = snapshot.candidates.reduce((s, c) => s + c.profileViews, 0);
+              const activeCount = snapshot.candidates.filter((c) => !c.archived).length;
+              const openCount = snapshot.candidates.filter((c) => !c.archived && c.availabilityStatus === "Actively looking").length;
+              const optInPct = activeCount > 0 ? ((openCount / activeCount) * 100).toFixed(1) : "0.0";
+              const totalApps = snapshot.applications.length;
+              const interviewCount = snapshot.applications.filter((a) => ["Interview", "Offer", "Hired"].includes(a.stage)).length;
+              const interviewRate = totalApps > 0 ? ((interviewCount / totalApps) * 100).toFixed(1) : "0.0";
+              return [
+                {
+                  label: "Top candidate skills",
+                  val: topSkills.length > 0 ? topSkills.join(", ") : "No skills indexed yet",
+                  meta: `${totalViews.toLocaleString("en-IN")} total profile views`,
+                },
+                {
+                  label: "Actively looking opt-in rate",
+                  val: `${optInPct}%`,
+                  meta: `${openCount} of ${activeCount} candidates visible to verified employers`,
+                },
+                {
+                  label: "Application-to-interview rate",
+                  val: `${interviewRate}%`,
+                  meta: `${interviewCount} interviews across ${totalApps} live applications`,
+                },
+              ];
+            })().map((card) => (
               <div key={card.label} className="rounded-xl border border-[#111827]/[0.08] bg-[#f5f7fa] p-4 space-y-1.5">
                 <p className="text-[#6b7487]">{card.label}</p>
                 <p className="text-base font-medium text-[#111827]">{card.val}</p>
@@ -730,6 +777,10 @@ export const AdminEcosystemOpsPanel: React.FC<Props> = ({
               </div>
             ))}
           </div>
+        ) : filteredTalent.length === 0 ? (
+          <p className="rounded-xl border border-[#111827]/[0.08] py-10 text-center text-xs text-[#6b7487]">
+            No high-readiness candidates (CIR ≥ 82) in the talent pool yet.
+          </p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3.5">
             {filteredTalent.map((c) => (
@@ -799,7 +850,16 @@ export const AdminEcosystemOpsPanel: React.FC<Props> = ({
           ))}
         </div>
         <span className="font-mono text-xs text-[#6b7487] tabular-nums">
-          Interview-to-offer conversion: 38.4%
+          Interview-to-offer conversion:{" "}
+          {(() => {
+            const interviewed = snapshot.applications.filter((a) =>
+              ["Interview", "Offer", "Hired"].includes(a.stage)
+            ).length;
+            const offered = snapshot.applications.filter((a) =>
+              ["Offer", "Hired"].includes(a.stage)
+            ).length;
+            return interviewed > 0 ? `${((offered / interviewed) * 100).toFixed(1)}%` : "0.0%";
+          })()}
         </span>
       </div>
 

@@ -11,6 +11,7 @@ import type {
   NetworkingEventAdminRecord,
   WebinarAdminRecord,
 } from "@/services/admin/superAdminEnterpriseData";
+import { adminCreateHackathon } from "@/services/admin/adminService";
 import { toast } from "sonner";
 
 interface Props {
@@ -48,12 +49,13 @@ export const AdminEventsAndFreelancePanel: React.FC<Props> = ({
 
   /* ===================== 12. HACKATHONS, NETWORKING & WEBINARS ===================== */
   if (mode === "events-hub") {
-    const handleCreate = (e: React.FormEvent) => {
+    const handleCreate = async (e: React.FormEvent) => {
       e.preventDefault();
       if (!eventTitle.trim()) return;
       if (eventsTab === "hackathons") {
+        const res = await adminCreateHackathon(eventTitle.trim(), eventIndustry, eventCity, 500000);
         const rec: HackathonAdminRecord = {
-          id: `hck-${Date.now()}`,
+          id: (res.data?.id as string) || `hck-${Date.now()}`,
           code: `HACK-${Math.floor(100 + Math.random() * 899)}`,
           title: eventTitle.trim(),
           industry: eventIndustry,
@@ -70,6 +72,10 @@ export const AdminEventsAndFreelancePanel: React.FC<Props> = ({
         };
         onUpdateEnterprise((p) => ({ ...p, hackathons: [rec, ...p.hackathons] }));
         onLogAudit("hackathon.created", "hackathons", rec.code, `Created hackathon ${rec.title}`);
+        setEventTitle("");
+        setShowCreateEvent(false);
+        toast.success(res.persisted ? "Hackathon saved to live database" : "Hackathon created");
+        return;
       } else if (eventsTab === "networking") {
         const rec: NetworkingEventAdminRecord = {
           id: `net-${Date.now()}`,
@@ -93,7 +99,7 @@ export const AdminEventsAndFreelancePanel: React.FC<Props> = ({
           id: `web-${Date.now()}`,
           code: `WEB-${Math.floor(100 + Math.random() * 899)}`,
           title: eventTitle.trim(),
-          hostMentor: "Siddharth Rao",
+          hostMentor: "Super Admin Team",
           category: eventIndustry,
           status: "upcoming",
           registrations: 0,

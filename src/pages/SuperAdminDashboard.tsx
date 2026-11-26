@@ -59,6 +59,7 @@ import {
 } from "@/services/admin/superAdminData";
 import {
   createInitialEnterpriseState,
+  hydrateEnterpriseStateFromLiveDb,
   type SuperAdminEnterpriseState,
 } from "@/services/admin/superAdminEnterpriseData";
 import {
@@ -71,7 +72,20 @@ import {
 import {
   adminReviewEmployer,
   adminModerateJob,
+  adminVerifyCandidateKyc,
+  adminToggleCandidateSuspension,
+  adminToggleProfileArchive,
+  adminToggleEmployerArchive,
+  adminPromoteJob,
+  adminUpdateApplicationStage,
+  adminReviewAssessmentAttempt,
+  adminRefundPaymentOrder,
+  adminAdjustWallet,
+  adminReplySupportTicket,
+  adminUpsertPlatformSetting,
+  adminSaveEnterpriseStore,
 } from "@/services/admin/adminService";
+import { supabase } from "@/integrations/supabase/client";
 import {
   SuperAdminOverview,
   type AdminSectionId,
@@ -207,36 +221,127 @@ const SuperAdminDashboard: React.FC = () => {
 
   // Table Filters & Global Omni-Search
   const [tableQuery, setTableQuery] = useState("");
-  const [originFilter, setOriginFilter] = useState<"all" | "live_db" | "platform">("all");
   const [billingActorFilter, setBillingActorFilter] = useState<"all" | "Candidate" | "Employer">("all");
   const [billingCategoryFilter, setBillingCategoryFilter] = useState<string>("all");
   const [omniQuery, setOmniQuery] = useState("");
   const [inspected, setInspected] = useState<InspectedEntity>(null);
+  const [realtimeConnected, setRealtimeConnected] = useState(false);
+
   const searchInputRef = useRef<HTMLInputElement>(null);
   const quickCreateRef = useRef<HTMLDivElement>(null);
   const profileMenuRef = useRef<HTMLDivElement>(null);
+  const enterpriseSaveTimerRef = useRef<number | null>(null);
 
-  const loadSnapshot = useCallback(async (isRefresh = false) => {
-    if (isRefresh) setSyncing(true);
-    else setLoading(true);
-    try {
-      const data = await fetchSuperAdminSnapshot();
-      setSnapshot(data);
-      if (isRefresh) {
-        toast.success(
-          `Synced live database (${data.liveProfilesCount} live profiles, ${data.liveEmployersCount} live employers, ${data.liveJobsCount} live jobs)`
+  const updateEnterprise: React.Dispatch<React.SetStateAction<SuperAdminEnterpriseState>> =
+    useCallback((updater) => {
+      setEnterprise((prev) => {
+        const next =
+          typeof updater === "function"
+            ? (updater as (p: SuperAdminEnterpriseState) => SuperAdminEnterpriseState)(prev)
+            : updater;
+        if (enterpriseSaveTimerRef.current) {
+          window.clearTimeout(enterpriseSaveTimerRef.current);
+        }
+        enterpriseSaveTimerRef.current = window.setTimeout(() => {
+          void adminSaveEnterpriseStore("enterprise_state_v1", {
+            roles: next.roles,
+            staffAccounts: next.staffAccounts,
+            aiFeatures: next.aiFeatures,
+            cmsPages: next.cmsPages,
+            campaigns: next.campaigns,
+            kbArticles: next.kbArticles,
+            approvalWorkflows: next.approvalWorkflows,
+            automations: next.automations,
+            cirConfig: next.cirConfig,
+            questionBank: next.questionBank,
+            taxonomy: next.taxonomy,
+            plans: next.plans,
+            maintenanceMode: next.maintenanceMode,
+            twoFactorEnforced: next.twoFactorEnforced,
+            ipWhitelistEnabled: next.ipWhitelistEnabled,
+            commissionRates: next.commissionRates,
+          });
+        }, 700);
+        return next;
+      });
+    }, []);
+
+  const loadSnapshot = useCallback(
+    async (isRefresh = false) => {
+      if (isRefresh) setSyncing(true);
+      else setLoading((prev) => (snapshot ? prev : true));
+      try {
+        const data = await fetchSuperAdminSnapshot();
+        setSnapshot(data);
+        setEnterprise((prev) =>
+          hydrateEnterpriseStateFromLiveDb(
+            createInitialEnterpriseState(),
+            data.liveEnterpriseRaw
+          ) || prev
         );
+        if (isRefresh) {
+          toast.success(
+            `Synced live DB (${data.liveProfilesCount} candidates · ${data.liveEmployersCount} employers · ${data.liveJobsCount} jobs · ${data.liveTransactionsCount} payments)`
+          );
+        }
+      } catch (e) {
+        toast.error(e instanceof Error ? e.message : "Failed to load Super Admin data");
+      } finally {
+        setLoading(false);
+        setSyncing(false);
       }
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Failed to load Super Admin data");
-    } finally {
-      setLoading(false);
-      setSyncing(false);
-    }
-  }, []);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   useEffect(() => {
     loadSnapshot(false);
+  }, [loadSnapshot]);
+
+  // Supabase Realtime streaming for live signups, profiles, jobs, applications, payments & tickets
+  useEffect(() => {
+    if (typeof supabase.channel !== "function") return;
+    let debounceTimer: number | null = null;
+    const scheduleRefresh = () => {
+      if (debounceTimer) window.clearTimeout(debounceTimer);
+      debounceTimer = window.setTimeout(() => {
+        void loadSnapshot(false);
+      }, 900);
+    };
+
+    const rtTables = [
+      "profiles",
+      "employers",
+      "employer_job_openings",
+      "job_applications",
+      "payment_orders",
+      "wallet_accounts",
+      "assessment_attempts",
+      "support_tickets",
+      "course_enrollments",
+      "hackathon_registrations",
+      "event_registrations",
+    ];
+
+    let channel = supabase.channel("super-admin-live-sync");
+    for (const table of rtTables) {
+      channel = channel.on(
+        "postgres_changes",
+        { event: "*", schema: "public", table },
+        scheduleRefresh
+      );
+    }
+    channel.subscribe((status) => {
+      setRealtimeConnected(status === "SUBSCRIBED");
+    });
+
+    return () => {
+      if (debounceTimer) window.clearTimeout(debounceTimer);
+      if (typeof supabase.removeChannel === "function") {
+        void supabase.removeChannel(channel);
+      }
+    };
   }, [loadSnapshot]);
 
   useEffect(() => {
@@ -274,7 +379,6 @@ const SuperAdminDashboard: React.FC = () => {
       setOpenModules((prev) => ({ ...prev, [resolved.module.id]: true }));
       setSearchParams(resolved.page.id === "01.01" ? {} : { page: resolved.page.id });
       setTableQuery("");
-      setOriginFilter("all");
       setBillingActorFilter(opts?.billingActor ?? "all");
       setBillingCategoryFilter(opts?.billingCategory ?? "all");
       setMobileMenuOpen(false);
@@ -323,8 +427,8 @@ const SuperAdminDashboard: React.FC = () => {
     []
   );
 
-  // Admin Mutation Handlers
-  const handleVerifyCandidate = (id: string, status: SuperAdminCandidate["kycStatus"]) => {
+  // Admin Mutation Handlers (Optimistic UI + Persistent Supabase RPC Writes)
+  const handleVerifyCandidate = async (id: string, status: SuperAdminCandidate["kycStatus"]) => {
     setSnapshot((prev) => {
       if (!prev) return prev;
       const updated = prev.candidates.map((c) => (c.id === id ? { ...c, kycStatus: status } : c));
@@ -334,11 +438,13 @@ const SuperAdminDashboard: React.FC = () => {
       }
       return { ...prev, candidates: updated };
     });
-    appendAudit("candidate.kyc_updated", "identity_verifications", id, `Candidate KYC set to ${status}`);
-    toast.success(`Candidate KYC marked as ${status}`);
+    const dbStatus = status === "unsubmitted" ? "unverified" : status;
+    const res = await adminVerifyCandidateKyc(id, dbStatus);
+    appendAudit("candidate.kyc_updated", "identity_verifications", id, `Candidate KYC set to ${status}${res.persisted ? " (saved to DB)" : ""}`);
+    toast.success(`Candidate KYC marked as ${status}${res.persisted ? " · saved to Supabase" : ""}`);
   };
 
-  const handleSuspendCandidate = (id: string) => {
+  const handleSuspendCandidate = async (id: string) => {
     setSnapshot((prev) => {
       if (!prev) return prev;
       const updated = prev.candidates.map((c) =>
@@ -358,11 +464,12 @@ const SuperAdminDashboard: React.FC = () => {
       }
       return { ...prev, candidates: updated };
     });
-    appendAudit("candidate.status_toggled", "profiles", id, "Toggled candidate account suspension", "warning");
-    toast.success("Candidate account status updated");
+    const res = await adminToggleCandidateSuspension(id, "Toggled from Super Admin Console");
+    appendAudit("candidate.status_toggled", "profiles", id, `Toggled candidate account suspension${res.persisted ? " (saved to DB)" : ""}`, "warning");
+    toast.success(`Candidate account status updated${res.persisted ? " · saved to Supabase" : ""}`);
   };
 
-  const handleToggleArchiveCandidates = (ids: string[], archive: boolean) => {
+  const handleToggleArchiveCandidates = async (ids: string[], archive: boolean) => {
     setSnapshot((prev) => {
       if (!prev) return prev;
       const updated = prev.candidates.map((c) =>
@@ -374,18 +481,19 @@ const SuperAdminDashboard: React.FC = () => {
       }
       return { ...prev, candidates: updated };
     });
+    const res = await adminToggleProfileArchive(ids, archive);
     appendAudit(
       archive ? "candidate.archived" : "candidate.unarchived",
       "profiles",
       ids.join(","),
-      `${archive ? "Archived" : "Restored"} ${ids.length} candidate profile(s)`
+      `${archive ? "Archived" : "Restored"} ${ids.length} candidate profile(s)${res.persisted ? " (saved to DB)" : ""}`
     );
     toast.success(
-      `${archive ? "Archived" : "Restored"} ${ids.length} candidate profile${ids.length > 1 ? "s" : ""}`
+      `${archive ? "Archived" : "Restored"} ${ids.length} candidate profile${ids.length > 1 ? "s" : ""}${res.persisted ? " · saved to Supabase" : ""}`
     );
   };
 
-  const handleBulkVerifyKyc = (ids: string[]) => {
+  const handleBulkVerifyKyc = async (ids: string[]) => {
     setSnapshot((prev) =>
       prev
         ? {
@@ -396,11 +504,13 @@ const SuperAdminDashboard: React.FC = () => {
           }
         : prev
     );
-    appendAudit("candidate.bulk_kyc_verified", "identity_verifications", ids.join(","), `Verified KYC for ${ids.length} candidates`);
-    toast.success(`Verified KYC for ${ids.length} candidate(s)`);
+    const results = await Promise.all(ids.map((id) => adminVerifyCandidateKyc(id, "verified")));
+    const persistedCount = results.filter((r) => r.persisted).length;
+    appendAudit("candidate.bulk_kyc_verified", "identity_verifications", ids.join(","), `Verified KYC for ${ids.length} candidates (${persistedCount} persisted)`);
+    toast.success(`Verified KYC for ${ids.length} candidate(s)${persistedCount > 0 ? ` · ${persistedCount} saved to Supabase` : ""}`);
   };
 
-  const handleToggleArchiveEmployers = (ids: string[], archive: boolean) => {
+  const handleToggleArchiveEmployers = async (ids: string[], archive: boolean) => {
     setSnapshot((prev) => {
       if (!prev) return prev;
       const updated = prev.employers.map((e) =>
@@ -412,14 +522,15 @@ const SuperAdminDashboard: React.FC = () => {
       }
       return { ...prev, employers: updated };
     });
+    const res = await adminToggleEmployerArchive(ids, archive);
     appendAudit(
       archive ? "employer.archived" : "employer.unarchived",
       "employers",
       ids.join(","),
-      `${archive ? "Archived" : "Restored"} ${ids.length} employer profile(s)`
+      `${archive ? "Archived" : "Restored"} ${ids.length} employer profile(s)${res.persisted ? " (saved to DB)" : ""}`
     );
     toast.success(
-      `${archive ? "Archived" : "Restored"} ${ids.length} employer profile${ids.length > 1 ? "s" : ""}`
+      `${archive ? "Archived" : "Restored"} ${ids.length} employer profile${ids.length > 1 ? "s" : ""}${res.persisted ? " · saved to Supabase" : ""}`
     );
   };
 
@@ -440,9 +551,7 @@ const SuperAdminDashboard: React.FC = () => {
     status: SuperAdminEmployer["verificationStatus"]
   ) => {
     const targetEmp = snapshot?.employers.find((e) => e.id === id);
-    if (targetEmp?.origin === "live_db") {
-      await adminReviewEmployer(id, status, "Reviewed from Super Admin Console").catch(() => {});
-    }
+    const res = await adminReviewEmployer(id, status, "Reviewed from Super Admin Console");
     setSnapshot((prev) => {
       if (!prev) return prev;
       const updated = prev.employers.map((e) =>
@@ -456,15 +565,12 @@ const SuperAdminDashboard: React.FC = () => {
       }
       return { ...prev, employers: updated };
     });
-    appendAudit("employer.kyb_reviewed", "employers", id, `Employer verification set to ${status}`);
-    toast.success(`Employer ${targetEmp?.companyName || id} marked as ${status}`);
+    appendAudit("employer.kyb_reviewed", "employers", id, `Employer verification set to ${status}${res.persisted ? " (saved to DB)" : ""}`);
+    toast.success(`Employer ${targetEmp?.companyName || id} marked as ${status}${res.persisted ? " · saved to Supabase" : ""}`);
   };
 
   const handleModerateJob = async (id: string, status: SuperAdminJob["status"]) => {
-    const targetJob = snapshot?.jobs.find((j) => j.id === id);
-    if (targetJob?.origin === "live_db") {
-      await adminModerateJob(id, status === "active", "Moderated in Super Admin Console").catch(() => {});
-    }
+    const res = await adminModerateJob(id, status === "active", "Moderated in Super Admin Console");
     setSnapshot((prev) => {
       if (!prev) return prev;
       const updated = prev.jobs.map((j) => (j.id === id ? { ...j, status } : j));
@@ -474,11 +580,11 @@ const SuperAdminDashboard: React.FC = () => {
       }
       return { ...prev, jobs: updated };
     });
-    appendAudit("job.moderated", "employer_job_openings", id, `Job status set to ${status}`);
-    toast.success(`Job status updated to ${status}`);
+    appendAudit("job.moderated", "employer_job_openings", id, `Job status set to ${status}${res.persisted ? " (saved to DB)" : ""}`);
+    toast.success(`Job status updated to ${status}${res.persisted ? " · saved to Supabase" : ""}`);
   };
 
-  const handlePromoteJob = (id: string, tier: SuperAdminJob["promotionTier"]) => {
+  const handlePromoteJob = async (id: string, tier: SuperAdminJob["promotionTier"]) => {
     setSnapshot((prev) => {
       if (!prev) return prev;
       const updated = prev.jobs.map((j) => (j.id === id ? { ...j, promotionTier: tier } : j));
@@ -488,11 +594,12 @@ const SuperAdminDashboard: React.FC = () => {
       }
       return { ...prev, jobs: updated };
     });
-    appendAudit("job.promotion_updated", "employer_job_openings", id, `Promotion tier set to ${tier}`);
-    toast.success(`Job promotion tier updated to ${tier}`);
+    const res = await adminPromoteJob(id, tier);
+    appendAudit("job.promotion_updated", "employer_job_openings", id, `Promotion tier set to ${tier}${res.persisted ? " (saved to DB)" : ""}`);
+    toast.success(`Job promotion tier updated to ${tier}${res.persisted ? " · saved to Supabase" : ""}`);
   };
 
-  const handleUpdateApplicationStage = (id: string, stage: string) => {
+  const handleUpdateApplicationStage = async (id: string, stage: string) => {
     setSnapshot((prev) => {
       if (!prev) return prev;
       const updated = prev.applications.map((a) =>
@@ -514,11 +621,12 @@ const SuperAdminDashboard: React.FC = () => {
       }
       return { ...prev, applications: updated };
     });
-    appendAudit("application.stage_override", "job_applications", id, `Overrode stage to ${stage}`);
-    toast.success(`Application moved to ${stage}`);
+    const res = await adminUpdateApplicationStage(id, stage);
+    appendAudit("application.stage_override", "job_applications", id, `Overrode stage to ${stage}${res.persisted ? " (saved to DB)" : ""}`);
+    toast.success(`Application moved to ${stage}${res.persisted ? " · saved to Supabase" : ""}`);
   };
 
-  const handleReviewAssessment = (id: string, status: SuperAdminAssessmentAttempt["status"]) => {
+  const handleReviewAssessment = async (id: string, status: SuperAdminAssessmentAttempt["status"]) => {
     setSnapshot((prev) => {
       if (!prev) return prev;
       const updated = prev.assessments.map((a) =>
@@ -537,11 +645,12 @@ const SuperAdminDashboard: React.FC = () => {
       }
       return { ...prev, assessments: updated };
     });
-    appendAudit("assessment.proctor_override", "assessment_attempts", id, `Assessment credential status set to ${status}`);
-    toast.success(`Assessment status updated to ${status}`);
+    const res = await adminReviewAssessmentAttempt(id, status);
+    appendAudit("assessment.proctor_override", "assessment_attempts", id, `Assessment credential status set to ${status}${res.persisted ? " (saved to DB)" : ""}`);
+    toast.success(`Assessment status updated to ${status}${res.persisted ? " · saved to Supabase" : ""}`);
   };
 
-  const handleRefundTransaction = (id: string) => {
+  const handleRefundTransaction = async (id: string) => {
     setSnapshot((prev) => {
       if (!prev) return prev;
       const updated = prev.transactions.map((t) =>
@@ -553,11 +662,12 @@ const SuperAdminDashboard: React.FC = () => {
       }
       return { ...prev, transactions: updated };
     });
-    appendAudit("payment.refunded", "payment_orders", id, "Full refund issued by Super Admin", "warning");
-    toast.success("Transaction refunded & credit note logged");
+    const res = await adminRefundPaymentOrder(id, "Full refund issued by Super Admin");
+    appendAudit("payment.refunded", "payment_orders", id, `Full refund issued by Super Admin${res.persisted ? " (saved to DB)" : ""}`, "warning");
+    toast.success(`Transaction refunded & credit note logged${res.persisted ? " · saved to Supabase" : ""}`);
   };
 
-  const handleAdjustWallet = (
+  const handleAdjustWallet = async (
     id: string,
     type: "credit" | "debit",
     amount: number,
@@ -597,11 +707,12 @@ const SuperAdminDashboard: React.FC = () => {
       }
       return { ...prev, wallets: updated };
     });
-    appendAudit(`wallet.${type}`, "wallet_ledger_entries", id, `${type.toUpperCase()} ₹${amount}: ${reason}`);
-    toast.success(`Wallet ${type}ed by ${formatINR(amount)}`);
+    const res = await adminAdjustWallet(id, type, amount, reason || "Super Admin adjustment");
+    appendAudit(`wallet.${type}`, "wallet_ledger_entries", id, `${type.toUpperCase()} ₹${amount}: ${reason}${res.persisted ? " (saved to DB)" : ""}`);
+    toast.success(`Wallet ${type}ed by ${formatINR(amount)}${res.persisted ? " · saved to Supabase" : ""}`);
   };
 
-  const handleReplyTicket = (id: string, reply: string, resolve: boolean) => {
+  const handleReplyTicket = async (id: string, reply: string, resolve: boolean) => {
     setSnapshot((prev) => {
       if (!prev) return prev;
       const updated = prev.tickets.map((t) =>
@@ -628,11 +739,12 @@ const SuperAdminDashboard: React.FC = () => {
       }
       return { ...prev, tickets: updated };
     });
-    appendAudit("support.ticket_updated", "support_tickets", id, resolve ? "Ticket resolved" : "Admin reply posted");
-    toast.success(resolve ? "Ticket resolved" : "Reply sent");
+    const res = await adminReplySupportTicket(id, reply, resolve);
+    appendAudit("support.ticket_updated", "support_tickets", id, `${resolve ? "Ticket resolved" : "Admin reply posted"}${res.persisted ? " (saved to DB)" : ""}`);
+    toast.success(`${resolve ? "Ticket resolved" : "Reply sent"}${res.persisted ? " · saved to Supabase" : ""}`);
   };
 
-  const handleToggleFlag = (key: string, checked: boolean) => {
+  const handleToggleFlag = async (key: string, checked: boolean) => {
     setSnapshot((prev) =>
       prev
         ? {
@@ -643,8 +755,9 @@ const SuperAdminDashboard: React.FC = () => {
           }
         : prev
     );
-    appendAudit("platform.flag_toggled", "platform_settings", key, `Set ${key} = ${checked}`);
-    toast.success(`Updated platform setting: ${key}`);
+    const res = await adminUpsertPlatformSetting(`flag.${key}`, checked);
+    appendAudit("platform.flag_toggled", "platform_settings", key, `Set ${key} = ${checked}${res.persisted ? " (saved to DB)" : ""}`);
+    toast.success(`Updated platform setting: ${key}${res.persisted ? " · saved to Supabase" : ""}`);
   };
 
   // Global Omni-Search Matches
@@ -909,14 +1022,27 @@ const SuperAdminDashboard: React.FC = () => {
               )}
             </Link>
             {!isCollapsedRail && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#001F4D] border border-white/15 px-2 py-0.5 font-mono text-[10px] text-blue-100">
+              <span
+                title={
+                  realtimeConnected
+                    ? "Supabase Realtime streaming active"
+                    : snapshot?.liveDbConnected
+                      ? "Connected to Supabase"
+                      : "Connecting to Supabase"
+                }
+                className="inline-flex items-center gap-1.5 rounded-full bg-[#001F4D] border border-white/15 px-2 py-0.5 font-mono text-[10px] text-blue-100"
+              >
                 <span
                   className={cn(
                     "h-1.5 w-1.5 rounded-full",
-                    snapshot?.liveDbConnected ? "bg-[#4ade80]" : "bg-[#f59e0b]"
+                    realtimeConnected
+                      ? "bg-[#4ade80]"
+                      : snapshot?.liveDbConnected
+                        ? "bg-[#60a5fa]"
+                        : "bg-[#f59e0b]"
                   )}
                 />
-                {snapshot?.liveDbConnected ? "Live DB" : "Sync"}
+                {realtimeConnected ? "Realtime" : snapshot?.liveDbConnected ? "Live DB" : "Sync"}
               </span>
             )}
           </div>
@@ -1246,9 +1372,26 @@ const SuperAdminDashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Right: Phase Legend + Quick Create + Approvals + Notifications + Impersonation + Sync/Export + Admin Profile */}
+          {/* Right: Live Production DB Indicator + Phase Legend + Quick Create + Approvals + Notifications + Impersonation + Sync/Export + Admin Profile */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            <div className="hidden 2xl:flex items-center gap-3 mr-2 text-[11px] text-[#6b7487]">
+            <span
+              title="Connected directly to live Supabase PostgreSQL tables (zero dummy data)"
+              className="hidden md:inline-flex items-center gap-1.5 rounded-lg border border-[#111827]/[0.08] bg-[#f5f7fa] px-2.5 py-1.5 font-mono text-[11px] font-medium text-[#111827]"
+            >
+              <span
+                className={cn(
+                  "h-1.5 w-1.5 rounded-full",
+                  realtimeConnected
+                    ? "bg-[#16a34a]"
+                    : snapshot?.liveDbConnected
+                      ? "bg-[#002C66]"
+                      : "bg-[#d97706]"
+                )}
+              />
+              {realtimeConnected ? "Live Realtime" : "Live Production DB"}
+            </span>
+
+            <div className="hidden 2xl:flex items-center gap-3 mr-1 text-[11px] text-[#6b7487]">
               <span className="inline-flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-full bg-[#4ade80]" />
                 Phase 1
@@ -1658,26 +1801,6 @@ const SuperAdminDashboard: React.FC = () => {
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2">
-                    {activeSection === "jobs" && (
-                      <div className="inline-flex rounded-lg border border-[#111827]/[0.08] bg-[#eceff4] p-0.5 text-xs">
-                        {(["all", "live_db", "platform"] as const).map((orig) => (
-                          <button
-                            key={orig}
-                            type="button"
-                            onClick={() => setOriginFilter(orig)}
-                            className={cn(
-                              "rounded-md px-2.5 py-1 text-xs font-medium transition-colors duration-150 cursor-pointer",
-                              originFilter === orig
-                                ? "bg-[#002C66] text-white"
-                                : "text-[#4b5565] hover:text-[#111827]"
-                            )}
-                          >
-                            {orig === "all" ? "All sources" : orig === "live_db" ? "Live DB" : "Platform"}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-
                     {activeSection === "billing" && (
                       <>
                         <div className="inline-flex rounded-lg border border-[#111827]/[0.08] bg-[#eceff4] p-0.5 text-xs">
@@ -1983,76 +2106,88 @@ const SuperAdminDashboard: React.FC = () => {
                     <h3 className="text-sm font-medium text-[#111827] dark:text-[#eef0f5]">
                       Corporate KYB filings (CIN · GSTIN · PAN)
                     </h3>
-                    {snapshot.employers.map((emp) => (
-                      <div key={emp.id} className="rounded-xl border border-[#111827]/[0.08] p-4 flex items-center justify-between gap-3">
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2">
-                            <p className="text-xs font-medium text-[#111827] truncate">{emp.companyName}</p>
-                            <StatusPill value={emp.verificationStatus} />
+                    {snapshot.employers.length === 0 ? (
+                      <p className="rounded-xl border border-[#111827]/[0.08] py-8 text-center text-xs text-[#6b7487]">
+                        No employer KYB filings submitted yet.
+                      </p>
+                    ) : (
+                      snapshot.employers.map((emp) => (
+                        <div key={emp.id} className="rounded-xl border border-[#111827]/[0.08] p-4 flex items-center justify-between gap-3">
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2">
+                              <p className="text-xs font-medium text-[#111827] truncate">{emp.companyName}</p>
+                              <StatusPill value={emp.verificationStatus} />
+                            </div>
+                            <p className="font-mono text-[11px] text-[#6b7487] mt-1">
+                              {emp.employerCode} · GSTIN: {emp.gstin} · PAN: {emp.pan}
+                            </p>
                           </div>
-                          <p className="font-mono text-[11px] text-[#6b7487] mt-1">
-                            {emp.employerCode} · GSTIN: {emp.gstin} · PAN: {emp.pan}
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-1.5 shrink-0">
-                          {emp.verificationStatus !== "verified" && (
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            {emp.verificationStatus !== "verified" && (
+                              <Button
+                                size="sm"
+                                className="h-7 text-[11px] bg-[#002C66] hover:bg-[#002250] text-white cursor-pointer"
+                                onClick={() => handleReviewEmployer(emp.id, "verified")}
+                              >
+                                Approve
+                              </Button>
+                            )}
                             <Button
                               size="sm"
-                              className="h-7 text-[11px] bg-[#002C66] hover:bg-[#002250] text-white cursor-pointer"
-                              onClick={() => handleReviewEmployer(emp.id, "verified")}
+                              variant="outline"
+                              className="h-7 text-[11px] cursor-pointer"
+                              onClick={() => setInspected({ kind: "employer", data: emp })}
                             >
-                              Approve
+                              Inspect
                             </Button>
-                          )}
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="h-7 text-[11px] cursor-pointer"
-                            onClick={() => setInspected({ kind: "employer", data: emp })}
-                          >
-                            Inspect
-                          </Button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))
+                    )}
                   </div>
 
                   <div className="space-y-3">
                     <h3 className="text-sm font-medium text-[#111827] dark:text-[#eef0f5]">
                       Candidate government ID &amp; biometric checks
                     </h3>
-                    {snapshot.candidates.map((cand) => (
-                      <div key={cand.id} className="rounded-xl border border-[#111827]/[0.08] p-4 flex items-center justify-between gap-3">
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2">
-                            <p className="text-xs font-medium text-[#111827] truncate">{cand.fullName}</p>
-                            <StatusPill value={cand.kycStatus} />
+                    {snapshot.candidates.length === 0 ? (
+                      <p className="rounded-xl border border-[#111827]/[0.08] py-8 text-center text-xs text-[#6b7487]">
+                        No candidate KYC records submitted yet.
+                      </p>
+                    ) : (
+                      snapshot.candidates.map((cand) => (
+                        <div key={cand.id} className="rounded-xl border border-[#111827]/[0.08] p-4 flex items-center justify-between gap-3">
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2">
+                              <p className="text-xs font-medium text-[#111827] truncate">{cand.fullName}</p>
+                              <StatusPill value={cand.kycStatus} />
+                            </div>
+                            <p className="font-mono text-[11px] text-[#6b7487] mt-1">
+                              {cand.talentCirId} · {cand.email}
+                            </p>
                           </div>
-                          <p className="font-mono text-[11px] text-[#6b7487] mt-1">
-                            {cand.talentCirId} · {cand.email}
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-1.5 shrink-0">
-                          {cand.kycStatus !== "verified" && (
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            {cand.kycStatus !== "verified" && (
+                              <Button
+                                size="sm"
+                                className="h-7 text-[11px] bg-[#002C66] hover:bg-[#002250] text-white cursor-pointer"
+                                onClick={() => handleVerifyCandidate(cand.id, "verified")}
+                              >
+                                Verify KYC
+                              </Button>
+                            )}
                             <Button
                               size="sm"
-                              className="h-7 text-[11px] bg-[#002C66] hover:bg-[#002250] text-white cursor-pointer"
-                              onClick={() => handleVerifyCandidate(cand.id, "verified")}
+                              variant="outline"
+                              className="h-7 text-[11px] cursor-pointer"
+                              onClick={() => setInspected({ kind: "candidate", data: cand })}
                             >
-                              Verify KYC
+                              Inspect
                             </Button>
-                          )}
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="h-7 text-[11px] cursor-pointer"
-                            onClick={() => setInspected({ kind: "candidate", data: cand })}
-                          >
-                            Inspect
-                          </Button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))
+                    )}
                   </div>
                 </div>
               )}
@@ -2074,28 +2209,37 @@ const SuperAdminDashboard: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#111827]/[0.06]">
-                      {snapshot.jobs
-                        .filter((j) => (originFilter === "all" ? true : j.origin === originFilter))
-                        .filter((j) => {
-                          const slug = activeInnerTab?.slug;
-                          if (!slug || slug === "all-jobs" || slug === "create-job") return true;
-                          if (slug === "pending-job-approvals") return j.status === "pending_review";
-                          if (slug === "published-jobs") return j.status === "active";
-                          if (slug === "rejected-jobs") return j.status === "rejected";
-                          if (slug === "expired-jobs") return j.status === "closed" || j.status === "paused";
-                          if (slug === "featured-jobs") return j.promotionTier !== "none";
-                          if (slug === "urgent-hiring-jobs") return j.openingsCount >= 4 || j.promotionTier === "sponsored";
-                          if (slug === "reported-jobs") return j.status === "pending_review" || j.status === "rejected";
-                          return true;
-                        })
-                        .filter(
-                          (j) =>
-                            !q ||
-                            [j.title, j.companyName, j.jobCode, j.location, ...j.skills].some((v) =>
-                              v?.toLowerCase().includes(q)
-                            )
-                        )
-                        .map((job) => (
+                      {(() => {
+                        const filteredJobs = snapshot.jobs
+                          .filter((j) => {
+                            const slug = activeInnerTab?.slug;
+                            if (!slug || slug === "all-jobs" || slug === "create-job") return true;
+                            if (slug === "pending-job-approvals") return j.status === "pending_review";
+                            if (slug === "published-jobs") return j.status === "active";
+                            if (slug === "rejected-jobs") return j.status === "rejected";
+                            if (slug === "expired-jobs") return j.status === "closed" || j.status === "paused";
+                            if (slug === "featured-jobs") return j.promotionTier !== "none";
+                            if (slug === "urgent-hiring-jobs") return j.openingsCount >= 4 || j.promotionTier === "sponsored";
+                            if (slug === "reported-jobs") return j.status === "pending_review" || j.status === "rejected";
+                            return true;
+                          })
+                          .filter(
+                            (j) =>
+                              !q ||
+                              [j.title, j.companyName, j.jobCode, j.location, ...j.skills].some((v) =>
+                                v?.toLowerCase().includes(q)
+                              )
+                          );
+                        if (filteredJobs.length === 0) {
+                          return (
+                            <tr>
+                              <td colSpan={8} className="py-10 text-center text-xs text-[#6b7487]">
+                                No job openings posted yet. Live employer job listings will appear here automatically.
+                              </td>
+                            </tr>
+                          );
+                        }
+                        return filteredJobs.map((job) => (
                           <tr
                             key={job.id}
                             onClick={() => setInspected({ kind: "job", data: job })}
@@ -2156,7 +2300,8 @@ const SuperAdminDashboard: React.FC = () => {
                               </div>
                             </td>
                           </tr>
-                        ))}
+                        ));
+                      })()}
                     </tbody>
                   </table>
                 </div>
@@ -2178,28 +2323,38 @@ const SuperAdminDashboard: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#111827]/[0.06]">
-                      {snapshot.applications
-                        .filter((a) => {
-                          const slug = activeInnerTab?.slug;
-                          if (!slug || slug === "all-applications") return true;
-                          const st = a.stage.toLowerCase();
-                          if (slug === "new-applications") return st.includes("appl") || st === "new";
-                          if (slug === "under-review") return st.includes("review") || st.includes("screen");
-                          if (slug === "shortlisted-candidates") return st.includes("shortlist");
-                          if (slug === "rejected-candidates") return st.includes("reject");
-                          if (slug === "interview-scheduled") return st.includes("interview");
-                          if (slug === "selected-candidates" || slug === "offers-released") return st.includes("offer") || st.includes("select");
-                          if (slug === "hired-candidates") return st.includes("hire");
-                          return true;
-                        })
-                        .filter(
-                          (a) =>
-                            !q ||
-                            [a.candidateName, a.jobTitle, a.companyName, a.appCode, a.stage].some(
-                              (v) => v?.toLowerCase().includes(q)
-                            )
-                        )
-                        .map((app) => (
+                      {(() => {
+                        const filteredApps = snapshot.applications
+                          .filter((a) => {
+                            const slug = activeInnerTab?.slug;
+                            if (!slug || slug === "all-applications") return true;
+                            const st = a.stage.toLowerCase();
+                            if (slug === "new-applications") return st.includes("appl") || st === "new";
+                            if (slug === "under-review") return st.includes("review") || st.includes("screen");
+                            if (slug === "shortlisted-candidates") return st.includes("shortlist");
+                            if (slug === "rejected-candidates") return st.includes("reject");
+                            if (slug === "interview-scheduled") return st.includes("interview");
+                            if (slug === "selected-candidates" || slug === "offers-released") return st.includes("offer") || st.includes("select");
+                            if (slug === "hired-candidates") return st.includes("hire");
+                            return true;
+                          })
+                          .filter(
+                            (a) =>
+                              !q ||
+                              [a.candidateName, a.jobTitle, a.companyName, a.appCode, a.stage].some(
+                                (v) => v?.toLowerCase().includes(q)
+                              )
+                          );
+                        if (filteredApps.length === 0) {
+                          return (
+                            <tr>
+                              <td colSpan={7} className="py-10 text-center text-xs text-[#6b7487]">
+                                No job applications submitted yet.
+                              </td>
+                            </tr>
+                          );
+                        }
+                        return filteredApps.map((app) => (
                           <tr
                             key={app.id}
                             onClick={() => setInspected({ kind: "application", data: app })}
@@ -2234,7 +2389,8 @@ const SuperAdminDashboard: React.FC = () => {
                               </Button>
                             </td>
                           </tr>
-                        ))}
+                        ));
+                      })()}
                     </tbody>
                   </table>
                 </div>
@@ -2257,15 +2413,24 @@ const SuperAdminDashboard: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#111827]/[0.06]">
-                      {snapshot.assessments
-                        .filter(
+                      {(() => {
+                        const filteredAssessments = snapshot.assessments.filter(
                           (a) =>
                             !q ||
                             [a.candidateName, a.attemptCode, a.credentialToken, a.assessmentTitle].some(
                               (v) => v?.toLowerCase().includes(q)
                             )
-                        )
-                        .map((att) => (
+                        );
+                        if (filteredAssessments.length === 0) {
+                          return (
+                            <tr>
+                              <td colSpan={8} className="py-10 text-center text-xs text-[#6b7487]">
+                                No proctored assessment attempts logged yet.
+                              </td>
+                            </tr>
+                          );
+                        }
+                        return filteredAssessments.map((att) => (
                           <tr
                             key={att.id}
                             onClick={() => setInspected({ kind: "assessment", data: att })}
@@ -2324,7 +2489,8 @@ const SuperAdminDashboard: React.FC = () => {
                               </div>
                             </td>
                           </tr>
-                        ))}
+                        ));
+                      })()}
                     </tbody>
                   </table>
                 </div>
@@ -2347,31 +2513,41 @@ const SuperAdminDashboard: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#111827]/[0.06]">
-                      {snapshot.transactions
-                        .filter((t) =>
-                          billingActorFilter === "all" ? true : t.actorType === billingActorFilter
-                        )
-                        .filter((t) =>
-                          billingCategoryFilter === "all" ? true : t.category === billingCategoryFilter
-                        )
-                        .filter((t) => {
-                          const slug = activeInnerTab?.slug;
-                          if (!slug || slug === "all-payments" || slug === "invoices" || slug === "payment-gateway-logs") return true;
-                          if (slug === "candidate-payments") return t.actorType === "Candidate";
-                          if (slug === "employer-payments") return t.actorType === "Employer";
-                          if (slug === "pending-payments") return t.status === "pending";
-                          if (slug === "failed-transactions") return t.status === "failed";
-                          if (slug === "credit-notes") return t.status === "refunded" || t.direction === "refund";
-                          return true;
-                        })
-                        .filter(
-                          (t) =>
-                            !q ||
-                            [t.invoiceNumber, t.orderId, t.actorName, t.itemTitle, t.category].some(
-                              (v) => v?.toLowerCase().includes(q)
-                            )
-                        )
-                        .map((tx) => (
+                      {(() => {
+                        const filteredTransactions = snapshot.transactions
+                          .filter((t) =>
+                            billingActorFilter === "all" ? true : t.actorType === billingActorFilter
+                          )
+                          .filter((t) =>
+                            billingCategoryFilter === "all" ? true : t.category === billingCategoryFilter
+                          )
+                          .filter((t) => {
+                            const slug = activeInnerTab?.slug;
+                            if (!slug || slug === "all-payments" || slug === "invoices" || slug === "payment-gateway-logs") return true;
+                            if (slug === "candidate-payments") return t.actorType === "Candidate";
+                            if (slug === "employer-payments") return t.actorType === "Employer";
+                            if (slug === "pending-payments") return t.status === "pending";
+                            if (slug === "failed-transactions") return t.status === "failed";
+                            if (slug === "credit-notes") return t.status === "refunded" || t.direction === "refund";
+                            return true;
+                          })
+                          .filter(
+                            (t) =>
+                              !q ||
+                              [t.invoiceNumber, t.orderId, t.actorName, t.itemTitle, t.category].some(
+                                (v) => v?.toLowerCase().includes(q)
+                              )
+                          );
+                        if (filteredTransactions.length === 0) {
+                          return (
+                            <tr>
+                              <td colSpan={8} className="py-10 text-center text-xs text-[#6b7487]">
+                                No payment orders recorded yet. Live Razorpay &amp; GST invoices will appear here automatically.
+                              </td>
+                            </tr>
+                          );
+                        }
+                        return filteredTransactions.map((tx) => (
                           <tr
                             key={tx.id}
                             onClick={() => setInspected({ kind: "transaction", data: tx })}
@@ -2405,7 +2581,8 @@ const SuperAdminDashboard: React.FC = () => {
                               </Button>
                             </td>
                           </tr>
-                        ))}
+                        ));
+                      })()}
                     </tbody>
                   </table>
                 </div>
@@ -2413,6 +2590,11 @@ const SuperAdminDashboard: React.FC = () => {
 
               {/* 9. WALLETS & LEDGER */}
               {activeSection === "wallets" && (
+                snapshot.wallets.length === 0 ? (
+                  <p className="rounded-xl border border-[#111827]/[0.08] py-10 text-center text-xs text-[#6b7487]">
+                    No escrow wallet accounts created yet. Wallets appear automatically when users top up or receive credits.
+                  </p>
+                ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                   {snapshot.wallets
                     .filter(
@@ -2452,6 +2634,7 @@ const SuperAdminDashboard: React.FC = () => {
                       </div>
                     ))}
                 </div>
+                )
               )}
 
               {/* 10. LEARNING, MENTORS & HACKATHONS */}
@@ -2471,29 +2654,37 @@ const SuperAdminDashboard: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#111827]/[0.06]">
-                      {snapshot.learningEvents.map((ev) => (
-                        <tr
-                          key={ev.id}
-                          onClick={() => setInspected({ kind: "learning", data: ev })}
-                          className="hover:bg-[#f5f7fa] cursor-pointer transition-colors duration-150"
-                        >
-                          <td className="py-3 pr-3">
-                            <p className="font-medium text-[#111827]">{ev.title}</p>
-                            <p className="font-mono text-[11px] text-[#6b7487]">{ev.code} · {ev.scheduleLabel}</p>
-                          </td>
-                          <td className="py-3 px-3"><Badge variant="secondary" className="font-normal">{ev.kind}</Badge></td>
-                          <td className="py-3 px-3 text-[#4b5565]">{ev.organizerOrInstructor}</td>
-                          <td className="py-3 px-3 font-medium text-[#111827] tabular-nums">{ev.participantsCount.toLocaleString()}</td>
-                          <td className="py-3 px-3 font-medium text-[#16a34a] tabular-nums">{ev.completionOrSubmissionRate}%</td>
-                          <td className="py-3 px-3 font-medium text-[#111827] tabular-nums">{formatINR(ev.revenueGeneratedInr)}</td>
-                          <td className="py-3 px-3"><StatusPill value={ev.status} /></td>
-                          <td className="py-3 pl-3 text-right">
-                            <Button size="sm" variant="outline" className="h-7 px-2 text-[11px] cursor-pointer">
-                              Inspect
-                            </Button>
+                      {snapshot.learningEvents.length === 0 ? (
+                        <tr>
+                          <td colSpan={8} className="py-10 text-center text-xs text-[#6b7487]">
+                            No learning programs or hackathons published yet. Create courses or events to populate this directory.
                           </td>
                         </tr>
-                      ))}
+                      ) : (
+                        snapshot.learningEvents.map((ev) => (
+                          <tr
+                            key={ev.id}
+                            onClick={() => setInspected({ kind: "learning", data: ev })}
+                            className="hover:bg-[#f5f7fa] cursor-pointer transition-colors duration-150"
+                          >
+                            <td className="py-3 pr-3">
+                              <p className="font-medium text-[#111827]">{ev.title}</p>
+                              <p className="font-mono text-[11px] text-[#6b7487]">{ev.code} · {ev.scheduleLabel}</p>
+                            </td>
+                            <td className="py-3 px-3"><Badge variant="secondary" className="font-normal">{ev.kind}</Badge></td>
+                            <td className="py-3 px-3 text-[#4b5565]">{ev.organizerOrInstructor}</td>
+                            <td className="py-3 px-3 font-medium text-[#111827] tabular-nums">{ev.participantsCount.toLocaleString()}</td>
+                            <td className="py-3 px-3 font-medium text-[#16a34a] tabular-nums">{ev.completionOrSubmissionRate}%</td>
+                            <td className="py-3 px-3 font-medium text-[#111827] tabular-nums">{formatINR(ev.revenueGeneratedInr)}</td>
+                            <td className="py-3 px-3"><StatusPill value={ev.status} /></td>
+                            <td className="py-3 pl-3 text-right">
+                              <Button size="sm" variant="outline" className="h-7 px-2 text-[11px] cursor-pointer">
+                                Inspect
+                              </Button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -2502,48 +2693,54 @@ const SuperAdminDashboard: React.FC = () => {
               {/* 11. SUPPORT DESK */}
               {activeSection === "support" && (
                 <div className="space-y-3">
-                  {snapshot.tickets
-                    .filter((t) => {
-                      const slug = activeInnerTab?.slug;
-                      if (!slug || slug === "all-tickets") return true;
-                      if (slug === "open-tickets") return t.status === "open";
-                      if (slug === "pending-tickets") return t.status === "in_progress";
-                      if (slug === "resolved-tickets") return t.status === "resolved";
-                      if (slug === "escalations" || slug === "sla-breaches") return t.priority === "urgent" || t.priority === "high";
-                      return true;
-                    })
-                    .filter(
-                      (t) =>
-                        !q ||
-                        [t.ticketCode, t.subject, t.requesterName, t.category].some((v) =>
-                          v?.toLowerCase().includes(q)
-                        )
-                    )
-                    .map((tkt) => (
-                      <div
-                        key={tkt.id}
-                        onClick={() => setInspected({ kind: "ticket", data: tkt })}
-                        className="rounded-xl border border-[#111827]/[0.08] p-4 hover:bg-[#f5f7fa] transition-colors duration-150 cursor-pointer flex flex-wrap items-center justify-between gap-4"
-                      >
-                        <div className="min-w-0 space-y-1">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <span className="font-mono text-xs font-medium text-[#111827]">
-                              {tkt.ticketCode}
-                            </span>
-                            <StatusPill value={tkt.priority} />
-                            <StatusPill value={tkt.status} />
-                            <Badge variant="outline" className="text-[11px] font-normal">{tkt.category}</Badge>
+                  {snapshot.tickets.length === 0 ? (
+                    <p className="rounded-xl border border-[#111827]/[0.08] py-10 text-center text-xs text-[#6b7487]">
+                      No support tickets or grievances raised yet.
+                    </p>
+                  ) : (
+                    snapshot.tickets
+                      .filter((t) => {
+                        const slug = activeInnerTab?.slug;
+                        if (!slug || slug === "all-tickets") return true;
+                        if (slug === "open-tickets") return t.status === "open";
+                        if (slug === "pending-tickets") return t.status === "in_progress";
+                        if (slug === "resolved-tickets") return t.status === "resolved";
+                        if (slug === "escalations" || slug === "sla-breaches") return t.priority === "urgent" || t.priority === "high";
+                        return true;
+                      })
+                      .filter(
+                        (t) =>
+                          !q ||
+                          [t.ticketCode, t.subject, t.requesterName, t.category].some((v) =>
+                            v?.toLowerCase().includes(q)
+                          )
+                      )
+                      .map((tkt) => (
+                        <div
+                          key={tkt.id}
+                          onClick={() => setInspected({ kind: "ticket", data: tkt })}
+                          className="rounded-xl border border-[#111827]/[0.08] p-4 hover:bg-[#f5f7fa] transition-colors duration-150 cursor-pointer flex flex-wrap items-center justify-between gap-4"
+                        >
+                          <div className="min-w-0 space-y-1">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="font-mono text-xs font-medium text-[#111827]">
+                                {tkt.ticketCode}
+                              </span>
+                              <StatusPill value={tkt.priority} />
+                              <StatusPill value={tkt.status} />
+                              <Badge variant="outline" className="text-[11px] font-normal">{tkt.category}</Badge>
+                            </div>
+                            <p className="text-sm font-medium text-[#111827]">{tkt.subject}</p>
+                            <p className="text-xs text-[#6b7487]">
+                              {tkt.requesterName} ({tkt.requesterEmail}) · SLA: {tkt.slaDueIn}
+                            </p>
                           </div>
-                          <p className="text-sm font-medium text-[#111827]">{tkt.subject}</p>
-                          <p className="text-xs text-[#6b7487]">
-                            {tkt.requesterName} ({tkt.requesterEmail}) · SLA: {tkt.slaDueIn}
-                          </p>
+                          <Button size="sm" variant="outline" className="h-8 text-xs cursor-pointer">
+                            Open thread ({tkt.messages.length})
+                          </Button>
                         </div>
-                        <Button size="sm" variant="outline" className="h-8 text-xs cursor-pointer">
-                          Open thread ({tkt.messages.length})
-                        </Button>
-                      </div>
-                    ))}
+                      ))
+                  )}
                 </div>
               )}
 
@@ -2635,12 +2832,12 @@ const SuperAdminDashboard: React.FC = () => {
                   onVerifyEmployer={(id) => handleReviewEmployer(id, "verified")}
                   onSuspendCandidate={handleSuspendCandidate}
                   onAddStaff={(staff) => {
-                    setEnterprise((p) => ({ ...p, staffAccounts: [staff, ...p.staffAccounts] }));
+                    updateEnterprise((p) => ({ ...p, staffAccounts: [staff, ...p.staffAccounts] }));
                     appendAudit("staff.provisioned", "admin_users", staff.code, `Provisioned ${staff.fullName} as ${staff.roleLabel}`);
                     toast.success(`Added ${staff.fullName} (${staff.roleLabel})`);
                   }}
                   onToggleStaffStatus={(id) => {
-                    setEnterprise((p) => ({
+                    updateEnterprise((p) => ({
                       ...p,
                       staffAccounts: p.staffAccounts.map((s) =>
                         s.id === id ? { ...s, status: s.status === "active" ? "suspended" : "active" } : s
@@ -2650,7 +2847,7 @@ const SuperAdminDashboard: React.FC = () => {
                     toast.success("Updated staff account status");
                   }}
                   onUpdateRolePermission={(roleKey, modKey, level) => {
-                    setEnterprise((p) => ({
+                    updateEnterprise((p) => ({
                       ...p,
                       roles: p.roles.map((r) =>
                         r.key === roleKey ? { ...r, permissions: { ...r.permissions, [modKey]: level } } : r
@@ -2672,7 +2869,7 @@ const SuperAdminDashboard: React.FC = () => {
                   initialSubTab={effectiveSubTab}
                   snapshot={snapshot}
                   enterprise={enterprise}
-                  onUpdateEnterprise={setEnterprise}
+                  onUpdateEnterprise={updateEnterprise}
                   onInspect={setInspected}
                   onLogAudit={(action, table, entityId, details) => appendAudit(action, table, entityId, details)}
                 />
@@ -2684,7 +2881,7 @@ const SuperAdminDashboard: React.FC = () => {
                   initialSubTab={effectiveSubTab}
                   snapshot={snapshot}
                   enterprise={enterprise}
-                  onUpdateEnterprise={setEnterprise}
+                  onUpdateEnterprise={updateEnterprise}
                   onLogAudit={(action, table, entityId, details) => appendAudit(action, table, entityId, details)}
                 />
               )}
@@ -2698,7 +2895,7 @@ const SuperAdminDashboard: React.FC = () => {
                   initialSubTab={effectiveSubTab}
                   snapshot={snapshot}
                   enterprise={enterprise}
-                  onUpdateEnterprise={setEnterprise}
+                  onUpdateEnterprise={updateEnterprise}
                   onRefundTransaction={handleRefundTransaction}
                   onLogAudit={(action, table, entityId, details) => appendAudit(action, table, entityId, details)}
                 />
@@ -2711,7 +2908,7 @@ const SuperAdminDashboard: React.FC = () => {
                   mode={activeSection}
                   initialSubTab={effectiveSubTab}
                   enterprise={enterprise}
-                  onUpdateEnterprise={setEnterprise}
+                  onUpdateEnterprise={updateEnterprise}
                   onLogAudit={(action, table, entityId, details) => appendAudit(action, table, entityId, details)}
                 />
               )}
@@ -2724,7 +2921,7 @@ const SuperAdminDashboard: React.FC = () => {
                   initialSubTab={effectiveSubTab}
                   snapshot={snapshot}
                   enterprise={enterprise}
-                  onUpdateEnterprise={setEnterprise}
+                  onUpdateEnterprise={updateEnterprise}
                   onLogAudit={(action, table, entityId, details) => appendAudit(action, table, entityId, details)}
                 />
               )}

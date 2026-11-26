@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { formatINR } from "@/data/proData";
 import type { SuperAdminSnapshot } from "@/services/admin/superAdminData";
-import { REGISTRATION_TREND_SERIES } from "@/services/admin/superAdminEnterpriseData";
+import { buildRegistrationTrendSeries } from "@/services/admin/superAdminEnterpriseData";
 import type { InspectedEntity } from "./SuperAdminInspector";
 
 export type AdminSectionId =
@@ -65,25 +65,45 @@ interface Props {
   onClearProctorFlag: (id: string) => void;
 }
 
-const GROWTH_SERIES = [
-  { month: "Jun", revenueK: 185, baselineK: 148 },
-  { month: "Jul", revenueK: 240, baselineK: 176 },
-  { month: "Aug", revenueK: 310, baselineK: 215 },
-  { month: "Sep", revenueK: 428, baselineK: 290 },
-  { month: "Oct", revenueK: 560, baselineK: 380 },
-  { month: "Nov", revenueK: 745, baselineK: 495 },
-];
+function buildRevenueGrowthSeries(
+  transactions: Array<{ status: string; netTotalInr: number; createdAt: string }>
+): Array<{ month: string; revenueK: number; baselineK: number }> {
+  const now = new Date();
+  const buckets: Array<{ key: string; month: string; total: number }> = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    buckets.push({ key, month: d.toLocaleString("en-US", { month: "short" }), total: 0 });
+  }
+  const byKey = new Map(buckets.map((b) => [b.key, b]));
+  for (const tx of transactions) {
+    if (tx.status !== "captured") continue;
+    const dt = new Date(tx.createdAt);
+    if (!Number.isNaN(dt.getTime())) {
+      const k = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}`;
+      const b = byKey.get(k);
+      if (b) b.total += Number(tx.netTotalInr || 0);
+    }
+  }
+  return buckets.map((b) => ({
+    month: b.month,
+    revenueK: Number((b.total / 1000).toFixed(2)),
+    baselineK: 0,
+  }));
+}
 
 export const SuperAdminOverview: React.FC<Props> = ({
   snapshot,
-  pendingCourseApprovals = 2,
-  openFraudAlertsCount = 2,
+  pendingCourseApprovals = 0,
+  openFraudAlertsCount = 0,
   onNavigate,
   onInspect,
   onApproveEmployer,
   onApproveJob,
   onClearProctorFlag,
 }) => {
+  const growthSeries = buildRevenueGrowthSeries(snapshot.transactions);
+  const registrationSeries = buildRegistrationTrendSeries(snapshot.candidates, snapshot.employers);
   const activeCandidates = snapshot.candidates.filter((c) => !c.archived);
   const archivedCandidatesCount = snapshot.candidates.filter((c) => c.archived).length;
   const verifiedCandidates = activeCandidates.filter((c) => c.kycStatus === "verified").length;
@@ -293,7 +313,7 @@ export const SuperAdminOverview: React.FC<Props> = ({
     {
       label: "Captured revenue (GMV)",
       value: formatINR(grossRevenue),
-      delta: "+33% vs October",
+      delta: capturedTx.length > 0 ? `${capturedTx.length} paid orders` : "Ready for first payment",
       positive: true,
       meta: `${capturedTx.length} captured GST invoices`,
       target: "billing" as AdminSectionId,
@@ -328,7 +348,7 @@ export const SuperAdminOverview: React.FC<Props> = ({
     {
       label: "Hackathon participants",
       val: activeCandidates.filter((c) => c.hackathonParticipated).length,
-      note: "Code Arena Season 4",
+      note: "Registered hackathons",
       target: "candidates" as AdminSectionId,
     },
     {
@@ -500,7 +520,7 @@ export const SuperAdminOverview: React.FC<Props> = ({
         </div>
 
         {/* Tactile Verifiable CIR Credential Object (Moment #2) */}
-        {featuredAttempt && (
+        {featuredAttempt ? (
           <div
             onClick={() => onInspect({ kind: "assessment", data: featuredAttempt })}
             role="button"
@@ -560,6 +580,25 @@ export const SuperAdminOverview: React.FC<Props> = ({
               <span>30/30 layers clean</span>
             </div>
           </div>
+        ) : (
+          <div className="xl:col-span-4 rounded-xl bg-[#002C66] text-white p-5 border border-[#001D44] shadow-[0_8px_24px_rgba(0,29,68,0.12)] flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#4cc38a]" />
+                <span className="text-xs text-blue-200/90">Latest issued CIR credential</span>
+              </div>
+              <p className="mt-2 text-base font-medium text-white">
+                No CIR credentials issued yet
+              </p>
+              <p className="mt-1 text-xs text-blue-200/80 leading-relaxed">
+                As soon as candidates complete proctored TalentCIR assessments, their verified scores and 30-layer proctor telemetry will stream here live.
+              </p>
+            </div>
+            <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-blue-200/75">
+              <span>READY FOR LAUNCH</span>
+              <span>0 attempts logged</span>
+            </div>
+          </div>
         )}
       </div>
 
@@ -601,10 +640,12 @@ export const SuperAdminOverview: React.FC<Props> = ({
               </p>
               <div className="mt-1 flex items-baseline gap-3">
                 <span className="text-[28px] leading-none font-medium text-[#111827] dark:text-[#eef0f5] tabular-nums">
-                  ₹7,45,000
+                  {formatINR(grossRevenue)}
                 </span>
                 <span className="font-mono text-xs text-[#16a34a] tabular-nums">
-                  +33.0% vs October
+                  {capturedTx.length > 0
+                    ? `${capturedTx.length} captured order${capturedTx.length === 1 ? "" : "s"}`
+                    : "Awaiting first order"}
                 </span>
               </div>
             </div>
@@ -622,7 +663,7 @@ export const SuperAdminOverview: React.FC<Props> = ({
 
           <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={GROWTH_SERIES} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+              <LineChart data={growthSeries} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="2 4" stroke="rgba(17,24,39,0.07)" vertical={false} />
                 <XAxis
                   dataKey="month"
@@ -700,7 +741,7 @@ export const SuperAdminOverview: React.FC<Props> = ({
                   <div className="h-1.5 w-full rounded bg-[#eceff4] dark:bg-[#1a1e28] overflow-hidden">
                     <div
                       className="h-full rounded bg-[#002C66]"
-                      style={{ width: `${Math.max(6, row.share)}%` }}
+                      style={{ width: `${row.count > 0 ? Math.max(6, row.share) : 0}%` }}
                     />
                   </div>
                 </div>
@@ -970,35 +1011,41 @@ export const SuperAdminOverview: React.FC<Props> = ({
             </span>
           </div>
           <div className="space-y-2">
-            {snapshot.auditLogs.slice(0, 5).map((log) => (
-              <button
-                key={log.id}
-                type="button"
-                onClick={() => onInspect({ kind: "audit", data: log })}
-                className="w-full rounded-lg border border-[#111827]/[0.08] dark:border-white/[0.08] p-3 text-left hover:bg-[#f5f7fa] dark:hover:bg-[#1a1e28] transition-colors duration-150 cursor-pointer"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="inline-flex items-center gap-2 font-mono text-xs text-[#111827] dark:text-[#eef0f5]">
-                    <span
-                      className={`h-1.5 w-1.5 rounded-full ${
-                        log.severity === "critical"
-                          ? "bg-[#dc2626]"
-                          : log.severity === "warning"
-                            ? "bg-[#d97706]"
-                            : "bg-[#16a34a]"
-                      }`}
-                    />
-                    {log.action}
-                  </span>
-                  <span className="font-mono text-[11px] text-[#6b7487] tabular-nums">
-                    {new Date(log.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                  </span>
-                </div>
-                <p className="mt-1 text-xs text-[#4b5565] dark:text-[#a3a9b8] line-clamp-2">
-                  {log.details}
-                </p>
-              </button>
-            ))}
+            {snapshot.auditLogs.length === 0 ? (
+              <p className="text-xs text-[#6b7487] py-8 text-center">
+                No audit events logged yet. Admin actions and live security events will stream here.
+              </p>
+            ) : (
+              snapshot.auditLogs.slice(0, 5).map((log) => (
+                <button
+                  key={log.id}
+                  type="button"
+                  onClick={() => onInspect({ kind: "audit", data: log })}
+                  className="w-full rounded-lg border border-[#111827]/[0.08] dark:border-white/[0.08] p-3 text-left hover:bg-[#f5f7fa] dark:hover:bg-[#1a1e28] transition-colors duration-150 cursor-pointer"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="inline-flex items-center gap-2 font-mono text-xs text-[#111827] dark:text-[#eef0f5]">
+                      <span
+                        className={`h-1.5 w-1.5 rounded-full ${
+                          log.severity === "critical"
+                            ? "bg-[#dc2626]"
+                            : log.severity === "warning"
+                              ? "bg-[#d97706]"
+                              : "bg-[#16a34a]"
+                        }`}
+                      />
+                      {log.action}
+                    </span>
+                    <span className="font-mono text-[11px] text-[#6b7487] tabular-nums">
+                      {new Date(log.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs text-[#4b5565] dark:text-[#a3a9b8] line-clamp-2">
+                    {log.details}
+                  </p>
+                </button>
+              ))
+            )}
           </div>
         </div>
       </div>
@@ -1060,7 +1107,7 @@ export const SuperAdminOverview: React.FC<Props> = ({
           </div>
           <div className="h-56 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={REGISTRATION_TREND_SERIES} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+              <LineChart data={registrationSeries} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="2 4" stroke="rgba(17,24,39,0.07)" vertical={false} />
                 <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6b7487", fontFamily: "ui-monospace, monospace" }} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6b7487", fontFamily: "ui-monospace, monospace" }} />

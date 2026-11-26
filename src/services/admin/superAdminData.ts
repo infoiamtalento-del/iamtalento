@@ -1,8 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
-import { SHOWCASE_COMPANIES } from "@/data/showcaseCompanies";
-import { CANDIDATES_SEED, DEFAULT_USERS } from "@/data/proData";
-import { DEMO_EMPLOYER_JOBS, DEMO_EMPLOYER_APPS } from "@/data/employerDemo";
 import { getCandidatePhoto } from "@/data/portalAssets";
+import { checkAdminSession, type AdminSessionStatus } from "@/services/admin/adminService";
 
 export type DataOrigin = "live_db" | "platform";
 
@@ -207,12 +205,12 @@ export interface SuperAdminTransaction {
   category:
     | "SaaS Subscription"
     | "Wallet Top-up"
-    | "Talent Package"
     | "Assessment Fee"
     | "Learning & Mentorship"
     | "Hackathon"
     | "Networking"
     | "Job Promotion"
+    | "Talent Package"
     | "Refund";
   itemTitle: string;
   amountInr: number;
@@ -253,7 +251,12 @@ export interface SuperAdminTicket {
   requesterType: "Employer" | "Candidate";
   requesterName: string;
   requesterEmail: string;
-  category: "Billing & GST" | "Verification / KYC" | "Assessment Proctoring" | "ATS & Job Posting" | "Account Security";
+  category:
+    | "Billing & GST"
+    | "Verification / KYC"
+    | "Assessment Proctoring"
+    | "ATS & Job Posting"
+    | "Account Security";
   subject: string;
   priority: "urgent" | "high" | "normal" | "low";
   status: "open" | "in_progress" | "resolved";
@@ -309,12 +312,39 @@ export interface PlatformFeatureFlag {
   category: "Security" | "AI & Proctoring" | "Billing" | "Moderation";
 }
 
+export interface LiveEnterpriseRawData {
+  lmsCourses: Record<string, unknown>[];
+  courseEnrollments: Record<string, unknown>[];
+  mentors: Record<string, unknown>[];
+  mentorBookings: Record<string, unknown>[];
+  hackathons: Record<string, unknown>[];
+  hackathonRegistrations: Record<string, unknown>[];
+  hackathonSubmissions: Record<string, unknown>[];
+  eventRegistrations: Record<string, unknown>[];
+  freelanceGigs: Record<string, unknown>[];
+  gigProposals: Record<string, unknown>[];
+  coupons: Record<string, unknown>[];
+  couponRedemptions: Record<string, unknown>[];
+  aiInterviews: Record<string, unknown>[];
+  scheduledInterviews: Record<string, unknown>[];
+  notifications: Record<string, unknown>[];
+  platformSettings: Record<string, unknown>[];
+  enterpriseStore: Record<string, unknown>[];
+  questionBank: Record<string, unknown>[];
+}
+
 export interface SuperAdminSnapshot {
   syncedAt: string;
   liveDbConnected: boolean;
+  adminSession: AdminSessionStatus;
   liveProfilesCount: number;
   liveEmployersCount: number;
   liveJobsCount: number;
+  liveApplicationsCount: number;
+  liveTransactionsCount: number;
+  liveWalletsCount: number;
+  liveAssessmentsCount: number;
+  liveTicketsCount: number;
   candidates: SuperAdminCandidate[];
   employers: SuperAdminEmployer[];
   jobs: SuperAdminJob[];
@@ -327,6 +357,7 @@ export interface SuperAdminSnapshot {
   learningEvents: SuperAdminLearningRecord[];
   tableHealth: TableHealthSummary[];
   featureFlags: PlatformFeatureFlag[];
+  liveEnterpriseRaw: LiveEnterpriseRawData;
 }
 
 function slugify(value: string): string {
@@ -382,1586 +413,955 @@ const DEFAULT_FLAGS: PlatformFeatureFlag[] = [
   },
 ];
 
+interface SafeQueryResult {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  rows: any[];
+  ok: boolean;
+}
+
+async function safeSelect(
+  table: string,
+  opts?: { orderBy?: string; limit?: number }
+): Promise<SafeQueryResult> {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const client = supabase as any;
+    let query = client.from(table).select("*");
+    if (opts?.orderBy && typeof query?.order === "function") {
+      query = query.order(opts.orderBy, { ascending: false });
+    }
+    if (opts?.limit && typeof query?.limit === "function") {
+      query = query.limit(opts.limit);
+    }
+    const res = await query;
+    if (res?.error) return { rows: [], ok: false };
+    return { rows: Array.isArray(res?.data) ? res.data : [], ok: true };
+  } catch {
+    return { rows: [], ok: false };
+  }
+}
+
 export async function fetchSuperAdminSnapshot(): Promise<SuperAdminSnapshot> {
-  // Query live Supabase tables & RPCs in parallel without failing if RLS restricts anonymous admin tables
   const [
-    profilesRes,
-    skillsRes,
-    certsRes,
-    edusRes,
-    expsRes,
-    projsRes,
-    kycRes,
-    employersRes,
-    jobsRes,
-    catalogRes,
-    lmsRes,
-    hackathonsRes,
-  ] = await Promise.allSettled([
-    supabase.from("profiles").select("*").order("created_at", { ascending: false }).limit(200),
-    supabase.from("skills").select("*").limit(500),
-    supabase.from("certifications").select("*").limit(300),
-    supabase.from("educations").select("*").limit(300),
-    supabase.from("experiences").select("*").limit(300),
-    supabase.from("projects").select("*").limit(300),
-    supabase.from("identity_verifications").select("*").limit(200),
-    supabase.from("employers").select("*").order("created_at", { ascending: false }).limit(200),
-    supabase.from("employer_job_openings").select("*").order("created_at", { ascending: false }).limit(200),
-    (supabase as any).from("assessments_catalog").select("id", { count: "exact", head: true }),
-    (supabase as any).from("lms_courses").select("id", { count: "exact", head: true }),
-    (supabase as any).from("hackathons").select("id", { count: "exact", head: true }),
+    adminSession,
+    profilesQ,
+    skillsQ,
+    certsQ,
+    edusQ,
+    expsQ,
+    projsQ,
+    kycQ,
+    employersQ,
+    tenantsQ,
+    membershipsQ,
+    jobsQ,
+    applicationsQ,
+    stageHistoryQ,
+    catalogQ,
+    questionBankQ,
+    attemptsQ,
+    cirReportsQ,
+    credentialsQ,
+    proctorEventsQ,
+    paymentOrdersQ,
+    employerSubsQ,
+    servicePurchasesQ,
+    walletsQ,
+    ledgerQ,
+    lmsCoursesQ,
+    courseEnrollmentsQ,
+    mentorsQ,
+    mentorBookingsQ,
+    hackathonsQ,
+    hackathonRegsQ,
+    hackathonSubsQ,
+    eventRegsQ,
+    freelanceGigsQ,
+    gigProposalsQ,
+    ticketsQ,
+    ticketMsgsQ,
+    auditLogQ,
+    settingsQ,
+    couponsQ,
+    couponRedemptionsQ,
+    aiInterviewsQ,
+    scheduledInterviewsQ,
+    notificationsQ,
+    enterpriseStoreQ,
+  ] = await Promise.all([
+    checkAdminSession(),
+    safeSelect("profiles", { orderBy: "created_at", limit: 300 }),
+    safeSelect("skills", { limit: 1000 }),
+    safeSelect("certifications", { limit: 500 }),
+    safeSelect("educations", { limit: 500 }),
+    safeSelect("experiences", { limit: 500 }),
+    safeSelect("projects", { limit: 500 }),
+    safeSelect("identity_verifications", { limit: 300 }),
+    safeSelect("employers", { orderBy: "created_at", limit: 300 }),
+    safeSelect("tenant_organizations", { orderBy: "created_at", limit: 300 }),
+    safeSelect("tenant_memberships", { limit: 500 }),
+    safeSelect("employer_job_openings", { orderBy: "created_at", limit: 300 }),
+    safeSelect("job_applications", { orderBy: "applied_at", limit: 500 }),
+    safeSelect("application_stage_history", { orderBy: "created_at", limit: 1000 }),
+    safeSelect("assessments_catalog", { limit: 200 }),
+    safeSelect("question_bank", { orderBy: "created_at", limit: 200 }),
+    safeSelect("assessment_attempts", { orderBy: "started_at", limit: 500 }),
+    safeSelect("cir_reports", { orderBy: "generated_at", limit: 300 }),
+    safeSelect("verifiable_credentials", { orderBy: "issued_at", limit: 300 }),
+    safeSelect("proctoring_events", { orderBy: "created_at", limit: 1000 }),
+    safeSelect("payment_orders", { orderBy: "created_at", limit: 500 }),
+    safeSelect("employer_subscriptions", { orderBy: "created_at", limit: 300 }),
+    safeSelect("service_purchases", { orderBy: "created_at", limit: 300 }),
+    safeSelect("wallet_accounts", { limit: 300 }),
+    safeSelect("wallet_ledger_entries", { orderBy: "created_at", limit: 1000 }),
+    safeSelect("lms_courses", { orderBy: "created_at", limit: 200 }),
+    safeSelect("course_enrollments", { orderBy: "enrolled_at", limit: 500 }),
+    safeSelect("mentor_profiles", { orderBy: "created_at", limit: 200 }),
+    safeSelect("mentor_bookings", { orderBy: "created_at", limit: 500 }),
+    safeSelect("hackathons", { orderBy: "starts_at", limit: 200 }),
+    safeSelect("hackathon_registrations", { orderBy: "registered_at", limit: 500 }),
+    safeSelect("hackathon_submissions", { orderBy: "submitted_at", limit: 500 }),
+    safeSelect("event_registrations", { orderBy: "created_at", limit: 500 }),
+    safeSelect("freelance_gigs", { orderBy: "created_at", limit: 200 }),
+    safeSelect("gig_proposals", { orderBy: "created_at", limit: 500 }),
+    safeSelect("support_tickets", { orderBy: "created_at", limit: 300 }),
+    safeSelect("support_messages", { orderBy: "created_at", limit: 1000 }),
+    safeSelect("audit_log", { orderBy: "at", limit: 300 }),
+    safeSelect("platform_settings", { limit: 100 }),
+    safeSelect("coupons", { orderBy: "created_at", limit: 200 }),
+    safeSelect("coupon_redemptions", { orderBy: "created_at", limit: 500 }),
+    safeSelect("ai_interview_sessions", { orderBy: "created_at", limit: 300 }),
+    safeSelect("scheduled_interviews", { orderBy: "scheduled_at", limit: 300 }),
+    safeSelect("notifications", { orderBy: "created_at", limit: 300 }),
+    safeSelect("admin_enterprise_store", { limit: 100 }),
   ]);
 
-  const liveProfiles: any[] =
-    profilesRes.status === "fulfilled" && Array.isArray(profilesRes.value.data)
-      ? profilesRes.value.data
-      : [];
-  const liveSkills: any[] =
-    skillsRes.status === "fulfilled" && Array.isArray(skillsRes.value.data)
-      ? skillsRes.value.data
-      : [];
-  const liveCerts: any[] =
-    certsRes.status === "fulfilled" && Array.isArray(certsRes.value.data)
-      ? certsRes.value.data
-      : [];
-  const liveEdus: any[] =
-    edusRes.status === "fulfilled" && Array.isArray(edusRes.value.data)
-      ? edusRes.value.data
-      : [];
-  const liveExps: any[] =
-    expsRes.status === "fulfilled" && Array.isArray(expsRes.value.data)
-      ? expsRes.value.data
-      : [];
-  const liveProjs: any[] =
-    projsRes.status === "fulfilled" && Array.isArray(projsRes.value.data)
-      ? projsRes.value.data
-      : [];
-  const liveKycs: any[] =
-    kycRes.status === "fulfilled" && Array.isArray(kycRes.value.data)
-      ? kycRes.value.data
-      : [];
-  const liveEmployers: any[] =
-    employersRes.status === "fulfilled" && Array.isArray(employersRes.value.data)
-      ? employersRes.value.data
-      : [];
-  const liveJobs: any[] =
-    jobsRes.status === "fulfilled" && Array.isArray(jobsRes.value.data)
-      ? jobsRes.value.data
-      : [];
+  const liveProfiles = profilesQ.rows;
+  const liveSkills = skillsQ.rows;
+  const liveCerts = certsQ.rows;
+  const liveEdus = edusQ.rows;
+  const liveExps = expsQ.rows;
+  const liveProjs = projsQ.rows;
+  const liveKycs = kycQ.rows;
+  const liveEmployers = employersQ.rows;
+  const liveTenants = tenantsQ.rows;
+  const liveMemberships = membershipsQ.rows;
+  const liveJobs = jobsQ.rows;
+  const liveApplications = applicationsQ.rows;
+  const liveStageHistory = stageHistoryQ.rows;
+  const liveCatalog = catalogQ.rows;
+  const liveQuestionBank = questionBankQ.rows;
+  const liveAttempts = attemptsQ.rows;
+  const liveCirReports = cirReportsQ.rows;
+  const liveCredentials = credentialsQ.rows;
+  const liveProctorEvents = proctorEventsQ.rows;
+  const livePaymentOrders = paymentOrdersQ.rows;
+  const liveEmployerSubs = employerSubsQ.rows;
+  const liveServicePurchases = servicePurchasesQ.rows;
+  const liveWallets = walletsQ.rows;
+  const liveLedger = ledgerQ.rows;
+  const liveLmsCourses = lmsCoursesQ.rows;
+  const liveCourseEnrollments = courseEnrollmentsQ.rows;
+  const liveMentors = mentorsQ.rows;
+  const liveMentorBookings = mentorBookingsQ.rows;
+  const liveHackathons = hackathonsQ.rows;
+  const liveHackathonRegs = hackathonRegsQ.rows;
+  const liveHackathonSubs = hackathonSubsQ.rows;
+  const liveEventRegs = eventRegsQ.rows;
+  const liveFreelanceGigs = freelanceGigsQ.rows;
+  const liveGigProposals = gigProposalsQ.rows;
+  const liveTickets = ticketsQ.rows;
+  const liveTicketMsgs = ticketMsgsQ.rows;
+  const liveAuditLogs = auditLogQ.rows;
+  const liveSettings = settingsQ.rows;
+  const liveCoupons = couponsQ.rows;
+  const liveCouponRedemptions = couponRedemptionsQ.rows;
+  const liveAiInterviews = aiInterviewsQ.rows;
+  const liveScheduledInterviews = scheduledInterviewsQ.rows;
+  const liveNotifications = notificationsQ.rows;
+  const liveEnterpriseStore = enterpriseStoreQ.rows;
 
-  const liveDbConnected =
-    profilesRes.status === "fulfilled" && !profilesRes.value.error;
+  const liveDbConnected = profilesQ.ok || employersQ.ok || jobsQ.ok || catalogQ.ok;
 
-  // Map Live DB Candidates
-  const mappedLiveCandidates: SuperAdminCandidate[] = liveProfiles.map((p, idx) => {
-    const uid = p.user_id;
-    const pSkills = liveSkills.filter((s) => s.user_id === uid).map((s) => s.skill_name);
-    const pCerts = liveCerts.filter((c) => c.user_id === uid).map((c) => c.title);
-    const pEdus = liveEdus
-      .filter((e) => e.user_id === uid)
-      .map((e) => ({
-        institution: e.institution || "University",
-        degree: [e.degree, e.field_of_study].filter(Boolean).join(" · ") || "Degree",
-        year: String(e.end_year || e.start_year || "2025"),
-      }));
-    const pExps = liveExps
-      .filter((x) => x.user_id === uid)
-      .map((x) => ({
-        company: x.company || "Organization",
-        role: x.job_title || "Member",
-        duration: [x.start_date, x.is_current ? "Present" : x.end_date].filter(Boolean).join(" – ") || "Active",
-        summary: x.description || undefined,
-      }));
-    const pProjs = liveProjs
-      .filter((pr) => pr.user_id === uid)
-      .map((pr) => ({
-        title: pr.title || "Project",
-        stack: Array.isArray(pr.technologies) ? pr.technologies.join(", ") : undefined,
-        link: pr.project_url || undefined,
-      }));
-    const kyc = liveKycs.find((k) => k.user_id === uid);
-    const fullName = p.full_name || p.email?.split("@")[0] || `Candidate ${idx + 1}`;
-    const expYrs = Number(p.total_experience_years || 0);
-    const missingCand: string[] = [];
-    if (!p.resume_url) missingCand.push("Resume PDF");
-    if (!p.phone) missingCand.push("Mobile OTP");
-    if (!pExps.length && expYrs > 0) missingCand.push("Work Experience");
-    if (!pEdus.length) missingCand.push("Education");
-    const calcCompletion = Number(
-      p.profile_completion || Math.max(55, 100 - missingCand.length * 12)
-    );
+  const employerUserIds = new Set(liveEmployers.map((e) => e.user_id).filter(Boolean));
+  const profileById = new Map(liveProfiles.map((p) => [p.id || p.user_id, p]));
+  const employerById = new Map(liveEmployers.map((e) => [e.id, e]));
+  const employerByUserId = new Map(liveEmployers.map((e) => [e.user_id, e]));
+  const employerByTenantId = new Map(liveEmployers.filter((e) => e.tenant_id).map((e) => [e.tenant_id, e]));
+  const tenantById = new Map(liveTenants.map((t) => [t.id, t]));
+  const jobById = new Map(liveJobs.map((j) => [j.id, j]));
+  const catalogById = new Map(liveCatalog.map((c) => [c.id, c]));
+  const courseById = new Map(liveLmsCourses.map((c) => [c.id, c]));
+  const hackathonById = new Map(liveHackathons.map((h) => [h.id, h]));
 
-    const inferredIndustry =
-      pSkills.some((s: string) => /seo|marketing|ads|social/i.test(s))
-        ? "Digital Marketing & Growth"
-        : pSkills.some((s: string) => /sql|python|power bi|tableau|data/i.test(s))
-          ? "Data & AI"
-          : pSkills.some((s: string) => /aws|docker|kubernetes|cloud/i.test(s))
-            ? "Cloud & DevOps"
-            : "Software & SaaS";
+  // 1. Live Candidates (100% from public.profiles + relational tables)
+  const candidates: SuperAdminCandidate[] = liveProfiles
+    .filter((p) => !employerUserIds.has(p.id || p.user_id))
+    .map((p, idx) => {
+      const uid = p.id || p.user_id;
+      const pSkills = liveSkills
+        .filter((s) => s.user_id === uid)
+        .map((s) => s.skill_name)
+        .filter(Boolean);
+      const pCerts = liveCerts
+        .filter((c) => c.user_id === uid)
+        .map((c) => c.name || c.title)
+        .filter(Boolean);
+      const pEdus = liveEdus
+        .filter((e) => e.user_id === uid)
+        .map((e) => ({
+          institution: e.institution_name || e.institution || "University",
+          degree: [e.degree, e.field_of_study].filter(Boolean).join(" · ") || "Degree",
+          year: String(e.end_year || e.start_year || "—"),
+        }));
+      const pExps = liveExps
+        .filter((x) => x.user_id === uid)
+        .map((x) => ({
+          company: x.company_name || x.company || "Organization",
+          role: x.job_title || "Member",
+          duration:
+            [x.start_date, x.is_current ? "Present" : x.end_date].filter(Boolean).join(" – ") ||
+            "Active",
+          summary: x.description || undefined,
+        }));
+      const pProjs = liveProjs
+        .filter((pr) => pr.user_id === uid)
+        .map((pr) => ({
+          title: pr.title || "Project",
+          stack: Array.isArray(pr.tools_technologies)
+            ? pr.tools_technologies.join(", ")
+            : Array.isArray(pr.technologies)
+              ? pr.technologies.join(", ")
+              : undefined,
+          link: pr.project_url || pr.github_url || undefined,
+          metrics: pr.impact || undefined,
+        }));
 
-    return {
-      id: p.id || uid,
-      talentCirId: p.talenta_id || `IAT-LIVE-${String(1040 + idx)}`,
-      origin: "live_db",
-      archived: false,
-      fullName,
-      slug: (p as any).public_slug || slugify(fullName),
-      email: p.email || "verified.user@talento.app",
-      phone: p.phone || "—",
-      headline: p.headline || p.current_role || "Verified TalentCIR Professional",
-      industry: (p as any).industry || inferredIndustry,
-      accountTier: idx % 2 === 0 ? "premium" : "normal",
-      premiumPlanName: idx % 2 === 0 ? "Talento Pro Candidate" : undefined,
-      city: p.location || p.city || "Bengaluru",
-      country: "India",
-      experienceYears: expYrs,
-      experienceLevel: p.experience_level || (expYrs >= 3 ? "Experienced" : "Fresher"),
-      expectedSalaryLpa: Number(p.expected_ctc || 12),
-      noticePeriodDays: Number(p.notice_period_days || 15),
-      workPreference: p.preferred_work_mode || "Hybrid / Remote",
-      availabilityStatus: "Actively looking",
-      freelancerStatus: idx % 3 === 0 ? "Actively Freelancing" : idx % 3 === 1 ? "Open to Freelance" : "Full-Time Only",
-      freelanceHourlyInr: idx % 3 !== 2 ? 1200 + idx * 250 : 0,
-      freelanceGigsCompleted: idx % 3 === 0 ? 3 : 0,
-      kycStatus:
-        kyc?.verification_status === "verified"
-          ? "verified"
-          : kyc
-            ? "pending"
-            : p.onboarding_completed
-              ? "verified"
-              : "unsubmitted",
-      emailVerified: true,
-      phoneVerified: Boolean(p.phone),
-      mfaEnabled: false,
-      cirScore: Number((p as any).cir_score || 84),
-      percentile: 88,
-      profileCompletion: calcCompletion,
-      missingProfileFields: missingCand,
-      walletBalance: 500,
-      profileViews: 42 + idx * 7,
-      applicationsCount: 2 + (idx % 4),
-      assessmentsPassed: Math.max(1, pCerts.length),
-      totalTestAttempts: idx % 2 === 0 ? 1 : 2,
-      retestCount: idx % 2 === 0 ? 0 : 1,
-      scoreImprovementDelta: idx % 2 === 0 ? 0 : 9,
-      domainsChosen: idx % 2 === 0 ? [inferredIndustry] : [inferredIndustry, "Core Aptitude & Analytics"],
-      coursesEnrolled: ["AI Engineer & Agentic Workflows Track"],
-      coursesCompleted: idx % 2 === 0 ? 1 : 0,
-      mentorSessionsBooked: idx % 3 === 0 ? 1 : 0,
-      mockInterviewsCount: 2,
-      hackathonParticipated: idx % 2 === 0,
-      hackathonsList: idx % 2 === 0 ? ["Code Arena · Season 4"] : [],
-      networkingRegistered: true,
-      networkingEventsList: ["Bengaluru Verified Builders Mixer"],
-      hasResume: Boolean(p.resume_url),
-      hasVideoResume: idx % 2 === 0,
-      avatarUrl: p.avatar_url || getCandidatePhoto(fullName),
-      resumeUrl: p.resume_url || undefined,
-      linkedinUrl: p.linkedin_url || undefined,
-      githubUrl: p.github_url || undefined,
-      portfolioUrl: p.portfolio_url || undefined,
-      skills: pSkills.length ? pSkills : ["Communication", "Problem Solving", "Analytical Thinking"],
-      certifications: pCerts,
-      educations: pEdus,
-      experiences: pExps,
-      projects: pProjs,
-      assessmentScores: { Aptitude: 84, Communication: 88, Domain: 82 },
-      createdAt: p.created_at || new Date().toISOString(),
-      lastActiveAt: p.updated_at || p.created_at || new Date().toISOString(),
-      raw: p,
-    };
-  });
+      const kyc = liveKycs.find((k) => k.user_id === uid);
+      const userWallet = liveWallets.find((w) => w.owner_type === "candidate" && w.user_id === uid);
+      const userApps = liveApplications.filter((a) => a.candidate_id === uid);
+      const userAttempts = liveAttempts.filter((a) => a.user_id === uid);
+      const userCirs = liveCirReports.filter((r) => r.user_id === uid);
+      const latestCir = userCirs[0];
+      const userEnrollments = liveCourseEnrollments.filter((e) => e.user_id === uid);
+      const userMentorBookings = liveMentorBookings.filter((b) => b.user_id === uid);
+      const userAiMocks = liveAiInterviews.filter((i) => i.user_id === uid);
+      const userHackRegs = liveHackathonRegs.filter((r) => r.user_id === uid && r.status !== "withdrawn");
+      const userEventRegs = liveEventRegs.filter((r) => r.user_id === uid);
+      const userOrders = livePaymentOrders.filter(
+        (o) => o.user_id === uid && (o.status === "captured" || o.status === "entitled")
+      );
+      const userServices = liveServicePurchases.filter((s) => s.user_id === uid);
+      const userGigs = liveGigProposals.filter((g) => g.user_id === uid);
 
-  const CANDIDATE_INDUSTRIES = [
-    "Software & SaaS",
-    "Data & AI",
-    "Cloud & DevOps",
-    "FinTech",
-    "Product & Design",
-    "Digital Marketing & Growth",
-    "Cybersecurity",
-  ];
-  const COURSE_CATALOG = [
-    "AI Engineer & Agentic Workflows Track",
-    "Full-Stack TypeScript & System Design",
-    "SQL, Power BI & Product Analytics",
-    "Cloud Native Kubernetes & Zero-Trust",
-    "Growth Marketing & AI Funnel Automation",
-  ];
-  const ACTIVITY_DAY_OFFSETS = [1, 4, 12, 24, 48, 76, 125, 168, 240, 320, 410];
+      const fullName = p.full_name || p.email?.split("@")[0] || `Candidate ${idx + 1}`;
+      const expYrs = Number(p.years_of_experience ?? p.total_experience_years ?? 0);
+      const missingCand: string[] = [];
+      if (!p.resume_url && !p.resume_path) missingCand.push("Resume PDF");
+      if (!p.phone) missingCand.push("Mobile OTP");
+      if (!pExps.length && expYrs > 0) missingCand.push("Work Experience");
+      if (!pEdus.length) missingCand.push("Education");
+      const calcCompletion = Number(
+        p.profile_completion ?? Math.max(25, 100 - missingCand.length * 18)
+      );
 
-  // Map Platform Seed Candidates (Yogesh + CANDIDATES_SEED)
-  const demoCand = DEFAULT_USERS["demo.candidate@talento.app"];
-  const platformCandidates: SuperAdminCandidate[] = [
-    {
-      id: "cand-yogesh-001",
-      talentCirId: "IAT-CIR-900124",
-      origin: "platform",
-      archived: false,
-      fullName: demoCand.name,
-      slug: "yogesh",
-      email: demoCand.email,
-      phone: demoCand.phone || "+91 98765 43210",
-      headline: demoCand.rs?.role || "Full-Stack React & TypeScript Engineer",
-      industry: "Software & SaaS",
-      accountTier: "premium",
-      premiumPlanName: "Talento Pro Annual",
-      city: demoCand.city || "Bengaluru",
-      country: "India",
-      experienceYears: demoCand.exp || 3,
-      experienceLevel: "Mid-Level",
-      expectedSalaryLpa: demoCand.pf?.sal || 22,
-      noticePeriodDays: demoCand.pf?.np || 15,
-      workPreference: demoCand.pf?.wm || "Remote / Hybrid",
-      availabilityStatus: "Actively looking",
-      freelancerStatus: "Actively Freelancing",
-      freelanceHourlyInr: 2200,
-      freelanceGigsCompleted: 6,
-      kycStatus: "verified",
-      emailVerified: true,
-      phoneVerified: true,
-      mfaEnabled: true,
-      cirScore: 91,
-      percentile: 96,
-      profileCompletion: 100,
-      missingProfileFields: [],
-      walletBalance: demoCand.wal?.bal || 1252,
-      profileViews: demoCand.views || 148,
-      applicationsCount: 5,
-      assessmentsPassed: 4,
-      totalTestAttempts: 3,
-      retestCount: 2,
-      scoreImprovementDelta: 14,
-      domainsChosen: ["Frontend Engineering (React)", "Data & SQL", "System Design"],
-      coursesEnrolled: [
-        "AI Engineer & Agentic Workflows Track",
-        "Full-Stack TypeScript & System Design",
-      ],
-      coursesCompleted: 2,
-      mentorSessionsBooked: 3,
-      mockInterviewsCount: 5,
-      hackathonParticipated: true,
-      hackathonsList: ["Code Arena · Season 4 (Finalist)", "GenAI Agent Buildathon 2026"],
-      networkingRegistered: true,
-      networkingEventsList: ["Bengaluru CTO & Builders Roundtable", "Indiranagar React Meetup"],
-      hasResume: true,
-      hasVideoResume: true,
-      avatarUrl: getCandidatePhoto(demoCand.name),
-      linkedinUrl: demoCand.links?.li,
-      githubUrl: demoCand.links?.gh,
-      portfolioUrl: demoCand.links?.pf,
-      skills: demoCand.sk || [],
-      certifications: demoCand.ce || [],
-      educations: (demoCand.ed || []).map((e) => ({ institution: e.sc, degree: e.dg, year: e.yr })),
-      experiences: (demoCand.ex || []).map((x) => ({
-        company: x.co,
-        role: x.role,
-        duration: `${x.fr} – ${x.to}`,
-        summary: x.d,
-      })),
-      projects: (demoCand.pj || []).map((p) => ({
-        title: p.t,
-        stack: p.s,
-        link: p.l,
-        metrics: p.m,
-      })),
-      assessmentScores: demoCand.as || { React: 88, SQL: 82, Python: 75, "System Design": 85 },
-      createdAt: "2026-04-14T09:30:00.000Z",
-      lastActiveAt: new Date(Date.now() - 1800000).toISOString(),
-      raw: demoCand as unknown as Record<string, unknown>,
-    },
-    ...CANDIDATES_SEED.map((c, idx): SuperAdminCandidate => {
-      const domainKeys = Object.keys(c.as || {});
-      const scores = Object.values(c.as || {});
-      const avg = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 82;
-      const isPremium = idx % 3 === 0 || idx === 1;
-      const attempts = idx % 6 === 5 ? 0 : idx % 2 === 0 ? 1 : 2 + (idx % 2);
-      const retests = Math.max(0, attempts - 1);
-      const domainsList =
-        idx % 3 === 0
-          ? [...domainKeys, "System Architecture"].slice(0, 3)
-          : idx % 3 === 1
-            ? domainKeys.slice(0, 2)
-            : domainKeys.slice(0, 1);
-      const enrolledCourses =
-        idx % 4 === 3
-          ? []
-          : idx % 2 === 0
-            ? [COURSE_CATALOG[idx % COURSE_CATALOG.length], COURSE_CATALOG[(idx + 1) % COURSE_CATALOG.length]]
-            : [COURSE_CATALOG[idx % COURSE_CATALOG.length]];
-      const dayOffset = ACTIVITY_DAY_OFFSETS[idx % ACTIVITY_DAY_OFFSETS.length];
-      const completion = idx % 5 === 4 ? 68 : idx % 4 === 2 ? 84 : 100;
-      const missing =
-        completion === 68
-          ? ["60s Video Resume", "Portfolio Link", "Certification Proof"]
-          : completion === 84
-            ? ["60s Video Resume"]
-            : [];
-      const hackJoined = idx % 2 === 0 || idx % 5 === 1;
-      const netJoined = idx % 3 !== 2;
+      const inferredIndustry =
+        p.industry ||
+        (pSkills.some((s: string) => /seo|marketing|ads|social/i.test(s))
+          ? "Digital Marketing & Growth"
+          : pSkills.some((s: string) => /sql|python|power bi|tableau|data/i.test(s))
+            ? "Data & AI"
+            : pSkills.some((s: string) => /aws|docker|kubernetes|cloud/i.test(s))
+              ? "Cloud & DevOps"
+              : "Software & SaaS");
+
+      const domainAssessmentsTaken = Array.from(
+        new Set(
+          userAttempts
+            .map((a) => catalogById.get(a.assessment_id)?.domain || catalogById.get(a.assessment_id)?.title)
+            .filter(Boolean) as string[]
+        )
+      );
+      const gradedAttempts = userAttempts.filter((a) => a.status === "graded" || a.status === "submitted");
+      const uniqueAssessmentIds = new Set(userAttempts.map((a) => a.assessment_id));
+      const retestCount = Math.max(0, userAttempts.length - uniqueAssessmentIds.size);
+
+      const isPremium = userOrders.length > 0 || userServices.length > 0;
+      const salaryDigits = String(p.preferred_salary_range || "").match(/\d+/);
+      const noticeDigits = String(p.notice_period || "").match(/\d+/);
+      const cirScore = Math.round(
+        Number(latestCir?.composite_score ?? p.industry_readiness_score ?? 0)
+      );
+
+      const availabilityStatus: SuperAdminCandidate["availabilityStatus"] = p.is_suspended
+        ? "Suspended"
+        : String(p.availability_status || "").toLowerCase() === "placed"
+          ? "Placed"
+          : p.open_to_work === false
+            ? "Open to offers"
+            : "Actively looking";
 
       return {
-        id: `cand-seed-${idx + 1}`,
-        talentCirId: `IAT-CIR-${840110 + idx * 17}`,
-        origin: "platform",
-        archived: false,
-        fullName: c.n,
-        slug: slugify(c.n),
-        email: `${slugify(c.n).replace(/-/g, ".")}@talentcir.verified.in`,
-        phone: `+91 98${410 + idx} ${22110 + idx * 31}`,
-        headline: `${c.sk.slice(0, 2).join(" & ")} Specialist · ${c.x} yrs exp`,
-        industry: CANDIDATE_INDUSTRIES[idx % CANDIDATE_INDUSTRIES.length],
+        id: uid,
+        talentCirId: p.iam_talento_id || p.talenta_id || `IAT-LIVE-${String(1040 + idx)}`,
+        origin: "live_db",
+        archived: Boolean(p.is_archived),
+        fullName,
+        slug: p.portfolio_slug || p.public_slug || slugify(fullName),
+        email: p.email || "—",
+        phone: p.phone || "—",
+        headline:
+          p.professional_headline ||
+          p.headline ||
+          p.job_role ||
+          "Registered Candidate",
+        industry: inferredIndustry,
         accountTier: isPremium ? "premium" : "normal",
-        premiumPlanName: isPremium ? "Talento Pro Candidate" : undefined,
-        city: c.c,
-        country: "India",
-        experienceYears: c.x,
-        experienceLevel: c.x <= 1 ? "Fresher" : c.x <= 3 ? "Junior" : c.x <= 6 ? "Mid-Level" : "Senior",
-        expectedSalaryLpa: c.es,
-        noticePeriodDays: c.nt,
-        workPreference: c.wp,
-        availabilityStatus:
-          idx % 6 === 5 ? "Placed" : idx % 3 === 1 ? "Open to offers" : "Actively looking",
-        freelancerStatus:
-          idx % 3 === 0
-            ? "Actively Freelancing"
-            : idx % 3 === 1
-              ? "Open to Freelance"
-              : "Full-Time Only",
-        freelanceHourlyInr: idx % 3 === 2 ? 0 : 1000 + c.x * 350,
-        freelanceGigsCompleted: idx % 3 === 0 ? 2 + (idx % 5) : idx % 3 === 1 ? 1 : 0,
-        kycStatus: idx % 7 === 4 ? "pending" : "verified",
-        emailVerified: true,
-        phoneVerified: idx % 6 !== 3,
-        mfaEnabled: idx % 2 === 0,
-        cirScore: avg,
-        percentile: Math.min(99, Math.max(65, avg + 6)),
-        profileCompletion: completion,
-        missingProfileFields: missing,
-        walletBalance: 250 + idx * 140,
-        profileViews: 38 + idx * 19,
-        applicationsCount: 2 + (idx % 6),
-        assessmentsPassed: attempts > 0 ? domainKeys.length : 0,
-        totalTestAttempts: attempts,
-        retestCount: retests,
-        scoreImprovementDelta: retests > 0 ? 6 + retests * 4 : 0,
-        domainsChosen: attempts > 0 ? (domainsList.length ? domainsList : ["Core Readiness"]) : [],
-        coursesEnrolled: enrolledCourses,
-        coursesCompleted: enrolledCourses.length > 0 && idx % 3 !== 1 ? 1 : 0,
-        mentorSessionsBooked: isPremium ? 1 + (idx % 3) : 0,
-        mockInterviewsCount: attempts > 0 ? 1 + (idx % 4) : 0,
-        hackathonParticipated: hackJoined,
-        hackathonsList: hackJoined
-          ? idx % 4 === 0
-            ? ["Code Arena · Season 4", "Cloud & AI Sprint S3"]
-            : ["Code Arena · Season 4"]
-          : [],
-        networkingRegistered: netJoined,
-        networkingEventsList: netJoined
-          ? [`${c.c} Verified Tech & Hiring Mixer`, "AI Career Podcast Live Q&A"]
-          : [],
-        hasResume: completion >= 84,
-        hasVideoResume: isPremium,
-        avatarUrl: getCandidatePhoto(c.n),
-        linkedinUrl: `linkedin.com/in/${slugify(c.n)}`,
-        githubUrl: `github.com/${slugify(c.n)}`,
-        skills: c.sk,
-        certifications: c.ce,
-        educations: [
-          {
-            institution: idx % 2 === 0 ? "IIT Madras / Anna University" : "NIT Surathkal / VIT",
-            degree: "B.Tech Computer Science & Engineering",
-            year: String(2025 - c.x),
-          },
-        ],
-        experiences: [
-          {
-            company: idx % 2 === 0 ? "Zoho Corp" : "Freshworks",
-            role: c.x >= 4 ? "Senior Software Engineer" : "Software Engineer",
-            duration: `${2025 - Math.min(c.x, 3)} – Present`,
-            summary: `Delivered production ${c.sk.slice(0, 3).join(", ")} systems with high test coverage.`,
-          },
-        ],
-        projects: [
-          {
-            title: `${c.sk[0] || "Cloud"} Distributed Service`,
-            stack: c.sk.join(", "),
-            metrics: "99.95% uptime · p95 < 45ms",
-          },
-        ],
-        assessmentScores: c.as,
-        createdAt: new Date(Date.now() - (dayOffset + 30) * 86400000).toISOString(),
-        lastActiveAt: new Date(Date.now() - dayOffset * 86400000).toISOString(),
-        raw: c as unknown as Record<string, unknown>,
+        premiumPlanName: isPremium ? "TalentCIR Paid Member" : undefined,
+        city: p.city || p.location || "India",
+        country: p.country || "India",
+        experienceYears: expYrs,
+        experienceLevel: p.experience_level || (expYrs >= 3 ? "Experienced" : "Fresher"),
+        expectedSalaryLpa: salaryDigits ? Number(salaryDigits[0]) : Number(p.expected_ctc || 0),
+        noticePeriodDays: noticeDigits ? Number(noticeDigits[0]) : Number(p.notice_period_days || 30),
+        workPreference:
+          Array.isArray(p.preferred_locations) && p.preferred_locations.length
+            ? p.preferred_locations.slice(0, 2).join(" / ")
+            : p.preferred_work_mode || "Hybrid / Remote",
+        availabilityStatus,
+        freelancerStatus: p.open_for_freelance
+          ? "Actively Freelancing"
+          : p.employment_type === "freelance"
+            ? "Open to Freelance"
+            : "Full-Time Only",
+        freelanceHourlyInr: p.open_for_freelance ? 1500 : 0,
+        freelanceGigsCompleted: userGigs.filter((g) => g.status === "accepted").length,
+        kycStatus:
+          kyc?.verification_status === "verified" || p.verification_status === "verified"
+            ? "verified"
+            : kyc?.verification_status === "rejected"
+              ? "rejected"
+              : kyc?.verification_status === "pending" || p.verification_status === "pending"
+                ? "pending"
+                : "unsubmitted",
+        emailVerified: Boolean(p.email_verified_at || p.email),
+        phoneVerified: Boolean(p.phone),
+        mfaEnabled: false,
+        cirScore,
+        percentile: Math.round(Number(latestCir?.percentile ?? 0)),
+        profileCompletion: calcCompletion,
+        missingProfileFields: missingCand,
+        walletBalance: Number(userWallet?.balance ?? 0),
+        profileViews: Number(p.profile_views ?? 0),
+        applicationsCount: userApps.length,
+        assessmentsPassed: gradedAttempts.filter((a) => Number(a.percentage ?? 0) >= 40).length,
+        totalTestAttempts: userAttempts.length,
+        retestCount,
+        scoreImprovementDelta: 0,
+        domainsChosen: domainAssessmentsTaken,
+        coursesEnrolled: userEnrollments.map(
+          (en) => courseById.get(en.course_id)?.title || "LMS Course"
+        ),
+        coursesCompleted: userEnrollments.filter((en) => en.status === "completed").length,
+        mentorSessionsBooked: userMentorBookings.length,
+        mockInterviewsCount: userAiMocks.length,
+        hackathonParticipated: userHackRegs.length > 0,
+        hackathonsList: userHackRegs.map(
+          (r) => hackathonById.get(r.hackathon_id)?.title || "TalentCIR Hackathon"
+        ),
+        networkingRegistered: userEventRegs.some(
+          (r) => r.event_kind === "networking" || r.event_kind === "meetup"
+        ),
+        networkingEventsList: userEventRegs.map((r) => `${r.event_ref}${r.city ? ` (${r.city})` : ""}`),
+        hasResume: Boolean(p.resume_url || p.resume_path),
+        hasVideoResume: Boolean(p.video_intro_url || p.video_pitch),
+        avatarUrl: p.profile_photo_url || p.avatar_url || getCandidatePhoto(fullName),
+        resumeUrl: p.resume_url || undefined,
+        linkedinUrl: p.linkedin_url || undefined,
+        githubUrl: p.github_url || undefined,
+        portfolioUrl: p.portfolio_url || undefined,
+        skills: pSkills,
+        certifications: pCerts,
+        educations: pEdus,
+        experiences: pExps,
+        projects: pProjs,
+        assessmentScores: Object.fromEntries(
+          gradedAttempts.map((a) => [
+            catalogById.get(a.assessment_id)?.title || "Assessment",
+            Math.round(Number(a.percentage ?? 0)),
+          ])
+        ),
+        createdAt: p.created_at || new Date().toISOString(),
+        lastActiveAt: p.updated_at || p.created_at || new Date().toISOString(),
+        raw: p,
       };
-    }),
-  ];
+    });
 
-  // Deduplicate live vs platform candidates by email
-  const seenCandidateEmails = new Set(mappedLiveCandidates.map((c) => c.email.toLowerCase()));
-  const candidates: SuperAdminCandidate[] = [
-    ...mappedLiveCandidates,
-    ...platformCandidates.filter((c) => !seenCandidateEmails.has(c.email.toLowerCase())),
-  ];
+  // 2. Live Employers (100% from public.employers + tenants + subscriptions + wallets)
+  const employers: SuperAdminEmployer[] = liveEmployers.map((emp, idx) => {
+    const tenant = emp.tenant_id ? tenantById.get(emp.tenant_id) : undefined;
+    const empSub = liveEmployerSubs.find(
+      (s) => s.tenant_id && s.tenant_id === emp.tenant_id && s.status === "active"
+    );
+    const empWallet = liveWallets.find(
+      (w) => w.owner_type === "tenant" && w.tenant_id && w.tenant_id === emp.tenant_id
+    );
+    const empMembers = liveMemberships.filter(
+      (m) => m.tenant_id && m.tenant_id === emp.tenant_id
+    );
+    const empJobs = liveJobs.filter(
+      (j) => j.employer_id === emp.id || (emp.tenant_id && j.tenant_id === emp.tenant_id)
+    );
+    const empJobIds = new Set(empJobs.map((j) => j.id));
+    const empApps = liveApplications.filter(
+      (a) => empJobIds.has(a.job_id) || (emp.tenant_id && a.tenant_id === emp.tenant_id)
+    );
 
-  // Map Live DB Employers + Showcase Employers + Pending / Incomplete Profile Employers
-  const mappedLiveEmployers: SuperAdminEmployer[] = liveEmployers.map((emp, idx) => {
     const missingEmp: string[] = [];
     if (!emp.website) missingEmp.push("Official Website");
     if (!emp.description) missingEmp.push("Company Description");
     if (!emp.logo_url) missingEmp.push("Company Logo");
-    if (!emp.phone_verified) missingEmp.push("Phone OTP Verification");
+    if (!emp.phone_verified && !emp.phone) missingEmp.push("Phone OTP Verification");
     if (!emp.industry) missingEmp.push("Industry Classification");
-    const empCompletion = Math.max(35, 100 - missingEmp.length * 15);
+    const gstinVal = emp.gstin || emp.gst_number || tenant?.gstin || "";
+    const cinVal = emp.cin_number || emp.cin || "";
+    const panVal = emp.pan_number || emp.pan || "";
+    if (!gstinVal) missingEmp.push("GSTIN / Corporate Tax ID");
+    const empCompletion = Number(
+      emp.profile_completion ?? Math.max(25, 100 - missingEmp.length * 14)
+    );
+
+    const planKey = String(empSub?.plan || tenant?.plan || "free").toLowerCase();
+    const subscriptionPlan: SuperAdminEmployer["subscriptionPlan"] =
+      planKey === "enterprise"
+        ? "Enterprise Annual"
+        : planKey === "growth"
+          ? "Growth Pro"
+          : "Free Trial";
+    const mrrInr =
+      subscriptionPlan === "Enterprise Annual"
+        ? 49999
+        : subscriptionPlan === "Growth Pro"
+          ? 19999
+          : 0;
 
     return {
       id: emp.id,
       employerCode: emp.employer_id || `IAT-EMP-${300100 + idx}`,
       origin: "live_db",
-      archived: false,
-      accountTier: "premium",
-      companyName: emp.company_name || "Registered Employer",
-      slug: slugify(emp.company_name || `company-${idx + 1}`),
+      archived: Boolean(emp.is_archived),
+      accountTier: subscriptionPlan === "Free Trial" ? "normal" : "premium",
+      companyName: emp.company_name || tenant?.name || "Registered Employer",
+      slug: emp.slug || tenant?.slug || slugify(emp.company_name || `company-${idx + 1}`),
       industry: emp.industry || "Software & SaaS",
-      category: emp.company_type || "Corporate",
+      category: emp.company_category || emp.company_type || "Corporate",
       companyType: emp.company_type || "Private Limited",
-      size: emp.num_employees || "51-200",
-      hq: emp.address || "Bengaluru",
-      address: emp.address || "India",
+      size: emp.num_employees || "11-50",
+      hq: emp.hq_city || emp.address || "India",
+      address: emp.address || emp.hq_city || "India",
       website: emp.website || "—",
-      establishedYear: Number(emp.established_year || 2021),
+      establishedYear: Number(emp.established_year || new Date().getFullYear()),
       contactName: emp.contact_name || "Hiring Lead",
-      officialEmail: emp.official_email || "hr@company.in",
+      officialEmail: emp.official_email || "—",
       phone: emp.phone || "—",
       verificationStatus:
-        (emp as any).verification_status ||
-        (emp.email_verified ? "verified" : "pending"),
-      gstin: (emp as any).gstin || "29AABCS1429B1ZB",
-      cin: (emp as any).cin || "U72900KA2021PTC148210",
-      pan: (emp as any).pan || "AABCS1429B",
-      gstinVerified: Boolean(emp.email_verified),
+        emp.verification_status || (emp.email_verified ? "verified" : "pending"),
+      gstin: gstinVal || "—",
+      cin: cinVal || "—",
+      pan: panVal ? (panVal.length > 12 ? "Encrypted PAN" : panVal) : "—",
+      gstinVerified: Boolean(emp.verification_status === "verified" && gstinVal),
       profileCompletion: empCompletion,
       missingProfileFields: missingEmp,
-      subscriptionPlan: "Growth Pro",
-      mrrInr: 14999,
-      walletBalance: 5000,
-      talentUnlocksRemaining: 28,
-      teamMembersCount: 3,
-      activeJobsCount: liveJobs.filter((j) => j.employer_id === emp.id).length,
-      totalApplications: 14,
-      totalHires: 2,
+      subscriptionPlan,
+      mrrInr,
+      walletBalance: Number(empWallet?.balance ?? 0),
+      talentUnlocksRemaining: Number(empSub?.cir_unlocks ?? 0),
+      teamMembersCount: Math.max(1, empMembers.length),
+      activeJobsCount: empJobs.filter((j) => j.status === "active").length,
+      totalApplications: empApps.length,
+      totalHires: empApps.filter(
+        (a) => String(a.stage).toLowerCase() === "offer" || String(a.stage).toLowerCase() === "hired"
+      ).length,
       logoUrl: emp.logo_url || undefined,
-      benefits: ["Health Insurance", "Flexible Work", "Learning Budget"],
+      benefits: Array.isArray(emp.benefits) ? emp.benefits : [],
       createdAt: emp.created_at || new Date().toISOString(),
       lastActiveAt: emp.updated_at || emp.created_at || new Date().toISOString(),
       raw: emp,
     };
   });
 
-  const showcaseEmployers: SuperAdminEmployer[] = SHOWCASE_COMPANIES.map((sc, idx) => ({
-    id: sc.id,
-    employerCode: sc.employer_code,
-    origin: "platform",
-    archived: false,
-    accountTier: "premium",
-    companyName: sc.name,
-    slug: sc.slug,
-    industry: sc.industry || "Software & Cloud Infrastructure",
-    category: sc.category || "Enterprise SaaS",
-    companyType: sc.company_type || "Private Limited",
-    size: sc.size || "201-500",
-    hq: sc.hq || "Bengaluru, India",
-    address: sc.address,
-    website: sc.website || "https://super30.ai",
-    establishedYear: sc.established_year || 2019,
-    contactName: sc.leadership?.[0]?.name || "Rohan Deshmukh",
-    officialEmail: (sc as any).contact?.email || `careers@${sc.slug}.in`,
-    phone: (sc as any).contact?.phone || "+91 80 4719 3030",
-    verificationStatus: sc.verified ? "verified" : "pending",
-    gstin: `29AADC${1042 + idx * 19}K1Z5`,
-    cin: `U72200KA${sc.established_year || 2019}PTC${129041 + idx * 112}`,
-    pan: `AADC${1042 + idx * 19}K`,
-    gstinVerified: sc.gstin_verified,
-    profileCompletion: 100,
-    missingProfileFields: [],
-    subscriptionPlan: idx === 0 ? "Enterprise Annual" : "Growth Pro",
-    mrrInr: idx === 0 ? 49999 : 19999,
-    walletBalance: idx === 0 ? 9200 : 6400,
-    talentUnlocksRemaining: idx === 0 ? 84 : 35,
-    teamMembersCount: (sc.leadership?.length || 2) + 3,
-    activeJobsCount: sc.jobs?.length || 4,
-    totalApplications: 48 - idx * 9,
-    totalHires: 9 - idx * 2,
-    logoUrl: sc.logo_url || undefined,
-    benefits: sc.benefits || [],
-    createdAt: new Date(Date.now() - (30 + idx * 18) * 86400000).toISOString(),
-    lastActiveAt: new Date(Date.now() - idx * 86400000 * 3).toISOString(),
-    raw: sc as unknown as Record<string, unknown>,
-  }));
+  // 3. Live Jobs (100% from public.employer_job_openings)
+  const jobs: SuperAdminJob[] = liveJobs.map((j, idx) => {
+    const ownerEmp =
+      (j.employer_id ? employerById.get(j.employer_id) : undefined) ||
+      (j.tenant_id ? employerByTenantId.get(j.tenant_id) : undefined);
+    const jobApps = liveApplications.filter((a) => a.job_id === j.id);
+    const views = Number(j.views_count || 0);
+    const promoTier: SuperAdminJob["promotionTier"] =
+      j.is_sponsored || j.promotion_tier === "sponsored"
+        ? "sponsored"
+        : j.is_featured || j.promotion_tier === "featured"
+          ? "featured"
+          : "none";
 
-  // Pending KYB & Incomplete Company Profile Employers
-  const pendingEmployers: SuperAdminEmployer[] = [
-    {
-      id: "emp-pending-01",
-      employerCode: "IAT-EMP-409112",
-      origin: "platform",
-      archived: false,
-      accountTier: "premium",
-      companyName: "FinStack Payments India Pvt. Ltd.",
-      slug: "finstack-payments",
-      industry: "FinTech",
-      category: "B2B Payments",
-      companyType: "Private Limited (Series A)",
-      size: "51-200",
-      hq: "Mumbai, Maharashtra, India",
-      address: "BKC One, Bandra Kurla Complex, Mumbai 400051",
-      website: "https://finstackpay.in",
-      establishedYear: 2022,
-      contactName: "Meera Krishnan",
-      officialEmail: "meera.k@finstackpay.in",
-      phone: "+91 22 6104 8890",
-      verificationStatus: "pending",
-      gstin: "27AAFCF8821M1Z2",
-      cin: "U65999MH2022PTC381920",
-      pan: "AAFCF8821M",
-      gstinVerified: false,
-      profileCompletion: 78,
-      missingProfileFields: ["GSTIN Certificate Upload", "Workplace Gallery Photos"],
-      subscriptionPlan: "Growth Pro",
-      mrrInr: 19999,
-      walletBalance: 5000,
-      talentUnlocksRemaining: 25,
-      teamMembersCount: 2,
-      activeJobsCount: 2,
-      totalApplications: 0,
-      totalHires: 0,
-      benefits: ["Health Insurance", "Performance Bonus", "Hybrid Flexibility"],
-      createdAt: new Date(Date.now() - 86400000 * 4).toISOString(),
-      lastActiveAt: new Date(Date.now() - 86400000 * 1.2).toISOString(),
-    },
-    {
-      id: "emp-pending-02",
-      employerCode: "IAT-EMP-409188",
-      origin: "platform",
-      archived: false,
-      accountTier: "normal",
-      companyName: "NeuralForge Robotics Labs",
-      slug: "neuralforge-robotics",
-      industry: "Data & AI",
-      category: "DeepTech",
-      companyType: "LLP",
-      size: "11-50",
-      hq: "Hyderabad, Telangana, India",
-      address: "T-Hub Phase 2, Madhapur, Hyderabad 500081",
-      website: "https://neuralforge.ai",
-      establishedYear: 2024,
-      contactName: "Vikramaditya Reddy",
-      officialEmail: "founders@neuralforge.ai",
-      phone: "+91 40 4852 1190",
-      verificationStatus: "pending",
-      gstin: "36AABFN4410P1Z9",
-      cin: "AAZ-4410",
-      pan: "AABFN4410P",
-      gstinVerified: false,
-      profileCompletion: 58,
-      missingProfileFields: ["Company Logo", "Company Mission & About", "Employee Benefits", "KYB Tax Proof"],
-      subscriptionPlan: "Starter",
-      mrrInr: 7999,
-      walletBalance: 2500,
-      talentUnlocksRemaining: 10,
-      teamMembersCount: 1,
-      activeJobsCount: 1,
-      totalApplications: 0,
-      totalHires: 0,
-      benefits: ["ESOPs"],
-      createdAt: new Date(Date.now() - 86400000 * 19).toISOString(),
-      lastActiveAt: new Date(Date.now() - 86400000 * 14).toISOString(),
-    },
-    {
-      id: "emp-incomplete-03",
-      employerCode: "IAT-EMP-409245",
-      origin: "platform",
-      archived: false,
-      accountTier: "normal",
-      companyName: "BrightCart D2C Commerce",
-      slug: "brightcart-d2c",
-      industry: "Digital Marketing & Growth",
-      category: "E-Commerce",
-      companyType: "Private Limited",
-      size: "11-50",
-      hq: "Chennai, Tamil Nadu, India",
-      address: "OMR Perungudi, Chennai 600096",
-      website: "—",
-      establishedYear: 2023,
-      contactName: "harish.n@brightcart.in",
-      officialEmail: "harish.n@brightcart.in",
-      phone: "—",
-      verificationStatus: "pending",
-      gstin: "—",
-      cin: "—",
-      pan: "—",
-      gstinVerified: false,
-      profileCompletion: 35,
-      missingProfileFields: [
-        "Official Website",
-        "Phone OTP Verification",
-        "GSTIN & CIN",
-        "Company Description",
-        "Company Logo",
-        "First Job Opening",
-      ],
-      subscriptionPlan: "Free Trial",
-      mrrInr: 0,
-      walletBalance: 0,
-      talentUnlocksRemaining: 0,
-      teamMembersCount: 1,
-      activeJobsCount: 0,
-      totalApplications: 0,
-      totalHires: 0,
-      benefits: [],
-      createdAt: new Date(Date.now() - 86400000 * 65).toISOString(),
-      lastActiveAt: new Date(Date.now() - 86400000 * 48).toISOString(),
-    },
-  ];
-
-  const employers: SuperAdminEmployer[] = [
-    ...mappedLiveEmployers,
-    ...showcaseEmployers,
-    ...pendingEmployers,
-  ];
-
-  // Map Live Jobs + Demo Employer Jobs + Showcase Jobs
-  const mappedLiveJobs: SuperAdminJob[] = liveJobs.map((j, idx) => {
-    const ownerEmp = liveEmployers.find((e) => e.id === j.employer_id);
     return {
       id: j.id,
-      jobCode: `JOB-LIVE-${2100 + idx}`,
+      jobCode: `JOB-${2100 + idx}`,
       origin: "live_db",
       title: j.designation || "Open Role",
-      companyName: ownerEmp?.company_name || "Verified Employer",
+      companyName: j.company_name || ownerEmp?.company_name || "TalentCIR Employer",
       employerCode: ownerEmp?.employer_id || "IAT-EMP-LIVE",
-      department: (j as any).department || "Engineering",
-      industry: ownerEmp?.industry || "Technology",
-      location: j.job_location || "India",
-      workMode: ((j as any).work_mode as any) || "Hybrid",
-      employmentType: (j as any).employment_type || "Full-time",
-      minExpYears: Number(parseInt(String(j.experience_years || "1"), 10) || 1),
-      salaryMinLpa: Number(j.salary_min || 8),
-      salaryMaxLpa: Number(j.salary_max || 16),
+      department: j.department || j.job_function || "Engineering",
+      industry: j.industry || ownerEmp?.industry || "Technology",
+      location: j.city || j.job_location || "India",
+      workMode: (j.work_mode as SuperAdminJob["workMode"]) || "Hybrid",
+      employmentType: j.job_type || j.employment_type || "Full-time",
+      minExpYears: Number(j.experience_min ?? (parseInt(String(j.experience_years || "0"), 10) || 0)),
+      salaryMinLpa: Number(j.salary_min || 0),
+      salaryMaxLpa: Number(j.salary_max || 0),
       openingsCount: Number(j.num_openings || 1),
-      status: ((j as any).status as any) || "active",
-      promotionTier: "none",
-      skills: Array.isArray((j as any).required_skills)
-        ? (j as any).required_skills
-        : ["Domain Expertise", "Problem Solving"],
-      views: Number((j as any).views_count || 64),
-      applicationsCount: 6,
-      shortlistedCount: 2,
-      hiredCount: 0,
-      conversionRate: 9.4,
-      description: j.job_description || "Live employer role published on TalentCIR.",
-      closesAt: new Date(Date.now() + 86400000 * 25).toISOString().slice(0, 10),
+      status:
+        (j.status === "scheduled"
+          ? "pending_review"
+          : (j.status as SuperAdminJob["status"])) || "active",
+      promotionTier: promoTier,
+      skills:
+        Array.isArray(j.skills) && j.skills.length
+          ? j.skills
+          : Array.isArray(j.required_skills)
+            ? j.required_skills
+            : [],
+      views,
+      applicationsCount: jobApps.length,
+      shortlistedCount: jobApps.filter((a) =>
+        ["Shortlisted", "Interview", "Offer"].includes(String(a.stage))
+      ).length,
+      hiredCount: jobApps.filter((a) => String(a.stage) === "Offer").length,
+      conversionRate: views > 0 ? Number(((jobApps.length / views) * 100).toFixed(1)) : 0,
+      description: j.job_description || "",
+      closesAt: j.closes_at ? String(j.closes_at).slice(0, 10) : "—",
       createdAt: j.created_at || new Date().toISOString(),
       raw: j,
     };
   });
 
-  const platformJobs: SuperAdminJob[] = [
-    ...DEMO_EMPLOYER_JOBS.map((j) => {
-      const jobApps = DEMO_EMPLOYER_APPS.filter((a) => a.jid === j.id);
-      const views = j.views || 150;
+  // 4. Live Applications (100% from public.job_applications + application_stage_history)
+  const applications: SuperAdminApplication[] = liveApplications.map((a, idx) => {
+    const cand = profileById.get(a.candidate_id);
+    const job = jobById.get(a.job_id);
+    const emp =
+      (a.tenant_id ? employerByTenantId.get(a.tenant_id) : undefined) ||
+      (job?.employer_id ? employerById.get(job.employer_id) : undefined);
+    const appHist = liveStageHistory
+      .filter((h) => h.application_id === a.id)
+      .map((h) => ({
+        stage: h.to_stage || a.stage,
+        note: h.message || `Moved from ${h.from_stage || "New"} to ${h.to_stage}`,
+        at: h.created_at || a.updated_at || a.applied_at,
+      }));
+    const candSkills = liveSkills
+      .filter((s) => s.user_id === a.candidate_id)
+      .map((s) => s.skill_name);
+    const cir = Math.round(Number(cand?.industry_readiness_score ?? 0));
+
+    return {
+      id: a.id,
+      appCode: `APP-${5000 + idx}`,
+      candidateName: cand?.full_name || cand?.email?.split("@")[0] || "Candidate",
+      candidateId: cand?.iam_talento_id || String(a.candidate_id).slice(0, 8),
+      candidateEmail: cand?.email || "—",
+      jobTitle: job?.designation || "Open Role",
+      jobId: job?.id ? `JOB-${String(job.id).slice(0, 8)}` : String(a.job_id).slice(0, 8),
+      companyName: job?.company_name || emp?.company_name || "TalentCIR Employer",
+      stage: a.stage || "Applied",
+      matchScore: Math.round(Number(a.match_score ?? 0)),
+      cirScore: cir,
+      experienceYears: Number(cand?.years_of_experience ?? 0),
+      expectedCtcLpa: Number(String(cand?.preferred_salary_range || "").match(/\d+/)?.[0] || 0),
+      noticeDays: Number(String(cand?.notice_period || "").match(/\d+/)?.[0] || 30),
+      assignedRecruiter: emp?.contact_name || "Employer TA Team",
+      slaStatus: a.stage === "Applied" && !a.viewed_at ? "Action Needed" : "Within SLA",
+      interviewScheduled: a.interview_at ? new Date(a.interview_at).toLocaleString() : undefined,
+      bgvStatus: a.stage === "Offer" ? "In Progress" : "Not Started",
+      recruiterNote: a.recruiter_note || undefined,
+      coverNote: a.cover_note || undefined,
+      skills: candSkills,
+      appliedAt: a.applied_at || new Date().toISOString(),
+      updatedAt: a.updated_at || a.applied_at || new Date().toISOString(),
+      history: appHist.length
+        ? appHist
+        : [{ stage: a.stage || "Applied", note: "Application submitted", at: a.applied_at || new Date().toISOString() }],
+    };
+  });
+
+  // 5. Live Assessments, CIR Credentials & 30-Layer Proctoring Sessions
+  const assessments: SuperAdminAssessmentAttempt[] = liveAttempts.map((att, idx) => {
+    const cand = profileById.get(att.user_id);
+    const cat = catalogById.get(att.assessment_id);
+    const cir = liveCirReports.find((r) => r.journey_id && r.journey_id === att.journey_id);
+    const cred = cir ? liveCredentials.find((vc) => vc.cir_report_id === cir.id) : undefined;
+    const events = liveProctorEvents.filter((e) => e.attempt_id === att.id);
+    const trustScore = Math.round(Number(att.integrity_score ?? 100));
+    const pct = Math.round(Number(att.percentage ?? cir?.composite_score ?? 0));
+    const isFlagged = Boolean(att.needs_manual_review) || trustScore < 80;
+    const status: SuperAdminAssessmentAttempt["status"] =
+      att.status === "invalidated"
+        ? "Failed"
+        : isFlagged
+          ? "Flagged"
+          : att.status === "graded"
+            ? "Issued"
+            : "In Review";
+
+    return {
+      id: att.id,
+      attemptCode: `ATT-${6000 + idx}`,
+      credentialToken: cred?.token
+        ? `TCIR-${String(cred.token).slice(0, 10).toUpperCase()}`
+        : `PENDING-${String(att.id).slice(0, 6).toUpperCase()}`,
+      candidateName: cand?.full_name || cand?.email?.split("@")[0] || "Candidate",
+      candidateEmail: cand?.email || "—",
+      assessmentTitle: cat?.title || "Proctored CIR Assessment",
+      domainTrack: cat?.domain || cat?.industry || "Core Readiness",
+      coreAptitudeScore: Math.round(Number(cir?.sections?.core ?? pct)),
+      coreCommunicationScore: Math.round(Number(cir?.sections?.communication ?? pct)),
+      domainTechnicalScore: Math.round(Number(cir?.sections?.domain ?? pct)),
+      codingScore: Math.round(Number(cir?.sections?.coding ?? pct)),
+      aiInterviewScore: Math.round(Number(cir?.sections?.interview ?? pct)),
+      overallCirScore: Math.round(Number(cir?.composite_score ?? pct)),
+      percentile: Math.round(Number(cir?.percentile ?? Math.min(99, pct))),
+      status,
+      proctorTrustScore: trustScore,
+      proctorFlagsCount: events.length,
+      proctorSummary: events.length
+        ? `${events.length} proctoring signal(s) recorded across 30-layer engine (integrity ${trustScore}%).`
+        : "All 30 AI proctoring layers clean with zero tamper signals.",
+      layersTriggered: events.length
+        ? events.slice(0, 5).map((e) => `L${String(e.layer_id).padStart(2, "0")}: ${e.signal_code} (${e.severity})`)
+        : ["All 30 Layers Passed Clean"],
+      durationMinutes: Number(cat?.duration_minutes ?? 30),
+      browserDevice: "Live Proctored Session",
+      ipRegion: cand?.city ? `${cand.city}, IN` : "India",
+      completedAt: att.submitted_at || att.graded_at || att.started_at || new Date().toISOString(),
+    };
+  });
+
+  // 6. Live Payment Orders & Service Purchases
+  const mapOrderCategory = (
+    itemType: string,
+    status: string,
+    itemRef?: string | null
+  ): SuperAdminTransaction["category"] => {
+    const it = String(itemType || "").toLowerCase();
+    if (status === "refunded") return "Refund";
+    if (it === "assessment_journey" || it.includes("assess") || it.includes("cir")) return "Assessment Fee";
+    if (it === "course" || it === "mentor_session" || it.includes("learn") || it.includes("mentor")) {
+      return "Learning & Mentorship";
+    }
+    if (it.includes("network") || it.includes("mixer") || it.includes("roundtable")) {
+      return "Networking";
+    }
+    if (it === "hackathon_ticket" || it.includes("hackathon") || it.includes("event")) {
+      return /network|mixer|meetup|roundtable/i.test(String(itemRef || "")) ? "Networking" : "Hackathon";
+    }
+    if (it === "wallet_topup" || it.includes("wallet")) return "Wallet Top-up";
+    if (it === "subscription" || it.includes("sub")) return "SaaS Subscription";
+    if (it === "job_spotlight" || it.includes("promot")) return "Job Promotion";
+    if (it === "recruiter_pack" || it.includes("talent")) return "Talent Package";
+    return "Learning & Mentorship";
+  };
+
+  const transactions: SuperAdminTransaction[] = [
+    ...livePaymentOrders.map((ord, idx): SuperAdminTransaction => {
+      const emp =
+        (ord.tenant_id ? employerByTenantId.get(ord.tenant_id) : undefined) ||
+        (ord.employer_id ? employerById.get(String(ord.employer_id)) : undefined) ||
+        employerByUserId.get(ord.user_id);
+      const prof = profileById.get(ord.user_id);
+      const isEmployer = Boolean(ord.tenant_id || ord.employer_id || emp);
+      const gst = Number(ord.cgst || 0) + Number(ord.sgst || 0) + Number(ord.igst || 0);
+      const net = Number(ord.total_amount || 0);
+      const base = Number(ord.taxable_amount || ord.base_amount || Math.max(0, net - gst));
+      const txStatus: SuperAdminTransaction["status"] =
+        ord.status === "entitled" || ord.status === "captured"
+          ? "captured"
+          : ord.status === "refunded"
+            ? "refunded"
+            : ord.status === "failed" || ord.status === "cancelled"
+              ? "failed"
+              : "pending";
       return {
-        id: String(j.id),
-        jobCode: `JOB-${j.id}`,
-        origin: "platform" as const,
-        title: j.t,
-        companyName: j.c,
-        employerCode: "IAT-EMP-204819",
-        department: j.department || "Engineering",
-        industry: j.industry || "Software & Cloud Infrastructure",
-        location: j.l,
-        workMode: j.m,
-        employmentType: j.ty,
-        minExpYears: j.e,
-        salaryMinLpa: j.a,
-        salaryMaxLpa: j.b,
-        openingsCount: 2,
-        status: (j.status === "scheduled" ? "pending_review" : (j.status as any)) || "active",
-        promotionTier: j.promotionTier || "none",
-        skills: j.sk,
-        views,
-        applicationsCount: jobApps.length,
-        shortlistedCount: jobApps.filter((a) =>
-          ["Shortlisted", "Interview", "Offer"].includes(a.st)
-        ).length,
-        hiredCount: jobApps.filter((a) => a.hired).length,
-        conversionRate: Number(((jobApps.length / Math.max(1, views)) * 100).toFixed(1)),
-        description: j.description || "",
-        closesAt: j.closesAt || "2026-12-20",
-        createdAt: new Date(j.at).toISOString(),
-        raw: j as unknown as Record<string, unknown>,
+        id: ord.id,
+        orderId: ord.gateway_order_id || `ord_${String(ord.id).slice(0, 10)}`,
+        gatewayRef: ord.gateway_payment_id || ord.gateway || "razorpay",
+        actorType: isEmployer ? "Employer" : "Candidate",
+        actorName: isEmployer
+          ? emp?.company_name || prof?.full_name || "Employer Account"
+          : prof?.full_name || prof?.email?.split("@")[0] || "Candidate Account",
+        actorEmail: (isEmployer ? emp?.official_email : prof?.email) || prof?.email || "—",
+        category: mapOrderCategory(ord.item_type, txStatus, ord.item_ref),
+        itemTitle: ord.item_ref || String(ord.item_type || "Order").replace(/_/g, " "),
+        amountInr: base,
+        gstInr: gst,
+        netTotalInr: net,
+        direction: txStatus === "refunded" ? "refund" : "credit",
+        paymentMethod:
+          ord.gateway === "wallet"
+            ? "TalentCIR Wallet"
+            : ord.gateway === "free"
+              ? "Free / Coupon"
+              : "Razorpay Checkout",
+        status: txStatus,
+        invoiceNumber: ord.invoice_number || `INV-${1000 + idx}`,
+        createdAt: ord.created_at || new Date().toISOString(),
       };
     }),
-    {
-      id: "job-mod-901",
-      jobCode: "JOB-90901",
-      origin: "platform",
-      title: "Founding Payment Systems Engineer (Go / Rust)",
-      companyName: "FinStack Payments India Pvt. Ltd.",
-      employerCode: "IAT-EMP-409112",
-      department: "Core Ledger",
-      industry: "FinTech",
-      location: "Mumbai",
-      workMode: "Hybrid",
-      employmentType: "Full-time",
-      minExpYears: 4,
-      salaryMinLpa: 28,
-      salaryMaxLpa: 45,
-      openingsCount: 3,
-      status: "pending_review",
-      promotionTier: "sponsored",
-      skills: ["Go", "Rust", "PostgreSQL", "Kafka", "UPI Switch"],
-      views: 0,
-      applicationsCount: 0,
-      shortlistedCount: 0,
-      hiredCount: 0,
-      conversionRate: 0,
-      description: "Awaiting Super Admin moderation & GSTIN clearance before going live on job feed.",
-      closesAt: "2026-12-31",
-      createdAt: new Date(Date.now() - 3600000 * 5).toISOString(),
-    },
-    {
-      id: "job-mod-902",
-      jobCode: "JOB-90902",
-      origin: "platform",
-      title: "Perception & SLAM Robotics Engineer",
-      companyName: "NeuralForge Robotics Labs",
-      employerCode: "IAT-EMP-409188",
-      department: "Autonomy",
-      industry: "Robotics & AI",
-      location: "Hyderabad",
-      workMode: "Onsite",
-      employmentType: "Full-time",
-      minExpYears: 2,
-      salaryMinLpa: 18,
-      salaryMaxLpa: 32,
-      openingsCount: 2,
-      status: "pending_review",
-      promotionTier: "featured",
-      skills: ["C++", "ROS2", "PyTorch", "CUDA", "Computer Vision"],
-      views: 0,
-      applicationsCount: 0,
-      shortlistedCount: 0,
-      hiredCount: 0,
-      conversionRate: 0,
-      description: "Build real-time warehouse SLAM pipelines on NVIDIA Jetson Orin edge hardware.",
-      closesAt: "2026-12-28",
-      createdAt: new Date(Date.now() - 3600000 * 3).toISOString(),
-    },
+    ...liveServicePurchases.map((sp, idx): SuperAdminTransaction => {
+      const emp = employerByUserId.get(sp.user_id);
+      const prof = profileById.get(sp.user_id);
+      const isEmployer =
+        Boolean(emp) || ["recruiter_pack", "job_spotlight", "ai_shortlisting"].includes(sp.service_key);
+      const amt = Number(sp.amount || 0);
+      return {
+        id: sp.id,
+        orderId: `svc_${String(sp.id).slice(0, 10)}`,
+        gatewayRef: sp.tx_group ? String(sp.tx_group).slice(0, 12) : "wallet_debit",
+        actorType: isEmployer ? "Employer" : "Candidate",
+        actorName: isEmployer
+          ? emp?.company_name || prof?.full_name || "Employer"
+          : prof?.full_name || "Candidate",
+        actorEmail: (isEmployer ? emp?.official_email : prof?.email) || "—",
+        category: mapOrderCategory(sp.service_key, sp.status === "refunded" ? "refunded" : "captured"),
+        itemTitle: `Add-on Service · ${String(sp.service_key || "").replace(/_/g, " ")}`,
+        amountInr: amt,
+        gstInr: 0,
+        netTotalInr: amt,
+        direction: sp.status === "refunded" ? "refund" : "credit",
+        paymentMethod: "TalentCIR Wallet",
+        status: sp.status === "refunded" ? "refunded" : "captured",
+        invoiceNumber: `SVC-${2000 + idx}`,
+        createdAt: sp.created_at || new Date().toISOString(),
+      };
+    }),
   ];
 
-  const jobs: SuperAdminJob[] = [...mappedLiveJobs, ...platformJobs];
+  // 7. Live Wallets & Ledger
+  const wallets: SuperAdminWalletAccount[] = liveWallets
+    .filter((w) => w.owner_type !== "platform")
+    .map((w, idx) => {
+      const isTenant = w.owner_type === "tenant";
+      const emp = isTenant && w.tenant_id ? employerByTenantId.get(w.tenant_id) : undefined;
+      const prof = !isTenant && w.user_id ? profileById.get(w.user_id) : undefined;
+      const entries = liveLedger
+        .filter((l) => l.wallet_id === w.id)
+        .map((l) => ({
+          txId: `TXN-${l.id}`,
+          type: (l.entry_type === "debit" ? "debit" : "credit") as "credit" | "debit",
+          amountInr: Number(l.amount || 0),
+          reason: l.reason || "Ledger transaction",
+          via: l.reference_type ? String(l.reference_type).replace(/_/g, " ") : "Wallet",
+          at: l.created_at || new Date().toISOString(),
+        }));
+      const credited = entries
+        .filter((e) => e.type === "credit")
+        .reduce((s, e) => s + e.amountInr, 0);
+      const debited = entries
+        .filter((e) => e.type === "debit")
+        .reduce((s, e) => s + e.amountInr, 0);
+      return {
+        id: w.id,
+        ownerType: isTenant ? "Employer" : "Candidate",
+        ownerName: isTenant
+          ? emp?.company_name || `Employer Tenant ${idx + 1}`
+          : prof?.full_name || prof?.email?.split("@")[0] || `Candidate ${idx + 1}`,
+        ownerEmail: (isTenant ? emp?.official_email : prof?.email) || "—",
+        ownerCode: (isTenant ? emp?.employer_id : prof?.iam_talento_id) || `WAL-${100 + idx}`,
+        balanceInr: Number(w.balance || 0),
+        lifetimeCreditedInr: credited || Number(w.balance || 0),
+        lifetimeDebitedInr: debited,
+        status: "active",
+        updatedAt: entries[0]?.at || w.created_at || new Date().toISOString(),
+        ledger: entries,
+      };
+    });
 
-  // Global Applications
-  const applications: SuperAdminApplication[] = DEMO_EMPLOYER_APPS.map((a, idx) => {
-    const job = DEMO_EMPLOYER_JOBS.find((j) => j.id === a.jid);
-    const scores = Object.values(a.as || {});
-    const cir = scores.length
-      ? Math.round(scores.reduce((acc, v) => acc + v, 0) / scores.length)
-      : 83;
+  // 8. Live Support Tickets
+  const mapTicketCategory = (cat: string): SuperAdminTicket["category"] => {
+    const c = (cat || "").toLowerCase();
+    if (c.includes("bill") || c.includes("gst") || c.includes("pay")) return "Billing & GST";
+    if (c.includes("verif") || c.includes("kyc") || c.includes("kyb")) return "Verification / KYC";
+    if (c.includes("proctor") || c.includes("assess") || c.includes("exam")) return "Assessment Proctoring";
+    if (c.includes("job") || c.includes("ats") || c.includes("app")) return "ATS & Job Posting";
+    return "Account Security";
+  };
+
+  const tickets: SuperAdminTicket[] = liveTickets.map((t, idx) => {
+    const emp =
+      (t.tenant_id ? employerByTenantId.get(t.tenant_id) : undefined) ||
+      employerByUserId.get(t.user_id);
+    const prof = profileById.get(t.user_id);
+    const msgs = liveTicketMsgs
+      .filter((m) => m.ticket_id === t.id)
+      .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+      .map((m) => ({
+        sender: m.is_staff ? "Super Admin" : prof?.full_name || emp?.contact_name || "User",
+        role: (m.is_staff ? "admin" : "user") as "user" | "admin",
+        body: m.body || "",
+        at: m.created_at || t.created_at,
+      }));
+    const st: SuperAdminTicket["status"] =
+      t.status === "resolved" || t.status === "closed"
+        ? "resolved"
+        : t.status === "pending"
+          ? "in_progress"
+          : "open";
     return {
-      id: String(a.id),
-      appCode: `APP-${a.id}`,
-      candidateName: a.name,
-      candidateId: `IAT-CIR-${840110 + idx * 17}`,
-      candidateEmail: a.who,
-      jobTitle: job?.t || "Senior Engineering Role",
-      jobId: `JOB-${a.jid}`,
-      companyName: job?.c || "Super30 Technologies",
-      stage: a.hired ? "Hired" : a.st,
-      matchScore: Math.min(98, cir + 4),
-      cirScore: cir,
-      experienceYears: a.exp,
-      expectedCtcLpa: 14 + a.exp * 3,
-      noticeDays: idx % 2 === 0 ? 15 : 30,
-      assignedRecruiter: idx % 2 === 0 ? "Ananya Rao (Lead TA)" : "Karthik Subramanian",
-      slaStatus: a.st === "Applied" ? "Action Needed" : "Within SLA",
-      interviewScheduled: a.iv,
-      offerCtcLpa: a.st === "Offer" || a.hired ? 26 : undefined,
-      bgvStatus: a.hired ? "Cleared" : a.st === "Offer" ? "In Progress" : "Not Started",
-      recruiterNote: a.note,
-      coverNote: a.cn,
-      skills: a.sk,
-      appliedAt: new Date(a.at).toISOString(),
-      updatedAt: new Date(a.upd?.[a.upd.length - 1]?.at || a.at).toISOString(),
-      history: (a.upd || []).map((u) => ({
-        stage: a.st,
-        note: u.msg,
-        at: new Date(u.at).toISOString(),
-      })),
-    };
-  });
-
-  // Assessments, CIR Credentials & 30-Layer Proctoring Sessions
-  const assessments: SuperAdminAssessmentAttempt[] = candidates.slice(0, 10).map((cand, idx) => {
-    const flagged = idx === 3 || idx === 7;
-    return {
-      id: `att-${1001 + idx}`,
-      attemptCode: `ATT-2026-${4910 + idx}`,
-      credentialToken: `TCIR-VC-${99201 + idx * 13}`,
-      candidateName: cand.fullName,
-      candidateEmail: cand.email,
-      assessmentTitle:
-        idx % 3 === 0
-          ? "Full-Stack React & Distributed Systems CIR"
-          : idx % 3 === 1
-            ? "Data Analytics, SQL & Python Readiness"
-            : "Digital Marketing & Growth Performance CIR",
-      domainTrack:
-        idx % 3 === 0 ? "Software Engineering" : idx % 3 === 1 ? "Data Science & BI" : "Growth & Marketing",
-      coreAptitudeScore: Math.min(99, cand.cirScore + 2),
-      coreCommunicationScore: Math.min(99, cand.cirScore + 4),
-      domainTechnicalScore: cand.cirScore,
-      codingScore: Math.max(70, cand.cirScore - 2),
-      aiInterviewScore: Math.min(98, cand.cirScore + 1),
-      overallCirScore: cand.cirScore,
-      percentile: cand.percentile,
-      status: flagged ? "Flagged" : "Issued",
-      proctorTrustScore: flagged ? 68 : 98 - (idx % 3),
-      proctorFlagsCount: flagged ? 3 : 0,
-      proctorSummary: flagged
-        ? "Secondary HDMI monitor detected (Layer 14) + 2 tab focus switches (Layer 4); queued for human proctor review."
-        : "All 30 AI proctoring layers clean: single face lock, clean audio spectrum, verified browser fingerprint, AAL2 check passed.",
-      layersTriggered: flagged
-        ? ["L04: Tab Focus Loss (x2)", "L14: Secondary Display Enum", "L19: Gaze Off-Screen > 6s"]
-        : ["All 30 Layers Passed Clean"],
-      durationMinutes: 68 + (idx % 15),
-      browserDevice: idx % 2 === 0 ? "Chrome 131 · Windows 11" : "Chrome 131 · macOS Sequoia",
-      ipRegion: `${cand.city}, IN (ASN Verified)`,
-      completedAt: new Date(Date.now() - idx * 3600000 * 11).toISOString(),
-    };
-  });
-
-  // Revenue, Orders & Subscriptions
-  const transactions: SuperAdminTransaction[] = [
-    {
-      id: "ord-01",
-      orderId: "order_P9kL82mXz01",
-      gatewayRef: "pay_Rzp99812041",
-      actorType: "Employer",
-      actorName: "Super30 Technologies",
-      actorEmail: "demo.employer@talento.app",
-      category: "SaaS Subscription",
-      itemTitle: "Enterprise Annual Hiring Suite (Unlimited Jobs + 100 CIR Unlocks/mo)",
-      amountInr: 49999,
-      gstInr: 9000,
-      netTotalInr: 58999,
-      direction: "credit",
-      paymentMethod: "Razorpay Corporate NetBanking · HDFC",
-      status: "captured",
-      invoiceNumber: "INV-2026-00891",
-      createdAt: new Date(Date.now() - 86400000 * 4).toISOString(),
-    },
-    {
-      id: "ord-02",
-      orderId: "order_P9kL71aBc02",
-      gatewayRef: "pay_Rzp99811802",
-      actorType: "Employer",
-      actorName: "Super30 Technologies",
-      actorEmail: "demo.employer@talento.app",
-      category: "Wallet Top-up",
-      itemTitle: "Recruiter Talent Credits Refill",
-      amountInr: 10000,
-      gstInr: 1800,
-      netTotalInr: 11800,
-      direction: "credit",
-      paymentMethod: "UPI Corporate · super30@icici",
-      status: "captured",
-      invoiceNumber: "INV-2026-00884",
-      createdAt: new Date(Date.now() - 86400000 * 5).toISOString(),
-    },
-    {
-      id: "ord-03",
-      orderId: "order_P9kJ19xYz03",
-      gatewayRef: "pay_Rzp99809412",
-      actorType: "Employer",
-      actorName: "FinStack Payments India Pvt. Ltd.",
-      actorEmail: "meera.k@finstackpay.in",
-      category: "Talent Package",
-      itemTitle: "Growth Pro Plan + 25 Verified CIR Candidate Unlocks",
-      amountInr: 19999,
-      gstInr: 3600,
-      netTotalInr: 23599,
-      direction: "credit",
-      paymentMethod: "Visa Corporate Card ••8821",
-      couponCode: "LAUNCH10",
-      status: "captured",
-      invoiceNumber: "INV-2026-00879",
-      createdAt: new Date(Date.now() - 86400000 * 1.1).toISOString(),
-    },
-    {
-      id: "ord-04",
-      orderId: "order_P9jW44mQp04",
-      gatewayRef: "pay_Rzp99805119",
-      actorType: "Candidate",
-      actorName: "Yogesh",
-      actorEmail: "demo.candidate@talento.app",
-      category: "Assessment Fee",
-      itemTitle: "Proctored Full-Stack CIR Assessment + Verifiable Credential",
-      amountInr: 999,
-      gstInr: 180,
-      netTotalInr: 1179,
-      direction: "credit",
-      paymentMethod: "UPI · yogesh@okaxis",
-      status: "captured",
-      invoiceNumber: "INV-2026-00865",
-      createdAt: new Date(Date.now() - 86400000 * 6).toISOString(),
-    },
-    {
-      id: "ord-05",
-      orderId: "order_P9jR12pLm05",
-      gatewayRef: "pay_Rzp99803108",
-      actorType: "Employer",
-      actorName: "NeuralForge Robotics Labs",
-      actorEmail: "founders@neuralforge.ai",
-      category: "Job Promotion",
-      itemTitle: "Sponsored Spotlight Slot · 14 Days",
-      amountInr: 4999,
-      gstInr: 900,
-      netTotalInr: 5899,
-      direction: "credit",
-      paymentMethod: "Pending Bank Authorization",
-      status: "pending",
-      invoiceNumber: "INV-2026-00894",
-      createdAt: new Date(Date.now() - 3600000 * 3).toISOString(),
-    },
-    {
-      id: "ord-06",
-      orderId: "order_P9hK09zTr06",
-      gatewayRef: "rfnd_Rzp0041921",
-      actorType: "Candidate",
-      actorName: candidates[1]?.fullName || "Divya Nair",
-      actorEmail: candidates[1]?.email || "divya.nair@talento.app",
-      category: "Refund",
-      itemTitle: "Assessment Reschedule Fee Waiver Refund",
-      amountInr: 499,
-      gstInr: 90,
-      netTotalInr: 589,
-      direction: "refund",
-      paymentMethod: "Original UPI Source",
-      status: "refunded",
-      invoiceNumber: "CN-2026-00112",
-      createdAt: new Date(Date.now() - 86400000 * 8).toISOString(),
-    },
-    {
-      id: "ord-07",
-      orderId: "order_P9jQ88vBn07",
-      gatewayRef: "pay_Rzp99804821",
-      actorType: "Candidate",
-      actorName: candidates[1]?.fullName || "Divya Nair",
-      actorEmail: candidates[1]?.email || "divya.nair@talento.app",
-      category: "Assessment Fee",
-      itemTitle: "Multi-Domain CIR Bundle (Frontend + System Design Retest)",
-      amountInr: 1999,
-      gstInr: 360,
-      netTotalInr: 2359,
-      direction: "credit",
-      paymentMethod: "UPI · divyanair@okicici",
-      status: "captured",
-      invoiceNumber: "INV-2026-00871",
-      createdAt: new Date(Date.now() - 86400000 * 4.5).toISOString(),
-    },
-    {
-      id: "ord-08",
-      orderId: "order_P9jM51cXz08",
-      gatewayRef: "pay_Rzp99804110",
-      actorType: "Candidate",
-      actorName: candidates[2]?.fullName || "Rahul Mehta",
-      actorEmail: candidates[2]?.email || "rahul.mehta@talento.app",
-      category: "Assessment Fee",
-      itemTitle: "Cloud & DevOps Proctored CIR Assessment + AI Interview",
-      amountInr: 1499,
-      gstInr: 270,
-      netTotalInr: 1769,
-      direction: "credit",
-      paymentMethod: "RuPay Debit ••4412",
-      status: "captured",
-      invoiceNumber: "INV-2026-00868",
-      createdAt: new Date(Date.now() - 86400000 * 5.2).toISOString(),
-    },
-    {
-      id: "ord-09",
-      orderId: "order_P9kA34nLp09",
-      gatewayRef: "pay_Rzp99812104",
-      actorType: "Candidate",
-      actorName: "Yogesh",
-      actorEmail: "demo.candidate@talento.app",
-      category: "Learning & Mentorship",
-      itemTitle: "AI Engineer & Agentic Workflows Certification Track",
-      amountInr: 4999,
-      gstInr: 900,
-      netTotalInr: 5899,
-      direction: "credit",
-      paymentMethod: "UPI · yogesh@okaxis",
-      status: "captured",
-      invoiceNumber: "INV-2026-00882",
-      createdAt: new Date(Date.now() - 86400000 * 3.2).toISOString(),
-    },
-    {
-      id: "ord-10",
-      orderId: "order_P9kB18wRt10",
-      gatewayRef: "pay_Rzp99812490",
-      actorType: "Candidate",
-      actorName: candidates[3]?.fullName || "Aravind Krishnan",
-      actorEmail: candidates[3]?.email || "aravind@talento.app",
-      category: "Learning & Mentorship",
-      itemTitle: "1:1 Staff System Design Coaching Pack (3 Mentor Sessions)",
-      amountInr: 2997,
-      gstInr: 539,
-      netTotalInr: 3536,
-      direction: "credit",
-      paymentMethod: "HDFC Credit Card ••9014",
-      status: "captured",
-      invoiceNumber: "INV-2026-00885",
-      createdAt: new Date(Date.now() - 86400000 * 2.6).toISOString(),
-    },
-    {
-      id: "ord-11",
-      orderId: "order_P9kC72pQs11",
-      gatewayRef: "pay_Rzp99812912",
-      actorType: "Candidate",
-      actorName: candidates[4]?.fullName || "Sneha Kulkarni",
-      actorEmail: candidates[4]?.email || "sneha.k@talento.app",
-      category: "Learning & Mentorship",
-      itemTitle: "Product Analytics & SQL Mastery Cohort",
-      amountInr: 3499,
-      gstInr: 630,
-      netTotalInr: 4129,
-      direction: "credit",
-      paymentMethod: "UPI · snehak@ybl",
-      status: "captured",
-      invoiceNumber: "INV-2026-00887",
-      createdAt: new Date(Date.now() - 86400000 * 2.1).toISOString(),
-    },
-    {
-      id: "ord-12",
-      orderId: "order_P9kD19mNv12",
-      gatewayRef: "pay_Rzp99813301",
-      actorType: "Candidate",
-      actorName: "Yogesh",
-      actorEmail: "demo.candidate@talento.app",
-      category: "Hackathon",
-      itemTitle: "Code Arena Season 4 Pro Builder Pass",
-      amountInr: 999,
-      gstInr: 180,
-      netTotalInr: 1179,
-      direction: "credit",
-      paymentMethod: "UPI · yogesh@okaxis",
-      status: "captured",
-      invoiceNumber: "INV-2026-00889",
-      createdAt: new Date(Date.now() - 86400000 * 1.8).toISOString(),
-    },
-    {
-      id: "ord-21",
-      orderId: "order_P9kD54bVc21",
-      gatewayRef: "pay_Rzp99813488",
-      actorType: "Candidate",
-      actorName: candidates[2]?.fullName || "Rahul Mehta",
-      actorEmail: candidates[2]?.email || "rahul.mehta@talento.app",
-      category: "Hackathon",
-      itemTitle: "National FinTech AI Sprint Team Entry Pass",
-      amountInr: 799,
-      gstInr: 144,
-      netTotalInr: 943,
-      direction: "credit",
-      paymentMethod: "UPI · rahulmehta@okhdfcbank",
-      status: "captured",
-      invoiceNumber: "INV-2026-00901",
-      createdAt: new Date(Date.now() - 86400000 * 1.6).toISOString(),
-    },
-    {
-      id: "ord-13",
-      orderId: "order_P9kE45xLk13",
-      gatewayRef: "pay_Rzp99813677",
-      actorType: "Candidate",
-      actorName: candidates[1]?.fullName || "Divya Nair",
-      actorEmail: candidates[1]?.email || "divya.nair@talento.app",
-      category: "Networking",
-      itemTitle: "Bengaluru Verified Builders Networking Pass",
-      amountInr: 499,
-      gstInr: 90,
-      netTotalInr: 589,
-      direction: "credit",
-      paymentMethod: "UPI · divyanair@okicici",
-      status: "captured",
-      invoiceNumber: "INV-2026-00890",
-      createdAt: new Date(Date.now() - 86400000 * 1.5).toISOString(),
-    },
-    {
-      id: "ord-14",
-      orderId: "order_P9kF63rTy14",
-      gatewayRef: "pay_Rzp99813940",
-      actorType: "Candidate",
-      actorName: candidates[5]?.fullName || "Karthik Subramanian",
-      actorEmail: candidates[5]?.email || "karthik.s@talento.app",
-      category: "Networking",
-      itemTitle: "Mumbai FinTech Founders & Engineers Networking Pass",
-      amountInr: 699,
-      gstInr: 126,
-      netTotalInr: 825,
-      direction: "credit",
-      paymentMethod: "UPI · karthiks@oksbi",
-      status: "captured",
-      invoiceNumber: "INV-2026-00892",
-      createdAt: new Date(Date.now() - 86400000 * 1.2).toISOString(),
-    },
-    {
-      id: "ord-15",
-      orderId: "order_P9kG81zWp15",
-      gatewayRef: "pay_Rzp99814218",
-      actorType: "Employer",
-      actorName: "Super30 Technologies",
-      actorEmail: "demo.employer@talento.app",
-      category: "Assessment Fee",
-      itemTitle: "Enterprise Custom AI Assessment Suite (250 Proctored Invites)",
-      amountInr: 35000,
-      gstInr: 6300,
-      netTotalInr: 41300,
-      direction: "credit",
-      paymentMethod: "Razorpay Corporate NetBanking · HDFC",
-      status: "captured",
-      invoiceNumber: "INV-2026-00895",
-      createdAt: new Date(Date.now() - 86400000 * 3.6).toISOString(),
-    },
-    {
-      id: "ord-16",
-      orderId: "order_P9kH27qMn16",
-      gatewayRef: "pay_Rzp99814509",
-      actorType: "Employer",
-      actorName: "FinStack Payments India Pvt. Ltd.",
-      actorEmail: "meera.k@finstackpay.in",
-      category: "Assessment Fee",
-      itemTitle: "Campus Screening & 30-Layer Proctored CIR Drive (150 Seats)",
-      amountInr: 24000,
-      gstInr: 4320,
-      netTotalInr: 28320,
-      direction: "credit",
-      paymentMethod: "Visa Corporate Card ••8821",
-      status: "captured",
-      invoiceNumber: "INV-2026-00896",
-      createdAt: new Date(Date.now() - 86400000 * 2.4).toISOString(),
-    },
-    {
-      id: "ord-17",
-      orderId: "order_P9kJ94tBv17",
-      gatewayRef: "pay_Rzp99814833",
-      actorType: "Employer",
-      actorName: "Super30 Technologies",
-      actorEmail: "demo.employer@talento.app",
-      category: "Learning & Mentorship",
-      itemTitle: "Corporate L&D Team License · Applied GenAI & Agentic Systems (25 Seats)",
-      amountInr: 45000,
-      gstInr: 8100,
-      netTotalInr: 53100,
-      direction: "credit",
-      paymentMethod: "Razorpay Corporate NetBanking · HDFC",
-      status: "captured",
-      invoiceNumber: "INV-2026-00897",
-      createdAt: new Date(Date.now() - 86400000 * 2.9).toISOString(),
-    },
-    {
-      id: "ord-18",
-      orderId: "order_P9kL11uCx18",
-      gatewayRef: "pay_Rzp99815190",
-      actorType: "Employer",
-      actorName: "FinStack Payments India Pvt. Ltd.",
-      actorEmail: "meera.k@finstackpay.in",
-      category: "Learning & Mentorship",
-      itemTitle: "Engineering Upskilling Track · Secure Go & Rust Payments (12 Seats)",
-      amountInr: 22000,
-      gstInr: 3960,
-      netTotalInr: 25960,
-      direction: "credit",
-      paymentMethod: "Visa Corporate Card ••8821",
-      status: "captured",
-      invoiceNumber: "INV-2026-00898",
-      createdAt: new Date(Date.now() - 86400000 * 1.7).toISOString(),
-    },
-    {
-      id: "ord-19",
-      orderId: "order_P9kM52yZa19",
-      gatewayRef: "pay_Rzp99815542",
-      actorType: "Employer",
-      actorName: "Super30 Technologies",
-      actorEmail: "demo.employer@talento.app",
-      category: "Hackathon",
-      itemTitle: "Code Arena Season 4 Title Hiring Partner & Challenge Track Sponsorship",
-      amountInr: 125000,
-      gstInr: 22500,
-      netTotalInr: 147500,
-      direction: "credit",
-      paymentMethod: "RTGS Corporate Treasury · HDFC",
-      status: "captured",
-      invoiceNumber: "INV-2026-00899",
-      createdAt: new Date(Date.now() - 86400000 * 1.4).toISOString(),
-    },
-    {
-      id: "ord-22",
-      orderId: "order_P9kM88pQr22",
-      gatewayRef: "pay_Rzp99815690",
-      actorType: "Employer",
-      actorName: "FinStack Payments India Pvt. Ltd.",
-      actorEmail: "meera.k@finstackpay.in",
-      category: "Hackathon",
-      itemTitle: "FinTech Payments Hackathon Track Co-Sponsorship",
-      amountInr: 60000,
-      gstInr: 10800,
-      netTotalInr: 70800,
-      direction: "credit",
-      paymentMethod: "Razorpay Corporate NetBanking · Axis",
-      status: "captured",
-      invoiceNumber: "INV-2026-00902",
-      createdAt: new Date(Date.now() - 86400000 * 1.1).toISOString(),
-    },
-    {
-      id: "ord-20",
-      orderId: "order_P9kN68hJk20",
-      gatewayRef: "pay_Rzp99815811",
-      actorType: "Employer",
-      actorName: "FinStack Payments India Pvt. Ltd.",
-      actorEmail: "meera.k@finstackpay.in",
-      category: "Networking",
-      itemTitle: "Mumbai & Bengaluru Executive Networking Mixer Hiring Table",
-      amountInr: 35000,
-      gstInr: 6300,
-      netTotalInr: 41300,
-      direction: "credit",
-      paymentMethod: "UPI Corporate · finstack@axisbank",
-      status: "captured",
-      invoiceNumber: "INV-2026-00900",
-      createdAt: new Date(Date.now() - 86400000 * 0.9).toISOString(),
-    },
-    {
-      id: "ord-23",
-      orderId: "order_P9kP12mWz23",
-      gatewayRef: "pay_Rzp99815974",
-      actorType: "Employer",
-      actorName: "Super30 Technologies",
-      actorEmail: "demo.employer@talento.app",
-      category: "Networking",
-      itemTitle: "Bengaluru CTO & Staff Builders Roundtable Host Partner",
-      amountInr: 45000,
-      gstInr: 8100,
-      netTotalInr: 53100,
-      direction: "credit",
-      paymentMethod: "Razorpay Corporate NetBanking · HDFC",
-      status: "captured",
-      invoiceNumber: "INV-2026-00903",
-      createdAt: new Date(Date.now() - 86400000 * 0.6).toISOString(),
-    },
-  ];
-
-  // Wallets & Immutable Ledger Accounts
-  const wallets: SuperAdminWalletAccount[] = [
-    {
-      id: "wal-emp-01",
-      ownerType: "Employer",
-      ownerName: "Super30 Technologies",
-      ownerEmail: "demo.employer@talento.app",
-      ownerCode: "IAT-EMP-204819",
-      balanceInr: 9200,
-      lifetimeCreditedInr: 25000,
-      lifetimeDebitedInr: 15800,
-      status: "active",
-      updatedAt: new Date(Date.now() - 3600000 * 6).toISOString(),
-      ledger: [
-        { txId: "TXN-2009", type: "debit", amountInr: 400, reason: "Unlocked 2 Verified CIR Profiles", via: "Talent Pool", at: new Date(Date.now() - 3600000 * 6).toISOString() },
-        { txId: "TXN-2005", type: "debit", amountInr: 400, reason: "Sponsored Job Boost · Data Analyst", via: "Job Promotion", at: new Date(Date.now() - 86400000 * 2).toISOString() },
-        { txId: "TXN-2001", type: "credit", amountInr: 10000, reason: "Recruiter Credits Refill", via: "Razorpay NetBanking", at: new Date(Date.now() - 86400000 * 5).toISOString() },
-      ],
-    },
-    {
-      id: "wal-emp-02",
-      ownerType: "Employer",
-      ownerName: "FinStack Payments India Pvt. Ltd.",
-      ownerEmail: "meera.k@finstackpay.in",
-      ownerCode: "IAT-EMP-409112",
-      balanceInr: 5000,
-      lifetimeCreditedInr: 5000,
-      lifetimeDebitedInr: 0,
-      status: "active",
-      updatedAt: new Date(Date.now() - 86400000).toISOString(),
-      ledger: [
-        { txId: "TXN-2104", type: "credit", amountInr: 5000, reason: "Onboarding Starter Bonus Credits", via: "Growth Pro Bundle", at: new Date(Date.now() - 86400000).toISOString() },
-      ],
-    },
-    {
-      id: "wal-cand-01",
-      ownerType: "Candidate",
-      ownerName: "Yogesh",
-      ownerEmail: "demo.candidate@talento.app",
-      ownerCode: "IAT-CIR-900124",
-      balanceInr: 1252,
-      lifetimeCreditedInr: 1500,
-      lifetimeDebitedInr: 248,
-      status: "active",
-      updatedAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-      ledger: [
-        { txId: "TXN-4001", type: "debit", amountInr: 99, reason: "Profile Boost (7 days)", via: "Wallet Balance", at: new Date(Date.now() - 86400000 * 2).toISOString() },
-        { txId: "TXN-4002", type: "credit", amountInr: 500, reason: "Wallet Top-up", via: "UPI · yogesh@okaxis", at: new Date(Date.now() - 86400000 * 5).toISOString() },
-        { txId: "TXN-4003", type: "debit", amountInr: 149, reason: "AI Expert Resume Benchmark", via: "Wallet Balance", at: new Date(Date.now() - 86400000 * 9).toISOString() },
-      ],
-    },
-  ];
-
-  // Support Tickets
-  const tickets: SuperAdminTicket[] = [
-    {
-      id: "tkt-01",
-      ticketCode: "SUP-4821",
-      requesterType: "Employer",
-      requesterName: "Meera Krishnan · FinStack Payments",
-      requesterEmail: "meera.k@finstackpay.in",
-      category: "Verification / KYC",
-      subject: "Expedite CIN & GSTIN verification for urgent Series-A engineering hiring drive",
-      priority: "urgent",
-      status: "open",
+      id: t.id,
+      ticketCode: `SUP-${4900 + idx}`,
+      requesterType: emp ? "Employer" : "Candidate",
+      requesterName: emp?.company_name || prof?.full_name || "Platform User",
+      requesterEmail: emp?.official_email || prof?.email || "—",
+      category: mapTicketCategory(t.category),
+      subject: t.subject || "Support request",
+      priority: (t.priority as SuperAdminTicket["priority"]) || "normal",
+      status: st,
       assignedAdmin: "Super Admin",
-      slaDueIn: "1h 40m",
-      createdAt: new Date(Date.now() - 3600000 * 2).toISOString(),
-      messages: [
-        {
-          sender: "Meera Krishnan",
-          role: "user",
-          body: "Hi TalentCIR Ops, we uploaded our MCA incorporation certificate and Maharashtra GSTIN (27AAFCF8821M1Z2). Could you verify our employer account today so our Founding Payment Systems Engineer role goes live?",
-          at: new Date(Date.now() - 3600000 * 2).toISOString(),
-        },
-      ],
-    },
-    {
-      id: "tkt-02",
-      ticketCode: "SUP-4819",
-      requesterType: "Candidate",
-      requesterName: candidates[3]?.fullName || "Aravind Krishnan",
-      requesterEmail: candidates[3]?.email || "aravind@talento.app",
-      category: "Assessment Proctoring",
-      subject: "Clarification on external monitor warning during System Design CIR test",
-      priority: "high",
-      status: "in_progress",
-      assignedAdmin: "Integrity Desk",
-      slaDueIn: "4h 15m",
-      createdAt: new Date(Date.now() - 3600000 * 7).toISOString(),
-      messages: [
-        {
-          sender: candidates[3]?.fullName || "Aravind Krishnan",
-          role: "user",
-          body: "My laptop dock had a powered-off monitor cable attached for the first 30 seconds before I unplugged it. Requesting manual review of webcam & screen recording.",
-          at: new Date(Date.now() - 3600000 * 7).toISOString(),
-        },
-        {
-          sender: "Integrity Desk",
-          role: "admin",
-          body: "Proctor video segment queued for manual audit. Gaze & keystroke telemetry look normal so far.",
-          at: new Date(Date.now() - 3600000 * 4).toISOString(),
-        },
-      ],
-    },
-    {
-      id: "tkt-03",
-      ticketCode: "SUP-4812",
-      requesterType: "Employer",
-      requesterName: "Super30 Technologies · Billing",
-      requesterEmail: "finance@super30.ai",
-      category: "Billing & GST",
-      subject: "GSTN input credit reflection on INV-2026-00891",
-      priority: "normal",
-      status: "resolved",
-      assignedAdmin: "Finance Ops",
-      slaDueIn: "Resolved",
-      createdAt: new Date(Date.now() - 86400000 * 3).toISOString(),
-      messages: [
-        {
-          sender: "Super30 Finance",
-          role: "user",
-          body: "Please confirm B2B GSTR-1 filing schedule for invoice INV-2026-00891.",
-          at: new Date(Date.now() - 86400000 * 3).toISOString(),
-        },
-        {
-          sender: "Finance Ops",
-          role: "admin",
-          body: "Confirmed — IRN e-Invoice generated and queued for current month GSTR-1.",
-          at: new Date(Date.now() - 86400000 * 2.8).toISOString(),
-        },
-      ],
-    },
-  ];
+      slaDueIn: st === "resolved" ? "Resolved" : "4h SLA",
+      createdAt: t.created_at || new Date().toISOString(),
+      messages: msgs.length
+        ? msgs
+        : [{ sender: prof?.full_name || "User", role: "user", body: t.subject || "Ticket created.", at: t.created_at || new Date().toISOString() }],
+    };
+  });
 
-  // Learning, Hackathons, Mentors & Networking
+  // 9. Live Learning, Hackathons & Mentors
   const learningEvents: SuperAdminLearningRecord[] = [
-    {
-      id: "lrn-01",
-      kind: "Hackathon",
-      code: "HACK-S4",
-      title: "Code Arena · Season 4 (National AI & Systems Challenge)",
-      organizerOrInstructor: "TalentCIR × Super30 Technologies",
-      category: "AI Agents & Distributed Systems",
-      participantsCount: 2840,
-      completionOrSubmissionRate: 68,
-      priceInr: 0,
-      revenueGeneratedInr: 350000,
-      status: "Active",
-      scheduleLabel: "Finals · Dec 2026",
-    },
-    {
-      id: "lrn-02",
-      kind: "LMS Course",
-      code: "CRS-AI-101",
-      title: "AI Engineer & Agentic Workflows Production Track",
-      organizerOrInstructor: "Siddharth Rao (Principal AI Architect)",
-      category: "Applied GenAI",
-      participantsCount: 1420,
-      completionOrSubmissionRate: 74,
-      priceInr: 0,
-      revenueGeneratedInr: 0,
-      status: "Active",
-      scheduleLabel: "Self-paced · 8 Modules",
-    },
-    {
-      id: "lrn-03",
-      kind: "Mentor",
-      code: "MNT-204",
-      title: "1:1 Staff System Design & Mock CIR Coaching",
-      organizerOrInstructor: "18 Verified Principal Engineers",
-      category: "Mentorship Marketplace",
-      participantsCount: 312,
-      completionOrSubmissionRate: 96,
-      priceInr: 999,
-      revenueGeneratedInr: 311688,
-      status: "Active",
-      scheduleLabel: "Daily Slots · 4.9★ Avg",
-    },
-    {
-      id: "lrn-04",
-      kind: "Networking Event",
-      code: "NET-BLR-11",
-      title: "Bengaluru CTO & Verified Builders Roundtable",
-      organizerOrInstructor: "TalentCIR Community",
-      category: "Executive Mixer",
-      participantsCount: 185,
-      completionOrSubmissionRate: 91,
-      priceInr: 499,
-      revenueGeneratedInr: 92315,
-      status: "Upcoming",
-      scheduleLabel: "Bengaluru · Indiranagar",
-    },
+    ...liveLmsCourses.map((c, idx): SuperAdminLearningRecord => {
+      const enrolls = liveCourseEnrollments.filter((e) => e.course_id === c.id);
+      const completed = enrolls.filter((e) => e.status === "completed").length;
+      const participants = Math.max(Number(c.learners_count || 0), enrolls.length);
+      const price = Number(c.price_inr || 0);
+      return {
+        id: c.id,
+        kind: "LMS Course",
+        code: `CRS-${101 + idx}`,
+        title: c.title || "LMS Course",
+        organizerOrInstructor: c.instructor_name || "TalentCIR Faculty",
+        category: c.category || "Upskilling",
+        participantsCount: participants,
+        completionOrSubmissionRate: enrolls.length ? Math.round((completed / enrolls.length) * 100) : 0,
+        priceInr: price,
+        revenueGeneratedInr: enrolls.length * price,
+        status: c.is_published ? "Active" : "Completed",
+        scheduleLabel: `${c.level || "Self-paced"}${c.duration_hours ? ` · ${c.duration_hours}h` : ""}`,
+      };
+    }),
+    ...liveHackathons.map((h, idx): SuperAdminLearningRecord => {
+      const regs = liveHackathonRegs.filter((r) => r.hackathon_id === h.id && r.status !== "withdrawn");
+      const subs = liveHackathonSubs.filter((s) => s.hackathon_id === h.id);
+      return {
+        id: h.id,
+        kind: "Hackathon",
+        code: `HACK-${201 + idx}`,
+        title: h.title || "TalentCIR Hackathon",
+        organizerOrInstructor: h.industry || "TalentCIR",
+        category: h.industry || "Innovation",
+        participantsCount: regs.length,
+        completionOrSubmissionRate: regs.length ? Math.round((subs.length / regs.length) * 100) : 0,
+        priceInr: Number(h.entry_fee_inr || 0),
+        revenueGeneratedInr: regs.length * Number(h.entry_fee_inr || 0),
+        status: h.status === "completed" ? "Completed" : h.status === "live" || h.status === "open" ? "Active" : "Upcoming",
+        scheduleLabel: `${h.city || "Hybrid"} · ${h.starts_at ? new Date(h.starts_at).toLocaleDateString() : "Scheduled"}`,
+      };
+    }),
+    ...liveMentors.map((m, idx): SuperAdminLearningRecord => {
+      const bookings = liveMentorBookings.filter((b) => b.mentor_id === m.id);
+      const completed = bookings.filter((b) => b.status === "completed").length;
+      const rate = Number(m.hourly_rate_inr || 0);
+      return {
+        id: m.id,
+        kind: "Mentor",
+        code: `MNT-${301 + idx}`,
+        title: `${m.display_name} · ${m.headline || "1:1 Mentorship"}`,
+        organizerOrInstructor: m.display_name || "Mentor",
+        category: Array.isArray(m.expertise) && m.expertise[0] ? m.expertise[0] : "Mentorship",
+        participantsCount: bookings.length,
+        completionOrSubmissionRate: bookings.length ? Math.round((completed / bookings.length) * 100) : 0,
+        priceInr: rate,
+        revenueGeneratedInr: bookings.filter((b) => b.status !== "cancelled").length * rate,
+        status: m.is_active ? "Active" : "Completed",
+        scheduleLabel: `₹${rate}/hr · ${Number(m.rating || 0).toFixed(1)}★`,
+      };
+    }),
   ];
 
-  // Immutable Audit Logs
-  const auditLogs: SuperAdminAuditEntry[] = [
-    {
-      id: "aud-901",
-      timestamp: new Date(Date.now() - 60000 * 14).toISOString(),
-      actorName: "Supabase Live Sync",
-      actorRole: "System Cron",
-      actorIp: "10.0.4.12",
-      action: "db.realtime_snapshot_synced",
-      entityTable: "profiles / employers / employer_job_openings",
-      entityId: "cluster-primary",
-      severity: "info",
-      details: `Synchronized ${liveProfiles.length} live candidate profiles, ${liveEmployers.length} live employers, and ${liveJobs.length} live job openings.`,
-      metadata: { liveProfiles: liveProfiles.length, liveEmployers: liveEmployers.length, liveJobs: liveJobs.length },
-    },
-    {
-      id: "aud-902",
-      timestamp: new Date(Date.now() - 3600000 * 1.5).toISOString(),
-      actorName: "Proctor Shield v3.4",
-      actorRole: "Proctor AI",
-      actorIp: "edge-proctor-ap-south-1",
-      action: "proctoring.session_flagged",
-      entityTable: "proctoring_sessions",
-      entityId: assessments[3]?.attemptCode || "ATT-2026-4913",
-      severity: "warning",
-      details: "Triggered Layer 14 (Secondary HDMI Display) + Layer 4 (Tab Blur) — held credential pending human review.",
-      metadata: { trustScore: 68, layers: [4, 14, 19] },
-    },
-    {
-      id: "aud-903",
-      timestamp: new Date(Date.now() - 3600000 * 3).toISOString(),
-      actorName: "Meera Krishnan",
-      actorRole: "Employer Owner",
-      actorIp: "103.211.54.18 (Mumbai, IN)",
-      action: "employer.verification_submitted",
-      entityTable: "employers",
-      entityId: "IAT-EMP-409112",
-      severity: "info",
-      details: "Submitted GSTIN 27AAFCF8821M1Z2, CIN U65999MH2022PTC381920, and PAN AAFCF8821M for KYB review.",
-      metadata: { company: "FinStack Payments India Pvt. Ltd." },
-    },
-    {
-      id: "aud-904",
-      timestamp: new Date(Date.now() - 3600000 * 6).toISOString(),
-      actorName: "Ananya Rao (Super30 TA)",
-      actorRole: "Employer Owner",
-      actorIp: "49.207.192.84 (Bengaluru, IN)",
-      action: "talent.cir_profile_unlocked",
-      entityTable: "talent_access_grants",
-      entityId: "GRANT-88210",
-      severity: "info",
-      details: "Debited ₹400 from Employer Wallet IAT-EMP-204819 to unlock full CIR report & contact details.",
-      metadata: { debitInr: 400, remainingBalance: 9200 },
-    },
-    {
-      id: "aud-905",
-      timestamp: new Date(Date.now() - 3600000 * 11).toISOString(),
-      actorName: "Rate-Limit Edge Guard",
-      actorRole: "System Cron",
-      actorIp: "185.220.101.42",
-      action: "security.rate_limit_throttled",
-      entityTable: "rate_limits",
-      entityId: "rl-auth-otp-42",
-      severity: "critical",
-      details: "Blocked automated credential-stuffing burst (42 req/min) on /auth OTP endpoint; IP hash quarantined for 60m.",
-      metadata: { endpoint: "/auth/v1/otp", requestsPerMinute: 42, blocked: true },
-    },
-  ];
+  // 10. Live Immutable Audit Logs
+  const auditLogs: SuperAdminAuditEntry[] = liveAuditLogs.map((a) => {
+    const actorProf = a.actor_id ? profileById.get(a.actor_id) : undefined;
+    const act = String(a.action || "system.event");
+    const severity: SuperAdminAuditEntry["severity"] =
+      /suspend|reject|fraud|fail|block|critical/i.test(act)
+        ? "critical"
+        : /refund|flag|override|archive|warn/i.test(act)
+          ? "warning"
+          : "info";
+    return {
+      id: `aud-${a.id}`,
+      timestamp: a.at || new Date().toISOString(),
+      actorName: actorProf?.full_name || actorProf?.email || "Platform Admin",
+      actorRole: actorProf && employerUserIds.has(a.actor_id) ? "Employer Owner" : "Super Admin",
+      actorIp: a.ip_hash ? `hash:${String(a.ip_hash).slice(0, 10)}` : "Supabase RPC",
+      action: act,
+      entityTable: a.entity || "public",
+      entityId: a.entity_id || "—",
+      severity,
+      details:
+        a.meta && typeof a.meta === "object" && Object.keys(a.meta).length
+          ? `${act} on ${a.entity} · ${JSON.stringify(a.meta)}`
+          : `${act} on ${a.entity}`,
+      metadata: (a.meta as Record<string, unknown>) || {},
+    };
+  });
 
-  const catalogCount =
-    catalogRes.status === "fulfilled" && typeof catalogRes.value.count === "number"
-      ? catalogRes.value.count
-      : null;
-  const lmsCount =
-    lmsRes.status === "fulfilled" && typeof lmsRes.value.count === "number"
-      ? lmsRes.value.count
-      : null;
-  const hackCount =
-    hackathonsRes.status === "fulfilled" && typeof hackathonsRes.value.count === "number"
-      ? hackathonsRes.value.count
-      : null;
+  // 11. Hydrate Platform Feature Flags from public.platform_settings
+  const settingsMap = new Map(liveSettings.map((s) => [String(s.key), s.value]));
+  const featureFlags: PlatformFeatureFlag[] = DEFAULT_FLAGS.map((flag) => {
+    const rawVal = settingsMap.get(`flag.${flag.key}`) ?? settingsMap.get(flag.key);
+    if (typeof rawVal === "boolean") {
+      return { ...flag, enabled: rawVal };
+    }
+    return flag;
+  });
 
+  // 12. Real Live Table Health Telemetry (zero synthetic row inflation)
   const tableHealth: TableHealthSummary[] = [
-    { tableName: "public.profiles", domain: "Candidate Identity", liveRows: liveProfiles.length, totalManagedRows: candidates.length, rlsEnabled: true, syncStatus: "Synced" },
-    { tableName: "public.skills / experiences / educations", domain: "Candidate Graph", liveRows: liveSkills.length + liveExps.length + liveEdus.length, totalManagedRows: liveSkills.length + liveExps.length + liveEdus.length + candidates.length * 5, rlsEnabled: true, syncStatus: "Synced" },
-    { tableName: "public.certifications / projects", domain: "Proof of Work", liveRows: liveCerts.length + liveProjs.length, totalManagedRows: liveCerts.length + liveProjs.length + candidates.length * 3, rlsEnabled: true, syncStatus: "Synced" },
-    { tableName: "public.identity_verifications", domain: "Candidate KYC", liveRows: liveKycs.length, totalManagedRows: candidates.length, rlsEnabled: true, syncStatus: "Synced" },
-    { tableName: "public.employers & tenant_organizations", domain: "Employer Tenants", liveRows: liveEmployers.length, totalManagedRows: employers.length, rlsEnabled: true, syncStatus: "Synced" },
-    { tableName: "public.employer_job_openings", domain: "Job Marketplace", liveRows: liveJobs.length, totalManagedRows: jobs.length, rlsEnabled: true, syncStatus: "Synced" },
-    { tableName: "public.job_applications & stage_history", domain: "ATS Pipeline", liveRows: null, totalManagedRows: applications.length, rlsEnabled: true, syncStatus: "Protected (RLS)" },
-    { tableName: "public.assessments_catalog & cir_reports", domain: "CIR Engine", liveRows: catalogCount, totalManagedRows: assessments.length, rlsEnabled: true, syncStatus: "Catalog" },
-    { tableName: "public.proctoring_sessions (30 Layers)", domain: "AI Integrity", liveRows: null, totalManagedRows: assessments.length, rlsEnabled: true, syncStatus: "Protected (RLS)" },
-    { tableName: "public.payment_orders & subscriptions", domain: "Revenue & GST", liveRows: null, totalManagedRows: transactions.length, rlsEnabled: true, syncStatus: "Protected (RLS)" },
-    { tableName: "public.wallet_accounts & ledger_entries", domain: "Wallet Ledger", liveRows: null, totalManagedRows: wallets.length, rlsEnabled: true, syncStatus: "Protected (RLS)" },
-    { tableName: "public.lms_courses / hackathons / mentors", domain: "Learning & Events", liveRows: (lmsCount ?? 0) + (hackCount ?? 0), totalManagedRows: learningEvents.length, rlsEnabled: true, syncStatus: "Catalog" },
-    { tableName: "public.support_tickets & audit_log", domain: "Ops & Security", liveRows: null, totalManagedRows: tickets.length + auditLogs.length, rlsEnabled: true, syncStatus: "Protected (RLS)" },
+    { tableName: "public.profiles", domain: "Candidate Identity", liveRows: profilesQ.ok ? liveProfiles.length : null, totalManagedRows: candidates.length, rlsEnabled: true, syncStatus: profilesQ.ok ? "Synced" : "Protected (RLS)" },
+    { tableName: "public.skills / experiences / educations", domain: "Candidate Graph", liveRows: skillsQ.ok ? liveSkills.length + liveExps.length + liveEdus.length : null, totalManagedRows: liveSkills.length + liveExps.length + liveEdus.length, rlsEnabled: true, syncStatus: skillsQ.ok ? "Synced" : "Protected (RLS)" },
+    { tableName: "public.certifications / projects", domain: "Proof of Work", liveRows: certsQ.ok ? liveCerts.length + liveProjs.length : null, totalManagedRows: liveCerts.length + liveProjs.length, rlsEnabled: true, syncStatus: certsQ.ok ? "Synced" : "Protected (RLS)" },
+    { tableName: "public.identity_verifications", domain: "Candidate KYC", liveRows: kycQ.ok ? liveKycs.length : null, totalManagedRows: liveKycs.length, rlsEnabled: true, syncStatus: kycQ.ok ? "Synced" : "Protected (RLS)" },
+    { tableName: "public.employers & tenant_organizations", domain: "Employer Tenants", liveRows: employersQ.ok ? liveEmployers.length : null, totalManagedRows: employers.length, rlsEnabled: true, syncStatus: employersQ.ok ? "Synced" : "Protected (RLS)" },
+    { tableName: "public.employer_job_openings", domain: "Job Marketplace", liveRows: jobsQ.ok ? liveJobs.length : null, totalManagedRows: jobs.length, rlsEnabled: true, syncStatus: jobsQ.ok ? "Synced" : "Protected (RLS)" },
+    { tableName: "public.job_applications & stage_history", domain: "ATS Pipeline", liveRows: applicationsQ.ok ? liveApplications.length : null, totalManagedRows: applications.length, rlsEnabled: true, syncStatus: applicationsQ.ok ? "Synced" : "Protected (RLS)" },
+    { tableName: "public.assessments_catalog & cir_reports", domain: "CIR Engine", liveRows: catalogQ.ok ? liveCatalog.length + liveCirReports.length : null, totalManagedRows: assessments.length, rlsEnabled: true, syncStatus: catalogQ.ok ? "Synced" : "Catalog" },
+    { tableName: "public.proctoring_events (30 Layers)", domain: "AI Integrity", liveRows: proctorEventsQ.ok ? liveProctorEvents.length : null, totalManagedRows: liveProctorEvents.length, rlsEnabled: true, syncStatus: proctorEventsQ.ok ? "Synced" : "Protected (RLS)" },
+    { tableName: "public.payment_orders & subscriptions", domain: "Revenue & GST", liveRows: paymentOrdersQ.ok ? livePaymentOrders.length + liveServicePurchases.length : null, totalManagedRows: transactions.length, rlsEnabled: true, syncStatus: paymentOrdersQ.ok ? "Synced" : "Protected (RLS)" },
+    { tableName: "public.wallet_accounts & ledger_entries", domain: "Wallet Ledger", liveRows: walletsQ.ok ? liveWallets.length : null, totalManagedRows: wallets.length, rlsEnabled: true, syncStatus: walletsQ.ok ? "Synced" : "Protected (RLS)" },
+    { tableName: "public.lms_courses / hackathons / mentors", domain: "Learning & Events", liveRows: lmsCoursesQ.ok || hackathonsQ.ok ? liveLmsCourses.length + liveHackathons.length + liveMentors.length : null, totalManagedRows: learningEvents.length, rlsEnabled: true, syncStatus: lmsCoursesQ.ok ? "Synced" : "Catalog" },
+    { tableName: "public.support_tickets & audit_log", domain: "Ops & Security", liveRows: ticketsQ.ok || auditLogQ.ok ? liveTickets.length + liveAuditLogs.length : null, totalManagedRows: tickets.length + auditLogs.length, rlsEnabled: true, syncStatus: ticketsQ.ok ? "Synced" : "Protected (RLS)" },
   ];
 
   return {
     syncedAt: new Date().toISOString(),
     liveDbConnected,
-    liveProfilesCount: liveProfiles.length,
-    liveEmployersCount: liveEmployers.length,
-    liveJobsCount: liveJobs.length,
+    adminSession,
+    liveProfilesCount: candidates.length,
+    liveEmployersCount: employers.length,
+    liveJobsCount: jobs.length,
+    liveApplicationsCount: applications.length,
+    liveTransactionsCount: transactions.length,
+    liveWalletsCount: wallets.length,
+    liveAssessmentsCount: assessments.length,
+    liveTicketsCount: tickets.length,
     candidates,
     employers,
     jobs,
@@ -1973,7 +1373,27 @@ export async function fetchSuperAdminSnapshot(): Promise<SuperAdminSnapshot> {
     auditLogs,
     learningEvents,
     tableHealth,
-    featureFlags: DEFAULT_FLAGS,
+    featureFlags,
+    liveEnterpriseRaw: {
+      lmsCourses: liveLmsCourses,
+      courseEnrollments: liveCourseEnrollments,
+      mentors: liveMentors,
+      mentorBookings: liveMentorBookings,
+      hackathons: liveHackathons,
+      hackathonRegistrations: liveHackathonRegs,
+      hackathonSubmissions: liveHackathonSubs,
+      eventRegistrations: liveEventRegs,
+      freelanceGigs: liveFreelanceGigs,
+      gigProposals: liveGigProposals,
+      coupons: liveCoupons,
+      couponRedemptions: liveCouponRedemptions,
+      aiInterviews: liveAiInterviews,
+      scheduledInterviews: liveScheduledInterviews,
+      notifications: liveNotifications,
+      platformSettings: liveSettings,
+      enterpriseStore: liveEnterpriseStore,
+      questionBank: liveQuestionBank,
+    },
   };
 }
 

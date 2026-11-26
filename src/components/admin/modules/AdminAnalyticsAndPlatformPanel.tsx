@@ -21,8 +21,8 @@ import {
   type SuperAdminSnapshot,
 } from "@/services/admin/superAdminData";
 import {
-  DOMAIN_CIR_ANALYTICS,
-  REGISTRATION_TREND_SERIES,
+  buildDomainCirAnalytics,
+  buildRegistrationTrendSeries,
   type SuperAdminEnterpriseState,
 } from "@/services/admin/superAdminEnterpriseData";
 import { toast } from "sonner";
@@ -122,6 +122,57 @@ export const AdminAnalyticsAndPlatformPanel: React.FC<Props> = ({
     const totalRevenue = capturedTx.reduce((s, t) => s + t.netTotalInr, 0);
     const totalMrr = snapshot.employers.reduce((s, e) => s + e.mrrInr, 0);
     const totalAiCost = enterprise.aiFeatures.reduce((s, f) => s + f.costInr, 0);
+    const registrationTrends = buildRegistrationTrendSeries(snapshot.candidates, snapshot.employers);
+    const domainCir = buildDomainCirAnalytics(snapshot.assessments);
+
+    const avgCompletion = snapshot.candidates.length
+      ? Math.round(
+          snapshot.candidates.reduce((s, c) => s + c.profileCompletion, 0) /
+            snapshot.candidates.length
+        )
+      : 0;
+    const cityCounts = new Map<string, number>();
+    for (const c of snapshot.candidates) {
+      const city = c.city || "India";
+      cityCounts.set(city, (cityCounts.get(city) || 0) + 1);
+    }
+    const topCities = Array.from(cityCounts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3);
+
+    const shortlistedApps = snapshot.applications.filter((a) =>
+      ["Shortlisted", "Interview", "Offer", "Hired"].includes(a.stage)
+    ).length;
+    const hiredApps = snapshot.applications.filter((a) => a.stage === "Hired" || a.stage === "Offer").length;
+    const shortlistPct = snapshot.applications.length
+      ? `${((shortlistedApps / snapshot.applications.length) * 100).toFixed(1)}%`
+      : "0%";
+    const hirePct = snapshot.applications.length
+      ? `${((hiredApps / snapshot.applications.length) * 100).toFixed(1)}%`
+      : "0%";
+
+    const totalEnrols = enterprise.courses.reduce((s, c) => s + c.enrolledCount, 0);
+    const totalCourseCompleted = enterprise.courses.reduce((s, c) => s + c.completedCount, 0);
+    const courseCompletionPct = totalEnrols
+      ? `${((totalCourseCompleted / totalEnrols) * 100).toFixed(1)}%`
+      : "0%";
+    const ratedMentors = enterprise.mentors.filter((m) => m.rating > 0);
+    const avgMentorRating = ratedMentors.length
+      ? `${(ratedMentors.reduce((s, m) => s + m.rating, 0) / ratedMentors.length).toFixed(2)}★`
+      : "—";
+
+    const refundedTx = snapshot.transactions.filter((t) => t.status === "refunded").length;
+    const paySuccessPct = snapshot.transactions.length
+      ? `${((capturedTx.length / snapshot.transactions.length) * 100).toFixed(1)}%`
+      : "—";
+    const refundPct = snapshot.transactions.length
+      ? `${((refundedTx / snapshot.transactions.length) * 100).toFixed(1)}%`
+      : "0%";
+
+    const sevenDaysAgo = Date.now() - 86400000 * 7;
+    const active7d = snapshot.candidates.filter(
+      (c) => new Date(c.lastActiveAt).getTime() >= sevenDaysAgo
+    ).length;
 
     return (
       <div className="space-y-5">
@@ -157,7 +208,7 @@ export const AdminAnalyticsAndPlatformPanel: React.FC<Props> = ({
               variant="outline"
               className="h-8 text-xs gap-1.5 cursor-pointer"
               onClick={() => {
-                exportRecordsAsCsv(`talentcir-bi-${biTab}`, REGISTRATION_TREND_SERIES as unknown as Array<Record<string, unknown>>);
+                exportRecordsAsCsv(`talentcir-bi-${biTab}`, registrationTrends as unknown as Array<Record<string, unknown>>);
                 toast.success(`Exported ${biTab} BI report (CSV / Excel compatible)`);
               }}
             >
@@ -169,7 +220,7 @@ export const AdminAnalyticsAndPlatformPanel: React.FC<Props> = ({
               variant="outline"
               className="h-8 text-xs gap-1.5 cursor-pointer"
               onClick={() => {
-                exportRecordsAsJson(`talentcir-bi-${biTab}`, { generatedAt: new Date().toISOString(), biTab, registrationTrends: REGISTRATION_TREND_SERIES, domainCir: DOMAIN_CIR_ANALYTICS, totalRevenue, totalMrr });
+                exportRecordsAsJson(`talentcir-bi-${biTab}`, { generatedAt: new Date().toISOString(), biTab, registrationTrends, domainCir, totalRevenue, totalMrr });
                 toast.success("Downloaded structured JSON analytics snapshot");
               }}
             >
@@ -184,16 +235,18 @@ export const AdminAnalyticsAndPlatformPanel: React.FC<Props> = ({
               <div className="flex items-baseline justify-between mb-4">
                 <div>
                   <h3 className="text-sm font-medium text-[#111827]">Candidate &amp; employer registration trends</h3>
-                  <p className="text-xs text-[#6b7487]">6-month monthly onboarding trajectory</p>
+                  <p className="text-xs text-[#6b7487]">6-month live onboarding trajectory from Supabase</p>
                 </div>
-                <span className="font-mono text-xs text-[#16a34a] tabular-nums">+16.7% MoM</span>
+                <span className="font-mono text-xs text-[#002C66] tabular-nums">
+                  {snapshot.candidates.length + snapshot.employers.length} total accounts
+                </span>
               </div>
               <div className="h-64 w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={REGISTRATION_TREND_SERIES}>
+                  <LineChart data={registrationTrends}>
                     <CartesianGrid strokeDasharray="2 4" stroke="rgba(17,24,39,0.07)" vertical={false} />
                     <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6b7487" }} />
-                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6b7487" }} />
+                    <YAxis allowDecimals={false} axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6b7487" }} />
                     <Tooltip />
                     <Line type="monotone" dataKey="candidates" name="Candidates" stroke="#002C66" strokeWidth={2.25} dot={{ r: 3 }} />
                     <Line type="monotone" dataKey="employers" name="Employers" stroke="#ea580c" strokeWidth={2} dot={{ r: 3 }} />
@@ -202,13 +255,16 @@ export const AdminAnalyticsAndPlatformPanel: React.FC<Props> = ({
               </div>
             </div>
             <div className="xl:col-span-4 rounded-xl border border-[#111827]/[0.08] p-5 space-y-3 text-xs">
-              <h3 className="text-sm font-medium text-[#111827]">Geographic &amp; retention metrics</h3>
+              <h3 className="text-sm font-medium text-[#111827]">Live geographic &amp; retention metrics</h3>
               {[
-                { label: "30-day candidate retention", val: "74.8%" },
-                { label: "Profile completion (avg)", val: `${Math.round(snapshot.candidates.reduce((s, c) => s + c.profileCompletion, 0) / Math.max(1, snapshot.candidates.length))}%` },
-                { label: "Top hub · Bengaluru", val: "38% of active users" },
-                { label: "Mumbai & Pune corridor", val: "24% of active users" },
-                { label: "Hyderabad & Chennai", val: "21% of active users" },
+                { label: "Active in last 7 days", val: `${active7d} candidates` },
+                { label: "Profile completion (avg)", val: `${avgCompletion}%` },
+                ...(topCities.length
+                  ? topCities.map(([city, count]) => ({
+                      label: `Hub · ${city}`,
+                      val: `${count} (${Math.round((count / Math.max(1, snapshot.candidates.length)) * 100)}%)`,
+                    }))
+                  : [{ label: "City hubs", val: "Awaiting first signups" }]),
               ].map((r) => (
                 <div key={r.label} className="flex items-center justify-between border-b border-[#111827]/[0.06] pb-2.5 last:border-0">
                   <span className="text-[#4b5565]">{r.label}</span>
@@ -223,18 +279,24 @@ export const AdminAnalyticsAndPlatformPanel: React.FC<Props> = ({
           <div className="rounded-xl border border-[#111827]/[0.08] p-5">
             <h3 className="text-sm font-medium text-[#111827] mb-1">Domain-wise CIR score &amp; pass rate</h3>
             <p className="text-xs text-[#6b7487] mb-4">Average verified CIR score vs assessment pass percentage by domain track</p>
-            <div className="h-64 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={DOMAIN_CIR_ANALYTICS}>
-                  <CartesianGrid strokeDasharray="2 4" stroke="rgba(17,24,39,0.07)" vertical={false} />
-                  <XAxis dataKey="domain" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6b7487" }} />
-                  <YAxis domain={[0, 100]} axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6b7487" }} />
-                  <Tooltip />
-                  <Bar dataKey="avgCir" name="Avg CIR Score" fill="#002C66" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="passRate" name="Pass Rate (%)" fill="#ea580c" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            {domainCir.length === 0 ? (
+              <div className="rounded-lg border border-dashed border-[#111827]/15 bg-[#f5f7fa] p-10 text-center text-xs text-[#6b7487]">
+                No completed CIR assessments yet. Domain analytics will populate automatically as candidates finish assessments.
+              </div>
+            ) : (
+              <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={domainCir}>
+                    <CartesianGrid strokeDasharray="2 4" stroke="rgba(17,24,39,0.07)" vertical={false} />
+                    <XAxis dataKey="domain" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6b7487" }} />
+                    <YAxis domain={[0, 100]} axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6b7487" }} />
+                    <Tooltip />
+                    <Bar dataKey="avgCir" name="Avg CIR Score" fill="#002C66" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="passRate" name="Pass Rate (%)" fill="#ea580c" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
           </div>
         )}
 
@@ -242,30 +304,30 @@ export const AdminAnalyticsAndPlatformPanel: React.FC<Props> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
             {(biTab === "recruitment"
               ? [
-                  { label: "Avg applications / job", val: (snapshot.applications.length / Math.max(1, snapshot.jobs.length)).toFixed(1), meta: "Verified CIR applicants" },
-                  { label: "Shortlisting rate", val: "36.4%", meta: "Applied → Shortlisted" },
-                  { label: "Interview-to-hire rate", val: "28.9%", meta: "With Linda AI Copilot" },
-                  { label: "Average time to hire", val: "14.2 days", meta: "Down from 32 days industry avg" },
+                  { label: "Avg applications / job", val: snapshot.jobs.length ? (snapshot.applications.length / snapshot.jobs.length).toFixed(1) : "0.0", meta: "Live ATS applications" },
+                  { label: "Shortlisting rate", val: shortlistPct, meta: `${shortlistedApps} of ${snapshot.applications.length} applications` },
+                  { label: "Offer / hire rate", val: hirePct, meta: `${hiredApps} offers & hires recorded` },
+                  { label: "Active job openings", val: String(snapshot.jobs.filter((j) => j.status === "active").length), meta: `${snapshot.jobs.length} total jobs` },
                 ]
               : biTab === "learning"
                 ? [
-                    { label: "Total LMS enrolments", val: enterprise.courses.reduce((s, c) => s + c.enrolledCount, 0).toLocaleString("en-IN"), meta: "Free + paid cohorts" },
-                    { label: "Avg course completion", val: "71.8%", meta: "Across approved courses" },
-                    { label: "Avg mentor rating", val: "4.91★", meta: "1:1 coaching marketplace" },
+                    { label: "Total LMS enrolments", val: totalEnrols.toLocaleString("en-IN"), meta: `${enterprise.courses.length} live courses` },
+                    { label: "Avg course completion", val: courseCompletionPct, meta: `${totalCourseCompleted} completed` },
+                    { label: "Avg mentor rating", val: avgMentorRating, meta: `${enterprise.mentors.length} registered mentors` },
                     { label: "Learning & mentor GMV", val: formatINR(enterprise.courses.reduce((s, c) => s + c.revenueInr, 0)), meta: "Direct course revenue" },
                   ]
                 : biTab === "financial"
                   ? [
                       { label: "Captured revenue (GMV)", val: formatINR(totalRevenue), meta: `${capturedTx.length} paid GST orders` },
                       { label: "Monthly recurring revenue", val: formatINR(totalMrr), meta: "Active SaaS subscriptions" },
-                      { label: "Payment success rate", val: "98.6%", meta: "Razorpay UPI + NetBanking" },
-                      { label: "Refund rate", val: "0.9%", meta: "Within 1.5% target band" },
+                      { label: "Payment success rate", val: paySuccessPct, meta: "Razorpay & Wallet orders" },
+                      { label: "Refund rate", val: refundPct, meta: `${refundedTx} refunded orders` },
                     ]
                   : [
-                      { label: "Daily active users (DAU)", val: "6,480", meta: "MAU 42,100 (15.4% stickiness)" },
-                      { label: "API p95 latency", val: "142 ms", meta: "99.97% uptime (30d)" },
-                      { label: "Monthly AI inference spend", val: formatINR(totalAiCost), meta: "11 active AI engines" },
-                      { label: "Scheduled automated reports", val: "6 active", meta: "Weekly Finance & Ops digests" },
+                      { label: "Active candidates (7d)", val: active7d.toLocaleString("en-IN"), meta: `of ${snapshot.candidates.length} total candidates` },
+                      { label: "Synced live DB tables", val: String(snapshot.tableHealth.filter((t) => t.syncStatus === "Synced").length), meta: `of ${snapshot.tableHealth.length} monitored schemas` },
+                      { label: "Monthly AI inference spend", val: formatINR(totalAiCost), meta: `${enterprise.aiFeatures.filter((f) => f.enabled).length} active AI engines` },
+                      { label: "Audit log events", val: String(snapshot.auditLogs.length), meta: "Immutable security trail" },
                     ]
             ).map((card) => (
               <div key={card.label} className="rounded-xl border border-[#111827]/[0.08] bg-[#f5f7fa] p-4 space-y-1.5">

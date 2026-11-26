@@ -12,6 +12,7 @@ import type {
   CouponRecord,
   QuestionBankItem,
 } from "@/services/admin/superAdminEnterpriseData";
+import { adminCreateCoupon } from "@/services/admin/adminService";
 import { toast } from "sonner";
 
 export type MonetizationOrConfigMode =
@@ -96,11 +97,19 @@ export const AdminMonetizationPanel: React.FC<Props> = ({
       toast.success(`Created plan "${created.name}"`);
     };
 
-    const handleAddCoupon = (e: React.FormEvent) => {
+    const handleAddCoupon = async (e: React.FormEvent) => {
       e.preventDefault();
       if (!couponCode.trim()) return;
+      const numericVal = Number(couponDiscount.match(/\d+/)?.[0] || 15);
+      const isFlat = /₹|flat|rs/i.test(couponDiscount);
+      const res = await adminCreateCoupon(
+        couponCode.trim().toUpperCase(),
+        isFlat ? "flat" : "percent",
+        numericVal,
+        250
+      );
       const created: CouponRecord = {
-        id: `cpn-${Date.now()}`,
+        id: (res.data?.id as string) || `cpn-${Date.now()}`,
         code: couponCode.trim().toUpperCase(),
         discountLabel: couponDiscount.trim() || "15% off",
         appliesTo: "All Plans",
@@ -112,7 +121,11 @@ export const AdminMonetizationPanel: React.FC<Props> = ({
       onUpdateEnterprise((p) => ({ ...p, coupons: [created, ...p.coupons] }));
       onLogAudit("coupon.created", "coupons", created.code, `Created coupon ${created.code}`);
       setCouponCode("");
-      toast.success(`Coupon ${created.code} activated`);
+      toast.success(
+        res.persisted
+          ? `Coupon ${created.code} saved to live billing database`
+          : `Coupon ${created.code} activated`
+      );
     };
 
     return (

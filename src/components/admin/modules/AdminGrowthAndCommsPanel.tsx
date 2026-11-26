@@ -8,6 +8,7 @@ import type {
   NotificationBroadcastRecord,
   KnowledgeBaseArticle,
 } from "@/services/admin/superAdminEnterpriseData";
+import { adminBroadcastNotification } from "@/services/admin/adminService";
 import { toast } from "sonner";
 
 interface Props {
@@ -159,9 +160,20 @@ export const AdminGrowthAndCommsPanel: React.FC<Props> = ({
 
   /* ===================== 17. NOTIFICATIONS MANAGEMENT ===================== */
   if (mode === "notifications") {
-    const handleSendBroadcast = (e: React.FormEvent) => {
+    const handleSendBroadcast = async (e: React.FormEvent) => {
       e.preventDefault();
       if (!notifTitle.trim()) return;
+      const dbAudience =
+        notifAudience === "Employers Only"
+          ? "Employers"
+          : notifAudience === "Candidates Only"
+            ? "Candidates"
+            : "All Users";
+      const res = await adminBroadcastNotification(
+        notifTitle.trim(),
+        `${notifChannel} announcement · ${notifSegment.trim() || notifAudience}`,
+        dbAudience
+      );
       const rec: NotificationBroadcastRecord = {
         id: `ntf-${Date.now()}`,
         title: notifTitle.trim(),
@@ -169,14 +181,19 @@ export const AdminGrowthAndCommsPanel: React.FC<Props> = ({
         audience: notifAudience,
         segmentDetail: notifSegment.trim() || "Default audience",
         status: "sent",
-        deliveredCount: notifAudience === "Employers Only" ? 64 : notifAudience === "Candidates Only" ? 1240 : 1304,
+        deliveredCount:
+          res.persisted && typeof res.data === "number" ? res.data : 0,
         openRatePct: 0,
         sentAt: "Just now",
       };
       onUpdateEnterprise((p) => ({ ...p, notifications: [rec, ...p.notifications] }));
       onLogAudit("notification.broadcast_sent", "notifications", rec.id, `${rec.channel} broadcast to ${rec.audience}: ${rec.title}`);
       setNotifTitle("");
-      toast.success(`Dispatched ${rec.channel} notification to ${rec.audience}`);
+      toast.success(
+        res.persisted
+          ? `Delivered live notification to ${rec.deliveredCount} user(s)`
+          : `Dispatched ${rec.channel} notification to ${rec.audience}`
+      );
     };
 
     return (
